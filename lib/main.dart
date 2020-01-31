@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:ynotes/UI/carousel.dart';
 import 'package:ynotes/UI/loginPage.dart';
 void main() {
 
@@ -21,6 +22,13 @@ class Logger extends StatelessWidget {
     ]);
     return Scaffold(
 //Main container
-        body: Login() );
+        body: ConditionsDialog() );
+  }
+}
+class SecondRoute extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+body: SlidingCarousel());
   }
 }
