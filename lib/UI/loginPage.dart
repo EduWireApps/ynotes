@@ -85,8 +85,8 @@ class ConditionsDialog extends StatelessWidget {
     }
 
 
-    return  Container(
-        height: screenSize.size.height,
+    return SafeArea(child: Container(
+        height: screenSize.size.height-screenSize.padding.top,
         decoration: BoxDecoration(
 
           gradient: LinearGradient(
@@ -100,8 +100,8 @@ class ConditionsDialog extends StatelessWidget {
             tileMode: TileMode.repeated, // repeats the gradient over the canvas
           ),
         ),
-        child: SingleChildScrollView(child:Container(
-            height: screenSize.size.height,
+        child: SingleChildScrollView(child: Container(
+            height: screenSize.size.height-screenSize.padding.top,
             width: screenSize.size.width,
             decoration: BoxDecoration(
               color: Color(0xff252228).withOpacity(0.8),
@@ -253,7 +253,7 @@ class ConditionsDialog extends StatelessWidget {
 
               ],
             )),
-        ));
+        )));
   }
 }
 
