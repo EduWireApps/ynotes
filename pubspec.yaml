@@ -21,6 +21,8 @@ dependencies:
     sdk: flutter
   flutter_svg: ^0.17.0
   flutter_secure_storage: ^3.3.1+1
+  auto_size_text: ^2.1.0
+  http: ^0.12.0+4
 
 
 
@@ -31,6 +33,15 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.7.4
+
+flutter_icons:
+  ios: true
+  android: true
+  image_path_ios: "assets/appico/icon.png"
+  image_path_android: "assets/appico/icon.png"
+  adaptive_icon_background: "#252B62"
+  adaptive_icon_foreground: "assets/appico/foreground.png"
 
 
 # For information on the generic Dart part of this file, see the
@@ -78,8 +89,19 @@ flutter:
     - family: Asap
       fonts:
         - asset: fonts/Asap-Regular.otf
+        - asset: fonts/Asap-Bold.otf
+          weight: 700
   assets:
     - assets/images/logoED.svg
     - assets/images/space/space.png
     - assets/images/space/2.0x/space.png
     - assets/images/space/4.0x/space.png
+    - assets/images/marks/2.0x/mark.png
+    - assets/images/marks/3.0x/mark.png
+    - assets/images/marks/mark.png
+    - assets/images/shelves/calendar.png
+    - assets/images/shelves/clock.png
+    - assets/images/shelves/shelve1.png
+    - assets/images/shelves/shelve2.png
+
+

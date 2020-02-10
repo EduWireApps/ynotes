@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ynotes/UI/carousel.dart';
 import 'package:ynotes/UI/loginPage.dart';
+import 'package:ynotes/land.dart';
 void main() {
+
 
 
 
@@ -21,10 +23,13 @@ class Logger extends StatelessWidget {
       DeviceOrientation.portraitUp,
     ]);
     return Scaffold(
+
 //Main container
-        body: ConditionsDialog() );
+        body: loginPage() );
   }
 }
+
+
 class SecondRoute extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
