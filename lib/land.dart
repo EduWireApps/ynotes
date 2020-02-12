@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 final storage = new FlutterSecureStorage();
 //Create a secure storage
 void CreateStorage(String key, String data) async
@@ -27,7 +28,8 @@ class connexionRequest {
 }
 
 
-Future<String> getToken(username, password) async {
+Future<String> connectionStatus(username, password) async {
+  final prefs = await SharedPreferences.getInstance();
   if(username==null)
     {
       username="";
@@ -44,7 +46,10 @@ Future<String> getToken(username, password) async {
   var body = data;
   var response = await http.post(url, headers: headers,
       body: body
-  );
+  ).catchError((e) {
+    throw("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou reessayez plus tard.");
+
+   });
 
   if (response.statusCode == 200) {
 
@@ -57,10 +62,12 @@ Future<String> getToken(username, password) async {
         //Create secure storage for credentials
         CreateStorage("password", password);
         CreateStorage("username", username);
+        //Ensure that the user will not see the carousel anymore
+        prefs.setBool('firstUse', false);
         return "Bienvenue ${name[0].toUpperCase()}${name.substring(1).toLowerCase()} !";
 
      }
-
+    //Return an error
     else {
         String message = req['message'];
         throw "Oups ! Une erreur a eu lieu :\n$message";
@@ -68,7 +75,7 @@ Future<String> getToken(username, password) async {
 
   }
   else {
-   throw "erreur";
+   throw "Erreur";
 
    // print(req["code"]);
   }

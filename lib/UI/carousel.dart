@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:ynotes/UI/loginPage.dart';
 import 'package:flutter/material.dart';
+import 'package:ynotes/main.dart';
 
 class SlidingCarousel extends StatefulWidget {
   SlidingCarousel({Key key}) : super(key: key);
@@ -32,6 +33,8 @@ class page3 extends StatefulWidget {
 
 //PAGE1 STATE
 class _page1State extends State<page1> {
+
+
   @override
   Widget build(BuildContext context) {
     
@@ -277,6 +280,7 @@ class _page1State extends State<page1> {
 
 //PAGE2 STATE
 class _page2State extends State<page2> {
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -475,7 +479,9 @@ class _page3State extends State<page3> {
             child: RaisedButton(
               color: Color(0xff5DADE2),
               shape: StadiumBorder(),
-              onPressed: () {},
+              onPressed: () {
+                router(homePage());
+              },
               child: const Text(
                   'Allons-y !',
                   style: TextStyle(fontSize: 20)
@@ -567,10 +573,12 @@ class _SlidingCarouselState extends State<SlidingCarousel> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: _getBGColor(),
-      body: WillPopScope(
-        onWillPop: () async {
+      body: //Disable back button
+       WillPopScope(
+        onWillPop: ()  async{
           Future.value(
               false);
+          return false;
         },
         child: Column(
           children: <Widget>[

@@ -1,42 +1,11 @@
-import 'dart:ffi';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ynotes/land.dart';
 import 'package:ynotes/main.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 Color myColor = Color(0xff00bfa5);
-Future<Post> fetchPost() async {
-  final response =
-      await http.get('https://jsonplaceholder.typicode.com/posts/1');
 
-  if (response.statusCode == 200) {
-    // If the call to the server was successful, parse the JSON.
-    return Post.fromJson(json.decode(response.body));
-  } else {
-    // If that call was not successful, throw an error.
-    throw Exception('Failed to load post');
-  }
-}
-
-class Post {
-  final int userId;
-  final int id;
-  final String title;
-  final String body;
-
-  Post({this.userId, this.id, this.title, this.body});
-
-  factory Post.fromJson(Map<String, dynamic> json) {
-    return Post(
-      userId: json['userId'],
-      id: json['id'],
-      title: json['title'],
-      body: json['body'],
-    );
-  }
-}
 
 class loginPage extends StatefulWidget {
   State<StatefulWidget> createState() {
@@ -46,161 +15,209 @@ class loginPage extends StatefulWidget {
 
 class _loginPageState extends State<loginPage> {
   Future<String> connectionData;
+  final _username = TextEditingController();
+  final _password = TextEditingController();
+  bool _isFirstUse = true;
+  String _obligationText = "";
+
   @override
-  void initState() {
-    super.initState();
+
+  initState(){
+    tryToConnect();
+    getFirstUse();
+  }
+  getFirstUse() async{
+    final prefs = await SharedPreferences.getInstance();
+    _isFirstUse =  prefs.getBool('firstUse') ?? true;
+    print(_isFirstUse.toString());
+  }
+  tryToConnect() async {
+
+    String u = await storage.read(key: "username");
+    String p = await storage.read(key: "password");
+    if (u != null && p != null) {
+      connectionData = connectionStatus(u,p);
+      openLoadingDialog();
+    }
+
   }
 
+  openAlertBox() {
+    MediaQueryData screenSize;
+    screenSize = MediaQuery.of(context);
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(32.0))),
+            contentPadding: EdgeInsets.only(top: 10.0),
+            content: SingleChildScrollView(
+              child: Container(
+                width: screenSize.size.width,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        Text(
+                          "Conditions d’utilisation",
+                          style:
+                          TextStyle(fontSize: 24.0, fontFamily: "Asap"),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 5.0,
+                    ),
+                    Divider(
+                      color: Colors.grey,
+                      height: 4.0,
+                    ),
+                    Padding(
+                        padding: EdgeInsets.only(
+                            left: 10.0, right: 10.0, top: 10, bottom: 10),
+                        child: SingleChildScrollView(
+                            child: Container(
+                              child: Text(
+                                "En utilisant cette application ainsi que les services tiers vous acceptez et comprenez les conditions suivantes :\n- Mon identifiant ainsi que mon mot de passe ne sont pas enregistrés sur des serveurs, seulement sur votre appareil. Mais vous vous portez responsables en cas de perte de ces derniers.\n - YNote ne se porte pas responsable en cas de suppression ou altération de la qualité de votre compte EcoleDirecte par une entité externe.\n - YNote est un client libre et gratuit et non officiel\n - YNote n’est en aucun cas affilié ou relié à une quelconque entité\n - EcoleDirecte est un produit de la société STATIM",
+                                style: TextStyle(
+                                  fontFamily: "Asap",
+                                ),
+                                textAlign: TextAlign.justify,
+                              ),
+                            ))),
+                    RaisedButton(
+                      padding: EdgeInsets.only(
+                          left: 60, right: 60, top: 15, bottom: 18),
+                      color: Color(0xff27AE60),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(32.0),
+                            bottomRight: Radius.circular(32.0)),
+                      ),
+                      onPressed: () {
+                        Navigator.of(context).pushReplacement(router(carousel()));
+                      },
+                      child: Text(
+                        "J'accepte",
+                        style: TextStyle(color: Colors.white),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
+  }
+
+
+  openLoadingDialog() {
+
+    MediaQueryData screenSize;
+    screenSize = MediaQuery.of(context);
+    return showDialog(
+
+
+        context: context,
+        builder: (BuildContext context) {
+
+          return AlertDialog(
+
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(32.0))),
+            contentPadding: EdgeInsets.only(top: 10.0),
+            content: SingleChildScrollView(
+              child: Container(
+                padding: EdgeInsets.only(left: 5, right: 5, top: 20, bottom: 20),
+                child: Column(
+                  children: <Widget>[
+                    FutureBuilder(
+                      future: connectionData,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+
+                          Future.delayed(const Duration(milliseconds: 500), () {
+                            Navigator.pop(context);
+                            if (_isFirstUse==true)
+                              {
+                                openAlertBox();
+
+                              }
+                            else {
+                              Navigator.of(context).pushReplacement(router(homePage()));
+                            }
+                          });
+                          return Column(
+                            children: <Widget>[
+                              Icon(
+                                Icons.check_circle,
+                                size: MediaQuery.of(context).size.width/5,
+                                color: Colors.lightGreen,
+                              ),
+                              Text(
+                                snapshot.data,
+                                textAlign: TextAlign.center,
+                              )
+                            ],
+                          );
+
+                        } else if (snapshot.hasError) {
+
+
+
+
+
+                          return Column(
+                            children: <Widget>[
+                              Icon(
+                                Icons.error,
+                                size: MediaQuery.of(context).size.width/5,
+                                color: Colors.redAccent,
+                              ),
+                              Text(
+                                snapshot.error.toString(),
+                                textAlign: TextAlign.center,
+                              )
+                            ],
+                          );
+
+                        } else {
+
+                          return Container(
+                              width: 50,
+                              height: 50,
+                              child: CircularProgressIndicator(
+
+                                backgroundColor: Color(0xff444A83),
+
+                              ));
+                        }
+                      },
+                    )
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
+
+  }
+
+
   Widget build(BuildContext context) {
-    final _username = TextEditingController();
-    final _password = TextEditingController();
+
     MediaQueryData screenSize;
     screenSize = MediaQuery.of(context);
 
-    openAlertBox() {
-      return showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(32.0))),
-              contentPadding: EdgeInsets.only(top: 10.0),
-              content: SingleChildScrollView(
-                child: Container(
-                  width: screenSize.size.width,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Text(
-                            "Conditions d’utilisation",
-                            style:
-                                TextStyle(fontSize: 24.0, fontFamily: "Asap"),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 5.0,
-                      ),
-                      Divider(
-                        color: Colors.grey,
-                        height: 4.0,
-                      ),
-                      Padding(
-                          padding: EdgeInsets.only(
-                              left: 10.0, right: 10.0, top: 10, bottom: 10),
-                          child: SingleChildScrollView(
-                              child: Container(
-                            child: Text(
-                              "En utilisant cette application ainsi que les services tiers vous acceptez et comprenez les conditions suivantes :\n- Mon identifiant ainsi que mon mot de passe ne sont pas enregistrés sur des serveurs, seulement sur votre appareil. Mais vous vous portez responsables en cas de perte de ces derniers.\n - YNote ne se porte pas responsable en cas de suppression ou altération de la qualité de votre compte EcoleDirecte par une entité externe.\n - YNote est un client libre et gratuit et non officiel\n - YNote n’est en aucun cas affilié ou relié à une quelconque entité\n - EcoleDirecte est un produit de la société STATIM",
-                              style: TextStyle(
-                                fontFamily: "Asap",
-                              ),
-                              textAlign: TextAlign.justify,
-                            ),
-                          ))),
-                      RaisedButton(
-                        padding: EdgeInsets.only(
-                            left: 60, right: 60, top: 15, bottom: 18),
-                        color: Color(0xff27AE60),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(32.0),
-                              bottomRight: Radius.circular(32.0)),
-                        ),
-                        onPressed: () {
-                          Navigator.of(context).pushReplacement(_routeto2());
-                        },
-                        child: Text(
-                          "J'accepte",
-                          style: TextStyle(color: Colors.white),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            );
-          });
-    }
 
-    openLoadingDialog() {
-      return showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(Radius.circular(32.0))),
-              contentPadding: EdgeInsets.only(top: 10.0),
-              content: SingleChildScrollView(
-                child: Container(
-                  padding: EdgeInsets.only(left: 5, right: 5, top: 20, bottom: 20),
-                  child: Column(
-                    children: <Widget>[
-                      FutureBuilder(
-                        future: connectionData,
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            Future.delayed(const Duration(milliseconds: 500), () {
-                              Navigator.pop(context);
-                              openAlertBox();
-                            });
-                            return Column(
-                              children: <Widget>[
-                                Icon(
-                                  Icons.check_circle,
-                                  size: MediaQuery.of(context).size.width/5,
-                                  color: Colors.lightGreen,
-                                ),
-                                Text(
-                                  snapshot.data,
-                                  textAlign: TextAlign.center,
-                                )
-                              ],
-                            );
-
-                          } else if (snapshot.hasError) {
-                            return Column(
-                              children: <Widget>[
-                                Icon(
-                                  Icons.error,
-                                  size: MediaQuery.of(context).size.width/5,
-                                  color: Colors.redAccent,
-                                ),
-                                Text(
-                                    snapshot.error,
-                                   textAlign: TextAlign.center,
-                                )
-                              ],
-                            );
-
-                          } else {
-                            return Container(
-                                width: 50,
-                                height: 50,
-                                child: CircularProgressIndicator(
-
-                                  backgroundColor: Color(0xff444A83),
-
-                                ));
-                          }
-                        },
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            );
-          });
-    }
-
-//BEGINNING OF THE STYLE
+//BEGINNING OF THE STYLE OF THE WINDOW
     return SafeArea(
         child: Container(
             height: screenSize.size.height -
@@ -233,19 +250,36 @@ class _loginPageState extends State<loginPage> {
                             SizedBox(
                               height: screenSize.size.height / 28,
                             ),
-                            Container(
-                              width: 400,
-                              margin: EdgeInsets.only(
-                                  left: screenSize.size.width / 11,
-                                  top: 20,
-                                  bottom: 5),
-                              child: Text(
-                                "Nom d'utilisateur",
-                                style: TextStyle(
-                                    fontFamily: 'Asap', color: Colors.white),
-                                textAlign: TextAlign.left,
-                              ),
-                            ),
+
+
+                                Container(
+                                  width: 400,
+                                  margin: EdgeInsets.only(
+                                      left: screenSize.size.width / 11,
+                                      top: 20,
+                                      bottom: 5),
+                                  child: Row(
+                                    children: <Widget>[
+                                      Text(
+                                        "Nom d'utilisateur",
+                                        style: TextStyle(
+                                            fontFamily: 'Asap', color: Colors.white),
+                                        textAlign: TextAlign.left,
+
+                                      ),
+                                          Text(
+                                              _obligationText,
+                                            style: TextStyle(color: Colors.red)
+                                          )
+
+
+                                    ],
+                                  ),
+                                ),
+
+
+
+
                             Container(
                               margin: EdgeInsets.only(
                                   left: screenSize.size.width / 12,
@@ -292,7 +326,7 @@ class _loginPageState extends State<loginPage> {
                                   right: screenSize.size.width / 12),
                               child: TextFormField(
                                 controller: _password,
-                                keyboardType: TextInputType.emailAddress,
+                                autocorrect: false,
                                 obscureText: true,
                                 decoration: InputDecoration(
                                   contentPadding: EdgeInsets.all(18),
@@ -321,10 +355,20 @@ class _loginPageState extends State<loginPage> {
                                   color: Color(0xff5DADE2),
                                   shape: StadiumBorder(),
                                   onPressed: () {
-                                    connectionData = getToken(
-                                        _username.text, _password.text);
-                                    openLoadingDialog();
-                                  },
+                                    //Actions when pressing the ok button
+                                    if  (_username.text!="")
+                                    {
+                                        connectionData = connectionStatus(_username.text, _password.text);
+                                        openLoadingDialog();
+                                    }
+                                    else {
+                                      _obligationText =" (obligatoire)";
+                                      setState(() {
+
+                                      });
+                                    }
+
+                                    },
                                   child: Text(
                                     "Se connecter",
                                     style: TextStyle(fontSize: 24),
@@ -376,6 +420,7 @@ class _loginPageState extends State<loginPage> {
                   )),
             )));
   }
+
 }
 
 //Planet widget
@@ -441,9 +486,9 @@ class Planet extends StatelessWidget {
   }
 }
 
-Route _routeto2() {
+Route router(Widget widget) {
   return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) => SecondRoute(),
+    pageBuilder: (context, animation, secondaryAnimation) => widget,
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
       var begin = Offset(1, 0);
       var end = Offset.zero;
