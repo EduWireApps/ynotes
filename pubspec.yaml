@@ -14,7 +14,7 @@ description: YNotes first version
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.2.2 <3.0.0"
 
 dependencies:
   flutter:
@@ -26,6 +26,10 @@ dependencies:
   charts_flutter: ^0.8.1
   shared_preferences: ^0.5.6+1
   circular_check_box: ^1.0.1
+  shimmer: ^1.0.1
+  badges: ^1.1.0
+
+
 
 
 

@@ -3,17 +3,17 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:ynotes/land.dart';
 import 'package:ynotes/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ynotes/UI/gradesPage.dart';
 
 Color myColor = Color(0xff00bfa5);
 
-
-class loginPage extends StatefulWidget {
+class LoginPage extends StatefulWidget {
   State<StatefulWidget> createState() {
-    return _loginPageState();
+    return _LoginPageState();
   }
 }
 
-class _loginPageState extends State<loginPage> {
+class _LoginPageState extends State<LoginPage> {
   Future<String> connectionData;
   final _username = TextEditingController();
   final _password = TextEditingController();
@@ -21,25 +21,23 @@ class _loginPageState extends State<loginPage> {
   String _obligationText = "";
 
   @override
-
-  initState(){
+  initState() {
     tryToConnect();
     getFirstUse();
   }
-  getFirstUse() async{
-    final prefs = await SharedPreferences.getInstance();
-    _isFirstUse =  prefs.getBool('firstUse') ?? true;
-    print(_isFirstUse.toString());
-  }
-  tryToConnect() async {
 
+  getFirstUse() async {
+    final prefs = await SharedPreferences.getInstance();
+    _isFirstUse = prefs.getBool('firstUse') ?? true;
+  }
+
+  tryToConnect() async {
     String u = await storage.read(key: "username");
     String p = await storage.read(key: "password");
     if (u != null && p != null) {
-      connectionData = connectionStatus(u,p);
+      connectionData = connectionStatus(u, p);
       openLoadingDialog();
     }
-
   }
 
   openAlertBox() {
@@ -66,8 +64,7 @@ class _loginPageState extends State<loginPage> {
                       children: <Widget>[
                         Text(
                           "Conditions d’utilisation",
-                          style:
-                          TextStyle(fontSize: 24.0, fontFamily: "Asap"),
+                          style: TextStyle(fontSize: 24.0, fontFamily: "Asap"),
                         ),
                       ],
                     ),
@@ -83,14 +80,14 @@ class _loginPageState extends State<loginPage> {
                             left: 10.0, right: 10.0, top: 10, bottom: 10),
                         child: SingleChildScrollView(
                             child: Container(
-                              child: Text(
-                                "En utilisant cette application ainsi que les services tiers vous acceptez et comprenez les conditions suivantes :\n- Mon identifiant ainsi que mon mot de passe ne sont pas enregistrés sur des serveurs, seulement sur votre appareil. Mais vous vous portez responsables en cas de perte de ces derniers.\n - YNote ne se porte pas responsable en cas de suppression ou altération de la qualité de votre compte EcoleDirecte par une entité externe.\n - YNote est un client libre et gratuit et non officiel\n - YNote n’est en aucun cas affilié ou relié à une quelconque entité\n - EcoleDirecte est un produit de la société STATIM",
-                                style: TextStyle(
-                                  fontFamily: "Asap",
-                                ),
-                                textAlign: TextAlign.justify,
-                              ),
-                            ))),
+                          child: Text(
+                            "En utilisant cette application ainsi que les services tiers vous acceptez et comprenez les conditions suivantes :\n- Mon identifiant ainsi que mon mot de passe ne sont pas enregistrés sur des serveurs, seulement sur votre appareil. Mais vous vous portez responsables en cas de perte de ces derniers.\n - YNote ne se porte pas responsable en cas de suppression ou altération de la qualité de votre compte EcoleDirecte par une entité externe.\n - YNote est un client libre et gratuit et non officiel\n - YNote n’est en aucun cas affilié ou relié à une quelconque entité\n - EcoleDirecte est un produit de la société STATIM",
+                            style: TextStyle(
+                              fontFamily: "Asap",
+                            ),
+                            textAlign: TextAlign.justify,
+                          ),
+                        ))),
                     RaisedButton(
                       padding: EdgeInsets.only(
                           left: 60, right: 60, top: 15, bottom: 18),
@@ -101,7 +98,8 @@ class _loginPageState extends State<loginPage> {
                             bottomRight: Radius.circular(32.0)),
                       ),
                       onPressed: () {
-                        Navigator.of(context).pushReplacement(router(carousel()));
+                        Navigator.of(context)
+                            .pushReplacement(router(carousel()));
                       },
                       child: Text(
                         "J'accepte",
@@ -117,48 +115,40 @@ class _loginPageState extends State<loginPage> {
         });
   }
 
-
   openLoadingDialog() {
-
     MediaQueryData screenSize;
     screenSize = MediaQuery.of(context);
     return showDialog(
-
-
         context: context,
         builder: (BuildContext context) {
-
           return AlertDialog(
-
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(32.0))),
             contentPadding: EdgeInsets.only(top: 10.0),
             content: SingleChildScrollView(
               child: Container(
-                padding: EdgeInsets.only(left: 5, right: 5, top: 20, bottom: 20),
+                padding:
+                    EdgeInsets.only(left: 5, right: 5, top: 20, bottom: 20),
                 child: Column(
                   children: <Widget>[
                     FutureBuilder(
                       future: connectionData,
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
-
                           Future.delayed(const Duration(milliseconds: 500), () {
                             Navigator.pop(context);
-                            if (_isFirstUse==true)
-                              {
-                                openAlertBox();
-
-                              }
-                            else {
-                              Navigator.of(context).pushReplacement(router(homePage()));
+                            if (_isFirstUse == true) {
+                              openAlertBox();
+                            } else {
+                              Navigator.of(context)
+                                  .pushReplacement(router(homePage()));
                             }
                           });
                           return Column(
                             children: <Widget>[
                               Icon(
                                 Icons.check_circle,
-                                size: MediaQuery.of(context).size.width/5,
+                                size: MediaQuery.of(context).size.width / 5,
                                 color: Colors.lightGreen,
                               ),
                               Text(
@@ -167,18 +157,12 @@ class _loginPageState extends State<loginPage> {
                               )
                             ],
                           );
-
                         } else if (snapshot.hasError) {
-
-
-
-
-
                           return Column(
                             children: <Widget>[
                               Icon(
                                 Icons.error,
-                                size: MediaQuery.of(context).size.width/5,
+                                size: MediaQuery.of(context).size.width / 5,
                                 color: Colors.redAccent,
                               ),
                               Text(
@@ -187,16 +171,12 @@ class _loginPageState extends State<loginPage> {
                               )
                             ],
                           );
-
                         } else {
-
                           return Container(
                               width: 50,
                               height: 50,
                               child: CircularProgressIndicator(
-
                                 backgroundColor: Color(0xff444A83),
-
                               ));
                         }
                       },
@@ -207,15 +187,11 @@ class _loginPageState extends State<loginPage> {
             ),
           );
         });
-
   }
 
-
   Widget build(BuildContext context) {
-
     MediaQueryData screenSize;
     screenSize = MediaQuery.of(context);
-
 
 //BEGINNING OF THE STYLE OF THE WINDOW
     return SafeArea(
@@ -232,186 +208,165 @@ class _loginPageState extends State<loginPage> {
                   width: screenSize.size.width,
                   child: Stack(
                     children: <Widget>[
-                      Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            SizedBox(height: 40),
-                            Container(
-                              child: Text(
-                                "Trouvez votre espace",
-                                style: TextStyle(
-                                    fontFamily: 'Asap',
-                                    fontSize: 48,
-                                    color: Colors.white),
-                                textAlign: TextAlign.center,
-                              ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SizedBox(height: 40),
+                          Container(
+                            child: Text(
+                              "Trouvez votre espace",
+                              style: TextStyle(
+                                  fontFamily: 'Asap',
+                                  fontSize: 48,
+                                  color: Colors.white),
+                              textAlign: TextAlign.center,
                             ),
-                            SizedBox(
-                              height: screenSize.size.height / 28,
-                            ),
-
-
-                                Container(
-                                  width: 400,
-                                  margin: EdgeInsets.only(
-                                      left: screenSize.size.width / 11,
-                                      top: 20,
-                                      bottom: 5),
-                                  child: Row(
-                                    children: <Widget>[
-                                      Text(
-                                        "Nom d'utilisateur",
-                                        style: TextStyle(
-                                            fontFamily: 'Asap', color: Colors.white),
-                                        textAlign: TextAlign.left,
-
-                                      ),
-                                          Text(
-                                              _obligationText,
-                                            style: TextStyle(color: Colors.red)
-                                          )
-
-
-                                    ],
-                                  ),
-                                ),
-
-
-
-
-                            Container(
-                              margin: EdgeInsets.only(
-                                  left: screenSize.size.width / 12,
-                                  right: screenSize.size.width / 12),
-                              height: 45,
-                              child: TextFormField(
-                                controller: _username,
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.all(18),
-                                  filled: true,
-                                  fillColor: Colors.white,
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 0,
-                                        color: Colors.lightBlue.shade50),
-                                    borderRadius: BorderRadius.circular(25.0),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 0,
-                                        color: Colors.lightBlue.shade50),
-                                    borderRadius: BorderRadius.circular(25.0),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              width: screenSize.size.width,
-                              margin: EdgeInsets.only(
-                                  left: screenSize.size.width / 11,
-                                  top: 20,
-                                  bottom: 5),
-                              child: Text(
-                                "Mot de passe",
-                                style: TextStyle(
-                                    fontFamily: 'Asap', color: Colors.white),
-                                textAlign: TextAlign.left,
-                              ),
-                            ),
-                            Container(
-                              height: 45,
-                              margin: EdgeInsets.only(
-                                  left: screenSize.size.width / 12,
-                                  right: screenSize.size.width / 12),
-                              child: TextFormField(
-                                controller: _password,
-                                autocorrect: false,
-                                obscureText: true,
-                                decoration: InputDecoration(
-                                  contentPadding: EdgeInsets.all(18),
-                                  filled: true,
-                                  fillColor: Colors.white,
-                                  focusedBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 0,
-                                        color: Colors.lightBlue.shade50),
-                                    borderRadius: BorderRadius.circular(25.0),
-                                  ),
-                                  enabledBorder: OutlineInputBorder(
-                                    borderSide: BorderSide(
-                                        width: 0,
-                                        color: Colors.lightBlue.shade50),
-                                    borderRadius: BorderRadius.circular(25.0),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Container(
-                                margin: const EdgeInsets.only(top: 20),
-                                child: RaisedButton(
-                                  padding: EdgeInsets.only(
-                                      left: 60, right: 60, top: 15, bottom: 15),
-                                  color: Color(0xff5DADE2),
-                                  shape: StadiumBorder(),
-                                  onPressed: () {
-                                    //Actions when pressing the ok button
-                                    if  (_username.text!="")
-                                    {
-                                        connectionData = connectionStatus(_username.text, _password.text);
-                                        openLoadingDialog();
-                                    }
-                                    else {
-                                      _obligationText =" (obligatoire)";
-                                      setState(() {
-
-                                      });
-                                    }
-
-                                    },
-                                  child: Text(
-                                    "Se connecter",
-                                    style: TextStyle(fontSize: 24),
-                                  ),
-                                )),
-                            SizedBox(height: screenSize.size.height / 20),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
+                          ),
+                          Container(
+                            width: screenSize.size.width,
+                            margin: EdgeInsets.only(
+                                left: screenSize.size.width / 11,
+                                top: screenSize.size.height / 28 + 20,
+                                bottom: 5),
+                            child: Row(
                               children: <Widget>[
-                                Tooltip(
-                                  message: "EcoleDirecte",
-                                  preferBelow: false,
-                                  child: Container(
-                                      height: 37,
-                                      width: 37,
-                                      decoration: new BoxDecoration(
-                                          color: Colors.white,
-                                          shape: BoxShape.circle,
-                                          border: Border.all(
-                                              width: 4,
-                                              color: const Color(0xFFFFFFFF))),
-                                      child: SvgPicture.asset(
-                                          "assets/images/logoED.svg",
-                                          height: 37,
-                                          width: 37,
-                                          color: Colors.lightBlueAccent)),
+                                Text(
+                                  "Nom d'utilisateur",
+                                  style: TextStyle(
+                                      fontFamily: 'Asap', color: Colors.white),
+                                  textAlign: TextAlign.left,
                                 ),
-                                SizedBox(width: screenSize.size.width / 30),
-                                Container(
-                                    height: 41,
-                                    width: 41,
-                                    decoration: new BoxDecoration(
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Image(
-                                      image: AssetImage(
-                                          'assets/images/space/4.0x/space.png'),
-                                      fit: BoxFit.fill,
-                                    )),
+                                Text(_obligationText,
+                                    style: TextStyle(color: Colors.red))
                               ],
-                            )
-                          ],
-                        ),
+                            ),
+                          ),
+                          Container(
+                            margin: EdgeInsets.only(
+                                left: screenSize.size.width / 12,
+                                right: screenSize.size.width / 12),
+                            height: 45,
+                            child: TextFormField(
+                              controller: _username,
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(18),
+                                filled: true,
+                                fillColor: Colors.white,
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      width: 0,
+                                      color: Colors.lightBlue.shade50),
+                                  borderRadius: BorderRadius.circular(25.0),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      width: 0,
+                                      color: Colors.lightBlue.shade50),
+                                  borderRadius: BorderRadius.circular(25.0),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                            width: screenSize.size.width,
+                            margin: EdgeInsets.only(
+                                left: screenSize.size.width / 11,
+                                top: 20,
+                                bottom: 5),
+                            child: Text(
+                              "Mot de passe",
+                              style: TextStyle(
+                                  fontFamily: 'Asap', color: Colors.white),
+                              textAlign: TextAlign.left,
+                            ),
+                          ),
+                          Container(
+                            height: 45,
+                            margin: EdgeInsets.only(
+                                left: screenSize.size.width / 12,
+                                right: screenSize.size.width / 12),
+                            child: TextFormField(
+                              controller: _password,
+                              autocorrect: false,
+                              obscureText: true,
+                              decoration: InputDecoration(
+                                contentPadding: EdgeInsets.all(18),
+                                filled: true,
+                                fillColor: Colors.white,
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      width: 0,
+                                      color: Colors.lightBlue.shade50),
+                                  borderRadius: BorderRadius.circular(25.0),
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                      width: 0,
+                                      color: Colors.lightBlue.shade50),
+                                  borderRadius: BorderRadius.circular(25.0),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Container(
+                              margin:  EdgeInsets.only(top: 20),
+                              child: RaisedButton(
+                                padding: EdgeInsets.only(
+                                    left: 60, right: 60, top: 15, bottom: 15),
+                                color: Color(0xff5DADE2),
+                                shape: StadiumBorder(),
+                                onPressed: () {
+                                  //Actions when pressing the ok button
+                                  if (_username.text != "") {
+                                    connectionData = connectionStatus(
+                                        _username.text, _password.text);
+                                    openLoadingDialog();
+                                  } else {
+                                    _obligationText = " (obligatoire)";
+                                    setState(() {});
+                                  }
+                                },
+                                child: Text(
+                                  "Se connecter",
+                                  style: TextStyle(fontSize: 24),
+                                ),
+                              )),
+                          SizedBox(height: screenSize.size.height / 20),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Tooltip(
+                                message: "EcoleDirecte",
+                                preferBelow: false,
+                                child: Container(
+                                    height: 37,
+                                    width: 37,
+                                    decoration: new BoxDecoration(
+                                        color: Colors.white,
+                                        shape: BoxShape.circle,
+                                        border: Border.all(
+                                            width: 4,
+                                            color: const Color(0xFFFFFFFF))),
+                                    child: SvgPicture.asset(
+                                        "assets/images/logoED.svg",
+                                        height: 37,
+                                        width: 37,
+                                        color: Colors.lightBlueAccent)),
+                              ),
+                              Container(
+                                  margin: EdgeInsets.only(left: screenSize.size.width / 30),
+                                  height: 41,
+                                  width: 41,
+                                  decoration: new BoxDecoration(
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: Image(
+                                    image: AssetImage('assets/images/space/4.0x/space.png'),
+                                    fit: BoxFit.fill,
+                                  )),
+                            ],
+                          )
+                        ],
                       ),
                       Container(
                         child: Planet(),
@@ -420,7 +375,6 @@ class _loginPageState extends State<loginPage> {
                   )),
             )));
   }
-
 }
 
 //Planet widget

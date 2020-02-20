@@ -4,16 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'dart:math';
 import 'package:circular_check_box/circular_check_box.dart';
+import 'package:ynotes/land.dart';
 
 int done = 50;
 
-class summaryPage extends StatefulWidget {
+class SummaryPage extends StatefulWidget {
   State<StatefulWidget> createState() {
-    return _summaryPageState();
+    return _SummaryPageState();
   }
 }
 
-class _summaryPageState extends State<summaryPage> {
+class _SummaryPageState extends State<SummaryPage> {
   PageController todoSettingsController;
   bool done2 = false;
   int _slider = 1;
@@ -32,13 +33,22 @@ class _summaryPageState extends State<summaryPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
+
+
           //First division (gauge)
 
           Container(
             width: screenSize.size.width / 5 * 4.5,
             height: (screenSize.size.height / 10 * 8.8) / 10 * 2,
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(39),
+              boxShadow: <BoxShadow>[
+                BoxShadow(
+                  blurRadius: 2.67,
+                  color: Colors.black.withOpacity(0.2),
+                  offset: Offset(0, 2.67),
+                ),
+              ],
+                borderRadius: BorderRadius.circular(25),
                 color: Color(0xff2C2C2C)),
             child: Stack(
               children: <Widget>[
@@ -51,12 +61,13 @@ class _summaryPageState extends State<summaryPage> {
                         padding: EdgeInsets.all(0),
                         //Gauge
                         child: charts.PieChart(_getDoneTasks(),
+
                             animate: false,
                             defaultRenderer: new charts.ArcRendererConfig(
-                                arcWidth: 6,
+                                arcWidth: (screenSize.size.width/70).round(),
                                 startAngle: pi,
                                 arcLength: pi,
-                                strokeWidthPx: 0.0)),
+                                strokeWidthPx: 1)),
                       ),
                     ),
                   ),
@@ -97,8 +108,15 @@ class _summaryPageState extends State<summaryPage> {
             width: screenSize.size.width / 5 * 4.5,
             height: (screenSize.size.height / 10 * 8.8) / 10 * 4,
             decoration: BoxDecoration(
+                boxShadow: <BoxShadow>[
+                  BoxShadow(
+                    blurRadius: 2.67,
+                    color: Colors.black.withOpacity(0.2),
+                    offset: Offset(0, 2.67),
+                  ),
+                ],
                 color: Color(0xff2C2C2C),
-                borderRadius: BorderRadius.circular(39)),
+                borderRadius: BorderRadius.circular(25)),
             child: ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(39)),
               child: PageView(
@@ -157,25 +175,31 @@ class _summaryPageState extends State<summaryPage> {
                                   10 *
                                   0.2),
                           height: (screenSize.size.height / 10 * 8.8) / 10 * 3,
-                          child: AnimatedList(
+                          child: CupertinoScrollbar(
+                            
+                            child: AnimatedList(
+
                             initialItemCount: 5,
                             padding:
-                                const EdgeInsets.only(left: 20.0, right: 20.0),
-                            itemBuilder:(context, index, animation)  {return homeworkTicket(
-                                  "Maths", "DM sur les fonctions polynomes");
+                            const EdgeInsets.only(left: 20.0, right: 20.0),
+                            itemBuilder:(context, index, animation)  {
+                            return HomeworkTicket(
+                            "Maths", "DM sur les fonctions polynomes");
 
-                           }
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Stack(
-                    children: <Widget>[
-                      Align(
-                          alignment: Alignment.topCenter,
-                          child: Container(
+                            }
+                            ),
+                            ),
+                            ),
+                            ),
+                            ],
+                            ),
+                            Stack(
+                            children: <Widget>[
+                            Align(
+                            alignment: Alignment.topCenter,
+                            child: Container(
                             margin: EdgeInsets.only(
+
                                 top: (screenSize.size.height / 10 * 8.8) /
                                     10 *
                                     0.2),
@@ -204,6 +228,7 @@ class _summaryPageState extends State<summaryPage> {
                                 left: 20.0, right: 20.0, top: 10),
                             children: <Widget>[
                               CupertinoSlider(
+
                                   value: _slider.toDouble(),
                                   min: 1.0,
                                   max: 10.0,
@@ -263,7 +288,14 @@ class _summaryPageState extends State<summaryPage> {
             width: screenSize.size.width / 5 * 4.5,
             height: (screenSize.size.height / 10 * 8.8) / 10 * 2,
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(39),
+                boxShadow: <BoxShadow>[
+                  BoxShadow(
+                    blurRadius: 2.67,
+                    color: Colors.black.withOpacity(0.2),
+                    offset: Offset(0, 2.67),
+                  ),
+                ],
+                borderRadius: BorderRadius.circular(25),
                 color: Color(0xff2C2C2C)),
             child: Stack(
               children: <Widget>[],
@@ -287,13 +319,8 @@ class _summaryPageState extends State<summaryPage> {
         measureFn: (GaugeSegment segment, _) => segment.size,
         colorFn: (GaugeSegment segment, __) =>
             charts.ColorUtil.fromDartColor(segment.color),
-        patternColorFn: (GaugeSegment segment, __) =>
-            charts.ColorUtil.fromDartColor(Colors.green),
-        seriesColor: charts.ColorUtil.fromDartColor(Colors.green),
-        fillColorFn: (GaugeSegment segment, __) =>
-            charts.ColorUtil.fromDartColor(Colors.green),
-        areaColorFn: (GaugeSegment segment, __) =>
-            charts.ColorUtil.fromDartColor(Colors.green),
+        strokeWidthPxFn: (GaugeSegment segment, _) => 0.0,
+
         data: data,
       ),
     ];
@@ -301,17 +328,17 @@ class _summaryPageState extends State<summaryPage> {
 }
 
 //The basic ticket for homeworks with the discipline and the description and a checkbox
-class homeworkTicket extends StatefulWidget {
+class HomeworkTicket extends StatefulWidget {
   final String discipline;
   final String description;
 
-  const homeworkTicket(this.discipline, this.description);
+  const HomeworkTicket(this.discipline, this.description);
   State<StatefulWidget> createState() {
-    return _homeworkTicketState();
+    return _HomeworkTicketState();
   }
 }
 
-class _homeworkTicketState extends State<homeworkTicket> {
+class _HomeworkTicketState extends State<HomeworkTicket> {
   bool done = false;
   @override
   Widget build(BuildContext context) {
@@ -324,7 +351,7 @@ class _homeworkTicketState extends State<homeworkTicket> {
         borderRadius: BorderRadius.circular(39),
         child: InkWell(
           borderRadius: BorderRadius.circular(39),
-          onTap: () => print(""),
+          onTap: () {},
           child: Container(
             width: screenSize.size.width / 5 * 4,
             height: (screenSize.size.height / 10 * 8.8) / 10 * 0.8,

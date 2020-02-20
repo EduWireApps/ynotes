@@ -9,8 +9,6 @@ import 'package:ynotes/land.dart';
 void main() {
 
 
-
-
   runApp(
     MaterialApp(
       home: Logger(),
@@ -30,7 +28,7 @@ class Logger extends StatelessWidget {
     return Scaffold(
 
 //Main container
-        body: loginPage() );
+        body: LoginPage() );
   }
 }
 
@@ -50,6 +48,6 @@ class homePage extends StatelessWidget {
       DeviceOrientation.portraitUp,
     ]);
     return Scaffold(
-        body: SafeArea(child: tabBuilder(),));
+        body: SafeArea(child: TabBuilder(),));
   }
 }

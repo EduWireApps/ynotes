@@ -480,7 +480,7 @@ class _page3State extends State<page3> {
               color: Color(0xff5DADE2),
               shape: StadiumBorder(),
               onPressed: () {
-                router(homePage());
+                Navigator.of(context).pushReplacement(router(homePage()));
               },
               child: const Text(
                   'Allons-y !',
