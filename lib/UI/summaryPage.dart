@@ -64,7 +64,7 @@ class _SummaryPageState extends State<SummaryPage> {
 
                             animate: false,
                             defaultRenderer: new charts.ArcRendererConfig(
-                                arcWidth: (screenSize.size.width/70).round(),
+                                arcWidth: (screenSize.size.width/54).round(),
                                 startAngle: pi,
                                 arcLength: pi,
                                 strokeWidthPx: 1)),

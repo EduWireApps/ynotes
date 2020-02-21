@@ -76,11 +76,49 @@ getLocalGradesList() async {
     return toReturn;
   }
 
+  getCorrespondingPeriod(String period)
+  {
+    switch(period) {
+      case "A001": {
+        return "Trimestre 1";
+      }
+      break;
 
+      case "A002": {
+        return "Trimestre 2";
+      }
+      break;
+
+      case "A003": {
+        return "Trimestre 3";
+      }
+      break;
+
+      case "Trimestre 1": {
+        return "A001";
+      }
+      break;
+
+      case "Trimestre 2": {
+        return "A002";
+      }
+      break;
+
+      case "Trimestre 3": {
+        return "A003";
+      }
+      break;
+
+      default: {
+        return "";
+      }
+      break;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-
+//Convert A001 to Periode 1 and reverse
 
     MediaQueryData screenSize = MediaQuery.of(context);
     return Container(
@@ -93,39 +131,68 @@ getLocalGradesList() async {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Container(
-              height: (screenSize.size.height / 10 * 8.8) / 10 * 0.8,
-              child: FittedBox(
-                child: RaisedButton(
-                  color: Colors.white,
-                  shape: StadiumBorder(),
-                  onPressed: () {},
-                  child: Row(
-                    children: <Widget>[
-                      Icon(Icons.keyboard_arrow_down),
-                      Text(
-                        "Periode",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontFamily: "Asap",
-                        ),
-                      ),
-                    ],
+              height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
+              width: (screenSize.size.width / 5)*1.5,
+              decoration: ShapeDecoration(
+                shape: StadiumBorder(),
+                color: Colors.white,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+
+              DropdownButtonHideUnderline(
+                child: DropdownButton<String>(
+
+
+                  value: getCorrespondingPeriod(periodeToUse),
+
+
+                  iconSize: 0.0,
+
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontFamily: "Asap",
+                      color: Colors.black
                   ),
+
+                  onChanged: (String newValue) {
+                    setState(() {
+                      periodeToUse = getCorrespondingPeriod(newValue);
+
+                    });
+                  },
+                  items: <String>['Trimestre 1', 'Trimestre 2', 'Trimestre 3']
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value,textAlign: TextAlign.center,),
+                    );
+                  })
+                      .toList(),
                 ),
+              )
+                ],
               ),
             ),
             Container(
               margin: EdgeInsets.only(
                   left: (screenSize.size.height / 10 * 8.8) / 10 * 0.1),
               height: (screenSize.size.height / 10 * 8.8) / 10 * 0.8,
+              width: (screenSize.size.width / 5)*1.5,
               child: FittedBox(
                 child: RaisedButton(
                   color: Colors.white,
                   shape: StadiumBorder(),
-                  onPressed: () {},
+                  onPressed: () {
+
+
+
+                  },
                   child: Row(
                     children: <Widget>[
+
                       Icon(Icons.sort),
                       Text(
                         "Trier",
@@ -192,6 +259,7 @@ getLocalGradesList() async {
         ),
       ]),
     );
+
   }
 }
 
@@ -208,7 +276,7 @@ class GradesGroup extends StatefulWidget {
 
 class _GradesGroupState extends State<GradesGroup> {
   Color colorGroup = Color(0xff72B488);
-
+  ScrollController controller =  ScrollController();
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
 
@@ -290,7 +358,7 @@ class _GradesGroupState extends State<GradesGroup> {
                                 "Ecrit",
                                 style: TextStyle(fontFamily: "Asap"),
                               )),
-                      columnOfNote(0),
+                      marksColumn(0),
                       if (widget.disciplinevar != null)
                         if (widget.disciplinevar.codeSousMatiere.length > 0)
                           Divider(thickness: 2),
@@ -299,7 +367,7 @@ class _GradesGroupState extends State<GradesGroup> {
                           Text("Oral", style: TextStyle(fontFamily: "Asap")),
                       if (widget.disciplinevar != null)
                         if (widget.disciplinevar.codeSousMatiere.length > 0)
-                          columnOfNote(1),
+                          marksColumn(1),
                     ],
                   ),
                 )),
@@ -344,9 +412,13 @@ class _GradesGroupState extends State<GradesGroup> {
     }
   }
 
-  columnOfNote(int sousMatiereIndex) {
+
+  //MARKS COLUMN
+  marksColumn(int sousMatiereIndex) {
+
 
     List<grade> localList = getNotesForDiscipline(sousMatiereIndex, periodeToUse);
+
 
     MediaQueryData screenSize = MediaQuery.of(context);
     return Container(
@@ -354,11 +426,11 @@ class _GradesGroupState extends State<GradesGroup> {
         child: ListView.builder(
             itemCount: (localList != null ? localList.length : 1),
             scrollDirection: Axis.horizontal,
+
             padding: EdgeInsets.symmetric(
                 horizontal: screenSize.size.width / 5 * 0.2,
                 vertical: (screenSize.size.height / 10 * 8.8) / 10 * 0.15),
             itemBuilder: (BuildContext context, int index) {
-
               return Container(
                 margin: EdgeInsets.only(
                     left: screenSize.size.width / 5 * 0.1),
@@ -371,7 +443,7 @@ class _GradesGroupState extends State<GradesGroup> {
 
                     borderRadius: BorderRadius.all(Radius.circular(15)),
                     splashColor: colorGroup,
-                    onTap: (){_settingModalBottomSheet(context);},
+                    onTap: (){_settingModalBottomSheet(context, localList[index]);},
                     child: Stack(
                       children: <Widget>[
                         if (localList != null)
@@ -452,7 +524,7 @@ class _GradesGroupState extends State<GradesGroup> {
                                 height:
                                     (screenSize.size.height / 10 * 8.8) / 10 * 0.8,
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(18),
+                                  borderRadius: BorderRadius.circular(15),
                                   color: colorGroup,
                                 ),
                               )),
@@ -461,9 +533,17 @@ class _GradesGroupState extends State<GradesGroup> {
                     ),
                   ),
                 ),
+
               );
-            }));
+
+
+            }
+
+            )
+    );
+
   }
+
 }
 
 Color darken(Color color, [double amount = .3]) {
@@ -476,8 +556,10 @@ Color darken(Color color, [double amount = .3]) {
 }
 
 
-void _settingModalBottomSheet(context){
+void _settingModalBottomSheet(context, grade grade){
+  MediaQueryData screenSize = MediaQuery.of(context);
   showModalBottomSheet(
+
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight:  Radius.circular(25)),
       ),
@@ -485,10 +567,45 @@ void _settingModalBottomSheet(context){
       context: context,
       builder: (BuildContext bc){
         return new Container(
+          height: screenSize.size.height/3,
+          padding: EdgeInsets.all(0),
 
-          child: new Center(
-            child: new Text("This is a modal sheet"),
-          ),
+          child: new Stack(
+            children: <Widget>[
+              Align(
+                alignment: Alignment.topLeft,
+               child: Container(
+                 padding: EdgeInsets.all(0),
+                 height: (screenSize.size.height/3)/2.5,
+                 width: (screenSize.size.width/5)*1.5,
+
+                 decoration: BoxDecoration(
+                   borderRadius: BorderRadius.only(topLeft: Radius.circular(24), bottomRight:  Radius.circular(25)),
+                   color: Color(0xff2C2C2C),
+                 ),
+
+               ),
+              ),
+              Align(
+                alignment: Alignment.topRight,
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal:(screenSize.size.width/5)*0.5,),
+                  height: (screenSize.size.height/3)/2.5,
+                  width: (screenSize.size.width/5)*3.5,
+                  child: FittedBox(
+                    child: AutoSizeText(
+
+                        
+                        grade.devoir, style: TextStyle(fontFamily: "Asap"),),
+                  ),
+                  ),
+
+                ),
+
+            ],
+
+          )
+
         );
       }
   );

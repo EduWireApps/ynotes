@@ -108,7 +108,7 @@ Future<List<grade>> getNotesAndDisciplines() async {
         "Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.");
   });
   if (response.statusCode == 200) {
-    Map<String, dynamic> req = jsonDecode(response.body);
+    Map<String, dynamic> req = json.decode(utf8.decode(response.bodyBytes));
     if (req['code'] == 200) {
       //Get all the marks
       List data = req['data']['notes'];
