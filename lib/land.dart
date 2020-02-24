@@ -28,6 +28,8 @@ class grade {
   final String codeMatiere;
   //E.G : "ECR"
   final String codeSousMatiere;
+  //E.G : "Français"
+  final String libelleMatiere;
   //E.G : true (affichage en lettres)
   final bool letters;
   //E.G : "18"
@@ -38,30 +40,40 @@ class grade {
   final String noteSur;
   //E.G : "" (affichage en lettres)
   final String moyenneClasse;
+  //E.G : "Devoir sur table"
+  final String typeDevoir;
+  //E.G : 16/02
+  final String date;
 
   grade({
     this.devoir,
     this.codePeriode,
     this.codeMatiere,
     this.codeSousMatiere,
+    this.libelleMatiere,
     this.letters,
     this.valeur,
     this.coef,
     this.noteSur,
     this.moyenneClasse,
+    this.typeDevoir,
+    this.date
   });
 
   factory grade.fromJson(Map<String, dynamic> json) {
     return grade(
-      devoir: json['devoir'],
-      codePeriode: json['codePeriode'],
-      codeMatiere: json['codeMatiere'],
-      codeSousMatiere: json['codeSousMatiere'],
-      letters: json['enLettre'],
-      valeur: json['valeur'],
-      coef: json['coef'],
-      noteSur: json['noteSur'],
-      moyenneClasse: json['moyenneClasse'],
+        devoir: json['devoir'],
+        codePeriode: json['codePeriode'],
+        codeMatiere: json['codeMatiere'],
+        codeSousMatiere: json['codeSousMatiere'],
+        libelleMatiere: json['libelleMatiere'],
+        letters: json['enLettre'],
+        valeur: json['valeur'],
+        coef: json['coef'],
+        noteSur: json['noteSur'],
+        moyenneClasse: json['moyenneClasse'],
+        typeDevoir: json['typeDevoir'],
+        date: json['date']
     );
   }
 }
@@ -75,6 +87,7 @@ class discipline {
   discipline(
       {this.codeMatiere,
       this.codeSousMatiere,
+
       this.professeurs,
       this.nomDiscipline,
       this.periode});

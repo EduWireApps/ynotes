@@ -28,10 +28,8 @@ dependencies:
   circular_check_box: ^1.0.1
   shimmer: ^1.0.1
   badges: ^1.1.0
-
-
-
-
+  intl: ^0.16.1
+  random_color: ^1.0.3
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -49,6 +47,7 @@ flutter_icons:
   image_path_android: "assets/appico/icon.png"
   adaptive_icon_background: "#ffff"
   adaptive_icon_foreground: "assets/appico/foreground.png"
+
 
 
 # For information on the generic Dart part of this file, see the
