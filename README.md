@@ -1,16 +1,11 @@
-# ynotes
+# yNotes
 
-YNotes first version
+YNotes is a marks and homeworks manager. Allows you to see your school stuff in a cool and modern app.
+This app is based on the https://www.ecoledirecte.com/ APIs. But I'm working hard to make the application available for www.index-education.com Pronote website. 
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
+## Features 
+Because having a cool and modern app is interesting but not enough, yNotes have lots of special and exclusive features :
+* A quick summary of the homeworks and the last grades
+* You can sort the grades by groups of affinities
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
