@@ -1,10 +1,34 @@
 import 'dart:convert';
+import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:quiver/collection.dart';
+import 'package:flutter/material.dart';
+import 'package:stack/stack.dart' as sta;
 
 final storage = new FlutterSecureStorage();
+int CLindex = 0;
+List<String> CoolcolorList = [
+  "#f07aa0",
+  "#17d0c9",
+  "#a3f7bf",
+  "#cecece",
+  "#ffa41b",
+  "#ff5151",
+  "#b967e1",
+  "#8a7ca7",
+  "#f18867",
+  "#ffc0da",
+  "#739832",
+  "#8ac6d1"
+];
+sta.Stack<String> Colorstack = sta.Stack();
+void createStack() {
+  CoolcolorList.forEach((color) {
+    Colorstack.push(color);
+  });
+}
 
 //Create a secure storage
 void CreateStorage(String key, String data) async {
@@ -15,6 +39,17 @@ ReadStorage(_key) async {
   String u = await storage.read(key: "username");
 }
 
+class HexColor extends Color {
+  static int _getColorFromHex(String hexColor) {
+    hexColor = hexColor.toUpperCase().replaceAll("#", "");
+    if (hexColor.length == 6) {
+      hexColor = "FF" + hexColor;
+    }
+    return int.parse(hexColor, radix: 16);
+  }
+
+  HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
+}
 
 String token;
 
@@ -44,21 +79,23 @@ class grade {
   final String typeDevoir;
   //E.G : 16/02
   final String date;
+  //E.G : 16/02
+  final String dateSaisie;
 
-  grade({
-    this.devoir,
-    this.codePeriode,
-    this.codeMatiere,
-    this.codeSousMatiere,
-    this.libelleMatiere,
-    this.letters,
-    this.valeur,
-    this.coef,
-    this.noteSur,
-    this.moyenneClasse,
-    this.typeDevoir,
-    this.date
-  });
+  grade(
+      {this.devoir,
+      this.codePeriode,
+      this.codeMatiere,
+      this.codeSousMatiere,
+      this.libelleMatiere,
+      this.letters,
+      this.valeur,
+      this.coef,
+      this.noteSur,
+      this.moyenneClasse,
+      this.typeDevoir,
+      this.date,
+      this.dateSaisie});
 
   factory grade.fromJson(Map<String, dynamic> json) {
     return grade(
@@ -73,34 +110,51 @@ class grade {
         noteSur: json['noteSur'],
         moyenneClasse: json['moyenneClasse'],
         typeDevoir: json['typeDevoir'],
-        date: json['date']
-    );
+        date: json['date'],
+        dateSaisie: json['dateSaisie']);
   }
 }
+
 //Discipline class
 class discipline {
   final String codeMatiere;
   final List<String> codeSousMatiere;
   final String nomDiscipline;
+  final String moyenne;
+  final String moyenneClasse;
+  final String moyenneMin;
+  final String moyenneMax;
   final List<String> professeurs;
   final String periode;
+  Color color;
   discipline(
-      {this.codeMatiere,
+      {this.moyenneClasse,
+      this.moyenneMin,
+      this.moyenneMax,
+      this.codeMatiere,
       this.codeSousMatiere,
-
+      this.moyenne,
       this.professeurs,
       this.nomDiscipline,
-      this.periode});
-  factory discipline.fromJson(Map<String, dynamic> json, List<String> profs, String codeMatiere, String periode) {
+      this.periode,
+      this.color});
+
+  void set setcolor(Color newcolor) {
+    color = newcolor;
+  }
+  factory discipline.fromJson(Map<String, dynamic> json, List<String> profs,
+      String codeMatiere, String periode, Color color) {
     return discipline(
-
-      codeSousMatiere: [],
-      codeMatiere: codeMatiere,
-      nomDiscipline: json['discipline'],
-      professeurs: profs,
-      periode: periode,
-
-    );
+        codeSousMatiere: [],
+        codeMatiere: codeMatiere,
+        nomDiscipline: json['discipline'],
+        moyenne: json['moyenne'],
+        moyenneClasse: json['moyenneClasse'],
+        moyenneMin: json['moyenneMin'],
+        moyenneMax: json['moyenneMax'],
+        professeurs: profs,
+        periode: periode,
+        color: color);
   }
 }
 
@@ -127,64 +181,97 @@ Future<List<grade>> getNotesAndDisciplines() async {
       List data = req['data']['notes'];
       List<grade> gradesList = List<grade>();
 
-
-
       //Get all the disciplines
-      List periodes =
-          req['data']['periodes'];
+      List periodes = req['data']['periodes'];
       disciplinesList.clear();
-      int i=0;
+      int i = 0;
 
-      periodes.forEach((periodeElement) {
-
+      periodes.forEach((periodeElement)  {
+        Color color = Colors.green;
         //Make a list of grades
         List disciplines = periodeElement["ensembleMatieres"]["disciplines"];
-        disciplines.forEach((element)
-        {
+        disciplines.forEach((element) async {
           List profs = element['professeurs'];
           final List<String> profsNoms = List<String>();
 
-          profs.forEach((e) {
+
+          profs.forEach((e)  {
             profsNoms.add(e["nom"]);
           });
-          if (element['codeSousMatiere']=="")
-          {
-            disciplinesList.add(discipline.fromJson(element, profsNoms, element['codeMatiere'], i.toString()));
+
+          if (element['codeSousMatiere'] == "") {
+
+
+            disciplinesList.add(discipline.fromJson(
+                element,
+                profsNoms,
+                element['codeMatiere'],
+                i.toString(), Colors.blue));
+
+
 
           }
+
           else {
+            disciplinesList[disciplinesList.lastIndexWhere((disciplinesList) =>
+            disciplinesList.codeMatiere == element['codeMatiere'] &&
+                disciplinesList.periode == i.toString())]
+                .codeSousMatiere
+                .add(element['codeSousMatiere']);
 
-            disciplinesList[disciplinesList.indexWhere((disciplinesList)=>disciplinesList.codeMatiere==element['codeMatiere']&&disciplinesList.periode==i.toString())].codeSousMatiere.add(element['codeSousMatiere']);
+
+
           }
+
 
         });
         i++;
-
       });
       data.forEach((element) {
         //Make a list of grades
-          gradesList.add(grade.fromJson(element));
+        gradesList.add(grade.fromJson(element));
       });
+      createStack();
+      disciplinesList.forEach((f) async {
 
+        f.color = await getColor(f.codeMatiere);
+      });
       return gradesList;
-
     }
   } else {
     throw "Erreur durant la récupération des notes.";
   }
 }
 
+
+
+getColor(String disciplineName) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+//prefs.clear();
+
+  if (prefs.containsKey(disciplineName)) {
+    String color = prefs.getString(disciplineName);
+
+    return HexColor(color);
+  } else {
+    if (Colorstack.isEmpty) {
+      createStack();
+    }
+    await prefs.setString(disciplineName, Colorstack.pop());
+
+    String color = prefs.getString(disciplineName);
+
+    return HexColor(color);
+  }
+}
+
 //Sort the notes with the name of the period with the pattern "CODEMATIERE, GRADE"
 Future<Multimap<String, grade>> sortMarks(int periode) async {
-
   List<grade> localGradesList = await getNotesAndDisciplines();
 
   var gradesMap = Multimap<String, grade>();
   localGradesList.forEach((element) {
-
-      gradesMap.add(element.codeMatiere + element.codeSousMatiere, element);
-
-
+    gradesMap.add(element.codeMatiere + element.codeSousMatiere, element);
   });
   print(disciplinesList[1].nomDiscipline);
   return gradesMap;
@@ -301,4 +388,3 @@ Future<String> connectionStatus(username, password) async {
     // print(req["code"]);
   }
 }
-

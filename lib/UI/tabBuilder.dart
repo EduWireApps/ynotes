@@ -2,7 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart';
 import 'package:ynotes/UI/gradesPage.dart';
-import 'package:ynotes/land.dart';
+import 'package:ynotes/landGrades.dart';
 import 'package:ynotes/UI/summaryPage.dart';
 class TabBuilder extends StatefulWidget {
   State<StatefulWidget> createState() {
@@ -161,11 +161,11 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
                                           ),
                                         ),
                                         Badge(
-
                                           animationType: BadgeAnimationType.scale,
                                           toAnimate: true,
+                                          showBadge: newGrades,
                                           elevation: 0,
-                                          position:   BadgePosition.topRight(right:  MediaQuery.of(context).size.width / 10 *0.05, top: -MediaQuery.of(context).size.height / 15 * 0.1),
+                                          position:   BadgePosition.topRight(right:  MediaQuery.of(context).size.width / 10 *0.001, top: -MediaQuery.of(context).size.height / 15 * 0.1),
                                           badgeColor: Colors.blue,
 
                                           child: Tab(

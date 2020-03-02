@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'dart:math';
 import 'package:circular_check_box/circular_check_box.dart';
-import 'package:ynotes/land.dart';
+import 'package:ynotes/landGrades.dart';
 
 int done = 50;
 
