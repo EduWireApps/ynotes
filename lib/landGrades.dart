@@ -117,6 +117,9 @@ class grade {
 
 //Discipline class
 class discipline {
+  final String moyenneGenerale;
+  final String moyenneGeneralClasseMax;
+  final String moyenneGeneraleClasse;
   final String codeMatiere;
   final List<String> codeSousMatiere;
   final String nomDiscipline;
@@ -127,8 +130,9 @@ class discipline {
   final List<String> professeurs;
   final String periode;
   Color color;
-  discipline(
-      {this.moyenneClasse,
+  discipline({this.moyenneGeneralClasseMax, this.moyenneGeneraleClasse,
+      this.moyenneGenerale,
+      this.moyenneClasse,
       this.moyenneMin,
       this.moyenneMax,
       this.codeMatiere,
@@ -142,8 +146,16 @@ class discipline {
   void set setcolor(Color newcolor) {
     color = newcolor;
   }
-  factory discipline.fromJson(Map<String, dynamic> json, List<String> profs,
-      String codeMatiere, String periode, Color color) {
+
+  factory discipline.fromJson(
+      Map<String, dynamic> json,
+      List<String> profs,
+      String codeMatiere,
+      String periode,
+      Color color,
+      String moyenneG,
+      String bmoyenneClasse,
+      String moyenneClasse) {
     return discipline(
         codeSousMatiere: [],
         codeMatiere: codeMatiere,
@@ -154,7 +166,13 @@ class discipline {
         moyenneMax: json['moyenneMax'],
         professeurs: profs,
         periode: periode,
-        color: color);
+        color: color,
+        moyenneGenerale: moyenneG,
+      moyenneGeneralClasseMax:bmoyenneClasse,
+      moyenneGeneraleClasse: moyenneClasse,
+
+
+    );
   }
 }
 
@@ -171,7 +189,7 @@ Future<List<grade>> getNotesAndDisciplines() async {
   var body = data;
   var response =
       await http.post(url, headers: headers, body: body).catchError((e) {
-    print(
+    throw(
         "Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.");
   });
   if (response.statusCode == 200) {
@@ -186,44 +204,36 @@ Future<List<grade>> getNotesAndDisciplines() async {
       disciplinesList.clear();
       int i = 0;
 
-      periodes.forEach((periodeElement)  {
+      periodes.forEach((periodeElement) {
         Color color = Colors.green;
         //Make a list of grades
+
         List disciplines = periodeElement["ensembleMatieres"]["disciplines"];
         disciplines.forEach((element) async {
           List profs = element['professeurs'];
           final List<String> profsNoms = List<String>();
 
-
-          profs.forEach((e)  {
+          profs.forEach((e) {
             profsNoms.add(e["nom"]);
           });
 
           if (element['codeSousMatiere'] == "") {
-
-
             disciplinesList.add(discipline.fromJson(
                 element,
                 profsNoms,
                 element['codeMatiere'],
-                i.toString(), Colors.blue));
-
-
-
-          }
-
-          else {
+                i.toString(),
+                Colors.blue,
+                periodeElement["ensembleMatieres"]["moyenneGenerale"],
+                periodeElement["ensembleMatieres"]["moyenneMax"],
+                periodeElement["ensembleMatieres"]["moyenneClasse"]));
+          } else {
             disciplinesList[disciplinesList.lastIndexWhere((disciplinesList) =>
-            disciplinesList.codeMatiere == element['codeMatiere'] &&
-                disciplinesList.periode == i.toString())]
+                    disciplinesList.codeMatiere == element['codeMatiere'] &&
+                    disciplinesList.periode == i.toString())]
                 .codeSousMatiere
                 .add(element['codeSousMatiere']);
-
-
-
           }
-
-
         });
         i++;
       });
@@ -232,10 +242,7 @@ Future<List<grade>> getNotesAndDisciplines() async {
         gradesList.add(grade.fromJson(element));
       });
       createStack();
-      disciplinesList.forEach((f) async {
-
-        f.color = await getColor(f.codeMatiere);
-      });
+      refreshDisciplinesListColors();
       return gradesList;
     }
   } else {
@@ -243,7 +250,11 @@ Future<List<grade>> getNotesAndDisciplines() async {
   }
 }
 
-
+refreshDisciplinesListColors() async {
+  disciplinesList.forEach((f) async {
+    f.color = await getColor(f.codeMatiere);
+  });
+}
 
 getColor(String disciplineName) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();

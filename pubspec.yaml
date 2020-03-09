@@ -34,6 +34,9 @@ dependencies:
   stack: ^0.0.1
   flutter_colorpicker: ^0.3.2
   flutter_material_color_picker: ^1.0.5
+  tinycolor: ^1.0.2
+  animated_text_kit: ^2.0.0
+  flutter_spinkit: ^4.1.2
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -113,5 +116,6 @@ flutter:
     - assets/images/shelves/clock.png
     - assets/images/shelves/shelve1.png
     - assets/images/shelves/shelve2.png
+    - assets/images/totor.png
 
 
