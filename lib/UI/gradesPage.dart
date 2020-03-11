@@ -23,7 +23,7 @@ bool newGrades = false;
 String periodeToUse = "A002";
 //If true, show a carousel
 bool firstStart = true;
-Future gradeListFuture;
+Future disciplinesListFuture;
 
 class _gradesPageState extends State<gradesPage> with TickerProviderStateMixin {
   AnimationController circleAnimation;
@@ -48,20 +48,24 @@ class _gradesPageState extends State<gradesPage> with TickerProviderStateMixin {
 
   Future<void> refreshLocalGradeList() async {
     setState(() {
-      gradeListFuture = getNotesAndDisciplines();
+      disciplinesListFuture = getNotesAndDisciplines();
     });
   }
 
   //Get the actual periode
   getActualPeriode() async {
-    List<grade> list = await getNotesAndDisciplines();
-    periodeToUse = list.last.codePeriode;
+    List<discipline> list = await getNotesAndDisciplines();
+
+    periodeToUse = list.lastWhere(
+            (list) => list.gradesList.length>0).gradesList.last.codePeriode;
   }
 
-  getDisciplinesForPeriod(List<discipline> list, periode) {
+  List<discipline> getDisciplinesForPeriod(List<discipline> list, periode) {
     List<discipline> toReturn = new List<discipline>();
     list.forEach((f) {
-      if ("A00" + f.periode == periode) {
+
+      if ("A00" + (int.parse(f.periode)/2+1).toString() == periode+".0") {
+        print(f.gradesList.length);
         toReturn.add(f);
       }
     });
@@ -234,22 +238,63 @@ class _gradesPageState extends State<gradesPage> with TickerProviderStateMixin {
             child: ClipRRect(
                 borderRadius: BorderRadius.circular(25),
                 child: FutureBuilder<void>(
-                    future: gradeListFuture,
+                    future: disciplinesListFuture,
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
                       if (snapshot.hasData) {
+                        
+                        
+                        
+                        if(getDisciplinesForPeriod(snapshot.data, periodeToUse).every((test){
+                          if(test.gradesList.length>0)
+                            {
+                              return true;
+                            }
+                          else {
+                            return false;
+                          }
+                        }))
+
+                          {
+
+
                         return ListView.builder(
                             itemCount: getDisciplinesForPeriod(
-                                    disciplinesList, periodeToUse)
+                                snapshot.data, periodeToUse)
                                 .length,
                             padding:
                                 EdgeInsets.all(screenSize.size.width / 5 * 0.3),
                             itemBuilder: (BuildContext context, int index) {
                               return GradesGroup(
                                 disciplinevar: getDisciplinesForPeriod(
-                                    disciplinesList, periodeToUse)[index],
-                                grades: snapshot.data,
+                                    snapshot.data, periodeToUse)[index]
+
                               );
+
                             });
+                          }
+                        else {
+                          return Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Image(
+                                image: AssetImage('assets/images/totor.png'),  width: screenSize.size.width / 5 * 3.5,),
+                              Container(
+                                margin : EdgeInsets.symmetric(horizontal:screenSize.size.width / 5 * 0.5)
+                                ,child: AutoSizeText(
+                                  "Pas de données pour cette periode.",
+
+                                  textAlign: TextAlign.center,
+
+                                  style: TextStyle(
+                                    fontFamily: "Asap",
+
+                                    color: Colors.white,
+                                  )
+                              ),
+                              )
+                            ],
+                          );
+                        }
                       }
                       if (snapshot.hasError) {
                         return Column(
@@ -300,13 +345,13 @@ class _gradesPageState extends State<gradesPage> with TickerProviderStateMixin {
           child: ClipRRect(
               borderRadius: BorderRadius.circular(28),
               child: FutureBuilder<void>(
-                  future: gradeListFuture,
+                  future: disciplinesListFuture,
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
                     discipline getLastDiscipline;
                     if (snapshot.hasData) {
-                      if (disciplinesList != null) {
+                      if (snapshot.data != null) {
                         try {
-                          getLastDiscipline = disciplinesList.firstWhere(
+                          getLastDiscipline = snapshot.data.firstWhere(
                               (disciplinesList) =>
                                   "A00" +
                                           (int.parse(disciplinesList.periode) /
@@ -320,7 +365,9 @@ class _gradesPageState extends State<gradesPage> with TickerProviderStateMixin {
                         movingCircle = Tween<double>(
                                 begin: screenSize.size.width / 4,
                                 end: screenSize.size.width / 6 * 0.015)
-                            .animate(circleAnimation)
+                            .animate(CurvedAnimation(
+                                parent: circleAnimation,
+                                curve: Interval(0.7, 1.0, curve: Curves.fastOutSlowIn)))
                               ..addListener(() {
                                 // Empty setState because the updated value is already in the animation field
                                 setState(() {});
@@ -328,7 +375,9 @@ class _gradesPageState extends State<gradesPage> with TickerProviderStateMixin {
 
                         animateWidth = Tween<double>(
                                 begin: 0, end: screenSize.size.width / 5 * 4)
-                            .animate(circleAnimation)
+                            .animate(CurvedAnimation(
+                            parent: circleAnimation,
+                            curve: Interval(0.7, 1.0, curve: Curves.fastOutSlowIn)))
                               ..addListener(() {
                                 /// Empty setState because the updated value is already in the animation field
                                 setState(() {});
@@ -585,10 +634,7 @@ class _gradesPageState extends State<gradesPage> with TickerProviderStateMixin {
 
 class GradesGroup extends StatefulWidget {
   final discipline disciplinevar;
-
-  final List<grade> grades;
-
-  const GradesGroup({this.disciplinevar, this.grades});
+  const GradesGroup({this.disciplinevar});
   State<StatefulWidget> createState() {
     return _GradesGroupState();
   }
@@ -712,14 +758,16 @@ class _GradesGroupState extends State<GradesGroup> {
     );
   }
 
-  List<grade> getGradesForDiscipline(
-      int sousMatiereIndex, String chosenPeriode) {
+  List<grade> getGradesForDiscipline(int sousMatiereIndex, String chosenPeriode) {
     List<grade> toReturn = List();
 
-    if (widget.grades != null) {
-      widget.grades.forEach((element) {
-        if (element.codeMatiere == widget.disciplinevar.codeMatiere) {
+    if (widget.disciplinevar != null) {
+
+
+      widget.disciplinevar.gradesList.forEach((element) {
+
           if (element.codePeriode == periodeToUse) {
+
             if (widget.disciplinevar.codeSousMatiere.length > 1) {
               if (element.codeSousMatiere ==
                   widget.disciplinevar.codeSousMatiere[sousMatiereIndex]) {
@@ -729,7 +777,7 @@ class _GradesGroupState extends State<GradesGroup> {
               toReturn.add(element);
             }
           }
-        }
+
       });
       return toReturn;
     } else {
@@ -1403,7 +1451,8 @@ class _GradesGroupState extends State<GradesGroup> {
                   Color(0xff4d65b4),
                   Color(0xff484a77),
                   Color(0xff30e1b9),
-                  Color(0xff8ff8e2)
+                  Color(0xff8ff8e2),
+                  Color(0xff8ac6d1),
                 ],
               ),
             ),
@@ -1439,7 +1488,7 @@ class _GradesGroupState extends State<GradesGroup> {
                 prefs.setString(discipline.codeMatiere, finalColor);
                 discipline.setcolor = pickerColor;
 
-                refreshDisciplinesListColors();
+                disciplinesListFuture = getNotesAndDisciplines();
               });
 
               Navigator.of(context).pop();

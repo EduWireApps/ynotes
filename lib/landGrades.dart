@@ -129,8 +129,12 @@ class discipline {
   final String moyenneMax;
   final List<String> professeurs;
   final String periode;
+  List<grade> gradesList;
   Color color;
-  discipline({this.moyenneGeneralClasseMax, this.moyenneGeneraleClasse,
+  discipline(
+      {this.gradesList,
+      this.moyenneGeneralClasseMax,
+      this.moyenneGeneraleClasse,
       this.moyenneGenerale,
       this.moyenneClasse,
       this.moyenneMin,
@@ -143,10 +147,12 @@ class discipline {
       this.periode,
       this.color});
 
-  void set setcolor(Color newcolor) {
+   set setcolor(Color newcolor) {
     color = newcolor;
   }
-
+   set setGradeList(List<grade> list) {
+    gradesList = list;
+  }
   factory discipline.fromJson(
       Map<String, dynamic> json,
       List<String> profs,
@@ -157,28 +163,27 @@ class discipline {
       String bmoyenneClasse,
       String moyenneClasse) {
     return discipline(
-        codeSousMatiere: [],
-        codeMatiere: codeMatiere,
-        nomDiscipline: json['discipline'],
-        moyenne: json['moyenne'],
-        moyenneClasse: json['moyenneClasse'],
-        moyenneMin: json['moyenneMin'],
-        moyenneMax: json['moyenneMax'],
-        professeurs: profs,
-        periode: periode,
-        color: color,
-        moyenneGenerale: moyenneG,
-      moyenneGeneralClasseMax:bmoyenneClasse,
+      codeSousMatiere: [],
+      codeMatiere: codeMatiere,
+      nomDiscipline: json['discipline'],
+      moyenne: json['moyenne'],
+      moyenneClasse: json['moyenneClasse'],
+      moyenneMin: json['moyenneMin'],
+      moyenneMax: json['moyenneMax'],
+      professeurs: profs,
+      periode: periode,
+      color: color,
+      moyenneGenerale: moyenneG,
+      moyenneGeneralClasseMax: bmoyenneClasse,
       moyenneGeneraleClasse: moyenneClasse,
-
-
     );
   }
 }
 
-List<discipline> disciplinesList = List<discipline>();
+
 //List of grades
-Future<List<grade>> getNotesAndDisciplines() async {
+Future<List<discipline>> getNotesAndDisciplines() async {
+  List<discipline> disciplinesList = List<discipline>();
   //Check and autorefresh the token
   await testToken();
   String id = await storage.read(key: "userID");
@@ -189,8 +194,7 @@ Future<List<grade>> getNotesAndDisciplines() async {
   var body = data;
   var response =
       await http.post(url, headers: headers, body: body).catchError((e) {
-    throw(
-        "Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.");
+    throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.");
   });
   if (response.statusCode == 200) {
     Map<String, dynamic> req = json.decode(utf8.decode(response.bodyBytes));
@@ -233,25 +237,41 @@ Future<List<grade>> getNotesAndDisciplines() async {
                     disciplinesList.periode == i.toString())]
                 .codeSousMatiere
                 .add(element['codeSousMatiere']);
-          }
-        });
+      }
+          });
         i++;
       });
-      data.forEach((element) {
-        //Make a list of grades
-        gradesList.add(grade.fromJson(element));
+      disciplinesList.forEach((f){
+        final List<grade> localGradesList= List<grade>();
+
+        data.forEach((element) {
+
+           if(element["codeMatiere"]==f.codeMatiere&&element["codePeriode"]+".0"=="A00"+(double.parse(f.periode)/2 + 1).toString())
+          {
+            print(element["codePeriode"]);
+            localGradesList.add(grade.fromJson(element));
+
+          }
+
+        });
+
+        f.gradesList = localGradesList;
+
       });
+
+
       createStack();
-      refreshDisciplinesListColors();
-      return gradesList;
+      refreshDisciplinesListColors(disciplinesList);
+
+      return disciplinesList;
     }
   } else {
     throw "Erreur durant la récupération des notes.";
   }
 }
 
-refreshDisciplinesListColors() async {
-  disciplinesList.forEach((f) async {
+refreshDisciplinesListColors(List<discipline> list) async {
+  list.forEach((f) async {
     f.color = await getColor(f.codeMatiere);
   });
 }
@@ -277,6 +297,7 @@ getColor(String disciplineName) async {
 }
 
 //Sort the notes with the name of the period with the pattern "CODEMATIERE, GRADE"
+/*
 Future<Multimap<String, grade>> sortMarks(int periode) async {
   List<grade> localGradesList = await getNotesAndDisciplines();
 
@@ -287,7 +308,7 @@ Future<Multimap<String, grade>> sortMarks(int periode) async {
   print(disciplinesList[1].nomDiscipline);
   return gradesMap;
 }
-
+*/
 //Bool value and Token validity tester
 testToken() async {
   if (token == "" || token == null) {

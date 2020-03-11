@@ -95,7 +95,7 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
 
                                       icon: Icon(Icons.settings, ),
                                       onPressed:() {
-                                        sortMarks(2);
+
 
 
                                       },
