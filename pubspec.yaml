@@ -37,6 +37,7 @@ dependencies:
   tinycolor: ^1.0.2
   animated_text_kit: ^2.0.0
   flutter_spinkit: ^4.1.2
+  material_design_icons_flutter: ^3.4.5045
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -117,5 +118,6 @@ flutter:
     - assets/images/shelves/shelve1.png
     - assets/images/shelves/shelve2.png
     - assets/images/totor.png
+    - assets/images/book.png
 
 

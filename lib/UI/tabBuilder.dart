@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart';
@@ -93,7 +94,7 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
 
                                       color: Colors.white,
 
-                                      icon: Icon(Icons.settings, ),
+                                      icon: Icon(Icons.settings, size:   MediaQuery.of(context).size.height / 10 * 0.5,),
                                       onPressed:() {
 
 

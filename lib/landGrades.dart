@@ -248,7 +248,7 @@ Future<List<discipline>> getNotesAndDisciplines() async {
 
            if(element["codeMatiere"]==f.codeMatiere&&element["codePeriode"]+".0"=="A00"+(double.parse(f.periode)/2 + 1).toString())
           {
-            print(element["codePeriode"]);
+            //print(element["codePeriode"]);
             localGradesList.add(grade.fromJson(element));
 
           }
