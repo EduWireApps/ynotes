@@ -8,4 +8,5 @@ This app is based on the https://www.ecoledirecte.com/ APIs. But I'm working har
 Because having a cool and modern app is interesting but not enough, yNotes have lots of special and exclusive features :
 * A quick summary of the homeworks and the last grades
 * You can sort the grades by groups of affinities
-
+* LightMode and DarkMode for the pleasure of your eyes
+* Need some help ? Share your homeworks with your friends in applications including Snapchat, WhatsApp and more. 

@@ -6,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:quiver/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:stack/stack.dart' as sta;
+import 'package:ynotes/usefulMethods.dart';
 
 final storage = new FlutterSecureStorage();
 int CLindex = 0;
@@ -81,8 +82,9 @@ class grade {
   final String date;
   //E.G : 16/02
   final String dateSaisie;
+  final bool nonSignificatif;
 
-  grade(
+  grade( 
       {this.devoir,
       this.codePeriode,
       this.codeMatiere,
@@ -95,7 +97,9 @@ class grade {
       this.moyenneClasse,
       this.typeDevoir,
       this.date,
-      this.dateSaisie});
+      this.dateSaisie,
+      this.nonSignificatif
+      });
 
   factory grade.fromJson(Map<String, dynamic> json) {
     return grade(
@@ -111,7 +115,10 @@ class grade {
         moyenneClasse: json['moyenneClasse'],
         typeDevoir: json['typeDevoir'],
         date: json['date'],
-        dateSaisie: json['dateSaisie']);
+        dateSaisie: json['dateSaisie'],
+        nonSignificatif: json['nonSignificatif']
+        
+        );
   }
 }
 
@@ -248,7 +255,7 @@ Future<List<discipline>> getNotesAndDisciplines() async {
 
            if(element["codeMatiere"]==f.codeMatiere&&element["codePeriode"]+".0"=="A00"+(double.parse(f.periode)/2 + 1).toString())
           {
-            //print(element["codePeriode"]);
+        
             localGradesList.add(grade.fromJson(element));
 
           }
@@ -276,7 +283,7 @@ refreshDisciplinesListColors(List<discipline> list) async {
   });
 }
 
-getColor(String disciplineName) async {
+Future<Color> getColor(String disciplineName) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
 //prefs.clear();
 
@@ -296,19 +303,7 @@ getColor(String disciplineName) async {
   }
 }
 
-//Sort the notes with the name of the period with the pattern "CODEMATIERE, GRADE"
-/*
-Future<Multimap<String, grade>> sortMarks(int periode) async {
-  List<grade> localGradesList = await getNotesAndDisciplines();
 
-  var gradesMap = Multimap<String, grade>();
-  localGradesList.forEach((element) {
-    gradesMap.add(element.codeMatiere + element.codeSousMatiere, element);
-  });
-  print(disciplinesList[1].nomDiscipline);
-  return gradesMap;
-}
-*/
 //Bool value and Token validity tester
 testToken() async {
   if (token == "" || token == null) {
@@ -395,7 +390,7 @@ Future<String> connectionStatus(username, password) async {
     Map<String, dynamic> req = jsonDecode(response.body);
     if (req['code'] == 200) {
       //Put the value of the name in a variable
-      String name = req['data']['accounts'][0]['prenom'];
+      actualUser = req['data']['accounts'][0]['prenom'];
       String userID = req['data']['accounts'][0]['id'].toString();
       //Store the token
       token = req['token'];
@@ -407,7 +402,7 @@ Future<String> connectionStatus(username, password) async {
 
       //Ensure that the user will not see the carousel anymore
       prefs.setBool('firstUse', false);
-      return "Bienvenue ${name[0].toUpperCase()}${name.substring(1).toLowerCase()} !";
+      return "Bienvenue ${actualUser[0].toUpperCase()}${actualUser.substring(1).toLowerCase()} !";
     }
     //Return an error
     else {

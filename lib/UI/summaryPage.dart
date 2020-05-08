@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'dart:math';
 import 'package:circular_check_box/circular_check_box.dart';
+import 'package:ynotes/UI/settingsPage.dart';
 import 'package:ynotes/landGrades.dart';
+import 'package:ynotes/usefulMethods.dart';
 
 int done = 50;
 
@@ -18,7 +20,7 @@ class _SummaryPageState extends State<SummaryPage> {
   PageController todoSettingsController;
   bool done2 = false;
   int _slider = 1;
-
+  List items = [1, 2, 3, 4, 5];
   void initState() {
     todoSettingsController = new PageController(initialPage: 0);
   }
@@ -28,43 +30,33 @@ class _SummaryPageState extends State<SummaryPage> {
     MediaQueryData screenSize = MediaQuery.of(context);
     return Container(
       margin: EdgeInsets.only(
-          top: (screenSize.size.height / 10 * 8.8) / 10 * 1 / 3),
+          top: (screenSize.size.height / 10 * 8.8) / 10 * 1 / 1.5),
       height: screenSize.size.height / 10 * 8.8,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-
-
           //First division (gauge)
-
           Container(
             width: screenSize.size.width / 5 * 4.5,
             height: (screenSize.size.height / 10 * 8.8) / 10 * 2,
             decoration: BoxDecoration(
-              boxShadow: <BoxShadow>[
-                BoxShadow(
-                  blurRadius: 2.67,
-                  color: Colors.black.withOpacity(0.2),
-                  offset: Offset(0, 2.67),
-                ),
-              ],
-                borderRadius: BorderRadius.circular(25),
-                color: Color(0xff2C2C2C)),
+              
+                borderRadius: BorderRadius.circular(12),
+                color: Theme.of(context).primaryColor),
             child: Stack(
               children: <Widget>[
                 ClipRect(
                   child: Transform.translate(
                     offset: Offset(0, (screenSize.size.height / 10 * 8.8) / 15),
                     child: Transform.scale(
-                      scale: screenSize.textScaleFactor*2.1,
+                      scale: screenSize.textScaleFactor * 2.1,
                       child: Container(
                         padding: EdgeInsets.all(0),
                         //Gauge
                         child: charts.PieChart(_getDoneTasks(),
-
                             animate: false,
                             defaultRenderer: new charts.ArcRendererConfig(
-                                arcWidth: (screenSize.size.width/54).round(),
+                                arcWidth: (screenSize.size.width / 40).round(),
                                 startAngle: pi,
                                 arcLength: pi,
                                 strokeWidthPx: 1)),
@@ -80,7 +72,8 @@ class _SummaryPageState extends State<SummaryPage> {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontFamily: "Asap",
-                          color: Colors.white,
+                          color:
+                              isDarkModeEnabled ? Colors.white : Colors.black,
                           fontSize: screenSize.size.width / 11),
                     ),
                   ),
@@ -92,7 +85,10 @@ class _SummaryPageState extends State<SummaryPage> {
                     child: Text(
                       'du travail fait !',
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.white, fontFamily: "Asap"),
+                      style: TextStyle(
+                          color:
+                              isDarkModeEnabled ? Colors.white : Colors.black,
+                          fontFamily: "Asap"),
                     ),
                   ),
                 ),
@@ -101,24 +97,16 @@ class _SummaryPageState extends State<SummaryPage> {
           ),
 
           //SecondDivision (homeworks)
-
           Container(
             margin: EdgeInsets.only(
                 top: (screenSize.size.height / 10 * 8.8) / 10 * 1 / 3),
             width: screenSize.size.width / 5 * 4.5,
             height: (screenSize.size.height / 10 * 8.8) / 10 * 4,
             decoration: BoxDecoration(
-                boxShadow: <BoxShadow>[
-                  BoxShadow(
-                    blurRadius: 2.67,
-                    color: Colors.black.withOpacity(0.2),
-                    offset: Offset(0, 2.67),
-                  ),
-                ],
-                color: Color(0xff2C2C2C),
-                borderRadius: BorderRadius.circular(25)),
+                color: Theme.of(context).primaryColor,
+                borderRadius: BorderRadius.circular(12)),
             child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(39)),
+              borderRadius: BorderRadius.all(Radius.circular(12)),
               child: PageView(
                 controller: todoSettingsController,
                 physics: NeverScrollableScrollPhysics(),
@@ -139,12 +127,16 @@ class _SummaryPageState extends State<SummaryPage> {
                             },
                             child: new Icon(
                               Icons.settings,
-                              color: Colors.white,
+                              color: isDarkModeEnabled
+                                  ? Colors.white
+                                  : Colors.black,
                               size: 25.0,
                             ),
                             shape: new CircleBorder(),
                             elevation: 1.0,
-                            fillColor: Color(0xff141414),
+                            fillColor: !isDarkModeEnabled
+                                ? Colors.white
+                                : Colors.black,
                           ),
                         ),
                       ),
@@ -161,7 +153,9 @@ class _SummaryPageState extends State<SummaryPage> {
                               style: TextStyle(
                                   fontFamily: "Asap",
                                   fontSize: 18,
-                                  color: Colors.white),
+                                  color: isDarkModeEnabled
+                                      ? Colors.white
+                                      : Colors.black),
                             ),
                           )),
                       Align(
@@ -176,30 +170,25 @@ class _SummaryPageState extends State<SummaryPage> {
                                   0.2),
                           height: (screenSize.size.height / 10 * 8.8) / 10 * 3,
                           child: CupertinoScrollbar(
-                            
                             child: AnimatedList(
-
-                            initialItemCount: 5,
-                            padding:
-                            const EdgeInsets.only(left: 20.0, right: 20.0),
-                            itemBuilder:(context, index, animation)  {
-                            return HomeworkTicket(
-                            "Maths", "DM sur les fonctions polynomes");
-
-                            }
-                            ),
-                            ),
-                            ),
-                            ),
-                            ],
-                            ),
-                            Stack(
-                            children: <Widget>[
-                            Align(
-                            alignment: Alignment.topCenter,
-                            child: Container(
+                                initialItemCount: 5,
+                                padding: const EdgeInsets.only(
+                                    left: 20.0, right: 20.0),
+                                itemBuilder: (context, index, animation) {
+                                  return HomeworkTicket("Maths",
+                                      "DM sur les fonctions polynomes");
+                                }),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Stack(
+                    children: <Widget>[
+                      Align(
+                          alignment: Alignment.topCenter,
+                          child: Container(
                             margin: EdgeInsets.only(
-
                                 top: (screenSize.size.height / 10 * 8.8) /
                                     10 *
                                     0.2),
@@ -209,7 +198,9 @@ class _SummaryPageState extends State<SummaryPage> {
                               style: TextStyle(
                                   fontFamily: "Asap",
                                   fontSize: 16,
-                                  color: Colors.white),
+                                  color: isDarkModeEnabled
+                                      ? Colors.white
+                                      : Colors.black),
                             ),
                           )),
                       Align(
@@ -228,7 +219,6 @@ class _SummaryPageState extends State<SummaryPage> {
                                 left: 20.0, right: 20.0, top: 10),
                             children: <Widget>[
                               CupertinoSlider(
-
                                   value: _slider.toDouble(),
                                   min: 1.0,
                                   max: 10.0,
@@ -239,11 +229,22 @@ class _SummaryPageState extends State<SummaryPage> {
                                     });
                                   }),
                               Container(
-                                margin: EdgeInsets.only( top: (screenSize.size.height / 10 * 8.8) /
-                                    10 *
-                                    0.2),
+                                margin: EdgeInsets.only(
+                                    top: (screenSize.size.height / 10 * 8.8) /
+                                        10 *
+                                        0.2),
                                 child: AutoSizeText(
-                                  "Devoirs sur :\n"+ _slider.toString() + " jour" + (_slider > 1 ?  "s" : "") , textAlign: TextAlign.center, style: TextStyle(fontFamily: "Asap", fontSize: 15, color: Colors.white),
+                                  "Devoirs sur :\n" +
+                                      _slider.toString() +
+                                      " jour" +
+                                      (_slider > 1 ? "s" : ""),
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontFamily: "Asap",
+                                      fontSize: 15,
+                                      color: isDarkModeEnabled
+                                          ? Colors.white
+                                          : Colors.black),
                                 ),
                               )
                             ],
@@ -253,23 +254,24 @@ class _SummaryPageState extends State<SummaryPage> {
                       Align(
                         alignment: Alignment.bottomCenter,
                         child: Container(
-                          margin: EdgeInsets.only(bottom: screenSize.size.width / 5 * 0.2),
-                          height: (screenSize.size.height / 10 * 8.8) / 10 * 0.8,
+                          margin: EdgeInsets.only(
+                              bottom: screenSize.size.width / 5 * 0.2),
+                          height:
+                              (screenSize.size.height / 10 * 8.8) / 10 * 0.8,
                           width: screenSize.size.width / 5 * 2,
                           child: RaisedButton(
-
                             color: Color(0xff5DADE2),
                             shape: StadiumBorder(),
                             onPressed: () {
                               todoSettingsController.animateToPage(0,
                                   duration: Duration(milliseconds: 400),
                                   curve: Curves.ease);
-
                             },
                             child: Text(
                               "Ok",
                               textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 18, fontFamily: "Asap"),
+                              style:
+                                  TextStyle(fontSize: 18, fontFamily: "Asap"),
                             ),
                           ),
                         ),
@@ -288,17 +290,11 @@ class _SummaryPageState extends State<SummaryPage> {
             width: screenSize.size.width / 5 * 4.5,
             height: (screenSize.size.height / 10 * 8.8) / 10 * 2,
             decoration: BoxDecoration(
-                boxShadow: <BoxShadow>[
-                  BoxShadow(
-                    blurRadius: 2.67,
-                    color: Colors.black.withOpacity(0.2),
-                    offset: Offset(0, 2.67),
-                  ),
-                ],
-                borderRadius: BorderRadius.circular(25),
-                color: Color(0xff2C2C2C)),
+              color: Theme.of(context).primaryColor,
+              borderRadius: BorderRadius.circular(12),
+            ),
             child: Stack(
-              children: <Widget>[],
+              children: <Widget>[Center()],
             ),
           ),
         ],
@@ -320,7 +316,6 @@ class _SummaryPageState extends State<SummaryPage> {
         colorFn: (GaugeSegment segment, __) =>
             charts.ColorUtil.fromDartColor(segment.color),
         strokeWidthPxFn: (GaugeSegment segment, _) => 0.0,
-
         data: data,
       ),
     ];

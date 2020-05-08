@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:ynotes/UI/loginPage.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/usefulMethods.dart';
 
 class SlidingCarousel extends StatefulWidget {
   SlidingCarousel({Key key}) : super(key: key);

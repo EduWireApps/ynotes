@@ -8,6 +8,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+      
     }
 }
 
@@ -15,6 +16,9 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven {
+            url "https://storage.googleapis.com/snap-kit-build/maven"
+        }
     }
 }
 
