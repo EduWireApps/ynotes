@@ -46,10 +46,14 @@ dependencies:
   provider: ^4.0.4
   flare_loading: ^2.1.1
   flutter_widget_from_html_core: ^0.3.3
-  zoom_widget: ^0.1.3
   matrix_gesture_detector: ^0.1.0
   path_provider: ^1.6.7
-  
+  marquee: ^1.3.1
+  url_launcher: ^5.4.7
+  provider_architecture: 1.0.6
+  alice: ^0.0.33
+  open_file: ^3.0.1
+  flushbar: ^1.10.4
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -67,16 +71,12 @@ flutter_icons:
   image_path_android: "assets/appico/icon.png"
   adaptive_icon_background: "#ffff"
   adaptive_icon_foreground: "assets/appico/foreground.png"
-  
-
-
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter.
 flutter:
-
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
@@ -134,7 +134,3 @@ flutter:
     - assets/images/book.png
     - assets/animations/
     - assets/images/
-    
-
-
-

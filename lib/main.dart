@@ -1,5 +1,6 @@
 import 'dart:async';
 
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -13,7 +14,11 @@ import 'package:ynotes/landGrades.dart';
 import 'package:sentry/sentry.dart';
 import 'package:logging/logging.dart';
 import 'package:ynotes/usefulMethods.dart';
+import 'package:alice/alice.dart';
+//Alice is used to debug
+Alice alice = Alice(showNotification: true);
 
+///TO DO : Disable after bêta, Sentry is used to send bug reports
 final SentryClient _sentry = SentryClient(
     dsn: "https://c55eb82b0cab4437aeda267bb0392959@sentry.io/3147528");
 Future<Null> _reportError(dynamic error, dynamic stackTrace) async {
@@ -37,41 +42,46 @@ Future<Null> main() async {
   runZoned<Future<Null>>(() async {
     runApp(
       ChangeNotifierProvider<AppStateNotifier>(
-      child: HomeApp(), create: (BuildContext context) {return AppStateNotifier();},
-    ),
+        child: HomeApp(),
+        create: (BuildContext context) {
+          return AppStateNotifier();
+        },
+      ),
     );
   }, onError: (error, stackTrace) async {
     await _reportError(error, stackTrace);
   });
 }
+
 class HomeApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<AppStateNotifier>(
       builder: (context, appState, child) {
-        return MaterialApp(
+        return MaterialApp(navigatorKey: alice.getNavigatorKey(),
           localizationsDelegates: [
-   // ... app-specific localization delegate[s] here
-   GlobalMaterialLocalizations.delegate,
-   GlobalWidgetsLocalizations.delegate,
-   GlobalCupertinoLocalizations.delegate,
- ],
- supportedLocales: [
-    const Locale('en'), // English
-    const Locale('fr'),
+            // ... app-specific localization delegate[s] here
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: [ 
+            const Locale('en'), // English (could be useless ?)
+            const Locale('fr'), //French
 
-    // ... other locales the app supports
-  ],
+            // ... other locales the app supports
+          ],
           debugShowCheckedModeBanner: false,
-          theme:lightTheme, // ThemeData(primarySwatch: Colors.blue),
-          darkTheme: darkTheme, // ThemeData(primarySwatch: Colors.blue),
+          theme: lightTheme, 
+          darkTheme: darkTheme, 
           home: loader(),
-          themeMode: appState.isDarkMode ? ThemeMode.dark : ThemeMode.light ,
+          themeMode: appState.isDarkMode ? ThemeMode.dark : ThemeMode.light,
         );
       },
     );
   }
 }
+
 class loader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -115,9 +125,9 @@ class homePage extends StatelessWidget {
       DeviceOrientation.portraitUp,
     ]);
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: Theme.of(context).backgroundColor,
         body: SafeArea(
-      child: TabBuilder(),
-    ));
+          child: TabBuilder(),
+        ));
   }
 }

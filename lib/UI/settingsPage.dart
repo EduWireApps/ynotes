@@ -55,7 +55,7 @@ rightToLeftAnimation =
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
-
+//animation left to right
 setLtr()
     {
       movingRow = Tween<double>(
@@ -69,6 +69,7 @@ setLtr()
           setState(() {});
         });
     }
+    //Animation right to left
     setRtl()
     {
       movingRow = Tween<double>(

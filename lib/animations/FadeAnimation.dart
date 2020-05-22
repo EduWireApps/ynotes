@@ -31,3 +31,30 @@ class FadeAnimation extends StatelessWidget {
     );
   }
 }
+class FadeAnimationLeftToRight extends StatelessWidget {
+  final double delay;
+  final Widget child;
+
+  FadeAnimationLeftToRight(this.delay, this.child);
+
+  @override
+  Widget build(BuildContext context) {
+    final tween = MultiTrackTween([
+      
+      Track("translateX").add(
+        Duration(milliseconds: 250), Tween(begin: -230.0, end: 0.0),
+        curve: Curves.easeOut)
+    ]);
+
+    return ControlledAnimation(
+      delay: Duration(milliseconds: (500 * delay).round()),
+      duration: tween.duration,
+      tween: tween,
+      child: child,
+      builderWithChild: (context, child, animation) => Transform.translate(
+        offset: Offset(animation["translateX"],0 ), 
+        child: child
+      ),
+    );
+  }
+}

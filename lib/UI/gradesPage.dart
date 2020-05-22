@@ -399,7 +399,7 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: <
           Widget>[
         Container(
-          width: screenSize.size.width / 5 * 4.5,
+          width: screenSize.size.width / 5 * 4.7,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(15), topRight: Radius.circular(15)),
@@ -411,7 +411,7 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
             children: <Widget>[
               Container(
                 height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
-                width: (screenSize.size.width / 5) * 1.8,
+                width: (screenSize.size.width / 5) * 2.2,
                 decoration: ShapeDecoration(
                   shape: StadiumBorder(),
                   color: Theme.of(context).primaryColorDark,
@@ -469,7 +469,7 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
                 margin: EdgeInsets.only(
                     left: (screenSize.size.height / 10 * 8.8) / 10 * 0.1),
                 height: (screenSize.size.height / 10 * 8.8) / 10 * 0.8,
-                width: (screenSize.size.width / 5) * 1.5,
+                width: (screenSize.size.width / 5) * 1.7,
                 child: FittedBox(
                   child: RaisedButton(
                     color: Theme.of(context).primaryColorDark,
@@ -510,7 +510,7 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
         RefreshIndicator(
           onRefresh: refreshLocalGradeList,
           child: Container(
-            width: screenSize.size.width / 5 * 4.5,
+            width: screenSize.size.width / 5 * 4.7,
             height: (screenSize.size.height / 10 * 8.8) / 10 * 5.5,
             margin: EdgeInsets.only(top: 0),
             decoration: BoxDecoration(
@@ -521,7 +521,7 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
                 ),
                 color: Theme.of(context).primaryColor),
             child: ClipRRect(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(11),
                 child: FutureBuilder<void>(
                     future: disciplinesListFuture,
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -539,8 +539,8 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
                               itemCount: getDisciplinesForPeriod(
                                       snapshot.data, periodeToUse, filter)
                                   .length,
-                              padding: EdgeInsets.all(
-                                  screenSize.size.width / 5 * 0.3),
+                              padding: EdgeInsets.symmetric(
+                                  vertical: screenSize.size.width / 5 * 0.1, horizontal: screenSize.size.width / 5 * 0.125),
                               itemBuilder: (BuildContext context, int index) {
                                 return GradesGroup(
                                     disciplinevar: getDisciplinesForPeriod(
@@ -626,16 +626,17 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
           ),
         ),
 
+//Average section
         Container(
-          width: screenSize.size.width / 5 * 4.5,
+          width: screenSize.size.width / 5 * 4.7,
           height: (screenSize.size.height / 10 * 8.8) / 10 * 1.8,
           margin: EdgeInsets.only(
               top: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(11),
               color: Theme.of(context).primaryColor),
           child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(15),
               child: FutureBuilder<void>(
                   future: disciplinesListFuture,
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -1020,12 +1021,13 @@ class _GradesGroupState extends State<GradesGroup> {
     }
     //BLOCK BUILDER
     return Container(
-      margin: EdgeInsets.only(top: 10),
-      width: screenSize.size.width / 5 * 3,
-      //height: (screenSize.size.height / 10 * 8.8) /10 * 1.3,
+  
+      width: screenSize.size.width / 5 * 3.2,
+       margin: EdgeInsets.only(top:screenSize.size.height / 10 * 0.2 ),
       child: Stack(
         children: <Widget>[
-          //Label
+         
+          //Label 
           Align(
             alignment: Alignment.topLeft,
             child: Container(
@@ -1049,7 +1051,7 @@ class _GradesGroupState extends State<GradesGroup> {
                     decoration: BoxDecoration(
                         border:
                             Border.all(width: 0.0, color: Colors.transparent)),
-                    width: screenSize.size.width / 5 * 4,
+                    width: screenSize.size.width / 5 * 4.5,
                     height: (screenSize.size.height / 10 * 8.8) / 10 * 0.75,
                     child: Center(
                       child: Stack(children: <Widget>[
@@ -1061,7 +1063,7 @@ class _GradesGroupState extends State<GradesGroup> {
                               padding: EdgeInsets.symmetric(
                                   horizontal: screenSize.size.width / 5 * 0.1),
                               child: Text(
-                                widget.disciplinevar.nomDiscipline,
+                               '${ widget.disciplinevar.nomDiscipline[0].toUpperCase()}${ widget.disciplinevar.nomDiscipline.substring(1)}',
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.left,
                                 style: TextStyle(
@@ -1097,14 +1099,16 @@ class _GradesGroupState extends State<GradesGroup> {
               ),
             ),
           ),
+
+          //Body with columns
           Align(
             alignment: Alignment.bottomLeft,
             child: Container(
                 margin: EdgeInsets.only(
                     top: (screenSize.size.height / 10 * 8.8) / 10 * 0.55),
-                width: screenSize.size.width / 5 * 4,
+                width: screenSize.size.width / 5 * 4.5,
                 decoration: BoxDecoration(
-                  color: darken(colorGroup, forceAmount: 0.1),
+                  color: isDarkModeEnabled?Color(0xff424242):Color(0xffE2E2E2),
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(15),
                     bottomRight: Radius.circular(15),
@@ -1127,7 +1131,7 @@ class _GradesGroupState extends State<GradesGroup> {
                                 "Ecrit",
                                 style: TextStyle(
                                   fontFamily: "Asap",
-                                  color: Colors.black,
+                                  color: isDarkModeEnabled?Colors.white:Colors.black,
                                 ),
                               )),
                       marksColumn(0),
@@ -1138,7 +1142,7 @@ class _GradesGroupState extends State<GradesGroup> {
                         if (widget.disciplinevar.codeSousMatiere.length > 0)
                           Text("Oral",
                               style: TextStyle(
-                                  fontFamily: "Asap", color: Colors.black)),
+                                  fontFamily: "Asap", color: isDarkModeEnabled?Colors.white:Colors.black,)),
                       if (widget.disciplinevar != null)
                         if (widget.disciplinevar.codeSousMatiere.length > 0)
                           marksColumn(1),
@@ -1225,13 +1229,19 @@ class _GradesGroupState extends State<GradesGroup> {
                 children: <Widget>[
                   Container(
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(11),
-                        border: Border.all(width: 1)),
+                        borderRadius: BorderRadius.circular(13),
+                        border: Border.all(color:   (getGradesForDiscipline(
+                                      sousMatiereIndex, periodeToUse) ==
+                                  null)?Colors.transparent:Colors.black, width: 1)
+                        ),
                     margin: EdgeInsets.only(
                         left: screenSize.size.width / 5 * 0.1,
                         right: screenSize.size.width / 5 * 0.1),
                     child: Material(
-                      color: colorGroup,
+                      color:  (getGradesForDiscipline(
+                                      sousMatiereIndex, periodeToUse) ==
+                                  null)?Colors.transparent:colorGroup
+                              ,
                       borderRadius: BorderRadius.all(Radius.circular(11)),
                       child: InkWell(
                         borderRadius: BorderRadius.all(Radius.circular(11)),
@@ -1359,16 +1369,17 @@ class _GradesGroupState extends State<GradesGroup> {
                                     baseColor: Color(0xff5D6469),
                                     highlightColor: Color(0xff8D9499),
                                     child: Container(
-                                      width: screenSize.size.width / 5 * 3,
+                                      width: screenSize.size.width / 5 * 3.2,
                                       height:
                                           (screenSize.size.height / 10 * 8.8) /
                                               10 *
                                               0.8,
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(11),
-                                        color:
-                                            Theme.of(context).primaryColorDark,
-                                      ),
+                                        
+                                  color:
+                                          Theme.of(context).primaryColorDark),
+                                      
                                     )),
                             ],
                           ),

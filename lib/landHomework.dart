@@ -27,14 +27,13 @@ class homework {
       this.codeMatiere,
       this.idDevoir,
       this.contenu,
-       this.contenuDeSeance,
+      this.contenuDeSeance,
       this.date,
       this.datePost,
       this.done,
       this.rendreEnLigne,
       this.interrogation,
       this.documents,
-     
       this.documentsContenuDeSeance);
 }
 
@@ -70,17 +69,21 @@ Future<List<DateTime>> getDatesNextHomeWork() async {
       print("Homework request succeed");
 
       Map<String, dynamic> data2 = req['data'];
-bool isLimitedTo7Days = await getSetting("7DaysLimit");
+      bool isLimitedTo7Days = await getSetting("7DaysLimit");
+      if (isLimitedTo7Days == null) {
+        isLimitedTo7Days = false;
+      }
       data2.forEach((key, value) {
-        if(isLimitedTo7Days==true)
-        {
- if(DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.parse(key))).difference(DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now()))).inDays>7)
-        homeworkDatesListToReturn.add(DateTime.parse(key));
-        }
-        else {
+        if (isLimitedTo7Days == true) {
+          if (DateTime.parse(
+                      DateFormat("yyyy-MM-dd").format(DateTime.parse(key)))
+                  .difference(DateTime.parse(
+                      DateFormat("yyyy-MM-dd").format(DateTime.now())))
+                  .inDays >
+              7) homeworkDatesListToReturn.add(DateTime.parse(key));
+        } else {
           homeworkDatesListToReturn.add(DateTime.parse(key));
         }
-       
       });
       return homeworkDatesListToReturn;
     } else {
@@ -118,6 +121,7 @@ Future<List<homework>> asyncTask(List<DateTime> datesList) async {
 Future<List<homework>> getHomeworkFor(DateTime dateHomework) async {
   //Autorefresh token
   initializeDateFormatting();
+
   String dateToUse = DateFormat("yyyy-MM-dd").format(dateHomework).toString();
   await testToken();
   String id = await storage.read(key: "userID");
@@ -146,11 +150,11 @@ Future<List<homework>> getHomeworkFor(DateTime dateHomework) async {
           bool rendreEnLigne = false;
           bool interrogation = false;
           List<document> documentsAFaire = List<document>();
- List<document> documentsContenuDeCours = List<document>();
+          List<document> documentsContenuDeCours = List<document>();
           try {
             encodedContent = element['aFaire']['contenu'];
             rendreEnLigne = element['aFaire']['rendreEnLigne'];
-          
+
             aFaireEncoded = element['contenuDeSeance']['contenu'];
             List docs = element['aFaire']['documents'];
             if (docs != null) {
@@ -159,7 +163,7 @@ Future<List<homework>> getHomeworkFor(DateTime dateHomework) async {
                     e["libelle"], e["id"], e["type"], e["taille"]));
               });
             }
-           
+
             List docsContenu = element['contenuDeSeance']['documents'];
             if (docsContenu != null) {
               docsContenu.forEach((e) {
@@ -175,10 +179,9 @@ Future<List<homework>> getHomeworkFor(DateTime dateHomework) async {
           String decodedContent = "";
           String decodedContenuDeSeance = "";
           decodedContent = utf8.decode(base64.decode(encodedContent));
-        
-          decodedContenuDeSeance =
-              utf8.decode(base64.decode(aFaireEncoded));
-                print(decodedContenuDeSeance);
+
+          decodedContenuDeSeance = utf8.decode(base64.decode(aFaireEncoded));
+          print(decodedContenuDeSeance);
           homeworkList.add(new homework(
               element['matiere'],
               element['codeMatiere'],
@@ -191,8 +194,7 @@ Future<List<homework>> getHomeworkFor(DateTime dateHomework) async {
               rendreEnLigne,
               interrogation,
               documentsAFaire,
-              documentsContenuDeCours
-              ));
+              documentsContenuDeCours));
         }
       });
       return homeworkList;

@@ -227,7 +227,7 @@ Future<List<discipline>> getNotesAndDisciplines() async {
           profs.forEach((e) {
             profsNoms.add(e["nom"]);
           });
-
+//Making objects
           if (element['codeSousMatiere'] == "") {
             disciplinesList.add(discipline.fromJson(
                 element,
@@ -338,7 +338,7 @@ testToken() async {
 }
 
 //Refresh the token if expired
-void refreshToken() async {
+ refreshToken() async {
 //Get the password in the secure storage
   String password = await storage.read(key: "password");
   String username = await storage.read(key: "username");
