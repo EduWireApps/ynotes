@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ynotes/UI/loginPage.dart';
 import 'package:ynotes/animations/FadeAnimation.dart';
-import 'package:ynotes/landGrades.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/parsers/EcoleDirecte.dart';
 import 'package:ynotes/usefulMethods.dart';
+
+import '../apiManager.dart';
 
 class LoadingPage extends StatefulWidget {
   const LoadingPage({Key key}) : super(key: key);
@@ -14,6 +16,8 @@ class LoadingPage extends StatefulWidget {
   @override
   _LoadingPageState createState() => _LoadingPageState();
 }
+
+API api = APIManager();
 
 class _LoadingPageState extends State<LoadingPage> {
   Future<String> connectionData;
@@ -26,16 +30,15 @@ class _LoadingPageState extends State<LoadingPage> {
   }
 
   tryToConnect() async {
+    await setChosenParser(0);
+    getChosenParser();
     u = await storage.read(key: "username");
     p = await storage.read(key: "password");
     if (u != null && p != null) {
-      return connectionStatus(u, p);
-    } else
-    {
-       Navigator.of(context).pushReplacement(router(login()));
-       
+      return api.login(u, p);
+    } else {
+      Navigator.of(context).pushReplacement(router(login()));
     }
-      
   }
 
   getDarkModeSetting() async {
@@ -50,7 +53,8 @@ class _LoadingPageState extends State<LoadingPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: FadeAnimation(
-              0.8, Center(
+        0.8,
+        Center(
             child: FlareLoading(
           until: () => tryToConnect(),
           name: 'assets/animations/ynotes.flr',
@@ -64,11 +68,6 @@ class _LoadingPageState extends State<LoadingPage> {
             Navigator.of(context).pushReplacement(router(login()));
           },
         )
-
-
-
-
-
 
             /* FutureBuilder(
                 future: tryToConnect(),

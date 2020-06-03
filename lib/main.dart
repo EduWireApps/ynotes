@@ -1,22 +1,21 @@
 import 'dart:async';
-
-
+import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:ynotes/UI/carousel.dart';
+import 'package:ynotes/UI/gradesPage.dart';
 import 'package:ynotes/UI/loadingPage.dart';
 import 'package:ynotes/UI/loginPage.dart';
 import 'package:ynotes/UI/tabBuilder.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:ynotes/landGrades.dart';
 import 'package:sentry/sentry.dart';
-import 'package:logging/logging.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:alice/alice.dart';
-//Alice is used to debug
-Alice alice = Alice(showNotification: true);
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:ynotes/apiManager.dart';
+import 'package:ynotes/parsers/EcoleDirecte.dart';
+import 'package:ynotes/background.dart';
 
 ///TO DO : Disable after bêta, Sentry is used to send bug reports
 final SentryClient _sentry = SentryClient(
@@ -28,9 +27,58 @@ Future<Null> _reportError(dynamic error, dynamic stackTrace) async {
   );
 }
 
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 final logger = loader();
 
-Future<Null> main() async {
+//Background task when when app is closed
+void backgroundFetchHeadlessTask(String taskId) async {
+  print("Starting the headless closed bakground task");
+  var initializationSettingsAndroid =
+      new AndroidInitializationSettings('newgradeicon');
+  var initializationSettingsIOS = new IOSInitializationSettings();
+  var initializationSettings = new InitializationSettings(
+      initializationSettingsAndroid, initializationSettingsIOS);
+  flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+  flutterLocalNotificationsPlugin.initialize(initializationSettings,
+      onSelectNotification: (String value){
+     haveToReopenOnGradePage = true;
+
+      });
+
+
+  if (await  mainTestNewGrades()) {
+    BackgroundServices.showNotification();
+
+  } else {
+    print("Nothing updated");
+  }
+  BackgroundFetch.finish(taskId);
+}
+ mainTestNewGrades() async{
+try {
+      //Getting the offline count of grades
+      List<grade> listOfflineGrades =
+      getAllGrades(await getOfflineGrades(), overrideLimit: true);
+      print("Offline length is ${listOfflineGrades.length}");
+      //Getting the online count of grades
+      List<grade> listOnlineGrades =
+          getAllGrades(await getGradesFromInternet(), overrideLimit: true);
+      print("Online length is ${listOnlineGrades.length}");
+      if (listOfflineGrades.length < listOnlineGrades.length) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch (e) {
+      print(e);
+      return null;
+    }
+}
+ 
+Future main() async {
+//Init the local notifications
+  WidgetsFlutterBinding.ensureInitialized();
+  BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
   // This captures errors reported by the Flutter framework.
   FlutterError.onError = (FlutterErrorDetails details) async {
     _sentry.captureException(
@@ -58,22 +106,22 @@ class HomeApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<AppStateNotifier>(
       builder: (context, appState, child) {
-        return MaterialApp(navigatorKey: alice.getNavigatorKey(),
+        return MaterialApp(
           localizationsDelegates: [
             // ... app-specific localization delegate[s] here
             GlobalMaterialLocalizations.delegate,
             GlobalWidgetsLocalizations.delegate,
             GlobalCupertinoLocalizations.delegate,
           ],
-          supportedLocales: [ 
+          supportedLocales: [
             const Locale('en'), // English (could be useless ?)
             const Locale('fr'), //French
 
             // ... other locales the app supports
           ],
           debugShowCheckedModeBanner: false,
-          theme: lightTheme, 
-          darkTheme: darkTheme, 
+          theme: lightTheme,
+          darkTheme: darkTheme,
           home: loader(),
           themeMode: appState.isDarkMode ? ThemeMode.dark : ThemeMode.light,
         );

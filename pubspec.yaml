@@ -54,7 +54,14 @@ dependencies:
   alice: ^0.0.33
   open_file: ^3.0.1
   flushbar: ^1.10.4
-
+  hive: ^1.4.1+1
+  hive_flutter: ^0.3.0+2
+  flutter_offline: "^0.3.0"
+  flutter_local_notifications: ^1.4.3
+  connectivity: ^0.4.8+6
+  flutter_html: ^1.0.0-pre.1
+  background_fetch: "^0.5.1"
+  scrollable_positioned_list: ^0.1.6
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
@@ -63,6 +70,11 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_launcher_icons: ^0.7.4
+  build_runner: ^1.10.0
+  hive_generator: ^0.7.0+2
+
+dependency_overrides:
+  dartx: ^0.3.0
 
 flutter_icons:
   ios: true
@@ -134,3 +146,7 @@ flutter:
     - assets/images/book.png
     - assets/animations/
     - assets/images/
+    - assets/images/Pronote/
+    - assets/images/EcoleDirecte/
+    - assets/appico/
+    - assets/appico/foreground.png

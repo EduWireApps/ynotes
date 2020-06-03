@@ -34,11 +34,8 @@ class page3 extends StatefulWidget {
 
 //PAGE1 STATE
 class _page1State extends State<page1> {
-
-
   @override
   Widget build(BuildContext context) {
-    
     return Stack(
       children: <Widget>[
         Transform.translate(
@@ -250,7 +247,7 @@ class _page1State extends State<page1> {
         ),
         Positioned(
           width: MediaQuery.of(context).size.width,
-          bottom: MediaQuery.of(context).size.height/15,
+          bottom: MediaQuery.of(context).size.height / 15,
           height: 90,
           child: Transform.translate(
               offset: Offset(-(widget.offset) * 200, 0),
@@ -281,7 +278,6 @@ class _page1State extends State<page1> {
 
 //PAGE2 STATE
 class _page2State extends State<page2> {
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -294,7 +290,7 @@ class _page2State extends State<page2> {
             child: Stack(
               children: <Widget>[
                 Transform.translate(
-                  offset: Offset(200-(widget.offset-1)*20,57 ),
+                  offset: Offset(200 - (widget.offset - 1) * 20, 57),
                   child: Container(
                       height: 100,
                       width: 100,
@@ -304,7 +300,7 @@ class _page2State extends State<page2> {
                               'assets/images/shelves/calendar.png'))),
                 ),
                 Transform.translate(
-    offset: Offset(70-(widget.offset-1)*20,-157 ),
+                  offset: Offset(70 - (widget.offset - 1) * 20, -157),
                   child: Container(
                       height: 120,
                       width: 120,
@@ -314,7 +310,7 @@ class _page2State extends State<page2> {
                               Image.asset('assets/images/shelves/clock.png'))),
                 ),
                 Transform.translate(
-                  offset: Offset(0-(widget.offset-1)*400, -90),
+                  offset: Offset(0 - (widget.offset - 1) * 400, -90),
                   child: Container(
                       height: 170,
                       width: 320,
@@ -324,7 +320,7 @@ class _page2State extends State<page2> {
                               'assets/images/shelves/shelve1.png'))),
                 ),
                 Transform.translate(
-                  offset: Offset(0-(widget.offset-1)*300, 90),
+                  offset: Offset(0 - (widget.offset - 1) * 300, 90),
                   child: Container(
                       height: 90,
                       width: 320,
@@ -337,7 +333,7 @@ class _page2State extends State<page2> {
             ),
           ),
           Positioned(
-            bottom:  MediaQuery.of(context).size.height/15,
+            bottom: MediaQuery.of(context).size.height / 15,
             height: 90,
             width: MediaQuery.of(context).size.width,
             child: Transform.translate(
@@ -368,25 +364,22 @@ class _page3State extends State<page3> {
   @override
   Widget build(BuildContext context) {
     double opacityvalue = 0;
-    if (widget.offset-1>0)
-      {
-        opacityvalue = widget.offset-1;
-      }
-    else {
+    if (widget.offset - 1 > 0) {
+      opacityvalue = widget.offset - 1;
+    } else {
       opacityvalue = 0;
     }
     return Stack(
       children: <Widget>[
-
         Positioned(
-          left: MediaQuery.of(context).size.width/8-(widget.offset-2)*250,
+          left:
+              MediaQuery.of(context).size.width / 8 - (widget.offset - 2) * 250,
           child: Align(
               alignment: Alignment.center,
               child: Opacity(
-
                 opacity: opacityvalue,
                 child: Transform.rotate(
-                  angle: 6-(widget.offset-2),
+                  angle: 6 - (widget.offset - 2),
                   child: Icon(
                     Icons.star,
                     color: Colors.white,
@@ -396,14 +389,15 @@ class _page3State extends State<page3> {
               )),
         ),
         Positioned(
-          right: MediaQuery.of(context).size.width/8+(widget.offset-2)*70,
-          top: MediaQuery.of(context).size.height/5,
+          right:
+              MediaQuery.of(context).size.width / 8 + (widget.offset - 2) * 70,
+          top: MediaQuery.of(context).size.height / 5,
           child: Align(
               alignment: Alignment.center,
               child: Opacity(
                 opacity: opacityvalue,
                 child: Transform.rotate(
-                  angle: 1.2-(widget.offset-2)*1.2,
+                  angle: 1.2 - (widget.offset - 2) * 1.2,
                   child: Icon(
                     Icons.star,
                     color: Colors.white,
@@ -413,14 +407,15 @@ class _page3State extends State<page3> {
               )),
         ),
         Positioned(
-          left: MediaQuery.of(context).size.width/3.5-(widget.offset-2)*310,
-          top: MediaQuery.of(context).size.height/2.3,
+          left: MediaQuery.of(context).size.width / 3.5 -
+              (widget.offset - 2) * 310,
+          top: MediaQuery.of(context).size.height / 2.3,
           child: Align(
               alignment: Alignment.center,
               child: Opacity(
                 opacity: opacityvalue,
                 child: Transform.rotate(
-                  angle: 4-(widget.offset-2)*1.4,
+                  angle: 4 - (widget.offset - 2) * 1.4,
                   child: Icon(
                     Icons.star,
                     color: Colors.white,
@@ -430,14 +425,15 @@ class _page3State extends State<page3> {
               )),
         ),
         Positioned(
-          left: MediaQuery.of(context).size.width/12-(widget.offset-2)*280,
-          top: MediaQuery.of(context).size.height/4,
+          left: MediaQuery.of(context).size.width / 12 -
+              (widget.offset - 2) * 280,
+          top: MediaQuery.of(context).size.height / 4,
           child: Align(
               alignment: Alignment.center,
               child: Opacity(
                 opacity: opacityvalue,
                 child: Transform.rotate(
-                  angle: 2-(widget.offset-2)*1.5,
+                  angle: 2 - (widget.offset - 2) * 1.5,
                   child: Icon(
                     Icons.star,
                     color: Colors.white,
@@ -446,36 +442,38 @@ class _page3State extends State<page3> {
                 ),
               )),
         ),
-
-
-          Positioned(
-            bottom:  MediaQuery.of(context).size.height/5,
-            height: 90,
-            width: MediaQuery.of(context).size.width,
-            child: Transform.translate(
-                offset: Offset(-(widget.offset - 2) * 200, 0),
-                child: Container(
-                    padding: EdgeInsets.only(left: 5, right: 5),
-                    width: 50,
-                    height: 140.0,
-                    child: AutoSizeText.rich(
-
-                        TextSpan(
-                          text: "...sans oublier de gérer votre",
-                          children: <TextSpan>[
-                            TextSpan(
-                                text: ' espace !',
-                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
-                          ],
-                        ),
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontFamily: "Asap", fontSize: 30.0,color: Colors.white)))),
-          ),
         Positioned(
-          left: MediaQuery.of(context).size.width/4,
-          bottom: MediaQuery.of(context).size.height/10,
-          child:   Container(
-            width:  MediaQuery.of(context).size.width/2,
+          bottom: MediaQuery.of(context).size.height / 5,
+          height: 90,
+          width: MediaQuery.of(context).size.width,
+          child: Transform.translate(
+              offset: Offset(-(widget.offset - 2) * 200, 0),
+              child: Container(
+                  padding: EdgeInsets.only(left: 5, right: 5),
+                  width: 50,
+                  height: 140.0,
+                  child: AutoSizeText.rich(
+                      TextSpan(
+                        text: "...sans oublier de gérer votre",
+                        children: <TextSpan>[
+                          TextSpan(
+                              text: ' espace !',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white)),
+                        ],
+                      ),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontFamily: "Asap",
+                          fontSize: 30.0,
+                          color: Colors.white)))),
+        ),
+        Positioned(
+          left: MediaQuery.of(context).size.width / 4,
+          bottom: MediaQuery.of(context).size.height / 10,
+          child: Container(
+            width: MediaQuery.of(context).size.width / 2,
             height: 50,
             child: RaisedButton(
               color: Color(0xff5DADE2),
@@ -483,16 +481,10 @@ class _page3State extends State<page3> {
               onPressed: () {
                 Navigator.of(context).pushReplacement(router(homePage()));
               },
-              child: const Text(
-                  'Allons-y !',
-                  style: TextStyle(fontSize: 20)
-              ),
+              child: const Text('Allons-y !', style: TextStyle(fontSize: 20)),
             ),
           ),
-
         ),
-
-
       ],
     );
   }
@@ -527,6 +519,7 @@ class _SlidingCarouselState extends State<SlidingCarousel> {
       });
     _list(_pageOffset, 0);
   }
+
 //set a list of basic infos (colors)
   _list(offset, idx) {
     return _pageInfoList = [
@@ -575,10 +568,9 @@ class _SlidingCarouselState extends State<SlidingCarousel> {
     return Scaffold(
       backgroundColor: _getBGColor(),
       body: //Disable back button
-       WillPopScope(
-        onWillPop: ()  async{
-          Future.value(
-              false);
+          WillPopScope(
+        onWillPop: () async {
+          Future.value(false);
           return false;
         },
         child: Column(

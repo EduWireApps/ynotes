@@ -4,8 +4,8 @@ import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:ynotes/animations/FadeAnimation.dart';
-import 'package:ynotes/landGrades.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -13,9 +13,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:tinycolor/tinycolor.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:ynotes/landHomework.dart';
-
+import 'package:ynotes/parsers/EcoleDirecte.dart';
+import '../apiManager.dart';
 import '../usefulMethods.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class GradesPage extends StatefulWidget {
   State<StatefulWidget> createState() {
@@ -23,6 +24,7 @@ class GradesPage extends StatefulWidget {
   }
 }
 
+API api = APIManager();
 double average = 0.0;
 //This boolean show a little badge if true
 bool newGrades = false;
@@ -33,12 +35,13 @@ String filter = "all";
 //If true, show a carousel
 bool firstStart = true;
 Future disciplinesListFuture;
+int initialIndexGradesOffset = 0;
 
 class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
   AnimationController circleAnimation;
   Animation<double> movingCircle;
   Animation<double> animateWidth;
-
+  ItemScrollController gradesItemScrollController = ItemScrollController();
   void initState() {
     super.initState();
 
@@ -46,7 +49,7 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
 
     //Test if it's the first start
     if (firstStart == true) {
-      refreshLocalGradeList();
+      disciplinesListFuture = api.getGrades();
       firstStart = false;
     }
     //Get the actual periode (based on grades)
@@ -58,13 +61,14 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
   @override
   Future<void> refreshLocalGradeList() async {
     setState(() {
-      disciplinesListFuture = getNotesAndDisciplines();
+      disciplinesListFuture = api.getGrades(forceReload: true);
     });
+    var realdisciplinesListFuture = await disciplinesListFuture;
   }
 
   //Get the actual periode
   getActualPeriode() async {
-    List<discipline> list = await getNotesAndDisciplines();
+    List<discipline> list = await api.getGrades();
 
     periodeToUse = list
         .lastWhere((list) => list.gradesList.length > 0)
@@ -521,7 +525,7 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
                 ),
                 color: Theme.of(context).primaryColor),
             child: ClipRRect(
-                borderRadius: BorderRadius.circular(11),
+                borderRadius: BorderRadius.circular(15),
                 child: FutureBuilder<void>(
                     future: disciplinesListFuture,
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -535,12 +539,25 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
                             return false;
                           }
                         })) {
-                          return ListView.builder(
+                          /*
+                          Future.delayed(const Duration(milliseconds: 200), () {
+                            gradesItemScrollController.scrollTo(
+                                index: initialIndexGradesOffset,
+                                duration: Duration(milliseconds: (initialIndexGradesOffset==0)?0:300));
+                          
+                       
+                          });
+                            */
+                          return ScrollablePositionedList.builder(
+                              itemScrollController: gradesItemScrollController,
+                              initialScrollIndex: 0,
                               itemCount: getDisciplinesForPeriod(
                                       snapshot.data, periodeToUse, filter)
                                   .length,
                               padding: EdgeInsets.symmetric(
-                                  vertical: screenSize.size.width / 5 * 0.1, horizontal: screenSize.size.width / 5 * 0.125),
+                                  vertical: screenSize.size.width / 5 * 0.1,
+                                  horizontal:
+                                      screenSize.size.width / 5 * 0.125),
                               itemBuilder: (BuildContext context, int index) {
                                 return GradesGroup(
                                     disciplinevar: getDisciplinesForPeriod(
@@ -614,7 +631,8 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
                           ],
                         );
                       } else {
-                        return ListView.builder(
+                        //Loading group
+                        return ScrollablePositionedList.builder(
                             itemCount: 5,
                             padding:
                                 EdgeInsets.all(screenSize.size.width / 5 * 0.3),
@@ -1021,13 +1039,11 @@ class _GradesGroupState extends State<GradesGroup> {
     }
     //BLOCK BUILDER
     return Container(
-  
       width: screenSize.size.width / 5 * 3.2,
-       margin: EdgeInsets.only(top:screenSize.size.height / 10 * 0.2 ),
+      margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
       child: Stack(
         children: <Widget>[
-         
-          //Label 
+          //Label
           Align(
             alignment: Alignment.topLeft,
             child: Container(
@@ -1063,7 +1079,7 @@ class _GradesGroupState extends State<GradesGroup> {
                               padding: EdgeInsets.symmetric(
                                   horizontal: screenSize.size.width / 5 * 0.1),
                               child: Text(
-                               '${ widget.disciplinevar.nomDiscipline[0].toUpperCase()}${ widget.disciplinevar.nomDiscipline.substring(1)}',
+                                '${widget.disciplinevar.nomDiscipline[0].toUpperCase()}${widget.disciplinevar.nomDiscipline.substring(1)}',
                                 overflow: TextOverflow.ellipsis,
                                 textAlign: TextAlign.left,
                                 style: TextStyle(
@@ -1108,7 +1124,8 @@ class _GradesGroupState extends State<GradesGroup> {
                     top: (screenSize.size.height / 10 * 8.8) / 10 * 0.55),
                 width: screenSize.size.width / 5 * 4.5,
                 decoration: BoxDecoration(
-                  color: isDarkModeEnabled?Color(0xff424242):Color(0xffE2E2E2),
+                  color:
+                      isDarkModeEnabled ? Color(0xff424242) : Color(0xffE2E2E2),
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(15),
                     bottomRight: Radius.circular(15),
@@ -1131,7 +1148,9 @@ class _GradesGroupState extends State<GradesGroup> {
                                 "Ecrit",
                                 style: TextStyle(
                                   fontFamily: "Asap",
-                                  color: isDarkModeEnabled?Colors.white:Colors.black,
+                                  color: isDarkModeEnabled
+                                      ? Colors.white
+                                      : Colors.black,
                                 ),
                               )),
                       marksColumn(0),
@@ -1142,7 +1161,11 @@ class _GradesGroupState extends State<GradesGroup> {
                         if (widget.disciplinevar.codeSousMatiere.length > 0)
                           Text("Oral",
                               style: TextStyle(
-                                  fontFamily: "Asap", color: isDarkModeEnabled?Colors.white:Colors.black,)),
+                                fontFamily: "Asap",
+                                color: isDarkModeEnabled
+                                    ? Colors.white
+                                    : Colors.black,
+                              )),
                       if (widget.disciplinevar != null)
                         if (widget.disciplinevar.codeSousMatiere.length > 0)
                           marksColumn(1),
@@ -1230,18 +1253,22 @@ class _GradesGroupState extends State<GradesGroup> {
                   Container(
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(13),
-                        border: Border.all(color:   (getGradesForDiscipline(
-                                      sousMatiereIndex, periodeToUse) ==
-                                  null)?Colors.transparent:Colors.black, width: 1)
-                        ),
+                        border: Border.all(
+                            color: (getGradesForDiscipline(
+                                        sousMatiereIndex, periodeToUse) ==
+                                    null)
+                                ? Colors.transparent
+                                : Colors.black,
+                            width: 1)),
                     margin: EdgeInsets.only(
                         left: screenSize.size.width / 5 * 0.1,
                         right: screenSize.size.width / 5 * 0.1),
                     child: Material(
-                      color:  (getGradesForDiscipline(
-                                      sousMatiereIndex, periodeToUse) ==
-                                  null)?Colors.transparent:colorGroup
-                              ,
+                      color: (getGradesForDiscipline(
+                                  sousMatiereIndex, periodeToUse) ==
+                              null)
+                          ? Colors.transparent
+                          : colorGroup,
                       borderRadius: BorderRadius.all(Radius.circular(11)),
                       child: InkWell(
                         borderRadius: BorderRadius.all(Radius.circular(11)),
@@ -1375,11 +1402,10 @@ class _GradesGroupState extends State<GradesGroup> {
                                               10 *
                                               0.8,
                                       decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(11),
-                                        
-                                  color:
-                                          Theme.of(context).primaryColorDark),
-                                      
+                                          borderRadius:
+                                              BorderRadius.circular(11),
+                                          color: Theme.of(context)
+                                              .primaryColorDark),
                                     )),
                             ],
                           ),
@@ -1391,7 +1417,7 @@ class _GradesGroupState extends State<GradesGroup> {
                     if (localList[index].dateSaisie == formattedDate)
                       Positioned(
                         left: screenSize.size.width / 5 * 1.18,
-                        bottom: screenSize.size.height / 15 * 0.4,
+                        top: screenSize.size.height / 15 * 0.01,
                         child: Badge(
                           animationType: BadgeAnimationType.scale,
                           toAnimate: true,
@@ -2170,7 +2196,7 @@ class _GradesGroupState extends State<GradesGroup> {
                 prefs.setString(discipline.codeMatiere, finalColor);
                 discipline.setcolor = pickerColor;
 
-                disciplinesListFuture = getNotesAndDisciplines();
+                disciplinesListFuture = api.getGrades();
               });
 
               Navigator.of(context).pop();

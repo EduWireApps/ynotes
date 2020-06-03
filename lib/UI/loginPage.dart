@@ -1,15 +1,244 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/animations/FadeAnimation.dart';
-import 'package:ynotes/landGrades.dart';
 import 'package:ynotes/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ynotes/UI/gradesPage.dart';
+import 'package:ynotes/parsers/EcoleDirecte.dart';
 import 'package:ynotes/usefulMethods.dart';
+import 'package:connectivity/connectivity.dart';
+import '../apiManager.dart';
 
 Color textButtonColor = Color(0xff252B62);
 Color myColor = Color(0xff00bfa5);
+Animation<double> chosenAnimation1;
+Animation<double> chosenAnimation2;
+AnimationController chosenAnimation1Controller;
+AnimationController chosenAnimation2Controller;
+
+bool isConnectedToInternet;
+//Deal with connection lost
+
+class ServiceChoice extends StatefulWidget {
+  State<StatefulWidget> createState() {
+    return _ServiceChoiceState();
+  }
+}
+
+int chosen;
+
+class _ServiceChoiceState extends State<ServiceChoice>
+    with TickerProviderStateMixin {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    chosenAnimation1Controller =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 450));
+    chosenAnimation2Controller =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 450));
+    chosenAnimation1 = new Tween(
+      begin: 1.0,
+      end: 1.1,
+    ).animate(new CurvedAnimation(
+        parent: chosenAnimation1Controller, curve: Curves.easeInOutQuint));
+    chosenAnimation2 = new Tween(
+      begin: 1.0,
+      end: 1.1,
+    ).animate(new CurvedAnimation(
+        parent: chosenAnimation2Controller, curve: Curves.easeInOutQuint));
+  }
+
+  Future<void> _updateConnectionStatus(ConnectivityResult result) async {
+    switch (result) {
+      case ConnectivityResult.none:
+        print("not connected");
+        break;
+      default:
+        print("connected");
+        break;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    MediaQueryData screenSize;
+    screenSize = MediaQuery.of(context);
+
+    return SafeArea(
+      child: Container(
+        height: screenSize.size.height,
+        color: Colors.white,
+        child: Center(
+          child: Stack(
+            children: <Widget>[
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    "Pour commencer...",
+                    style: TextStyle(
+                        fontFamily: "Asap",
+                        fontWeight: FontWeight.w300,
+                        fontSize: screenSize.size.height / 10 * 0.4),
+                  ),
+                  Text(
+                    "Choisissez votre service scolaire :",
+                    style: TextStyle(
+                        fontFamily: "Asap",
+                        fontSize: screenSize.size.height / 10 * 0.25),
+                  ),
+                  SizedBox(
+                    height: screenSize.size.height / 10 * 0.4,
+                  ),
+                  AnimatedBuilder(
+                    animation: chosenAnimation1,
+                    builder: (BuildContext context, Widget child) {
+                      return Transform.scale(
+                        scale: chosenAnimation1.value,
+                        child: child,
+                      );
+                    },
+                    child: Material(
+                      color: Color(0xff2874A6),
+                      borderRadius: BorderRadius.circular(25),
+                      child: InkWell(
+                        onTap: () {
+                          setState(() {
+                            chosenAnimation2Controller.reverse();
+                            chosen = 0;
+                            chosenAnimation1Controller.forward();
+                          });
+                        },
+                        borderRadius: BorderRadius.circular(25),
+                        child: Container(
+                          width: screenSize.size.width / 5 * 4.2,
+                          height: screenSize.size.height / 10 * 0.8,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                    vertical:
+                                        MediaQuery.of(context).size.width /
+                                            10 *
+                                            0.1),
+                                margin: EdgeInsets.only(
+                                    right: MediaQuery.of(context).size.width /
+                                        10 *
+                                        0.2),
+                                child: Image(
+                                    width: MediaQuery.of(context).size.width /
+                                        5 *
+                                        0.6,
+                                    height: MediaQuery.of(context).size.width /
+                                        5 *
+                                        0.4,
+                                    fit: BoxFit.fill,
+                                    image: AssetImage(
+                                        'assets/images/EcoleDirecte/EcoleDirecteIcon.png')),
+                              ),
+                              Text("Ecole Directe",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontFamily: "Asap",
+                                      fontSize:
+                                          screenSize.size.height / 10 * 0.4,
+                                      color: Colors.white)),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: screenSize.size.height / 10 * 0.2,
+                  ),
+                  AnimatedBuilder(
+                    animation: chosenAnimation2,
+                    builder: (BuildContext context, Widget child) {
+                      return Transform.scale(
+                        scale: chosenAnimation2.value,
+                        child: child,
+                      );
+                    },
+                    child: Material(
+                      color: Color(0xff4BA55D),
+                      borderRadius: BorderRadius.circular(25),
+                      child: InkWell(
+                        onTap: () {
+                          setState(() {
+                            chosenAnimation1Controller.reverse();
+                            chosen = 1;
+                            chosenAnimation2Controller.forward();
+                          });
+                        },
+                        borderRadius: BorderRadius.circular(25),
+                        child: Container(
+                          width: screenSize.size.width / 5 * 4.2,
+                          height: screenSize.size.height / 10 * 0.8,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                    vertical:
+                                        MediaQuery.of(context).size.width /
+                                            10 *
+                                            0.1),
+                                margin: EdgeInsets.only(
+                                    right: MediaQuery.of(context).size.width /
+                                        10 *
+                                        0.2),
+                                child: Image(
+                                    width: MediaQuery.of(context).size.width /
+                                        5 *
+                                        0.5,
+                                    height: screenSize.size.width / 5 * 0.5,
+                                    fit: BoxFit.fitHeight,
+                                    image: AssetImage(
+                                        'assets/images/Pronote/PronoteIcon.png')),
+                              ),
+                              Text("Pronote",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontFamily: "Asap",
+                                      fontSize:
+                                          screenSize.size.height / 10 * 0.4,
+                                      color: Colors.white)),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Positioned(
+                bottom: screenSize.size.height / 10 * 0.4,
+                right: screenSize.size.width / 5 * 0.1,
+                child: RaisedButton(
+                  color: chosen != null ? Color(0xff5DADE2) : Color(0xffECECEC),
+                  shape: StadiumBorder(),
+                  onPressed: () async {
+                    await setChosenParser(chosen);
+                    await getChosenParser();
+                    Navigator.of(context).pushReplacement(router(LoginPage()));
+                  },
+                  child:
+                      const Text('Connexion', style: TextStyle(fontSize: 20)),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
 
 class LoginPage extends StatefulWidget {
   State<StatefulWidget> createState() {
@@ -23,11 +252,23 @@ class _LoginPageState extends State<LoginPage> {
   final _password = TextEditingController();
   bool _isFirstUse = true;
   String _obligationText = "";
-
+  Map _source = {ConnectivityResult.none: false};
+  MyConnectivity _connectivity = MyConnectivity.instance;
   @override
   initState() {
     //tryToConnect();
+    setChosenParser(0);
     getFirstUse();
+
+    _connectivity.initialise();
+
+    //If connected auto try to connect
+    _connectivity.myStream.listen((source) {
+      setState(() => _source = source);
+      if (_source.keys.toList()[0] != ConnectivityResult.none) {
+        tryToConnect();
+      }
+    });
   }
 
   getFirstUse() async {
@@ -39,7 +280,7 @@ class _LoginPageState extends State<LoginPage> {
     String u = await storage.read(key: "username");
     String p = await storage.read(key: "password");
     if (u != null && p != null) {
-      connectionData = connectionStatus(u, p);
+      connectionData = api.login(u, p);
       openLoadingDialog();
     }
   }
@@ -193,15 +434,18 @@ class _LoginPageState extends State<LoginPage> {
         });
   }
 
+  void dispose() {
+    _connectivity.disposeStream();
+  }
+
   Widget build(BuildContext context) {
     MediaQueryData screenSize;
     screenSize = MediaQuery.of(context);
 
 //BEGINNING OF THE STYLE OF THE WINDOW
     return Container(
-      color:Color(0xFF252B62) ,
-          child: SafeArea(
-        
+      color: Color(0xFF252B62),
+      child: SafeArea(
           child: Container(
               height: screenSize.size.height -
                   screenSize.padding.top -
@@ -300,8 +544,10 @@ class _LoginPageState extends State<LoginPage> {
                           child: Transform.rotate(
                               angle: 0,
                               child: Image(
-                                  image: AssetImage(
-                                      'assets/images/LogoYNotes.png'), width: screenSize.size.width / 5 * 0.7,)),
+                                image:
+                                    AssetImage('assets/images/LogoYNotes.png'),
+                                width: screenSize.size.width / 5 * 0.7,
+                              )),
                         ),
                         Align(
                           alignment: Alignment.centerLeft,
@@ -320,7 +566,8 @@ class _LoginPageState extends State<LoginPage> {
                                 children: [
                                   Container(
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: <Widget>[
@@ -330,9 +577,10 @@ class _LoginPageState extends State<LoginPage> {
                                             style: TextStyle(
                                                 fontFamily: 'Asap',
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: screenSize.size.width /
-                                                    5 *
-                                                    0.32,
+                                                fontSize:
+                                                    screenSize.size.width /
+                                                        5 *
+                                                        0.32,
                                                 color: Colors.black),
                                             textAlign: TextAlign.left,
                                           ),
@@ -343,9 +591,10 @@ class _LoginPageState extends State<LoginPage> {
                                             "Connectez vous à votre espace scolaire",
                                             style: TextStyle(
                                                 fontFamily: 'Asap',
-                                                fontSize: screenSize.size.width /
-                                                    5 *
-                                                    0.22,
+                                                fontSize:
+                                                    screenSize.size.width /
+                                                        5 *
+                                                        0.22,
                                                 color: Colors.black),
                                             textAlign: TextAlign.left,
                                           ),
@@ -360,7 +609,8 @@ class _LoginPageState extends State<LoginPage> {
                                       bottom: screenSize.size.height / 10 * 0.1,
                                     ),
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
                                       children: <Widget>[
                                         Text(
                                           "Identifiant",
@@ -442,15 +692,16 @@ class _LoginPageState extends State<LoginPage> {
                                   Align(
                                     alignment: Alignment.bottomRight,
                                     child: Container(
-                                        width: screenSize.size.width / 5 * 1.8,
+                                        width: screenSize.size.width / 5 * 4,
                                         height:
                                             screenSize.size.height / 10 * 0.55,
                                         margin: EdgeInsets.only(
                                             top: screenSize.size.height /
                                                 10 *
                                                 0.55,
-                                            right:
-                                                screenSize.size.width / 5 * 0.3),
+                                            right: screenSize.size.width /
+                                                5 *
+                                                0.25),
                                         child: GestureDetector(
                                           onTapDown: (details) {
                                             setState(() {
@@ -459,45 +710,70 @@ class _LoginPageState extends State<LoginPage> {
                                           },
                                           onTapCancel: () {
                                             setState(() {
-                                              textButtonColor = Color(0xff252B62);
+                                              textButtonColor =
+                                                  Color(0xff252B62);
                                             });
                                           },
-                                          child: OutlineButton(
-                                            color: Color(0xff252B62),
-                                            highlightColor: Color(0xff252B62),
-                                            focusColor: Color(0xff252B62),
-                                            borderSide: BorderSide(
-                                                color: Color(0xff252B62)),
-                                            shape: new RoundedRectangleBorder(
-                                                borderRadius:
-                                                    new BorderRadius.circular(
-                                                        30.0)),
-                                            highlightedBorderColor:
-                                                Color(0xff252B62),
-                                            onPressed: () {
-                                              //Actions when pressing the ok button
-                                              if (_username.text != "") {
-                                                connectionData = connectionStatus(
-                                                    _username.text,
-                                                    _password.text);
-                                                openLoadingDialog();
-                                              } else {
-                                                _obligationText =
-                                                    " (obligatoire)";
-                                                setState(() {});
-                                              }
-                                            },
-                                            child: Text(
-                                              "Allons-y",
-                                              style: TextStyle(
-                                                  fontFamily: "Asap",
-                                                  fontSize:
-                                                      screenSize.size.width /
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: <Widget>[
+                                              if ((_source.keys.toList()[0] ==
+                                                  ConnectivityResult.none))
+                                                Row(
+                                                  children: <Widget>[
+                                                    Text("Vous êtes hors ligne",
+                                                        style: TextStyle(
+                                                            color: Colors.red)),
+                                                  ],
+                                                ),
+                                              SizedBox(
+                                                width: screenSize.size.width /
+                                                    5 *
+                                                    0.2,
+                                              ),
+                                              OutlineButton(
+                                                color: Color(0xff252B62),
+                                                highlightColor:
+                                                    Color(0xff252B62),
+                                                focusColor: Color(0xff252B62),
+                                                borderSide: BorderSide(
+                                                    color: Color(0xff252B62)),
+                                                shape:
+                                                    new RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            new BorderRadius
+                                                                    .circular(
+                                                                30.0)),
+                                                highlightedBorderColor:
+                                                    Color(0xff252B62),
+                                                onPressed: () {
+                                                  //Actions when pressing the ok button
+                                                  if (_username.text != "") {
+                                                    connectionData = api.login(
+                                                        _username.text,
+                                                        _password.text);
+                                                    openLoadingDialog();
+                                                  } else {
+                                                    _obligationText =
+                                                        " (obligatoire)";
+                                                    setState(() {});
+                                                  }
+                                                },
+                                                child: Text(
+                                                  "Allons-y",
+                                                  style: TextStyle(
+                                                      fontFamily: "Asap",
+                                                      fontSize: screenSize
+                                                              .size.width /
                                                           5 *
                                                           0.3,
-                                                  fontWeight: FontWeight.bold,
-                                                  color: textButtonColor),
-                                            ),
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: textButtonColor),
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         )),
                                   ),

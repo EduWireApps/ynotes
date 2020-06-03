@@ -1,27 +1,32 @@
-import 'dart:convert';
+import 'dart:async';
 import 'dart:io';
-
-import 'package:alice/model/alice_http_call.dart';
-import 'package:intl/intl.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:open_file/open_file.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path/path.dart' as path;
 import 'package:tinycolor/tinycolor.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:ynotes/UI/loginPage.dart';
 import 'package:flutter/material.dart';
-import 'package:ynotes/landGrades.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart';
-import 'package:ynotes/main.dart';
+import 'package:ynotes/parsers/EcoleDirecte.dart';
+import 'dart:io' show Platform;
 
+import 'apiManager.dart';
+
+//L
 _launchURL(url) async {
   if (await canLaunch(url)) {
     await launch(url);
   } else {
-    throw 'Could not launch $url';
+    throw "L'adresse $url n'a pas pu être ouverte";
   }
 }
+
+//Parsers list
+List parsers = ["EcoleDirecte", "Pronote"];
+
+int chosenParser;
 
 bool isDarkModeEnabled = false;
 
@@ -44,14 +49,14 @@ class DownloadModel extends ChangeNotifier {
   get downloadProgress => _progress;
   get isDownloading => _isDownloading;
   Future<File> _getFile(String filename) async {
-    final dir = await getExternalStorageDirectory();
-    return File("${dir.path}/$filename");
+    final dir = await getDirectory();
+    return File("${dir.path}/downloads/$filename");
   }
 
 //check if file exists
   Future<bool> fileExists(filename) async {
-    final dir = await getExternalStorageDirectory();
-    return File("${dir.path}/$filename").exists();
+    final dir = await getDirectory();
+    return File("${dir.path}/downloads/$filename").exists();
   }
 
 //Download a file in the app directory
@@ -59,19 +64,16 @@ class DownloadModel extends ChangeNotifier {
     _isDownloading = true;
     _progress = null;
     notifyListeners();
-    var url =
-        'https://api.ecoledirecte.com/v3/telechargement.awp?verbe=get';
+    var url = 'https://api.ecoledirecte.com/v3/telechargement.awp?verbe=get';
 
     Map<String, String> headers = {"Content-type": "x"};
 
-    String body =
-        "leTypeDeFichier=$type&fichierId=$id&token=$token";
+    String body = "leTypeDeFichier=$type&fichierId=$id&token=$token";
     Request request = Request('POST', Uri.parse(url));
     request.body = body.toString();
 
     //Make a response client
-    final StreamedResponse response =
-        await Client().send(request);
+    final StreamedResponse response = await Client().send(request);
     final contentLength = response.contentLength;
     // final contentLength = double.parse(response.headers['x-decompressed-content-length']);
 
@@ -92,8 +94,16 @@ class DownloadModel extends ChangeNotifier {
       onDone: () async {
         _progress = 100;
         notifyListeners();
-        print(
-            "Téléchargement du fichier terminé : $filename");
+        print("Téléchargement du fichier terminé : $filename");
+        final dir = await getDirectory();
+        final Directory _appDocDirFolder = Directory('${dir.path}/downloads/');
+
+        if (!await _appDocDirFolder.exists()) {
+          //if folder already exists return path
+          final Directory _appDocDirNewFolder =
+              await _appDocDirFolder.create(recursive: true);
+        } //if folder not exists create folder and then return its path
+
         await file.writeAsBytes(bytes);
       },
       onError: (e) {
@@ -106,29 +116,39 @@ class DownloadModel extends ChangeNotifier {
 
 Route router(Widget widget) {
   return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) =>
-        widget,
-    transitionsBuilder:
-        (context, animation, secondaryAnimation, child) {
+    pageBuilder: (context, animation, secondaryAnimation) => widget,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
       var begin = Offset(1.0, 0.0);
       var end = Offset.zero;
       var curve = Curves.ease;
 
-      var tween = Tween(begin: begin, end: end)
-          .chain(CurveTween(curve: curve));
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
 
       return SlideTransition(
         position: animation.drive(tween),
-        child: child,
+        child: Material(child: child),
       );
     },
   );
 }
 
+getDirectory() async {
+  if (Platform.isAndroid) {
+    final dir = await getExternalStorageDirectory();
+    return dir;
+  }
+  if (Platform.isIOS) {
+    final dir = await getApplicationDocumentsDirectory();
+    return dir;
+  } else {
+    ///DO NOTHING
+  }
+}
+
 //Open a file
 Future<void> openFile(filename) async {
-  final dir = await getExternalStorageDirectory();
-  final filePath = '${dir.path}/$filename';
+  final dir = await getDirectory();
+  final filePath = '${dir.path}/downloads/$filename';
   await OpenFile.open(filePath);
 }
 
@@ -162,6 +182,7 @@ Color GetColorFor(String element) {
   }
 }
 
+List<homework> localHomeworkList;
 ThemeData darkTheme = ThemeData(
     backgroundColor: Color(0xff1F1E1E),
     primaryColor: Color(0xff2C2C2C),
@@ -175,6 +196,7 @@ ThemeData lightTheme = ThemeData(
     primaryColorDark: Color(0xffDCDCDC),
     indicatorColor: Color(0xffDCDCDC),
     tabBarTheme: TabBarTheme(labelColor: Colors.black));
+
 Future<bool> getSetting(String setting) async {
   final prefs = await SharedPreferences.getInstance();
   bool value = prefs.getBool(setting);
@@ -188,6 +210,21 @@ Future<bool> getSetting(String setting) async {
 setSetting(String setting, bool value) async {
   final prefs = await SharedPreferences.getInstance();
   prefs.setBool(setting, value);
+}
+
+Future<int> getIntSetting(String setting) async {
+  final prefs = await SharedPreferences.getInstance();
+  int value = prefs.getInt(setting);
+  if (value == null) {
+    setIntSetting(setting, 0);
+    value = 0;
+  }
+  return value;
+}
+
+setIntSetting(String setting, int value) async {
+  final prefs = await SharedPreferences.getInstance();
+  prefs.setInt(setting, value);
 }
 
 ///Make the selected color darker
@@ -212,15 +249,13 @@ Color darken(Color color, {double forceAmount}) {
   assert(amount >= 0 && amount <= 1);
 
   final hsl = HSLColor.fromColor(color);
-  final hslDark = hsl.withLightness(
-      (hsl.lightness - amount).clamp(0.0, 1.0));
+  final hslDark = hsl.withLightness((hsl.lightness - amount).clamp(0.0, 1.0));
 
   return hslDark.toColor();
 }
 
 class AppUtil {
-  static Future<String> getFileNameWithExtension(
-      File file) async {
+  static Future<String> getFileNameWithExtension(File file) async {
     if (await file.exists()) {
       return path.basename(file.path);
     } else {
@@ -228,8 +263,7 @@ class AppUtil {
     }
   }
 
-  static Future<DateTime> getLastModifiedDate(
-      File file) async {
+  static Future<DateTime> getLastModifiedDate(File file) async {
     if (await file.exists()) {
       return await file.lastModified();
     } else {
@@ -255,22 +289,101 @@ class FileInfo {
 }
 
 Future<List<FileInfo>> getListOfFiles() async {
-  String directory;
-  List file = new List();
-  directory = (await getExternalStorageDirectory()).path;
+  try {
+    String directory;
+    List file = new List();
+    directory = (await getDirectory()).path;
 
-  file = Directory("$directory")
-      .listSync(); //use your folder name insted of resume.
-  List<FileInfo> listFiles = List<FileInfo>();
-  await Future.forEach(file, (element) async {
-    listFiles.add(new FileInfo(
-        element,
-        await AppUtil.getLastModifiedDate(element),
-        await AppUtil.getFileNameWithExtension(element)));
-    listFiles.sort((a, b) =>
-        a.lastModifiedDate.compareTo(b.lastModifiedDate));
-  });
+    file = Directory("$directory/downloads")
+        .listSync(); //use your folder name insted of resume.
+    List<FileInfo> listFiles = List<FileInfo>();
 
-  listFiles = listFiles.reversed.toList();
-  return listFiles;
+    await Future.forEach(file, (element) async {
+      try {
+        listFiles.add(new FileInfo(
+            element,
+            await AppUtil.getLastModifiedDate(element),
+            await AppUtil.getFileNameWithExtension(element)));
+        listFiles
+            .sort((a, b) => a.lastModifiedDate.compareTo(b.lastModifiedDate));
+      } catch (e) {
+        print(e);
+      }
+    });
+
+    listFiles = listFiles.reversed.toList();
+    return listFiles;
+  } catch (e) {
+    List<FileInfo> listFiles = List<FileInfo>();
+    return listFiles;
+  }
 }
+
+//Used in the app page
+class App {
+  final String name;
+  final IconData icon;
+  final String route;
+
+  App(this.name, this.icon, {this.route});
+}
+
+//Connectivity  classs
+
+class MyConnectivity {
+  MyConnectivity._internal();
+
+  static final MyConnectivity _instance = MyConnectivity._internal();
+
+  static MyConnectivity get instance => _instance;
+
+  Connectivity connectivity = Connectivity();
+
+  StreamController controller = StreamController.broadcast();
+
+  Stream get myStream => controller.stream;
+
+  void initialise() async {
+    ConnectivityResult result = await connectivity.checkConnectivity();
+    _checkStatus(result);
+    connectivity.onConnectivityChanged.listen((result) {
+      _checkStatus(result);
+    });
+  }
+
+  void _checkStatus(ConnectivityResult result) async {
+    bool isOnline = false;
+    try {
+      final result = await InternetAddress.lookup('example.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        isOnline = true;
+      } else
+        isOnline = false;
+    } on SocketException catch (_) {
+      isOnline = false;
+    }
+    controller.sink.add({result: isOnline});
+  }
+
+  void disposeStream() => controller.close();
+}
+
+//Get only grades as a list
+List<grade> getAllGrades(List<discipline> list, {bool overrideLimit = false}) {
+  List<grade> listToReturn = List<grade>();
+  list.forEach((element) {
+    listToReturn.addAll(element.gradesList);
+  });
+  listToReturn.sort((a, b) => a.dateSaisie.compareTo(b.dateSaisie));
+  listToReturn = listToReturn.reversed.toList();
+
+  if (overrideLimit == false) {
+    listToReturn = listToReturn.sublist(
+        0, (listToReturn.length >= 5) ? 5 : listToReturn.length);
+  }
+
+  return listToReturn;
+}
+
+//Indicate if the app has to reopen on grade page
+bool haveToReopenOnGradePage = false;

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 import '../usefulMethods.dart';
+import 'apps/cloud.dart';
 
 class AppsPage extends StatefulWidget {
   State<StatefulWidget> createState() {
@@ -16,25 +17,61 @@ class _AppsPageState extends State<AppsPage> {
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
     return Container(
-      child: Column(
+        child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+             theme: lightTheme, 
+          darkTheme: darkTheme, 
+            themeMode: isDarkModeEnabled ? ThemeMode.dark : ThemeMode.light,
+            initialRoute: '/homePage',
+            routes: {
+          '/homePage': (context) => Material(child: HomePage()),
+          '/cloud': (context) => Material(child: CloudPage()),
+        }));
+  }
+}
+
+class HomePage extends StatefulWidget {
+  State<StatefulWidget> createState() {
+    return _HomePageState();
+  }
+}
+
+class _HomePageState extends State<HomePage> {
+  //Easily add apps to ecole directe (for now hardcoded)
+  List<App> listAppsEcoleDirecte = [
+    App("Messagerie", MdiIcons.mail),
+    App("Cloud", Icons.cloud, route: "cloud")
+  ];
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    MediaQueryData screenSize = MediaQuery.of(context);
+    return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
+      body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           Text(
             "Accédez à vos applications",
             style: TextStyle(
                 fontFamily: "Asap",
-                color :isDarkModeEnabled? Colors.white : Colors.black,
+                color: isDarkModeEnabled ? Colors.white : Colors.black,
                 fontSize: screenSize.size.height / 10 * 0.4,
                 fontWeight: FontWeight.w200),
             textAlign: TextAlign.center,
           ),
-          SizedBox(height:  screenSize.size.height / 10 * 0.4,),
+          SizedBox(
+            height: screenSize.size.height / 10 * 0.4,
+          ),
           Wrap(
-            
-            children: <Widget>[
-              Container(
-                 margin: EdgeInsets.all(
-                                  screenSize.size.width / 5 * 0.1),
+            children: List.generate(listAppsEcoleDirecte.length, (index) {
+              return Container(
+                margin: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
                 child: Column(
                   children: <Widget>[
                     Material(
@@ -42,55 +79,38 @@ class _AppsPageState extends State<AppsPage> {
                         borderRadius: BorderRadius.circular(21),
                         child: InkWell(
                             borderRadius: BorderRadius.circular(21),
-                            onTap: () {},
+                            onTap: () {
+                              if(listAppsEcoleDirecte[index].route!=null)
+                              {
+                                 Navigator.pushNamed(context, '/${listAppsEcoleDirecte[index].route}');
+                              }
+                            },
                             child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(21)),
-                               
-                                width: screenSize.size.width / 3,
-                                height: screenSize.size.width / 3,
-                                child: Center(child: Icon(MdiIcons.mail, size: screenSize.size.width / 6, color: isDarkModeEnabled? Colors.white : Colors.black,),),
-                                ))),
-                    //label
-                    Text(
-                      "Messagerie",
-                      style: TextStyle(fontFamily: "Asap", color :isDarkModeEnabled? Colors.white : Colors.black ),
-                    )
-                  ],
-                ),
-              ),
-              Container(
-                  margin: EdgeInsets.all(
-                                  screenSize.size.width / 5 * 0.1),
-                child: Column(
-                  children: <Widget>[
-                    Material(
-                        color: Theme.of(context).primaryColorDark,
-                        borderRadius: BorderRadius.circular(21),
-                        child: InkWell(
-                            borderRadius: BorderRadius.circular(21),
-                            onTap: () {},
-                            child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(21)),
-                              
-                                width: screenSize.size.width / 3,
-                                height: screenSize.size.width / 3,
-                                child: Center(child: Icon(Icons.cloud, size: screenSize.size.width / 6, color: isDarkModeEnabled? Colors.white : Colors.black,),),
-                                )
-                              
-                                )
-                              
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(21)),
+                              width: screenSize.size.width / 3,
+                              height: screenSize.size.width / 3,
+                              child: Center(
+                                child: Icon(
+                                  listAppsEcoleDirecte[index].icon,
+                                  size: screenSize.size.width / 6,
+                                  color: isDarkModeEnabled
+                                      ? Colors.white
+                                      : Colors.black,
                                 ),
+                              ),
+                            ))),
                     //label
                     Text(
-                      "Cloud",
-                      style: TextStyle(fontFamily: "Asap", color :isDarkModeEnabled? Colors.white : Colors.black),
+                      listAppsEcoleDirecte[index].name,
+                      style: TextStyle(
+                          fontFamily: "Asap",
+                          color: isDarkModeEnabled ? Colors.white : Colors.black),
                     )
                   ],
                 ),
-              ),
-            ],
+              );
+            }),
           ),
         ],
       ),
