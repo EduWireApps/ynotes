@@ -19,7 +19,9 @@ putGrades(String string) async {
   var gradesBox = await Hive.openBox('grades');
   await gradesBox.clear();
   await gradesBox.put(now, string);
-  await gradesBox.close();
+  try {
+    await gradesBox.close();
+  } catch (e) {}
 }
 
 //To get grades in db
@@ -44,20 +46,23 @@ getGradesFromDB() async {
       try {
         print("Returned grades from offline");
         String jsonString = gradesBoxMap.values.toList()[0];
-        await gradesBox.close();
+        try {
+          await gradesBox.close();
+        } catch (e) {}
         return json.decode(jsonString);
       } catch (e) {
         print("Failed to decode grades offline data");
         return null;
       }
     } else {
-      await gradesBox.close();
+      try {
+        await gradesBox.close();
+      } catch (e) {}
       print(
           "Offline grades data is too old of ${difference.inHours - 3} hours.");
       return null;
     }
   } catch (e) {
-    
     print("Getting grades from offline returned null : $e");
     return null;
   }
@@ -82,7 +87,10 @@ putHomework(List<homework> listHW) async {
     var gradesBox = await Hive.openBox('homework');
     await gradesBox.clear();
     await gradesBox.put(now, listHW);
-     await gradesBox.close();
+    try {
+      await gradesBox.close();
+    } catch (e) {}
+
     print("The offline homework save succeeded.");
   } catch (e) {
     print("Failed to save homework offline : $e");
@@ -119,10 +127,16 @@ getHomeworkFromDB({bool online = true}) async {
       try {
         print("Returned homework from offline");
         List<homework> listToReturn = homeworkBox.getAt(0).cast<homework>();
-        await homeworkBox.close();
+
+        try {
+          await homeworkBox.close();
+        } catch (e) {}
+
         return listToReturn;
       } catch (e) {
-         await homeworkBox.close();
+        try {
+          await homeworkBox.close();
+        } catch (e) {}
         print("Failed to decode homework offline data $e");
         return null;
       }
@@ -130,17 +144,23 @@ getHomeworkFromDB({bool online = true}) async {
       if (online == true) {
         print(
             "Offline homework data is too old of ${difference.inHours - 3} hours.");
-            await homeworkBox.close();
+        try {
+          await homeworkBox.close();
+        } catch (e) {}
         return null;
       } else {
         try {
           //Force the cast
           List<homework> listToReturn = homeworkBox.getAt(0).cast<homework>();
-          await homeworkBox.close();
+          try {
+            await homeworkBox.close();
+          } catch (e) {}
           return listToReturn;
         } catch (e) {
           print("Failed to decode homework offline data $e");
-          await homeworkBox.close();
+          try {
+            await homeworkBox.close();
+          } catch (e) {}
           return null;
         }
       }
@@ -149,7 +169,6 @@ getHomeworkFromDB({bool online = true}) async {
     print("Getting homework from offline returned null : $e");
 
     return null;
-    
   }
 }
 
@@ -160,7 +179,9 @@ setHomeworkCompletion(String id, bool done) async {
     Hive.init("${dir.path}/offline");
     var homeworkDoneBox = await Hive.openBox('doneHomework');
     homeworkDoneBox.put(id.toString(), done);
-    await homeworkDoneBox.close();
+    try {
+      await homeworkDoneBox.close();
+    } catch (e) {}
   } catch (e) {
     print("Error during the setHomeworkDoneProcess $e");
   }
@@ -174,7 +195,9 @@ Future<bool> getHomeworkCompletion(String id) async {
     var homeworkDoneBox = await Hive.openBox('doneHomework');
 
     bool toReturn = homeworkDoneBox.get(id.toString());
-await homeworkDoneBox.close();
+    try {
+      await homeworkDoneBox.close();
+    } catch (e) {}
     //If to return is null return false
     return (toReturn != null) ? toReturn : false;
   } catch (e) {
