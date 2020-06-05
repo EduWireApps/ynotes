@@ -59,7 +59,7 @@ List<String> CoolcolorList = [
 ];
 
 //The ecole directe api extended from the apiManager.dart API class
-class APIEcoleDirecte extends API {
+class APIEcoleDirecte extends API with EcoleDirecteMail{
   @override
 //Get connection message and store token
   Future<String> login(username, password) async {
@@ -340,6 +340,10 @@ class APIEcoleDirecte extends API {
     }
   }
 
+Future<List<mail>> getMails(String category)
+{
+
+}
   ///END OF THE API CLASS
 }
 

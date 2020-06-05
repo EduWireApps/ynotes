@@ -14,6 +14,7 @@ import 'package:ynotes/background.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/background.dart';
 import 'package:ynotes/UI/homeworkPage.dart';
+import 'package:ynotes/parsers/EcoleDirecte.dart';
 import '../usefulMethods.dart';
 import 'appsPage.dart';
 import 'package:flutter_offline/flutter_offline.dart';
@@ -38,8 +39,9 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
   //Boolean
   bool isChanging = false;
   int actualIndex = 1;
-  //Tap animation when "space button" is long pressed
+  
   API api = APIManager();
+  API apiecoledirecte = APIEcoleDirecte();
   bool firstStart = true;
   AnimationController quickMenuAnimationController;
 
@@ -55,7 +57,6 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
     );
     quickMenuAnimationController =
         AnimationController(vsync: this, duration: Duration(seconds: 1));
-
     //Define a controller in order to control the scrolls
     tabController = TabController(
         vsync: this,

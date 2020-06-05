@@ -215,6 +215,30 @@ class discipline {
   }
 }
 
+class mail {
+
+  //E.G: "69627"
+  final String id;
+  //E.G : "archived"/"sent"/"received"
+  final String mtype;
+  final bool read;
+  //E.G : 183 ==> To class mails in folders
+  final String idClasseur;
+  final Map<String, dynamic> from;
+  final List to;
+  //E.G : "Coronavirus school prank"
+  final String subject;
+  final String date;
+
+  mail(this.id, this.mtype, this.read, this.idClasseur, this.from, this.to, this.subject, this.date);
+
+
+
+
+
+}
+
+
 abstract class API {
 //Connect to the API
 //Should return a connection status
@@ -234,7 +258,17 @@ abstract class API {
 
   //Test to know if there are new grades
   Future<bool> testNewGrades();
+  
+
+
 }
+abstract class EcoleDirecteMail {
+  //returns mails list
+  Future<List<mail>> getMails(String category);
+
+   
+}
+
 
 //Return the good API (will be extended to Pronote)
 APIManager() {
@@ -243,6 +277,7 @@ APIManager() {
   switch (chosenParser) {
     case 0:
       return APIEcoleDirecte();
+      
     case 1:
       return APIEcoleDirecte();
   }

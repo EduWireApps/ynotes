@@ -14,11 +14,12 @@ putGrades(String string) async {
   final dir = await getDirectory();
   await Hive.init("${dir.path}/offline");
   //Format the actual date
-  var now = DateFormat("yyyy-MM-dd H:mm").format(DateTime.now()).toString();
+  var now = DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now()).toString();
 
   var gradesBox = await Hive.openBox('grades');
   await gradesBox.clear();
   await gradesBox.put(now, string);
+  await gradesBox.close();
 }
 
 //To get grades in db
@@ -28,7 +29,8 @@ getGradesFromDB() async {
     await Hive.init("${dir.path}/offline");
     var gradesBox = await Hive.openBox('grades');
 
-    DateTime now = DateTime.now();
+    DateTime now =
+        DateTime.parse(DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now()));
     //The date of the offline grades file
     Map<dynamic, dynamic> gradesBoxMap = await gradesBox.toMap();
     String dateOfflineString = gradesBoxMap.keys.toList()[0];
@@ -40,18 +42,22 @@ getGradesFromDB() async {
     if (difference.inHours < 3) {
       Map<dynamic, dynamic> mapToReturn;
       try {
+        print("Returned grades from offline");
         String jsonString = gradesBoxMap.values.toList()[0];
+        await gradesBox.close();
         return json.decode(jsonString);
       } catch (e) {
         print("Failed to decode grades offline data");
         return null;
       }
     } else {
+      await gradesBox.close();
       print(
           "Offline grades data is too old of ${difference.inHours - 3} hours.");
       return null;
     }
   } catch (e) {
+    
     print("Getting grades from offline returned null : $e");
     return null;
   }
@@ -76,6 +82,7 @@ putHomework(List<homework> listHW) async {
     var gradesBox = await Hive.openBox('homework');
     await gradesBox.clear();
     await gradesBox.put(now, listHW);
+     await gradesBox.close();
     print("The offline homework save succeeded.");
   } catch (e) {
     print("Failed to save homework offline : $e");
@@ -112,8 +119,10 @@ getHomeworkFromDB({bool online = true}) async {
       try {
         print("Returned homework from offline");
         List<homework> listToReturn = homeworkBox.getAt(0).cast<homework>();
+        await homeworkBox.close();
         return listToReturn;
       } catch (e) {
+         await homeworkBox.close();
         print("Failed to decode homework offline data $e");
         return null;
       }
@@ -121,23 +130,29 @@ getHomeworkFromDB({bool online = true}) async {
       if (online == true) {
         print(
             "Offline homework data is too old of ${difference.inHours - 3} hours.");
+            await homeworkBox.close();
         return null;
       } else {
         try {
           //Force the cast
           List<homework> listToReturn = homeworkBox.getAt(0).cast<homework>();
+          await homeworkBox.close();
           return listToReturn;
         } catch (e) {
           print("Failed to decode homework offline data $e");
+          await homeworkBox.close();
           return null;
         }
       }
     }
   } catch (e) {
     print("Getting homework from offline returned null : $e");
+
     return null;
+    
   }
 }
+
 //Set the homework completion (done or not)
 setHomeworkCompletion(String id, bool done) async {
   try {
@@ -145,6 +160,7 @@ setHomeworkCompletion(String id, bool done) async {
     Hive.init("${dir.path}/offline");
     var homeworkDoneBox = await Hive.openBox('doneHomework');
     homeworkDoneBox.put(id.toString(), done);
+    await homeworkDoneBox.close();
   } catch (e) {
     print("Error during the setHomeworkDoneProcess $e");
   }
@@ -156,17 +172,14 @@ Future<bool> getHomeworkCompletion(String id) async {
     final dir = await getDirectory();
     Hive.init("${dir.path}/offline");
     var homeworkDoneBox = await Hive.openBox('doneHomework');
-    
-   bool toReturn =  homeworkDoneBox.get(id.toString());
 
-
-   //If to return is null return false
-  return (toReturn!=null)?toReturn:false;
-
+    bool toReturn = homeworkDoneBox.get(id.toString());
+await homeworkDoneBox.close();
+    //If to return is null return false
+    return (toReturn != null) ? toReturn : false;
   } catch (e) {
     print("Error during the getHomeworkDoneProcess $e");
 
     return null;
   }
 }
-
