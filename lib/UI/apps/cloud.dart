@@ -19,12 +19,26 @@ class _CloudPageState extends State<CloudPage> {
     return Container(
       width: screenSize.size.width,
       height: screenSize.size.height,
-      child: Center(child: ListView.builder(itemBuilder: (context,index)
-      {
-
-      })),
+      child: Center(child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text("Espaces de stockages en ligne disponibles :", style: TextStyle(fontFamily: "Asap", fontSize: 15),),
+          Container(
+            margin: EdgeInsets.symmetric(vertical:screenSize.size.height/10*0.3, horizontal:screenSize.size.height/5*0.1 ),
+            height: screenSize.size.height/10*7,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(15),
+                          child: ListView.builder(
+                 itemCount: 5
+                ,itemBuilder: (context,index)
+              {
+             
+              }),
+            ),
+          ),
+        ],
+      )),
     );
   }
 }
 
-//List of apps with "Name of app", icon, route

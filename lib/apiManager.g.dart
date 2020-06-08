@@ -29,13 +29,14 @@ class homeworkAdapter extends TypeAdapter<homework> {
       fields[9] as bool,
       (fields[10] as List)?.cast<document>(),
       (fields[11] as List)?.cast<document>(),
+      fields[12] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, homework obj) {
     writer
-      ..writeByte(12)
+      ..writeByte(13)
       ..writeByte(0)
       ..write(obj.matiere)
       ..writeByte(1)
@@ -59,7 +60,9 @@ class homeworkAdapter extends TypeAdapter<homework> {
       ..writeByte(10)
       ..write(obj.documents)
       ..writeByte(11)
-      ..write(obj.documentsContenuDeSeance);
+      ..write(obj.documentsContenuDeSeance)
+      ..writeByte(12)
+      ..write(obj.nomProf);
   }
 }
 

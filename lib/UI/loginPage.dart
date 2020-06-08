@@ -19,9 +19,6 @@ Animation<double> chosenAnimation2;
 AnimationController chosenAnimation1Controller;
 AnimationController chosenAnimation2Controller;
 
-bool isConnectedToInternet;
-//Deal with connection lost
-
 class ServiceChoice extends StatefulWidget {
   State<StatefulWidget> createState() {
     return _ServiceChoiceState();
@@ -50,17 +47,6 @@ class _ServiceChoiceState extends State<ServiceChoice>
       end: 1.1,
     ).animate(new CurvedAnimation(
         parent: chosenAnimation2Controller, curve: Curves.easeInOutQuint));
-  }
-
-  Future<void> _updateConnectionStatus(ConnectivityResult result) async {
-    switch (result) {
-      case ConnectivityResult.none:
-        print("not connected");
-        break;
-      default:
-        print("connected");
-        break;
-    }
   }
 
   @override
@@ -252,23 +238,31 @@ class _LoginPageState extends State<LoginPage> {
   final _password = TextEditingController();
   bool _isFirstUse = true;
   String _obligationText = "";
-  Map _source = {ConnectivityResult.none: false};
-  MyConnectivity _connectivity = MyConnectivity.instance;
+  StreamSubscription loginconnexion;
+
+  bool isOffline = false;
+
+
+  API apiLogin;
   @override
   initState() {
-    //tryToConnect();
-    setChosenParser(0);
+    super.initState();
+
+    tryToConnect();
+
     getFirstUse();
+    ConnectionStatusSingleton connectionStatus =
+        ConnectionStatusSingleton.getInstance();
+    loginconnexion =
+        connectionStatus.connectionChange.listen(connectionChanged);
+  }
 
-    _connectivity.initialise();
-
-    //If connected auto try to connect
-    _connectivity.myStream.listen((source) {
-      setState(() => _source = source);
-      if (_source.keys.toList()[0] != ConnectivityResult.none) {
-        tryToConnect();
-      }
+  void connectionChanged(dynamic hasConnection) {
+    print("connected");
+    setState(() {
+      isOffline = !hasConnection;
     });
+    tryToConnect();
   }
 
   getFirstUse() async {
@@ -277,10 +271,13 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   tryToConnect() async {
+    await setChosenParser(0);
+    getChosenParser();
+    apiLogin= APIManager();
     String u = await storage.read(key: "username");
     String p = await storage.read(key: "password");
     if (u != null && p != null) {
-      connectionData = api.login(u, p);
+      connectionData = apiLogin.login(u, p);
       openLoadingDialog();
     }
   }
@@ -379,7 +376,8 @@ class _LoginPageState extends State<LoginPage> {
                     FutureBuilder(
                       future: connectionData,
                       builder: (context, snapshot) {
-                        if (snapshot.hasData) {
+                        if (snapshot.hasData &&
+                            snapshot.data.toString().contains("Bienvenue")) {
                           Future.delayed(const Duration(milliseconds: 500), () {
                             Navigator.pop(context);
                             if (_isFirstUse == true) {
@@ -402,7 +400,8 @@ class _LoginPageState extends State<LoginPage> {
                               )
                             ],
                           );
-                        } else if (snapshot.hasError) {
+                        } else if (snapshot.hasData &&
+                            !snapshot.data.toString().contains("Bienvenue")) {
                           return Column(
                             children: <Widget>[
                               Icon(
@@ -411,7 +410,7 @@ class _LoginPageState extends State<LoginPage> {
                                 color: Colors.redAccent,
                               ),
                               Text(
-                                snapshot.error.toString(),
+                                snapshot.data.toString(),
                                 textAlign: TextAlign.center,
                               )
                             ],
@@ -434,9 +433,7 @@ class _LoginPageState extends State<LoginPage> {
         });
   }
 
-  void dispose() {
-    _connectivity.disposeStream();
-  }
+  void dispose() {}
 
   Widget build(BuildContext context) {
     MediaQueryData screenSize;
@@ -718,8 +715,7 @@ class _LoginPageState extends State<LoginPage> {
                                             mainAxisAlignment:
                                                 MainAxisAlignment.end,
                                             children: <Widget>[
-                                              if ((_source.keys.toList()[0] ==
-                                                  ConnectivityResult.none))
+                                              if (isOffline)
                                                 Row(
                                                   children: <Widget>[
                                                     Text("Vous êtes hors ligne",
@@ -747,12 +743,18 @@ class _LoginPageState extends State<LoginPage> {
                                                                 30.0)),
                                                 highlightedBorderColor:
                                                     Color(0xff252B62),
-                                                onPressed: () {
+                                                onPressed: () async {
+                                                  await setChosenParser(1);
+                                                  getChosenParser();
+                                                  apiLogin = APIManager();
                                                   //Actions when pressing the ok button
                                                   if (_username.text != "") {
-                                                    connectionData = api.login(
-                                                        _username.text,
-                                                        _password.text);
+                                                    connectionData =
+                                                        apiLogin.login(
+                                                            _username.text
+                                                                .trim(),
+                                                            _password.text
+                                                                .trim());
                                                     openLoadingDialog();
                                                   } else {
                                                     _obligationText =

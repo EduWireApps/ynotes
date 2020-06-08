@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
@@ -29,7 +31,6 @@ class TabBuilder extends StatefulWidget {
   TabBuilder({Key key}) : super(key: key);
 }
 
-
 int _currentIndex = 0;
 bool isQuickMenuShown = false;
 
@@ -39,12 +40,15 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
   //Boolean
   bool isChanging = false;
   int actualIndex = 1;
-  
+
   API api = APIManager();
   API apiecoledirecte = APIEcoleDirecte();
   bool firstStart = true;
   AnimationController quickMenuAnimationController;
+  Animation<double> quickMenuButtonAnimation;
+StreamSubscription tabBarconnexion;
 
+    bool isOffline = false;
   OverlayState overlayState;
   OverlayEntry _overlayEntry;
 
@@ -54,15 +58,22 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
     initPlatformState();
     _overlayEntry = OverlayEntry(
       builder: (BuildContext context) => QuickMenu(removeQuickMenu),
+
+      
     );
-    quickMenuAnimationController =
-        AnimationController(vsync: this, duration: Duration(seconds: 1));
+ 
     //Define a controller in order to control the scrolls
     tabController = TabController(
         vsync: this,
         length: 5,
         initialIndex: (haveToReopenOnGradePage) ? 2 : 1);
-    
+    quickMenuAnimationController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 200));
+    quickMenuButtonAnimation = new Tween(
+      begin: 1.0,
+      end: 1.3,
+    ).animate(new CurvedAnimation(
+        parent: quickMenuAnimationController, curve: Curves.easeIn, reverseCurve: Curves.easeOut));
     tabController.addListener(_handleTabChange);
     if (firstStart == true) {
       //Get grades before
@@ -72,6 +83,8 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
       firstStart = false;
     }
     removeQuickMenu();
+       ConnectionStatusSingleton connectionStatus = ConnectionStatusSingleton.getInstance();
+        tabBarconnexion = connectionStatus.connectionChange.listen(connectionChanged);
   }
 
   void removeQuickMenu() {
@@ -84,14 +97,16 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
       });
     }
   }
-
+  void connectionChanged(dynamic hasConnection) {
+    print("connected");
+        setState(() {
+            isOffline = !hasConnection;
+        });
+    }
   //On tab change
   void _handleTabChange() {
-
-    if(tabController.index!=2)
-    {
-      
-       initialIndexGradesOffset=0;
+    if (tabController.index != 2) {
+      initialIndexGradesOffset = 0;
     }
     setState(() {
       actualIndex = tabController.index;
@@ -187,7 +202,12 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
 
                                               removeQuickMenu();
                                             },
-                                            onLongPress: () {
+                                            onVerticalDragStart: (details) {
+                                              quickMenuAnimationController.forward().then((value) {
+                                                 quickMenuAnimationController.reverse();
+                                              });
+                                     
+                                              
                                               setState(() {
                                                 isQuickMenuShown = false;
                                               });
@@ -204,6 +224,8 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
                                                 });
                                               }
                                             },
+                                         
+                                            onLongPress: () {},
                                             child: Tab(
                                               child: AnimatedContainer(
                                                 margin: EdgeInsets.symmetric(
@@ -231,16 +253,25 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
                                                         MainAxisAlignment
                                                             .spaceEvenly,
                                                     children: <Widget>[
-                                                      Image(
-                                                        image: AssetImage(
-                                                            'assets/images/space/4.0x/space.png'),
-                                                        width: MediaQuery.of(
-                                                                    context)
-                                                                .size
-                                                                .width /
-                                                            10 *
-                                                            0.7,
-                                                      ),
+                                                      AnimatedBuilder(
+                                                          animation:
+                                                              quickMenuButtonAnimation,
+                                                          builder: (context,
+                                                              snapshot) {
+                                                            return Transform.scale(
+                                                              scale: quickMenuButtonAnimation.value,
+                                                                                                                          child: Image(
+                                                                                                                            image: AssetImage(
+                                                                                                                                'assets/images/space/4.0x/space.png'),
+                                                                                                                            width: MediaQuery.of(
+                                                                                                                                        context)
+                                                                                                                                    .size
+                                                                                                                                    .width /
+                                                                                                                                10 *
+                                                                                                                                0.7,
+                                                                                                                          ),
+                                                            );
+                                                          }),
                                                       if (actualIndex == 0)
                                                         Flexible(
                                                           child: FittedBox(
@@ -516,6 +547,29 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
                 child: Container(
                   child: Stack(
                     children: <Widget>[
+                      Stack(
+            fit: StackFit.expand,
+            children: [
+              Positioned(
+                
+                left: 0.0,
+                right: 0.0,
+                child: AnimatedContainer(
+                  height:isOffline? screenSize.size.height/10*0.4:0,
+                  curve: Interval(0.3, 1.0, curve: Curves.fastOutSlowIn),
+                  duration: Duration(milliseconds: 800),
+             
+                  child: Container(
+                         color: !isOffline ? Colors.greenAccent: Colors.deepOrange,
+                    child: Center(
+                      child: Text("${!isOffline ? 'Vous avez été reconnecté' : 'Vous êtes hors-ligne'}"),
+                    ),
+                  ),
+                ),
+              ),
+            ]
+                      ),
+                      
                       NotificationListener(
                         onNotification: (scrollNotification) {
                           if (scrollNotification is ScrollUpdateNotification) {
@@ -599,7 +653,7 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
       flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
       flutterLocalNotificationsPlugin.initialize(initializationSettings,
           onSelectNotification: BackgroundServices.onSelectNotification);
-      if (await testForNewGrades()) {
+      if ((await testForNewGrades()!=null)&&await testForNewGrades()) {
         BackgroundServices.showNotification();
         disciplinesListFuture = api.getGrades();
       } else {

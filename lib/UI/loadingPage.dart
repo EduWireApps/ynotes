@@ -1,3 +1,4 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:flare_flutter/flare_actor.dart';
 import 'package:flare_loading/flare_loading.dart';
 import 'package:flutter/material.dart';
@@ -64,50 +65,32 @@ class _LoadingPageState extends State<LoadingPage> {
           onSuccess: (test) {
             Navigator.of(context).pushReplacement(router(homePage()));
           },
-          onError: (__, _) {
-            Navigator.of(context).pushReplacement(router(login()));
+          onError: (__, _) async {
+            var connectivityResult = await (Connectivity().checkConnectivity());
+            // If offline
+            if (connectivityResult == ConnectivityResult.none) {
+              if (await testIfExistingAccount()) {
+                print("Starting app offline");
+                Navigator.of(context).pushReplacement(router(homePage()));
+              } else {
+                Navigator.of(context).pushReplacement(router(login()));
+              }
+            } else {
+              Navigator.of(context).pushReplacement(router(login()));
+            }
           },
-        )
-
-            /* FutureBuilder(
-                future: tryToConnect(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                   return homePage();
-                   
-                  }
-                  if (snapshot.hasError) {
-                  return login();
-                  } else {
-                    print("waiting");
-                    return Container(
-                      color: Colors.white,
-                      height: screenSize.size.height / 10 * 4,
-                      width: screenSize.size.width,
-                      child: Column(
-                        children: <Widget>[
-                          Container(
-                            height: screenSize.size.height / 10 * 3,
-                            width: screenSize.size.width,
-                            child: FlareActor(
-                              "assets/animations/ynotes.flr",
-                              animation: "Ended",
-                            ),
-                          ),
-                          FadeAnimation(
-                            1.1,
-                            CircularProgressIndicator(
-                              backgroundColor: Color(0xff444A83),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }
-                }) */
-
-            ),
+        )),
       ),
     );
+  }
+}
+
+testIfExistingAccount() async {
+  var u = await storage.read(key: "username");
+  var p = await storage.read(key: "password");
+  if (u != null && p != null) {
+    return true;
+  } else {
+    return false;
   }
 }

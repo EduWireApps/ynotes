@@ -21,10 +21,12 @@ import 'package:ynotes/background.dart';
 final SentryClient _sentry = SentryClient(
     dsn: "https://c55eb82b0cab4437aeda267bb0392959@sentry.io/3147528");
 Future<Null> _reportError(dynamic error, dynamic stackTrace) async {
-  final SentryResponse response = await _sentry.captureException(
-    exception: error,
-    stackTrace: stackTrace,
-  );
+  try {
+    final SentryResponse response = await _sentry.captureException(
+      exception: error,
+      stackTrace: stackTrace,
+    );
+  } catch (e) {}
 }
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
@@ -40,41 +42,39 @@ void backgroundFetchHeadlessTask(String taskId) async {
       initializationSettingsAndroid, initializationSettingsIOS);
   flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
   flutterLocalNotificationsPlugin.initialize(initializationSettings,
-      onSelectNotification: (String value){
-     haveToReopenOnGradePage = true;
+      onSelectNotification: (String value) {
+    haveToReopenOnGradePage = true;
+  });
 
-      });
-
-
-  if (await  mainTestNewGrades()) {
+  if (await mainTestNewGrades()) {
     BackgroundServices.showNotification();
-
   } else {
     print("Nothing updated");
   }
   BackgroundFetch.finish(taskId);
 }
- mainTestNewGrades() async{
-try {
-      //Getting the offline count of grades
-      List<grade> listOfflineGrades =
-      getAllGrades(await getOfflineGrades(), overrideLimit: true);
-      print("Offline length is ${listOfflineGrades.length}");
-      //Getting the online count of grades
-      List<grade> listOnlineGrades =
-          getAllGrades(await getGradesFromInternet(), overrideLimit: true);
-      print("Online length is ${listOnlineGrades.length}");
-      if (listOfflineGrades.length < listOnlineGrades.length) {
-        return true;
-      } else {
-        return false;
-      }
-    } catch (e) {
-      print(e);
-      return null;
+
+mainTestNewGrades() async {
+  try {
+    //Getting the offline count of grades
+    List<grade> listOfflineGrades =
+        getAllGrades(await getOfflineGrades(), overrideLimit: true);
+    print("Offline length is ${listOfflineGrades.length}");
+    //Getting the online count of grades
+    List<grade> listOnlineGrades =
+        getAllGrades(await getGradesFromInternet(), overrideLimit: true);
+    print("Online length is ${listOnlineGrades.length}");
+    if (listOfflineGrades.length < listOnlineGrades.length) {
+      return true;
+    } else {
+      return false;
     }
+  } catch (e) {
+    print(e);
+    return null;
+  }
 }
- 
+
 Future main() async {
 //Init the local notifications
   WidgetsFlutterBinding.ensureInitialized();
@@ -86,7 +86,9 @@ Future main() async {
       stackTrace: details.stack,
     );
   };
-
+  ConnectionStatusSingleton connectionStatus =
+      ConnectionStatusSingleton.getInstance();
+  connectionStatus.initialize();
   runZoned<Future<Null>>(() async {
     runApp(
       ChangeNotifierProvider<AppStateNotifier>(

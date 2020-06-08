@@ -182,7 +182,7 @@ Color GetColorFor(String element) {
   }
 }
 
-List<homework> localHomeworkList;
+
 ThemeData darkTheme = ThemeData(
     backgroundColor: Color(0xff1F1E1E),
     primaryColor: Color(0xff2C2C2C),
@@ -330,42 +330,66 @@ class App {
 
 //Connectivity  classs
 
-class MyConnectivity {
-  MyConnectivity._internal();
+class ConnectionStatusSingleton {
+    //This creates the single instance by calling the `_internal` constructor specified below
+    static final ConnectionStatusSingleton _singleton = new ConnectionStatusSingleton._internal();
+    ConnectionStatusSingleton._internal();
 
-  static final MyConnectivity _instance = MyConnectivity._internal();
+    //This is what's used to retrieve the instance through the app
+    static ConnectionStatusSingleton getInstance() => _singleton;
 
-  static MyConnectivity get instance => _instance;
+    //This tracks the current connection status
+    bool hasConnection = false;
 
-  Connectivity connectivity = Connectivity();
+    //This is how we'll allow subscribing to connection changes
+    StreamController connectionChangeController = new StreamController.broadcast();
 
-  StreamController controller = StreamController.broadcast();
+    //flutter_connectivity
+    final Connectivity _connectivity = Connectivity();
 
-  Stream get myStream => controller.stream;
-
-  void initialise() async {
-    ConnectivityResult result = await connectivity.checkConnectivity();
-    _checkStatus(result);
-    connectivity.onConnectivityChanged.listen((result) {
-      _checkStatus(result);
-    });
-  }
-
-  void _checkStatus(ConnectivityResult result) async {
-    bool isOnline = false;
-    try {
-      final result = await InternetAddress.lookup('example.com');
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        isOnline = true;
-      } else
-        isOnline = false;
-    } on SocketException catch (_) {
-      isOnline = false;
+    //Hook into flutter_connectivity's Stream to listen for changes
+    //And check the connection status out of the gate
+    void initialize() {
+        _connectivity.onConnectivityChanged.listen(_connectionChange);
+        checkConnection();
     }
-    controller.sink.add({result: isOnline});
-  }
 
-  void disposeStream() => controller.close();
+    Stream get connectionChange => connectionChangeController.stream;
+
+    //A clean up method to close our StreamController
+    //   Because this is meant to exist through the entire application life cycle this isn't
+    //   really an issue
+    void dispose() {
+        connectionChangeController.close();
+    }
+
+    //flutter_connectivity's listener
+    void _connectionChange(ConnectivityResult result) {
+        checkConnection();
+    }
+
+    //The test to actually see if there is a connection
+    Future<bool> checkConnection() async {
+        bool previousConnection = hasConnection;
+
+        try {
+            final result = await InternetAddress.lookup('google.com');
+            if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                hasConnection = true;
+            } else {
+                hasConnection = false;
+            }
+        } on SocketException catch(_) {
+            hasConnection = false;
+        }
+
+        //The connection status changed send out an update to all listeners
+        if (previousConnection != hasConnection) {
+            connectionChangeController.add(hasConnection);
+        }
+
+        return hasConnection;
+    }
 }
 
 //Get only grades as a list
@@ -377,7 +401,7 @@ List<grade> getAllGrades(List<discipline> list, {bool overrideLimit = false}) {
   listToReturn.sort((a, b) => a.dateSaisie.compareTo(b.dateSaisie));
   listToReturn = listToReturn.reversed.toList();
 
-  if (overrideLimit == false) {
+  if (overrideLimit == false&&listToReturn!=null) {
     listToReturn = listToReturn.sublist(
         0, (listToReturn.length >= 5) ? 5 : listToReturn.length);
   }

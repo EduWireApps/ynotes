@@ -39,6 +39,8 @@ class homework extends HiveObject {
   final List<document> documents;
   @HiveField(11)
   final List<document> documentsContenuDeSeance;
+  @HiveField(12)
+  final String nomProf;
   homework(
       this.matiere,
       this.codeMatiere,
@@ -51,7 +53,7 @@ class homework extends HiveObject {
       this.rendreEnLigne,
       this.interrogation,
       this.documents,
-      this.documentsContenuDeSeance);
+      this.documentsContenuDeSeance, this.nomProf);
 }
 
 //Class of a downloadable document
@@ -215,7 +217,7 @@ class discipline {
   }
 }
 
-class mail {
+class Mail {
 
   //E.G: "69627"
   final String id;
@@ -229,15 +231,22 @@ class mail {
   //E.G : "Coronavirus school prank"
   final String subject;
   final String date;
+  final String content;
 
-  mail(this.id, this.mtype, this.read, this.idClasseur, this.from, this.to, this.subject, this.date);
-
-
-
-
+  Mail(this.id, this.mtype, this.read, this.idClasseur, this.from, this.to, this.subject, this.date, {this.content});
 
 }
 
+ class Classeur {
+
+  //E.G: "Mails Maths"
+  final String libelle;
+  //E.G : "128"
+  final int id;
+
+  Classeur(this.libelle, this.id);
+
+}
 
 abstract class API {
 //Connect to the API
@@ -259,15 +268,12 @@ abstract class API {
   //Test to know if there are new grades
   Future<bool> testNewGrades();
   
+  //Apps
+  Future app(String appname, {String args , String action});
 
 
 }
-abstract class EcoleDirecteMail {
-  //returns mails list
-  Future<List<mail>> getMails(String category);
 
-   
-}
 
 
 //Return the good API (will be extended to Pronote)

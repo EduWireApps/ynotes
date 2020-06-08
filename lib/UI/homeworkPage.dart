@@ -782,6 +782,9 @@ class _HomeworkElementState extends State<HomeworkElement> {
                                               ),
                                             }),
                                       ),
+                                     Container(height: screenSize.size.height/10*0.2,child: Text(this
+                                                .widget
+                                                .homeworkForThisDay.nomProf)), 
                                     HtmlWidget(
                                         //Delete all format made by teachers to allow the zoom
                                         segmentedControlIndex == 0
@@ -1058,19 +1061,16 @@ class _HomeworkElementState extends State<HomeworkElement> {
                                                                               ///Download is ended
                                                                               else {
                                                                                 return Container(
-                                                                                  padding: EdgeInsets.symmetric(
-                                                                                    horizontal: screenSize.size.width / 5 * 0.2,
-                                                                                  ),
-                                                                                  child: Center(
-                                                                                    child: SizedBox(
-                                                                                        width: screenSize.size.width / 5 * 0.3,
-                                                                                        height: screenSize.size.width / 5 * 0.3,
-                                                                                        child: Icon(
-                                                                                          MdiIcons.check,
-                                                                                          color: Colors.green,
-                                                                                          size: screenSize.size.width / 5 * 0.3,
-                                                                                        )),
-                                                                                  ),
+                                                                                  
+                                                                                  child: IconButton(
+                                                                              icon: Icon(
+                                                                                MdiIcons.check,
+                                                                                color: Colors.green,
+                                                                              ),
+                                                                              onPressed: () async {
+                                                                                openFile((segmentedControlIndex == 0 ? widget.homeworkForThisDay.documents : widget.homeworkForThisDay.documentsContenuDeSeance)[index].libelle);
+                                                                              },
+                                                                            )
                                                                                 );
                                                                               }
                                                                             }
@@ -1344,31 +1344,10 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
                           ],
                         ),
                       ),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                            vertical: screenSize.size.height / 10 * 0.1,
-                            horizontal: screenSize.size.width / 5 * 0.1),
-                        child: Container(
-                          child: ListView.builder(
-                              physics: NeverScrollableScrollPhysics(),
-                              addAutomaticKeepAlives: true,
-                              shrinkWrap: true,
-                              itemCount:
-                                  getHomeworkInList(widget.listHW).length,
-                              itemBuilder: (context, index) {
-                                return HomeworkElement(
-                                    getHomeworkInList(widget.listHW)[index],
-                                    true);
-                              }),
-                        ),
-                      ),
                       AnimatedContainer(
                           duration: Duration(milliseconds: 170),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(15),
-                              bottomRight: Radius.circular(15),
-                            ),
+                           
                             color: isDarkModeEnabled
                                 ? Color(0xff656565)
                                 : Colors.white,
@@ -1379,10 +1358,7 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
                           height:
                               screenSize.size.width / 10 * containerSize / 1.2,
                           child: ClipRRect(
-                            borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(15),
-                              bottomRight: Radius.circular(15),
-                            ),
+                            
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -1447,6 +1423,25 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
                               ],
                             ),
                           )),
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                            vertical: screenSize.size.height / 10 * 0.1,
+                            horizontal: screenSize.size.width / 5 * 0.1),
+                        child: Container(
+                          child: ListView.builder(
+                              physics: NeverScrollableScrollPhysics(),
+                              addAutomaticKeepAlives: true,
+                              shrinkWrap: true,
+                              itemCount:
+                                  getHomeworkInList(widget.listHW).length,
+                              itemBuilder: (context, index) {
+                                return HomeworkElement(
+                                    getHomeworkInList(widget.listHW)[index],
+                                    true);
+                              }),
+                        ),
+                      ),
+                      
                     ],
                   ),
                 ),

@@ -102,6 +102,7 @@ class _SummaryPageState extends State<SummaryPage> {
                 future: doneListFuture,
                 initialData: 0,
                 builder: (context, snapshot) {
+                 
                   return Stack(
                     children: <Widget>[
                       ClipRect(
@@ -114,8 +115,8 @@ class _SummaryPageState extends State<SummaryPage> {
                                 padding: EdgeInsets.all(0),
                                 //Gauge
                                 child: charts.PieChart(
-                                    _getDoneTasks(
-                                       snapshot.data),
+                                    _getDoneTasks(snapshot.hasError?
+                                       0:snapshot.data),
                                     animate: false,
                                     defaultRenderer:
                                         new charts.ArcRendererConfig(
@@ -132,7 +133,7 @@ class _SummaryPageState extends State<SummaryPage> {
                         child: Container(
                           margin: EdgeInsets.only(top: 10),
                           child: Text(
-                            snapshot.data.toString() +
+                            (snapshot.hasError?"0":snapshot.data.toString()) +
                                 "%",
                             textAlign: TextAlign.center,
                             style: TextStyle(
@@ -947,6 +948,7 @@ Future<List<homework>> getReducedListHomework() async {
   int reduce = await getIntSetting("summaryQuickHomework");
 
   List<homework> localList = await api.getNextHomework();
+  if(localList!=null){
   List<homework> listToReturn = List<homework>();
   localList.forEach((element) {
     var now = DateTime.now();
@@ -956,6 +958,9 @@ Future<List<homework>> getReducedListHomework() async {
       listToReturn.add(element);
     }
   });
-
   return listToReturn;
+}
+  else {
+     return null;
+}
 }

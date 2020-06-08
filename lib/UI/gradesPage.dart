@@ -3,6 +3,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:marquee/marquee.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:ynotes/animations/FadeAnimation.dart';
@@ -1022,7 +1023,8 @@ class GradesGroup extends StatefulWidget {
 class _GradesGroupState extends State<GradesGroup> {
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
-
+    String capitalizedNomDiscipline;
+    String nomsProfesseurs;
     Color colorGroup;
     void callback() {
       setState(() {
@@ -1032,10 +1034,23 @@ class _GradesGroupState extends State<GradesGroup> {
 
     if (widget.disciplinevar == null) {
       colorGroup = Theme.of(context).primaryColorDark;
+      nomsProfesseurs == null;
+      capitalizedNomDiscipline == null;
     } else {
       if (widget.disciplinevar.color != null) {
+        String nomDiscipline = widget.disciplinevar.nomDiscipline.toLowerCase();
+        capitalizedNomDiscipline =
+            "${nomDiscipline[0].toUpperCase()}${nomDiscipline.substring(1)}";
+        nomsProfesseurs = widget.disciplinevar.professeurs[0];
+        widget.disciplinevar.professeurs.forEach((element) {
+          if (widget.disciplinevar.professeurs.indexOf(element) > 0) {
+            nomsProfesseurs += " - " + element + " - " ;
+          }
+        });
+
         colorGroup = widget.disciplinevar.color;
       }
+  
     }
     //BLOCK BUILDER
     return Container(
@@ -1071,20 +1086,73 @@ class _GradesGroupState extends State<GradesGroup> {
                     height: (screenSize.size.height / 10 * 8.8) / 10 * 0.75,
                     child: Center(
                       child: Stack(children: <Widget>[
-                        if (widget.disciplinevar != null)
+                        if (widget.disciplinevar != null &&
+                            nomsProfesseurs != null &&
+                            capitalizedNomDiscipline != null)
                           Positioned(
                             left: screenSize.size.width / 5 * 0.15,
                             top: screenSize.size.width / 5 * 0.1,
                             child: Container(
                               padding: EdgeInsets.symmetric(
                                   horizontal: screenSize.size.width / 5 * 0.1),
-                              child: Text(
-                                '${widget.disciplinevar.nomDiscipline[0].toUpperCase()}${widget.disciplinevar.nomDiscipline.substring(1)}',
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.left,
-                                style: TextStyle(
-                                    fontFamily: "Asap",
-                                    fontWeight: FontWeight.w600),
+                              child: Row(
+                                children: <Widget>[
+                                  Text(
+                                    capitalizedNomDiscipline,
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(
+                                        fontFamily: "Asap",
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                  if (nomsProfesseurs.length > 15)
+                                    Container(
+                                        margin: EdgeInsets.only(
+                                            left: screenSize.size.width /
+                                                5 *
+                                                0.3),
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(11)),
+                                        width: screenSize.size.width / 5 * 2,
+                                        height:
+                                            screenSize.size.height / 10 * 0.3,
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(25),
+                                          child: Marquee(
+                                              text: nomsProfesseurs,
+                                              style: TextStyle(
+                                                  fontFamily: "Asap",
+                                                  fontSize:
+                                                      screenSize.size.height /
+                                                          10 *
+                                                          0.15)),
+                                        )),
+                                        if(nomsProfesseurs.length <= 15)
+                                         Container(
+                                        margin: EdgeInsets.only(
+                                            left: screenSize.size.width /
+                                                5 *
+                                                0.3),
+                                        decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(11)),
+                                        width: screenSize.size.width / 5 * 2,
+                                     
+                                        child: ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(25),
+                                          child: Text(
+                                             nomsProfesseurs,
+                                              style: TextStyle(
+                                                  fontFamily: "Asap",
+                                                  fontSize:
+                                                       screenSize.size.height /
+                                                          10 *
+                                                          0.2)),
+                                        )),
+                                ],
                               ),
                             ),
                           ),

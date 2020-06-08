@@ -3,6 +3,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 
 import '../usefulMethods.dart';
 import 'apps/cloud.dart';
+import 'apps/mail.dart';
 
 class AppsPage extends StatefulWidget {
   State<StatefulWidget> createState() {
@@ -26,6 +27,7 @@ class _AppsPageState extends State<AppsPage> {
             routes: {
           '/homePage': (context) => Material(child: HomePage()),
           '/cloud': (context) => Material(child: CloudPage()),
+          '/mail': (context) => Material(child: MailPage()),
         }));
   }
 }
@@ -39,7 +41,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   //Easily add apps to ecole directe (for now hardcoded)
   List<App> listAppsEcoleDirecte = [
-    App("Messagerie", MdiIcons.mail),
+    App("Messagerie", MdiIcons.mail, route: "mail"),
     App("Cloud", Icons.cloud, route: "cloud")
   ];
   @override

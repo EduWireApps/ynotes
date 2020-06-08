@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
@@ -59,7 +60,7 @@ List<String> CoolcolorList = [
 ];
 
 //The ecole directe api extended from the apiManager.dart API class
-class APIEcoleDirecte extends API with EcoleDirecteMail{
+class APIEcoleDirecte extends API {
   @override
 //Get connection message and store token
   Future<String> login(username, password) async {
@@ -79,7 +80,7 @@ class APIEcoleDirecte extends API with EcoleDirecteMail{
     var body = data;
     var response =
         await http.post(url, headers: headers, body: body).catchError((e) {
-      throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.");
+      return "Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.";
     });
 
     if (response.statusCode == 200) {
@@ -103,31 +104,36 @@ class APIEcoleDirecte extends API with EcoleDirecteMail{
       //Return an error
       else {
         String message = req['message'];
-        throw "Oups ! Une erreur a eu lieu :\n$message";
+        return "Oups ! Une erreur a eu lieu :\n$message" ;
       }
     } else {
-      throw "Erreur";
+      return "Erreur";
     }
   }
 
   @override
 //Getting grades
   Future<List<discipline>> getGrades({bool forceReload}) async {
-    var offlineGrades = await getGradesFromDB();
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    var offlineGrades = await getGradesFromDB(
+        online: connectivityResult != ConnectivityResult.none);
 
     //If force reload enabled the grades will be loaded online
-    if ((forceReload == false || forceReload == null) &&
+    if ((connectivityResult == ConnectivityResult.none ||
+            forceReload == false ||
+            forceReload == null) &&
         offlineGrades != null) {
       print("Loading grades from offline storage.");
       //RELOAD THE GRADES ANYWAY
       //NDLR : await is not needed, grades will be refreshed later
-      getGrades(forceReload: true);
+      if (connectivityResult != ConnectivityResult.none) {
+        getGrades(forceReload: true);
+      }
+
       return await getOfflineGrades();
     } else {
       print("Loading grades inline.");
       var toReturn = await getGradesFromInternet();
-   
-
 
       return toReturn;
     }
@@ -184,25 +190,31 @@ class APIEcoleDirecte extends API with EcoleDirecteMail{
 
 //Get dates of the the next homework (based on the EcoleDirecte API)
   Future<List<homework>> getNextHomework({bool forceReload}) async {
-    var offlineHomework = await getHomeworkFromDB();
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    var offlineHomework = await getHomeworkFromDB(
+        online: connectivityResult != ConnectivityResult.none);
+    
 
     //If force reload enabled the grades will be loaded online
-    if ((forceReload == false || forceReload == null) &&
+    if ((connectivityResult == ConnectivityResult.none ||
+            forceReload == false ||
+            forceReload == null) &&
         offlineHomework != null) {
       print("Loading homework from offline storage.");
-      //RELOAD THE GRADES ANYWAY
-      //NDLR : await is not needed, grades will be refreshed later
+      //RELOAD THE HOMEWORK ANYWAY
+      //NDLR : await is not needed, homework will be refreshed later
       //getNextHomework(forceReload:true);
-      var toReturn = await getHomeworkFromDB();
-      localHomeworkList = toReturn;
-      return toReturn;
+      if (connectivityResult != ConnectivityResult.none) {
+        getNextHomework(forceReload: true);
+      }
+
+      return offlineHomework;
     } else {
       print("Loading homework inline.");
       List<DateTime> localDTList = await getDatesNextHomework();
 
       //List<homework> test;
       var toReturn = await asyncTask(localDTList);
-      localHomeworkList = toReturn;
       return toReturn;
     }
   }
@@ -255,14 +267,14 @@ class APIEcoleDirecte extends API with EcoleDirecteMail{
               String encodedContent = "";
               String aFaireEncoded = "";
               bool rendreEnLigne = false;
-              
+
               bool interrogation = false;
               List<document> documentsAFaire = List<document>();
               List<document> documentsContenuDeCours = List<document>();
               try {
                 encodedContent = element['aFaire']['contenu'];
                 rendreEnLigne = element['aFaire']['rendreEnLigne'];
-           
+
                 aFaireEncoded = element['contenuDeSeance']['contenu'];
                 List docs = element['aFaire']['documents'];
                 if (docs != null) {
@@ -287,7 +299,7 @@ class APIEcoleDirecte extends API with EcoleDirecteMail{
               String decodedContent = "";
               String decodedContenuDeSeance = "";
               decodedContent = utf8.decode(base64.decode(encodedContent));
-  
+
               decodedContenuDeSeance =
                   utf8.decode(base64.decode(aFaireEncoded));
               homeworkList.add(new homework(
@@ -302,7 +314,9 @@ class APIEcoleDirecte extends API with EcoleDirecteMail{
                   rendreEnLigne,
                   interrogation,
                   documentsAFaire,
-                  documentsContenuDeCours));
+                  documentsContenuDeCours,
+                  element['nomProf'],
+                  ));
             }
           });
           return homeworkList;
@@ -340,13 +354,59 @@ class APIEcoleDirecte extends API with EcoleDirecteMail{
     }
   }
 
-Future<List<mail>> getMails(String category)
-{
+  @override
+  Future app(String appname, {String args, String action}) {
+    switch (appname) {
+      case "mail":
+        {
+          return getMails();
+        }
+        break;
+    }
+  }
 
-}
   ///END OF THE API CLASS
 }
 
+Future getMails() async {
+  await testToken();
+  String id = await storage.read(key: "userID");
+  var url =
+      'https://api.ecoledirecte.com/v3/eleves/$identityHashCode(object)/messages.awp?verbe=getall&typeRecuperation=all';
+  Map<String, String> headers = {"Content-type": "text/plain"};
+  String data = 'data={"token": "$token"}';
+  //encode Map to JSON
+  var body = data;
+  var response =
+      await http.post(url, headers: headers, body: body).catchError((e) {
+    throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou reessayez plus tard.");
+  });
+  if (response.statusCode == 200) {
+    Map<String, dynamic> req = jsonDecode(response.body);
+    if (req['code'] == 200) {
+      List<Mail> mailsList = List<Mail>();
+      List<Classeur> classeursList = List<Classeur>();
+      Map<String, dynamic> data = jsonDecode(req['code']['data']);
+      //add the classeurs
+      if (req['code']['data']['classeurs'] != null) {
+        var classeurs = req['code']['data']['classeurs'];
+        classeurs.forEach((element) {
+          Classeur classeur;
+          classeursList.add(new Classeur(element["libelle"], element["id"]));
+        });
+      }
+    }
+    //Return an error
+    else {
+      throw "Error.";
+    }
+  } else {
+    throw "Error.";
+  }
+}
+
+Future<Mail> readMail(String mailId) {}
+Future<Mail> sendMail() {}
 //Refresh colors
 refreshDisciplinesListColors(List<discipline> list) async {
   list.forEach((f) async {
@@ -456,10 +516,8 @@ getGradesFromInternet() async {
     Map<String, dynamic> req = json.decode(utf8.decode(response.bodyBytes));
     if (req['code'] == 200) {
       try {
-putGrades(utf8.decode(response.bodyBytes));
-      }
-      catch(e)
-      {
+        putGrades(utf8.decode(response.bodyBytes));
+      } catch (e) {
         print(e);
       }
       //Get all the marks
@@ -594,5 +652,3 @@ getOfflineGrades() async {
 
   return disciplinesList;
 }
-
-

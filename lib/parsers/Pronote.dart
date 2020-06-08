@@ -34,4 +34,11 @@ class APIPronote extends API {
 
     return null;
   }
+
+  @override
+  Future app(String appname, {String args, String action}) {
+    
+    // TODO: implement app
+    throw UnimplementedError();
+  }
 }
