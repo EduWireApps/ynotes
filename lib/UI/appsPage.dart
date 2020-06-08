@@ -10,7 +10,7 @@ class AppsPage extends StatefulWidget {
     return _AppsPageState();
   }
 }
-
+String initialRoute = '/homePage';
 class _AppsPageState extends State<AppsPage> {
   void initState() {}
 
@@ -23,7 +23,7 @@ class _AppsPageState extends State<AppsPage> {
              theme: lightTheme, 
           darkTheme: darkTheme, 
             themeMode: isDarkModeEnabled ? ThemeMode.dark : ThemeMode.light,
-            initialRoute: '/homePage',
+            initialRoute: initialRoute,
             routes: {
           '/homePage': (context) => Material(child: HomePage()),
           '/cloud': (context) => Material(child: CloudPage()),
@@ -85,6 +85,7 @@ class _HomePageState extends State<HomePage> {
                               if(listAppsEcoleDirecte[index].route!=null)
                               {
                                  Navigator.pushNamed(context, '/${listAppsEcoleDirecte[index].route}');
+                                 initialRoute = '/${listAppsEcoleDirecte[index].route}';
                               }
                             },
                             child: Container(

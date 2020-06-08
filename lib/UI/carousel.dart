@@ -31,7 +31,13 @@ class page3 extends StatefulWidget {
 
   _page3State createState() => _page3State();
 }
+class page4 extends StatefulWidget {
+  final double offset;
+  final int idx;
+  page4({Key key, this.offset, this.idx}) : super(key: key);
 
+  _page4State createState() => _page4State();
+}
 //PAGE1 STATE
 class _page1State extends State<page1> {
   @override
@@ -490,6 +496,26 @@ class _page3State extends State<page3> {
   }
 }
 
+
+
+class _page4State extends State<page3> {
+  @override
+  Widget build(BuildContext context) {
+    double opacityvalue = 0;
+    if (widget.offset - 1 > 0) {
+      opacityvalue = widget.offset - 1;
+    } else {
+      opacityvalue = 0;
+    }
+    return Column(
+children: <Widget>[
+  Text("Paramètrons votre application")
+],
+    );
+  }
+}
+
+
 class PageInfo {
   //Widget Used
   Widget widget;
@@ -543,7 +569,14 @@ class _SlidingCarouselState extends State<SlidingCarousel> {
           idx: idx,
         ),
         backgroundColor: Color(0xFF252B62),
-      )
+        
+      ),
+       PageInfo(
+        widget: page4(
+          offset: offset,
+          idx: idx,
+        ),
+        backgroundColor: Theme.of(context).backgroundColor),
     ];
   }
 

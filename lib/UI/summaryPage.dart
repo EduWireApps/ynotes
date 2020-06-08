@@ -546,179 +546,177 @@ class _SummaryPageState extends State<SummaryPage> {
                                       onTap: () {
                                         widget.tabController.animateTo(2);
 
-                                        //Not ready for now
-                                        /* setState(() {
-                                       
-                                         initialIndexGradesOffset=snapshot.data.indexWhere((element) => element.codeMatiere==getAllGrades(snapshot.data)[position].codeMatiere);
-                                        // print(initialIndexGradesOffset);
-                                       });*/
                                       },
                                       child: Container(
-                                        child: Center(
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: <Widget>[
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: <Widget>[
-                                                  Container(
-                                                    margin: EdgeInsets.only(
-                                                        right: screenSize
-                                                                .size.width /
-                                                            5 *
-                                                            0.2),
-                                                    child: Badge(
-                                                      showBadge: getAllGrades(
+                                        height: (screenSize.size.height / 10 * 8.8) / 10 * 1.8,
+                                         width: screenSize.size.width / 5 * 4,
+                                        child: FittedBox(
+                                                                                  child: Center(
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: <Widget>[
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: <Widget>[
+                                                    Container(
+                                                      margin: EdgeInsets.only(
+                                                          right: screenSize
+                                                                  .size.width /
+                                                              5 *
+                                                              0.2),
+                                                      child: Badge(
+                                                        showBadge: getAllGrades(
+                                                                        snapshot
+                                                                            .data)[
+                                                                    position]
+                                                                .dateSaisie ==
+                                                            DateFormat(
+                                                                    'yyyy-MM-dd')
+                                                                .format(DateTime
+                                                                    .now()),
+                                                        animationType:
+                                                            BadgeAnimationType
+                                                                .scale,
+                                                        toAnimate: true,
+                                                        elevation: 0,
+                                                        position: BadgePosition
+                                                            .topRight(),
+                                                        badgeColor: Colors.blue,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      getAllGrades(snapshot.data)[
+                                                                  position]
+                                                              .libelleMatiere +
+                                                          " - " +
+                                                          getAllGrades(snapshot
+                                                                  .data)[position]
+                                                              .date,
+                                                      style: TextStyle(
+                                                          fontFamily: "Asap",
+                                                          color:
+                                                              (isDarkModeEnabled
+                                                                  ? Colors.white
+                                                                  : Colors
+                                                                      .black)),
+                                                    ),
+                                                  ],
+                                                ),
+                                                AutoSizeText.rich(
+                                                  //MARK
+                                                  TextSpan(
+                                                    text: (getAllGrades(snapshot
+                                                                .data)[position]
+                                                            .nonSignificatif
+                                                        ? "(" +
+                                                            getAllGrades(snapshot
+                                                                        .data)[
+                                                                    position]
+                                                                .valeur
+                                                        : getAllGrades(snapshot
+                                                                .data)[position]
+                                                            .valeur),
+                                                    style: TextStyle(
+                                                        color: (isDarkModeEnabled
+                                                            ? Colors.white
+                                                            : Colors.black),
+                                                        fontFamily: "Asap",
+                                                        fontWeight:
+                                                            FontWeight.normal,
+                                                        fontSize: (screenSize
+                                                                    .size.height /
+                                                                10 *
+                                                                8.8) /
+                                                            10 *
+                                                            0.7),
+                                                    children: <TextSpan>[
+                                                      if (getAllGrades(
                                                                       snapshot
                                                                           .data)[
                                                                   position]
-                                                              .dateSaisie ==
-                                                          DateFormat(
-                                                                  'yyyy-MM-dd')
-                                                              .format(DateTime
-                                                                  .now()),
-                                                      animationType:
-                                                          BadgeAnimationType
-                                                              .scale,
-                                                      toAnimate: true,
-                                                      elevation: 0,
-                                                      position: BadgePosition
-                                                          .topRight(),
-                                                      badgeColor: Colors.blue,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    getAllGrades(snapshot.data)[
-                                                                position]
-                                                            .libelleMatiere +
-                                                        " - " +
-                                                        getAllGrades(snapshot
-                                                                .data)[position]
-                                                            .date,
-                                                    style: TextStyle(
-                                                        fontFamily: "Asap",
-                                                        color:
-                                                            (isDarkModeEnabled
-                                                                ? Colors.white
-                                                                : Colors
-                                                                    .black)),
-                                                  ),
-                                                ],
-                                              ),
-                                              AutoSizeText.rich(
-                                                //MARK
-                                                TextSpan(
-                                                  text: (getAllGrades(snapshot
-                                                              .data)[position]
-                                                          .nonSignificatif
-                                                      ? "(" +
-                                                          getAllGrades(snapshot
-                                                                      .data)[
-                                                                  position]
-                                                              .valeur
-                                                      : getAllGrades(snapshot
-                                                              .data)[position]
-                                                          .valeur),
-                                                  style: TextStyle(
-                                                      color: (isDarkModeEnabled
-                                                          ? Colors.white
-                                                          : Colors.black),
-                                                      fontFamily: "Asap",
-                                                      fontWeight:
-                                                          FontWeight.normal,
-                                                      fontSize: (screenSize
-                                                                  .size.height /
-                                                              10 *
-                                                              8.8) /
-                                                          10 *
-                                                          0.7),
-                                                  children: <TextSpan>[
-                                                    if (getAllGrades(
-                                                                    snapshot
-                                                                        .data)[
-                                                                position]
-                                                            .noteSur !=
-                                                        "20")
+                                                              .noteSur !=
+                                                          "20")
 
-                                                      //MARK ON
-                                                      TextSpan(
-                                                          text: '/' +
-                                                              getAllGrades(snapshot
+                                                        //MARK ON
+                                                        TextSpan(
+                                                            text: '/' +
+                                                                getAllGrades(snapshot
+                                                                            .data)[
+                                                                        position]
+                                                                    .noteSur,
+                                                            style: TextStyle(
+                                                                color:
+                                                                    (isDarkModeEnabled
+                                                                        ? Colors
+                                                                            .white
+                                                                        : Colors
+                                                                            .black),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .normal,
+                                                                fontSize: (screenSize
+                                                                            .size
+                                                                            .height /
+                                                                        10 *
+                                                                        8.8) /
+                                                                    10 *
+                                                                    0.4)),
+                                                      if (getAllGrades(
+                                                                      snapshot
                                                                           .data)[
-                                                                      position]
-                                                                  .noteSur,
-                                                          style: TextStyle(
-                                                              color:
-                                                                  (isDarkModeEnabled
-                                                                      ? Colors
-                                                                          .white
-                                                                      : Colors
-                                                                          .black),
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .normal,
-                                                              fontSize: (screenSize
-                                                                          .size
-                                                                          .height /
-                                                                      10 *
-                                                                      8.8) /
-                                                                  10 *
-                                                                  0.4)),
-                                                    if (getAllGrades(
-                                                                    snapshot
-                                                                        .data)[
-                                                                position]
-                                                            .nonSignificatif ==
-                                                        true)
-                                                      TextSpan(
-                                                          text: ")",
-                                                          style: TextStyle(
-                                                              color:
-                                                                  (isDarkModeEnabled
-                                                                      ? Colors
-                                                                          .white
-                                                                      : Colors
-                                                                          .black),
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .normal,
-                                                              fontSize: (screenSize
-                                                                          .size
-                                                                          .height /
-                                                                      10 *
-                                                                      8.8) /
-                                                                  10 *
-                                                                  0.7)),
-                                                  ],
+                                                                  position]
+                                                              .nonSignificatif ==
+                                                          true)
+                                                        TextSpan(
+                                                            text: ")",
+                                                            style: TextStyle(
+                                                                color:
+                                                                    (isDarkModeEnabled
+                                                                        ? Colors
+                                                                            .white
+                                                                        : Colors
+                                                                            .black),
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .normal,
+                                                                fontSize: (screenSize
+                                                                            .size
+                                                                            .height /
+                                                                        10 *
+                                                                        8.8) /
+                                                                    10 *
+                                                                    0.7)),
+                                                    ],
+                                                  ),
                                                 ),
-                                              ),
-                                              SizedBox(
-                                                  height:
-                                                      screenSize.size.height /
-                                                          10 *
-                                                          0.1),
-                                              SizedBox(
-                                                width: screenSize.size.width /
-                                                    5 *
-                                                    3,
-                                                child: Text(
-                                                  getAllGrades(snapshot.data)[
-                                                          position]
-                                                      .devoir,
-                                                  textAlign: TextAlign.center,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: TextStyle(
-                                                      fontSize: 15,
-                                                      fontFamily: "Asap",
-                                                      color: (isDarkModeEnabled
-                                                          ? Colors.white
-                                                          : Colors.black)),
-                                                ),
-                                              )
-                                            ],
+                                                SizedBox(
+                                                    height:
+                                                        screenSize.size.height /
+                                                            10 *
+                                                            0.1),
+                                                SizedBox(
+                                                  width: screenSize.size.width /
+                                                      5 *
+                                                      3,
+                                                  child: Text(
+                                                    getAllGrades(snapshot.data)[
+                                                            position]
+                                                        .devoir,
+                                                    textAlign: TextAlign.center,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: TextStyle(
+                                                        fontSize: 15,
+                                                        fontFamily: "Asap",
+                                                        color: (isDarkModeEnabled
+                                                            ? Colors.white
+                                                            : Colors.black)),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
                                           ),
                                         ),
                                       ),
@@ -828,7 +826,7 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(39),
 
-              //TO DO :  SEARCH IN DISCIPLINES DATABASE
+             
             ),
             child: Row(
               children: <Widget>[

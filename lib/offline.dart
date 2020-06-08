@@ -34,13 +34,15 @@ getGradesFromDB({bool online =true}) async {
         DateTime.parse(DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now()));
     //The date of the offline grades file
     Map<dynamic, dynamic> gradesBoxMap = await gradesBox.toMap();
+    //Is economy mode activated
+    bool batterySaver = await getSetting("batterySaver");
     String dateOfflineString = gradesBoxMap.keys.toList()[0];
-    //print(dateOfflineString);
+  
     DateTime dateOffline = DateTime.parse(dateOfflineString);
-    //print(dateOffline.toString());
+    
     var difference = now.difference(dateOffline);
 //if offline force show homework
-    if (difference.inHours < 3) {
+    if (difference.inHours < (batterySaver?8:3)) {
       Map<dynamic, dynamic> mapToReturn;
       try {
         print("Returned grades from offline");
@@ -54,7 +56,7 @@ getGradesFromDB({bool online =true}) async {
     } else {
       if (online == true) {
         print(
-            "Offline grades data is too old of ${difference.inHours - 3} hours.");
+            "Offline grades data is too old of ${difference.inHours - (batterySaver?8:3)} hours.");
         return null;
       } else {
         try {
@@ -116,7 +118,8 @@ getHomeworkFromDB({bool online = true}) async {
     final dir = await getDirectory();
     Hive.init("${dir.path}/offline");
     var homeworkBox = await Hive.openBox('homework');
-
+    //Is economy mode activated
+    bool batterySaver = await getSetting("batterySaver");
     DateTime now =
         DateTime.parse(DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now()));
 
@@ -128,7 +131,7 @@ getHomeworkFromDB({bool online = true}) async {
     DateTime dateOffline = DateTime.parse(dateOfflineString);
     var difference = now.difference(dateOffline);
 //If time difference is bigger, return null and the user have to fetch from Internet
-    if (difference.inHours < 3) {
+    if (difference.inHours < (batterySaver?8:3)) {
       try {
         print("Returned homework from offline");
         List<homework> listToReturn = homeworkBox.getAt(0).cast<homework>();
@@ -141,7 +144,7 @@ getHomeworkFromDB({bool online = true}) async {
     } else {
       if (online == true) {
         print(
-            "Offline homework data is too old of ${difference.inHours - 3} hours.");
+            "Offline homework data is too old of ${difference.inHours - (batterySaver?8:3)} hours.");
         return null;
       } else {
         try {

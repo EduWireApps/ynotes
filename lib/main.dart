@@ -45,13 +45,18 @@ void backgroundFetchHeadlessTask(String taskId) async {
       onSelectNotification: (String value) {
     haveToReopenOnGradePage = true;
   });
-
-  if (await mainTestNewGrades()) {
-    BackgroundServices.showNotification();
+//Ensure that grades notification are enabled and battery saver disabled
+  if (await getSetting("notificationNewGrade") &&
+      !await getSetting("batterySaver")) {
+    if (await mainTestNewGrades()) {
+      BackgroundServices.showNotification();
+    } else {
+      print("Nothing updated");
+    }
+    BackgroundFetch.finish(taskId);
   } else {
-    print("Nothing updated");
+    print("New grade notification disabled");
   }
-  BackgroundFetch.finish(taskId);
 }
 
 mainTestNewGrades() async {

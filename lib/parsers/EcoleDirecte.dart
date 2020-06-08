@@ -88,6 +88,7 @@ class APIEcoleDirecte extends API {
       if (req['code'] == 200) {
         //Put the value of the name in a variable
         actualUser = req['data']['accounts'][0]['prenom'];
+        actualUser = req['data']['accounts'][0]['prenom'];
         String userID = req['data']['accounts'][0]['id'].toString();
         //Store the token
         token = req['token'];
@@ -230,7 +231,7 @@ class APIEcoleDirecte extends API {
       });
     });
 
-    putHomework(listToReturn);
+    await putHomework(listToReturn);
     return listToReturn;
   }
 
@@ -262,7 +263,7 @@ class APIEcoleDirecte extends API {
           List data = req['data']['matieres'];
 
           data.forEach((element) {
-            print(data);
+            //print(data);
             if (element['aFaire'] != null) {
               String encodedContent = "";
               String aFaireEncoded = "";
@@ -394,6 +395,7 @@ Future getMails() async {
           Classeur classeur;
           classeursList.add(new Classeur(element["libelle"], element["id"]));
         });
+        
       }
     }
     //Return an error

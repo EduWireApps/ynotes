@@ -404,6 +404,8 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: <
           Widget>[
         Container(
+    
+      padding: EdgeInsets.only(top:(screenSize.size.height / 10 * 8.8) / 10 * 1 / 6),
           width: screenSize.size.width / 5 * 4.7,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
@@ -415,10 +417,11 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Container(
+                
                 height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
                 width: (screenSize.size.width / 5) * 2.2,
-                decoration: ShapeDecoration(
-                  shape: StadiumBorder(),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(11),
                   color: Theme.of(context).primaryColorDark,
                 ),
                 child: Row(
@@ -472,40 +475,36 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
               ),
               Container(
                 margin: EdgeInsets.only(
-                    left: (screenSize.size.height / 10 * 8.8) / 10 * 0.1),
-                height: (screenSize.size.height / 10 * 8.8) / 10 * 0.8,
-                width: (screenSize.size.width / 5) * 1.7,
-                child: FittedBox(
-                  child: RaisedButton(
-                    color: Theme.of(context).primaryColorDark,
-                    shape: StadiumBorder(),
-                    onPressed: () {
-                      openSortBox();
-                    },
-                    child: Row(
-                      children: <Widget>[
-                        Icon(MdiIcons.filter,
-                            color: isDarkModeEnabled
-                                ? Colors.white
-                                : Colors.black),
-                        SizedBox(
-                          width: (screenSize.size.width / 5) * 0.1,
-                        ),
-                        Text(
-                          "Trier",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 18,
-                              fontFamily: "Asap",
-                              color: isDarkModeEnabled
-                                  ? Colors.white
-                                  : Colors.black),
-                        ),
-                      ],
+                      left: (screenSize.size.height / 10 * 8.8) / 10 * 0.1),
+                child: Material(
+                      color: Theme.of(context).primaryColorDark,
+                      borderRadius: BorderRadius.circular(11),
+                      child: InkWell(
+                        onTap: ()
+                        {
+                            openSortBox();
+                        },
+                        child: Container(
+                          
+                            height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
+                            padding:
+                                EdgeInsets.all(screenSize.size.width / 5 * 0.1),
+                            child: FittedBox(
+                                                      child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Icon(Icons.settings),
+                                  Text(
+                                    "Trier",
+                                    style: TextStyle(fontFamily: "Asap"),
+                                  ),
+                                ],
+                              ),
+                            )),
+                      ),
                     ),
-                  ),
-                ),
               ),
+              
             ],
           ),
         ),
@@ -516,6 +515,7 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
           onRefresh: refreshLocalGradeList,
           child: Container(
             width: screenSize.size.width / 5 * 4.7,
+            padding: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
             height: (screenSize.size.height / 10 * 8.8) / 10 * 5.5,
             margin: EdgeInsets.only(top: 0),
             decoration: BoxDecoration(
@@ -1091,19 +1091,23 @@ class _GradesGroupState extends State<GradesGroup> {
                             capitalizedNomDiscipline != null)
                           Positioned(
                             left: screenSize.size.width / 5 * 0.15,
-                            top: screenSize.size.width / 5 * 0.1,
+                            top: screenSize.size.height / 10 * 0.1,
                             child: Container(
                               padding: EdgeInsets.symmetric(
                                   horizontal: screenSize.size.width / 5 * 0.1),
                               child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: <Widget>[
-                                  Text(
-                                    capitalizedNomDiscipline,
-                                    overflow: TextOverflow.ellipsis,
-                                    textAlign: TextAlign.left,
-                                    style: TextStyle(
-                                        fontFamily: "Asap",
-                                        fontWeight: FontWeight.w600),
+                                  Container(
+                                    child: Text(
+                                      capitalizedNomDiscipline,
+                                      overflow: TextOverflow.ellipsis,
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                          fontFamily: "Asap",
+                                          fontWeight: FontWeight.w600),
+                                    ),
                                   ),
                                   if (nomsProfesseurs.length > 15)
                                     Container(
@@ -1118,8 +1122,7 @@ class _GradesGroupState extends State<GradesGroup> {
                                         height:
                                             screenSize.size.height / 10 * 0.3,
                                         child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(25),
+                                         
                                           child: Marquee(
                                               text: nomsProfesseurs,
                                               style: TextStyle(
@@ -1137,12 +1140,12 @@ class _GradesGroupState extends State<GradesGroup> {
                                                 0.3),
                                         decoration: BoxDecoration(
                                             borderRadius:
-                                                BorderRadius.circular(11)),
+                                                BorderRadius.circular(0)),
                                         width: screenSize.size.width / 5 * 2,
                                      
                                         child: ClipRRect(
                                           borderRadius:
-                                              BorderRadius.circular(25),
+                                              BorderRadius.circular(0),
                                           child: Text(
                                              nomsProfesseurs,
                                               style: TextStyle(
@@ -1345,16 +1348,21 @@ class _GradesGroupState extends State<GradesGroup> {
                           gradesModalBottomSheet(context, localList[index],
                               widget.disciplinevar, callback);
                         },
+                        /*
                         onLongPress: () {
                           shareBox(localList[index], widget.disciplinevar);
-                        },
+                        },*/
                         child: ClipRRect(
                           child: Stack(
                             children: <Widget>[
                               if (localList != null)
                                 //Grade box
                                 Container(
-                                  width: screenSize.size.width / 5 * 1.2,
+                                     padding: EdgeInsets.symmetric(
+                                            horizontal: screenSize.size.width /
+                                                    5 * 0.2),
+                                                    
+                                                    
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
@@ -1834,105 +1842,108 @@ class _GradesGroupState extends State<GradesGroup> {
                     alignment: Alignment.bottomCenter,
                     child: Container(
                       height: (screenSize.size.height / 3) / 1.5,
+                       width: (screenSize.size.width* 0.8),
                       margin: EdgeInsets.only(
                           top: (screenSize.size.height / 3) / 10),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text("Moyenne de la classe :",
-                                  style: TextStyle(fontFamily: "Asap")),
-                              Container(
-                                margin: EdgeInsets.only(
-                                    left: (screenSize.size.width / 5) * 0.2),
-                                decoration: BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(15)),
-                                    color: Theme.of(context).primaryColor),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal:
-                                        (screenSize.size.width / 5) * 0.2,
-                                    vertical:
-                                        (screenSize.size.width / 5) * 0.1),
-                                child: Text(
-                                  (grade.moyenneClasse != ""
-                                      ? grade.moyenneClasse
-                                      : "-"),
-                                  style: TextStyle(
-                                      fontFamily: "Asap",
-                                      color: isDarkModeEnabled
-                                          ? Colors.white
-                                          : Colors.black),
-                                ),
-                              )
-                            ],
-                          ),
-                          SizedBox(
-                            height: (screenSize.size.height / 3) / 25,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text("Type de devoir :",
-                                  style: TextStyle(fontFamily: "Asap")),
-                              Container(
-                                margin: EdgeInsets.only(
-                                    left: (screenSize.size.width / 5) * 0.2),
-                                decoration: BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(15)),
-                                    color: Theme.of(context).primaryColor),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal:
-                                        (screenSize.size.width / 5) * 0.2,
-                                    vertical:
-                                        (screenSize.size.width / 5) * 0.1),
-                                child: Text(
-                                  grade.typeDevoir,
-                                  style: TextStyle(
-                                      fontFamily: "Asap",
-                                      color: isDarkModeEnabled
-                                          ? Colors.white
-                                          : Colors.black),
-                                ),
-                              )
-                            ],
-                          ),
-                          SizedBox(
-                            height: (screenSize.size.height / 3) / 25,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text("Date du devoir :",
-                                  style: TextStyle(fontFamily: "Asap")),
-                              Container(
-                                margin: EdgeInsets.only(
-                                    left: (screenSize.size.width / 5) * 0.2),
-                                decoration: BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(15)),
-                                    color: Theme.of(context).primaryColor),
-                                padding: EdgeInsets.symmetric(
-                                    horizontal:
-                                        (screenSize.size.width / 5) * 0.2,
-                                    vertical:
-                                        (screenSize.size.width / 5) * 0.1),
-                                child: Text(
-                                  DateFormat("dd MMMM yyyy", "fr_FR")
-                                      .format(DateTime.parse(grade.date)),
-                                  style: TextStyle(
-                                      fontFamily: "Asap",
-                                      color: isDarkModeEnabled
-                                          ? Colors.white
-                                          : Colors.black),
-                                ),
-                              )
-                            ],
-                          )
-                        ],
+                      child: FittedBox(
+                                              child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text("Moyenne de la classe :",
+                                    style: TextStyle(fontFamily: "Asap")),
+                                Container(
+                                  margin: EdgeInsets.only(
+                                      left: (screenSize.size.width / 5) * 0.2),
+                                  decoration: BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(15)),
+                                      color: Theme.of(context).primaryColor),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal:
+                                          (screenSize.size.width / 5) * 0.2,
+                                      vertical:
+                                          (screenSize.size.width / 5) * 0.1),
+                                  child: Text(
+                                    (grade.moyenneClasse != ""
+                                        ? grade.moyenneClasse
+                                        : "-"),
+                                    style: TextStyle(
+                                        fontFamily: "Asap",
+                                        color: isDarkModeEnabled
+                                            ? Colors.white
+                                            : Colors.black),
+                                  ),
+                                )
+                              ],
+                            ),
+                            SizedBox(
+                              height: (screenSize.size.height / 3) / 25,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text("Type de devoir :",
+                                    style: TextStyle(fontFamily: "Asap")),
+                                Container(
+                                  margin: EdgeInsets.only(
+                                      left: (screenSize.size.width / 5) * 0.2),
+                                  decoration: BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(15)),
+                                      color: Theme.of(context).primaryColor),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal:
+                                          (screenSize.size.width / 5) * 0.2,
+                                      vertical:
+                                          (screenSize.size.width / 5) * 0.1),
+                                  child: Text(
+                                    grade.typeDevoir,
+                                    style: TextStyle(
+                                        fontFamily: "Asap",
+                                        color: isDarkModeEnabled
+                                            ? Colors.white
+                                            : Colors.black),
+                                  ),
+                                )
+                              ],
+                            ),
+                            SizedBox(
+                              height: (screenSize.size.height / 3) / 25,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text("Date du devoir :",
+                                    style: TextStyle(fontFamily: "Asap")),
+                                Container(
+                                  margin: EdgeInsets.only(
+                                      left: (screenSize.size.width / 5) * 0.2),
+                                  decoration: BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(15)),
+                                      color: Theme.of(context).primaryColor),
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal:
+                                          (screenSize.size.width / 5) * 0.2,
+                                      vertical:
+                                          (screenSize.size.width / 5) * 0.1),
+                                  child: Text(
+                                    DateFormat("dd MMMM yyyy", "fr_FR")
+                                        .format(DateTime.parse(grade.date)),
+                                    style: TextStyle(
+                                        fontFamily: "Asap",
+                                        color: isDarkModeEnabled
+                                            ? Colors.white
+                                            : Colors.black),
+                                  ),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   )
@@ -1962,65 +1973,64 @@ class _GradesGroupState extends State<GradesGroup> {
         context: context,
         builder: (BuildContext bc) {
           return Container(
-              height: (screenSize.size.height / 3.5),
+              height: screenSize.size.height/10*3.0,
               padding: EdgeInsets.all(0),
-              child: new Stack(
+              child: new Column(
                 children: <Widget>[
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          decoration: BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(25)),
-                              color: colorGroup),
-                          padding: EdgeInsets.all(5),
-                          child: Text(
-                            discipline.nomDiscipline,
-                            style: TextStyle(
-                                fontFamily: "Asap",
-                                fontSize: 17,
-                                fontWeight: FontWeight.w700),
-                            textAlign: TextAlign.center,
-                          ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                         margin: EdgeInsets.only(
+                        top:screenSize.size.height / 10 *0.05),
+                        decoration: BoxDecoration(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(25)),
+                            color: colorGroup),
+                        padding: EdgeInsets.all(5),
+                        child: Text(
+                          discipline.nomDiscipline,
+                          style: TextStyle(
+                              fontFamily: "Asap",
+                              fontSize: 17,
+                              fontWeight: FontWeight.w700),
+                          textAlign: TextAlign.center,
                         ),
-                        Container(
-                            height: (screenSize.size.height / 3) / 6,
-                            width: (screenSize.size.height / 3) / 6,
-                            padding: EdgeInsets.all(5),
-                            child: Material(
+                      ),
+                      Container(
+                          height: (screenSize.size.height / 3) / 6,
+                          width: (screenSize.size.height / 3) / 6,
+                          padding: EdgeInsets.all(5),
+                          child: Material(
+                              borderRadius: BorderRadius.circular(80),
+                              color: Colors.grey.withOpacity(0.5),
+                              child: InkWell(
                                 borderRadius: BorderRadius.circular(80),
-                                color: Colors.grey.withOpacity(0.5),
-                                child: InkWell(
-                                  borderRadius: BorderRadius.circular(80),
-                                  radius: 25,
-                                  onTap: () {
-                                    Navigator.pop(context);
-                                    colorPicker(context, discipline, callback);
-                                  },
-                                  splashColor: Colors.grey,
-                                  highlightColor: Colors.grey,
-                                  child: Container(
-                                    child: Icon(
-                                      Icons.color_lens,
-                                      color: Colors.black26,
-                                    ),
+                                radius: 25,
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  colorPicker(context, discipline, callback);
+                                },
+                                splashColor: Colors.grey,
+                                highlightColor: Colors.grey,
+                                child: Container(
+                                  child: Icon(
+                                    Icons.color_lens,
+                                    color: Colors.black26,
                                   ),
-                                )))
-                      ],
-                    ),
+                                ),
+                              )))
+                    ],
                   ),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      height: (screenSize.size.height / 3) / 1.5,
-                      margin: EdgeInsets.only(
-                          top: (screenSize.size.height / 3) / 10),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                  Container(
+                    height: screenSize.size.height/10*2,
+                    margin: EdgeInsets.only(
+                        top: (screenSize.size.height / 10*0.2)),
+                    child: FittedBox(
+                                          child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,

@@ -411,3 +411,17 @@ List<grade> getAllGrades(List<discipline> list, {bool overrideLimit = false}) {
 
 //Indicate if the app has to reopen on grade page
 bool haveToReopenOnGradePage = false;
+//Redefine the switch statement
+TValue case2<TOptionType, TValue>(
+  TOptionType selectedOption,
+  Map<TOptionType, TValue> branches, [
+  TValue defaultValue = null,
+]) {
+  if (!branches.containsKey(selectedOption)) {
+    return defaultValue;
+  }
+
+  return branches[selectedOption];
+}
+
+List<discipline> specialities  = List<discipline>();

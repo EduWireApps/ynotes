@@ -21,6 +21,8 @@ class HomeworkPage extends StatefulWidget {
   }
 }
 
+enum sortHomeworkValue { date, reversed_date, done, pinned }
+
 PageController _pageController;
 //The date the user want to see
 DateTime dateToUse;
@@ -28,6 +30,7 @@ bool firstStart = true;
 API api = APIManager();
 
 class _HomeworkPageState extends State<HomeworkPage> {
+  sortHomeworkValue actualSortHomework = sortHomeworkValue.date;
   void initState() {
     super.initState();
     _pageController = PageController();
@@ -67,8 +70,9 @@ class _HomeworkPageState extends State<HomeworkPage> {
               width: screenSize.size.width / 5 * 4.7,
               height: (screenSize.size.height / 10 * 8.8) / 10 * 7.5,
               decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(15),
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(15),
+                    topRight: Radius.circular(15),
                   ),
                   border: Border.all(width: 0.00000, color: Colors.transparent),
                   color: Theme.of(context).primaryColor),
@@ -104,7 +108,7 @@ class _HomeworkPageState extends State<HomeworkPage> {
                                               padding: EdgeInsets.all(
                                                   screenSize.size.width /
                                                       5 *
-                                                      0.2),
+                                                      0.1),
                                               itemBuilder:
                                                   (BuildContext context,
                                                       int index, animation) {
@@ -339,112 +343,147 @@ class _HomeworkPageState extends State<HomeworkPage> {
                       ],
                     ),
                   ),
-                  Positioned(
-                    bottom: 0,
-                    child: AnimatedContainer(
-                      duration: Duration(milliseconds: 200),
-                      width: screenSize.size.width / 5 * 4.7,
-                      height: screenSize.size.height / 10 * 0,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(15),
-                          ),
-                          color: Colors.blueGrey),
-                    ),
-                  ),
                 ],
               )),
 
           ///Button Bar
-          Container(
-            width: screenSize.size.width / 5 * 4.7,
-            margin: EdgeInsets.only(
-                top: (screenSize.size.height / 10 * 8.8) / 10 * 0.1),
-            padding: EdgeInsets.only(
-                top: (screenSize.size.height / 10 * 8.8) / 10 * 0.1,
-                bottom: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(
-                  Radius.circular(15),
-                ),
-                border: Border.all(width: 0.00000, color: Colors.transparent),
-                color: Theme.of(context).primaryColorDark),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                RaisedButton(
-                  color: Theme.of(context).primaryColor,
-                  shape: CircleBorder(),
-                  onPressed: () {},
-                  child: Container(
-                      padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
-                      child: Icon(
-                        MdiIcons.filter,
-                        color: isDarkModeEnabled ? Colors.white : Colors.black,
-                        size: screenSize.size.width / 5 * 0.5,
-                      )),
-                ),
-                RaisedButton(
-                  color: Theme.of(context).primaryColor,
-                  shape: CircleBorder(),
-                  onPressed: () {},
-                  //Open the settings bar
-                  child: Container(
-                      padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
-                      child: Icon(
-                        Icons.settings,
-                        color: isDarkModeEnabled ? Colors.white : Colors.black,
-                        size: screenSize.size.width / 5 * 0.5,
-                      )),
-                ),
-                RaisedButton(
-                  color: Theme.of(context).primaryColor,
-                  shape: CircleBorder(),
-                  onPressed: () async {
-                    DateTime someDate = await showDatePicker(
-                      locale: Locale('fr', 'FR'),
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2018),
-                      lastDate: DateTime(2030),
-                      helpText: "",
-                      builder: (BuildContext context, Widget child) {
-                        return Material(
-                          color: Colors.transparent,
-                          child: Theme(
-                            data: isDarkModeEnabled?ThemeData.dark():ThemeData.light(),
-                            child: Column(
+          MediaQuery(
+           data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+                      child: Container(
+              width: screenSize.size.width / 5 * 4.7,
+              padding: EdgeInsets.only(
+                  top: (screenSize.size.height / 10 * 8.8) / 10 * 0.1,
+                  bottom: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(15),
+                    bottomRight: Radius.circular(15),
+                  ),
+                  border: Border.all(width: 0.00000, color: Colors.transparent),
+                  color: Theme.of(context).primaryColor),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Container(
+                    margin:
+                        EdgeInsets.only(left: (screenSize.size.width / 5) * 0.2),
+                    child: Material(
+                      color: Theme.of(context).primaryColorDark,
+                      borderRadius: BorderRadius.circular(11),
+                      child: InkWell(
+                        onTap: () {
+                          setState(() {
+                            print(sortHomeworkValue);
+                            int index = sortHomeworkValue.values
+                                .indexOf(actualSortHomework);
+                            actualSortHomework = sortHomeworkValue.values[index +
+                                (index == sortHomeworkValue.values.length - 1
+                                    ? -2
+                                    : 1)];
+                          });
+                        },
+                        borderRadius: BorderRadius.circular(11),
+                        child: Container(
+                            height:
+                                (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
+                            width: (screenSize.size.width / 5) * 0.6,
+                            child: Icon(
+                              case2(
+                                actualSortHomework,
+                                {
+                                  sortHomeworkValue.date: MdiIcons.sortAscending,
+                                  sortHomeworkValue.reversed_date:
+                                      MdiIcons.sortDescending,
+                                  sortHomeworkValue.done: MdiIcons.check,
+                                  sortHomeworkValue.pinned: MdiIcons.bookmark,
+                                },
+                                MdiIcons.bookmark,
+                              ),
+                              color: Colors.black,
+                            )),
+                      ),
+                    ),
+                  ),
+                  Material(
+                    color: Theme.of(context).primaryColorDark,
+                    borderRadius: BorderRadius.circular(11),
+                    child: InkWell(
+                      child: Container(
+                          height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
+                          padding:
+                              EdgeInsets.all(screenSize.size.width / 5 * 0.1),
+                          child: FittedBox(
+                                                    child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                             
-                                SizedBox(
-                                  
-                                  height: screenSize.size.height/10*5,
-                                  child: child)
+                                Icon(Icons.settings),
+                                Text(
+                                  "Paramètres",
+                                  style: TextStyle(fontFamily: "Asap"),
+                                ),
                               ],
                             ),
-                          ),
+                          )),
+                    ),
+                  ),
+                  Material(
+                    color: Theme.of(context).primaryColorDark,
+                    borderRadius: BorderRadius.circular(11),
+                    child: InkWell(
+                      onTap: () async {
+                        DateTime someDate = await showDatePicker(
+                          locale: Locale('fr', 'FR'),
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(2018),
+                          lastDate: DateTime(2030),
+                          helpText: "",
+                          builder: (BuildContext context, Widget child) {
+                            return Material(
+                              color: Colors.transparent,
+                              child: Theme(
+                                data: isDarkModeEnabled
+                                    ? ThemeData.dark()
+                                    : ThemeData.light(),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    SizedBox(
+                                        height: screenSize.size.height / 10 * 5,
+                                        child: child)
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
                         );
+                        if (someDate != null) {
+                          setState(() {
+                            dateToUse = someDate;
+                          });
+                          _pageController.animateToPage(1,
+                              duration: Duration(milliseconds: 200),
+                              curve: Curves.easeIn);
+                        }
                       },
-                    );
-                    if (someDate != null) {
-                      setState(() {
-                        dateToUse = someDate;
-                      });
-                      _pageController.animateToPage(1,
-                          duration: Duration(milliseconds: 200),
-                          curve: Curves.easeIn);
-                    }
-                  },
-                  child: Container(
-                      padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
-                      child: Icon(
-                        MdiIcons.calendar,
-                        color: isDarkModeEnabled ? Colors.white : Colors.black,
-                        size: screenSize.size.width / 5 * 0.5,
-                      )),
-                ),
-              ],
+                      child: Container(
+                          height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
+                          padding:
+                              EdgeInsets.all(screenSize.size.width / 5 * 0.1),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Icon(MdiIcons.calendar),
+                              Text(
+                                "Choisir une date",
+                                style: TextStyle(fontFamily: "Asap"),
+                              ),
+                            ],
+                          )),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],
@@ -654,7 +693,7 @@ class _HomeworkElementState extends State<HomeworkElement> {
                           border:
                               Border.all(width: 0, color: Colors.transparent),
                         ),
-                        width: screenSize.size.width / 5 * 4.4,
+                        width: screenSize.size.width / 5 * 4.5,
                         height: isExpanded
                             ? (screenSize.size.height / 10 * 8.8) / 10 * 0.9
                             : (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
@@ -782,9 +821,11 @@ class _HomeworkElementState extends State<HomeworkElement> {
                                               ),
                                             }),
                                       ),
-                                     Container(height: screenSize.size.height/10*0.2,child: Text(this
-                                                .widget
-                                                .homeworkForThisDay.nomProf)), 
+                                    Container(
+                                        child: Text(this
+                                            .widget
+                                            .homeworkForThisDay
+                                            .nomProf)),
                                     HtmlWidget(
                                         //Delete all format made by teachers to allow the zoom
                                         segmentedControlIndex == 0
@@ -855,19 +896,6 @@ class _HomeworkElementState extends State<HomeworkElement> {
                                                   width: screenSize.size.width /
                                                       5 *
                                                       1.88,
-                                                ),
-                                              if (isDocumentExpanded)
-                                                FadeAnimation(
-                                                  0.05,
-                                                  IconButton(
-                                                    icon: Icon(
-                                                      MdiIcons.downloadMultiple,
-                                                      color: Colors.white,
-                                                    ),
-                                                    onPressed: () {
-                                                      // do something
-                                                    },
-                                                  ),
                                                 ),
                                             ],
                                           ),
@@ -1061,17 +1089,15 @@ class _HomeworkElementState extends State<HomeworkElement> {
                                                                               ///Download is ended
                                                                               else {
                                                                                 return Container(
-                                                                                  
-                                                                                  child: IconButton(
-                                                                              icon: Icon(
-                                                                                MdiIcons.check,
-                                                                                color: Colors.green,
-                                                                              ),
-                                                                              onPressed: () async {
-                                                                                openFile((segmentedControlIndex == 0 ? widget.homeworkForThisDay.documents : widget.homeworkForThisDay.documentsContenuDeSeance)[index].libelle);
-                                                                              },
-                                                                            )
-                                                                                );
+                                                                                    child: IconButton(
+                                                                                  icon: Icon(
+                                                                                    MdiIcons.check,
+                                                                                    color: Colors.green,
+                                                                                  ),
+                                                                                  onPressed: () async {
+                                                                                    openFile((segmentedControlIndex == 0 ? widget.homeworkForThisDay.documents : widget.homeworkForThisDay.documentsContenuDeSeance)[index].libelle);
+                                                                                  },
+                                                                                ));
                                                                               }
                                                                             }
 
@@ -1261,7 +1287,7 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
         margin:
             EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.1),
         duration: Duration(milliseconds: 170),
-        width: screenSize.size.width / 5 * 4.1,
+        width: screenSize.size.width / 5 * 5,
         decoration: BoxDecoration(
           color: Theme.of(context).primaryColor,
           borderRadius: BorderRadius.circular(25),
@@ -1296,7 +1322,7 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
                   Radius.circular(15),
                 ),
                 child: Container(
-                  width: screenSize.size.width / 5 * 4.4,
+                  width: screenSize.size.width / 5 * 5,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(
                       Radius.circular(15),
@@ -1347,7 +1373,6 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
                       AnimatedContainer(
                           duration: Duration(milliseconds: 170),
                           decoration: BoxDecoration(
-                           
                             color: isDarkModeEnabled
                                 ? Color(0xff656565)
                                 : Colors.white,
@@ -1358,7 +1383,6 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
                           height:
                               screenSize.size.width / 10 * containerSize / 1.2,
                           child: ClipRRect(
-                            
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
@@ -1441,7 +1465,6 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
                               }),
                         ),
                       ),
-                      
                     ],
                   ),
                 ),
