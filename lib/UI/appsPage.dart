@@ -6,6 +6,9 @@ import 'apps/cloud.dart';
 import 'apps/mail.dart';
 
 class AppsPage extends StatefulWidget {
+  final BuildContext rootcontext;
+
+  const AppsPage({Key key, this.rootcontext}) : super(key: key);
   State<StatefulWidget> createState() {
     return _AppsPageState();
   }
@@ -27,7 +30,7 @@ class _AppsPageState extends State<AppsPage> {
             routes: {
           '/homePage': (context) => Material(child: HomePage()),
           '/cloud': (context) => Material(child: CloudPage()),
-          '/mail': (context) => Material(child: MailPage()),
+          '/mail': (context) => Material(child: MailPage(context:widget.rootcontext)),
         }));
   }
 }
@@ -55,67 +58,70 @@ class _HomePageState extends State<HomePage> {
     MediaQueryData screenSize = MediaQuery.of(context);
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text(
-            "Accédez à vos applications",
-            style: TextStyle(
-                fontFamily: "Asap",
-                color: isDarkModeEnabled ? Colors.white : Colors.black,
-                fontSize: screenSize.size.height / 10 * 0.4,
-                fontWeight: FontWeight.w200),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(
-            height: screenSize.size.height / 10 * 0.4,
-          ),
-          Wrap(
-            children: List.generate(listAppsEcoleDirecte.length, (index) {
-              return Container(
-                margin: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
-                child: Column(
-                  children: <Widget>[
-                    Material(
-                        color: Theme.of(context).primaryColorDark,
-                        borderRadius: BorderRadius.circular(21),
-                        child: InkWell(
-                            borderRadius: BorderRadius.circular(21),
-                            onTap: () {
-                              if(listAppsEcoleDirecte[index].route!=null)
-                              {
-                                 Navigator.pushNamed(context, '/${listAppsEcoleDirecte[index].route}');
-                                 initialRoute = '/${listAppsEcoleDirecte[index].route}';
-                              }
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(21)),
-                              width: screenSize.size.width / 3,
-                              height: screenSize.size.width / 3,
-                              child: Center(
-                                child: Icon(
-                                  listAppsEcoleDirecte[index].icon,
-                                  size: screenSize.size.width / 6,
-                                  color: isDarkModeEnabled
-                                      ? Colors.white
-                                      : Colors.black,
+      body: Container(
+      
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              "Accédez à vos applications",
+              style: TextStyle(
+                  fontFamily: "Asap",
+                  color: isDarkModeEnabled ? Colors.white : Colors.black,
+                  fontSize: screenSize.size.height / 10 * 0.4,
+                  fontWeight: FontWeight.w200),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(
+              height: screenSize.size.height / 10 * 0.4,
+            ),
+            Wrap(
+              children: List.generate(listAppsEcoleDirecte.length, (index) {
+                return Container(
+                  margin: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
+                  child: Column(
+                    children: <Widget>[
+                      Material(
+                          color: Theme.of(context).primaryColorDark,
+                          borderRadius: BorderRadius.circular(21),
+                          child: InkWell(
+                              borderRadius: BorderRadius.circular(21),
+                              onTap: () {
+                                if(listAppsEcoleDirecte[index].route!=null)
+                                {
+                                   Navigator.pushNamed(context, '/${listAppsEcoleDirecte[index].route}');
+                                   initialRoute = '/${listAppsEcoleDirecte[index].route}';
+                                }
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(21)),
+                                width: screenSize.size.width / 3,
+                                height: screenSize.size.width / 3,
+                                child: Center(
+                                  child: Icon(
+                                    listAppsEcoleDirecte[index].icon,
+                                    size: screenSize.size.width / 6,
+                                    color: isDarkModeEnabled
+                                        ? Colors.white
+                                        : Colors.black,
+                                  ),
                                 ),
-                              ),
-                            ))),
-                    //label
-                    Text(
-                      listAppsEcoleDirecte[index].name,
-                      style: TextStyle(
-                          fontFamily: "Asap",
-                          color: isDarkModeEnabled ? Colors.white : Colors.black),
-                    )
-                  ],
-                ),
-              );
-            }),
-          ),
-        ],
+                              ))),
+                      //label
+                      Text(
+                        listAppsEcoleDirecte[index].name,
+                        style: TextStyle(
+                            fontFamily: "Asap",
+                            color: isDarkModeEnabled ? Colors.white : Colors.black),
+                      )
+                    ],
+                  ),
+                );
+              }),
+            ),
+          ],
+        ),
       ),
     );
   }

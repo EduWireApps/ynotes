@@ -348,8 +348,8 @@ class _HomeworkPageState extends State<HomeworkPage> {
 
           ///Button Bar
           MediaQuery(
-           data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
-                      child: Container(
+            data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+            child: Container(
               width: screenSize.size.width / 5 * 4.7,
               padding: EdgeInsets.only(
                   top: (screenSize.size.height / 10 * 8.8) / 10 * 0.1,
@@ -365,8 +365,8 @@ class _HomeworkPageState extends State<HomeworkPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   Container(
-                    margin:
-                        EdgeInsets.only(left: (screenSize.size.width / 5) * 0.2),
+                    margin: EdgeInsets.only(
+                        left: (screenSize.size.width / 5) * 0.2),
                     child: Material(
                       color: Theme.of(context).primaryColorDark,
                       borderRadius: BorderRadius.circular(11),
@@ -376,10 +376,12 @@ class _HomeworkPageState extends State<HomeworkPage> {
                             print(sortHomeworkValue);
                             int index = sortHomeworkValue.values
                                 .indexOf(actualSortHomework);
-                            actualSortHomework = sortHomeworkValue.values[index +
-                                (index == sortHomeworkValue.values.length - 1
-                                    ? -2
-                                    : 1)];
+                            actualSortHomework = sortHomeworkValue.values[
+                                index +
+                                    (index ==
+                                            sortHomeworkValue.values.length - 1
+                                        ? -2
+                                        : 1)];
                           });
                         },
                         borderRadius: BorderRadius.circular(11),
@@ -391,7 +393,8 @@ class _HomeworkPageState extends State<HomeworkPage> {
                               case2(
                                 actualSortHomework,
                                 {
-                                  sortHomeworkValue.date: MdiIcons.sortAscending,
+                                  sortHomeworkValue.date:
+                                      MdiIcons.sortAscending,
                                   sortHomeworkValue.reversed_date:
                                       MdiIcons.sortDescending,
                                   sortHomeworkValue.done: MdiIcons.check,
@@ -399,7 +402,9 @@ class _HomeworkPageState extends State<HomeworkPage> {
                                 },
                                 MdiIcons.bookmark,
                               ),
-                              color: Colors.black,
+                              color: isDarkModeEnabled
+                                  ? Colors.white
+                                  : Colors.black,
                             )),
                       ),
                     ),
@@ -409,17 +414,28 @@ class _HomeworkPageState extends State<HomeworkPage> {
                     borderRadius: BorderRadius.circular(11),
                     child: InkWell(
                       child: Container(
-                          height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
+                          height:
+                              (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
                           padding:
                               EdgeInsets.all(screenSize.size.width / 5 * 0.1),
                           child: FittedBox(
-                                                    child: Row(
+                            child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                Icon(Icons.settings),
+                                Icon(
+                                  Icons.settings,
+                                  color: isDarkModeEnabled
+                                      ? Colors.white
+                                      : Colors.black,
+                                ),
                                 Text(
                                   "Paramètres",
-                                  style: TextStyle(fontFamily: "Asap"),
+                                  style: TextStyle(
+                                    fontFamily: "Asap",
+                                    color: isDarkModeEnabled
+                                        ? Colors.white
+                                        : Colors.black,
+                                  ),
                                 ),
                               ],
                             ),
@@ -467,16 +483,27 @@ class _HomeworkPageState extends State<HomeworkPage> {
                         }
                       },
                       child: Container(
-                          height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
+                          height:
+                              (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
                           padding:
                               EdgeInsets.all(screenSize.size.width / 5 * 0.1),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              Icon(MdiIcons.calendar),
+                              Icon(
+                                MdiIcons.calendar,
+                                color: isDarkModeEnabled
+                                    ? Colors.white
+                                    : Colors.black,
+                              ),
                               Text(
                                 "Choisir une date",
-                                style: TextStyle(fontFamily: "Asap"),
+                                style: TextStyle(
+                                  fontFamily: "Asap",
+                                  color: isDarkModeEnabled
+                                      ? Colors.white
+                                      : Colors.black,
+                                ),
                               ),
                             ],
                           )),

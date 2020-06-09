@@ -106,22 +106,24 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
                       child: InkWell(
                         borderRadius: BorderRadius.all(Radius.circular(30)),
                         onTap: () {},
-                        child: Row(
-                          children: <Widget>[
-                            Image(
-                              image:
-                                  AssetImage('assets/images/space/space.png'),
-                              width: screenSize.size.width / 5 * 0.8,
-                            ),
-                            Text(
-                              "Mes spécialités",
-                              style: TextStyle(
-                                  fontSize: screenSize.size.width / 5 * 0.3,
-                                  fontWeight: FontWeight.w500,
-                                  fontFamily: "Asap",
-                                  color: Colors.white),
-                            )
-                          ],
+                        child: FittedBox(
+                                                  child: Row(
+                            children: <Widget>[
+                              Image(
+                                image:
+                                    AssetImage('assets/images/space/space.png'),
+                                width: screenSize.size.width / 5 * 0.8,
+                              ),
+                              Text(
+                                "Mes spécialités",
+                                style: TextStyle(
+                                    fontSize: screenSize.size.width / 5 * 0.3,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: "Asap",
+                                    color: Colors.white),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -291,7 +293,8 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
         }
       });
     });
-
+    print(average);
+    print(counter);
     average = average / counter;
   }
 
@@ -404,8 +407,8 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: <
           Widget>[
         Container(
-    
-      padding: EdgeInsets.only(top:(screenSize.size.height / 10 * 8.8) / 10 * 1 / 6),
+          padding: EdgeInsets.only(
+              top: (screenSize.size.height / 10 * 8.8) / 10 * 1 / 6),
           width: screenSize.size.width / 5 * 4.7,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(
@@ -417,7 +420,6 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Container(
-                
                 height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
                 width: (screenSize.size.width / 5) * 2.2,
                 decoration: BoxDecoration(
@@ -475,36 +477,43 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
               ),
               Container(
                 margin: EdgeInsets.only(
-                      left: (screenSize.size.height / 10 * 8.8) / 10 * 0.1),
+                    left: (screenSize.size.height / 10 * 8.8) / 10 * 0.1),
                 child: Material(
-                      color: Theme.of(context).primaryColorDark,
-                      borderRadius: BorderRadius.circular(11),
-                      child: InkWell(
-                        onTap: ()
-                        {
-                            openSortBox();
-                        },
-                        child: Container(
-                          
-                            height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
-                            padding:
-                                EdgeInsets.all(screenSize.size.width / 5 * 0.1),
-                            child: FittedBox(
-                                                      child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Icon(Icons.settings),
-                                  Text(
-                                    "Trier",
-                                    style: TextStyle(fontFamily: "Asap"),
-                                  ),
-                                ],
+                  color: Theme.of(context).primaryColorDark,
+                  borderRadius: BorderRadius.circular(11),
+                  child: InkWell(
+                    onTap: () {
+                      openSortBox();
+                    },
+                    child: Container(
+                        height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
+                        padding:
+                            EdgeInsets.all(screenSize.size.width / 5 * 0.1),
+                        child: FittedBox(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Icon(
+                                Icons.settings,
+                                color: isDarkModeEnabled
+                                    ? Colors.white
+                                    : Colors.black,
                               ),
-                            )),
-                      ),
-                    ),
+                              Text(
+                                "Trier",
+                                style: TextStyle(
+                                  fontFamily: "Asap",
+                                  color: isDarkModeEnabled
+                                      ? Colors.white
+                                      : Colors.black,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )),
+                  ),
+                ),
               ),
-              
             ],
           ),
         ),
@@ -930,7 +939,7 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
                                   0.2,
                               child: Tooltip(
                                 message:
-                                    "Moyenne calculée par YNotes en temps réel avec les données actuelles.",
+                                    "Moyenne calculée par yNotes en temps réel avec les données actuelles.",
                                 preferBelow: false,
                                 verticalOffset:
                                     -(screenSize.size.height / 10 * 1.1),
@@ -1044,13 +1053,12 @@ class _GradesGroupState extends State<GradesGroup> {
         nomsProfesseurs = widget.disciplinevar.professeurs[0];
         widget.disciplinevar.professeurs.forEach((element) {
           if (widget.disciplinevar.professeurs.indexOf(element) > 0) {
-            nomsProfesseurs += " - " + element + " - " ;
+            nomsProfesseurs += " - " + element + " - ";
           }
         });
 
         colorGroup = widget.disciplinevar.color;
       }
-  
     }
     //BLOCK BUILDER
     return Container(
@@ -1122,7 +1130,6 @@ class _GradesGroupState extends State<GradesGroup> {
                                         height:
                                             screenSize.size.height / 10 * 0.3,
                                         child: ClipRRect(
-                                         
                                           child: Marquee(
                                               text: nomsProfesseurs,
                                               style: TextStyle(
@@ -1132,8 +1139,8 @@ class _GradesGroupState extends State<GradesGroup> {
                                                           10 *
                                                           0.15)),
                                         )),
-                                        if(nomsProfesseurs.length <= 15)
-                                         Container(
+                                  if (nomsProfesseurs.length <= 15)
+                                    Container(
                                         margin: EdgeInsets.only(
                                             left: screenSize.size.width /
                                                 5 *
@@ -1142,16 +1149,14 @@ class _GradesGroupState extends State<GradesGroup> {
                                             borderRadius:
                                                 BorderRadius.circular(0)),
                                         width: screenSize.size.width / 5 * 2,
-                                     
                                         child: ClipRRect(
                                           borderRadius:
                                               BorderRadius.circular(0),
-                                          child: Text(
-                                             nomsProfesseurs,
+                                          child: Text(nomsProfesseurs,
                                               style: TextStyle(
                                                   fontFamily: "Asap",
                                                   fontSize:
-                                                       screenSize.size.height /
+                                                      screenSize.size.height /
                                                           10 *
                                                           0.2)),
                                         )),
@@ -1358,11 +1363,9 @@ class _GradesGroupState extends State<GradesGroup> {
                               if (localList != null)
                                 //Grade box
                                 Container(
-                                     padding: EdgeInsets.symmetric(
-                                            horizontal: screenSize.size.width /
-                                                    5 * 0.2),
-                                                    
-                                                    
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal:
+                                          screenSize.size.width / 5 * 0.2),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
@@ -1842,11 +1845,11 @@ class _GradesGroupState extends State<GradesGroup> {
                     alignment: Alignment.bottomCenter,
                     child: Container(
                       height: (screenSize.size.height / 3) / 1.5,
-                       width: (screenSize.size.width* 0.8),
+                      width: (screenSize.size.width * 0.8),
                       margin: EdgeInsets.only(
                           top: (screenSize.size.height / 3) / 10),
                       child: FittedBox(
-                                              child: Column(
+                        child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             Row(
@@ -1973,7 +1976,7 @@ class _GradesGroupState extends State<GradesGroup> {
         context: context,
         builder: (BuildContext bc) {
           return Container(
-              height: screenSize.size.height/10*3.0,
+              height: screenSize.size.height / 10 * 3.0,
               padding: EdgeInsets.all(0),
               child: new Column(
                 children: <Widget>[
@@ -1982,11 +1985,10 @@ class _GradesGroupState extends State<GradesGroup> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                       Container(
-                         margin: EdgeInsets.only(
-                        top:screenSize.size.height / 10 *0.05),
+                        margin: EdgeInsets.only(
+                            top: screenSize.size.height / 10 * 0.05),
                         decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(25)),
+                            borderRadius: BorderRadius.all(Radius.circular(25)),
                             color: colorGroup),
                         padding: EdgeInsets.all(5),
                         child: Text(
@@ -2024,11 +2026,11 @@ class _GradesGroupState extends State<GradesGroup> {
                     ],
                   ),
                   Container(
-                    height: screenSize.size.height/10*2,
+                    height: screenSize.size.height / 10 * 2,
                     margin: EdgeInsets.only(
-                        top: (screenSize.size.height / 10*0.2)),
+                        top: (screenSize.size.height / 10 * 0.2)),
                     child: FittedBox(
-                                          child: Column(
+                      child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[

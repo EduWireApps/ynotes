@@ -1,3 +1,5 @@
+
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:ynotes/UI/loginPage.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +33,7 @@ class page3 extends StatefulWidget {
 
   _page3State createState() => _page3State();
 }
+
 class page4 extends StatefulWidget {
   final double offset;
   final int idx;
@@ -38,6 +41,7 @@ class page4 extends StatefulWidget {
 
   _page4State createState() => _page4State();
 }
+
 //PAGE1 STATE
 class _page1State extends State<page1> {
   @override
@@ -369,12 +373,8 @@ class _page2State extends State<page2> {
 class _page3State extends State<page3> {
   @override
   Widget build(BuildContext context) {
-    double opacityvalue = 0;
-    if (widget.offset - 1 > 0) {
-      opacityvalue = widget.offset - 1;
-    } else {
-      opacityvalue = 0;
-    }
+    double opacityvalue = 1;
+
     return Stack(
       children: <Widget>[
         Positioned(
@@ -496,25 +496,32 @@ class _page3State extends State<page3> {
   }
 }
 
-
-
-class _page4State extends State<page3> {
+class _page4State extends State<page4> {
   @override
   Widget build(BuildContext context) {
+    var screenSize = MediaQuery.of(context);
     double opacityvalue = 0;
-    if (widget.offset - 1 > 0) {
+    if (widget.offset - 1 > 0 && widget.offset - 1 < 1) {
       opacityvalue = widget.offset - 1;
     } else {
       opacityvalue = 0;
     }
-    return Column(
-children: <Widget>[
-  Text("Paramètrons votre application")
-],
+    return Container(
+      color: Theme.of(context).backgroundColor,
+      child: Column(
+        children: <Widget>[
+          Text(
+            "Paramètrons votre application",
+            style: TextStyle(
+                fontFamily: "Asap", fontSize: screenSize.size.height / 10 * 0.35),
+                textAlign: TextAlign.center,
+          ),
+        
+        ],
+      ),
     );
   }
 }
-
 
 class PageInfo {
   //Widget Used
@@ -569,14 +576,13 @@ class _SlidingCarouselState extends State<SlidingCarousel> {
           idx: idx,
         ),
         backgroundColor: Color(0xFF252B62),
-        
       ),
-       PageInfo(
-        widget: page4(
-          offset: offset,
-          idx: idx,
-        ),
-        backgroundColor: Theme.of(context).backgroundColor),
+      PageInfo(
+          widget: page4(
+            offset: offset,
+            idx: idx,
+          ),
+          backgroundColor: Colors.white),
     ];
   }
 

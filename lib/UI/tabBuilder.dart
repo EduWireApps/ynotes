@@ -592,7 +592,7 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
                               SummaryPage(tabController: tabController),
                               GradesPage(),
                               HomeworkPage(),
-                              AppsPage()
+                              AnimatedContainer(duration: Duration(milliseconds: 200), margin: EdgeInsets.only(top:isOffline ?screenSize.size.height / 10 * 0.4:0),child: AppsPage(rootcontext: this.context,))
                             ]),
                       ),
                       if (isQuickMenuShown)

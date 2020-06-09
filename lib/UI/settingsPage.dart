@@ -23,7 +23,8 @@ class _SettingsPageState extends State<SettingsPage>
   Animation<double> movingRow;
   //To use by the actual image when switching
   Animation<double> avatarSize;
-
+  //Disable new grades when battery saver is enabled
+  bool disableNewGradesNotification;
   @override
   void initState() {
     setState(() {
@@ -47,7 +48,8 @@ class _SettingsPageState extends State<SettingsPage>
 
   @override
   Widget build(BuildContext context) {
-    actualUser = '${actualUser[0].toUpperCase()}${actualUser.toLowerCase().substring(1)}';
+    actualUser =
+        '${actualUser[0].toUpperCase()}${actualUser.toLowerCase().substring(1)}';
     MediaQueryData screenSize = MediaQuery.of(context);
 //animation left to right
     setLtr() {
@@ -96,7 +98,7 @@ class _SettingsPageState extends State<SettingsPage>
       ),
       body: Container(
         child: SingleChildScrollView(
-                  child: Column(
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               Center(
@@ -182,8 +184,9 @@ class _SettingsPageState extends State<SettingsPage>
                       child: Text("Bonjour $actualUser",
                           style: TextStyle(
                               fontFamily: "Asap",
-                              color:
-                                  isDarkModeEnabled ? Colors.white : Colors.black,
+                              color: isDarkModeEnabled
+                                  ? Colors.white
+                                  : Colors.black,
                               fontSize: screenSize.size.height / 10 * 0.3)))),
               FutureBuilder(
                   future: getSetting("nightmode"),
@@ -194,8 +197,9 @@ class _SettingsPageState extends State<SettingsPage>
                       title: Text("Mode nuit",
                           style: TextStyle(
                               fontFamily: "Asap",
-                              color:
-                                  isDarkModeEnabled ? Colors.white : Colors.black,
+                              color: isDarkModeEnabled
+                                  ? Colors.white
+                                  : Colors.black,
                               fontSize: screenSize.size.height / 10 * 0.3)),
                       subtitle: Text(
                         "Lisez vos notes de jour comme de nuit.",
@@ -218,18 +222,30 @@ class _SettingsPageState extends State<SettingsPage>
                       ),
                     );
                   }),
-                  Divider(),
+              Divider(),
               FutureBuilder(
                   future: getSetting("batterySaver"),
                   initialData: false,
                   builder: (context, snapshot) {
+                    if (snapshot.data == true) {
+                     
+                        setSetting("notificationNewGrade", false);
+                        disableNewGradesNotification=true;
+                    }
+                    
+                    else {
+                 
+                        disableNewGradesNotification=false;
+                 
+                    }
                     return SwitchListTile(
                       value: snapshot.data,
                       title: Text("Economie de données",
                           style: TextStyle(
                               fontFamily: "Asap",
-                              color:
-                                  isDarkModeEnabled ? Colors.white : Colors.black,
+                              color: isDarkModeEnabled
+                                  ? Colors.white
+                                  : Colors.black,
                               fontSize: screenSize.size.height / 10 * 0.3)),
                       subtitle: Text(
                         "Réduit les interactions réseaux au minimum pour sauver vos 15 pourcents restants.",
@@ -242,6 +258,15 @@ class _SettingsPageState extends State<SettingsPage>
                       onChanged: (value) {
                         setState(() {
                           setSetting("batterySaver", value);
+
+                          //disable the notificationNewGrade because it can't work with the battery saver enabled
+                          if (value == true) {
+                            setSetting("notificationNewGrade", false);
+                            disableNewGradesNotification=true;
+                          }
+                          else {
+                            disableNewGradesNotification=false;
+                          }
                         });
                       },
                       secondary: Icon(
@@ -250,9 +275,7 @@ class _SettingsPageState extends State<SettingsPage>
                       ),
                     );
                   }),
-                  Divider(),
-              
-           
+              Divider(),
               FutureBuilder(
                   future: getSetting("notificationNewGrade"),
                   initialData: false,
@@ -266,47 +289,46 @@ class _SettingsPageState extends State<SettingsPage>
                             color:
                                 isDarkModeEnabled ? Colors.white : Colors.black,
                             fontSize: screenSize.size.height / 10 * 0.3),
-                      
                       ),
-                      
-                      onChanged: (value) {
+                      subtitle: Text((disableNewGradesNotification==true?"Ne peut fonctionner si l'économie de données est activée":""), style: TextStyle(fontFamily: "Asap", color: Colors.red.shade700),),
+                      onChanged:(disableNewGradesNotification==true)?null: (value) {
+
+                    
                         setState(() {
                           setSetting("notificationNewGrade", value);
                         });
                       },
-                        
                       secondary: Icon(
                         MdiIcons.newBox,
                         color: isDarkModeEnabled ? Colors.white : Colors.black,
                       ),
                     );
                   }),
-                  Divider(),
-                  ListTile(leading: Icon(
-                        MdiIcons.commentQuestion,
-                        color: isDarkModeEnabled ? Colors.white : Colors.black,
-                      ), title: Text(
-                        "A propos",
-                        style: TextStyle(
-                            fontFamily: "Asap",
-                            color:
-                                isDarkModeEnabled ? Colors.white : Colors.black,
-                            fontSize: screenSize.size.height / 10 * 0.3),
-                      
+              Divider(),
+              ListTile(
+                leading: Icon(
+                  MdiIcons.commentQuestion,
+                  color: isDarkModeEnabled ? Colors.white : Colors.black,
+                ),
+                title: Text(
+                  "A propos",
+                  style: TextStyle(
+                      fontFamily: "Asap",
+                      color: isDarkModeEnabled ? Colors.white : Colors.black,
+                      fontSize: screenSize.size.height / 10 * 0.3),
+                ),
+                onTap: () {
+                  showAboutDialog(
+                      context: this.context,
+                      applicationIcon: Image(
+                        image: AssetImage('assets/appico/foreground.png'),
+                        width: screenSize.size.width / 5 * 0.7,
                       ),
-                     onTap: ()
-                     {
-                    showAboutDialog(context: this.context, applicationIcon: Image(
-                                  image:
-                                      AssetImage('assets/appico/foreground.png'),
-                                  width: screenSize.size.width / 5 * 0.7,
-                                ), applicationName: "yNotes", applicationVersion: "0.1-Bêta", applicationLegalese: "Developpé avec amour en France");
-
-                       
-
-                     },
-                      )
-                  
+                      applicationName: "yNotes",
+                      applicationVersion: "0.1-Bêta",
+                      applicationLegalese: "Developpé avec amour en France");
+                },
+              )
             ],
           ),
         ),

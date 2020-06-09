@@ -20,6 +20,7 @@ class _CloudPageState extends State<CloudPage> {
     return Container(
       width: screenSize.size.width,
       height: screenSize.size.height,
+      color: Theme.of(context).backgroundColor,
       child: Center(child: Stack(
    
         children: <Widget>[
@@ -39,9 +40,13 @@ class _CloudPageState extends State<CloudPage> {
                   padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
                   child: Row(
                     children: <Widget>[
-                      Icon(MdiIcons.arrowLeft),
+                      Icon(MdiIcons.arrowLeft,  color: isDarkModeEnabled
+                                      ? Colors.white
+                                      : Colors.black,),
                       Text("Revenir aux applications",
-                          style: TextStyle(fontFamily: "Asap", fontSize: 15)),
+                          style: TextStyle(fontFamily: "Asap", fontSize: 15,  color: isDarkModeEnabled
+                                      ? Colors.white
+                                      : Colors.black,)),
                     ],
                   ),
                 ),

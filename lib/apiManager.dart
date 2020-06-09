@@ -232,8 +232,9 @@ class Mail {
   final String subject;
   final String date;
   final String content;
-
-  Mail(this.id, this.mtype, this.read, this.idClasseur, this.from, this.to, this.subject, this.date, {this.content});
+  final List files;
+  Mail(this.id, this.mtype, this.read, this.idClasseur, this.from, this.subject, this.date, {this.content,this.to, this.files});
+  
 
 }
 

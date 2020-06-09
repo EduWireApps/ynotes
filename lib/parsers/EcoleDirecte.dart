@@ -105,7 +105,7 @@ class APIEcoleDirecte extends API {
       //Return an error
       else {
         String message = req['message'];
-        return "Oups ! Une erreur a eu lieu :\n$message" ;
+        return "Oups ! Une erreur a eu lieu :\n$message";
       }
     } else {
       return "Erreur";
@@ -194,7 +194,6 @@ class APIEcoleDirecte extends API {
     var connectivityResult = await (Connectivity().checkConnectivity());
     var offlineHomework = await getHomeworkFromDB(
         online: connectivityResult != ConnectivityResult.none);
-    
 
     //If force reload enabled the grades will be loaded online
     if ((connectivityResult == ConnectivityResult.none ||
@@ -304,20 +303,20 @@ class APIEcoleDirecte extends API {
               decodedContenuDeSeance =
                   utf8.decode(base64.decode(aFaireEncoded));
               homeworkList.add(new homework(
-                  element['matiere'],
-                  element['codeMatiere'],
-                  element['id'].toString(),
-                  decodedContent,
-                  decodedContenuDeSeance,
-                  dateHomework,
-                  DateTime.parse(element['aFaire']['donneLe']),
-                  element['aFaire']['effectue'] == 'true',
-                  rendreEnLigne,
-                  interrogation,
-                  documentsAFaire,
-                  documentsContenuDeCours,
-                  element['nomProf'],
-                  ));
+                element['matiere'],
+                element['codeMatiere'],
+                element['id'].toString(),
+                decodedContent,
+                decodedContenuDeSeance,
+                dateHomework,
+                DateTime.parse(element['aFaire']['donneLe']),
+                element['aFaire']['effectue'] == 'true',
+                rendreEnLigne,
+                interrogation,
+                documentsAFaire,
+                documentsContenuDeCours,
+                element['nomProf'],
+              ));
             }
           });
           return homeworkList;
@@ -356,11 +355,12 @@ class APIEcoleDirecte extends API {
   }
 
   @override
-  Future app(String appname, {String args, String action}) {
+  Future app(String appname, {String args, String action}) async {
     switch (appname) {
       case "mail":
         {
-          return getMails();
+          print("Returning mails");
+          return await getMails();
         }
         break;
     }
@@ -373,7 +373,7 @@ Future getMails() async {
   await testToken();
   String id = await storage.read(key: "userID");
   var url =
-      'https://api.ecoledirecte.com/v3/eleves/$identityHashCode(object)/messages.awp?verbe=getall&typeRecuperation=all';
+      'https://api.ecoledirecte.com/v3/eleves/$id/messages.awp?verbe=getall&typeRecuperation=all';
   Map<String, String> headers = {"Content-type": "text/plain"};
   String data = 'data={"token": "$token"}';
   //encode Map to JSON
@@ -382,32 +382,108 @@ Future getMails() async {
       await http.post(url, headers: headers, body: body).catchError((e) {
     throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou reessayez plus tard.");
   });
-  if (response.statusCode == 200) {
-    Map<String, dynamic> req = jsonDecode(response.body);
-    if (req['code'] == 200) {
-      List<Mail> mailsList = List<Mail>();
-      List<Classeur> classeursList = List<Classeur>();
-      Map<String, dynamic> data = jsonDecode(req['code']['data']);
-      //add the classeurs
-      if (req['code']['data']['classeurs'] != null) {
-        var classeurs = req['code']['data']['classeurs'];
-        classeurs.forEach((element) {
-          Classeur classeur;
-          classeursList.add(new Classeur(element["libelle"], element["id"]));
-        });
+  print("Starting the mails collection");
+  try {
+    if (response.statusCode == 200) {
+      Map<String, dynamic> req = jsonDecode(utf8.decode(response.bodyBytes));
+      if (req['code'] == 200) {
+        print("Mail request succeeded");
+        List<Mail> mailsList = List<Mail>();
+        List<Classeur> classeursList = List<Classeur>();
+
+        //add the classeurs
+        if (req['data']['classeurs'] != null) {
+          var classeurs = req['data']['classeurs'];
+          classeurs.forEach((element) {
+            classeursList.add(Classeur(element["libelle"], element["id"]));
+            print(element["libelle"]);
+          });
+        }
+      List messagesList= List();
+        if (req['data']['messages'] != null) {
+          Map messages = req['data']['messages'];
+          messages.forEach((key, value) {
+             //We finally get in message items
         
+             value.forEach((e)
+             {
+              messagesList.add(e);
+             });
+            
+             
+               // mailsList.add(Mail(message["id"], message["mtype"], message["read"], message["idClasseur"], jsonDecode(message["from"]), message["subject"], message["date"]));
+         
+
+          });
+          messagesList.forEach((element) {
+         
+              Map<String, dynamic> mail = element;
+             mailsList.add(Mail(mail["id"].toString(), mail["mtype"], mail["read"], mail["idClasseur"].toString(),mail["from"], mail["subject"], mail["date"],to: (mail["to"]!=null)?mail["to"]:null, files: (mail["files"]!=null)?mail["files"]:null),);
+          });
+          //This is the root class of message or message type ("sent", "archived", "received")
+          //List messagesRootClass = req['data']['messages'];
+          /*print(messagesRootClass.length);
+        messagesRootClass.forEach((rootClass){
+         
+       
+        });
+*/
+        }
+        print("Returned mails");
+        return mailsList;
       }
-    }
-    //Return an error
-    else {
+      //Return an error
+      else {
+        throw "Error.";
+      }
+    } else {
+      print(response.statusCode);
       throw "Error.";
     }
-  } else {
-    throw "Error.";
+  } catch (e) {
+    print("error during the mail collection $e");
   }
 }
 
-Future<Mail> readMail(String mailId) {}
+Future readMail(String mailId) async{
+  await testToken();
+  String id = await storage.read(key: "userID");
+  var url =
+      'https://api.ecoledirecte.com/v3/eleves/$id/messages/${mailId}.awp?verbe=get';
+  Map<String, String> headers = {"Content-type": "text/plain"};
+  String data = 'data={"token": "$token"}';
+  //encode Map to JSON
+  var body = data;
+  var response =
+      await http.post(url, headers: headers, body: body).catchError((e) {
+    throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou reessayez plus tard.");
+  });
+  print("Starting the mail reading");
+  try {
+    if (response.statusCode == 200) {
+      Map<String, dynamic> req = jsonDecode(response.body);
+      if (req['code'] == 200) {
+       String toDecode= req['data']['content'];
+       print(toDecode.length);
+       toDecode= utf8.decode(base64.decode(toDecode.replaceAll("\n", "")));
+       
+        return  toDecode;
+   
+      }
+      //Return an error
+      else {
+        throw "Error.";
+      }
+    } else {
+      print(response.statusCode);
+      throw "Error.";
+    }
+  } catch (e) {
+    print("error during the mail collection $e");
+  }
+
+
+}
 Future<Mail> sendMail() {}
 //Refresh colors
 refreshDisciplinesListColors(List<discipline> list) async {
