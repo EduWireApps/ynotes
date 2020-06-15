@@ -268,9 +268,12 @@ abstract class API {
 
   //Test to know if there are new grades
   Future<bool> testNewGrades();
+  //Send file to cloud or anywhere
+  Future uploadFile(String contexte, String id, String filepath);
   
   //Apps
   Future app(String appname, {String args , String action});
+
 
 
 }

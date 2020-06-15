@@ -1,10 +1,12 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+import 'package:alice/alice.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:quiver/collection.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +14,7 @@ import 'package:stack/stack.dart' as sta;
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/offline.dart';
 import 'package:ynotes/apiManager.dart';
+import 'package:dio/dio.dart' as dio;
 
 sta.Stack<String> Colorstack = sta.Stack();
 void createStack() {
@@ -20,6 +23,7 @@ void createStack() {
   });
 }
 
+Alice alice = Alice();
 //Create a secure storage
 void CreateStorage(String key, String data) async {
   await storage.write(key: key, value: data);
@@ -180,7 +184,12 @@ class APIEcoleDirecte extends API {
             homeworkDatesListToReturn.add(DateTime.parse(key));
           }
         });
-        return homeworkDatesListToReturn;
+        List<DateTime> pinnedDates = await getPinnedHomeworkDates();
+        //Combine lists
+      List<DateTime> combinedList = homeworkDatesListToReturn+pinnedDates;
+      combinedList = combinedList.toSet().toList();
+      combinedList.sort();
+        return combinedList;
       } else {
         throw "Erreur durant la récupération des devoirs";
       }
@@ -262,7 +271,7 @@ class APIEcoleDirecte extends API {
           List data = req['data']['matieres'];
 
           data.forEach((element) {
-            //print(data);
+      
             if (element['aFaire'] != null) {
               String encodedContent = "";
               String aFaireEncoded = "";
@@ -366,6 +375,43 @@ class APIEcoleDirecte extends API {
     }
   }
 
+  @override
+  Future uploadFile(String contexte, String id, String filepath) async {
+    switch (contexte) {
+      case ("CDT"):
+        {
+          //Ensure that token is refreshed
+          await testToken();
+          /*  print(id);
+          var dio2 = dio.Dio();
+      
+          var data = {
+            "data": '{"token":"$token","idContexte":$id}'
+          
+            //"file": await dio.MultipartFile.fromFile(filepath)
+          };
+         
+          dio.Response response = await dio2.post("https://en9xoeu6tjzo.x.pipedream.net/",  data: dio.FormData.fromMap(data), options: dio.Options(contentType: 'multipart/form-data', headers: {"User-Agent":"PostmanRuntime/7.25.0"}));
+      
+         print(response.data);
+        */
+          var uri = Uri.parse(
+              'https://api.ecoledirecte.com/v3/televersement.awp?verbe=post&mode=CDT');
+          var request = http.MultipartRequest('POST', uri)
+            ..headers["user-agent"] = "PostmanRuntime/7.25.0"
+            ..headers["accept"] = "*/*"
+            ..fields['asap'] =
+                '\nContent-Disposition: form-data; name="data"\n\n{"token":"$token","idContexte":$id}';
+
+          var response = await request.send();
+          if (response.statusCode == 200) print('Uploaded!');
+          response.stream.transform(utf8.decoder).listen((value) {
+            print(value);
+          });
+        }
+    }
+  }
+
   ///END OF THE API CLASS
 }
 
@@ -399,26 +445,32 @@ Future getMails() async {
             print(element["libelle"]);
           });
         }
-      List messagesList= List();
+        List messagesList = List();
         if (req['data']['messages'] != null) {
           Map messages = req['data']['messages'];
           messages.forEach((key, value) {
-             //We finally get in message items
-        
-             value.forEach((e)
-             {
-              messagesList.add(e);
-             });
-            
-             
-               // mailsList.add(Mail(message["id"], message["mtype"], message["read"], message["idClasseur"], jsonDecode(message["from"]), message["subject"], message["date"]));
-         
+            //We finally get in message items
 
+            value.forEach((e) {
+              messagesList.add(e);
+            });
+
+            // mailsList.add(Mail(message["id"], message["mtype"], message["read"], message["idClasseur"], jsonDecode(message["from"]), message["subject"], message["date"]));
           });
           messagesList.forEach((element) {
-         
-              Map<String, dynamic> mail = element;
-             mailsList.add(Mail(mail["id"].toString(), mail["mtype"], mail["read"], mail["idClasseur"].toString(),mail["from"], mail["subject"], mail["date"],to: (mail["to"]!=null)?mail["to"]:null, files: (mail["files"]!=null)?mail["files"]:null),);
+            Map<String, dynamic> mail = element;
+            mailsList.add(
+              Mail(
+                  mail["id"].toString(),
+                  mail["mtype"],
+                  mail["read"],
+                  mail["idClasseur"].toString(),
+                  mail["from"],
+                  mail["subject"],
+                  mail["date"],
+                  to: (mail["to"] != null) ? mail["to"] : null,
+                  files: (mail["files"] != null) ? mail["files"] : null),
+            );
           });
           //This is the root class of message or message type ("sent", "archived", "received")
           //List messagesRootClass = req['data']['messages'];
@@ -445,7 +497,7 @@ Future getMails() async {
   }
 }
 
-Future readMail(String mailId) async{
+Future readMail(String mailId) async {
   await testToken();
   String id = await storage.read(key: "userID");
   var url =
@@ -463,12 +515,11 @@ Future readMail(String mailId) async{
     if (response.statusCode == 200) {
       Map<String, dynamic> req = jsonDecode(response.body);
       if (req['code'] == 200) {
-       String toDecode= req['data']['content'];
-       print(toDecode.length);
-       toDecode= utf8.decode(base64.decode(toDecode.replaceAll("\n", "")));
-       
-        return  toDecode;
-   
+        String toDecode = req['data']['content'];
+
+        toDecode = utf8.decode(base64.decode(toDecode.replaceAll("\n", "")));
+
+        return toDecode;
       }
       //Return an error
       else {
@@ -481,9 +532,8 @@ Future readMail(String mailId) async{
   } catch (e) {
     print("error during the mail collection $e");
   }
-
-
 }
+
 Future<Mail> sendMail() {}
 //Refresh colors
 refreshDisciplinesListColors(List<discipline> list) async {

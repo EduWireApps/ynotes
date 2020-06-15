@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import '../apiManager.dart';
 import 'package:flutter/services.dart';
 
@@ -39,6 +41,12 @@ class APIPronote extends API {
   Future app(String appname, {String args, String action}) {
     
     // TODO: implement app
+    throw UnimplementedError();
+  }
+
+  @override
+  Future uploadFile(String contexte, String id, String filepath) {
+    // TODO: implement sendFile
     throw UnimplementedError();
   }
 }

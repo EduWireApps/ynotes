@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:package_info/package_info.dart';
 
 import '../usefulMethods.dart';
 
@@ -317,7 +318,9 @@ class _SettingsPageState extends State<SettingsPage>
                       color: isDarkModeEnabled ? Colors.white : Colors.black,
                       fontSize: screenSize.size.height / 10 * 0.3),
                 ),
-                onTap: () {
+                onTap: () async{
+                  PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
                   showAboutDialog(
                       context: this.context,
                       applicationIcon: Image(
@@ -325,7 +328,7 @@ class _SettingsPageState extends State<SettingsPage>
                         width: screenSize.size.width / 5 * 0.7,
                       ),
                       applicationName: "yNotes",
-                      applicationVersion: "0.1-Bêta",
+                      applicationVersion: packageInfo.version,
                       applicationLegalese: "Developpé avec amour en France");
                 },
               )

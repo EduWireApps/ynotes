@@ -106,25 +106,28 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
                       child: InkWell(
                         borderRadius: BorderRadius.all(Radius.circular(30)),
                         onTap: () {},
-                        child: FittedBox(
-                                                  child: Row(
+                        child: Row(
                             children: <Widget>[
                               Image(
                                 image:
                                     AssetImage('assets/images/space/space.png'),
                                 width: screenSize.size.width / 5 * 0.8,
                               ),
-                              Text(
-                                "Mes spécialités",
-                                style: TextStyle(
-                                    fontSize: screenSize.size.width / 5 * 0.3,
-                                    fontWeight: FontWeight.w500,
-                                    fontFamily: "Asap",
-                                    color: Colors.white),
+                              Container(width:screenSize.size.width / 5 * 2.5,
+                                child: FittedBox(
+                                  fit: BoxFit.fitWidth,
+                                                                child: Text(
+                                    "Mes spécialités",
+                                    style: TextStyle(
+                                        fontSize: screenSize.size.width / 5 * 0.3,
+                                        fontWeight: FontWeight.w500,
+                                        fontFamily: "Asap",
+                                        color: Colors.white),
+                                  ),
+                                ),
                               )
                             ],
                           ),
-                        ),
                       ),
                     ),
                   ),
@@ -293,8 +296,6 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
         }
       });
     });
-    print(average);
-    print(counter);
     average = average / counter;
   }
 

@@ -10,6 +10,7 @@ import 'package:ynotes/UI/settingsPage.dart';
 import 'package:ynotes/UI/tabBuilder.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:ynotes/background.dart';
+import 'package:ynotes/pronoteAPI.dart';
 import '../main.dart';
 import '../usefulMethods.dart';
 
@@ -137,8 +138,15 @@ class _QuickMenuState extends State<QuickMenu> with TickerProviderStateMixin {
                                                       curve: Curves.easeIn);
                                                   break;
                                                 case 2:
-                                                  await BackgroundServices
-                                                      .showNotification();
+                                                 
+                                                 {
+                                                   var client = Client('https://demo.index-education.net/pronote/eleve.html',
+                          username:'demonstration',
+                          password:'pronotevs');
+                                                    await client.init();
+                                        
+                                     
+                                                 }
                                                   break;
                                               }
                                             },
@@ -230,10 +238,10 @@ class _QuickMenuState extends State<QuickMenu> with TickerProviderStateMixin {
                                                           show) ==
                                                       true;
                                                 },
-                                                onDismissed: (direction) {
-                                                  AppUtil.remove(
+                                                onDismissed: (direction) async{
+                                                  await AppUtil.remove(
                                                       listFiles[index].file);
-                                                  setState(() {
+                                                      setState(() {
                                                     listFiles.removeAt(index);
                                                   });
                                                 },

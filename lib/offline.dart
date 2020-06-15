@@ -23,7 +23,7 @@ putGrades(String string) async {
 }
 
 //To get grades in db
-getGradesFromDB({bool online =true}) async {
+getGradesFromDB({bool online = true}) async {
   var connectivityResult = await (Connectivity().checkConnectivity());
   try {
     final dir = await getDirectory();
@@ -37,17 +37,17 @@ getGradesFromDB({bool online =true}) async {
     //Is economy mode activated
     bool batterySaver = await getSetting("batterySaver");
     String dateOfflineString = gradesBoxMap.keys.toList()[0];
-  
+
     DateTime dateOffline = DateTime.parse(dateOfflineString);
-    
+
     var difference = now.difference(dateOffline);
 //if offline force show homework
-    if (difference.inHours < (batterySaver?8:3)) {
+    if (difference.inHours < (batterySaver ? 8 : 3)) {
       Map<dynamic, dynamic> mapToReturn;
       try {
         print("Returned grades from offline");
         String jsonString = gradesBoxMap.values.toList()[0];
-    
+
         return json.decode(jsonString);
       } catch (e) {
         print("Failed to decode grades offline data");
@@ -56,7 +56,7 @@ getGradesFromDB({bool online =true}) async {
     } else {
       if (online == true) {
         print(
-            "Offline grades data is too old of ${difference.inHours - (batterySaver?8:3)} hours.");
+            "Offline grades data is too old of ${difference.inHours - (batterySaver ? 8 : 3)} hours.");
         return null;
       } else {
         try {
@@ -78,11 +78,11 @@ getGradesFromDB({bool online =true}) async {
 }
 
 //To put homework in db
-putHomework(List<homework> listHW) async {
+putHomework(List<homework> listHW, {bool add=false}) async {
   try {
     final dir = await getDirectory();
     await Hive.init("${dir.path}/offline");
-
+  
     try {
       Hive.registerAdapter(documentAdapter());
       Hive.registerAdapter(homeworkAdapter());
@@ -93,9 +93,28 @@ putHomework(List<homework> listHW) async {
     //Format the actual date
     var now = DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now()).toString();
 
-    var gradesBox = await Hive.openBox('homework');
-    await gradesBox.clear();
-    await gradesBox.put(now, listHW);
+    var homeworkBox = await Hive.openBox('homework');
+    if(add==false)
+    {
+      print("clearing homework");
+await homeworkBox.clear();
+    }
+
+ if(homeworkBox.keys.contains(now)&&add==true)
+ {
+   print("here");
+
+   List<homework> oldHW = homeworkBox.getAt(0).cast<homework>();
+ 
+   List<homework> combinedList = oldHW+ listHW;
+   combinedList = combinedList.toSet().toList();
+   
+   await homeworkBox.put(now, combinedList);
+ }
+ else {
+   await homeworkBox.put(now, listHW);
+ }
+  
 
     print("The offline homework save succeeded.");
   } catch (e) {
@@ -131,11 +150,11 @@ getHomeworkFromDB({bool online = true}) async {
     DateTime dateOffline = DateTime.parse(dateOfflineString);
     var difference = now.difference(dateOffline);
 //If time difference is bigger, return null and the user have to fetch from Internet
-    if (difference.inHours < (batterySaver?8:3)) {
+    if (difference.inHours < (batterySaver ? 8 : 3)) {
       try {
         print("Returned homework from offline");
         List<homework> listToReturn = homeworkBox.getAt(0).cast<homework>();
-     
+
         return listToReturn;
       } catch (e) {
         print("Failed to decode homework offline data $e");
@@ -144,7 +163,7 @@ getHomeworkFromDB({bool online = true}) async {
     } else {
       if (online == true) {
         print(
-            "Offline homework data is too old of ${difference.inHours - (batterySaver?8:3)} hours.");
+            "Offline homework data is too old of ${difference.inHours - (batterySaver ? 8 : 3)} hours.");
         return null;
       } else {
         try {
@@ -173,7 +192,6 @@ setHomeworkCompletion(String id, bool done) async {
     Hive.init("${dir.path}/offline");
     var homeworkDoneBox = await Hive.openBox('doneHomework');
     homeworkDoneBox.put(id.toString(), done);
-  
   } catch (e) {
     print("Error during the setHomeworkDoneProcess $e");
   }
@@ -187,7 +205,54 @@ Future<bool> getHomeworkCompletion(String id) async {
     var homeworkDoneBox = await Hive.openBox('doneHomework');
 
     bool toReturn = homeworkDoneBox.get(id.toString());
-   
+
+    //If to return is null return false
+    return (toReturn != null) ? toReturn : false;
+  } catch (e) {
+    print("Error during the getHomeworkDoneProcess $e");
+
+    return null;
+  }
+}
+
+//Set a new pinned homework or delete it (by calling it a new time)
+setPinnedHomeworkDate(String date, bool value) async {
+  try {
+    final dir = await getDirectory();
+    Hive.init("${dir.path}/offline");
+    var pinnedHomeworkBox = await Hive.openBox('pinnedHomework');
+
+    pinnedHomeworkBox.put(date, value);
+  } catch (e) {
+    print("Error during the setPinnedHomeworkDateProcess $e");
+  }
+}
+
+getPinnedHomeworkDates() async {
+  try {
+    final dir = await getDirectory();
+    Hive.init("${dir.path}/offline");
+    var pinnedHomeworkBox = await Hive.openBox('pinnedHomework');
+    Map notParsedList = pinnedHomeworkBox.toMap();
+    List<DateTime> parsedList = List<DateTime>();
+ notParsedList.removeWhere((key, value) => value==false);
+    notParsedList.keys.forEach((element) {
+      parsedList.add(DateTime.parse(
+          DateFormat("yyyy-MM-dd").format(DateTime.parse(element))));
+    });
+    return parsedList;
+  } catch (e) {
+    print("Error during the getPinnedHomeworkDateProcess $e");
+  }
+}
+
+Future<bool> getPinnedHomeworkSingleDate(String date) async {
+  try {
+    final dir = await getDirectory();
+    Hive.init("${dir.path}/offline");
+    var pinnedHomeworkBox = await Hive.openBox('pinnedHomework');
+    bool toReturn = pinnedHomeworkBox.get(date);
+    
     //If to return is null return false
     return (toReturn != null) ? toReturn : false;
   } catch (e) {

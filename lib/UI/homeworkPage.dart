@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -7,39 +9,59 @@ import 'package:marquee/marquee.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:ynotes/UI/dialogs.dart';
+import 'package:ynotes/UI/homeworkPageWidgets/HWsecondPage.dart';
 import 'package:ynotes/animations/FadeAnimation.dart';
 import 'package:ynotes/parsers/EcoleDirecte.dart';
+import 'package:ynotes/main.dart';
 import '../apiManager.dart';
+import '../offline.dart';
 import '../usefulMethods.dart';
 import 'package:provider_architecture/provider_architecture.dart';
+import 'package:file_picker/file_picker.dart';
+
+import 'homeworkPageWidgets/HWfirstPage.dart';
+import 'homeworkPageWidgets/HWsettingsPage.dart';
 
 Future<List<homework>> homeworkListFuture;
-
+PageController _pageControllerHW;
 class HomeworkPage extends StatefulWidget {
   State<StatefulWidget> createState() {
     return _HomeworkPageState();
   }
 }
 
-enum sortHomeworkValue { date, reversed_date, done, pinned }
 
-PageController _pageController;
 //The date the user want to see
 DateTime dateToUse;
 bool firstStart = true;
 API api = APIManager();
+bool isPinnedDateToUse = false;
+//Public list of dates to be easily deleted
+List dates = List();
+//Only use to add homework to database
+List<homework> localListHomeworkDateToUse;
 
 class _HomeworkPageState extends State<HomeworkPage> {
-  sortHomeworkValue actualSortHomework = sortHomeworkValue.date;
   void initState() {
     super.initState();
-    _pageController = PageController();
+    _pageControllerHW = PageController(initialPage: 1);
     //WidgetsFlutterBinding.ensureInitialized();
     //Test if it's the first start
-    if (firstStart == true) {
+    setState(() {
       homeworkListFuture = api.getNextHomework();
-      firstStart = false;
-    }
+      
+    });
+
+    getPinnedStateDayToUse();
+  }
+
+  getPinnedStateDayToUse() async {
+    print(dateToUse);
+    var pinnedStatus = await getPinnedHomeworkSingleDate(dateToUse.toString());
+    setState(() {
+      isPinnedDateToUse = pinnedStatus;
+    });
   }
 
   void callback() {
@@ -52,6 +74,13 @@ class _HomeworkPageState extends State<HomeworkPage> {
       homeworkListFuture = api.getNextHomework(forceReload: true);
     });
     var realHW = await homeworkListFuture;
+   
+  }
+  animateToPage(int index)
+  {
+_pageControllerHW.animateToPage(index,
+                            duration: Duration(milliseconds: 250),
+                            curve: Curves.ease);
   }
 
 //Build the main widget container of the homeworkpage
@@ -83,263 +112,18 @@ class _HomeworkPageState extends State<HomeworkPage> {
                       Radius.circular(15),
                     ),
                     child: PageView(
-                      controller: _pageController,
-                      physics: new NeverScrollableScrollPhysics(),
+                      controller: _pageControllerHW,
+                      physics: NeverScrollableScrollPhysics(),
                       children: <Widget>[
-                        RefreshIndicator(
-                          onRefresh: refreshLocalHomeworkList,
-                          child: FutureBuilder(
-                              future: homeworkListFuture,
-                              builder: (context, snapshot) {
-                                if (snapshot.hasData) {
-                                  List dates = getDates(snapshot.data);
-                                  if (snapshot.data.length != 0) {
-                                    return Stack(
-                                      children: <Widget>[
-                                        Container(
-                                          margin: EdgeInsets.only(
-                                              top: (screenSize.size.height /
-                                                      10 *
-                                                      8.8) /
-                                                  10 *
-                                                  0.1),
-                                          child: AnimatedList(
-                                              initialItemCount: dates.length,
-                                              padding: EdgeInsets.all(
-                                                  screenSize.size.width /
-                                                      5 *
-                                                      0.1),
-                                              itemBuilder:
-                                                  (BuildContext context,
-                                                      int index, animation) {
-                                                return Column(
-                                                  children: <Widget>[
-                                                    if (getWeeksRelation(index,
-                                                            snapshot.data) !=
-                                                        null)
-                                                      Row(children: <Widget>[
-                                                        Expanded(
-                                                          child: new Container(
-                                                              margin:
-                                                                  const EdgeInsets
-                                                                          .only(
-                                                                      left:
-                                                                          10.0,
-                                                                      right:
-                                                                          20.0),
-                                                              child: Divider(
-                                                                color: isDarkModeEnabled
-                                                                    ? Colors
-                                                                        .white
-                                                                    : Colors
-                                                                        .black,
-                                                                height: 36,
-                                                              )),
-                                                        ),
-                                                        Text(
-                                                          getWeeksRelation(
-                                                              index,
-                                                              snapshot.data),
-                                                          style: TextStyle(
-                                                              color:
-                                                                  isDarkModeEnabled
-                                                                      ? Colors
-                                                                          .white
-                                                                      : Colors
-                                                                          .black,
-                                                              fontFamily:
-                                                                  "Asap"),
-                                                        ),
-                                                        Expanded(
-                                                          child: new Container(
-                                                              margin:
-                                                                  const EdgeInsets
-                                                                          .only(
-                                                                      left:
-                                                                          20.0,
-                                                                      right:
-                                                                          10.0),
-                                                              child: Divider(
-                                                                color: isDarkModeEnabled
-                                                                    ? Colors
-                                                                        .white
-                                                                    : Colors
-                                                                        .black,
-                                                                height: 36,
-                                                              )),
-                                                        ),
-                                                      ]),
-                                                    HomeworkContainer(
-                                                        dates[index],
-                                                        this.callback,
-                                                        snapshot.data),
-                                                  ],
-                                                );
-                                              }),
-                                        ),
-                                      ],
-                                    );
-                                  } else {
-                                    return Container(
-                                      height: screenSize.size.height / 10 * 7.5,
-                                      width: screenSize.size.width / 5 * 4.7,
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          Image(
-                                              fit: BoxFit.fitWidth,
-                                              image: AssetImage(
-                                                  'assets/images/noHomework.png')),
-                                          Text(
-                                            "Pas de devoirs à l'horizon... \non se détend ?",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                              fontFamily: "Asap",
-                                              color: isDarkModeEnabled
-                                                  ? Colors.white
-                                                  : Colors.black,
-                                            ),
-                                          ),
-                                          FlatButton(
-                                            onPressed: () {
-                                              //Reload list
-                                              refreshLocalHomeworkList();
-                                            },
-                                            child: Text("Recharger",
-                                                style: TextStyle(
-                                                  fontFamily: "Asap",
-                                                  color: isDarkModeEnabled
-                                                      ? Colors.white
-                                                      : Colors.black,
-                                                )),
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    new BorderRadius.circular(
-                                                        18.0),
-                                                side: BorderSide(
-                                                    color: Theme.of(context)
-                                                        .primaryColorDark)),
-                                          )
-                                        ],
-                                      ),
-                                    );
-                                  }
-                                } else {
-                                  return SpinKitFadingFour(
-                                    color: Theme.of(context).primaryColorDark,
-                                    size: screenSize.size.width / 5 * 1,
-                                  );
-                                }
-                              }),
-                        ),
+                        //First page with settings
+                        HomeworkSettingPage(animateToPage),
 
-                        //Second page (with homework)
-                        Container(
-                          child: Column(
-                            children: <Widget>[
-                              Container(
-                                margin: EdgeInsets.symmetric(
-                                    vertical:
-                                        screenSize.size.height / 10 * 0.2),
-                                child: Stack(
-                                  children: <Widget>[
-                                    Positioned(
-                                      top: screenSize.size.height / 10 * 0.1,
-                                      left: screenSize.size.width / 5 * 0.5,
-                                      child: Container(
-                                        width: screenSize.size.width / 5 * 2.5,
-                                        padding: EdgeInsets.only(
-                                            top:
-                                                screenSize.size.width / 5 * 0.1,
-                                            bottom:
-                                                screenSize.size.width / 5 * 0.1,
-                                            left: screenSize.size.width /
-                                                5 *
-                                                0.5),
-                                        decoration: BoxDecoration(
-                                            color: Theme.of(context)
-                                                .primaryColorDark,
-                                            borderRadius: BorderRadius.only(
-                                                bottomRight:
-                                                    Radius.circular(11),
-                                                topRight: Radius.circular(11))),
-                                        child: Text(
-                                            (dateToUse != null
-                                                ? toBeginningOfSentenceCase(
-                                                    DateFormat("EEEE d MMMM",
-                                                            "fr_FR")
-                                                        .format(dateToUse)
-                                                        .toString())
-                                                : ""),
-                                            style: TextStyle(
-                                                fontFamily: "Asap",
-                                                color: isDarkModeEnabled
-                                                    ? Colors.white
-                                                    : Colors.black)),
-                                      ),
-                                    ),
-                                    Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: RaisedButton(
-                                        color: Color(0xff3b3b3b),
-                                        shape: CircleBorder(),
-                                        onPressed: () {
-                                          _pageController.animateToPage(0,
-                                              duration:
-                                                  Duration(milliseconds: 200),
-                                              curve: Curves.easeIn);
-                                        },
-                                        child: Container(
-                                            padding: EdgeInsets.all(
-                                                screenSize.size.width /
-                                                    5 *
-                                                    0.1),
-                                            child: Icon(
-                                              Icons.arrow_back,
-                                              color: Colors.white,
-                                              size: screenSize.size.width /
-                                                  5 *
-                                                  0.4,
-                                            )),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Container(
-                                height: screenSize.size.height / 10 * 5.0,
-                                width: screenSize.size.width / 5 * 4.4,
-                                child: FutureBuilder(
-                                    future: api.getHomeworkFor(dateToUse),
-                                    builder: (context, snapshot) {
-                                      if (snapshot.hasData) {
-                                        return Container(
-                                          child: ListView.builder(
-                                              addRepaintBoundaries: false,
-                                              itemCount: snapshot.data.length,
-                                              itemBuilder: (context, index) {
-                                                return FadeAnimationLeftToRight(
-                                                  0.05 + index / 5,
-                                                  HomeworkElement(
-                                                      snapshot.data[index],
-                                                      true),
-                                                );
-                                              }),
-                                        );
-                                      } else {
-                                        return Center(
-                                            child: SpinKitFadingFour(
-                                          color: Theme.of(context)
-                                              .primaryColorDark,
-                                          size: screenSize.size.width / 5 * 1,
-                                        ));
-                                      }
-                                    }),
-                              ),
-                            ],
-                          ),
-                        )
+                        //Second page with homework
+                        HomeworkFirstPage(),
+                        
+                        //Third page (with homework at a specific date)
+                        HomeworkSecondPage(animateToPage)
+                      
                       ],
                     ),
                   ),
@@ -364,55 +148,15 @@ class _HomeworkPageState extends State<HomeworkPage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  Container(
-                    margin: EdgeInsets.only(
-                        left: (screenSize.size.width / 5) * 0.2),
-                    child: Material(
-                      color: Theme.of(context).primaryColorDark,
-                      borderRadius: BorderRadius.circular(11),
-                      child: InkWell(
-                        onTap: () {
-                          setState(() {
-                            print(sortHomeworkValue);
-                            int index = sortHomeworkValue.values
-                                .indexOf(actualSortHomework);
-                            actualSortHomework = sortHomeworkValue.values[
-                                index +
-                                    (index ==
-                                            sortHomeworkValue.values.length - 1
-                                        ? -2
-                                        : 1)];
-                          });
-                        },
-                        borderRadius: BorderRadius.circular(11),
-                        child: Container(
-                            height:
-                                (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
-                            width: (screenSize.size.width / 5) * 0.6,
-                            child: Icon(
-                              case2(
-                                actualSortHomework,
-                                {
-                                  sortHomeworkValue.date:
-                                      MdiIcons.sortAscending,
-                                  sortHomeworkValue.reversed_date:
-                                      MdiIcons.sortDescending,
-                                  sortHomeworkValue.done: MdiIcons.check,
-                                  sortHomeworkValue.pinned: MdiIcons.bookmark,
-                                },
-                                MdiIcons.bookmark,
-                              ),
-                              color: isDarkModeEnabled
-                                  ? Colors.white
-                                  : Colors.black,
-                            )),
-                      ),
-                    ),
-                  ),
                   Material(
                     color: Theme.of(context).primaryColorDark,
                     borderRadius: BorderRadius.circular(11),
                     child: InkWell(
+                      onTap: () {
+                        _pageControllerHW.animateTo(0,
+                            duration: Duration(milliseconds: 250),
+                            curve: Curves.ease);
+                      },
                       child: Container(
                           height:
                               (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
@@ -476,8 +220,14 @@ class _HomeworkPageState extends State<HomeworkPage> {
                         if (someDate != null) {
                           setState(() {
                             dateToUse = someDate;
+                            setState() {
+                              localListHomeworkDateToUse = null;
+                            }
+
+                            getPinnedStateDayToUse();
                           });
-                          _pageController.animateToPage(1,
+
+                          _pageControllerHW.animateToPage(2,
                               duration: Duration(milliseconds: 200),
                               curve: Curves.easeIn);
                         }
@@ -526,7 +276,7 @@ getDates(List<homework> list) {
       listtoReturn.add(element.date);
     }
   });
-
+  listtoReturn.sort();
   return listtoReturn;
 }
 
@@ -664,7 +414,7 @@ class _HomeworkElementState extends State<HomeworkElement> {
   /// Show a small label if the main label doesn't show a date
   bool showSmallLabel = true;
 
-  bool isExpanded;
+  bool isExpanded = false;
 
   ///Expand document part or not
   bool isDocumentExpanded = false;
@@ -674,11 +424,17 @@ class _HomeworkElementState extends State<HomeworkElement> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    //Define the default expanding state
+    getDefaultValue();
+  }
 
-    ///Expand the element or not
-    isExpanded = widget.initialExpansion;
+  void getDefaultValue() async {
+    var defaultValue = await getSetting("isExpandedByDefault");
+
+    setState(() {
+      isExpanded = defaultValue;
+    });
   }
 
   @override
@@ -715,48 +471,55 @@ class _HomeworkElementState extends State<HomeworkElement> {
                       borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(15),
                           topRight: Radius.circular(15)),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border:
-                              Border.all(width: 0, color: Colors.transparent),
-                        ),
-                        width: screenSize.size.width / 5 * 4.5,
-                        height: isExpanded
-                            ? (screenSize.size.height / 10 * 8.8) / 10 * 0.9
-                            : (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
-                        child: Stack(children: <Widget>[
-                          Container(
-                            margin: EdgeInsets.only(
-                                left: screenSize.size.width / 5 * 0.2,
-                                top: (screenSize.size.height / 10 * 8.8) /
-                                    10 *
-                                    0.1),
-                            padding: EdgeInsets.symmetric(horizontal: 4),
-                            child: Row(
-                              children: <Widget>[
-                                Text(
-                                  this.widget.homeworkForThisDay.matiere,
-                                  overflow: TextOverflow.ellipsis,
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontFamily: "Asap",
-                                      fontWeight: FontWeight.normal),
-                                ),
-                                if (widget.homeworkForThisDay.interrogation ==
-                                    true)
-                                  Container(
-                                    margin: EdgeInsets.only(
-                                        left: screenSize.size.width / 5 * 0.15),
-                                    width: screenSize.size.width / 5 * 0.15,
-                                    height: screenSize.size.width / 5 * 0.15,
-                                    decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: Colors.redAccent),
-                                  )
-                              ],
-                            ),
+                      child: GestureDetector(
+                        excludeFromSemantics: true,
+                        onLongPress: () {
+                          print("ok");
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border:
+                                Border.all(width: 0, color: Colors.transparent),
                           ),
-                        ]),
+                          width: screenSize.size.width / 5 * 4.5,
+                          height: isExpanded
+                              ? (screenSize.size.height / 10 * 8.8) / 10 * 0.9
+                              : (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
+                          child: Stack(children: <Widget>[
+                            Container(
+                              margin: EdgeInsets.only(
+                                  left: screenSize.size.width / 5 * 0.2,
+                                  top: (screenSize.size.height / 10 * 8.8) /
+                                      10 *
+                                      0.1),
+                              padding: EdgeInsets.symmetric(horizontal: 4),
+                              child: Row(
+                                children: <Widget>[
+                                  Text(
+                                    this.widget.homeworkForThisDay.matiere,
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontFamily: "Asap",
+                                        fontWeight: FontWeight.normal),
+                                  ),
+                                  if (widget.homeworkForThisDay.interrogation ==
+                                      true)
+                                    Container(
+                                      margin: EdgeInsets.only(
+                                          left:
+                                              screenSize.size.width / 5 * 0.15),
+                                      width: screenSize.size.width / 5 * 0.15,
+                                      height: screenSize.size.width / 5 * 0.15,
+                                      decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.redAccent),
+                                    )
+                                ],
+                              ),
+                            ),
+                          ]),
+                        ),
                       ),
                     ),
                   ),
@@ -1182,6 +945,12 @@ class _HomeworkElementState extends State<HomeworkElement> {
                                     bottomLeft: Radius.circular(15),
                                     bottomRight: Radius.circular(15)),
                                 child: InkWell(
+                                  onTap: () async {
+                                    showUnimplementedSnackBar(context);
+                                    /*
+                                        File file = await FilePicker.getFile();
+                                        await api.uploadFile("CDT", this.widget.homeworkForThisDay.idDevoir, file.path);*/
+                                  },
                                   child: Container(
                                     width: screenSize.size.width / 5 * 4.4,
                                     height: screenSize.size.height / 10 * 0.5,
@@ -1239,285 +1008,3 @@ class _HomeworkElementState extends State<HomeworkElement> {
   }
 }
 
-///Homework container to access the homeworks on the right page
-
-class HomeworkContainer extends StatefulWidget {
-  final DateTime date;
-  final Function callback;
-  final List<homework> listHW;
-  const HomeworkContainer(this.date, this.callback, this.listHW);
-
-  @override
-  _HomeworkContainerState createState() => _HomeworkContainerState();
-}
-
-class _HomeworkContainerState extends State<HomeworkContainer> {
-  ///Label to show on the left (I.E : "Tomorrow")
-  String mainLabel = "";
-
-  /// Show a small label if the main label doesn't show a date
-  bool showSmallLabel = true;
-  int containerSize = 0;
-  @override
-  initState() {}
-
-  ///Really important function that indicate for example if homework DateTime is tomorrow
-  getTimeRelation() {
-    DateTime dateToUse = widget.date;
-    var now = new DateFormat("yyyy-MM-dd").format(DateTime.now());
-    var difference = dateToUse.difference(DateTime.parse(now)).inDays;
-    //Value that indicate the number of day offset with today when it's not considered as near
-
-    if (difference == 0) {
-      mainLabel = "Aujourd'hui";
-      showSmallLabel = true;
-    }
-    if (difference == 1) {
-      mainLabel = "Demain";
-      showSmallLabel = true;
-    }
-    if (difference == 2) {
-      mainLabel = "Après-demain";
-      showSmallLabel = true;
-    }
-    if (difference >= 3) {
-      mainLabel = toBeginningOfSentenceCase(
-          DateFormat("EEEE d MMMM", "fr_FR").format(dateToUse).toString());
-      showSmallLabel = false;
-    }
-    if (difference < 0) {
-      mainLabel = toBeginningOfSentenceCase(
-          DateFormat("EEEE d MMMM", "fr_FR").format(dateToUse).toString());
-      showSmallLabel = false;
-    }
-  }
-
-  getHomeworkInList(List<homework> list) {
-    List<homework> listToReturn = new List<homework>();
-    listToReturn.clear();
-    list.forEach((element) {
-      if (element.date == widget.date) {
-        listToReturn.add(element);
-      }
-    });
-    return listToReturn;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    MediaQueryData screenSize = MediaQuery.of(context);
-    if (widget.date != null) {
-      getTimeRelation();
-
-//Container with homework date
-      return AnimatedContainer(
-        margin:
-            EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.1),
-        duration: Duration(milliseconds: 170),
-        width: screenSize.size.width / 5 * 5,
-        decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor,
-          borderRadius: BorderRadius.circular(25),
-        ),
-        child: Column(
-          children: <Widget>[
-            Material(
-              color: Theme.of(context).primaryColorDark,
-              borderRadius: BorderRadius.all(
-                Radius.circular(15),
-              ),
-              child: InkWell(
-                onLongPress: () {
-                  if (containerSize == 0) {
-                    setState(() {
-                      containerSize = 2;
-                    });
-                  } else {
-                    setState(() {
-                      containerSize = 0;
-                    });
-                  }
-                },
-                /* onTap: () {
-                  /*_pageController.animateToPage(1,
-                      duration: Duration(milliseconds: 200),
-                      curve: Curves.easeIn);
-                  dateToUse = widget.date;
-                  widget.callback();*/
-                },*/
-                borderRadius: BorderRadius.all(
-                  Radius.circular(15),
-                ),
-                child: Container(
-                  width: screenSize.size.width / 5 * 5,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(15),
-                    ),
-                  ),
-                  padding:
-                      EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
-                  child: Column(
-                    children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.only(
-                            left: (showSmallLabel
-                                ? 0
-                                : screenSize.size.height / 10 * 0.2),
-                            bottom: screenSize.size.height / 10 * 0.1),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Text(
-                              //The main date or date relation
-                              mainLabel,
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                  color: isDarkModeEnabled
-                                      ? Colors.white
-                                      : Colors.black,
-                                  fontFamily: "Asap",
-                                  fontSize: screenSize.size.height / 10 * 0.4,
-                                  fontWeight: FontWeight.w600),
-                            ),
-                            //Small date
-                            if (showSmallLabel == true)
-                              Text(
-                                DateFormat("EEEE d MMMM", "fr_FR")
-                                    .format(widget.date),
-                                textAlign: TextAlign.left,
-                                style: TextStyle(
-                                    color: isDarkModeEnabled
-                                        ? Colors.white70
-                                        : Colors.grey,
-                                    fontFamily: "Asap",
-                                    fontSize:
-                                        screenSize.size.height / 10 * 0.2),
-                              )
-                          ],
-                        ),
-                      ),
-                      AnimatedContainer(
-                          duration: Duration(milliseconds: 170),
-                          decoration: BoxDecoration(
-                            color: isDarkModeEnabled
-                                ? Color(0xff656565)
-                                : Colors.white,
-                          ),
-                          padding: EdgeInsets.only(
-                              top: screenSize.size.height / 10 * 0.1,
-                              bottom: screenSize.size.height / 10 * 0.1),
-                          height:
-                              screenSize.size.width / 10 * containerSize / 1.2,
-                          child: ClipRRect(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                RaisedButton(
-                                  color: Color(0xff3b3b3b),
-                                  shape: CircleBorder(),
-                                  onPressed: () {},
-                                  child: Container(
-                                      width: screenSize.size.width / 5 * 0.7,
-                                      height: screenSize.size.width / 5 * 0.7,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          Icon(
-                                            Icons.done_all,
-                                            color: Colors.greenAccent,
-                                            size:
-                                                screenSize.size.width / 5 * 0.5,
-                                          ),
-                                        ],
-                                      )),
-                                ),
-                                RaisedButton(
-                                  color: Color(0xff3b3b3b),
-                                  onPressed: () {},
-                                  shape: CircleBorder(),
-                                  child: Container(
-                                      width: screenSize.size.width / 5 * 0.7,
-                                      height: screenSize.size.width / 5 * 0.7,
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          Icon(
-                                            Icons.alarm,
-                                            color: Colors.white,
-                                            size:
-                                                screenSize.size.width / 5 * 0.5,
-                                          ),
-                                        ],
-                                      )),
-                                ),
-                                RaisedButton(
-                                  color: Color(0xff3b3b3b),
-                                  onPressed: () {},
-                                  shape: CircleBorder(),
-                                  child: Container(
-                                      width: screenSize.size.width / 5 * 0.7,
-                                      height: screenSize.size.width / 5 * 0.7,
-                                      padding: EdgeInsets.only(
-                                          bottom: screenSize.size.height /
-                                              10 *
-                                              0.05),
-                                      child: Icon(
-                                        MdiIcons.pin,
-                                        color: Colors.white,
-                                        size: screenSize.size.width / 5 * 0.5,
-                                      )),
-                                ),
-                              ],
-                            ),
-                          )),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                            vertical: screenSize.size.height / 10 * 0.1,
-                            horizontal: screenSize.size.width / 5 * 0.1),
-                        child: Container(
-                          child: ListView.builder(
-                              physics: NeverScrollableScrollPhysics(),
-                              addAutomaticKeepAlives: true,
-                              shrinkWrap: true,
-                              itemCount:
-                                  getHomeworkInList(widget.listHW).length,
-                              itemBuilder: (context, index) {
-                                return HomeworkElement(
-                                    getHomeworkInList(widget.listHW)[index],
-                                    true);
-                              }),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      );
-    }
-  }
-}
-
-class ArcClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    var path = Path();
-
-    path.lineTo(0.0, size.height);
-    path.lineTo(size.width, size.height);
-    path.lineTo(size.width - 20, size.height / 2);
-    path.lineTo(size.width, 0.0);
-    path.close();
-
-    return path;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
-}

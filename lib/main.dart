@@ -3,6 +3,8 @@ import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:logging/logging.dart';
+import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 import 'package:ynotes/UI/carousel.dart';
 import 'package:ynotes/UI/gradesPage.dart';
@@ -16,9 +18,11 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:ynotes/apiManager.dart';
 import 'package:ynotes/parsers/EcoleDirecte.dart';
 import 'package:ynotes/background.dart';
-
+import 'package:uuid/uuid.dart';
+var uuid = Uuid();
 ///TO DO : Disable after bêta, Sentry is used to send bug reports
 final SentryClient _sentry = SentryClient(
+  uuidGenerator: uuid.v4,
     dsn: "https://c55eb82b0cab4437aeda267bb0392959@sentry.io/3147528");
 Future<Null> _reportError(dynamic error, dynamic stackTrace) async {
   try {
@@ -28,6 +32,7 @@ Future<Null> _reportError(dynamic error, dynamic stackTrace) async {
     );
   } catch (e) {}
 }
+
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 final logger = loader();
@@ -91,6 +96,7 @@ Future main() async {
       stackTrace: details.stack,
     );
   };
+
   ConnectionStatusSingleton connectionStatus =
       ConnectionStatusSingleton.getInstance();
   connectionStatus.initialize();
@@ -114,6 +120,7 @@ class HomeApp extends StatelessWidget {
     return Consumer<AppStateNotifier>(
       builder: (context, appState, child) {
         return MaterialApp(
+        
           localizationsDelegates: [
             // ... app-specific localization delegate[s] here
             GlobalMaterialLocalizations.delegate,

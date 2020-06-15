@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'dart:math';
 import 'package:circular_check_box/circular_check_box.dart';
-import 'package:flutter_html/flutter_html.dart';
-import 'package:flutter_html/style.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:intl/intl.dart';
@@ -15,6 +13,7 @@ import 'package:ynotes/UI/gradesPage.dart';
 import 'package:ynotes/UI/gradesPage.dart';
 import 'package:ynotes/UI/tabBuilder.dart';
 import 'package:ynotes/animations/FadeAnimation.dart';
+import 'package:ynotes/parsers/EcoleDirecte.dart';
 import 'package:ynotes/parsers/EcoleDirecte.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/UI/homeworkPage.dart';
@@ -34,6 +33,7 @@ class SummaryPage extends StatefulWidget {
 
 API api = APIManager();
 Future doneListFuture;
+
 class _SummaryPageState extends State<SummaryPage> {
   double actualPage;
   PageController _pageControllerSummaryPage;
@@ -74,13 +74,13 @@ class _SummaryPageState extends State<SummaryPage> {
     });
     var realHW = await homeworkListFuture;
   }
-  void refreshCallback()
-  {
+
+  void refreshCallback() {
     setState(() {
-        doneListFuture = getHomeworkDonePercent();
+      doneListFuture = getHomeworkDonePercent();
     });
-   
   }
+
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
@@ -102,7 +102,6 @@ class _SummaryPageState extends State<SummaryPage> {
                 future: doneListFuture,
                 initialData: 0,
                 builder: (context, snapshot) {
-                 
                   return Stack(
                     children: <Widget>[
                       ClipRect(
@@ -115,8 +114,8 @@ class _SummaryPageState extends State<SummaryPage> {
                                 padding: EdgeInsets.all(0),
                                 //Gauge
                                 child: charts.PieChart(
-                                    _getDoneTasks(snapshot.hasError?
-                                       0:snapshot.data),
+                                    _getDoneTasks(
+                                        snapshot.hasError ? 0 : snapshot.data),
                                     animate: false,
                                     defaultRenderer:
                                         new charts.ArcRendererConfig(
@@ -133,7 +132,9 @@ class _SummaryPageState extends State<SummaryPage> {
                         child: Container(
                           margin: EdgeInsets.only(top: 10),
                           child: Text(
-                            (snapshot.hasError?"0":snapshot.data.toString()) +
+                            (snapshot.hasError
+                                    ? "0"
+                                    : snapshot.data.toString()) +
                                 "%",
                             textAlign: TextAlign.center,
                             style: TextStyle(
@@ -246,14 +247,13 @@ class _SummaryPageState extends State<SummaryPage> {
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
                                       if (snapshot.data.length != 0) {
-                                        return AnimatedList(
-                                          
-                                            initialItemCount:
+                                        return ListView.builder(
+                                            itemCount:
                                                 snapshot.data.length,
                                             padding: const EdgeInsets.only(
                                                 left: 20.0, right: 20.0),
                                             itemBuilder:
-                                                (context, index, animation) {
+                                                (context, index) {
                                               return FutureBuilder(
                                                 initialData: Colors.grey,
                                                 future: getColor(snapshot
@@ -326,8 +326,7 @@ class _SummaryPageState extends State<SummaryPage> {
                                                         snapshot.data[index],
                                                         color.data,
                                                         widget.tabController,
-                                                        refreshCallback
-                                                        ),
+                                                        refreshCallback),
                                                   ],
                                                 ),
                                               );
@@ -491,19 +490,21 @@ class _SummaryPageState extends State<SummaryPage> {
                           margin: EdgeInsets.only(
                               bottom: screenSize.size.width / 5 * 0.2),
                           height:
-                              (screenSize.size.height / 10 * 8.8) / 10 * 0.8,
+                              (screenSize.size.height / 10 * 8.8) / 10 * 0.75,
                           width: screenSize.size.width / 5 * 2,
                           child: RaisedButton(
                             color: Color(0xff5DADE2),
-                            shape: StadiumBorder(),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: new BorderRadius.circular(18.0),
+                            ),
                             onPressed: () {
                               todoSettingsController.animateToPage(0,
                                   duration: Duration(milliseconds: 400),
                                   curve: Curves.ease);
-                                  refreshCallback();
+                              refreshCallback();
                             },
                             child: Text(
-                              "Ok",
+                              "Enregistrer",
                               textAlign: TextAlign.center,
                               style:
                                   TextStyle(fontSize: 18, fontFamily: "Asap"),
@@ -545,13 +546,16 @@ class _SummaryPageState extends State<SummaryPage> {
                                     child: InkWell(
                                       onTap: () {
                                         widget.tabController.animateTo(2);
-
                                       },
                                       child: Container(
-                                        height: (screenSize.size.height / 10 * 8.8) / 10 * 1.8,
-                                         width: screenSize.size.width / 5 * 4,
+                                        height: (screenSize.size.height /
+                                                10 *
+                                                8.8) /
+                                            10 *
+                                            1.8,
+                                        width: screenSize.size.width / 5 * 4,
                                         child: FittedBox(
-                                                                                  child: Center(
+                                          child: Center(
                                             child: Column(
                                               mainAxisAlignment:
                                                   MainAxisAlignment.center,
@@ -587,12 +591,14 @@ class _SummaryPageState extends State<SummaryPage> {
                                                       ),
                                                     ),
                                                     Text(
-                                                      getAllGrades(snapshot.data)[
+                                                      getAllGrades(snapshot
+                                                                      .data)[
                                                                   position]
                                                               .libelleMatiere +
                                                           " - " +
                                                           getAllGrades(snapshot
-                                                                  .data)[position]
+                                                                      .data)[
+                                                                  position]
                                                               .date,
                                                       style: TextStyle(
                                                           fontFamily: "Asap",
@@ -619,14 +625,16 @@ class _SummaryPageState extends State<SummaryPage> {
                                                                 .data)[position]
                                                             .valeur),
                                                     style: TextStyle(
-                                                        color: (isDarkModeEnabled
-                                                            ? Colors.white
-                                                            : Colors.black),
+                                                        color:
+                                                            (isDarkModeEnabled
+                                                                ? Colors.white
+                                                                : Colors.black),
                                                         fontFamily: "Asap",
                                                         fontWeight:
                                                             FontWeight.normal,
                                                         fontSize: (screenSize
-                                                                    .size.height /
+                                                                    .size
+                                                                    .height /
                                                                 10 *
                                                                 8.8) /
                                                             10 *
@@ -647,12 +655,11 @@ class _SummaryPageState extends State<SummaryPage> {
                                                                         position]
                                                                     .noteSur,
                                                             style: TextStyle(
-                                                                color:
-                                                                    (isDarkModeEnabled
-                                                                        ? Colors
-                                                                            .white
-                                                                        : Colors
-                                                                            .black),
+                                                                color: (isDarkModeEnabled
+                                                                    ? Colors
+                                                                        .white
+                                                                    : Colors
+                                                                        .black),
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .normal,
@@ -663,21 +670,19 @@ class _SummaryPageState extends State<SummaryPage> {
                                                                         8.8) /
                                                                     10 *
                                                                     0.4)),
-                                                      if (getAllGrades(
-                                                                      snapshot
-                                                                          .data)[
+                                                      if (getAllGrades(snapshot
+                                                                      .data)[
                                                                   position]
                                                               .nonSignificatif ==
                                                           true)
                                                         TextSpan(
                                                             text: ")",
                                                             style: TextStyle(
-                                                                color:
-                                                                    (isDarkModeEnabled
-                                                                        ? Colors
-                                                                            .white
-                                                                        : Colors
-                                                                            .black),
+                                                                color: (isDarkModeEnabled
+                                                                    ? Colors
+                                                                        .white
+                                                                    : Colors
+                                                                        .black),
                                                                 fontWeight:
                                                                     FontWeight
                                                                         .normal,
@@ -710,9 +715,11 @@ class _SummaryPageState extends State<SummaryPage> {
                                                     style: TextStyle(
                                                         fontSize: 15,
                                                         fontFamily: "Asap",
-                                                        color: (isDarkModeEnabled
-                                                            ? Colors.white
-                                                            : Colors.black)),
+                                                        color:
+                                                            (isDarkModeEnabled
+                                                                ? Colors.white
+                                                                : Colors
+                                                                    .black)),
                                                   ),
                                                 )
                                               ],
@@ -798,14 +805,14 @@ class HomeworkTicket extends StatefulWidget {
   final Function refreshCallback;
 
   final TabController tabController;
-  const HomeworkTicket(this._homework, this.color, this.tabController, this.refreshCallback);
+  const HomeworkTicket(
+      this._homework, this.color, this.tabController, this.refreshCallback);
   State<StatefulWidget> createState() {
     return _HomeworkTicketState();
   }
 }
 
 class _HomeworkTicketState extends State<HomeworkTicket> {
-  
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
@@ -825,32 +832,29 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
             height: (screenSize.size.height / 10 * 8.8) / 10 * 0.8,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(39),
-
-             
             ),
             child: Row(
               children: <Widget>[
                 FutureBuilder(
-                  future: getHomeworkCompletion(widget._homework.idDevoir),
-                  initialData: false,
-                  builder: (context, snapshot) {
-                    bool done = snapshot.data;
-                    return CircularCheckBox(
-                      activeColor: Colors.blue,
-                      inactiveColor: Colors.white,
-                      value: done,
-                      materialTapTargetSize: MaterialTapTargetSize.padded,
-                      onChanged: (bool x) {
-                        setState(() {
-                          done = !done;
-                          doneListFuture = getHomeworkDonePercent();
-                          widget.refreshCallback();
-                        });
-                        setHomeworkCompletion(widget._homework.idDevoir, x);
-                      },
-                    );
-                  }
-                ),
+                    future: getHomeworkCompletion(widget._homework.idDevoir),
+                    initialData: false,
+                    builder: (context, snapshot) {
+                      bool done = snapshot.data;
+                      return CircularCheckBox(
+                        activeColor: Colors.blue,
+                        inactiveColor: Colors.white,
+                        value: done,
+                        materialTapTargetSize: MaterialTapTargetSize.padded,
+                        onChanged: (bool x) {
+                          setState(() {
+                            done = !done;
+                            doneListFuture = getHomeworkDonePercent();
+                            widget.refreshCallback();
+                          });
+                          setHomeworkCompletion(widget._homework.idDevoir, x);
+                        },
+                      );
+                    }),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -913,9 +917,8 @@ class GaugeSegment {
 }
 
 //Homework done percent
-Future<int> getHomeworkDonePercent() async{
-  
- List list = await getReducedListHomework();
+Future<int> getHomeworkDonePercent() async {
+  List list = await getReducedListHomework();
   if (list != null) {
     //Number of elements in list
     int total = list.length;
@@ -923,16 +926,14 @@ Future<int> getHomeworkDonePercent() async{
       return 100;
     } else {
       int done = 0;
-    
-      
 
-       await Future.forEach(list, (element) async {
-       bool isDone= await getHomeworkCompletion(element.idDevoir);
-        if (isDone){
+      await Future.forEach(list, (element) async {
+        bool isDone = await getHomeworkCompletion(element.idDevoir);
+        if (isDone) {
           done++;
         }
-    });
-     print(done);
+      });
+      print(done);
       int percent = (done * 100 / total).round();
 
       return percent;
@@ -946,19 +947,18 @@ Future<List<homework>> getReducedListHomework() async {
   int reduce = await getIntSetting("summaryQuickHomework");
 
   List<homework> localList = await api.getNextHomework();
-  if(localList!=null){
-  List<homework> listToReturn = List<homework>();
-  localList.forEach((element) {
-    var now = DateTime.now();
-    var date = element.date;
-
-    if (date.difference(now).inDays < reduce) {
-      listToReturn.add(element);
-    }
-  });
-  return listToReturn;
-}
-  else {
-     return null;
-}
+  if (localList != null) {
+    List<homework> listToReturn = List<homework>();
+    localList.forEach((element) {
+      var now = DateTime.now();
+      var date = element.date;
+//ensure that the list doesn't contain the pinned homework
+      if (date.difference(now).inDays < reduce&&date.isAfter(DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now())))) {
+        listToReturn.add(element);
+      }
+    });
+    return listToReturn;
+  } else {
+    return null;
+  }
 }
