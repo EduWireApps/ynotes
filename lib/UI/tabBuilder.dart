@@ -19,11 +19,10 @@ import 'package:ynotes/UI/homeworkPage.dart';
 import 'package:ynotes/parsers/EcoleDirecte.dart';
 import '../usefulMethods.dart';
 import 'appsPage.dart';
-import 'package:flutter_offline/flutter_offline.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class TabBuilder extends StatefulWidget {
-  static final tabBarKey = new GlobalKey<_TabBuilderState>();
+  
   State<StatefulWidget> createState() {
     return _TabBuilderState();
   }
@@ -87,6 +86,7 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
         ConnectionStatusSingleton.getInstance();
     tabBarconnexion =
         connectionStatus.connectionChange.listen(connectionChanged);
+   isOffline = !connectionStatus.hasConnection;
   }
 
   void removeQuickMenu() {
@@ -585,7 +585,7 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
                           return true;
                         },
                         child: TabBarView(
-                            key: TabBuilder.tabBarKey,
+                          
                             controller: tabController,
                             children: [
                               Icon(Icons.apps),

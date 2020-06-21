@@ -9,10 +9,13 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:ynotes/UI/settingsPage.dart';
 import 'package:ynotes/UI/tabBuilder.dart';
 import 'package:flushbar/flushbar.dart';
+import 'package:ynotes/apiManager.dart';
 import 'package:ynotes/background.dart';
+import 'package:ynotes/encrypttest.dart';
 import 'package:ynotes/pronoteAPI.dart';
 import '../main.dart';
 import '../usefulMethods.dart';
+import 'dialogs.dart';
 
 class QuickMenu extends StatefulWidget {
   final Function close;
@@ -32,7 +35,7 @@ class _QuickMenuState extends State<QuickMenu> with TickerProviderStateMixin {
 
   Animation<double> quickMenuShowAnimation;
   AnimationController quickMenuController;
-
+API api  = APIManager();
   @override
   void initState() {
     super.initState();
@@ -140,11 +143,15 @@ class _QuickMenuState extends State<QuickMenu> with TickerProviderStateMixin {
                                                 case 2:
                                                  
                                                  {
-                                                   var client = Client('https://demo.index-education.net/pronote/eleve.html',
+                                                api.app("cloud", args: "/", action: "CD");
+                                           /* var client = Client('https://demo.index-education.net/pronote/eleve.html',
                           username:'demonstration',
                           password:'pronotevs');
                                                     await client.init();
-                                        
+                                                 */
+                                       
+                                        /*widget.close();
+                                        CustomDialogs.showGiffyDialog(context,"QuickMenu","Glisser en bas à droite pour afficher le quickMenu", Image.asset("assets/gifs/QuickMenu720.gif"));*/
                                      
                                                  }
                                                   break;
@@ -319,7 +326,7 @@ class _QuickMenuState extends State<QuickMenu> with TickerProviderStateMixin {
                                                                               .centerLeft,
                                                                       child:
                                                                           Text(
-                                                                        DateFormat("yyyy-MM-dd").format(snapshot
+                                                                        DateFormat("yyyy-MM-dd HH:mm").format(snapshot
                                                                             .data[index]
                                                                             .lastModifiedDate),
                                                                         style: TextStyle(

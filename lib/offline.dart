@@ -1,6 +1,5 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -42,7 +41,7 @@ getGradesFromDB({bool online = true}) async {
 
     var difference = now.difference(dateOffline);
 //if offline force show homework
-    if (difference.inHours < (batterySaver ? 8 : 3)) {
+    if (difference.inHours < (batterySaver ? 24 : 6)) {
       Map<dynamic, dynamic> mapToReturn;
       try {
         print("Returned grades from offline");
@@ -150,7 +149,7 @@ getHomeworkFromDB({bool online = true}) async {
     DateTime dateOffline = DateTime.parse(dateOfflineString);
     var difference = now.difference(dateOffline);
 //If time difference is bigger, return null and the user have to fetch from Internet
-    if (difference.inHours < (batterySaver ? 8 : 3)) {
+    if (difference.inHours < (batterySaver ? 24 : 6)) {
       try {
         print("Returned homework from offline");
         List<homework> listToReturn = homeworkBox.getAt(0).cast<homework>();

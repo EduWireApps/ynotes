@@ -1,9 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
+import 'package:stacked/stacked.dart';
+
+import '../../apiManager.dart';
 import '../../usefulMethods.dart';
 import '../appsPage.dart';
+import '../gradesPage.dart';
+import 'mail.dart';
 
 class CloudPage extends StatefulWidget {
   State<StatefulWidget> createState() {
@@ -11,8 +17,47 @@ class CloudPage extends StatefulWidget {
   }
 }
 
+Future cloudFolderFuture;
+
+String dossier = "Reçus";
+enum sortValue { date, reversed_date, author }
+bool isLoading = false;
+var actualSort = sortValue.date;
+List<CloudItem> localFoldersList;
+String path = "/";
+
 class _CloudPageState extends State<CloudPage> {
-  void initState() {}
+  //Initial path is "/""
+
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {
+          refreshLocalCloudItemsList();
+        }));
+  }
+
+  Future<void> refreshLocalCloudItemsList() async {
+    setState(() {
+      cloudFolderFuture = api.app("cloud", args: path, action: "CD");
+      isLoading = true;
+    });
+    var realdisciplinesListFuture = await cloudFolderFuture;
+    setState(() {
+      isLoading = false;
+    });
+  }
+
+  //Change directory action
+  changeDirectory(CloudItem item) async {
+    setState(() {
+      cloudFolderFuture =
+          api.app("cloud", args: path, action: "CD", folder: item);
+      isLoading = true;
+    });
+    var realdisciplinesListFuture = await cloudFolderFuture;
+    setState(() {
+      isLoading = false;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +66,8 @@ class _CloudPageState extends State<CloudPage> {
       width: screenSize.size.width,
       height: screenSize.size.height,
       color: Theme.of(context).backgroundColor,
-      child: Center(child: Stack(
-   
+      child: Center(
+          child: Stack(
         children: <Widget>[
           Positioned(
             left: screenSize.size.width / 5 * 0.2,
@@ -38,44 +83,480 @@ class _CloudPageState extends State<CloudPage> {
                 child: Container(
                   height: screenSize.size.height / 10 * 0.5,
                   padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
-                  child: Row(
-                    children: <Widget>[
-                      Icon(MdiIcons.arrowLeft,  color: isDarkModeEnabled
-                                      ? Colors.white
-                                      : Colors.black,),
-                      Text("Revenir aux applications",
-                          style: TextStyle(fontFamily: "Asap", fontSize: 15,  color: isDarkModeEnabled
-                                      ? Colors.white
-                                      : Colors.black,)),
-                    ],
+                  child: FittedBox(
+                    child: Row(
+                      children: <Widget>[
+                        Icon(
+                          MdiIcons.arrowLeft,
+                          color:
+                              isDarkModeEnabled ? Colors.white : Colors.black,
+                        ),
+                        Text("Revenir aux applications",
+                            style: TextStyle(
+                              fontFamily: "Asap",
+                              fontSize: 15,
+                              color: isDarkModeEnabled
+                                  ? Colors.white
+                                  : Colors.black,
+                            )),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
           ),
-        
-          Align(
-             alignment: Alignment.center,
-                      child: Container(
-             
-              height: screenSize.size.height/10*7,
-              width: screenSize.size.width/5*4.8,
-              child: Center(
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(15),
-                              child: ListView.builder(
-                     itemCount: 5
-                    ,itemBuilder: (context,index)
-                  {
-                 
-                  }),
+          AnimatedContainer(
+            duration: Duration(milliseconds: 250),
+            margin: EdgeInsets.only(
+              top: screenSize.size.height / 10 * 0.8,
+            ),
+            height: path != "/" ? screenSize.size.height / 10 * 0.5 : 0,
+            width: screenSize.size.width,
+            child: Material(
+              borderRadius: BorderRadius.circular(11),
+              color: Theme.of(context).primaryColor,
+              child: InkWell(
+                onTap: () {
+                  if (path != "/") {
+                    var splits = path.split("/");
+                    print(splits.length);
+                    if (splits.length > 2) {
+                      var finalList = splits.sublist(1, splits.length - 2);
+                      var concatenate = StringBuffer();
+
+                      finalList.forEach((item) {
+                        concatenate.write(r'/' + item);
+                      });
+                      print(concatenate);
+                      setState(() {
+                        path = concatenate.toString();
+                      });
+                    } else {
+                      setState(() {
+                        path = "/";
+                      });
+                    }
+                    changeDirectory(null);
+                  }
+                },
+                child: Container(
+                  height: screenSize.size.height / 10 * 0.5,
+                  padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
+                  child: FittedBox(
+                    child: Row(
+                      children: <Widget>[
+                        Icon(
+                          MdiIcons.arrowLeft,
+                          color:
+                              isDarkModeEnabled ? Colors.white : Colors.black,
+                        ),
+                        Text("Retour",
+                            style: TextStyle(
+                              fontFamily: "Asap",
+                              fontSize: 15,
+                              color: isDarkModeEnabled
+                                  ? Colors.white
+                                  : Colors.black,
+                            )),
+                      ],
+                    ),
+                  ),
                 ),
               ),
             ),
           ),
+          Container(
+            margin: EdgeInsets.only(
+              top: screenSize.size.height / 10 * 1.35,
+            ),
+            height: screenSize.size.height / 10 * 7,
+            child: RefreshIndicator(
+              onRefresh: refreshLocalCloudItemsList,
+              child: FutureBuilder(
+                  future: cloudFolderFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      localFoldersList = snapshot.data;
+                      if (path == "/" && isLoading == false) {
+                        localFoldersList =
+                            sortByGroupMainPage(localFoldersList);
+                      }
+
+                      return ClipRRect(
+                        borderRadius: BorderRadius.circular(15),
+                        child: MediaQuery.removePadding(
+                          removeTop: true,
+                          context: context,
+                          child: ListView.builder(
+                            addRepaintBoundaries: false,
+                              itemCount: localFoldersList.length,
+                              itemBuilder: (context, index) {
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: <Widget>[
+                                    //Separator
+                                    if (path == "/" &&
+                                        isLoading == false &&
+                                        index != 0 &&
+                                        localFoldersList[
+                                                    index - 1]
+                                                .isMemberOf !=
+                                            null &&
+                                        localFoldersList[index].isMemberOf !=
+                                            null &&
+                                        index != localFoldersList.length - 1 &&
+                                        localFoldersList[index - 1]
+                                            .isMemberOf &&
+                                        !localFoldersList[index].isMemberOf)
+                                      Row(children: <Widget>[
+                                        Expanded(
+                                          child: new Container(
+                                              margin: const EdgeInsets.only(
+                                                  left: 10.0, right: 20.0),
+                                              child: Divider(
+                                                color: isDarkModeEnabled
+                                                    ? Colors.white
+                                                    : Colors.black,
+                                                height: 36,
+                                              )),
+                                        ),
+                                        Text(
+                                          "Autres clouds",
+                                          style: TextStyle(
+                                              color: isDarkModeEnabled
+                                                  ? Colors.white
+                                                  : Colors.black,
+                                              fontFamily: "Asap"),
+                                        ),
+                                        Expanded(
+                                          child: new Container(
+                                              margin: const EdgeInsets.only(
+                                                  left: 20.0, right: 10.0),
+                                              child: Divider(
+                                                color: isDarkModeEnabled
+                                                    ? Colors.white
+                                                    : Colors.black,
+                                                height: 36,
+                                              )),
+                                        ),
+                                      ]),
+                                    //Item builder
+                                    ViewModelBuilder<
+                                            DownloadModel>.reactive(
+                                       viewModelBuilder: ()=>DownloadModel(),
+                                        builder: (context, model, child) {
+                                          return Material(
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                            child: InkWell(
+                                              onTap: () async {
+                                                if (localFoldersList[index]
+                                                        .type ==
+                                                    "FOLDER") {
+                                                  if (path == "/") {
+                                                    cloudUsedFolder =
+                                                        localFoldersList[index]
+                                                            .id;
+                                                  }
+                                                  setState(() {
+                                                    path +=
+                                                        localFoldersList[index]
+                                                                .title +
+                                                            "/";
+                                                  });
+                                                  changeDirectory(
+                                                      localFoldersList[index]);
+                                                }
+                                                if (localFoldersList[index]
+                                                        .type ==
+                                                    "FILE") {
+                                                  if (await model.fileExists(
+                                                      localFoldersList[index]
+                                                          .title)) {
+                                                    openFile(
+                                                        localFoldersList[index]
+                                                            .title);
+                                                  } else {
+                                                    model.download(
+                                                        localFoldersList[index]
+                                                            .id,
+                                                        "CLOUD",
+                                                        localFoldersList[index]
+                                                            .title);
+                                                  }
+                                                }
+                                              },
+                                              child: Container(
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical:
+                                                        screenSize.size.height /
+                                                            10 *
+                                                            0.1),
+                                                margin: EdgeInsets.all(0),
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    FutureBuilder(
+                                                        future: model.fileExists(
+                                                            localFoldersList[
+                                                                    index]
+                                                                .title),
+                                                        initialData: false,
+                                                        builder: (context,
+                                                            snapshot) {
+                                                          return Container(
+                                                            margin: EdgeInsets.only(
+                                                                left: screenSize
+                                                                        .size
+                                                                        .width /
+                                                                    5 *
+                                                                    0.2),
+                                                            child: Icon(
+                                                              (localFoldersList[
+                                                                              index]
+                                                                          .type ==
+                                                                      "FOLDER")
+                                                                  ? MdiIcons
+                                                                      .folder
+                                                                  : (snapshot
+                                                                          .data
+                                                                      ? MdiIcons
+                                                                          .fileCheck
+                                                                      : MdiIcons
+                                                                          .file),
+                                                              color: ((localFoldersList[
+                                                                              index]
+                                                                          .type ==
+                                                                      "FOLDER")
+                                                                  ? Colors
+                                                                      .yellow
+                                                                      .shade600
+                                                                  : Colors.grey
+                                                                      .shade300),
+                                                            ),
+                                                          );
+                                                        }),
+                                                    Container(
+                                                      margin: EdgeInsets.only(
+                                                          left: screenSize
+                                                                  .size.width /
+                                                              5 *
+                                                              0.4),
+                                                      width: screenSize
+                                                              .size.width /
+                                                          5 *
+                                                          4,
+                                                      child: Column(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .start,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: <Widget>[
+                                                          Container(
+                                                            child: Text(
+                                                              localFoldersList[
+                                                                      index]
+                                                                  .title,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .start,
+                                                              style: TextStyle(
+                                                                fontFamily:
+                                                                    "Asap",
+                                                                fontSize: screenSize
+                                                                        .size
+                                                                        .height /
+                                                                    10 *
+                                                                    0.25,
+                                                                color: isDarkModeEnabled
+                                                                    ? Colors
+                                                                        .white
+                                                                    : Colors
+                                                                        .black,
+                                                              ),
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                            ),
+                                                          ),
+                                                          if (localFoldersList[
+                                                                      index]
+                                                                  .author !=
+                                                              "")
+                                                            Text(
+                                                              localFoldersList[
+                                                                      index]
+                                                                  .author,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .start,
+                                                              style: TextStyle(
+                                                                fontFamily:
+                                                                    "Asap",
+                                                                fontSize: screenSize
+                                                                        .size
+                                                                        .height /
+                                                                    10 *
+                                                                    0.2,
+                                                                color: isDarkModeEnabled
+                                                                    ? Colors
+                                                                        .white60
+                                                                    : Colors
+                                                                        .black87,
+                                                              ),
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                            ),
+                                                          if (localFoldersList[
+                                                                      index]
+                                                                  .date !=
+                                                              null)
+                                                            Row(
+                                                              children: <
+                                                                  Widget>[
+                                                                Text(
+                                                                  localFoldersList[
+                                                                          index]
+                                                                      .date
+                                                                      .toString(),
+                                                                  textAlign:
+                                                                      TextAlign
+                                                                          .start,
+                                                                  style:
+                                                                      TextStyle(
+                                                                    fontFamily:
+                                                                        "Asap",
+                                                                    fontSize: screenSize
+                                                                            .size
+                                                                            .height /
+                                                                        10 *
+                                                                        0.2,
+                                                                    color: isDarkModeEnabled
+                                                                        ? Colors
+                                                                            .white38
+                                                                        : Colors
+                                                                            .black38,
+                                                                  ),
+                                                                  overflow:
+                                                                      TextOverflow
+                                                                          .ellipsis,
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            if(model.isDownloading&&model.downloadProgress!=null&&model.downloadProgress<100)
+                                                            Container(
+                                                              width: screenSize.size.width/5*4,
+                                                              child: LinearProgressIndicator(
+
+                                                                value: model.downloadProgress,
+                                                              ))
+                                                         
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        }),
+                                    Container(
+                                      child: Divider(
+                                        color: Colors.black45,
+                                        height:
+                                            screenSize.size.height / 10 * 0.005,
+                                        thickness:
+                                            screenSize.size.height / 10 * 0.005,
+                                      ),
+                                    )
+                                  ],
+                                );
+                              }),
+                        ),
+                      );
+                    }
+                    if (snapshot.hasError) {
+                      return Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(
+                              "Une erreur a eu lieu",
+                              style: TextStyle(
+                                  fontFamily: "Asap",
+                                  color: isDarkModeEnabled
+                                      ? Colors.white
+                                      : Colors.black),
+                            ),
+                            FlatButton(
+                              onPressed: () {
+                                //Reload list
+                                refreshLocalCloudItemsList();
+                              },
+                              child: Text("Recharger",
+                                  style: TextStyle(
+                                    fontFamily: "Asap",
+                                    color: isDarkModeEnabled
+                                        ? Colors.white
+                                        : Colors.black,
+                                  )),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: new BorderRadius.circular(18.0),
+                                  side: BorderSide(
+                                      color:
+                                          Theme.of(context).primaryColorDark)),
+                            ),
+                          ],
+                        ),
+                      );
+                    } else {
+                      return SpinKitFadingFour(
+                        color: Theme.of(context).primaryColor,
+                        size: screenSize.size.width / 5 * 0.7,
+                      );
+                    }
+                  }),
+            ),
+          ),
+          if (isLoading)
+            Container(
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15),
+                  color: Colors.black.withOpacity(0.4)),
+              margin: EdgeInsets.only(
+                top: screenSize.size.height / 10 * 1.35,
+              ),
+              height: screenSize.size.height / 10 * 7,
+              child: SpinKitFadingFour(
+                color: Colors.white60,
+                size: screenSize.size.width / 5 * 0.7,
+              ),
+            ),
         ],
       )),
     );
   }
 }
 
+
+
+//Sort in the main page
+sortByGroupMainPage(List<CloudItem> list) {
+  List<CloudItem> toReturn = List();
+  //Make two groups of member of and not member of
+
+  list.forEach((element) {
+    if (element.isMemberOf != null && element.isMemberOf) {
+      toReturn.add(element);
+    }
+  });
+  list.forEach((element) {
+    if (element.isMemberOf == null || !element.isMemberOf) {
+      toReturn.add(element);
+    }
+  });
+  return toReturn;
+}

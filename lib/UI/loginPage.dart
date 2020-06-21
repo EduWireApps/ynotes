@@ -242,7 +242,6 @@ class _LoginPageState extends State<LoginPage> {
 
   bool isOffline = false;
 
-
   API apiLogin;
   @override
   initState() {
@@ -255,6 +254,7 @@ class _LoginPageState extends State<LoginPage> {
         ConnectionStatusSingleton.getInstance();
     loginconnexion =
         connectionStatus.connectionChange.listen(connectionChanged);
+    isOffline = !connectionStatus.hasConnection;
   }
 
   void connectionChanged(dynamic hasConnection) {
@@ -267,16 +267,20 @@ class _LoginPageState extends State<LoginPage> {
 
   getFirstUse() async {
     final prefs = await SharedPreferences.getInstance();
-    _isFirstUse = prefs.getBool('firstUse') ?? true;
+    if (prefs.getBool('firstUse') == true &&
+        storage.read(key: 'agreedTermsAndConfiguredApp') == null) {
+      _isFirstUse = true;
+    }
   }
 
   tryToConnect() async {
     await setChosenParser(0);
     getChosenParser();
-    apiLogin= APIManager();
+    apiLogin = APIManager();
     String u = await storage.read(key: "username");
     String p = await storage.read(key: "password");
-    if (u != null && p != null) {
+    String z = await storage.read(key: "agreedTermsAndConfiguredApp");
+    if (u != null && p != null && z != null) {
       connectionData = apiLogin.login(u, p);
       openLoadingDialog();
     }
@@ -433,7 +437,10 @@ class _LoginPageState extends State<LoginPage> {
         });
   }
 
-  void dispose() {}
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   Widget build(BuildContext context) {
     MediaQueryData screenSize;
@@ -570,7 +577,7 @@ class _LoginPageState extends State<LoginPage> {
                                       children: <Widget>[
                                         Container(
                                           child: Text(
-                                            "Bienvenue sur YNotes",
+                                            "Bienvenue sur yNotes",
                                             style: TextStyle(
                                                 fontFamily: 'Asap',
                                                 fontWeight: FontWeight.bold,
@@ -744,7 +751,7 @@ class _LoginPageState extends State<LoginPage> {
                                                 highlightedBorderColor:
                                                     Color(0xff252B62),
                                                 onPressed: () async {
-                                                  await setChosenParser(1);
+                                                  await setChosenParser(0);
                                                   getChosenParser();
                                                   apiLogin = APIManager();
                                                   //Actions when pressing the ok button

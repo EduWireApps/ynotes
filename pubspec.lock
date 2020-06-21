@@ -22,13 +22,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.39.8"
-  animated_text_kit:
-    dependency: "direct main"
-    description:
-      name: animated_text_kit
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.0"
   archive:
     dependency: transitive
     description:
@@ -282,33 +275,19 @@ packages:
     source: hosted
     version: "0.3.0"
   dio:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: dio
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.9"
-  dio_http2_adapter:
-    dependency: "direct dev"
-    description:
-      name: dio_http2_adapter
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.0"
   encrypt:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: encrypt
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.2"
-  english_words:
-    dependency: "direct main"
-    description:
-      name: english_words
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "3.1.5"
   ffi:
     dependency: transitive
     description:
@@ -317,12 +296,12 @@ packages:
     source: hosted
     version: "0.1.3"
   file_picker:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: file_picker
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.11.0+2"
+    version: "1.12.0"
   file_picker_platform_interface:
     dependency: transitive
     description:
@@ -410,13 +389,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.5"
-  flutter_offline:
+  flutter_multiselect:
     dependency: "direct main"
     description:
-      name: flutter_offline
+      name: flutter_multiselect
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.0"
+    version: "0.5.0"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -461,9 +440,9 @@ packages:
       name: flutter_widget_from_html_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.3"
+    version: "0.3.3+4"
   giffy_dialog:
-    dependency: "direct overridden"
+    dependency: "direct main"
     description:
       name: giffy_dialog
       url: "https://pub.dartlang.org"
@@ -497,13 +476,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.4.1+1"
-  hive_flutter:
-    dependency: "direct main"
-    description:
-      name: hive_flutter
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.3.0+2"
   hive_generator:
     dependency: "direct dev"
     description:
@@ -525,13 +497,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.12.0+4"
-  http2:
-    dependency: transitive
-    description:
-      name: http2
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.0"
   http_multi_server:
     dependency: transitive
     description:
@@ -616,13 +581,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.4.5045"
-  matrix_gesture_detector:
-    dependency: "direct main"
-    description:
-      name: matrix_gesture_detector
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.0"
   meta:
     dependency: transitive
     description:
@@ -658,6 +616,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.1"
+  observable_ish:
+    dependency: transitive
+    description:
+      name: observable_ish
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.1.4"
   open_file:
     dependency: "direct main"
     description:
@@ -735,13 +700,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.8.0+1"
-  percent_indicator:
-    dependency: "direct main"
-    description:
-      name: percent_indicator
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.1.1+1"
   permission_handler:
     dependency: transitive
     description:
@@ -785,7 +743,7 @@ packages:
     source: hosted
     version: "1.0.2"
   pointycastle:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: pointycastle
       url: "https://pub.dartlang.org"
@@ -805,13 +763,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.4"
-  provider_architecture:
-    dependency: "direct main"
-    description:
-      name: provider_architecture
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.6"
   pub_semver:
     dependency: transitive
     description:
@@ -841,7 +792,7 @@ packages:
     source: hosted
     version: "1.0.3"
   requests:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: requests
       url: "https://pub.dartlang.org"
@@ -978,8 +929,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.9.3"
+  stacked:
+    dependency: "direct main"
+    description:
+      name: stacked
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.6.0"
   steel_crypt:
-    dependency: "direct overridden"
+    dependency: "direct main"
     description:
       name: steel_crypt
       url: "https://pub.dartlang.org"
@@ -1091,7 +1049,7 @@ packages:
     source: hosted
     version: "3.4.1"
   uuid:
-    dependency: "direct overridden"
+    dependency: "direct main"
     description:
       name: uuid
       url: "https://pub.dartlang.org"

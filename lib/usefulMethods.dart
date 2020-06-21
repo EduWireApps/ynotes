@@ -1,7 +1,10 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 import 'package:connectivity/connectivity.dart';
 import 'package:flushbar/flushbar.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:hive/hive.dart';
 import 'package:open_file/open_file.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path/path.dart' as path;
@@ -89,7 +92,7 @@ class DownloadModel extends ChangeNotifier {
         bytes.addAll(newBytes);
         final downloadedLength = bytes.length;
         _progress = downloadedLength / contentLength;
-       
+
         notifyListeners();
       },
       onDone: () async {
@@ -155,7 +158,7 @@ Future<void> openFile(filename) async {
 
 ///Color theme switcher, actually 0 for darkmode and 1 for lightmode
 int colorTheme = 0;
-String actualUser;
+String actualUser ="";
 Color GetColorFor(String element) {
   if (colorTheme == 0) {
     switch (element) {
@@ -428,3 +431,49 @@ TValue case2<TOptionType, TValue>(
 
 List<discipline> specialities = List<discipline>();
 
+exit() async {
+//Delete sharedPref
+  SharedPreferences preferences = await SharedPreferences.getInstance();
+  preferences.clear();
+//Import secureStorage
+  final storage = new FlutterSecureStorage();
+// Delete all
+  await storage.deleteAll();
+
+//delete hive files
+  final dir = await getDirectory();
+  Hive.init("${dir.path}/offline");
+  var homeworkBox = await Hive.openBox('homework');
+  await homeworkBox.clear();
+  var gradeBox = await Hive.openBox('grades');
+  await gradeBox.clear();
+  var done = await Hive.openBox('doneHomework');
+  await done.clear();
+  var pinned = await Hive.openBox('pinnedHomework');
+  await pinned.clear();
+}
+
+specialtiesSelectionAvailable() async {
+  await getChosenParser();
+
+  if (chosenParser == 0) {
+    
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+  String classe= await storage.read(key: "classe");
+   
+//E.G : It is always something like "Première blabla"
+    var split = classe.split(" ");
+
+    if (split[0] == "PremiÃ¨re" || split[0] == "Terminale") {
+
+      return [true,(split[0]=="PremiÃ¨re")?"Première":split[0]];
+    } else {
+      return false;
+    }
+  } else {
+    return false;
+  }
+}
+
+String lastCloudRequest = "";
+String cloudUsedFolder ="";

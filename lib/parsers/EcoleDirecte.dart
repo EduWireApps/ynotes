@@ -11,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:quiver/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:stack/stack.dart' as sta;
+import 'package:ynotes/parsers/EcoleDirecteCloud.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/offline.dart';
 import 'package:ynotes/apiManager.dart';
@@ -92,8 +93,10 @@ class APIEcoleDirecte extends API {
       if (req['code'] == 200) {
         //Put the value of the name in a variable
         actualUser = req['data']['accounts'][0]['prenom'];
-        actualUser = req['data']['accounts'][0]['prenom'];
         String userID = req['data']['accounts'][0]['id'].toString();
+        String classe = req['data']['accounts'][0]['profile']["classe"]
+                ["libelle"]
+            .toString();
         //Store the token
         token = req['token'];
         //Create secure storage for credentials
@@ -101,7 +104,8 @@ class APIEcoleDirecte extends API {
         CreateStorage("username", username);
         //IMPORTANT ! store the user ID
         CreateStorage("userID", userID);
-
+        CreateStorage("classe", classe);
+        CreateStorage("userFullName", actualUser);
         //Ensure that the user will not see the carousel anymore
         prefs.setBool('firstUse', false);
         return "Bienvenue ${actualUser[0].toUpperCase()}${actualUser.substring(1).toLowerCase()} !";
@@ -186,9 +190,9 @@ class APIEcoleDirecte extends API {
         });
         List<DateTime> pinnedDates = await getPinnedHomeworkDates();
         //Combine lists
-      List<DateTime> combinedList = homeworkDatesListToReturn+pinnedDates;
-      combinedList = combinedList.toSet().toList();
-      combinedList.sort();
+        List<DateTime> combinedList = homeworkDatesListToReturn + pinnedDates;
+        combinedList = combinedList.toSet().toList();
+        combinedList.sort();
         return combinedList;
       } else {
         throw "Erreur durant la récupération des devoirs";
@@ -271,7 +275,6 @@ class APIEcoleDirecte extends API {
           List data = req['data']['matieres'];
 
           data.forEach((element) {
-      
             if (element['aFaire'] != null) {
               String encodedContent = "";
               String aFaireEncoded = "";
@@ -311,6 +314,7 @@ class APIEcoleDirecte extends API {
 
               decodedContenuDeSeance =
                   utf8.decode(base64.decode(aFaireEncoded));
+
               homeworkList.add(new homework(
                 element['matiere'],
                 element['codeMatiere'],
@@ -364,12 +368,19 @@ class APIEcoleDirecte extends API {
   }
 
   @override
-  Future app(String appname, {String args, String action}) async {
+  Future app(String appname,
+      {String args, String action, CloudItem folder}) async {
     switch (appname) {
       case "mail":
         {
           print("Returning mails");
           return await getMails();
+        }
+        break;
+      case "cloud":
+        {
+          print("Returning cloud");
+          return await getCloud(args, action, folder);
         }
         break;
     }
@@ -413,6 +424,84 @@ class APIEcoleDirecte extends API {
   }
 
   ///END OF THE API CLASS
+}
+
+/* CLOUD SUB API 
+Read this : called with two arguments. The first one is "args" and is used to add the path: 
+
+      The second one has to be "CD", "PUSH", "RM" 
+      E.G : "CD" navigate to the path and return the files and folder existing in it : ESPACES DE TRAVAILS and PERSONNAL CLOUDS are considered as folders
+      E.G : "PUSH" add a file to the path if it doesn't exist
+      E.G : "RM" remove a file to the path 
+              
+*/
+Future getCloud(String args, String action, CloudItem item) async {
+  if (action == "CD") {
+    switch (args) {
+      //Default repository. Every folder have to be followed by / => "/CLOUD/FOLDER/"
+      //This action returns every cloud as folders
+
+      case ("/"):
+        {
+          //Refresh the token
+          await testToken();
+          String id = await storage.read(key: "userID");
+          //Get the espaces de travail
+          var url =
+              "https://api.ecoledirecte.com/v3/E/$id/espacestravail.awp?verbe=get&";
+          String data = 'data={"token": "$token"}';
+          Map<String, String> headers = {"Content-type": "text/plain"};
+          var body = data;
+          var response = await http
+              .post(url, headers: headers, body: body)
+              .catchError((e) {
+            throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou reessayez plus tard.");
+          });
+          try {
+            if (response.statusCode == 200) {
+              List<CloudItem> toReturn = List();
+              Map<String, dynamic> req =
+                  jsonDecode(utf8.decode(response.bodyBytes));
+              if (req["code"] == 200) {
+                lastCloudRequest = utf8.decode(response.bodyBytes);
+                String date = "";
+                List listData = req["data"];
+                listData.forEach((element) {
+                  String date = element["creeLe"];
+                  try {
+                    var split = date.split(" ");
+                    date = split[0];
+                  } catch (e) {}
+
+                
+                  toReturn.add(CloudItem(element["titre"], "FOLDER",
+                      element["creePar"], true, date,
+                      isMemberOf: element["estMembre"],
+                      id: element["id"].toString(),
+                      isLoaded: false,
+                     ));
+                });
+                return toReturn;
+              } else {
+                print(
+                    "The servor didn't returned the cloud folder. ${response.body}");
+              }
+            } else {
+              print(
+                  "The servor didn't returned the cloud folder. ${response.body}");
+            }
+          } catch (e) {
+            print("Error during an action on the main folders: $e");
+          }
+        }
+        break;
+      default:
+        {
+          return changeFolder(args);
+        }
+        break;
+    }
+  }
 }
 
 Future getMails() async {
@@ -497,11 +586,14 @@ Future getMails() async {
   }
 }
 
-Future readMail(String mailId) async {
+Future readMail(String mailId, bool read) async {
   await testToken();
   String id = await storage.read(key: "userID");
   var url =
       'https://api.ecoledirecte.com/v3/eleves/$id/messages/${mailId}.awp?verbe=get';
+  if (read == false) {
+    url = url + "&mode=destinataire";
+  }
   Map<String, String> headers = {"Content-type": "text/plain"};
   String data = 'data={"token": "$token"}';
   //encode Map to JSON
@@ -710,7 +802,7 @@ getGradesFromInternet() async {
       return disciplinesList;
     }
   } else {
-    throw "Erreur durant la récupération des notes.";
+    throw "Erreur durant la récupération des notes. ${url}";
   }
   return null;
 }

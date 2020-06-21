@@ -154,7 +154,7 @@ class Client {
 
     var dec = e.aes_decrypt(hex.decode(challenge));
     var dec_no_alea = _enleverAlea(utf8.decode(dec));
-    var ch = hex.encode(e.aes_encrypt(utf8.encode(dec_no_alea)));
+    var ch = e.aes_encrypt(utf8.encode(dec_no_alea));
 
     Map auth_json = {
       "connexion": 0,
@@ -282,13 +282,14 @@ class _Communication {
 
   post(String function_name, var data,
       {bool recursive = false, var decryption_change = null}) async {
-    print(1);
+  
     if (data["_Signature_"] != null &&
         !this.authorized_onglets.contains(data['_Signature_']['onglet'])) {
       throw ('Action not permitted. (onglet is not normally accessible)');
     }
-    print(2);
+  
     if (this.compress_requests) {
+      print("Compress request");
       data = utf8.encode(jsonEncode(data.toString()));
       data = hex.encode(data);
       var zlibInstance = ZLibCodec(level: 6);
@@ -296,17 +297,17 @@ class _Communication {
     }
     print(data);
     if (this.encrypt_requests) {
+      print("Encrypt requests");
       if (data.runtimeType == Map) {
         data = utf8.encode(data.toString());
       }
-      data = hex.encode(encryption.aes_encrypt(data)).toUpperCase();
+      data = encryption.aes_encrypt(data).toUpperCase();
     }
     print("Request number:"+this.request_number.toString());
    
-     print(hex.encode(encryption.aes_encrypt(utf8.encode(this.request_number.toString()))) );
-    var r_number = hex.encode(
-        encryption.aes_encrypt(utf8.encode(this.request_number.toString())));
-     
+    
+    var r_number = encryption.aes_encrypt(utf8.encode(this.request_number.toString()));
+     print(r_number);
     var json = {
       'session': int.parse(this.attributes['h']),
       'numeroOrdre': r_number,
@@ -324,7 +325,7 @@ class _Communication {
         r_number;
     print("p_site: " + p_site);
     this.request_number += 2;
-    /*var response =
+    var response =
         await Requests.post(p_site, json: json, persistCookies: false);
 
     this.last_ping = (DateTime.now().millisecondsSinceEpoch / 1000);
@@ -376,7 +377,7 @@ class _Communication {
       }
 
       return response_data;
-    }*/
+    }
   }
 
   after_auth(var auth_response, var data, var auth_key) {
@@ -440,10 +441,10 @@ class _Encryption {
       var rng = new Random();
       list.add(rng.nextInt(255));
     }
-    this.aes_iv = Int16List(16);
+    this.aes_iv = IV.fromBase16("00000000000000000000000000000000");
 
     this.aes_iv_temp = Uint8List.fromList(list);
-    this.aes_key = generateMd5("");
+    this.aes_key = md5.convert(utf8.encode("")).toString();
 
     this.rsa_keys = {};
   }
@@ -451,16 +452,21 @@ class _Encryption {
   return md5.convert(utf8.encode(input)).toString();
 }
   aes_encrypt(List<int> data) {
-    this.aes_key = generateMd5("");
-print(base64.encode(this.aes_iv));
-  var aesEncrypter =  AesCrypt(key: this.aes_key,padding: PaddingAES.pkcs7, mode: ModeAES.cbc ); //generate AES CBC block encrypter with key and PKCS7 padding
-String encrypted = aesEncrypter.encrypt(data.toString(),iv: base64.encode(this.aes_iv));
- // print(base64.decode(encrypted));
-    return base64.decode(encrypted);
+  print("Starting encryption ");
+     var data2 = utf8.decode(data);
+ 
+    var key = Key.fromBase16(this.aes_key);
+   
+    final encrypter = Encrypter(AES(key, mode: AESMode.cbc, padding: "PKCS7"));
+    final encrypted = encrypter.encrypt(data2.toString(), iv: aes_iv).base16;
+
+    return(encrypted);
   }
 
   aes_decrypt(var data) {
-     var aesEncrypter =  AesCrypt(key: this.aes_key, mode: ModeAES.cbc ); //generate AES CBC block encrypter with key and PKCS7 padding
+    var key = Key.fromBase16(this.aes_key);
+    final aesEncrypter = Encrypter(AES(key, mode: AESMode.cbc, padding: "PKCS7"));
+      //generate AES CBC block encrypter with key and PKCS7 padding
 
     try {
       return aesEncrypter.decrypt(data, iv: this.aes_iv);
@@ -478,8 +484,8 @@ String encrypted = aesEncrypter.encrypt(data.toString(),iv: base64.encode(this.a
   }
 
   rsa_encrypt(var data) async {
-    //print(this.rsa_keys['MR']);
-    //print(this.rsa_keys['ER']);
+    print(this.rsa_keys['MR']);
+    print(this.rsa_keys['ER']);
 
     var modulusBytes = this.rsa_keys['MR'];
     var modulus =
@@ -505,7 +511,7 @@ String encrypted = aesEncrypter.encrypt(data.toString(),iv: base64.encode(this.a
     for (int i = 2; i < paddingLength + 2; i++) {
       eb[i] = r.nextInt(254) + 1;
     }
-
+ 
     return engine.process(eb);
   }
 

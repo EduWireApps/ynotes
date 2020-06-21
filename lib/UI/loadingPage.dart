@@ -24,6 +24,7 @@ class _LoadingPageState extends State<LoadingPage> {
   Future<String> connectionData;
   String u;
   String p;
+  String z;
   @override
   void initState() {
     tryToConnect();
@@ -35,7 +36,10 @@ class _LoadingPageState extends State<LoadingPage> {
     getChosenParser();
     u = await storage.read(key: "username");
     p = await storage.read(key: "password");
-    if (u != null && p != null) {
+    z = await storage.read(key: "agreedTermsAndConfiguredApp");
+    
+    if (u != null && p != null && z !=null) {
+      
       return api.login(u, p);
     } else {
       Navigator.of(context).pushReplacement(router(login()));

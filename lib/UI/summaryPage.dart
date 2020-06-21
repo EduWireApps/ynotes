@@ -6,7 +6,6 @@ import 'package:charts_flutter/flutter.dart' as charts;
 import 'dart:math';
 import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ynotes/UI/gradesPage.dart';
@@ -109,7 +108,7 @@ class _SummaryPageState extends State<SummaryPage> {
                           offset: Offset(
                               0, (screenSize.size.height / 10 * 8.8) / 15),
                           child: Transform.scale(
-                              scale: 2.1,
+                              scale: 1.9,
                               child: Container(
                                 padding: EdgeInsets.all(0),
                                 //Gauge
@@ -118,10 +117,8 @@ class _SummaryPageState extends State<SummaryPage> {
                                         snapshot.hasError ? 0 : snapshot.data),
                                     animate: false,
                                     defaultRenderer:
-                                        new charts.ArcRendererConfig(
-                                            arcWidth:
-                                                (screenSize.size.width / 40)
-                                                    .round(),
+                                         charts.ArcRendererConfig(
+                                            arcWidth: (screenSize.size.width<500)?5:10,
                                             startAngle: pi,
                                             arcLength: pi,
                                             strokeWidthPx: 1)),
@@ -157,6 +154,9 @@ class _SummaryPageState extends State<SummaryPage> {
                                 color: isDarkModeEnabled
                                     ? Colors.white
                                     : Colors.black,
+                                fontSize:  screenSize.size.height /
+                                    10 *
+                                    0.2,
                                 fontFamily: "Asap"),
                           ),
                         ),
@@ -187,8 +187,8 @@ class _SummaryPageState extends State<SummaryPage> {
                         top: (screenSize.size.height / 10 * 8.8) / 95,
                         left: 20,
                         child: Container(
-                          width: 30,
-                          height: 30,
+                          width: screenSize.size.height / 10 * 0.5,
+                          height: screenSize.size.height / 10 * 0.5,
                           child: RawMaterialButton(
                             onPressed: () {
                               todoSettingsController.animateToPage(1,
@@ -200,7 +200,7 @@ class _SummaryPageState extends State<SummaryPage> {
                               color: isDarkModeEnabled
                                   ? Colors.white
                                   : Colors.black,
-                              size: 25.0,
+                              size: screenSize.size.height / 10 * 0.4,
                             ),
                             shape: new CircleBorder(),
                             elevation: 1.0,
@@ -304,7 +304,7 @@ class _SummaryPageState extends State<SummaryPage> {
                                                                   "Asap"),
                                                         ),
                                                         Expanded(
-                                                          child: new Container(
+                                                          child: Container(
                                                               margin:
                                                                   const EdgeInsets
                                                                           .only(

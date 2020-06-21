@@ -1,9 +1,15 @@
-
-
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:circular_check_box/circular_check_box.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ynotes/UI/dialogs.dart';
 import 'package:ynotes/UI/loginPage.dart';
 import 'package:flutter/material.dart';
+import 'package:ynotes/apiManager.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/parsers/EcoleDirecte.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 class SlidingCarousel extends StatefulWidget {
@@ -475,28 +481,40 @@ class _page3State extends State<page3> {
                           fontSize: 30.0,
                           color: Colors.white)))),
         ),
-        Positioned(
-          left: MediaQuery.of(context).size.width / 4,
-          bottom: MediaQuery.of(context).size.height / 10,
-          child: Container(
-            width: MediaQuery.of(context).size.width / 2,
-            height: 50,
-            child: RaisedButton(
-              color: Color(0xff5DADE2),
-              shape: StadiumBorder(),
-              onPressed: () {
-                Navigator.of(context).pushReplacement(router(homePage()));
-              },
-              child: const Text('Allons-y !', style: TextStyle(fontSize: 20)),
-            ),
-          ),
-        ),
       ],
     );
   }
 }
 
+API api = APIManager();
+
 class _page4State extends State<page4> {
+  bool specialtiesAvailable = false;
+  Future carouselDisciplineListFuture;
+   String localClasse;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getSpecialitiesChoiceAvailability();
+    carouselDisciplineListFuture = api.getGrades();
+  }
+
+  void refreshCarouselDLFuture() async {
+    setState(() {
+      carouselDisciplineListFuture = api.getGrades();
+    });
+  }
+
+  void getSpecialitiesChoiceAvailability() async {
+    var list = await specialtiesSelectionAvailable();
+    setState(() {
+      localClasse= list[1];
+      specialtiesAvailable= list[0];
+    });
+  }
+
+  List<String> chosenSpecialties = List();
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
@@ -507,17 +525,259 @@ class _page4State extends State<page4> {
       opacityvalue = 0;
     }
     return Container(
+      height: screenSize.size.height,
       color: Theme.of(context).backgroundColor,
-      child: Column(
-        children: <Widget>[
-          Text(
-            "Paramètrons votre application",
-            style: TextStyle(
-                fontFamily: "Asap", fontSize: screenSize.size.height / 10 * 0.35),
+      child: SingleChildScrollView(
+        child: Container(
+          height: screenSize.size.height,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                "Paramètrons votre application",
+                style: TextStyle(
+                    fontFamily: "Asap",
+                    fontSize: screenSize.size.height / 10 * 0.35,
+                    color: isDarkModeEnabled ? Colors.white : Colors.black),
                 textAlign: TextAlign.center,
+              ),
+              SizedBox(
+                height: screenSize.size.height / 10 * 0.1,
+              ),
+              SizedBox(
+                height: screenSize.size.height / 10 * 0.2,
+              ),
+              //Only available for EcoleDirecte
+              if (specialtiesAvailable)
+                Text(
+                  "Sélectionnez vos spécialités :",
+                  style: TextStyle(
+                      fontFamily: "Asap",
+                      fontSize: screenSize.size.height / 10 * 0.27,
+                      color: isDarkModeEnabled ? Colors.white : Colors.black),
+                  textAlign: TextAlign.center,
+                ),
+              if (specialtiesAvailable)
+                Container(
+                  height: screenSize.size.height / 10 * 3,
+                  width: screenSize.size.width / 5 * 4.8,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(11),
+                      color: Theme.of(context).primaryColor),
+                  child: FutureBuilder<List<discipline>>(
+                      future: carouselDisciplineListFuture,
+                      builder: (BuildContext context, snapshot) {
+                        List disciplines = List();
+                        if (snapshot.hasData) {
+                          snapshot.data
+                              .where((element) => element.periode == "0")
+                              .forEach((element) {
+                            disciplines.add(element.nomDiscipline);
+                          });
+                          return ListView.builder(
+                            itemCount: disciplines.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Container(
+                                padding: EdgeInsets.symmetric(
+                                  vertical: screenSize.size.height / 10 * 0.2,
+                                ),
+                                child: Row(
+                                  children: <Widget>[
+                                    CircularCheckBox(
+                                      inactiveColor: isDarkModeEnabled
+                                          ? Colors.white
+                                          : Colors.black,
+                                      onChanged: (value) {
+                                        if (chosenSpecialties
+                                            .contains(disciplines[index])) {
+                                          setState(() {
+                                            chosenSpecialties.removeWhere(
+                                                (element) =>
+                                                    element ==
+                                                    disciplines[index]);
+                                          });
+                                        } else {
+                                          if (chosenSpecialties.length < (localClasse == "Première"? 3 : 2)) {
+                                            setState(() {
+                                              chosenSpecialties
+                                                  .add(disciplines[index]);
+                                            });
+                                          }
+                                        }
+                                      },
+                                      value: chosenSpecialties
+                                          .contains(disciplines[index]),
+                                    ),
+                                    Text(
+                                      disciplines[index],
+                                      style: TextStyle(
+                                          fontFamily: "Asap",
+                                          color: isDarkModeEnabled
+                                              ? Colors.white
+                                              : Colors.black),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                        }
+                        if (snapshot.hasError) {
+                          return Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  "Une erreur a eu lieu",
+                                  style: TextStyle(
+                                      fontFamily: "Asap",
+                                      color: isDarkModeEnabled
+                                          ? Colors.white
+                                          : Colors.black),
+                                ),
+                                FlatButton(
+                                  onPressed: () {
+                                    //Reload list
+                                    refreshCarouselDLFuture();
+                                  },
+                                  child: Text("Recharger",
+                                      style: TextStyle(
+                                        fontFamily: "Asap",
+                                        color: isDarkModeEnabled
+                                            ? Colors.white
+                                            : Colors.black,
+                                      )),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          new BorderRadius.circular(18.0),
+                                      side: BorderSide(
+                                          color: Theme.of(context)
+                                              .primaryColorDark)),
+                                ),
+                              ],
+                            ),
+                          );
+                        } else {
+                          return SpinKitChasingDots(
+                            color: Theme.of(context).primaryColorDark,
+                          );
+                        }
+                      }),
+                ),
+              SizedBox(
+                height: screenSize.size.height / 10 * 0.2,
+              ),
+
+              Text(
+                "De quel côté de la force êtes vous ?",
+                style: TextStyle(
+                  fontFamily: "Asap",
+                  fontSize: screenSize.size.height / 10 * 0.27,
+                  color: isDarkModeEnabled ? Colors.white : Colors.black,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              Divider(
+                color: isDarkModeEnabled ? Colors.white : Colors.black,
+              ),
+              FutureBuilder(
+                  future: getSetting("nightmode"),
+                  initialData: false,
+                  builder: (context, snapshot) {
+                    return SwitchListTile(
+                      value: snapshot.data,
+                      title: Text("Mode nuit",
+                          style: TextStyle(
+                              fontFamily: "Asap",
+                              color: isDarkModeEnabled
+                                  ? Colors.white
+                                  : Colors.black,
+                              fontSize: screenSize.size.height / 10 * 0.3)),
+                      onChanged: (value) {
+                        setState(() {
+                          Provider.of<AppStateNotifier>(context, listen: false)
+                              .updateTheme(value);
+                          setSetting("nightmode", value);
+                        });
+                      },
+                      secondary: Icon(
+                        Icons.lightbulb_outline,
+                        color: isDarkModeEnabled ? Colors.white : Colors.black,
+                      ),
+                    );
+                  }),
+
+              Divider(
+                color: isDarkModeEnabled ? Colors.white : Colors.black,
+              ),
+              Text(
+                "Notifications",
+                style: TextStyle(
+                    fontFamily: "Asap",
+                    fontSize: screenSize.size.height / 10 * 0.27,
+                    color: isDarkModeEnabled ? Colors.white : Colors.black),
+                textAlign: TextAlign.center,
+              ),
+              Divider(),
+              FutureBuilder(
+                  future: getSetting("notificationNewGrade"),
+                  initialData: false,
+                  builder: (context, snapshot) {
+                    return SwitchListTile(
+                        value: snapshot.data,
+                        title: Text(
+                          "Notification de nouvelle note",
+                          style: TextStyle(
+                              fontFamily: "Asap",
+                              color: isDarkModeEnabled
+                                  ? Colors.white
+                                  : Colors.black,
+                              fontSize: screenSize.size.height / 10 * 0.3),
+                        ),
+                        secondary: Icon(
+                          MdiIcons.newBox,
+                          color:
+                              isDarkModeEnabled ? Colors.white : Colors.black,
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            setSetting("notificationNewGrade", value);
+                          });
+                        });
+                  }),
+              Divider(
+                color: isDarkModeEnabled ? Colors.white : Colors.black,
+              ),
+              RaisedButton(
+                color: Color(0xff5DADE2),
+                shape: StadiumBorder(),
+                onPressed: () async {
+                  var classe = await specialtiesSelectionAvailable();
+                  if (classe[0] &&
+                      chosenSpecialties.length ==
+                          (classe[1] == "Première" ? 3 : 2)) {
+                    CreateStorage("agreedTermsAndConfiguredApp", "true");
+                    final prefs = await SharedPreferences.getInstance();
+                    prefs.setStringList("listSpecialties", chosenSpecialties);
+                    Navigator.of(context).pushReplacement(router(homePage()));
+                  }
+                  else if(!classe[0]) {
+                      CreateStorage("agreedTermsAndConfiguredApp", "true");
+                    final prefs = await SharedPreferences.getInstance();
+                    prefs.setStringList("listSpecialties", chosenSpecialties);
+                    Navigator.of(context).pushReplacement(router(homePage()));
+                  }
+                  else {
+                    CustomDialogs.showAnyDialog(context, "Vous devez renseigner toutes vos spécialités.");
+                  }
+                  
+                },
+                child: const Text('Allons-y !',
+                    style: TextStyle(fontSize: 20, fontFamily: "Asap")),
+              ),
+            ],
           ),
-        
-        ],
+        ),
       ),
     );
   }

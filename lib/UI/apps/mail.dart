@@ -1,18 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:intl/intl.dart';
 import 'package:marquee/marquee.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:provider_architecture/viewmodel_provider.dart';
+import 'package:stacked/stacked.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/apiManager.dart';
 import 'package:ynotes/parsers/EcoleDirecte.dart';
 
 import '../../usefulMethods.dart';
 import '../appsPage.dart';
-
+      List<Mail> localList = List();
 class MailPage extends StatefulWidget {
   final BuildContext context;
 
@@ -36,7 +37,7 @@ class _MailPageState extends State<MailPage> {
         }));
   }
 
-  Future<void> refreshLocalGradeList() async {
+  Future<void> refreshLocalMailsList() async {
     setState(() {
       mailsListFuture = api.app("mail");
     });
@@ -66,20 +67,25 @@ class _MailPageState extends State<MailPage> {
                 child: Container(
                   height: screenSize.size.height / 10 * 0.5,
                   padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
-                  child: Row(
-                    children: <Widget>[
-                      Icon(
-                        MdiIcons.arrowLeft,
-                        color: isDarkModeEnabled ? Colors.white : Colors.black,
-                      ),
-                      Text("Revenir aux applications",
-                          style: TextStyle(
-                            fontFamily: "Asap",
-                            fontSize: 15,
-                            color:
-                                isDarkModeEnabled ? Colors.white : Colors.black,
-                          )),
-                    ],
+                  child: FittedBox(
+                                      child: Row(
+             
+                      children: <Widget>[
+                        Icon(
+                          MdiIcons.arrowLeft,
+                          color: isDarkModeEnabled ? Colors.white : Colors.black,
+                        ),
+                        FittedBox(
+                                                child: Text("Revenir aux applications",
+                              style: TextStyle(
+                                fontFamily: "Asap",
+                                fontSize: 15,
+                                color:
+                                    isDarkModeEnabled ? Colors.white : Colors.black,
+                              )),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -189,13 +195,13 @@ class _MailPageState extends State<MailPage> {
             ),
             height: screenSize.size.height / 10 * 7,
             child: RefreshIndicator(
-              onRefresh: refreshLocalGradeList,
+              onRefresh: refreshLocalMailsList,
               child: FutureBuilder(
                   //Get all the mails
                   future: mailsListFuture,
                   builder: (context, snapshot) {
                     if (snapshot.hasData) {
-                      List<Mail> localList =
+                    localList =
                           getCorrespondingClasseur(dossier, snapshot.data);
                       return ClipRRect(
                         borderRadius: BorderRadius.circular(15),
@@ -209,11 +215,15 @@ class _MailPageState extends State<MailPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     Material(
-                                      color: Theme.of(context).primaryColor,
+                                      color: localList[index]
+                                                            .read?Theme.of(context).primaryColor:darken(Theme.of(context).primaryColor),
                                       child: InkWell(
                                         onTap: () {
+                                        
+                                       
                                           mailModalBottomSheet(
-                                              widget.context, localList[index]);
+                                              widget.context, localList[index], index:index);
+                                              
                                         },
                                         child: Container(
                                           margin: EdgeInsets.all(0),
@@ -352,12 +362,43 @@ class _MailPageState extends State<MailPage> {
                       );
                     }
                     if (snapshot.hasError) {
-                      return Center(
-                        child: Text("Une erreur a eu lieu", style: TextStyle(fontFamily: "Asap"),),
-                      );
-                    } else {
+                          return Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  "Une erreur a eu lieu",
+                                  style: TextStyle(
+                                      fontFamily: "Asap",
+                                      color: isDarkModeEnabled
+                                          ? Colors.white
+                                          : Colors.black),
+                                ),
+                                FlatButton(
+                                  onPressed: () {
+                                    //Reload list
+                                    refreshLocalMailsList();
+                                  },
+                                  child: Text("Recharger",
+                                      style: TextStyle(
+                                        fontFamily: "Asap",
+                                        color: isDarkModeEnabled
+                                            ? Colors.white
+                                            : Colors.black,
+                                      )),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius:
+                                          new BorderRadius.circular(18.0),
+                                      side: BorderSide(
+                                          color: Theme.of(context)
+                                              .primaryColorDark)),
+                                ),
+                              ],
+                            ),
+                          );
+                        }  else {
                       return SpinKitFadingFour(
-                        color: Theme.of(context).primaryColorDark,
+                        color: Theme.of(context).primaryColor,
                         size: screenSize.size.width / 5 * 0.7,
                       );
                     }
@@ -367,9 +408,10 @@ class _MailPageState extends State<MailPage> {
         ],
       ),
     );
+    
   }
 
-  void mailModalBottomSheet(context, Mail mail) {
+  void mailModalBottomSheet(context, Mail mail, {int index}) {
     MediaQueryData screenSize = MediaQuery.of(context);
     showModalBottomSheet(
         shape: RoundedRectangleBorder(
@@ -379,7 +421,7 @@ class _MailPageState extends State<MailPage> {
         context: context,
         builder: (BuildContext bc) {
           return FutureBuilder(
-              future: readMail(mail.id),
+              future: readMail(mail.id, mail.read),
               builder: (context, snapshot) {
                 String to = "";
                 if (mail.to != null) {
@@ -387,7 +429,15 @@ class _MailPageState extends State<MailPage> {
                     to += element["name"] + " - ";
                   });
                 }
-
+                if (snapshot.hasData&&mail.read==false)
+                {
+               SchedulerBinding.instance
+                .addPostFrameCallback((_) => setState(() {
+          localList[index].read=true;
+            }));
+                  
+               
+                }
                 return Container(
                     height: screenSize.size.height / 10 * 8.0,
                     padding: EdgeInsets.all(0),
@@ -689,10 +739,9 @@ class _MailPageState extends State<MailPage> {
                                                                   color: Color(
                                                                       0xff5FA9DA),
                                                                 ),
-                                                              ViewModelProvider<
-                                                                      DownloadModel>.withConsumer(
-                                                                  viewModel:
-                                                                      DownloadModel(),
+                                                              ViewModelBuilder<
+                                                                      DownloadModel>.reactive(
+                                                                viewModelBuilder: ()=>DownloadModel(),
                                                                   builder:
                                                                       (context,
                                                                           model,

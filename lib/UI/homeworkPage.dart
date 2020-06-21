@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:marquee/marquee.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:stacked/stacked.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/UI/dialogs.dart';
 import 'package:ynotes/UI/homeworkPageWidgets/HWsecondPage.dart';
@@ -17,7 +18,7 @@ import 'package:ynotes/main.dart';
 import '../apiManager.dart';
 import '../offline.dart';
 import '../usefulMethods.dart';
-import 'package:provider_architecture/provider_architecture.dart';
+
 import 'package:file_picker/file_picker.dart';
 
 import 'homeworkPageWidgets/HWfirstPage.dart';
@@ -25,12 +26,12 @@ import 'homeworkPageWidgets/HWsettingsPage.dart';
 
 Future<List<homework>> homeworkListFuture;
 PageController _pageControllerHW;
+
 class HomeworkPage extends StatefulWidget {
   State<StatefulWidget> createState() {
     return _HomeworkPageState();
   }
 }
-
 
 //The date the user want to see
 DateTime dateToUse;
@@ -48,9 +49,9 @@ class _HomeworkPageState extends State<HomeworkPage> {
     _pageControllerHW = PageController(initialPage: 1);
     //WidgetsFlutterBinding.ensureInitialized();
     //Test if it's the first start
+
     setState(() {
       homeworkListFuture = api.getNextHomework();
-      
     });
 
     getPinnedStateDayToUse();
@@ -74,13 +75,11 @@ class _HomeworkPageState extends State<HomeworkPage> {
       homeworkListFuture = api.getNextHomework(forceReload: true);
     });
     var realHW = await homeworkListFuture;
-   
   }
-  animateToPage(int index)
-  {
-_pageControllerHW.animateToPage(index,
-                            duration: Duration(milliseconds: 250),
-                            curve: Curves.ease);
+
+  animateToPage(int index) {
+    _pageControllerHW.animateToPage(index,
+        duration: Duration(milliseconds: 250), curve: Curves.ease);
   }
 
 //Build the main widget container of the homeworkpage
@@ -120,10 +119,9 @@ _pageControllerHW.animateToPage(index,
 
                         //Second page with homework
                         HomeworkFirstPage(),
-                        
+
                         //Third page (with homework at a specific date)
                         HomeworkSecondPage(animateToPage)
-                      
                       ],
                     ),
                   ),
@@ -474,7 +472,7 @@ class _HomeworkElementState extends State<HomeworkElement> {
                       child: GestureDetector(
                         excludeFromSemantics: true,
                         onLongPress: () {
-                          print("ok");
+                         
                         },
                         child: Container(
                           decoration: BoxDecoration(
@@ -567,7 +565,7 @@ class _HomeworkElementState extends State<HomeworkElement> {
                                 ),
                               ),
                             Container(
-                              color: Colors.white,
+                              color: isDarkModeEnabled?darken(Theme.of(context).primaryColorDark, forceAmount: 0.1):Theme.of(context).primaryColor,
                               width: screenSize.size.width / 5 * 4.4,
                               height: isExpanded ? null : 0,
                               child: Container(
@@ -615,9 +613,9 @@ class _HomeworkElementState extends State<HomeworkElement> {
                                         child: Text(this
                                             .widget
                                             .homeworkForThisDay
-                                            .nomProf)),
+                                            .nomProf, style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled?Colors.white:Colors.black),)),
                                     HtmlWidget(
-                                        //Delete all format made by teachers to allow the zoom
+                                        
                                         segmentedControlIndex == 0
                                             ? this
                                                 .widget
@@ -627,6 +625,7 @@ class _HomeworkElementState extends State<HomeworkElement> {
                                                 .widget
                                                 .homeworkForThisDay
                                                 .contenuDeSeance,
+                                                textStyle: TextStyle(color: isDarkModeEnabled?Colors.white:Colors.black, fontFamily: "Asap"),
                                         onTapUrl: (url) async {
                                       if (await canLaunch(url)) {
                                         await launch(url);
@@ -749,7 +748,7 @@ class _HomeworkElementState extends State<HomeworkElement> {
                                                           width: screenSize
                                                                   .size.width /
                                                               5 *
-                                                              2.8,
+                                                              3.8,
                                                           child: ClipRRect(
                                                             child: Marquee(
                                                                 text: (segmentedControlIndex ==
@@ -795,120 +794,86 @@ class _HomeworkElementState extends State<HomeworkElement> {
                                                                   BorderRadius
                                                                       .circular(
                                                                           50)),
-                                                          child: Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .spaceEvenly,
-                                                            children: <Widget>[
-                                                              if ((segmentedControlIndex == 0
-                                                                          ? widget
-                                                                              .homeworkForThisDay
-                                                                              .documents
-                                                                          : widget
-                                                                              .homeworkForThisDay
-                                                                              .documentsContenuDeSeance)[index]
-                                                                      .libelle
-                                                                      .substring((segmentedControlIndex == 0 ? widget.homeworkForThisDay.documents : widget.homeworkForThisDay.documentsContenuDeSeance)[index].libelle.length - 3) ==
-                                                                  "pdf")
-                                                                IconButton(
-                                                                  icon: Icon(
-                                                                    MdiIcons
-                                                                        .eyeOutline,
-                                                                    color: Colors
-                                                                        .white,
-                                                                  ),
-                                                                  onPressed:
-                                                                      () {
-                                                                    // do something
-                                                                  },
-                                                                ),
-                                                              if ((segmentedControlIndex == 0
-                                                                          ? widget
-                                                                              .homeworkForThisDay
-                                                                              .documents
-                                                                          : widget
-                                                                              .homeworkForThisDay
-                                                                              .documentsContenuDeSeance)[index]
-                                                                      .libelle
-                                                                      .substring((segmentedControlIndex == 0 ? widget.homeworkForThisDay.documents : widget.homeworkForThisDay.documentsContenuDeSeance)[index].libelle.length - 3) ==
-                                                                  "pdf")
-                                                                VerticalDivider(
-                                                                  width: 2,
-                                                                  color: Color(
-                                                                      0xff5FA9DA),
-                                                                ),
-                                                              ViewModelProvider<
-                                                                      DownloadModel>.withConsumer(
-                                                                  viewModel:
-                                                                      DownloadModel(),
-                                                                  builder:
-                                                                      (context,
-                                                                          model,
-                                                                          child) {
-                                                                    return FutureBuilder(
-                                                                        future: model.fileExists((segmentedControlIndex == 0 ? widget.homeworkForThisDay.documents : widget.homeworkForThisDay.documentsContenuDeSeance)[index]
-                                                                            .libelle),
-                                                                        initialData:
-                                                                            false,
-                                                                        builder:
-                                                                            (context,
-                                                                                snapshot) {
-                                                                          if (snapshot.data ==
-                                                                              false) {
-                                                                            if (model.isDownloading) {
-                                                                              /// If download is in progress or connecting
-                                                                              if (model.downloadProgress == null || model.downloadProgress < 100) {
-                                                                                return Container(
-                                                                                  padding: EdgeInsets.symmetric(
-                                                                                    horizontal: screenSize.size.width / 5 * 0.2,
+                                                          child: ViewModelBuilder<
+                                                                  DownloadModel>.reactive(
+                                                              viewModelBuilder: ()=>DownloadModel(),
+                                                              builder:
+                                                                  (context,
+                                                                      model,
+                                                                      child) {
+                                                                return FutureBuilder(
+                                                                    future: model.fileExists((segmentedControlIndex == 0 ? widget.homeworkForThisDay.documents : widget.homeworkForThisDay.documentsContenuDeSeance)[index]
+                                                                        .libelle),
+                                                                    initialData:
+                                                                        false,
+                                                                    builder:
+                                                                        (context,
+                                                                            snapshot) {
+                                                                      if (snapshot.data ==
+                                                                          false) {
+                                                                        if (model.isDownloading) {
+                                                                          /// If download is in progress or connecting
+                                                                          if (model.downloadProgress == null || model.downloadProgress < 100) {
+                                                                            return Container(
+                                                                              padding: EdgeInsets.symmetric(
+                                                                                horizontal: screenSize.size.width / 5 * 0.2,
+                                                                              ),
+                                                                              child: Center(
+                                                                                child: SizedBox(
+                                                                                  width: screenSize.size.width / 5 * 0.3,
+                                                                                  height: screenSize.size.width / 5 * 0.3,
+                                                                                  child: CircularProgressIndicator(
+                                                                                    backgroundColor: Colors.green,
+                                                                                    strokeWidth: screenSize.size.width / 5 * 0.05,
+                                                                                    value: model.downloadProgress,
                                                                                   ),
-                                                                                  child: Center(
-                                                                                    child: SizedBox(
-                                                                                      width: screenSize.size.width / 5 * 0.3,
-                                                                                      height: screenSize.size.width / 5 * 0.3,
-                                                                                      child: CircularProgressIndicator(
-                                                                                        backgroundColor: Colors.green,
-                                                                                        strokeWidth: screenSize.size.width / 5 * 0.05,
-                                                                                        value: model.downloadProgress,
-                                                                                      ),
-                                                                                    ),
-                                                                                  ),
-                                                                                );
-                                                                              }
-
-                                                                              ///Download is ended
-                                                                              else {
-                                                                                return Container(
-                                                                                    child: IconButton(
-                                                                                  icon: Icon(
-                                                                                    MdiIcons.check,
-                                                                                    color: Colors.green,
-                                                                                  ),
-                                                                                  onPressed: () async {
-                                                                                    openFile((segmentedControlIndex == 0 ? widget.homeworkForThisDay.documents : widget.homeworkForThisDay.documentsContenuDeSeance)[index].libelle);
-                                                                                  },
-                                                                                ));
-                                                                              }
-                                                                            }
-
-                                                                            ///Isn't downloading
-                                                                            if (!model.isDownloading) {
-                                                                              return IconButton(
-                                                                                icon: Icon(
-                                                                                  MdiIcons.fileDownloadOutline,
-                                                                                  color: Colors.white,
                                                                                 ),
-                                                                                onPressed: () async {
-                                                                                  await model.download((segmentedControlIndex == 0 ? widget.homeworkForThisDay.documents : widget.homeworkForThisDay.documentsContenuDeSeance)[index].id.toString(), (segmentedControlIndex == 0 ? widget.homeworkForThisDay.documents : widget.homeworkForThisDay.documentsContenuDeSeance)[index].type, (segmentedControlIndex == 0 ? widget.homeworkForThisDay.documents : widget.homeworkForThisDay.documentsContenuDeSeance)[index].libelle);
-                                                                                },
-                                                                              );
-                                                                            }
+                                                                              ),
+                                                                            );
                                                                           }
 
-                                                                          ///If file already exists
+                                                                          ///Download is ended
                                                                           else {
                                                                             return Container(
                                                                                 child: IconButton(
+                                                                                   padding: EdgeInsets.symmetric(vertical: 0),
+                                                                              icon: Row(
+                                                                                children: <Widget>[
+                                                                                  Icon(
+                                                                                    
+                                                                                    MdiIcons.check,
+                                                                                    color: Colors.green,
+                                                                                  ),
+                                                                                ],
+                                                                              ),
+                                                                              onPressed: () async {
+                                                                                openFile((segmentedControlIndex == 0 ? widget.homeworkForThisDay.documents : widget.homeworkForThisDay.documentsContenuDeSeance)[index].libelle);
+                                                                              },
+                                                                            ));
+                                                                          }
+                                                                        }
+
+                                                                        ///Isn't downloading
+                                                                        if (!model.isDownloading) {
+                                                                          return IconButton(
+                                                                             padding: EdgeInsets.symmetric(vertical: 0),
+                                                                            icon: Icon(
+                                                                              MdiIcons.fileDownloadOutline,
+                                                                              color: Colors.white,
+                                                                            ),
+                                                                            onPressed: () async {
+                                                                              await model.download((segmentedControlIndex == 0 ? widget.homeworkForThisDay.documents : widget.homeworkForThisDay.documentsContenuDeSeance)[index].id.toString(), (segmentedControlIndex == 0 ? widget.homeworkForThisDay.documents : widget.homeworkForThisDay.documentsContenuDeSeance)[index].type, (segmentedControlIndex == 0 ? widget.homeworkForThisDay.documents : widget.homeworkForThisDay.documentsContenuDeSeance)[index].libelle);
+                                                                            },
+                                                                          );
+                                                                        }
+                                                                      }
+
+                                                                      ///If file already exists
+                                                                      else {
+                                                                        return Container(
+                                                                            height: screenSize.size.height / 10 * 8,
+                                                                            child: IconButton(
+                                                                               padding: EdgeInsets.symmetric(vertical: 0),
                                                                               icon: Icon(
                                                                                 MdiIcons.check,
                                                                                 color: Colors.green,
@@ -917,11 +882,9 @@ class _HomeworkElementState extends State<HomeworkElement> {
                                                                                 openFile((segmentedControlIndex == 0 ? widget.homeworkForThisDay.documents : widget.homeworkForThisDay.documentsContenuDeSeance)[index].libelle);
                                                                               },
                                                                             ));
-                                                                          }
-                                                                        });
-                                                                  }),
-                                                            ],
-                                                          ),
+                                                                      }
+                                                                    });
+                                                              }),
                                                         ),
                                                       ),
                                                     ],
@@ -946,7 +909,8 @@ class _HomeworkElementState extends State<HomeworkElement> {
                                     bottomRight: Radius.circular(15)),
                                 child: InkWell(
                                   onTap: () async {
-                                    showUnimplementedSnackBar(context);
+                                    CustomDialogs.showUnimplementedSnackBar(
+                                        context);
                                     /*
                                         File file = await FilePicker.getFile();
                                         await api.uploadFile("CDT", this.widget.homeworkForThisDay.idDevoir, file.path);*/
@@ -1007,4 +971,3 @@ class _HomeworkElementState extends State<HomeworkElement> {
     );
   }
 }
-

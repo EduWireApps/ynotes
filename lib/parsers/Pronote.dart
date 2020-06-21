@@ -38,7 +38,7 @@ class APIPronote extends API {
   }
 
   @override
-  Future app(String appname, {String args, String action}) {
+  Future app(String appname, {String args, String action, CloudItem folder}) {
     
     // TODO: implement app
     throw UnimplementedError();

@@ -223,7 +223,7 @@ class Mail {
   final String id;
   //E.G : "archived"/"sent"/"received"
   final String mtype;
-  final bool read;
+   bool read;
   //E.G : 183 ==> To class mails in folders
   final String idClasseur;
   final Map<String, dynamic> from;
@@ -248,7 +248,26 @@ class Mail {
   Classeur(this.libelle, this.id);
 
 }
+class CloudItem{
+  //E.G "test.txt"
+  final String title;
+  //E.G "FILE"
+  final String type;
+  //E.G "Donald Trump"
+  final String author;
+  //E.G true
+  final bool isMainFolder;
+  //E.G true
+  final bool isMemberOf;
+  //E.G only useful for the ecoledirecte api
+  final bool isLoaded;
 
+  final String id;
+  final String date;
+
+
+  CloudItem(this.title, this.type, this.author, this.isMainFolder, this.date, {this.isMemberOf, this.isLoaded, this.id});
+}
 abstract class API {
 //Connect to the API
 //Should return a connection status
@@ -272,7 +291,7 @@ abstract class API {
   Future uploadFile(String contexte, String id, String filepath);
   
   //Apps
-  Future app(String appname, {String args , String action});
+  Future app(String appname, {String args , String action, CloudItem folder});
 
 
 

@@ -414,7 +414,7 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
                                       //If date pinned is before actual date (can be deleted)
                                     });
                                     if (isPinned != true&&widget.date.isBefore(DateTime.now())) {
-                                      showAnyDialog(context,
+                                      CustomDialogs.showAnyDialog(context,
                                           "Cette date sera supprimée au prochain rafraichissement.");
                                     }
                                     widget.callback();

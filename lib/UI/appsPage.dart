@@ -56,72 +56,73 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
-    return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
-      body: Container(
-      
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              "Accédez à vos applications",
-              style: TextStyle(
-                  fontFamily: "Asap",
-                  color: isDarkModeEnabled ? Colors.white : Colors.black,
-                  fontSize: screenSize.size.height / 10 * 0.4,
-                  fontWeight: FontWeight.w200),
-              textAlign: TextAlign.center,
-            ),
-            SizedBox(
-              height: screenSize.size.height / 10 * 0.4,
-            ),
-            Wrap(
-              children: List.generate(listAppsEcoleDirecte.length, (index) {
-                return Container(
-                  margin: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
-                  child: Column(
-                    children: <Widget>[
-                      Material(
-                          color: Theme.of(context).primaryColorDark,
-                          borderRadius: BorderRadius.circular(21),
-                          child: InkWell(
-                              borderRadius: BorderRadius.circular(21),
-                              onTap: () {
-                                if(listAppsEcoleDirecte[index].route!=null)
-                                {
-                                   Navigator.pushNamed(context, '/${listAppsEcoleDirecte[index].route}');
-                                   initialRoute = '/${listAppsEcoleDirecte[index].route}';
-                                }
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(21)),
-                                width: screenSize.size.width / 3,
-                                height: screenSize.size.width / 3,
-                                child: Center(
-                                  child: Icon(
-                                    listAppsEcoleDirecte[index].icon,
-                                    size: screenSize.size.width / 6,
-                                    color: isDarkModeEnabled
-                                        ? Colors.white
-                                        : Colors.black,
-                                  ),
+    return Container(
+     
+    decoration: BoxDecoration( color: Theme.of(context).backgroundColor,border: Border.all(width: 0, color: Theme.of(context).backgroundColor)),
+    width: screenSize.size.width,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Text(
+            "Accédez à vos applications",
+            style: TextStyle(
+                fontFamily: "Asap",
+                color: isDarkModeEnabled ? Colors.white : Colors.black,
+                fontSize: screenSize.size.height / 10 * 0.4,
+                fontWeight: FontWeight.w200),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(
+            height: screenSize.size.height / 10 * 0.4,
+          ),
+          Wrap(
+            children: List.generate(listAppsEcoleDirecte.length, (index) {
+              return Container(
+                margin: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
+                child: Column(
+                  children: <Widget>[
+                    Material(
+                        color: Theme.of(context).primaryColorDark,
+                        borderRadius: BorderRadius.circular(21),
+                        child: InkWell(
+                            borderRadius: BorderRadius.circular(21),
+                            onTap: () {
+                              if(listAppsEcoleDirecte[index].route!=null)
+                              {
+                                 Navigator.pushNamed(context, '/${listAppsEcoleDirecte[index].route}');
+                                 initialRoute = '/${listAppsEcoleDirecte[index].route}';
+                              }
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(21)),
+                              width: screenSize.size.width / 3,
+                              height: screenSize.size.width / 3,
+                              child: Center(
+                                child: Icon(
+                                  listAppsEcoleDirecte[index].icon,
+                                  size: screenSize.size.width / 6,
+                                  color: isDarkModeEnabled
+                                      ? Colors.white
+                                      : Colors.black,
                                 ),
-                              ))),
-                      //label
-                      Text(
-                        listAppsEcoleDirecte[index].name,
-                        style: TextStyle(
-                            fontFamily: "Asap",
-                            color: isDarkModeEnabled ? Colors.white : Colors.black),
-                      )
-                    ],
-                  ),
-                );
-              }),
-            ),
-          ],
-        ),
+                              ),
+                            ))),
+                    //label
+                    Text(
+                      listAppsEcoleDirecte[index].name,
+                      style: TextStyle(
+                          fontFamily: "Asap",
+                          color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize:  screenSize.size.height /
+                          10 *
+                          0.2),
+                    )
+                  ],
+                ),
+              );
+            }),
+          ),
+        ],
       ),
     );
   }
