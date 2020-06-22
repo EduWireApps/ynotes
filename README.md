@@ -8,18 +8,20 @@ Les fonctionnalités de yNotes s'étendent chaque jour pour permettre d'être le
 - Accès aux devoirs : Accès aux prochains devoirs, affichage des pièces jointes liées (en cours)
 - Coloration des matières personnalisable
 - Mode nuit
-
-#### Fonctionnalités à venir
 - Application hors ligne, nulle besoin d'Internet pour accéder à ses notes 
-- Fonctionnalités supplémentaires dans l'affichage des devoirs, ajout aux favoris, partage et recherche rapide par mot clé (partenariat avec applications scolaires ?)
+- Accès aux applications supplémentaires : mail et cloud (disponible sur Ecole Directe)
+- Ajout aux favoris de devoirs. (fonctionnalité d'épinglage)
+- Mise en place d'un "Quick menu" (menu rapide) pour accéder rapidement aux documents téléchargés
+#### Fonctionnalités à venir
+
+- Fonctionnalités supplémentaires dans l'affichage des devoirs, partage et recherche rapide par mot clé (partenariat avec applications scolaires ?)
 - Visualisation de l'emploi du temps et organisation de la vie d'étudiant
-- Mise en place d'un "Quick menu" pour accéder rapidement aux documents téléchargés, envoyer des mails, devoirs favoris
-- Accès aux applications supplémentaires : mail et cloud
-- Multicomptes
+- Ajout de la foncionnalité envoyer des mails au Quick menu, ~~devoirs favoris~~
+~~- Multicomptes~~ (abandonné)
 
 ## Compatibilité (apps scolaires)
 yNotes se veut multi compatible et ainsi permettre un portage vers n'importe quelle application scolaire à l'aide d'une API. Cette implémentation n'est pas encore faite et demande du travail, mais sera faite le plus rapidement possible pour permettre à n'importe qui de créer son parser vers une application scolaire. Peut-être même de rendre l'application internationale ?
-
+*Note du **22/06** je travaille actuellement sur l'implémentation de l'application scolaire Pronote. Cette dernière devrait être effective en cours d'année.*
 
 ## Fonctionnalité générale Space
 Space, pour espace de l'étudiant, est un algorithme qui permettrait à l'étudiant d'aménager sa vie en fonction de son emploi du temps tout en suggérant un plan de travail.
@@ -36,24 +38,24 @@ Space se baserait sur l'emploi du temps de l'utilisateur, importé grâce aux AP
 Sans devenir un laboratoire, Space devra se baser sur un algorithme intelligent, sans se montrer trop intrusif, ni collecter de données. En effet ces dernières ne doivent êtres stockées que localement, et ne peuvent être sujettes à des traitements extérieurs a l'application.
 
 ## Comment utiliser l'application
-L'application est développée avec le framework Flutter, et donc développée en dart.
+L'application est développée avec le framework Flutter, et donc développée en Dart.
 
 ### Depuis les releases officielles
 Si vous êtes utilisateur et souhaitez télécharger l'application sur votre smartphone, vous pouvez :
 #### Android :
-- Télécharger la dernière release (.apk) ici
+- Télécharger la dernière release (.apk) [ici](https://github.com/ModernChocolate/ynotes/releases)
 - Vous rendre sur le site de yNotes pour vous inscrire à la newsletter et être informé des dernières nouveautés et recevoir votre application
 - Tester la dernière bêta pour tester les fonctionnalités en avant première ici
 - Compiler vous même votre application
 #### IOS :
-- Étant donné que les frais d'inscriptions obligatoires pour devenir Apple Developper sont hors budgets, vous ne pourrez pas trouver l'application sur un marché alternatif. Vous pouvez donc compiler l'application à l'étape suivante si vous possédez un Mac.
+- Étant donné que les frais d'inscriptions obligatoires pour devenir Apple Developer sont hors budgets, vous ne pourrez pas trouver l'application sur un marché alternatif. Vous pouvez donc compiler l'application à l'étape suivante si vous possédez un Mac.
 
 
 ### Compilation 
 
 La compilation permet de créer une application interprétable par un appareil donné, dans notre cas votre smartphone à partir d'un code source.
 
-Il est conseillé de procéder à l'installation guidée indiquée par la documentation officielle de Flutter.
+Il est conseillé de procéder à l'installation guidée indiquée par [la documentation officielle de Flutter](https://flutter.dev/docs/get-started/install).
 
 Notez que pour compiler l'application pour iOS, il vous faut absolument un ordinateur Mac.
 
@@ -61,11 +63,14 @@ Téléchargez une version officielle du code source de l'application depuis cett
 
 - La dernière version stable
 
-Ouvrez le dossier du code source dans votre éditeur favori. 
+Ouvrez le dossier du code source dans votre éditeur favori (VSCode, Android Studio, XCode). 
 
 Assurez vous que votre téléphone est connecté à votre ordinateur si vous souhaitez directement compiler l'application sur ce dernier et vérifiez les conditions suivantes.
 
-Suivez les étapes de compilation de la documentation officielle.
+Suivez les étapes de compilation de la documentation officielle :
+* [Compiler pour Android](https://flutter.dev/docs/deployment/android)
+* [Compiler pour iOS](https://flutter.dev/docs/deployment/ios)
+*Vous devez disposer d'un compte Apple Developer gratuit pour installer l'application sur un appareil iOS*
 
 ## Documentation 
 La documentation spécifique au développement vous permettant de modifier les layouts selon vos goûts, ajouter vos fonctionnalités, votre touche.
@@ -77,8 +82,9 @@ Tout le code peut être organisé dans des fichiers .dart, l'UI comme le backend
 décomposés par "pages".
 
 ### Back-end
-Le traitement des données comme les devoirs ou les notes se fait dans les fichiers du dossier `/lib` précédés par land (pour atterrissage), ici `landHomework.dart` et `landGrades.dart` sont hardcodés pour uniquement permettre une utilisation d'Ecole Directe mais se veulent remplacés par une API universelle. Les parsers seront placés dans `/lib/parsers/(service scolaire EX : EcoleDirecte).dart`
+Le traitement des données est maintenant effectué dans des parsers distincts situés dans `/lib/parsers`
+Ces fichiers contiennent des classes étendues de la classe API disponible dans le fichier `/lib/APIManager.dart` qui contient également toutes les classes importantes de l'application. L'ajout de fonctionnalités spécifiques nécessite une modification de l'APIManager ce qui est fortement déconseillé. Ainsi la fonction app() permet l'ajout de fonctionnalités spéficiques en toute liberté.
 
 ### Ressources
 Les ressources sont dans `/assets`
-On y distingue les animations, (utilisant le moteur de rendu *Flare*, qui diffèrent des animations dans `/lib/UI/animations` qui sont des animations utilisant le langage Dart) ainsi que les images.
+On y distingue les animations, (utilisant le moteur de rendu *Flare*, qui diffèrent des animations dans `/lib/UI/animations` qui sont des animations utilisant le langage Dart) ainsi que les images et les gifs animés.
