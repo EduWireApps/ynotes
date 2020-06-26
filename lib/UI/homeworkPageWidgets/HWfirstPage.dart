@@ -254,10 +254,10 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
         duration: Duration(milliseconds: 170),
         width: screenSize.size.width / 5 * 5,
         decoration: BoxDecoration(
-          color: Theme.of(context).primaryColor,
+          color: Theme.of(context).primaryColorDark,
           borderRadius: BorderRadius.circular(25),
         ),
-        child: Column(
+        child: Stack(
           children: <Widget>[
             Material(
               color: Theme.of(context).primaryColorDark,
@@ -438,7 +438,15 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
                               ],
                             ),
                           )),
-                      Container(
+                      
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            AnimatedContainer(
+              duration: Duration(milliseconds: 170),
+              margin: EdgeInsets.only(top:containerSize==0?screenSize.size.height / 10 * 0.6:screenSize.size.height / 10 * 1.5),
                         padding: EdgeInsets.symmetric(
                             vertical: screenSize.size.height / 10 * 0.1,
                             horizontal: screenSize.size.width / 5 * 0.1),
@@ -456,11 +464,6 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
                               }),
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
           ],
         ),
       );

@@ -19,10 +19,12 @@ import 'package:ynotes/apiManager.dart';
 import 'package:ynotes/parsers/EcoleDirecte.dart';
 import 'package:ynotes/background.dart';
 import 'package:uuid/uuid.dart';
+
 var uuid = Uuid();
+
 ///TO DO : Disable after bêta, Sentry is used to send bug reports
 final SentryClient _sentry = SentryClient(
-  uuidGenerator: uuid.v4,
+    uuidGenerator: uuid.v4,
     dsn: "https://c55eb82b0cab4437aeda267bb0392959@sentry.io/3147528");
 Future<Null> _reportError(dynamic error, dynamic stackTrace) async {
   try {
@@ -32,7 +34,6 @@ Future<Null> _reportError(dynamic error, dynamic stackTrace) async {
     );
   } catch (e) {}
 }
-
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 final logger = loader();
@@ -47,20 +48,29 @@ void backgroundFetchHeadlessTask(String taskId) async {
       initializationSettingsAndroid, initializationSettingsIOS);
   flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
   flutterLocalNotificationsPlugin.initialize(initializationSettings,
-      onSelectNotification: (String value) {
-    haveToReopenOnGradePage = true;
-  });
+      onSelectNotification:BackgroundServices.onSelectNotification);
 //Ensure that grades notification are enabled and battery saver disabled
   if (await getSetting("notificationNewGrade") &&
       !await getSetting("batterySaver")) {
     if (await mainTestNewGrades()) {
-      BackgroundServices.showNotification();
+      BackgroundServices.showNotificationNewGrade();
     } else {
       print("Nothing updated");
     }
     BackgroundFetch.finish(taskId);
   } else {
     print("New grade notification disabled");
+  }
+  if (await getSetting("notificationNewMail") &&
+      !await getSetting("batterySaver")) {
+    if (await mainTestNewMails()) {
+      BackgroundServices.showNotificationNewMail();
+    } else {
+      print("Nothing updated");
+    }
+    BackgroundFetch.finish(taskId);
+  } else {
+    print("New mail notification disabled");
   }
 }
 
@@ -73,6 +83,7 @@ mainTestNewGrades() async {
     //Getting the online count of grades
     List<grade> listOnlineGrades =
         getAllGrades(await getGradesFromInternet(), overrideLimit: true);
+
     print("Online length is ${listOnlineGrades.length}");
     if (listOfflineGrades.length < listOnlineGrades.length) {
       return true;
@@ -81,6 +92,27 @@ mainTestNewGrades() async {
     }
   } catch (e) {
     print(e);
+    return null;
+  }
+}
+
+mainTestNewMails() async {
+  try {
+    //Get the old number of mails
+    var oldMailLength = await getIntSetting("mailNumber");
+    print("Old length is $oldMailLength");
+    //Get new mails
+    await getMails();
+    var newMailLength = await getIntSetting("mailNumber");
+    print("New length is ${newMailLength}");
+        
+    if ((oldMailLength!= null?oldMailLength:0)<(newMailLength!= null?newMailLength:0)) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (e) {
+    print("Erreur dans la verification de nouveaux mails hors ligne "+e.toString());
     return null;
   }
 }
@@ -120,7 +152,6 @@ class HomeApp extends StatelessWidget {
     return Consumer<AppStateNotifier>(
       builder: (context, appState, child) {
         return MaterialApp(
-        
           localizationsDelegates: [
             // ... app-specific localization delegate[s] here
             GlobalMaterialLocalizations.delegate,

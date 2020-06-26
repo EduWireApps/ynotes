@@ -143,12 +143,14 @@ API api  = APIManager();
                                                 case 2:
                                                  
                                                  {
-                                                api.app("cloud", args: "/", action: "CD");
+                                                   testingEncryptor();
+                                                //api.app("cloud", args: "/", action: "CD");
                                            /* var client = Client('https://demo.index-education.net/pronote/eleve.html',
                           username:'demonstration',
                           password:'pronotevs');
                                                     await client.init();
                                                  */
+
                                        
                                         /*widget.close();
                                         CustomDialogs.showGiffyDialog(context,"QuickMenu","Glisser en bas à droite pour afficher le quickMenu", Image.asset("assets/gifs/QuickMenu720.gif"));*/

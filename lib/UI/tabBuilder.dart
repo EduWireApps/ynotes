@@ -22,7 +22,6 @@ import 'appsPage.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class TabBuilder extends StatefulWidget {
-  
   State<StatefulWidget> createState() {
     return _TabBuilderState();
   }
@@ -86,7 +85,7 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
         ConnectionStatusSingleton.getInstance();
     tabBarconnexion =
         connectionStatus.connectionChange.listen(connectionChanged);
-   isOffline = !connectionStatus.hasConnection;
+    isOffline = !connectionStatus.hasConnection;
   }
 
   void removeQuickMenu() {
@@ -122,6 +121,8 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
     tabController.dispose();
     super.dispose();
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -200,9 +201,9 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
                                             onLongPressEnd: (_) {},
                                             onTap: () {
                                               setState(() {
-                                          _currentIndex = 0;
-                                        });
-                                        tabController.animateTo(0);
+                                                _currentIndex = 0;
+                                              });
+                                              tabController.animateTo(0);
                                               removeQuickMenu();
                                             },
                                             onVerticalDragStart: (details) {
@@ -584,16 +585,21 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
                           }
                           return true;
                         },
-                        child: TabBarView(
-                          
-                            controller: tabController,
-                            children: [
-                              Icon(Icons.apps),
-                              SummaryPage(tabController: tabController),
-                              GradesPage(),
-                              HomeworkPage(),
-                              AnimatedContainer(duration: Duration(milliseconds: 200), margin: EdgeInsets.only(top:isOffline ?screenSize.size.height / 10 * 0.4:0),child: AppsPage(rootcontext: this.context,))
-                            ]),
+                        child: TabBarView(controller: tabController, children: [
+                          Icon(Icons.apps),
+                          SummaryPage(tabController: tabController),
+                          GradesPage(),
+                          HomeworkPage(),
+                          AnimatedContainer(
+                              duration: Duration(milliseconds: 200),
+                              margin: EdgeInsets.only(
+                                  top: isOffline
+                                      ? screenSize.size.height / 10 * 0.4
+                                      : 0),
+                              child: AppsPage(
+                                rootcontext: this.context,
+                              ))
+                        ]),
                       ),
                       if (isQuickMenuShown)
                         AnimatedContainer(
@@ -663,19 +669,28 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
           onSelectNotification: BackgroundServices.onSelectNotification);
 
 //Ensure that grades notification are enabled and battery saver disabled
-      if (await getSetting("notificationNewGrade")&&!await getSetting("batterySaver")) {
-        if ((await testForNewGrades() != null) && await testForNewGrades()) {
-          BackgroundServices.showNotification();
-          disciplinesListFuture = api.getGrades();
+      if (await getSetting("notificationNewGrade") &&
+          !await getSetting("batterySaver")) {
+        if (await mainTestNewGrades()) {
+          BackgroundServices.showNotificationNewGrade();
         } else {
           print("Nothing updated");
         }
+        BackgroundFetch.finish(taskId);
       } else {
         print("New grade notification disabled");
       }
-      // IMPORTANT:  You must signal completion of your task or the OS can punish your app
-      // for taking too long in the background.
-      BackgroundFetch.finish(taskId);
+      if (await getSetting("notificationNewMail") &&
+          !await getSetting("batterySaver")) {
+        if (await mainTestNewMails()) {
+          BackgroundServices.showNotificationNewMail();
+        } else {
+          print("Nothing updated");
+        }
+        BackgroundFetch.finish(taskId);
+      } else {
+        print("New mail notification disabled");
+      }
     }).then((int status) {
       print('[BackgroundFetch] configure success: $status');
     });

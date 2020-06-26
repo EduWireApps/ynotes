@@ -374,7 +374,9 @@ class APIEcoleDirecte extends API {
       case "mail":
         {
           print("Returning mails");
-          return await getMails();
+          List<Mail> mails = await getMails();
+
+          return mails;
         }
         break;
       case "cloud":
@@ -473,13 +475,16 @@ Future getCloud(String args, String action, CloudItem item) async {
                     date = split[0];
                   } catch (e) {}
 
-                
-                  toReturn.add(CloudItem(element["titre"], "FOLDER",
-                      element["creePar"], true, date,
-                      isMemberOf: element["estMembre"],
-                      id: element["id"].toString(),
-                      isLoaded: false,
-                     ));
+                  toReturn.add(CloudItem(
+                    element["titre"],
+                    "FOLDER",
+                    element["creePar"],
+                    true,
+                    date,
+                    isMemberOf: element["estMembre"],
+                    id: element["id"].toString(),
+                    isLoaded: false,
+                  ));
                 });
                 return toReturn;
               } else {
@@ -504,11 +509,12 @@ Future getCloud(String args, String action, CloudItem item) async {
   }
 }
 
-Future getMails() async {
+Future getMails({bool checking}) async {
   await testToken();
   String id = await storage.read(key: "userID");
   var url =
       'https://api.ecoledirecte.com/v3/eleves/$id/messages.awp?verbe=getall&typeRecuperation=all';
+
   Map<String, String> headers = {"Content-type": "text/plain"};
   String data = 'data={"token": "$token"}';
   //encode Map to JSON
@@ -571,6 +577,16 @@ Future getMails() async {
 */
         }
         print("Returned mails");
+        if (checking == null) {
+          print("checking mails");
+          List<Mail> receivedMails = mailsList
+              .where((element) => element.mtype == "received")
+              .toList();
+
+          setIntSetting("mailNumber", receivedMails.length);
+          print("checked mails");
+        }
+
         return mailsList;
       }
       //Return an error

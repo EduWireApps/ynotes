@@ -31,7 +31,7 @@ class _SettingsPageState extends State<SettingsPage>
   //To use by the actual image when switching
   Animation<double> avatarSize;
   //Disable new grades when battery saver is enabled
-  bool disableNewGradesNotification;
+  bool disableNotification;
   @override
   void initState() {
     setState(() {
@@ -177,9 +177,9 @@ class _SettingsPageState extends State<SettingsPage>
                   builder: (context, snapshot) {
                     if (snapshot.data == true) {
                       setSetting("notificationNewGrade", false);
-                      disableNewGradesNotification = true;
+                      disableNotification = true;
                     } else {
-                      disableNewGradesNotification = false;
+                      disableNotification = false;
                     }
                     return SwitchListTile(
                       value: snapshot.data,
@@ -205,9 +205,10 @@ class _SettingsPageState extends State<SettingsPage>
                           //disable the notificationNewGrade because it can't work with the battery saver enabled
                           if (value == true) {
                             setSetting("notificationNewGrade", false);
-                            disableNewGradesNotification = true;
+                            setSetting("notificationNewMail", false);
+                            disableNotification = true;
                           } else {
-                            disableNewGradesNotification = false;
+                            disableNotification = false;
                           }
                         });
                       },
@@ -233,17 +234,52 @@ class _SettingsPageState extends State<SettingsPage>
                             fontSize: screenSize.size.height / 10 * 0.3),
                       ),
                       subtitle: Text(
-                        (disableNewGradesNotification == true
+                        (disableNotification == true
                             ? "Ne peut fonctionner si l'économie de données est activée"
                             : ""),
                         style: TextStyle(
                             fontFamily: "Asap", color: Colors.red.shade700),
                       ),
-                      onChanged: (disableNewGradesNotification == true)
+                      onChanged: (disableNotification == true)
                           ? null
                           : (value) {
                               setState(() {
                                 setSetting("notificationNewGrade", value);
+                              });
+                            },
+                      secondary: Icon(
+                        MdiIcons.newBox,
+                        color: isDarkModeEnabled ? Colors.white : Colors.black,
+                      ),
+                    );
+                  }),
+                    Divider(),
+              FutureBuilder(
+                  future: getSetting("notificationNewMail"),
+                  initialData: false,
+                  builder: (context, snapshot) {
+                    return SwitchListTile(
+                      value: snapshot.data,
+                      title: Text(
+                        "Notification de nouveau mail",
+                        style: TextStyle(
+                            fontFamily: "Asap",
+                            color:
+                                isDarkModeEnabled ? Colors.white : Colors.black,
+                            fontSize: screenSize.size.height / 10 * 0.3),
+                      ),
+                      subtitle: Text(
+                        (disableNotification == true
+                            ? "Ne peut fonctionner si l'économie de données est activée"
+                            : ""),
+                        style: TextStyle(
+                            fontFamily: "Asap", color: Colors.red.shade700),
+                      ),
+                      onChanged: (disableNotification == true)
+                          ? null
+                          : (value) {
+                              setState(() {
+                                setSetting("notificationNewMail", value);
                               });
                             },
                       secondary: Icon(

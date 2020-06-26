@@ -58,6 +58,7 @@ dependencies:
   background_fetch: "^0.5.1"
   scrollable_positioned_list: ^0.1.6
   package_info: ^0.4.0+16
+  share: ^0.6.4+3
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
@@ -70,6 +71,10 @@ dependencies:
   giffy_dialog: ^1.7.0
   uuid: ^2.1.0
   steel_crypt: ^2.0.0
+  highlight_text: ^0.7.2
+  android_intent: ^0.3.7+2
+  device_apps: ^1.0.10
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -134,6 +139,11 @@ flutter:
         - asset: fonts/Asap-Regular.otf
         - asset: fonts/Asap-Bold.otf
           weight: 700
+    - family: ProximaNova
+      fonts:
+        - asset: fonts/proxima-nova-soft-bold.otf
+          weight: 700
+
   assets:
     - assets/images/logoED.svg
     - assets/images/space/space.png
@@ -155,3 +165,4 @@ flutter:
     - assets/appico/
     - assets/appico/foreground.png
     - assets/gifs/
+    - assets/lessons.json

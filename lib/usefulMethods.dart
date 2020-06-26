@@ -193,6 +193,7 @@ ThemeData darkTheme = ThemeData(
     primaryColorDark: Color(0xff404040),
     indicatorColor: Color(0xff404040),
     tabBarTheme: TabBarTheme(labelColor: Colors.black));
+
 ThemeData lightTheme = ThemeData(
     backgroundColor: Colors.white,
     primaryColor: Color(0xffF3F3F3),
@@ -413,6 +414,9 @@ List<grade> getAllGrades(List<discipline> list, {bool overrideLimit = false}) {
 
   return listToReturn;
 }
+
+
+
 
 //Indicate if the app has to reopen on grade page
 bool haveToReopenOnGradePage = false;

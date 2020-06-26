@@ -48,6 +48,7 @@ class _CloudPageState extends State<CloudPage> {
 
   //Change directory action
   changeDirectory(CloudItem item) async {
+    print(path);
     setState(() {
       cloudFolderFuture =
           api.app("cloud", args: path, action: "CD", folder: item);
@@ -130,7 +131,7 @@ class _CloudPageState extends State<CloudPage> {
                       });
                       print(concatenate);
                       setState(() {
-                        path = concatenate.toString();
+                        path = concatenate.toString()+'/';
                       });
                     } else {
                       setState(() {

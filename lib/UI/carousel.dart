@@ -745,6 +745,33 @@ class _page4State extends State<page4> {
                           });
                         });
                   }),
+                  Divider(),
+              FutureBuilder(
+                  future: getSetting("notificationNewMail"),
+                  initialData: false,
+                  builder: (context, snapshot) {
+                    return SwitchListTile(
+                      value: snapshot.data,
+                      title: Text(
+                        "Notification de nouveau mail",
+                        style: TextStyle(
+                            fontFamily: "Asap",
+                            color:
+                                isDarkModeEnabled ? Colors.white : Colors.black,
+                            fontSize: screenSize.size.height / 10 * 0.3),
+                      ),
+                     
+                      onChanged: (value) {
+                              setState(() {
+                                setSetting("notificationNewMail", value);
+                              });
+                            },
+                      secondary: Icon(
+                        MdiIcons.newBox,
+                        color: isDarkModeEnabled ? Colors.white : Colors.black,
+                      ),
+                    );
+                  }),
               Divider(
                 color: isDarkModeEnabled ? Colors.white : Colors.black,
               ),
