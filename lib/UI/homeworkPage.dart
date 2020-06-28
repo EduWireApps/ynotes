@@ -575,7 +575,7 @@ class _HomeworkElementState extends State<HomeworkElement> {
                               color: isDarkModeEnabled
                                   ? darken(Theme.of(context).primaryColorDark,
                                       forceAmount: 0.1)
-                                  : Theme.of(context).primaryColor,
+                                  : darken(Theme.of(context).primaryColor, forceAmount: 0.03),
                               width: screenSize.size.width / 5 * 4.4,
                               height: isExpanded ? null : 0,
                               child: Container(

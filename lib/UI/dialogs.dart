@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -5,22 +7,19 @@ import 'package:giffy_dialog/giffy_dialog.dart';
 import '../usefulMethods.dart';
 
 class CustomDialogs {
-  static void showGiffyDialog(
-      BuildContext context, String title, String description, Image image) {
+  static void showGiffyDialog(BuildContext context, HelpDialog hd) {
     var screenSize = MediaQuery.of(context);
     //Show a dialog with a gif
     showDialog(
         context: context,
         builder: (_) => AssetGiffyDialog(
-              image: image,
+              image: Image.asset(hd.gifPath),
               title: Text(
-                title,
-                style: TextStyle(
-                    fontSize: screenSize.size.height / 10 * 0.3,
-                    fontWeight: FontWeight.w600),
+                hd.title,
+                style: TextStyle(fontSize: screenSize.size.height / 10 * 0.3, fontWeight: FontWeight.w600),
               ),
               description: Text(
-                description,
+                hd.description,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: "Asap",
@@ -33,8 +32,63 @@ class CustomDialogs {
               ),
               onlyOkButton: true,
               entryAnimation: EntryAnimation.LEFT,
-              onOkButtonPressed: () {},
+              onOkButtonPressed: () {
+               Navigator.pop(_);
+              },
             ));
+  }
+
+  static Future<bool> showConfirmationDialog(BuildContext context, File file, Function show) {
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      elevation: 50,
+      backgroundColor: Theme.of(context).primaryColor,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+      title: Text(
+        "Confirmation",
+        style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+      ),
+      content: Text(
+        "Voulez vous vraiment supprimer ce fichier ?",
+        style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+      ),
+      actions: [
+        FlatButton(
+          child: const Text(
+            'ANNULER',
+            style: TextStyle(color: Colors.green),
+          ),
+          onPressed: () {
+            if (show != null) {
+              show();
+            }
+
+            Navigator.pop(context, false);
+          },
+        ),
+        FlatButton(
+          child: const Text(
+            'SUPPRIMER',
+            style: TextStyle(color: Colors.red),
+          ),
+          onPressed: () {
+            if (show != null) {
+              show();
+            }
+            Navigator.pop(context, true);
+          },
+        )
+      ],
+    );
+
+    // show the dialog
+    return showDialog<bool>(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 
 //Bêta purposes : show when a function is not available yet
@@ -78,18 +132,18 @@ class CustomDialogs {
     )..show(context);
   }
 }
+
 //The help dialog class
-class helpDialog 
-{
-final GlobalKey key;
-final String title;
-final String description;
-
-  helpDialog(this.title, this.description,{this.key});
-
+class HelpDialog {
+  final GlobalKey key;
+  final String title;
+  final String description;
+  final String gifPath;
+  HelpDialog(this.title, this.description, this.gifPath, {this.key});
 }
+
 //Help dialogs list for the showcase
-List<helpDialog> helpDialogs = [
-helpDialog("QuickMenu", "Glissez votre doigt vers le haut sur l'icone Space pour afficher un menu rapide."),
-helpDialog("Epingler", "Restez appuyé puis épinglez un devoir pour le revoir même après sa date d'échéance.")
+List<HelpDialog> helpDialogs = [
+  HelpDialog("QuickMenu", "Glissez votre doigt vers le haut sur l'icone Space pour afficher un menu rapide.", "assets/gifs/QuickMenu720.gif"),
+  HelpDialog("Epingler", "Restez appuyé puis épinglez un devoir pour le revoir même après sa date d'échéance.", "assets/gifs/QuickMenu720.gif")
 ];

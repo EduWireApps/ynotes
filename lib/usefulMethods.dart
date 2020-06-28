@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:connectivity/connectivity.dart';
+import 'package:dio/dio.dart' as dio;
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive/hive.dart';
@@ -14,8 +15,8 @@ import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart';
 import 'package:ynotes/parsers/EcoleDirecte.dart';
-import 'dart:io' show Platform;
-
+import 'dart:io';
+import 'package:dio/src/response.dart' as dioResponse;
 import 'apiManager.dart';
 
 //L
@@ -104,8 +105,7 @@ class DownloadModel extends ChangeNotifier {
 
         if (!await _appDocDirFolder.exists()) {
           //if folder already exists return path
-          final Directory _appDocDirNewFolder =
-              await _appDocDirFolder.create(recursive: true);
+          final Directory _appDocDirNewFolder = await _appDocDirFolder.create(recursive: true);
         } //if folder not exists create folder and then return its path
 
         await file.writeAsBytes(bytes);
@@ -158,33 +158,7 @@ Future<void> openFile(filename) async {
 
 ///Color theme switcher, actually 0 for darkmode and 1 for lightmode
 int colorTheme = 0;
-String actualUser ="";
-Color GetColorFor(String element) {
-  if (colorTheme == 0) {
-    switch (element) {
-      case "menuForeground":
-        {}
-        break;
-      case "generalBackground":
-        {
-          return Color(0xff141414);
-        }
-        break;
-    }
-    if (colorTheme == 1) {
-      switch (element) {
-        case "menuForeground":
-          {}
-          break;
-        case "generalBackground":
-          {
-            return Color(0xff141414);
-          }
-          break;
-      }
-    }
-  }
-}
+String actualUser = "";
 
 ThemeData darkTheme = ThemeData(
     backgroundColor: Color(0xff1F1E1E),
@@ -194,12 +168,7 @@ ThemeData darkTheme = ThemeData(
     indicatorColor: Color(0xff404040),
     tabBarTheme: TabBarTheme(labelColor: Colors.black));
 
-ThemeData lightTheme = ThemeData(
-    backgroundColor: Colors.white,
-    primaryColor: Color(0xffF3F3F3),
-    primaryColorDark: Color(0xffDCDCDC),
-    indicatorColor: Color(0xffDCDCDC),
-    tabBarTheme: TabBarTheme(labelColor: Colors.black));
+ThemeData lightTheme = ThemeData(backgroundColor: Colors.white, primaryColor: Color(0xffF3F3F3), primaryColorDark: Color(0xffDCDCDC), indicatorColor: Color(0xffDCDCDC), tabBarTheme: TabBarTheme(labelColor: Colors.black));
 
 Future<bool> getSetting(String setting) async {
   final prefs = await SharedPreferences.getInstance();
@@ -220,8 +189,12 @@ Future<int> getIntSetting(String setting) async {
   final prefs = await SharedPreferences.getInstance();
   int value = prefs.getInt(setting);
   if (value == null) {
-    setIntSetting(setting, 0);
     value = 0;
+    if (setting == "summaryQuickHomework") {
+      value = 10;
+    }
+
+    setIntSetting(setting, value);
   }
   return value;
 }
@@ -298,18 +271,13 @@ Future<List<FileInfo>> getListOfFiles() async {
     List file = new List();
     directory = (await getDirectory()).path;
 
-    file = Directory("$directory/downloads")
-        .listSync(); //use your folder name insted of resume.
+    file = Directory("$directory/downloads").listSync(); //use your folder name insted of resume.
     List<FileInfo> listFiles = List<FileInfo>();
 
     await Future.forEach(file, (element) async {
       try {
-        listFiles.add(new FileInfo(
-            element,
-            await AppUtil.getLastModifiedDate(element),
-            await AppUtil.getFileNameWithExtension(element)));
-        listFiles
-            .sort((a, b) => a.lastModifiedDate.compareTo(b.lastModifiedDate));
+        listFiles.add(new FileInfo(element, await AppUtil.getLastModifiedDate(element), await AppUtil.getFileNameWithExtension(element)));
+        listFiles.sort((a, b) => a.lastModifiedDate.compareTo(b.lastModifiedDate));
       } catch (e) {
         print(e);
       }
@@ -336,8 +304,7 @@ class App {
 
 class ConnectionStatusSingleton {
   //This creates the single instance by calling the `_internal` constructor specified below
-  static final ConnectionStatusSingleton _singleton =
-      new ConnectionStatusSingleton._internal();
+  static final ConnectionStatusSingleton _singleton = new ConnectionStatusSingleton._internal();
   ConnectionStatusSingleton._internal();
 
   //This is what's used to retrieve the instance through the app
@@ -347,8 +314,7 @@ class ConnectionStatusSingleton {
   bool hasConnection = false;
 
   //This is how we'll allow subscribing to connection changes
-  StreamController connectionChangeController =
-      new StreamController.broadcast();
+  StreamController connectionChangeController = new StreamController.broadcast();
 
   //flutter_connectivity
   final Connectivity _connectivity = Connectivity();
@@ -408,15 +374,11 @@ List<grade> getAllGrades(List<discipline> list, {bool overrideLimit = false}) {
   listToReturn = listToReturn.reversed.toList();
 
   if (overrideLimit == false && listToReturn != null) {
-    listToReturn = listToReturn.sublist(
-        0, (listToReturn.length >= 5) ? 5 : listToReturn.length);
+    listToReturn = listToReturn.sublist(0, (listToReturn.length >= 5) ? 5 : listToReturn.length);
   }
 
   return listToReturn;
 }
-
-
-
 
 //Indicate if the app has to reopen on grade page
 bool haveToReopenOnGradePage = false;
@@ -461,16 +423,14 @@ specialtiesSelectionAvailable() async {
   await getChosenParser();
 
   if (chosenParser == 0) {
-    
     SharedPreferences preferences = await SharedPreferences.getInstance();
-  String classe= await storage.read(key: "classe");
-   
+    String classe = await storage.read(key: "classe");
+
 //E.G : It is always something like "Première blabla"
     var split = classe.split(" ");
 
     if (split[0] == "PremiÃ¨re" || split[0] == "Terminale") {
-
-      return [true,(split[0]=="PremiÃ¨re")?"Première":split[0]];
+      return [true, (split[0] == "PremiÃ¨re") ? "Première" : split[0]];
     } else {
       return false;
     }
@@ -479,5 +439,26 @@ specialtiesSelectionAvailable() async {
   }
 }
 
+class AppNews {
+  static Future<List> checkAppNews() async {
+
+      try {
+        dioResponse.Response response = await dio.Dio().get("http://192.168.1.99/news.json", options: dio.Options(responseType: dio.ResponseType.plain));
+       
+    Map map = json.decode(response.data.toString());
+        List list = map["tickets"];
+        list.sort((a,b)=>a["ticketnb"].compareTo(b["ticketnb"]));
+        return map["tickets"];
+      
+    }
+         
+   
+    catch (e) {
+        print(e);
+        return null;
+      }
+  }
+}
+
 String lastCloudRequest = "";
-String cloudUsedFolder ="";
+String cloudUsedFolder = "";

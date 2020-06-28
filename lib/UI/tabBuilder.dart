@@ -8,6 +8,7 @@ import 'package:badges/badges.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/UI/homeworkPage.dart';
 import 'package:ynotes/UI/gradesPage.dart';
+import 'package:ynotes/UI/spacePage.dart';
 import 'package:ynotes/UI/summaryPage.dart';
 import 'package:ynotes/UI/settingsPage.dart';
 import 'package:ynotes/UI/quickMenu.dart';
@@ -586,7 +587,7 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
                           return true;
                         },
                         child: TabBarView(controller: tabController, children: [
-                          Icon(Icons.apps),
+                          SpacePage(),
                           SummaryPage(tabController: tabController),
                           GradesPage(),
                           HomeworkPage(),

@@ -35,7 +35,7 @@ class _QuickMenuState extends State<QuickMenu> with TickerProviderStateMixin {
 
   Animation<double> quickMenuShowAnimation;
   AnimationController quickMenuController;
-API api  = APIManager();
+  API api = APIManager();
   @override
   void initState() {
     super.initState();
@@ -141,21 +141,30 @@ API api  = APIManager();
                                                       curve: Curves.easeIn);
                                                   break;
                                                 case 2:
-                                                 
-                                                 {
-                                                   testingEncryptor();
-                                                //api.app("cloud", args: "/", action: "CD");
-                                           /* var client = Client('https://demo.index-education.net/pronote/eleve.html',
-                          username:'demonstration',
-                          password:'pronotevs');
+                                                  {
+                                                    //api.app("cloud", args: "/", action: "CD");
+                                                  /*  var client = Client(
+                                                        'https://demo.index-education.net/pronote/eleve.html',
+                                                        username:
+                                                            'demonstration',
+                                                        password: 'pronotevs');
                                                     await client.init();
-                                                 */
+                       if(client.logged_in)
+                       {
+                         client.periods().forEach((period)
+                         async {
+                           var grades = await period.grades(); 
+                         grades.forEach((grade)
+                         {
+                           print(grade);
+                         });
+                         });
+                       }*/
+                                                    widget.close();
+                                        CustomDialogs.showGiffyDialog(context, helpDialogs[0]
+                                        );
 
-                                       
-                                        /*widget.close();
-                                        CustomDialogs.showGiffyDialog(context,"QuickMenu","Glisser en bas à droite pour afficher le quickMenu", Image.asset("assets/gifs/QuickMenu720.gif"));*/
-                                     
-                                                 }
+                                                  }
                                                   break;
                                               }
                                             },
@@ -241,16 +250,18 @@ API api  = APIManager();
                                                   setState(() {
                                                     visibility = false;
                                                   });
-                                                  return await showConfirmationDialog(
-                                                          context,
-                                                          listFiles[index].file,
-                                                          show) ==
+                                                  return await CustomDialogs
+                                                          .showConfirmationDialog(
+                                                              context,
+                                                              listFiles[index]
+                                                                  .file,
+                                                              show) ==
                                                       true;
                                                 },
-                                                onDismissed: (direction) async{
+                                                onDismissed: (direction) async {
                                                   await AppUtil.remove(
                                                       listFiles[index].file);
-                                                      setState(() {
+                                                  setState(() {
                                                     listFiles.removeAt(index);
                                                   });
                                                 },
@@ -410,57 +421,4 @@ API api  = APIManager();
       ),
     );
   }
-}
-
-Future<bool> showConfirmationDialog(
-    BuildContext context, File file, Function show) {
-  // set up the AlertDialog
-  AlertDialog alert = AlertDialog(
-    elevation: 50,
-    backgroundColor: Theme.of(context).primaryColor,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-    title: Text(
-      "Confirmation",
-      style: TextStyle(
-          fontFamily: "Asap",
-          color: isDarkModeEnabled ? Colors.white : Colors.black),
-    ),
-    content: Text(
-      "Voulez vous vraiment supprimer ce fichier ?",
-      style: TextStyle(
-          fontFamily: "Asap",
-          color: isDarkModeEnabled ? Colors.white : Colors.black),
-    ),
-    actions: [
-      FlatButton(
-        child: const Text(
-          'ANNULER',
-          style: TextStyle(color: Colors.green),
-        ),
-        onPressed: () {
-          show();
-          Navigator.pop(context, false);
-        },
-      ),
-      FlatButton(
-        child: const Text(
-          'SUPPRIMER',
-          style: TextStyle(color: Colors.red),
-        ),
-        onPressed: () {
-          show();
-          Navigator.pop(context, true);
-        },
-      )
-    ],
-  );
-
-  // show the dialog
-  return showDialog<bool>(
-    barrierDismissible: false,
-    context: context,
-    builder: (BuildContext context) {
-      return alert;
-    },
-  );
 }
