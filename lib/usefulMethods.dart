@@ -158,11 +158,11 @@ int colorTheme = 0;
 String actualUser = "";
 
 ThemeData darkTheme = ThemeData(
-    backgroundColor: Color(0xff1F1E1E),
-    primaryColor: Color(0xff2C2C2C),
+    backgroundColor: Color(0xff313131),
+    primaryColor: Color(0xff414141),
     //In reality that is primary ColorLighter
-    primaryColorDark: Color(0xff404040),
-    indicatorColor: Color(0xff404040),
+    primaryColorDark: Color(0xff525252),
+    indicatorColor: Color(0xff525252),
     tabBarTheme: TabBarTheme(labelColor: Colors.black));
 
 ThemeData lightTheme = ThemeData(backgroundColor: Colors.white, primaryColor: Color(0xffF3F3F3), primaryColorDark: Color(0xffDCDCDC), indicatorColor: Color(0xffDCDCDC), tabBarTheme: TabBarTheme(labelColor: Colors.black));

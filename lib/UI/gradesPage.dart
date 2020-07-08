@@ -257,7 +257,6 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
   void setAverage(List<discipline> disciplineList) {
     average = 0;
     double counter = 0;
-    print(periodeToUse);
     disciplineList.where((i) => i.periode == periodeToUse).forEach((f) {
       f.gradesList.forEach((z) {
       
@@ -413,7 +412,7 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
 
     ///Button container
     return Container(
-      margin: EdgeInsets.only(top: (screenSize.size.height / 10 * 8.8) / 10 * 1 / 3.8),
+
       height: screenSize.size.height / 10 * 8.8,
       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
         Container(
@@ -513,7 +512,7 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
           child: Container(
             width: screenSize.size.width / 5 * 4.7,
             padding: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
-            height: (screenSize.size.height / 10 * 8.8) / 10 * 5.5,
+            height: screenSize.size.height / 10*5.4  ,
             margin: EdgeInsets.only(top: 0),
             decoration: BoxDecoration(
                 border: Border.all(width: 0.000000, color: Colors.transparent),
@@ -939,7 +938,7 @@ class _GradesGroupState extends State<GradesGroup> {
                 margin: EdgeInsets.only(top: (screenSize.size.height / 10 * 8.8) / 10 * 0.55),
                 width: screenSize.size.width / 5 * 4.5,
                 decoration: BoxDecoration(
-                  color: isDarkModeEnabled ? Color(0xff424242) : Color(0xffE2E2E2),
+                  color: isDarkModeEnabled ? Color(0xff333333) : Color(0xffE2E2E2),
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(15),
                     bottomRight: Radius.circular(15),
@@ -974,7 +973,9 @@ class _GradesGroupState extends State<GradesGroup> {
                                 fontFamily: "Asap",
                                 color: isDarkModeEnabled ? Colors.white : Colors.black,
                               )),
-                      if (widget.disciplinevar != null) if (widget.disciplinevar.codeSousMatiere.length > 0) gradesColumn(1),
+                      if (widget.disciplinevar != null) 
+                      if (widget.disciplinevar.codeSousMatiere.length > 0) 
+                      gradesColumn(1),
                     ],
                   ),
                 )),

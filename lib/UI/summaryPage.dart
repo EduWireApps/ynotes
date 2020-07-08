@@ -91,7 +91,7 @@ class _SummaryPageState extends State<SummaryPage> {
     helpDialogs[0].showDialog(context);
     MediaQueryData screenSize = MediaQuery.of(context);
     return Container(
-      margin: EdgeInsets.only(top: (screenSize.size.height / 10 * 8.8) / 10 * 1 / 1.5),
+      margin: EdgeInsets.only(top:screenSize.size.height / 10 * 0.1 ),
       height: screenSize.size.height / 10 * 8.8,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -150,7 +150,7 @@ class _SummaryPageState extends State<SummaryPage> {
           Container(
             margin: EdgeInsets.only(top: (screenSize.size.height / 10 * 8.8) / 10 * 1 / 3),
             width: screenSize.size.width / 5 * 4.5,
-            height: (screenSize.size.height / 10 * 8.8) / 10 * 4,
+            height: (screenSize.size.height / 10 * 8.8) / 10 * 4.2,
             decoration: BoxDecoration(color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(12)),
             child: ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(12)),

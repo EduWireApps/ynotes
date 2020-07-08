@@ -92,15 +92,15 @@ class _HomeworkPageState extends State<HomeworkPage> {
     helpDialogs[2].showDialog(context);
     MediaQueryData screenSize = MediaQuery.of(context);
     return Container(
-      margin: EdgeInsets.only(top: (screenSize.size.height / 10 * 8.8) / 10 * 0.5),
-      height: screenSize.size.height / 10 * 8,
+   
+      height: screenSize.size.height / 10 * 8.8,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           //Homework list view
           Container(
               width: screenSize.size.width / 5 * 4.7,
-              height: (screenSize.size.height / 10 * 8.8) / 10 * 7.5,
+              height: screenSize.size.height / 10 * 7.1,
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.circular(15),

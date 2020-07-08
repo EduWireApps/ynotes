@@ -689,7 +689,9 @@ getGradesFromInternet() async {
                 periodeElement["ensembleMatieres"]["moyenneClasse"]));
           } else {
             try {
-              disciplinesList[disciplinesList.lastIndexWhere((disciplinesList) => disciplinesList.codeMatiere == element['codeMatiere'] && disciplinesList.periode == element["codePeriode"])].codeSousMatiere.add(element['codeSousMatiere']);
+              print(element["idPeriode"]);
+
+              disciplinesList[disciplinesList.lastIndexWhere((disciplinesList) => disciplinesList.codeMatiere == element['codeMatiere'] && disciplinesList.periode == periodeElement["idPeriode"])].codeSousMatiere.add(element['codeSousMatiere']);
             } catch (e) {}
           }
         });
@@ -699,6 +701,7 @@ getGradesFromInternet() async {
 
         data.forEach((element) {
           if (element["codeMatiere"] == f.codeMatiere && element["codePeriode"] == f.periode.toString()) {
+            //print("IT WAS OK" + element.toString());
             localGradesList.add(grade.fromJson(element));
           }
         });

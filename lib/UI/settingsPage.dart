@@ -448,9 +448,9 @@ showExitDialog(BuildContext context) {
                 style: TextStyle(color: Colors.red),
               ),
               onPressed: () async {
+                Navigator.of(context).pushReplacement(router(login()));
                 Provider.of<AppStateNotifier>(context, listen: false).updateTheme(false);
                 await exitApp();
-                Navigator.of(context).pushReplacement(router(login()));
               },
             )
           ]);
