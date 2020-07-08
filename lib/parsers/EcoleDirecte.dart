@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:alice/alice.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:quiver/collection.dart';
 import 'package:flutter/material.dart';
@@ -30,10 +31,6 @@ void CreateStorage(String key, String data) async {
   await storage.write(key: key, value: data);
 }
 
-ReadStorage(_key) async {
-  String u = await storage.read(key: "username");
-}
-
 class HexColor extends Color {
   static int _getColorFromHex(String hexColor) {
     hexColor = hexColor.toUpperCase().replaceAll("#", "");
@@ -49,26 +46,16 @@ class HexColor extends Color {
 String token;
 
 final storage = new FlutterSecureStorage();
-List<String> CoolcolorList = [
-  "#f07aa0",
-  "#17d0c9",
-  "#a3f7bf",
-  "#cecece",
-  "#ffa41b",
-  "#ff5151",
-  "#b967e1",
-  "#8a7ca7",
-  "#f18867",
-  "#ffc0da",
-  "#739832",
-  "#8ac6d1"
-];
+List<String> CoolcolorList = ["#f07aa0", "#17d0c9", "#a3f7bf", "#cecece", "#ffa41b", "#ff5151", "#b967e1", "#8a7ca7", "#f18867", "#ffc0da", "#739832", "#8ac6d1"];
 
 //The ecole directe api extended from the apiManager.dart API class
 class APIEcoleDirecte extends API {
   @override
+  // TODO: implement listApp
+  List<App> get listApp => [App("Messagerie", MdiIcons.mail, route: "mail"), App("Cloud", Icons.cloud, route: "cloud")];
+  @override
 //Get connection message and store token
-  Future<String> login(username, password) async {
+  Future<String> login(username, password, {url, cas}) async {
     final prefs = await SharedPreferences.getInstance();
     if (username == null) {
       username = "";
@@ -79,12 +66,10 @@ class APIEcoleDirecte extends API {
 
     var url = 'https://api.ecoledirecte.com/v3/login.awp';
     Map<String, String> headers = {"Content-type": "texet/plain"};
-    String data =
-        'data={"identifiant": "$username", "motdepasse": "$password"}';
+    String data = 'data={"identifiant": "$username", "motdepasse": "$password"}';
     //encode Map to JSON
     var body = data;
-    var response =
-        await http.post(url, headers: headers, body: body).catchError((e) {
+    var response = await http.post(url, headers: headers, body: body).catchError((e) {
       return "Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.";
     });
 
@@ -94,9 +79,7 @@ class APIEcoleDirecte extends API {
         //Put the value of the name in a variable
         actualUser = req['data']['accounts'][0]['prenom'];
         String userID = req['data']['accounts'][0]['id'].toString();
-        String classe = req['data']['accounts'][0]['profile']["classe"]
-                ["libelle"]
-            .toString();
+        String classe = req['data']['accounts'][0]['profile']["classe"]["libelle"].toString();
         //Store the token
         token = req['token'];
         //Create secure storage for credentials
@@ -124,14 +107,10 @@ class APIEcoleDirecte extends API {
 //Getting grades
   Future<List<discipline>> getGrades({bool forceReload}) async {
     var connectivityResult = await (Connectivity().checkConnectivity());
-    var offlineGrades = await getGradesFromDB(
-        online: connectivityResult != ConnectivityResult.none);
+    var offlineGrades = await getGradesFromDB(online: connectivityResult != ConnectivityResult.none);
 
     //If force reload enabled the grades will be loaded online
-    if ((connectivityResult == ConnectivityResult.none ||
-            forceReload == false ||
-            forceReload == null) &&
-        offlineGrades != null) {
+    if ((connectivityResult == ConnectivityResult.none || forceReload == false || forceReload == null) && offlineGrades != null) {
       print("Loading grades from offline storage.");
       //RELOAD THE GRADES ANYWAY
       //NDLR : await is not needed, grades will be refreshed later
@@ -139,7 +118,9 @@ class APIEcoleDirecte extends API {
         getGrades(forceReload: true);
       }
 
-      return await getOfflineGrades();
+      List<discipline> grades = await getGradesFromDB();
+      await refreshDisciplinesListColors(grades);
+      return grades;
     } else {
       print("Loading grades inline.");
       var toReturn = await getGradesFromInternet();
@@ -153,14 +134,12 @@ class APIEcoleDirecte extends API {
     //Autorefresh token
     await testToken();
     String id = await storage.read(key: "userID");
-    var url =
-        'https://api.ecoledirecte.com/v3/Eleves/$id/cahierdetexte.awp?verbe=get&';
+    var url = 'https://api.ecoledirecte.com/v3/Eleves/$id/cahierdetexte.awp?verbe=get&';
     Map<String, String> headers = {"Content-type": "text/plain"};
     String data = 'data={"token": "$token"}';
 
     var body = data;
-    var response =
-        await http.post(url, headers: headers, body: body).catchError((e) {
+    var response = await http.post(url, headers: headers, body: body).catchError((e) {
       throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.");
     });
 
@@ -178,12 +157,7 @@ class APIEcoleDirecte extends API {
         }
         data2.forEach((key, value) {
           if (isLimitedTo7Days == true) {
-            if (DateTime.parse(
-                        DateFormat("yyyy-MM-dd").format(DateTime.parse(key)))
-                    .difference(DateTime.parse(
-                        DateFormat("yyyy-MM-dd").format(DateTime.now())))
-                    .inDays >
-                7) homeworkDatesListToReturn.add(DateTime.parse(key));
+            if (DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.parse(key))).difference(DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now()))).inDays > 7) homeworkDatesListToReturn.add(DateTime.parse(key));
           } else {
             homeworkDatesListToReturn.add(DateTime.parse(key));
           }
@@ -205,14 +179,10 @@ class APIEcoleDirecte extends API {
 //Get dates of the the next homework (based on the EcoleDirecte API)
   Future<List<homework>> getNextHomework({bool forceReload}) async {
     var connectivityResult = await (Connectivity().checkConnectivity());
-    var offlineHomework = await getHomeworkFromDB(
-        online: connectivityResult != ConnectivityResult.none);
+    var offlineHomework = await getHomeworkFromDB(online: connectivityResult != ConnectivityResult.none);
 
     //If force reload enabled the grades will be loaded online
-    if ((connectivityResult == ConnectivityResult.none ||
-            forceReload == false ||
-            forceReload == null) &&
-        offlineHomework != null) {
+    if ((connectivityResult == ConnectivityResult.none || forceReload == false || forceReload == null) && offlineHomework != null) {
       print("Loading homework from offline storage.");
       //RELOAD THE HOMEWORK ANYWAY
       //NDLR : await is not needed, homework will be refreshed later
@@ -252,18 +222,15 @@ class APIEcoleDirecte extends API {
     //Autorefresh token
     initializeDateFormatting();
     if (dateHomework != null) {
-      String dateToUse =
-          DateFormat("yyyy-MM-dd").format(dateHomework).toString();
+      String dateToUse = DateFormat("yyyy-MM-dd").format(dateHomework).toString();
       await testToken();
       String id = await storage.read(key: "userID");
-      var url =
-          'https://api.ecoledirecte.com/v3/Eleves/$id/cahierdetexte/$dateToUse.awp?verbe=get&';
+      var url = 'https://api.ecoledirecte.com/v3/Eleves/$id/cahierdetexte/$dateToUse.awp?verbe=get&';
       Map<String, String> headers = {"Con*nt-type": "text/plain"};
       String data = 'data={"token": "$token"}';
 
       var body = data;
-      var response =
-          await http.post(url, headers: headers, body: body).catchError((e) {
+      var response = await http.post(url, headers: headers, body: body).catchError((e) {
         throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.");
       });
       if (response.statusCode == 200) {
@@ -291,16 +258,14 @@ class APIEcoleDirecte extends API {
                 List docs = element['aFaire']['documents'];
                 if (docs != null) {
                   docs.forEach((e) {
-                    documentsAFaire.add(new document(
-                        e["libelle"], e["id"], e["type"], e["taille"]));
+                    documentsAFaire.add(new document(e["libelle"], e["id"], e["type"], e["taille"]));
                   });
                 }
 
                 List docsContenu = element['contenuDeSeance']['documents'];
                 if (docsContenu != null) {
                   docsContenu.forEach((e) {
-                    documentsContenuDeCours.add(new document(
-                        e["libelle"], e["id"], e["type"], e["taille"]));
+                    documentsContenuDeCours.add(new document(e["libelle"], e["id"], e["type"], e["taille"]));
                   });
                 }
                 interrogation = element['interrogation'];
@@ -312,8 +277,7 @@ class APIEcoleDirecte extends API {
               String decodedContenuDeSeance = "";
               decodedContent = utf8.decode(base64.decode(encodedContent));
 
-              decodedContenuDeSeance =
-                  utf8.decode(base64.decode(aFaireEncoded));
+              decodedContenuDeSeance = utf8.decode(base64.decode(aFaireEncoded));
 
               homeworkList.add(new homework(
                 element['matiere'],
@@ -348,13 +312,11 @@ class APIEcoleDirecte extends API {
   Future<bool> testNewGrades() async {
     try {
       //Getting the offline count of grades
-      List<grade> listOfflineGrades =
-          getAllGrades(await getOfflineGrades(), overrideLimit: true);
+      List<grade> listOfflineGrades = getAllGrades(await getGradesFromDB(), overrideLimit: true);
 
       print("Offline length is ${listOfflineGrades.length}");
       //Getting the online count of grades
-      List<grade> listOnlineGrades =
-          getAllGrades(await getGradesFromInternet(), overrideLimit: true);
+      List<grade> listOnlineGrades = getAllGrades(await getGradesFromInternet(), overrideLimit: true);
       print("Online length is ${listOnlineGrades.length}");
       if (listOfflineGrades.length < listOnlineGrades.length) {
         return true;
@@ -368,8 +330,7 @@ class APIEcoleDirecte extends API {
   }
 
   @override
-  Future app(String appname,
-      {String args, String action, CloudItem folder}) async {
+  Future app(String appname, {String args, String action, CloudItem folder}) async {
     switch (appname) {
       case "mail":
         {
@@ -395,26 +356,11 @@ class APIEcoleDirecte extends API {
         {
           //Ensure that token is refreshed
           await testToken();
-          /*  print(id);
-          var dio2 = dio.Dio();
-      
-          var data = {
-            "data": '{"token":"$token","idContexte":$id}'
-          
-            //"file": await dio.MultipartFile.fromFile(filepath)
-          };
-         
-          dio.Response response = await dio2.post("https://en9xoeu6tjzo.x.pipedream.net/",  data: dio.FormData.fromMap(data), options: dio.Options(contentType: 'multipart/form-data', headers: {"User-Agent":"PostmanRuntime/7.25.0"}));
-      
-         print(response.data);
-        */
-          var uri = Uri.parse(
-              'https://api.ecoledirecte.com/v3/televersement.awp?verbe=post&mode=CDT');
+          var uri = Uri.parse('https://api.ecoledirecte.com/v3/televersement.awp?verbe=post&mode=CDT');
           var request = http.MultipartRequest('POST', uri)
             ..headers["user-agent"] = "PostmanRuntime/7.25.0"
             ..headers["accept"] = "*/*"
-            ..fields['asap'] =
-                '\nContent-Disposition: form-data; name="data"\n\n{"token":"$token","idContexte":$id}';
+            ..fields['asap'] = '\nContent-Disposition: form-data; name="data"\n\n{"token":"$token","idContexte":$id}';
 
           var response = await request.send();
           if (response.statusCode == 200) print('Uploaded!');
@@ -428,15 +374,13 @@ class APIEcoleDirecte extends API {
   ///END OF THE API CLASS
 }
 
-/* CLOUD SUB API 
-Read this : called with two arguments. The first one is "args" and is used to add the path: 
+///  CLOUD SUB API
+/// Read this : called with two arguments. The first one is "args" and is used to add the path:
 
-      The second one has to be "CD", "PUSH", "RM" 
-      E.G : "CD" navigate to the path and return the files and folder existing in it : ESPACES DE TRAVAILS and PERSONNAL CLOUDS are considered as folders
-      E.G : "PUSH" add a file to the path if it doesn't exist
-      E.G : "RM" remove a file to the path 
-              
-*/
+///       The second one has to be "CD", "PUSH", "RM"
+///     E.G : "CD" navigate to the path and return the files and folder existing in it : ESPACES DE TRAVAILS and PERSONNAL CLOUDS are considered as folders
+///      E.G : "PUSH" add a file to the path if it doesn't exist
+///       E.G : "RM" remove a file to the path
 Future getCloud(String args, String action, CloudItem item) async {
   if (action == "CD") {
     switch (args) {
@@ -449,23 +393,18 @@ Future getCloud(String args, String action, CloudItem item) async {
           await testToken();
           String id = await storage.read(key: "userID");
           //Get the espaces de travail
-          var url =
-              "https://api.ecoledirecte.com/v3/E/$id/espacestravail.awp?verbe=get&";
+          var url = "https://api.ecoledirecte.com/v3/E/$id/espacestravail.awp?verbe=get&";
           String data = 'data={"token": "$token"}';
           Map<String, String> headers = {"Content-type": "text/plain"};
           var body = data;
-          var response = await http
-              .post(url, headers: headers, body: body)
-              .catchError((e) {
+          var response = await http.post(url, headers: headers, body: body).catchError((e) {
             throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou reessayez plus tard.");
           });
           try {
             if (response.statusCode == 200) {
               List<CloudItem> toReturn = List();
-              Map<String, dynamic> req =
-                  jsonDecode(utf8.decode(response.bodyBytes));
+              Map<String, dynamic> req = jsonDecode(utf8.decode(response.bodyBytes));
               if (req["code"] == 200) {
-                lastCloudRequest = utf8.decode(response.bodyBytes);
                 String date = "";
                 List listData = req["data"];
                 listData.forEach((element) {
@@ -488,12 +427,10 @@ Future getCloud(String args, String action, CloudItem item) async {
                 });
                 return toReturn;
               } else {
-                print(
-                    "The servor didn't returned the cloud folder. ${response.body}");
+                print("The servor didn't returned the cloud folder. ${response.body}");
               }
             } else {
-              print(
-                  "The servor didn't returned the cloud folder. ${response.body}");
+              print("The servor didn't returned the cloud folder. ${response.body}");
             }
           } catch (e) {
             print("Error during an action on the main folders: $e");
@@ -512,15 +449,13 @@ Future getCloud(String args, String action, CloudItem item) async {
 Future getMails({bool checking}) async {
   await testToken();
   String id = await storage.read(key: "userID");
-  var url =
-      'https://api.ecoledirecte.com/v3/eleves/$id/messages.awp?verbe=getall&typeRecuperation=all';
+  var url = 'https://api.ecoledirecte.com/v3/eleves/$id/messages.awp?verbe=getall&typeRecuperation=all';
 
   Map<String, String> headers = {"Content-type": "text/plain"};
   String data = 'data={"token": "$token"}';
   //encode Map to JSON
   var body = data;
-  var response =
-      await http.post(url, headers: headers, body: body).catchError((e) {
+  var response = await http.post(url, headers: headers, body: body).catchError((e) {
     throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou reessayez plus tard.");
   });
   print("Starting the mails collection");
@@ -537,7 +472,6 @@ Future getMails({bool checking}) async {
           var classeurs = req['data']['classeurs'];
           classeurs.forEach((element) {
             classeursList.add(Classeur(element["libelle"], element["id"]));
-            print(element["libelle"]);
           });
         }
         List messagesList = List();
@@ -555,16 +489,7 @@ Future getMails({bool checking}) async {
           messagesList.forEach((element) {
             Map<String, dynamic> mail = element;
             mailsList.add(
-              Mail(
-                  mail["id"].toString(),
-                  mail["mtype"],
-                  mail["read"],
-                  mail["idClasseur"].toString(),
-                  mail["from"],
-                  mail["subject"],
-                  mail["date"],
-                  to: (mail["to"] != null) ? mail["to"] : null,
-                  files: (mail["files"] != null) ? mail["files"] : null),
+              Mail(mail["id"].toString(), mail["mtype"], mail["read"], mail["idClasseur"].toString(), mail["from"], mail["subject"], mail["date"], to: (mail["to"] != null) ? mail["to"] : null, files: (mail["files"] != null) ? mail["files"] : null),
             );
           });
           //This is the root class of message or message type ("sent", "archived", "received")
@@ -579,9 +504,7 @@ Future getMails({bool checking}) async {
         print("Returned mails");
         if (checking == null) {
           print("checking mails");
-          List<Mail> receivedMails = mailsList
-              .where((element) => element.mtype == "received")
-              .toList();
+          List<Mail> receivedMails = mailsList.where((element) => element.mtype == "received").toList();
 
           setIntSetting("mailNumber", receivedMails.length);
           print("checked mails");
@@ -605,8 +528,7 @@ Future getMails({bool checking}) async {
 Future readMail(String mailId, bool read) async {
   await testToken();
   String id = await storage.read(key: "userID");
-  var url =
-      'https://api.ecoledirecte.com/v3/eleves/$id/messages/${mailId}.awp?verbe=get';
+  var url = 'https://api.ecoledirecte.com/v3/eleves/$id/messages/${mailId}.awp?verbe=get';
   if (read == false) {
     url = url + "&mode=destinataire";
   }
@@ -614,8 +536,7 @@ Future readMail(String mailId, bool read) async {
   String data = 'data={"token": "$token"}';
   //encode Map to JSON
   var body = data;
-  var response =
-      await http.post(url, headers: headers, body: body).catchError((e) {
+  var response = await http.post(url, headers: headers, body: body).catchError((e) {
     throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou reessayez plus tard.");
   });
   print("Starting the mail reading");
@@ -643,21 +564,15 @@ Future readMail(String mailId, bool read) async {
 }
 
 Future<Mail> sendMail() {}
-//Refresh colors
-refreshDisciplinesListColors(List<discipline> list) async {
-  list.forEach((f) async {
-    f.color = await getColor(f.codeMatiere);
-  });
-}
 
-Future<Color> getColor(String disciplineName) async {
+Future<int> getColor(String disciplineName) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
 //prefs.clear();
 
   if (prefs.containsKey(disciplineName)) {
     String color = prefs.getString(disciplineName);
 
-    return HexColor(color);
+    return HexColor(color).value;
   } else {
     if (Colorstack.isEmpty) {
       createStack();
@@ -666,7 +581,7 @@ Future<Color> getColor(String disciplineName) async {
 
     String color = prefs.getString(disciplineName);
 
-    return HexColor(color);
+    return HexColor(color).value;
   }
 }
 
@@ -682,8 +597,7 @@ testToken() async {
     String data = 'data={"token": "$token"}';
     //encode Map to JSON
     var body = data;
-    var response =
-        await http.post(url, headers: headers, body: body).catchError((e) {
+    var response = await http.post(url, headers: headers, body: body).catchError((e) {
       return false;
     });
 
@@ -714,8 +628,7 @@ refreshToken() async {
   String data = 'data={"identifiant": "$username", "motdepasse": "$password"}';
   //encode Map to JSON
   var body = data;
-  var response =
-      await http.post(url, headers: headers, body: body).catchError((e) {
+  var response = await http.post(url, headers: headers, body: body).catchError((e) {
     throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou reessayez plus tard.");
   });
   if (response.statusCode == 200) {
@@ -744,18 +657,12 @@ getGradesFromInternet() async {
   String data = 'data={"token": "$token"}';
 
   var body = data;
-  var response =
-      await http.post(url, headers: headers, body: body).catchError((e) {
+  var response = await http.post(url, headers: headers, body: body).catchError((e) {
     throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.");
   });
   if (response.statusCode == 200) {
     Map<String, dynamic> req = json.decode(utf8.decode(response.bodyBytes));
     if (req['code'] == 200) {
-      try {
-        putGrades(utf8.decode(response.bodyBytes));
-      } catch (e) {
-        print(e);
-      }
       //Get all the marks
       List data = req['data']['notes'];
       List<grade> gradesList = List<grade>();
@@ -763,7 +670,6 @@ getGradesFromInternet() async {
       //Get all the disciplines
       List periodes = req['data']['periodes'];
       disciplinesList.clear();
-      int i = 0;
 
       periodes.forEach((periodeElement) {
         Color color = Colors.green;
@@ -779,39 +685,27 @@ getGradesFromInternet() async {
           });
 //Making objects
           if (element['codeSousMatiere'] == "") {
-            disciplinesList.add(discipline.fromJson(
-                element,
-                profsNoms,
-                element['codeMatiere'],
-                i.toString(),
-                Colors.blue,
-                periodeElement["ensembleMatieres"]["moyenneGenerale"],
-                periodeElement["ensembleMatieres"]["moyenneMax"],
+            disciplinesList.add(discipline.fromJson(element, profsNoms, element['codeMatiere'], periodeElement["idPeriode"], Colors.blue, periodeElement["ensembleMatieres"]["moyenneGenerale"], periodeElement["ensembleMatieres"]["moyenneMax"],
                 periodeElement["ensembleMatieres"]["moyenneClasse"]));
           } else {
-            disciplinesList[disciplinesList.lastIndexWhere((disciplinesList) =>
-                    disciplinesList.codeMatiere == element['codeMatiere'] &&
-                    disciplinesList.periode == i.toString())]
-                .codeSousMatiere
-                .add(element['codeSousMatiere']);
+            try {
+              disciplinesList[disciplinesList.lastIndexWhere((disciplinesList) => disciplinesList.codeMatiere == element['codeMatiere'] && disciplinesList.periode == element["codePeriode"])].codeSousMatiere.add(element['codeSousMatiere']);
+            } catch (e) {}
           }
         });
-        i++;
       });
       disciplinesList.forEach((f) {
         final List<grade> localGradesList = List<grade>();
 
         data.forEach((element) {
-          if (element["codeMatiere"] == f.codeMatiere &&
-              element["codePeriode"] + ".0" ==
-                  "A00" + (double.parse(f.periode) / 2 + 1).toString()) {
+          if (element["codeMatiere"] == f.codeMatiere && element["codePeriode"] == f.periode.toString()) {
             localGradesList.add(grade.fromJson(element));
           }
         });
 
         f.gradesList = localGradesList;
       });
-
+      await putGrades(disciplinesList);
       createStack();
       refreshDisciplinesListColors(disciplinesList);
 
@@ -821,70 +715,4 @@ getGradesFromInternet() async {
     throw "Erreur durant la récupération des notes. ${url}";
   }
   return null;
-}
-
-getOfflineGrades() async {
-  Map<String, dynamic> req = await getGradesFromDB();
-  List<discipline> disciplinesList = List<discipline>();
-
-  //Get all the marks
-  List data = req['data']['notes'];
-  List<grade> gradesList = List<grade>();
-
-  //Get all the disciplines
-  List periodes = req['data']['periodes'];
-  disciplinesList.clear();
-  int i = 0;
-
-  periodes.forEach((periodeElement) {
-    Color color = Colors.green;
-    //Make a list of grades
-
-    List disciplines = periodeElement["ensembleMatieres"]["disciplines"];
-    disciplines.forEach((element) async {
-      List profs = element['professeurs'];
-      final List<String> profsNoms = List<String>();
-
-      profs.forEach((e) {
-        profsNoms.add(e["nom"]);
-      });
-//Making objects
-      if (element['codeSousMatiere'] == "") {
-        disciplinesList.add(discipline.fromJson(
-            element,
-            profsNoms,
-            element['codeMatiere'],
-            i.toString(),
-            Colors.blue,
-            periodeElement["ensembleMatieres"]["moyenneGenerale"],
-            periodeElement["ensembleMatieres"]["moyenneMax"],
-            periodeElement["ensembleMatieres"]["moyenneClasse"]));
-      } else {
-        disciplinesList[disciplinesList.lastIndexWhere((disciplinesList) =>
-                disciplinesList.codeMatiere == element['codeMatiere'] &&
-                disciplinesList.periode == i.toString())]
-            .codeSousMatiere
-            .add(element['codeSousMatiere']);
-      }
-    });
-    i++;
-  });
-  disciplinesList.forEach((f) {
-    final List<grade> localGradesList = List<grade>();
-
-    data.forEach((element) {
-      if (element["codeMatiere"] == f.codeMatiere &&
-          element["codePeriode"] + ".0" ==
-              "A00" + (double.parse(f.periode) / 2 + 1).toString()) {
-        localGradesList.add(grade.fromJson(element));
-      }
-    });
-
-    f.gradesList = localGradesList;
-  });
-
-  createStack();
-  refreshDisciplinesListColors(disciplinesList);
-
-  return disciplinesList;
 }

@@ -20,6 +20,7 @@ import 'package:dio/dio.dart' as dio2;
 
 //The basical function to change folder
 changeFolder(String path) async {
+  print(path);
 ///I've chosen to not use their shitty "Loaded function", user doesn't care about a little loading
   List paths = path.split("/");
   var finalPath= paths.sublist(2);
@@ -33,7 +34,7 @@ changeFolder(String path) async {
   var url ='https://api.ecoledirecte.com/v3/cloud/W/${cloudUsedFolder}.awp?verbe=get&idFolder=${concatenate}';
   url= Uri.encodeFull(url);
   print(url);
- List<CloudItem> toReturn    = List();
+ List<CloudItem> toReturn = List();
  
     Map<String, String> headers = {"Content-type": "text/plain"};
     String data = 'data={"token": "$token"}';

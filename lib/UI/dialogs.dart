@@ -4,36 +4,63 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:giffy_dialog/giffy_dialog.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../usefulMethods.dart';
 
 class CustomDialogs {
   static void showGiffyDialog(BuildContext context, HelpDialog hd) {
+    PageController controller = PageController();
     var screenSize = MediaQuery.of(context);
     //Show a dialog with a gif
     showDialog(
+        barrierDismissible: false,
         context: context,
         builder: (_) => AssetGiffyDialog(
               image: Image.asset(hd.gifPath),
               title: Text(
                 hd.title,
-                style: TextStyle(fontSize: screenSize.size.height / 10 * 0.3, fontWeight: FontWeight.w600),
+                style: TextStyle(fontSize: screenSize.size.height / 10 * 0.3, fontWeight: FontWeight.w600),textScaleFactor: 1.0,
               ),
-              description: Text(
-                hd.description,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: "Asap",
-                  fontSize: screenSize.size.height / 10 * 0.2,
-                ),
+              description: Container(
+                width: screenSize.size.width / 5 * 3,
+                height: screenSize.size.width / 10 * 3,
+                child: PageView.builder(
+                    controller: controller,
+                    itemCount: hd.description.length,
+                    itemBuilder: (context, index) {
+                      return SingleChildScrollView(
+                                              child: Text(
+                          hd.description[index],
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontFamily: "Asap",
+                            fontSize: screenSize.size.height / 10 * 0.2,
+                          )
+                        ),
+                      );
+                    }),
               ),
               buttonOkText: Text(
                 "J'ai compris",
-                style: TextStyle(fontFamily: "Asap", color: Colors.white),
+                style: TextStyle(fontFamily: "Asap", color: Colors.white),textScaleFactor: 1.0,
               ),
-              onlyOkButton: true,
-              entryAnimation: EntryAnimation.LEFT,
+              buttonCancelText: Text(
+                "Passer le tutoriel",
+                style: TextStyle(fontFamily: "Asap", color: Colors.white),textScaleFactor: 1.0,
+              ),
+              onlyOkButton: false,
+              entryAnimation: EntryAnimation.TOP,
+              onCancelButtonPressed: () async {
+                await hd.skipEveryHelpDialog();
+                Navigator.pop(_);
+              },
               onOkButtonPressed: () {
-               Navigator.pop(_);
+                if (controller.page.round() < hd.description.length - 1) {
+                  controller.animateToPage(controller.page.round() + 1, duration: Duration(milliseconds: 250), curve: Curves.easeIn);
+                } else {
+                  
+                  Navigator.pop(_);
+                }
               },
             ));
   }
@@ -56,7 +83,7 @@ class CustomDialogs {
         FlatButton(
           child: const Text(
             'ANNULER',
-            style: TextStyle(color: Colors.green),
+            style: TextStyle(color: Colors.green),textScaleFactor: 1.0
           ),
           onPressed: () {
             if (show != null) {
@@ -69,7 +96,7 @@ class CustomDialogs {
         FlatButton(
           child: const Text(
             'SUPPRIMER',
-            style: TextStyle(color: Colors.red),
+            style: TextStyle(color: Colors.red) ,textScaleFactor: 1.0,
           ),
           onPressed: () {
             if (show != null) {
@@ -135,15 +162,56 @@ class CustomDialogs {
 
 //The help dialog class
 class HelpDialog {
+  final int id;
   final GlobalKey key;
   final String title;
-  final String description;
+  final List<String> description;
   final String gifPath;
-  HelpDialog(this.title, this.description, this.gifPath, {this.key});
+  void showDialog(BuildContext context) async {
+    //If the dialog has never been viewed
+    if (!await checkAlreadyViewed()) {
+      CustomDialogs.showGiffyDialog(context, this);
+      //Set the dialog as viewed
+      await this.setAlreadyViewed();
+    }
+  }
+
+  ///Set if the dialog as already been watched
+  setAlreadyViewed() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    await preferences.setBool("alreadyViewedHelpDialog" + this.id.toString(), true);
+  }
+
+  ///Check if the dialog as already been watched
+  checkAlreadyViewed() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    bool viewed = preferences.getBool("alreadyViewedHelpDialog" + this.id.toString());
+    
+    return  viewed!=null?viewed:false;
+  }
+
+  ///Skip every dialogs (already seen)
+  skipEveryHelpDialog() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    for (int i = 0; i < helpDialogs.length; i++) {
+      await preferences.setBool("alreadyViewedHelpDialog" + i.toString(), true);
+    }
+  }
+  
+  ///Skip every dialogs (already seen)
+  resetEveryHelpDialog() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    for (int i = 0; i < helpDialogs.length; i++) {
+      await preferences.setBool("alreadyViewedHelpDialog" + i.toString(), false);
+    }
+  }
+  HelpDialog(this.title, this.description, this.gifPath, this.id, {this.key});
 }
 
 //Help dialogs list for the showcase
 List<HelpDialog> helpDialogs = [
-  HelpDialog("QuickMenu", "Glissez votre doigt vers le haut sur l'icone Space pour afficher un menu rapide.", "assets/gifs/QuickMenu720.gif"),
-  HelpDialog("Epingler", "Restez appuyé puis épinglez un devoir pour le revoir même après sa date d'échéance.", "assets/gifs/QuickMenu720.gif")
+  HelpDialog("Bienvenue !", ["Bienvenue sur yNotes ! Nous sommes très content de vous voir ici !", "Nous vous laissons découvrir l'application comme bon vous semble. Des fenêtres comme celle ci apparaitront parfois pour aider.","Vous avez déjà vu ce tutoriel ? Passez-le !"],
+      "assets/gifs/Hello720.gif", 0),
+  HelpDialog("QuickMenu", ["Glissez votre doigt vers le haut sur l'icone Space pour afficher un menu rapide.", "Vous accéderez rapidement à vos fichiers, et à d'autres action spéciales."], "assets/gifs/QuickMenu720.gif", 1),
+  HelpDialog("Épingler", ["Restez appuyé puis épinglez un devoir pour le revoir même après sa date d'échéance.","Pratique pour retrouver les documents associés à ce devoir ou pour réafficher son contenu même des mois après !","La fonctionnalité fonctionne hors ligne."], "assets/gifs/PinHomework720.gif", 2)
 ];

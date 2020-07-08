@@ -6,6 +6,7 @@ import 'package:dio/dio.dart' as dio;
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive/hive.dart';
+import 'package:intl/intl.dart';
 import 'package:open_file/open_file.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:path/path.dart' as path;
@@ -47,18 +48,14 @@ class AppStateNotifier extends ChangeNotifier {
   }
 }
 
-//Class download to notify view when download is ended
+///Class download to notify view when download is ended
 class DownloadModel extends ChangeNotifier {
   bool _isDownloading = false;
   double _progress = 0;
   get downloadProgress => _progress;
   get isDownloading => _isDownloading;
-  Future<File> _getFile(String filename) async {
-    final dir = await getDirectory();
-    return File("${dir.path}/downloads/$filename");
-  }
 
-//check if file exists
+  ///Check if file exists
   Future<bool> fileExists(filename) async {
     final dir = await getDirectory();
     return File("${dir.path}/downloads/$filename").exists();
@@ -87,7 +84,7 @@ class DownloadModel extends ChangeNotifier {
     print("Downloading a file : $filename");
 
     List<int> bytes = [];
-    final file = await _getFile(filename);
+    final file = await FileAppUtil.getFilePath(filename);
     response.stream.listen(
       (List<int> newBytes) {
         bytes.addAll(newBytes);
@@ -231,13 +228,20 @@ Color darken(Color color, {double forceAmount}) {
   return hslDark.toColor();
 }
 
-class AppUtil {
+///Every action related to files
+class FileAppUtil {
   static Future<String> getFileNameWithExtension(File file) async {
     if (await file.exists()) {
       return path.basename(file.path);
     } else {
       return null;
     }
+  }
+
+  ///Get new file path
+  static Future<File> getFilePath(String filename) async {
+    final dir = await getDirectory();
+    return File("${dir.path}/downloads/$filename");
   }
 
   static Future<DateTime> getLastModifiedDate(File file) async {
@@ -276,7 +280,7 @@ Future<List<FileInfo>> getListOfFiles() async {
 
     await Future.forEach(file, (element) async {
       try {
-        listFiles.add(new FileInfo(element, await AppUtil.getLastModifiedDate(element), await AppUtil.getFileNameWithExtension(element)));
+        listFiles.add(new FileInfo(element, await FileAppUtil.getLastModifiedDate(element), await FileAppUtil.getFileNameWithExtension(element)));
         listFiles.sort((a, b) => a.lastModifiedDate.compareTo(b.lastModifiedDate));
       } catch (e) {
         print(e);
@@ -370,7 +374,10 @@ List<grade> getAllGrades(List<discipline> list, {bool overrideLimit = false}) {
   list.forEach((element) {
     listToReturn.addAll(element.gradesList);
   });
-  listToReturn.sort((a, b) => a.dateSaisie.compareTo(b.dateSaisie));
+
+  if (chosenParser == 0) {
+    listToReturn.sort((a, b) => a.dateSaisie.compareTo(b.dateSaisie));
+  }
   listToReturn = listToReturn.reversed.toList();
 
   if (overrideLimit == false && listToReturn != null) {
@@ -380,8 +387,6 @@ List<grade> getAllGrades(List<discipline> list, {bool overrideLimit = false}) {
   return listToReturn;
 }
 
-//Indicate if the app has to reopen on grade page
-bool haveToReopenOnGradePage = false;
 //Redefine the switch statement
 TValue case2<TOptionType, TValue>(
   TOptionType selectedOption,
@@ -396,27 +401,41 @@ TValue case2<TOptionType, TValue>(
 }
 
 List<discipline> specialities = List<discipline>();
+//Refresh colors
+refreshDisciplinesListColors(List<discipline> list) async {
+  list.forEach((f) async {
+ 
+    f.color = await getColor(f.codeMatiere);
+  });
+}
 
-exit() async {
+//Leave app
+exitApp() async {
 //Delete sharedPref
   SharedPreferences preferences = await SharedPreferences.getInstance();
-  preferences.clear();
+  await preferences.clear();
 //Import secureStorage
   final storage = new FlutterSecureStorage();
 // Delete all
   await storage.deleteAll();
 
+  isDarkModeEnabled = false;
+
 //delete hive files
   final dir = await getDirectory();
   Hive.init("${dir.path}/offline");
-  var homeworkBox = await Hive.openBox('homework');
-  await homeworkBox.clear();
-  var gradeBox = await Hive.openBox('grades');
-  await gradeBox.clear();
-  var done = await Hive.openBox('doneHomework');
-  await done.clear();
-  var pinned = await Hive.openBox('pinnedHomework');
-  await pinned.clear();
+  try {
+    var homeworkBox = await Hive.openBox('homework');
+    await homeworkBox.clear();
+    var gradeBox = await Hive.openBox('grades');
+    await gradeBox.clear();
+    var done = await Hive.openBox('doneHomework');
+    await done.clear();
+    var pinned = await Hive.openBox('pinnedHomework');
+    await pinned.clear();
+  } catch (e) {
+    print(e);
+  }
 }
 
 specialtiesSelectionAvailable() async {
@@ -432,33 +451,47 @@ specialtiesSelectionAvailable() async {
     if (split[0] == "PremiÃ¨re" || split[0] == "Terminale") {
       return [true, (split[0] == "PremiÃ¨re") ? "Première" : split[0]];
     } else {
-      return false;
+      return [false];
     }
   } else {
-    return false;
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String classe = await storage.read(key: "classe");
+    if (classe != null) {
+      if (classe.toLowerCase().contains("1e") || classe.toLowerCase().contains("terminale")) {
+        if (classe.toLowerCase().contains("1e")) {
+          classe = "Premiere";
+        }
+        if (classe.toLowerCase().contains("terminale")) {
+          classe = "Terminale";
+        }
+        return [true, classe];
+      } else {
+        return [false];
+      }
+    } else {
+      return [false];
+    }
   }
 }
 
 class AppNews {
   static Future<List> checkAppNews() async {
+    try {
+      dioResponse.Response response = await dio.Dio().get("https://ynotes.fr/src/app-src/news.json", options: dio.Options(responseType: dio.ResponseType.plain));
 
-      try {
-        dioResponse.Response response = await dio.Dio().get("http://192.168.1.99/news.json", options: dio.Options(responseType: dio.ResponseType.plain));
-       
-    Map map = json.decode(response.data.toString());
-        List list = map["tickets"];
-        list.sort((a,b)=>a["ticketnb"].compareTo(b["ticketnb"]));
-        return map["tickets"];
-      
+      Map map = json.decode(response.data.toString());
+      List list = map["tickets"];
+      list.sort((a, b) => a["ticketnb"].compareTo(b["ticketnb"]));
+      return list.reversed.toList();
+    } catch (e) {
+      print(e);
+      return null;
     }
-         
-   
-    catch (e) {
-        print(e);
-        return null;
-      }
   }
 }
 
-String lastCloudRequest = "";
 String cloudUsedFolder = "";
+ReadStorage(_key) async {
+  String u = await storage.read(key: _key);
+  return u;
+}

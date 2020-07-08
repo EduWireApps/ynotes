@@ -18,8 +18,6 @@ class LoadingPage extends StatefulWidget {
   _LoadingPageState createState() => _LoadingPageState();
 }
 
-API api = APIManager();
-
 class _LoadingPageState extends State<LoadingPage> {
   Future<String> connectionData;
   String u;
@@ -32,15 +30,14 @@ class _LoadingPageState extends State<LoadingPage> {
   }
 
   tryToConnect() async {
-    await setChosenParser(0);
     getChosenParser();
-    u = await storage.read(key: "username");
-    p = await storage.read(key: "password");
+    String u = await ReadStorage("username");
+    String p = await ReadStorage("password");
+    String url = await ReadStorage("pronoteurl");
+    String cas = await ReadStorage("pronotecas");
     z = await storage.read(key: "agreedTermsAndConfiguredApp");
-    
-    if (u != null && p != null && z !=null) {
-      
-      return api.login(u, p);
+    if (u != null && p != null && z != null) {
+      return localApi.login(u, p, url: url, cas: cas);
     } else {
       Navigator.of(context).pushReplacement(router(login()));
     }
@@ -66,7 +63,8 @@ class _LoadingPageState extends State<LoadingPage> {
           startAnimation: 'Load',
           loopAnimation: 'Load',
           endAnimation: 'Ended',
-          onSuccess: (test) {
+          onSuccess: (value) {
+            
             Navigator.of(context).pushReplacement(router(homePage()));
           },
           onError: (__, _) async {

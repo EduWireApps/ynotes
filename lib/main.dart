@@ -12,6 +12,7 @@ import 'package:ynotes/UI/loadingPage.dart';
 import 'package:ynotes/UI/loginPage.dart';
 import 'package:ynotes/UI/tabBuilder.dart';
 import 'package:sentry/sentry.dart';
+import 'package:ynotes/offline.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:alice/alice.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -20,12 +21,15 @@ import 'package:ynotes/parsers/EcoleDirecte.dart';
 import 'package:ynotes/background.dart';
 import 'package:uuid/uuid.dart';
 
+import 'UI/schoolAPIChoicePage.dart';
+
 var uuid = Uuid();
 
+API localApi=APIManager();
 ///TO DO : Disable after bêta, Sentry is used to send bug reports
 final SentryClient _sentry = SentryClient(
     uuidGenerator: uuid.v4,
-    dsn: "https://c55eb82b0cab4437aeda267bb0392959@sentry.io/3147528");
+    dsn: "");
 Future<Null> _reportError(dynamic error, dynamic stackTrace) async {
   try {
     final SentryResponse response = await _sentry.captureException(
@@ -78,7 +82,7 @@ mainTestNewGrades() async {
   try {
     //Getting the offline count of grades
     List<grade> listOfflineGrades =
-        getAllGrades(await getOfflineGrades(), overrideLimit: true);
+        getAllGrades(await getGradesFromDB(), overrideLimit: true);
     print("Offline length is ${listOfflineGrades.length}");
     //Getting the online count of grades
     List<grade> listOnlineGrades =
@@ -105,10 +109,17 @@ mainTestNewMails() async {
     await getMails();
     var newMailLength = await getIntSetting("mailNumber");
     print("New length is ${newMailLength}");
+    if(oldMailLength!=0)
+    {
+
         
-    if ((oldMailLength!= null?oldMailLength:0)<(newMailLength!= null?newMailLength:0)) {
+    if (oldMailLength<(newMailLength!= null?newMailLength:0)) {
       return true;
     } else {
+      return false;
+    }
+    }
+    else {
       return false;
     }
   } catch (e) {
@@ -118,6 +129,8 @@ mainTestNewMails() async {
 }
 
 Future main() async {
+
+  
 //Init the local notifications
   WidgetsFlutterBinding.ensureInitialized();
   BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
@@ -144,6 +157,9 @@ Future main() async {
   }, onError: (error, stackTrace) async {
     await _reportError(error, stackTrace);
   });
+
+
+
 }
 
 class HomeApp extends StatelessWidget {
@@ -197,7 +213,7 @@ class login extends StatelessWidget {
     return Scaffold(
 
 //Main container
-        body: LoginPage());
+        body: SchoolAPIChoice());
   }
 }
 

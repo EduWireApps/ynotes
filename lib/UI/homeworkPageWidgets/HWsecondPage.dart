@@ -6,7 +6,7 @@ import 'package:ynotes/UI/homeworkPage.dart';
 import 'package:ynotes/animations/FadeAnimation.dart';
 import 'package:ynotes/offline.dart';
 import 'package:ynotes/usefulMethods.dart';
-
+import 'package:ynotes/main.dart';
 class HomeworkSecondPage extends StatefulWidget {
   final Function animateToPage;
 
@@ -19,7 +19,7 @@ class HomeworkSecondPage extends StatefulWidget {
 class _HomeworkSecondPageState extends State<HomeworkSecondPage> {
   Future<void> refreshLocalHomeworkList() async {
     setState(() {
-      homeworkListFuture = api.getNextHomework(forceReload: true);
+      homeworkListFuture = localApi.getNextHomework(forceReload: true);
     });
     var realHW = await homeworkListFuture;
   }
@@ -32,7 +32,7 @@ class _HomeworkSecondPageState extends State<HomeworkSecondPage> {
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
     return FutureBuilder(
-        future: api.getHomeworkFor(dateToUse),
+        future: localApi.getHomeworkFor(dateToUse),
         builder: (context, snapshot) {
           if (snapshot.hasData && snapshot.data != null) {
             localListHomeworkDateToUse = snapshot.data;

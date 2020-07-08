@@ -10,27 +10,49 @@ import 'dart:convert';
 import 'package:ynotes/usefulMethods.dart';
 
 //To put grades in db
-putGrades(String string) async {
-  final dir = await getDirectory();
-  await Hive.init("${dir.path}/offline");
-  //Format the actual date
-  var now = DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now()).toString();
+putGrades(List<discipline> listD) async {
+  try {
+    final dir = await getDirectory();
+    await Hive.init("${dir.path}/offline");
 
-  var gradesBox = await Hive.openBox('grades');
-  await gradesBox.clear();
-  await gradesBox.put(now, string);
+    try {
+      Hive.registerAdapter(gradeAdapter());
+      Hive.registerAdapter(disciplineAdapter());
+    } catch (e) {
+      //OVERRIDE THE ADAPTER ALREADY REGISTERED ERROR
+    }
+    
+    //Format the actual date
+    var now = DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now()).toString();
+
+    var gradesBox = await Hive.openBox('grades');
+
+    print("clearing grades");
+    await gradesBox.clear();
+
+    await gradesBox.put(now, listD);
+    print("The offline grades save succeeded.");
+  } catch (e) {
+    print("Failed to save grades offline : $e");
+  }
 }
 
 //To get grades in db
 getGradesFromDB({bool online = true}) async {
   var connectivityResult = await (Connectivity().checkConnectivity());
   try {
+    try {
+      Hive.registerAdapter(gradeAdapter());
+      Hive.registerAdapter(disciplineAdapter());
+    } catch (e) {
+      //OVERRIDE THE ADAPTER ALREADY REGISTERED ERROR
+
+    }
     final dir = await getDirectory();
     await Hive.init("${dir.path}/offline");
     var gradesBox = await Hive.openBox('grades');
 
-    DateTime now =
-        DateTime.parse(DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now()));
+    DateTime now = DateTime.parse(DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now()));
     //The date of the offline grades file
     Map<dynamic, dynamic> gradesBoxMap = await gradesBox.toMap();
     //Is economy mode activated
@@ -45,22 +67,20 @@ getGradesFromDB({bool online = true}) async {
       Map<dynamic, dynamic> mapToReturn;
       try {
         print("Returned grades from offline");
-        String jsonString = gradesBoxMap.values.toList()[0];
-
-        return json.decode(jsonString);
+        List<discipline> listToReturn = gradesBox.getAt(0).cast<discipline>();
+        return listToReturn;
       } catch (e) {
-        print("Failed to decode grades offline data");
+        print("Failed to get grades offline data");
         return null;
       }
     } else {
       if (online == true) {
-        print(
-            "Offline grades data is too old of ${difference.inHours - (batterySaver ? 8 : 3)} hours.");
+        print("Offline grades data is too old of ${difference.inHours - (batterySaver ? 8 : 3)} hours.");
         return null;
       } else {
         try {
           //Force the cast
-          List<homework> listToReturn = gradesBox.getAt(0).cast<homework>();
+          List<discipline> listToReturn = gradesBox.getAt(0).cast<discipline>();
 
           return listToReturn;
         } catch (e) {
@@ -77,11 +97,11 @@ getGradesFromDB({bool online = true}) async {
 }
 
 //To put homework in db
-putHomework(List<homework> listHW, {bool add=false}) async {
+putHomework(List<homework> listHW, {bool add = false}) async {
   try {
     final dir = await getDirectory();
     await Hive.init("${dir.path}/offline");
-  
+
     try {
       Hive.registerAdapter(documentAdapter());
       Hive.registerAdapter(homeworkAdapter());
@@ -93,27 +113,23 @@ putHomework(List<homework> listHW, {bool add=false}) async {
     var now = DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now()).toString();
 
     var homeworkBox = await Hive.openBox('homework');
-    if(add==false)
-    {
+    if (add == false) {
       print("clearing homework");
-await homeworkBox.clear();
+      await homeworkBox.clear();
     }
 
- if(homeworkBox.keys.contains(now)&&add==true)
- {
-   print("here");
+    if (homeworkBox.keys.contains(now) && add == true) {
+      print("here");
 
-   List<homework> oldHW = homeworkBox.getAt(0).cast<homework>();
- 
-   List<homework> combinedList = oldHW+ listHW;
-   combinedList = combinedList.toSet().toList();
-   
-   await homeworkBox.put(now, combinedList);
- }
- else {
-   await homeworkBox.put(now, listHW);
- }
-  
+      List<homework> oldHW = homeworkBox.getAt(0).cast<homework>();
+
+      List<homework> combinedList = oldHW + listHW;
+      combinedList = combinedList.toSet().toList();
+
+      await homeworkBox.put(now, combinedList);
+    } else {
+      await homeworkBox.put(now, listHW);
+    }
 
     print("The offline homework save succeeded.");
   } catch (e) {
@@ -138,8 +154,7 @@ getHomeworkFromDB({bool online = true}) async {
     var homeworkBox = await Hive.openBox('homework');
     //Is economy mode activated
     bool batterySaver = await getSetting("batterySaver");
-    DateTime now =
-        DateTime.parse(DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now()));
+    DateTime now = DateTime.parse(DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now()));
 
 //The date of the offline grades file
     Map<dynamic, dynamic> homeworkBoxMap = homeworkBox.toMap();
@@ -161,8 +176,7 @@ getHomeworkFromDB({bool online = true}) async {
       }
     } else {
       if (online == true) {
-        print(
-            "Offline homework data is too old of ${difference.inHours - (batterySaver ? 8 : 3)} hours.");
+        print("Offline homework data is too old of ${difference.inHours - (batterySaver ? 8 : 3)} hours.");
         return null;
       } else {
         try {
@@ -234,10 +248,9 @@ getPinnedHomeworkDates() async {
     var pinnedHomeworkBox = await Hive.openBox('pinnedHomework');
     Map notParsedList = pinnedHomeworkBox.toMap();
     List<DateTime> parsedList = List<DateTime>();
- notParsedList.removeWhere((key, value) => value==false);
+    notParsedList.removeWhere((key, value) => value == false);
     notParsedList.keys.forEach((element) {
-      parsedList.add(DateTime.parse(
-          DateFormat("yyyy-MM-dd").format(DateTime.parse(element))));
+      parsedList.add(DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.parse(element))));
     });
     return parsedList;
   } catch (e) {
@@ -251,7 +264,7 @@ Future<bool> getPinnedHomeworkSingleDate(String date) async {
     Hive.init("${dir.path}/offline");
     var pinnedHomeworkBox = await Hive.openBox('pinnedHomework');
     bool toReturn = pinnedHomeworkBox.get(date);
-    
+
     //If to return is null return false
     return (toReturn != null) ? toReturn : false;
   } catch (e) {

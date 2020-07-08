@@ -6,6 +6,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:ynotes/UI/dialogs.dart';
 import 'package:ynotes/UI/homeworkPage.dart';
 import 'package:ynotes/UI/gradesPage.dart';
 import 'package:ynotes/UI/spacePage.dart';
@@ -40,7 +41,6 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
   bool isChanging = false;
   int actualIndex = 1;
 
-  API api = APIManager();
   API apiecoledirecte = APIEcoleDirecte();
   bool firstStart = true;
   AnimationController quickMenuAnimationController;
@@ -60,32 +60,23 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
     );
 
     //Define a controller in order to control the scrolls
-    tabController = TabController(
-        vsync: this,
-        length: 5,
-        initialIndex: (haveToReopenOnGradePage) ? 2 : 1);
-    quickMenuAnimationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 200));
+    tabController = TabController(vsync: this, length: 5, initialIndex: 1);
+    quickMenuAnimationController = AnimationController(vsync: this, duration: Duration(milliseconds: 200));
     quickMenuButtonAnimation = new Tween(
       begin: 1.0,
       end: 1.3,
-    ).animate(new CurvedAnimation(
-        parent: quickMenuAnimationController,
-        curve: Curves.easeIn,
-        reverseCurve: Curves.easeOut));
+    ).animate(new CurvedAnimation(parent: quickMenuAnimationController, curve: Curves.easeIn, reverseCurve: Curves.easeOut));
     tabController.addListener(_handleTabChange);
     if (firstStart == true) {
       //Get grades before
-      disciplinesListFuture = api.getGrades();
+      disciplinesListFuture = localApi.getGrades();
       //Get homework before
-      homeworkListFuture = api.getNextHomework();
+      homeworkListFuture = localApi.getNextHomework();
       firstStart = false;
     }
     removeQuickMenu();
-    ConnectionStatusSingleton connectionStatus =
-        ConnectionStatusSingleton.getInstance();
-    tabBarconnexion =
-        connectionStatus.connectionChange.listen(connectionChanged);
+    ConnectionStatusSingleton connectionStatus = ConnectionStatusSingleton.getInstance();
+    tabBarconnexion = connectionStatus.connectionChange.listen(connectionChanged);
     isOffline = !connectionStatus.hasConnection;
   }
 
@@ -123,8 +114,6 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
     super.dispose();
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize;
@@ -139,26 +128,18 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
       child: DefaultTabController(
           length: 5,
           child: Scaffold(
+              resizeToAvoidBottomInset: false,
               backgroundColor: Theme.of(context).backgroundColor,
               bottomNavigationBar: Container(
                 color: isQuickMenuShown ? Colors.black.withOpacity(0.5) : null,
                 child: Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(30),
-                          topRight: Radius.circular(30))),
+                  decoration: BoxDecoration(borderRadius: BorderRadius.only(topLeft: Radius.circular(30), topRight: Radius.circular(30))),
                   width: screenSize.size.width,
                   height: screenSize.size.height / 10 * 1,
                   child: ClipRRect(
                     child: Container(
-                      padding: EdgeInsets.only(
-                          left: screenSize.size.height / 10 * 0.025,
-                          right: screenSize.size.height / 10 * 0.025),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(30),
-                              topRight: Radius.circular(30)),
-                          color: Theme.of(context).primaryColor),
+                      padding: EdgeInsets.only(left: screenSize.size.height / 10 * 0.025, right: screenSize.size.height / 10 * 0.025),
+                      decoration: BoxDecoration(borderRadius: BorderRadius.only(topLeft: Radius.circular(30), topRight: Radius.circular(30)), color: Theme.of(context).primaryColor),
                       child: Container(
                         child: Stack(
                           children: [
@@ -186,14 +167,12 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
                                       unselectedLabelColor: Colors.white,
                                       indicatorSize: TabBarIndicatorSize.label,
                                       isScrollable: true,
-                                      indicatorPadding:
-                                          EdgeInsets.only(bottom: 0),
+                                      indicatorPadding: EdgeInsets.only(bottom: 0),
                                       indicator: BoxDecoration(
                                           borderRadius: BorderRadius.all(
                                             Radius.circular(30),
                                           ),
-                                          color:
-                                              Theme.of(context).indicatorColor),
+                                          color: Theme.of(context).indicatorColor),
                                       tabs: [
                                         //TODO : Start the space tab
                                         ///Space tab
@@ -208,91 +187,48 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
                                               removeQuickMenu();
                                             },
                                             onVerticalDragStart: (details) {
-                                              quickMenuAnimationController
-                                                  .forward()
-                                                  .then((value) {
-                                                quickMenuAnimationController
-                                                    .reverse();
+                                              quickMenuAnimationController.forward().then((value) {
+                                                quickMenuAnimationController.reverse();
                                               });
 
                                               setState(() {
                                                 isQuickMenuShown = false;
                                               });
-                                              overlayState =
-                                                  Overlay.of(context);
+                                              overlayState = Overlay.of(context);
 
                                               if (!isQuickMenuShown) {
                                                 isQuickMenuShown = true;
                                                 setState(() {
-                                                  WidgetsBinding.instance
-                                                      .addPostFrameCallback((_) =>
-                                                          overlayState.insert(
-                                                              _overlayEntry));
+                                                  WidgetsBinding.instance.addPostFrameCallback((_) => overlayState.insert(_overlayEntry));
                                                 });
                                               }
                                             },
                                             onLongPress: () {},
                                             child: Tab(
                                               child: AnimatedContainer(
-                                                margin: EdgeInsets.symmetric(
-                                                    horizontal:
-                                                        screenSize.size.width /
-                                                            5 *
-                                                            0.15),
-                                                duration:
-                                                    Duration(milliseconds: 170),
-                                                width: (actualIndex == 0
-                                                    ? MediaQuery.of(context)
-                                                            .size
-                                                            .width /
-                                                        5 *
-                                                        1.5
-                                                    : MediaQuery.of(context)
-                                                            .size
-                                                            .width /
-                                                        5 *
-                                                        0.5),
+                                                margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.15),
+                                                duration: Duration(milliseconds: 170),
+                                                width: (actualIndex == 0 ? MediaQuery.of(context).size.width / 5 * 1.5 : MediaQuery.of(context).size.width / 5 * 0.5),
                                                 child: Align(
                                                   alignment: Alignment.center,
                                                   child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceEvenly,
+                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                     children: <Widget>[
                                                       AnimatedBuilder(
-                                                          animation:
-                                                              quickMenuButtonAnimation,
-                                                          builder: (context,
-                                                              snapshot) {
-                                                            return Transform
-                                                                .scale(
-                                                              scale:
-                                                                  quickMenuButtonAnimation
-                                                                      .value,
+                                                          animation: quickMenuButtonAnimation,
+                                                          builder: (context, snapshot) {
+                                                            return Transform.scale(
+                                                              scale: quickMenuButtonAnimation.value,
                                                               child: Image(
-                                                                image: AssetImage(
-                                                                    'assets/images/space/4.0x/space.png'),
-                                                                width: MediaQuery.of(
-                                                                            context)
-                                                                        .size
-                                                                        .width /
-                                                                    10 *
-                                                                    0.7,
+                                                                image: AssetImage('assets/images/space/4.0x/space.png'),
+                                                                width: MediaQuery.of(context).size.width / 10 * 0.7,
                                                               ),
                                                             );
                                                           }),
                                                       if (actualIndex == 0)
                                                         Flexible(
                                                           child: FittedBox(
-                                                            child: Text("Space",
-                                                                style: TextStyle(
-                                                                    fontFamily:
-                                                                        "Asap",
-                                                                    color: isDarkModeEnabled
-                                                                        ? Colors
-                                                                            .white
-                                                                        : Colors
-                                                                            .black)),
+                                                            child: Text("Space", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black)),
                                                           ),
                                                         ),
                                                     ],
@@ -306,49 +242,22 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
                                         ///Summary page
                                         Tab(
                                           child: AnimatedContainer(
-                                            margin: EdgeInsets.symmetric(
-                                                horizontal:
-                                                    screenSize.size.width /
-                                                        5 *
-                                                        0.15),
-                                            duration:
-                                                Duration(milliseconds: 170),
-                                            width: (actualIndex == 1
-                                                ? MediaQuery.of(context)
-                                                        .size
-                                                        .width /
-                                                    5 *
-                                                    1.5
-                                                : MediaQuery.of(context)
-                                                        .size
-                                                        .width /
-                                                    5 *
-                                                    0.5),
+                                            margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.15),
+                                            duration: Duration(milliseconds: 170),
+                                            width: (actualIndex == 1 ? MediaQuery.of(context).size.width / 5 * 1.5 : MediaQuery.of(context).size.width / 5 * 0.5),
                                             child: Align(
                                               alignment: Alignment.center,
                                               child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceEvenly,
+                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                 children: <Widget>[
                                                   Icon(
                                                     Icons.info,
-                                                    color: isDarkModeEnabled
-                                                        ? Colors.white
-                                                        : Colors.black,
+                                                    color: isDarkModeEnabled ? Colors.white : Colors.black,
                                                   ),
                                                   if (actualIndex == 1)
                                                     Flexible(
                                                       child: FittedBox(
-                                                        child: Text("Résumé",
-                                                            style: TextStyle(
-                                                                fontFamily:
-                                                                    "Asap",
-                                                                color: isDarkModeEnabled
-                                                                    ? Colors
-                                                                        .white
-                                                                    : Colors
-                                                                        .black)),
+                                                        child: Text("Résumé", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black)),
                                                       ),
                                                     ),
                                                 ],
@@ -359,69 +268,30 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
 
                                         ///Grades page
                                         Badge(
-                                          animationType:
-                                              BadgeAnimationType.scale,
+                                          animationType: BadgeAnimationType.scale,
                                           toAnimate: true,
                                           showBadge: newGrades,
                                           elevation: 0,
-                                          position: BadgePosition.topRight(
-                                              right: MediaQuery.of(context)
-                                                      .size
-                                                      .width /
-                                                  10 *
-                                                  0.001,
-                                              top: MediaQuery.of(context)
-                                                      .size
-                                                      .height /
-                                                  15 *
-                                                  0.11),
+                                          position: BadgePosition.topRight(right: MediaQuery.of(context).size.width / 10 * 0.001, top: MediaQuery.of(context).size.height / 15 * 0.11),
                                           badgeColor: Colors.blue,
                                           child: Tab(
                                             child: AnimatedContainer(
-                                              margin: EdgeInsets.symmetric(
-                                                  horizontal:
-                                                      screenSize.size.width /
-                                                          5 *
-                                                          0.15),
-                                              duration:
-                                                  Duration(milliseconds: 170),
-                                              width: (actualIndex == 2
-                                                  ? MediaQuery.of(context)
-                                                          .size
-                                                          .width /
-                                                      5 *
-                                                      1.5
-                                                  : MediaQuery.of(context)
-                                                          .size
-                                                          .width /
-                                                      5 *
-                                                      0.5),
+                                              margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.15),
+                                              duration: Duration(milliseconds: 170),
+                                              width: (actualIndex == 2 ? MediaQuery.of(context).size.width / 5 * 1.5 : MediaQuery.of(context).size.width / 5 * 0.5),
                                               child: Align(
                                                 alignment: Alignment.center,
                                                 child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceEvenly,
+                                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                   children: <Widget>[
                                                     Icon(
-                                                      Icons
-                                                          .format_list_numbered,
-                                                      color: isDarkModeEnabled
-                                                          ? Colors.white
-                                                          : Colors.black,
+                                                      Icons.format_list_numbered,
+                                                      color: isDarkModeEnabled ? Colors.white : Colors.black,
                                                     ),
                                                     if (actualIndex == 2)
                                                       Flexible(
                                                         child: FittedBox(
-                                                          child: Text("Notes",
-                                                              style: TextStyle(
-                                                                  fontFamily:
-                                                                      "Asap",
-                                                                  color: isDarkModeEnabled
-                                                                      ? Colors
-                                                                          .white
-                                                                      : Colors
-                                                                          .black)),
+                                                          child: Text("Notes", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black)),
                                                         ),
                                                       ),
                                                   ],
@@ -433,49 +303,23 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
 
                                         ///Homework page
                                         AnimatedContainer(
-                                          margin: EdgeInsets.symmetric(
-                                              horizontal:
-                                                  screenSize.size.width /
-                                                      5 *
-                                                      0.15),
+                                          margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.15),
                                           duration: Duration(milliseconds: 170),
-                                          width: (actualIndex == 3
-                                              ? MediaQuery.of(context)
-                                                      .size
-                                                      .width /
-                                                  5 *
-                                                  1.2
-                                              : MediaQuery.of(context)
-                                                      .size
-                                                      .width /
-                                                  5 *
-                                                  0.45),
+                                          width: (actualIndex == 3 ? MediaQuery.of(context).size.width / 5 * 1.2 : MediaQuery.of(context).size.width / 5 * 0.45),
                                           child: Tab(
                                             child: Align(
                                               alignment: Alignment.center,
                                               child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceEvenly,
+                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                 children: <Widget>[
                                                   Icon(
                                                     MdiIcons.viewAgenda,
-                                                    color: isDarkModeEnabled
-                                                        ? Colors.white
-                                                        : Colors.black,
+                                                    color: isDarkModeEnabled ? Colors.white : Colors.black,
                                                   ),
                                                   if (actualIndex == 3)
                                                     Flexible(
                                                       child: FittedBox(
-                                                        child: Text("Devoirs",
-                                                            style: TextStyle(
-                                                                fontFamily:
-                                                                    "Asap",
-                                                                color: isDarkModeEnabled
-                                                                    ? Colors
-                                                                        .white
-                                                                    : Colors
-                                                                        .black)),
+                                                        child: Text("Devoirs", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black)),
                                                       ),
                                                     ),
                                                 ],
@@ -487,50 +331,23 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
                                         ///Apps page
                                         AnimatedContainer(
                                           duration: Duration(milliseconds: 170),
-                                          margin: EdgeInsets.symmetric(
-                                              horizontal:
-                                                  screenSize.size.width /
-                                                      5 *
-                                                      0.15),
-                                          width: (actualIndex == 4
-                                              ? MediaQuery.of(context)
-                                                      .size
-                                                      .width /
-                                                  5 *
-                                                  1.5
-                                              : MediaQuery.of(context)
-                                                      .size
-                                                      .width /
-                                                  5 *
-                                                  0.5),
+                                          margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.15),
+                                          width: (actualIndex == 4 ? MediaQuery.of(context).size.width / 5 * 1.5 : MediaQuery.of(context).size.width / 5 * 0.5),
                                           child: Tab(
                                             child: Align(
                                               alignment: Alignment.center,
                                               child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceEvenly,
+                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                 children: <Widget>[
                                                   Icon(
                                                     Icons.apps,
-                                                    color: isDarkModeEnabled
-                                                        ? Colors.white
-                                                        : Colors.black,
+                                                    color: isDarkModeEnabled ? Colors.white : Colors.black,
                                                   ),
                                                   if (actualIndex == 4)
                                                     Flexible(
                                                       child: FittedBox(
                                                         fit: BoxFit.fitWidth,
-                                                        child: Text(
-                                                            "Applications",
-                                                            style: TextStyle(
-                                                                fontFamily:
-                                                                    "Asap",
-                                                                color: isDarkModeEnabled
-                                                                    ? Colors
-                                                                        .white
-                                                                    : Colors
-                                                                        .black)),
+                                                        child: Text("Applications", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black)),
                                                       ),
                                                     ),
                                                 ],
@@ -561,19 +378,13 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
                           left: 0.0,
                           right: 0.0,
                           child: AnimatedContainer(
-                            height: isOffline
-                                ? screenSize.size.height / 10 * 0.4
-                                : 0,
-                            curve:
-                                Interval(0.3, 1.0, curve: Curves.fastOutSlowIn),
+                            height: isOffline ? screenSize.size.height / 10 * 0.4 : 0,
+                            curve: Interval(0.3, 1.0, curve: Curves.fastOutSlowIn),
                             duration: Duration(milliseconds: 800),
                             child: Container(
-                              color: !isOffline
-                                  ? Colors.greenAccent
-                                  : Colors.deepOrange,
+                              color: !isOffline ? Colors.greenAccent : Colors.deepOrange,
                               child: Center(
-                                child: Text(
-                                    "${!isOffline ? 'Vous avez été reconnecté' : 'Vous êtes hors-ligne'}"),
+                                child: Text("${!isOffline ? 'Vous avez été reconnecté' : 'Vous êtes hors-ligne'}"),
                               ),
                             ),
                           ),
@@ -589,14 +400,11 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
                         child: TabBarView(controller: tabController, children: [
                           SpacePage(),
                           SummaryPage(tabController: tabController),
-                          GradesPage(),
-                          HomeworkPage(),
+                          SingleChildScrollView(physics: NeverScrollableScrollPhysics(), child: GradesPage()),
+                          SingleChildScrollView(physics: NeverScrollableScrollPhysics(), child: HomeworkPage()),
                           AnimatedContainer(
                               duration: Duration(milliseconds: 200),
-                              margin: EdgeInsets.only(
-                                  top: isOffline
-                                      ? screenSize.size.height / 10 * 0.4
-                                      : 0),
+                              margin: EdgeInsets.only(top: isOffline ? screenSize.size.height / 10 * 0.4 : 0),
                               child: AppsPage(
                                 rootcontext: this.context,
                               ))
@@ -605,9 +413,7 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
                       if (isQuickMenuShown)
                         AnimatedContainer(
                           duration: Duration(milliseconds: 800),
-                          color: isQuickMenuShown
-                              ? Colors.black.withOpacity(0.5)
-                              : Colors.black.withOpacity(0),
+                          color: isQuickMenuShown ? Colors.black.withOpacity(0.5) : Colors.black.withOpacity(0),
                           height: MediaQuery.of(context).size.height,
                           width: MediaQuery.of(context).size.width,
                         ),
@@ -636,10 +442,6 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
     }
   }
 
-  Future<bool> testForNewGrades() async {
-    return await api.testNewGrades();
-  }
-
   Future<void> initPlatformState() async {
     bool saveBattery = await getSetting("batterySaver");
     // Configure BackgroundFetch.
@@ -660,18 +462,14 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
 
       print("Started the background task");
 
-      var initializationSettingsAndroid =
-          new AndroidInitializationSettings('newgradeicon');
+      var initializationSettingsAndroid = new AndroidInitializationSettings('newgradeicon');
       var initializationSettingsIOS = new IOSInitializationSettings();
-      var initializationSettings = new InitializationSettings(
-          initializationSettingsAndroid, initializationSettingsIOS);
+      var initializationSettings = new InitializationSettings(initializationSettingsAndroid, initializationSettingsIOS);
       flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
-      flutterLocalNotificationsPlugin.initialize(initializationSettings,
-          onSelectNotification: BackgroundServices.onSelectNotification);
+      flutterLocalNotificationsPlugin.initialize(initializationSettings, onSelectNotification: BackgroundServices.onSelectNotification);
 
 //Ensure that grades notification are enabled and battery saver disabled
-      if (await getSetting("notificationNewGrade") &&
-          !await getSetting("batterySaver")) {
+      if (await getSetting("notificationNewGrade") && !await getSetting("batterySaver")) {
         if (await mainTestNewGrades()) {
           BackgroundServices.showNotificationNewGrade();
         } else {
@@ -681,8 +479,7 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
       } else {
         print("New grade notification disabled");
       }
-      if (await getSetting("notificationNewMail") &&
-          !await getSetting("batterySaver")) {
+      if (await getSetting("notificationNewMail") && !await getSetting("batterySaver")) {
         if (await mainTestNewMails()) {
           BackgroundServices.showNotificationNewMail();
         } else {

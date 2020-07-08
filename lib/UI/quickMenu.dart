@@ -12,7 +12,8 @@ import 'package:flushbar/flushbar.dart';
 import 'package:ynotes/apiManager.dart';
 import 'package:ynotes/background.dart';
 import 'package:ynotes/encrypttest.dart';
-import 'package:ynotes/pronoteAPI.dart';
+import 'package:ynotes/parsers/Pronote.dart';
+import 'package:ynotes/parsers/PronoteAPI.dart';
 import '../main.dart';
 import '../usefulMethods.dart';
 import 'dialogs.dart';
@@ -35,18 +36,16 @@ class _QuickMenuState extends State<QuickMenu> with TickerProviderStateMixin {
 
   Animation<double> quickMenuShowAnimation;
   AnimationController quickMenuController;
-  API api = APIManager();
+
   @override
   void initState() {
     super.initState();
 
-    quickMenuController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 80));
+    quickMenuController = AnimationController(vsync: this, duration: Duration(milliseconds: 80));
     quickMenuShowAnimation = new Tween(
       begin: 0.0,
       end: 1.0,
-    ).animate(
-        new CurvedAnimation(parent: quickMenuController, curve: Curves.easeIn));
+    ).animate(new CurvedAnimation(parent: quickMenuController, curve: Curves.easeIn));
 
     quickMenuController.forward();
   }
@@ -60,18 +59,8 @@ class _QuickMenuState extends State<QuickMenu> with TickerProviderStateMixin {
       });
     }
 
-    List quickMenuTexts = [
-      "Paramètres",
-      "Téléchargements",
-      "Envoyer un mail",
-      "Signaler un bug"
-    ];
-    List quickMenuIcons = [
-      Icons.settings,
-      MdiIcons.downloadOutline,
-      MdiIcons.mailboxUp,
-      MdiIcons.bug
-    ];
+    List quickMenuTexts = ["Préférences", "Téléchargements", "Envoyer un mail", "Signaler un bug"];
+    List quickMenuIcons = [Icons.settings, MdiIcons.downloadOutline, MdiIcons.mailboxUp, MdiIcons.bug];
     MediaQueryData screenSize;
     screenSize = MediaQuery.of(context);
     return Offstage(
@@ -93,15 +82,9 @@ class _QuickMenuState extends State<QuickMenu> with TickerProviderStateMixin {
                       borderRadius: BorderRadius.circular(15),
                       child: AnimatedContainer(
                         duration: Duration(milliseconds: 150),
-                        decoration: BoxDecoration(
-                            color: Theme.of(context).primaryColor,
-                            borderRadius: BorderRadius.circular(15)),
+                        decoration: BoxDecoration(color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(15)),
                         width: screenSize.size.width / 5 * 3,
-                        height: !isOnDownloadPage
-                            ? (screenSize.size.height / 10 * 0.6) *
-                                4 *
-                                quickMenuShowAnimation.value
-                            : (screenSize.size.height / 10 * 0.6) * 8,
+                        height: !isOnDownloadPage ? (screenSize.size.height / 10 * 0.6) * 4 * quickMenuShowAnimation.value : (screenSize.size.height / 10 * 0.6) * 8,
                         child: Container(
                           width: screenSize.size.width / 5 * 3,
                           child: PageView(
@@ -118,97 +101,46 @@ class _QuickMenuState extends State<QuickMenu> with TickerProviderStateMixin {
                                     children: <Widget>[
                                       Container(
                                         child: Material(
-                                          color: Theme.of(context)
-                                              .primaryColorDark,
+                                          color: Theme.of(context).primaryColorDark,
                                           child: InkWell(
                                             splashColor: Color(0xff525252),
                                             onTap: () async {
                                               switch (index) {
                                                 case 0:
                                                   widget.close();
-                                                  Navigator.of(context).push(
-                                                      router(SettingsPage()));
+                                                  Navigator.of(context).push(router(SettingsPage()));
 
                                                   break;
                                                 case 1:
                                                   setState(() {
                                                     isOnDownloadPage = true;
                                                   });
-                                                  _pageController.animateToPage(
-                                                      1,
-                                                      duration: Duration(
-                                                          milliseconds: 200),
-                                                      curve: Curves.easeIn);
+                                                  _pageController.animateToPage(1, duration: Duration(milliseconds: 200), curve: Curves.easeIn);
                                                   break;
                                                 case 2:
                                                   {
-                                                    //api.app("cloud", args: "/", action: "CD");
-                                                  /*  var client = Client(
-                                                        'https://demo.index-education.net/pronote/eleve.html',
-                                                        username:
-                                                            'demonstration',
-                                                        password: 'pronotevs');
-                                                    await client.init();
-                       if(client.logged_in)
-                       {
-                         client.periods().forEach((period)
-                         async {
-                           var grades = await period.grades(); 
-                         grades.forEach((grade)
-                         {
-                           print(grade);
-                         });
-                         });
-                       }*/
-                                                    widget.close();
-                                        CustomDialogs.showGiffyDialog(context, helpDialogs[0]
-                                        );
-
+                                                    
+                                                    helpDialogs[0].resetEveryHelpDialog();
                                                   }
                                                   break;
                                               }
                                             },
                                             child: Container(
-                                              width:
-                                                  screenSize.size.width / 5 * 3,
-                                              height: (screenSize.size.height /
-                                                      10 *
-                                                      0.6 *
-                                                      4) /
-                                                  4,
-                                              padding: EdgeInsets.symmetric(
-                                                  horizontal:
-                                                      screenSize.size.width /
-                                                          5 *
-                                                          0.25),
+                                              width: screenSize.size.width / 5 * 3,
+                                              height: (screenSize.size.height / 10 * 0.6 * 4) / 4,
+                                              padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.25),
                                               child: Stack(
                                                 children: <Widget>[
                                                   Align(
-                                                    alignment:
-                                                        Alignment.centerLeft,
+                                                    alignment: Alignment.centerLeft,
                                                     child: Text(
                                                       quickMenuTexts[index],
-                                                      style: TextStyle(
-                                                          fontFamily: "Asap",
-                                                          fontSize: screenSize
-                                                                  .size.height /
-                                                              10 *
-                                                              0.2,
-                                                          color:
-                                                              isDarkModeEnabled
-                                                                  ? Colors.white
-                                                                  : Colors
-                                                                      .black),
+                                                      style: TextStyle(fontFamily: "Asap", fontSize: screenSize.size.height / 10 * 0.2, color: isDarkModeEnabled ? Colors.white : Colors.black),
                                                     ),
                                                   ),
                                                   Align(
-                                                    alignment:
-                                                        Alignment.centerRight,
-                                                    child: Icon(
-                                                        quickMenuIcons[index],
-                                                        color: isDarkModeEnabled
-                                                            ? Colors.white
-                                                            : Colors.black),
+                                                    alignment: Alignment.centerRight,
+                                                    child: Icon(quickMenuIcons[index], color: isDarkModeEnabled ? Colors.white : Colors.black),
                                                   )
                                                 ],
                                               ),
@@ -229,38 +161,25 @@ class _QuickMenuState extends State<QuickMenu> with TickerProviderStateMixin {
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
                                       if (snapshot.data.length != 0) {
-                                        List<FileInfo> listFiles =
-                                            snapshot.data;
+                                        List<FileInfo> listFiles = snapshot.data;
                                         return Container(
-                                          height:
-                                              screenSize.size.height / 10 * 8,
+                                          height: screenSize.size.height / 10 * 8,
                                           child: ListView.builder(
                                             padding: EdgeInsets.all(0.0),
                                             itemCount: listFiles.length,
                                             itemBuilder: (context, index) {
-                                              final item =
-                                                  listFiles[index].fileName;
+                                              final item = listFiles[index].fileName;
                                               return Dismissible(
-                                                direction:
-                                                    DismissDirection.endToStart,
-                                                background: Container(
-                                                    color: Colors.red),
-                                                confirmDismiss:
-                                                    (direction) async {
+                                                direction: DismissDirection.endToStart,
+                                                background: Container(color: Colors.red),
+                                                confirmDismiss: (direction) async {
                                                   setState(() {
                                                     visibility = false;
                                                   });
-                                                  return await CustomDialogs
-                                                          .showConfirmationDialog(
-                                                              context,
-                                                              listFiles[index]
-                                                                  .file,
-                                                              show) ==
-                                                      true;
+                                                  return await CustomDialogs.showConfirmationDialog(context, listFiles[index].file, show) == true;
                                                 },
                                                 onDismissed: (direction) async {
-                                                  await AppUtil.remove(
-                                                      listFiles[index].file);
+                                                  await FileAppUtil.remove(listFiles[index].file);
                                                   setState(() {
                                                     listFiles.removeAt(index);
                                                   });
@@ -270,87 +189,39 @@ class _QuickMenuState extends State<QuickMenu> with TickerProviderStateMixin {
                                                   child: Column(
                                                     children: <Widget>[
                                                       ConstrainedBox(
-                                                        constraints:
-                                                            new BoxConstraints(
-                                                          minHeight: screenSize
-                                                                  .size.height /
-                                                              10 *
-                                                              0.8,
+                                                        constraints: new BoxConstraints(
+                                                          minHeight: screenSize.size.height / 10 * 0.8,
                                                         ),
                                                         child: Container(
-                                                          margin: EdgeInsets.only(
-                                                              bottom: (screenSize
-                                                                      .size
-                                                                      .height /
-                                                                  10 *
-                                                                  0.008)),
+                                                          margin: EdgeInsets.only(bottom: (screenSize.size.height / 10 * 0.008)),
                                                           child: Material(
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .primaryColorDark,
+                                                            color: Theme.of(context).primaryColorDark,
                                                             child: InkWell(
-                                                              splashColor: Color(
-                                                                  0xff525252),
+                                                              splashColor: Color(0xff525252),
                                                               onTap: () {
-                                                                openFile(listFiles[
-                                                                        index]
-                                                                    .fileName);
+                                                                openFile(listFiles[index].fileName);
                                                               },
                                                               child: Container(
-                                                                width: screenSize
-                                                                        .size
-                                                                        .width /
-                                                                    5 *
-                                                                    3,
-                                                                padding: EdgeInsets.symmetric(
-                                                                    horizontal: screenSize
-                                                                            .size
-                                                                            .width /
-                                                                        5 *
-                                                                        0.25,
-                                                                    vertical: screenSize
-                                                                            .size
-                                                                            .height /
-                                                                        10 *
-                                                                        0.2),
+                                                                width: screenSize.size.width / 5 * 3,
+                                                                padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.25, vertical: screenSize.size.height / 10 * 0.2),
                                                                 child: Column(
-                                                                  children: <
-                                                                      Widget>[
+                                                                  children: <Widget>[
                                                                     Stack(
-                                                                      children: <
-                                                                          Widget>[
+                                                                      children: <Widget>[
                                                                         Align(
-                                                                          alignment:
-                                                                              Alignment.centerLeft,
-                                                                          child:
-                                                                              Text(
+                                                                          alignment: Alignment.centerLeft,
+                                                                          child: Text(
                                                                             snapshot.data[index].fileName,
-                                                                            style: TextStyle(
-                                                                                fontFamily: "Asap",
-                                                                                fontSize: screenSize.size.height / 10 * 0.2,
-                                                                                color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                                                            style: TextStyle(fontFamily: "Asap", fontSize: screenSize.size.height / 10 * 0.2, color: isDarkModeEnabled ? Colors.white : Colors.black),
                                                                           ),
                                                                         ),
                                                                       ],
                                                                     ),
                                                                     Align(
-                                                                      alignment:
-                                                                          Alignment
-                                                                              .centerLeft,
-                                                                      child:
-                                                                          Text(
-                                                                        DateFormat("yyyy-MM-dd HH:mm").format(snapshot
-                                                                            .data[index]
-                                                                            .lastModifiedDate),
-                                                                        style: TextStyle(
-                                                                            fontFamily:
-                                                                                "Asap",
-                                                                            fontSize: screenSize.size.height /
-                                                                                10 *
-                                                                                0.2,
-                                                                            color: isDarkModeEnabled
-                                                                                ? Colors.white.withOpacity(0.5)
-                                                                                : Colors.black.withOpacity(0.5)),
+                                                                      alignment: Alignment.centerLeft,
+                                                                      child: Text(
+                                                                        DateFormat("yyyy-MM-dd HH:mm").format(snapshot.data[index].lastModifiedDate),
+                                                                        style: TextStyle(fontFamily: "Asap", fontSize: screenSize.size.height / 10 * 0.2, color: isDarkModeEnabled ? Colors.white.withOpacity(0.5) : Colors.black.withOpacity(0.5)),
                                                                       ),
                                                                     ),
                                                                   ],
@@ -369,29 +240,18 @@ class _QuickMenuState extends State<QuickMenu> with TickerProviderStateMixin {
                                         );
                                       } else {
                                         return Container(
-                                          height:
-                                              screenSize.size.height / 10 * 6,
+                                          height: screenSize.size.height / 10 * 6,
                                           child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
+                                            mainAxisAlignment: MainAxisAlignment.center,
                                             children: <Widget>[
                                               Icon(
                                                 MdiIcons.downloadOffOutline,
-                                                color: isDarkModeEnabled
-                                                    ? Colors.white
-                                                    : Colors.black,
-                                                size: screenSize.size.width /
-                                                    5 *
-                                                    1.5,
+                                                color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                                size: screenSize.size.width / 5 * 1.5,
                                               ),
                                               Text(
                                                 "Aucun téléchargement.",
-                                                style: TextStyle(
-                                                    fontFamily: "Asap",
-                                                    color: isDarkModeEnabled
-                                                        ? Colors.white
-                                                        : Colors.black,
-                                                    fontSize: 15),
+                                                style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: 15),
                                               )
                                             ],
                                           ),
@@ -399,8 +259,7 @@ class _QuickMenuState extends State<QuickMenu> with TickerProviderStateMixin {
                                       }
                                     } else {
                                       return SpinKitFadingFour(
-                                        color:
-                                            Theme.of(context).primaryColorDark,
+                                        color: Theme.of(context).primaryColorDark,
                                         size: screenSize.size.width / 5 * 1,
                                       );
                                     }

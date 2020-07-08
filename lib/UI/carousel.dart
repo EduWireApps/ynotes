@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:circular_check_box/circular_check_box.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
@@ -55,8 +56,7 @@ class _page1State extends State<page1> {
     return Stack(
       children: <Widget>[
         Transform.translate(
-          offset: Offset(-(widget.offset) * 400 - 75 + 75 * widget.offset,
-              -135 + 135 * widget.offset),
+          offset: Offset(-(widget.offset) * 400 - 75 + 75 * widget.offset, -135 + 135 * widget.offset),
           child: Align(
               alignment: Alignment.center,
               child: Transform.rotate(
@@ -81,9 +81,7 @@ class _page1State extends State<page1> {
                       TextSpan(
                         text: "Bienvenue dans",
                         children: <TextSpan>[
-                          TextSpan(
-                              text: ' yNotes !',
-                              style: TextStyle(fontWeight: FontWeight.bold)),
+                          TextSpan(text: ' yNotes !', style: TextStyle(fontWeight: FontWeight.bold)),
                         ],
                       ),
                       textAlign: TextAlign.center,
@@ -129,14 +127,9 @@ class _page1State extends State<page1> {
                                 alignment: Alignment.center,
                                 child: Container(
                                   margin: EdgeInsets.only(left: 22, top: 10),
-                                  width:
-                                      MediaQuery.of(context).size.width / 3.5,
-                                  height:
-                                      MediaQuery.of(context).size.width / 3.5,
-                                  child: Image(
-                                      fit: BoxFit.fill,
-                                      image: AssetImage(
-                                          'assets/images/marks/3.0x/mark.png')),
+                                  width: MediaQuery.of(context).size.width / 3.5,
+                                  height: MediaQuery.of(context).size.width / 3.5,
+                                  child: Image(fit: BoxFit.fill, image: AssetImage('assets/images/marks/3.0x/mark.png')),
                                 ),
                               ),
                             ),
@@ -183,10 +176,7 @@ class _page1State extends State<page1> {
                                 margin: EdgeInsets.only(left: 22, top: 10),
                                 width: MediaQuery.of(context).size.width / 3.5,
                                 height: MediaQuery.of(context).size.width / 3.5,
-                                child: Image(
-                                    fit: BoxFit.fill,
-                                    image: AssetImage(
-                                        'assets/images/marks/3.0x/mark.png')),
+                                child: Image(fit: BoxFit.fill, image: AssetImage('assets/images/marks/3.0x/mark.png')),
                               ),
                             ),
                           ),
@@ -245,10 +235,7 @@ class _page1State extends State<page1> {
                                 margin: EdgeInsets.only(left: 22, top: 10),
                                 width: MediaQuery.of(context).size.width / 3.5,
                                 height: MediaQuery.of(context).size.width / 3.5,
-                                child: Image(
-                                    fit: BoxFit.fill,
-                                    image: AssetImage(
-                                        'assets/images/marks/3.0x/mark.png')),
+                                child: Image(fit: BoxFit.fill, image: AssetImage('assets/images/marks/3.0x/mark.png')),
                               ),
                             ),
                           ),
@@ -275,13 +262,9 @@ class _page1State extends State<page1> {
                       TextSpan(
                         text: "Car les",
                         children: <TextSpan>[
-                          TextSpan(
-                              text: ' outils ',
-                              style: TextStyle(fontWeight: FontWeight.bold)),
+                          TextSpan(text: ' outils ', style: TextStyle(fontWeight: FontWeight.bold)),
                           TextSpan(text: ' sont aussi importants que le'),
-                          TextSpan(
-                              text: ' travail...',
-                              style: TextStyle(fontWeight: FontWeight.bold)),
+                          TextSpan(text: ' travail...', style: TextStyle(fontWeight: FontWeight.bold)),
                         ],
                       ),
                       textAlign: TextAlign.center,
@@ -307,43 +290,19 @@ class _page2State extends State<page2> {
               children: <Widget>[
                 Transform.translate(
                   offset: Offset(200 - (widget.offset - 1) * 20, 57),
-                  child: Container(
-                      height: 100,
-                      width: 100,
-                      child: FittedBox(
-                          fit: BoxFit.fill,
-                          child: Image.asset(
-                              'assets/images/shelves/calendar.png'))),
+                  child: Container(height: 100, width: 100, child: FittedBox(fit: BoxFit.fill, child: Image.asset('assets/images/shelves/calendar.png'))),
                 ),
                 Transform.translate(
                   offset: Offset(70 - (widget.offset - 1) * 20, -157),
-                  child: Container(
-                      height: 120,
-                      width: 120,
-                      child: FittedBox(
-                          fit: BoxFit.fill,
-                          child:
-                              Image.asset('assets/images/shelves/clock.png'))),
+                  child: Container(height: 120, width: 120, child: FittedBox(fit: BoxFit.fill, child: Image.asset('assets/images/shelves/clock.png'))),
                 ),
                 Transform.translate(
                   offset: Offset(0 - (widget.offset - 1) * 400, -90),
-                  child: Container(
-                      height: 170,
-                      width: 320,
-                      child: FittedBox(
-                          fit: BoxFit.fill,
-                          child: Image.asset(
-                              'assets/images/shelves/shelve1.png'))),
+                  child: Container(height: 170, width: 320, child: FittedBox(fit: BoxFit.fill, child: Image.asset('assets/images/shelves/shelve1.png'))),
                 ),
                 Transform.translate(
                   offset: Offset(0 - (widget.offset - 1) * 300, 90),
-                  child: Container(
-                      height: 90,
-                      width: 320,
-                      child: FittedBox(
-                          fit: BoxFit.fill,
-                          child: Image.asset(
-                              'assets/images/shelves/shelve2.png'))),
+                  child: Container(height: 90, width: 320, child: FittedBox(fit: BoxFit.fill, child: Image.asset('assets/images/shelves/shelve2.png'))),
                 ),
               ],
             ),
@@ -362,9 +321,7 @@ class _page2State extends State<page2> {
                         TextSpan(
                           text: "...emmenez l'école",
                           children: <TextSpan>[
-                            TextSpan(
-                                text: ' dans votre poche ! ',
-                                style: TextStyle(fontWeight: FontWeight.bold)),
+                            TextSpan(text: ' dans votre poche ! ', style: TextStyle(fontWeight: FontWeight.bold)),
                           ],
                         ),
                         textAlign: TextAlign.center,
@@ -384,8 +341,7 @@ class _page3State extends State<page3> {
     return Stack(
       children: <Widget>[
         Positioned(
-          left:
-              MediaQuery.of(context).size.width / 8 - (widget.offset - 2) * 250,
+          left: MediaQuery.of(context).size.width / 8 - (widget.offset - 2) * 250,
           child: Align(
               alignment: Alignment.center,
               child: Opacity(
@@ -401,8 +357,7 @@ class _page3State extends State<page3> {
               )),
         ),
         Positioned(
-          right:
-              MediaQuery.of(context).size.width / 8 + (widget.offset - 2) * 70,
+          right: MediaQuery.of(context).size.width / 8 + (widget.offset - 2) * 70,
           top: MediaQuery.of(context).size.height / 5,
           child: Align(
               alignment: Alignment.center,
@@ -419,8 +374,7 @@ class _page3State extends State<page3> {
               )),
         ),
         Positioned(
-          left: MediaQuery.of(context).size.width / 3.5 -
-              (widget.offset - 2) * 310,
+          left: MediaQuery.of(context).size.width / 3.5 - (widget.offset - 2) * 310,
           top: MediaQuery.of(context).size.height / 2.3,
           child: Align(
               alignment: Alignment.center,
@@ -437,8 +391,7 @@ class _page3State extends State<page3> {
               )),
         ),
         Positioned(
-          left: MediaQuery.of(context).size.width / 12 -
-              (widget.offset - 2) * 280,
+          left: MediaQuery.of(context).size.width / 12 - (widget.offset - 2) * 280,
           top: MediaQuery.of(context).size.height / 4,
           child: Align(
               alignment: Alignment.center,
@@ -468,55 +421,49 @@ class _page3State extends State<page3> {
                       TextSpan(
                         text: "...sans oublier de gérer votre",
                         children: <TextSpan>[
-                          TextSpan(
-                              text: ' espace !',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white)),
+                          TextSpan(text: ' espace !', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
                         ],
                       ),
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                          fontFamily: "Asap",
-                          fontSize: 30.0,
-                          color: Colors.white)))),
+                      style: TextStyle(fontFamily: "Asap", fontSize: 30.0, color: Colors.white)))),
         ),
       ],
     );
   }
 }
 
-API api = APIManager();
-
 class _page4State extends State<page4> {
   bool specialtiesAvailable = false;
   Future carouselDisciplineListFuture;
-   String localClasse;
+  String localClasse;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     getSpecialitiesChoiceAvailability();
-    carouselDisciplineListFuture = api.getGrades();
+    carouselDisciplineListFuture = localApi.getGrades();
   }
 
   void refreshCarouselDLFuture() async {
     setState(() {
-      carouselDisciplineListFuture = api.getGrades();
+      carouselDisciplineListFuture = localApi.getGrades();
     });
   }
 
   void getSpecialitiesChoiceAvailability() async {
     var list = await specialtiesSelectionAvailable();
     setState(() {
-      localClasse= list[1];
-      specialtiesAvailable= list[0];
+      localClasse = list[1];
+      specialtiesAvailable = list[0];
     });
   }
 
   List<String> chosenSpecialties = List();
   @override
   Widget build(BuildContext context) {
+    SchedulerBinding.instance.addPostFrameCallback((_) => setState(() {
+          isDarkModeEnabled = Provider.of<AppStateNotifier>(context, listen: false).isDarkMode;
+        }));
     var screenSize = MediaQuery.of(context);
     double opacityvalue = 0;
     if (widget.offset - 1 > 0 && widget.offset - 1 < 1) {
@@ -535,10 +482,7 @@ class _page4State extends State<page4> {
             children: <Widget>[
               Text(
                 "Paramètrons votre application",
-                style: TextStyle(
-                    fontFamily: "Asap",
-                    fontSize: screenSize.size.height / 10 * 0.35,
-                    color: isDarkModeEnabled ? Colors.white : Colors.black),
+                style: TextStyle(fontFamily: "Asap", fontSize: screenSize.size.height / 10 * 0.35, color: isDarkModeEnabled ? Colors.white : Colors.black),
                 textAlign: TextAlign.center,
               ),
               SizedBox(
@@ -551,27 +495,20 @@ class _page4State extends State<page4> {
               if (specialtiesAvailable)
                 Text(
                   "Sélectionnez vos spécialités :",
-                  style: TextStyle(
-                      fontFamily: "Asap",
-                      fontSize: screenSize.size.height / 10 * 0.27,
-                      color: isDarkModeEnabled ? Colors.white : Colors.black),
+                  style: TextStyle(fontFamily: "Asap", fontSize: screenSize.size.height / 10 * 0.27, color: isDarkModeEnabled ? Colors.white : Colors.black),
                   textAlign: TextAlign.center,
                 ),
               if (specialtiesAvailable)
                 Container(
                   height: screenSize.size.height / 10 * 3,
                   width: screenSize.size.width / 5 * 4.8,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(11),
-                      color: Theme.of(context).primaryColor),
+                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(11), color: Theme.of(context).primaryColor),
                   child: FutureBuilder<List<discipline>>(
                       future: carouselDisciplineListFuture,
                       builder: (BuildContext context, snapshot) {
                         List disciplines = List();
                         if (snapshot.hasData) {
-                          snapshot.data
-                              .where((element) => element.periode == "0")
-                              .forEach((element) {
+                          snapshot.data.where((element) => element.periode == "A001").forEach((element) {
                             disciplines.add(element.nomDiscipline);
                           });
                           return ListView.builder(
@@ -584,37 +521,25 @@ class _page4State extends State<page4> {
                                 child: Row(
                                   children: <Widget>[
                                     CircularCheckBox(
-                                      inactiveColor: isDarkModeEnabled
-                                          ? Colors.white
-                                          : Colors.black,
+                                      inactiveColor: isDarkModeEnabled ? Colors.white : Colors.black,
                                       onChanged: (value) {
-                                        if (chosenSpecialties
-                                            .contains(disciplines[index])) {
+                                        if (chosenSpecialties.contains(disciplines[index])) {
                                           setState(() {
-                                            chosenSpecialties.removeWhere(
-                                                (element) =>
-                                                    element ==
-                                                    disciplines[index]);
+                                            chosenSpecialties.removeWhere((element) => element == disciplines[index]);
                                           });
                                         } else {
-                                          if (chosenSpecialties.length < (localClasse == "Première"? 3 : 2)) {
+                                          if (chosenSpecialties.length < (localClasse == "Première" ? 3 : 2)) {
                                             setState(() {
-                                              chosenSpecialties
-                                                  .add(disciplines[index]);
+                                              chosenSpecialties.add(disciplines[index]);
                                             });
                                           }
                                         }
                                       },
-                                      value: chosenSpecialties
-                                          .contains(disciplines[index]),
+                                      value: chosenSpecialties.contains(disciplines[index]),
                                     ),
                                     Text(
                                       disciplines[index],
-                                      style: TextStyle(
-                                          fontFamily: "Asap",
-                                          color: isDarkModeEnabled
-                                              ? Colors.white
-                                              : Colors.black),
+                                      style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
                                     ),
                                   ],
                                 ),
@@ -629,11 +554,7 @@ class _page4State extends State<page4> {
                               children: <Widget>[
                                 Text(
                                   "Une erreur a eu lieu",
-                                  style: TextStyle(
-                                      fontFamily: "Asap",
-                                      color: isDarkModeEnabled
-                                          ? Colors.white
-                                          : Colors.black),
+                                  style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
                                 ),
                                 FlatButton(
                                   onPressed: () {
@@ -643,16 +564,9 @@ class _page4State extends State<page4> {
                                   child: Text("Recharger",
                                       style: TextStyle(
                                         fontFamily: "Asap",
-                                        color: isDarkModeEnabled
-                                            ? Colors.white
-                                            : Colors.black,
+                                        color: isDarkModeEnabled ? Colors.white : Colors.black,
                                       )),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                          new BorderRadius.circular(18.0),
-                                      side: BorderSide(
-                                          color: Theme.of(context)
-                                              .primaryColorDark)),
+                                  shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(18.0), side: BorderSide(color: Theme.of(context).primaryColorDark)),
                                 ),
                               ],
                             ),
@@ -686,17 +600,10 @@ class _page4State extends State<page4> {
                   builder: (context, snapshot) {
                     return SwitchListTile(
                       value: snapshot.data,
-                      title: Text("Mode nuit",
-                          style: TextStyle(
-                              fontFamily: "Asap",
-                              color: isDarkModeEnabled
-                                  ? Colors.white
-                                  : Colors.black,
-                              fontSize: screenSize.size.height / 10 * 0.3)),
+                      title: Text("Mode nuit", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.3)),
                       onChanged: (value) {
                         setState(() {
-                          Provider.of<AppStateNotifier>(context, listen: false)
-                              .updateTheme(value);
+                          Provider.of<AppStateNotifier>(context, listen: false).updateTheme(value);
                           setSetting("nightmode", value);
                         });
                       },
@@ -712,10 +619,7 @@ class _page4State extends State<page4> {
               ),
               Text(
                 "Notifications",
-                style: TextStyle(
-                    fontFamily: "Asap",
-                    fontSize: screenSize.size.height / 10 * 0.27,
-                    color: isDarkModeEnabled ? Colors.white : Colors.black),
+                style: TextStyle(fontFamily: "Asap", fontSize: screenSize.size.height / 10 * 0.27, color: isDarkModeEnabled ? Colors.white : Colors.black),
                 textAlign: TextAlign.center,
               ),
               Divider(),
@@ -727,17 +631,11 @@ class _page4State extends State<page4> {
                         value: snapshot.data,
                         title: Text(
                           "Notification de nouvelle note",
-                          style: TextStyle(
-                              fontFamily: "Asap",
-                              color: isDarkModeEnabled
-                                  ? Colors.white
-                                  : Colors.black,
-                              fontSize: screenSize.size.height / 10 * 0.3),
+                          style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.3),
                         ),
                         secondary: Icon(
                           MdiIcons.newBox,
-                          color:
-                              isDarkModeEnabled ? Colors.white : Colors.black,
+                          color: isDarkModeEnabled ? Colors.white : Colors.black,
                         ),
                         onChanged: (value) {
                           setState(() {
@@ -745,7 +643,7 @@ class _page4State extends State<page4> {
                           });
                         });
                   }),
-                  Divider(),
+              Divider(),
               FutureBuilder(
                   future: getSetting("notificationNewMail"),
                   initialData: false,
@@ -754,18 +652,13 @@ class _page4State extends State<page4> {
                       value: snapshot.data,
                       title: Text(
                         "Notification de nouveau mail",
-                        style: TextStyle(
-                            fontFamily: "Asap",
-                            color:
-                                isDarkModeEnabled ? Colors.white : Colors.black,
-                            fontSize: screenSize.size.height / 10 * 0.3),
+                        style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.3),
                       ),
-                     
                       onChanged: (value) {
-                              setState(() {
-                                setSetting("notificationNewMail", value);
-                              });
-                            },
+                        setState(() {
+                          setSetting("notificationNewMail", value);
+                        });
+                      },
                       secondary: Icon(
                         MdiIcons.newBox,
                         color: isDarkModeEnabled ? Colors.white : Colors.black,
@@ -780,27 +673,21 @@ class _page4State extends State<page4> {
                 shape: StadiumBorder(),
                 onPressed: () async {
                   var classe = await specialtiesSelectionAvailable();
-                  if (classe[0] &&
-                      chosenSpecialties.length ==
-                          (classe[1] == "Première" ? 3 : 2)) {
+                  if (classe[0] && chosenSpecialties.length == (classe[1] == "Première" ? 3 : 2)) {
                     CreateStorage("agreedTermsAndConfiguredApp", "true");
                     final prefs = await SharedPreferences.getInstance();
                     prefs.setStringList("listSpecialties", chosenSpecialties);
                     Navigator.of(context).pushReplacement(router(homePage()));
-                  }
-                  else if(!classe[0]) {
-                      CreateStorage("agreedTermsAndConfiguredApp", "true");
+                  } else if (!classe[0]) {
+                    CreateStorage("agreedTermsAndConfiguredApp", "true");
                     final prefs = await SharedPreferences.getInstance();
                     prefs.setStringList("listSpecialties", chosenSpecialties);
                     Navigator.of(context).pushReplacement(router(homePage()));
-                  }
-                  else {
+                  } else {
                     CustomDialogs.showAnyDialog(context, "Vous devez renseigner toutes vos spécialités.");
                   }
-                  
                 },
-                child: const Text('Allons-y !',
-                    style: TextStyle(fontSize: 20, fontFamily: "Asap")),
+                child: const Text('Allons-y !', style: TextStyle(fontSize: 20, fontFamily: "Asap")),
               ),
             ],
           ),
@@ -906,9 +793,7 @@ class _SlidingCarouselState extends State<SlidingCarousel> {
                   controller: _pageController,
                   itemCount: _pageInfoList.length,
                   itemBuilder: (context, idx) {
-                    return Container(
-                        height: MediaQuery.of(context).size.height,
-                        child: Center(child: _setOffset(idx)));
+                    return Container(height: MediaQuery.of(context).size.height, child: Center(child: _setOffset(idx)));
                   }),
             )
           ],

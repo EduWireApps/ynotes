@@ -6,7 +6,7 @@ import 'package:ynotes/UI/dialogs.dart';
 import 'package:ynotes/UI/homeworkPage.dart';
 import 'package:ynotes/offline.dart';
 import 'package:ynotes/usefulMethods.dart';
-
+import 'package:ynotes/main.dart';
 import '../../apiManager.dart';
 
 class HomeworkFirstPage extends StatefulWidget {
@@ -18,7 +18,7 @@ class HomeworkFirstPage extends StatefulWidget {
 class _HomeworkFirstPageState extends State<HomeworkFirstPage> {
   Future<void> refreshLocalHomeworkList() async {
     setState(() {
-      homeworkListFuture = api.getNextHomework(forceReload: true);
+      homeworkListFuture = localApi.getNextHomework(forceReload: true);
     });
     var realHW = await homeworkListFuture;
   }
@@ -43,7 +43,7 @@ class _HomeworkFirstPageState extends State<HomeworkFirstPage> {
 
   void refreshHomeworkOfflineFuture() {
     setState(() {
-      homeworkListFuture = api.getNextHomework();
+      homeworkListFuture = localApi.getNextHomework();
     });
   }
 
@@ -310,7 +310,7 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
-                                RaisedButton(
+                                /* RaisedButton(
                                   color: Color(0xff3b3b3b),
                                   shape: CircleBorder(),
                                   onPressed: () {},
@@ -345,8 +345,8 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
                                           ),
                                         ],
                                       )),
-                                ),
-
+                                ),*/
+                                
                                 //Pin button
                                 RaisedButton(
                                   color: Color(0xff3b3b3b),
@@ -382,7 +382,7 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
             ),
             AnimatedContainer(
               duration: Duration(milliseconds: 170),
-              margin: EdgeInsets.only(top: containerSize == 0 ? screenSize.size.height / 10 * 0.6 : screenSize.size.height / 10 * 1.5),
+              margin: EdgeInsets.only(top: containerSize == 0 ? screenSize.size.height / 10 * 0.8 : screenSize.size.height / 10 * 1.5),
               padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.1, horizontal: screenSize.size.width / 5 * 0.1),
               child: Container(
                 child: ListView.builder(

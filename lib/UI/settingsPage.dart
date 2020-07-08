@@ -22,14 +22,14 @@ class SettingsPage extends StatefulWidget {
 bool isFirstAvatarSelected;
 final storage = new FlutterSecureStorage();
 
-class _SettingsPageState extends State<SettingsPage>
-    with TickerProviderStateMixin {
+class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMixin {
   AnimationController leftToRightAnimation;
   AnimationController rightToLeftAnimation;
   //Avatar's animations :
   Animation<double> movingRow;
   //To use by the actual image when switching
   Animation<double> avatarSize;
+  String fullUserName = "";
   //Disable new grades when battery saver is enabled
   bool disableNotification;
   @override
@@ -39,10 +39,8 @@ class _SettingsPageState extends State<SettingsPage>
     });
 
     super.initState();
-    leftToRightAnimation =
-        AnimationController(duration: Duration(milliseconds: 800), vsync: this);
-    rightToLeftAnimation =
-        AnimationController(duration: Duration(milliseconds: 800), vsync: this);
+    leftToRightAnimation = AnimationController(duration: Duration(milliseconds: 800), vsync: this);
+    rightToLeftAnimation = AnimationController(duration: Duration(milliseconds: 800), vsync: this);
     getActualUser();
   }
 
@@ -59,16 +57,14 @@ class _SettingsPageState extends State<SettingsPage>
     if (toGet != null) {
       setState(() {
         actualUser = toGet;
-        actualUser =
-            '${actualUser[0].toUpperCase()}${actualUser.toLowerCase().substring(1)}';
+        fullUserName = toGet;
+        actualUser = '${actualUser[0].toUpperCase()}${actualUser.toLowerCase().substring(1)}';
       });
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    print(actualUser);
-
     MediaQueryData screenSize = MediaQuery.of(context);
 //animation left to right
 
@@ -77,6 +73,12 @@ class _SettingsPageState extends State<SettingsPage>
       appBar: new AppBar(
         backgroundColor: Theme.of(context).primaryColor,
         title: new Text("Paramètres"),
+        leading: new IconButton(
+          icon: new Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: Container(
         child: SingleChildScrollView(
@@ -107,17 +109,11 @@ class _SettingsPageState extends State<SettingsPage>
                         child: CircleAvatar(
                           backgroundColor: Colors.transparent,
                           child: Text(
-                            '${actualUser[0]}',
-                            style: TextStyle(
-                                fontSize: screenSize.size.width / 5 * 0.4,
-                                color: isDarkModeEnabled
-                                    ? Colors.white
-                                    : Colors.black),
+                            '${actualUser.length > 0 ? actualUser[0] : "I"}',
+                            style: TextStyle(fontSize: screenSize.size.width / 5 * 0.4, color: isDarkModeEnabled ? Colors.white : Colors.black),
                             textAlign: TextAlign.center,
                           ),
-                          radius: (isFirstAvatarSelected
-                              ? screenSize.size.width / 5 * 0.55
-                              : screenSize.size.width / 5 * 0.4),
+                          radius: (isFirstAvatarSelected ? screenSize.size.width / 5 * 0.55 : screenSize.size.width / 5 * 0.4),
                         ),
                       ),
                     ),
@@ -126,41 +122,22 @@ class _SettingsPageState extends State<SettingsPage>
               )),
               Center(
                   child: Container(
-                      margin: EdgeInsets.only(
-                          top: screenSize.size.height / 10 * 0.1,
-                          bottom: screenSize.size.height / 10 * 0.2),
-                      child: Text("Bonjour $actualUser",
-                          style: TextStyle(
-                              fontFamily: "Asap",
-                              color: isDarkModeEnabled
-                                  ? Colors.white
-                                  : Colors.black,
-                              fontSize: screenSize.size.height / 10 * 0.3)))),
+                      margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1, bottom: screenSize.size.height / 10 * 0.2),
+                      child: Text("Bonjour ${fullUserName.length > 0 ? fullUserName : "Invité"}", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.3)))),
               FutureBuilder(
                   future: getSetting("nightmode"),
                   initialData: false,
                   builder: (context, snapshot) {
                     return SwitchListTile(
                       value: snapshot.data,
-                      title: Text("Mode nuit",
-                          style: TextStyle(
-                              fontFamily: "Asap",
-                              color: isDarkModeEnabled
-                                  ? Colors.white
-                                  : Colors.black,
-                              fontSize: screenSize.size.height / 10 * 0.3)),
+                      title: Text("Mode nuit", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.3)),
                       subtitle: Text(
                         "Lisez vos notes de jour comme de nuit.",
-                        style: TextStyle(
-                            fontFamily: "Asap",
-                            color:
-                                isDarkModeEnabled ? Colors.white : Colors.black,
-                            fontSize: screenSize.size.height / 10 * 0.2),
+                        style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.2),
                       ),
                       onChanged: (value) {
                         setState(() {
-                          Provider.of<AppStateNotifier>(context, listen: false)
-                              .updateTheme(value);
+                          Provider.of<AppStateNotifier>(context, listen: false).updateTheme(value);
                           setSetting("nightmode", value);
                         });
                       },
@@ -183,20 +160,10 @@ class _SettingsPageState extends State<SettingsPage>
                     }
                     return SwitchListTile(
                       value: snapshot.data,
-                      title: Text("Economie de données",
-                          style: TextStyle(
-                              fontFamily: "Asap",
-                              color: isDarkModeEnabled
-                                  ? Colors.white
-                                  : Colors.black,
-                              fontSize: screenSize.size.height / 10 * 0.3)),
+                      title: Text("Economie de données", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.3)),
                       subtitle: Text(
                         "Réduit les interactions réseaux au minimum pour sauver vos 15 pourcents restants.",
-                        style: TextStyle(
-                            fontFamily: "Asap",
-                            color:
-                                isDarkModeEnabled ? Colors.white : Colors.black,
-                            fontSize: screenSize.size.height / 10 * 0.2),
+                        style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.2),
                       ),
                       onChanged: (value) {
                         setState(() {
@@ -227,18 +194,11 @@ class _SettingsPageState extends State<SettingsPage>
                       value: snapshot.data,
                       title: Text(
                         "Notification de nouvelle note",
-                        style: TextStyle(
-                            fontFamily: "Asap",
-                            color:
-                                isDarkModeEnabled ? Colors.white : Colors.black,
-                            fontSize: screenSize.size.height / 10 * 0.3),
+                        style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.3),
                       ),
                       subtitle: Text(
-                        (disableNotification == true
-                            ? "Ne peut fonctionner si l'économie de données est activée"
-                            : ""),
-                        style: TextStyle(
-                            fontFamily: "Asap", color: Colors.red.shade700),
+                        (disableNotification == true ? "Ne peut fonctionner si l'économie de données est activée" : ""),
+                        style: TextStyle(fontFamily: "Asap", color: Colors.red.shade700),
                       ),
                       onChanged: (disableNotification == true)
                           ? null
@@ -253,7 +213,7 @@ class _SettingsPageState extends State<SettingsPage>
                       ),
                     );
                   }),
-                    Divider(),
+              Divider(),
               FutureBuilder(
                   future: getSetting("notificationNewMail"),
                   initialData: false,
@@ -262,18 +222,11 @@ class _SettingsPageState extends State<SettingsPage>
                       value: snapshot.data,
                       title: Text(
                         "Notification de nouveau mail",
-                        style: TextStyle(
-                            fontFamily: "Asap",
-                            color:
-                                isDarkModeEnabled ? Colors.white : Colors.black,
-                            fontSize: screenSize.size.height / 10 * 0.3),
+                        style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.3),
                       ),
                       subtitle: Text(
-                        (disableNotification == true
-                            ? "Ne peut fonctionner si l'économie de données est activée"
-                            : ""),
-                        style: TextStyle(
-                            fontFamily: "Asap", color: Colors.red.shade700),
+                        (disableNotification == true ? "Ne peut fonctionner si l'économie de données est activée" : ""),
+                        style: TextStyle(fontFamily: "Asap", color: Colors.red.shade700),
                       ),
                       onChanged: (disableNotification == true)
                           ? null
@@ -296,10 +249,7 @@ class _SettingsPageState extends State<SettingsPage>
                 ),
                 title: Text(
                   "Mes spécialités",
-                  style: TextStyle(
-                      fontFamily: "Asap",
-                      color: isDarkModeEnabled ? Colors.white : Colors.black,
-                      fontSize: screenSize.size.height / 10 * 0.3),
+                  style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.3),
                 ),
                 onTap: () {
                   showSpecialtiesChoice(context);
@@ -313,10 +263,7 @@ class _SettingsPageState extends State<SettingsPage>
                 ),
                 title: Text(
                   "A propos",
-                  style: TextStyle(
-                      fontFamily: "Asap",
-                      color: isDarkModeEnabled ? Colors.white : Colors.black,
-                      fontSize: screenSize.size.height / 10 * 0.3),
+                  style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.3),
                 ),
                 onTap: () async {
                   PackageInfo packageInfo = await PackageInfo.fromPlatform();
@@ -340,10 +287,7 @@ class _SettingsPageState extends State<SettingsPage>
                 ),
                 title: Text(
                   "Se déconnecter",
-                  style: TextStyle(
-                      fontFamily: "Asap",
-                      color: Colors.red.shade300,
-                      fontSize: screenSize.size.height / 10 * 0.3),
+                  style: TextStyle(fontFamily: "Asap", color: Colors.red.shade300, fontSize: screenSize.size.height / 10 * 0.3),
                 ),
                 onTap: () async {
                   showExitDialog(context);
@@ -390,7 +334,6 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
   }
 
   Widget build(BuildContext context) {
-    API api = APIManager();
     List disciplines = List();
 
     MediaQueryData screenSize;
@@ -398,19 +341,16 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
     return Container(
       height: screenSize.size.height / 10 * 4,
       child: FutureBuilder(
-          future: api.getGrades(),
+          future: localApi.getGrades(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
-              snapshot.data
-                  .where((element) => element.periode == "0")
-                  .forEach((element) {
+              snapshot.data.where((element) => element.periode == "0").forEach((element) {
                 disciplines.add(element.nomDiscipline);
               });
 
               return AlertDialog(
                   backgroundColor: Theme.of(context).primaryColor,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(15.0))),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0))),
                   contentPadding: EdgeInsets.only(top: 10.0),
                   content: Container(
                       height: screenSize.size.height / 10 * 4,
@@ -426,40 +366,28 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
                             child: Row(
                               children: <Widget>[
                                 CircularCheckBox(
-                                  inactiveColor: isDarkModeEnabled
-                                      ? Colors.white
-                                      : Colors.black,
+                                  inactiveColor: isDarkModeEnabled ? Colors.white : Colors.black,
                                   onChanged: (value) {
-                                    if (chosenSpecialties
-                                        .contains(disciplines[index])) {
+                                    if (chosenSpecialties.contains(disciplines[index])) {
                                       setState(() {
-                                        chosenSpecialties.removeWhere(
-                                            (element) =>
-                                                element == disciplines[index]);
+                                        chosenSpecialties.removeWhere((element) => element == disciplines[index]);
                                       });
                                       print(chosenSpecialties);
                                       setChosenSpecialties();
                                     } else {
-                                      if (chosenSpecialties.length <
-                                          (classe[1] == "Première" ? 3 : 2)) {
+                                      if (chosenSpecialties.length < (classe[1] == "Première" ? 3 : 2)) {
                                         setState(() {
-                                          chosenSpecialties
-                                              .add(disciplines[index]);
+                                          chosenSpecialties.add(disciplines[index]);
                                         });
                                         setChosenSpecialties();
                                       }
                                     }
                                   },
-                                  value: chosenSpecialties
-                                      .contains(disciplines[index]),
+                                  value: chosenSpecialties.contains(disciplines[index]),
                                 ),
                                 Text(
                                   disciplines[index],
-                                  style: TextStyle(
-                                      fontFamily: "Asap",
-                                      color: isDarkModeEnabled
-                                          ? Colors.white
-                                          : Colors.black),
+                                  style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
                                 ),
                               ],
                             ),
@@ -495,19 +423,14 @@ showExitDialog(BuildContext context) {
       return AlertDialog(
           elevation: 50,
           backgroundColor: Theme.of(context).primaryColor,
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
           title: Text(
             "Confirmation",
-            style: TextStyle(
-                fontFamily: "Asap",
-                color: isDarkModeEnabled ? Colors.white : Colors.black),
+            style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
           ),
           content: Text(
             "Voulez vous vraiment vous deconnecter ?",
-            style: TextStyle(
-                fontFamily: "Asap",
-                color: isDarkModeEnabled ? Colors.white : Colors.black),
+            style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
           ),
           actions: [
             FlatButton(
@@ -525,7 +448,8 @@ showExitDialog(BuildContext context) {
                 style: TextStyle(color: Colors.red),
               ),
               onPressed: () async {
-                await exit();
+                Provider.of<AppStateNotifier>(context, listen: false).updateTheme(false);
+                await exitApp();
                 Navigator.of(context).pushReplacement(router(login()));
               },
             )

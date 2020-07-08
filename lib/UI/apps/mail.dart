@@ -10,7 +10,7 @@ import 'package:stacked/stacked.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/apiManager.dart';
 import 'package:ynotes/parsers/EcoleDirecte.dart';
-
+import 'package:ynotes/main.dart';
 import '../../usefulMethods.dart';
 import '../appsPage.dart';
       List<Mail> localList = List();
@@ -30,16 +30,16 @@ enum sortValue { date, reversed_date, author }
 class _MailPageState extends State<MailPage> {
   var actualSort = sortValue.date;
 
-  API api = APIManager();
+
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {
-          mailsListFuture = api.app("mail");
+          mailsListFuture = localApi.app("mail");
         }));
   }
 
   Future<void> refreshLocalMailsList() async {
     setState(() {
-      mailsListFuture = api.app("mail");
+      mailsListFuture = localApi.app("mail");
     });
     var realdisciplinesListFuture = await mailsListFuture;
   }
@@ -612,6 +612,7 @@ class _MailPageState extends State<MailPage> {
                         Container(
                           width: screenSize.size.width / 5 * 4.8,
                           height: screenSize.size.height / 10 * 4,
+                        
                           child: (snapshot.hasData)
                               ? SingleChildScrollView(
                                   child: Column(
@@ -635,196 +636,201 @@ class _MailPageState extends State<MailPage> {
                                                   0.7)
                                          ,
                                       child: ListView.builder(
+                                    
                                           itemCount: mail.files.length,
                                              
                                           itemBuilder: (BuildContext context,
                                               int index) {
-                                            return Material(
-                                               borderRadius: BorderRadius.circular(11),
-                                              color: Color(0xff5FA9DA),
-                                              child: InkWell(
+                                            return Container(
+                                               margin: EdgeInsets.only(bottom:screenSize.size.height/10*0.2),
+                                              child: Material(
                                                  borderRadius: BorderRadius.circular(11),
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                      border: Border(
-                                                          bottom: BorderSide(
-                                                              width: 0,
-                                                              color: Colors
-                                                                  .transparent))),
-                                                  width: screenSize.size.width /
-                                                      5 *
-                                                      4.4,
-                                                  height:
-                                                      screenSize.size.height /
-                                                          10 *
-                                                          0.7,
-                                                  child: Stack(
-                                                    children: <Widget>[
-                                                      Align(
-                                                        alignment: Alignment
-                                                            .centerLeft,
-                                                        child: Container(
-                                                          margin: EdgeInsets.only(
-                                                              left: screenSize
-                                                                      .size
-                                                                      .width /
-                                                                  5 *
-                                                                  0.1),
-                                                          width: screenSize
+                                                color: Color(0xff5FA9DA),
+                                                child: InkWell(
+                                                   borderRadius: BorderRadius.circular(11),
+                                                  child: Container(
+                                                   
+                                                    decoration: BoxDecoration(
+                                                        border: Border(
+                                                            bottom: BorderSide(
+                                                                width: 0,
+                                                                color: Colors
+                                                                    .transparent))),
+                                                    width: screenSize.size.width /
+                                                        5 *
+                                                        4.4,
+                                                    height:
+                                                        screenSize.size.height /
+                                                            10 *
+                                                            0.7,
+                                                    child: Stack(
+                                                      children: <Widget>[
+                                                        Align(
+                                                          alignment: Alignment
+                                                              .centerLeft,
+                                                          child: Container(
+                                                            margin: EdgeInsets.only(
+                                                                left: screenSize
+                                                                        .size
+                                                                        .width /
+                                                                    5 *
+                                                                    0.1),
+                                                            width: screenSize
+                                                                    .size.width /
+                                                                5 *
+                                                                2.8,
+                                                            child: ClipRRect(
+                                                             
+                                                              child: Marquee(
+                                                                  text: mail.files[index]["libelle"],
+                                                                  blankSpace:
+                                                                      screenSize
+                                                                              .size
+                                                                              .width /
+                                                                          5 *
+                                                                          0.2,
+                                                                  style: TextStyle(
+                                                                      fontFamily:
+                                                                          "Asap",
+                                                                      color: Colors
+                                                                          .white)),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Positioned(
+                                                          right: screenSize
                                                                   .size.width /
                                                               5 *
-                                                              2.8,
-                                                          child: ClipRRect(
-                                                           
-                                                            child: Marquee(
-                                                                text: mail.files[index]["libelle"],
-                                                                blankSpace:
-                                                                    screenSize
-                                                                            .size
-                                                                            .width /
-                                                                        5 *
-                                                                        0.2,
-                                                                style: TextStyle(
-                                                                    fontFamily:
-                                                                        "Asap",
-                                                                    color: Colors
-                                                                        .white)),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                      Positioned(
-                                                        right: screenSize
-                                                                .size.width /
-                                                            5 *
-                                                            0.1,
-                                                        top: screenSize
-                                                                .size.height /
-                                                            10 *
-                                                            0.11,
-                                                        child: Container(
-                                                          height: screenSize
+                                                              0.1,
+                                                          top: screenSize
                                                                   .size.height /
                                                               10 *
-                                                              0.5,
-                                                          decoration: BoxDecoration(
-                                                              color: darken(Color(
-                                                                  0xff5FA9DA)),
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          50)),
-                                                          child: Row(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .spaceEvenly,
-                                                            children: <Widget>[
-                                                              if ((mail.files[index]["libelle"].length - 3) ==
-                                                                  "pdf")
-                                                                IconButton(
-                                                                  icon: Icon(
-                                                                    MdiIcons
-                                                                        .eyeOutline,
-                                                                    color: Colors
-                                                                        .white,
+                                                              0.11,
+                                                          child: Container(
+                                                            height: screenSize
+                                                                    .size.height /
+                                                                10 *
+                                                                0.5,
+                                                            decoration: BoxDecoration(
+                                                                color: darken(Color(
+                                                                    0xff5FA9DA)),
+                                                                borderRadius:
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            50)),
+                                                            child: Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .spaceEvenly,
+                                                              children: <Widget>[
+                                                                if ((mail.files[index]["libelle"].length - 3) ==
+                                                                    "pdf")
+                                                                  IconButton(
+                                                                    icon: Icon(
+                                                                      MdiIcons
+                                                                          .eyeOutline,
+                                                                      color: Colors
+                                                                          .white,
+                                                                    ),
+                                                                    onPressed:
+                                                                        () {
+                                                                      // do something
+                                                                    },
                                                                   ),
-                                                                  onPressed:
-                                                                      () {
-                                                                    // do something
-                                                                  },
-                                                                ),
-                                                              if ((mail.files[index]["libelle"].length - 3) ==
-                                                                  "pdf")
-                                                                VerticalDivider(
-                                                                  width: 2,
-                                                                  color: Color(
-                                                                      0xff5FA9DA),
-                                                                ),
-                                                              ViewModelBuilder<
-                                                                      DownloadModel>.reactive(
-                                                                viewModelBuilder: ()=>DownloadModel(),
-                                                                  builder:
-                                                                      (context,
-                                                                          model,
-                                                                          child) {
-                                                                    return FutureBuilder(
-                                                                        future: model.fileExists(mail.files[index]["libelle"]),
-                                                                        initialData:
-                                                                            false,
-                                                                        builder:
-                                                                            (context,
-                                                                                snapshot) {
-                                                                          if (snapshot.data ==
-                                                                              false) {
-                                                                            if (model.isDownloading) {
-                                                                              /// If download is in progress or connecting
-                                                                              if (model.downloadProgress == null || model.downloadProgress < 100) {
-                                                                                return Container(
-                                                                                  padding: EdgeInsets.symmetric(
-                                                                                    horizontal: screenSize.size.width / 5 * 0.2,
-                                                                                  ),
-                                                                                  child: Center(
-                                                                                    child: SizedBox(
-                                                                                      width: screenSize.size.width / 5 * 0.3,
-                                                                                      height: screenSize.size.width / 5 * 0.3,
-                                                                                      child: CircularProgressIndicator(
-                                                                                        backgroundColor: Colors.green,
-                                                                                        strokeWidth: screenSize.size.width / 5 * 0.05,
-                                                                                        value: model.downloadProgress,
+                                                                if ((mail.files[index]["libelle"].length - 3) ==
+                                                                    "pdf")
+                                                                  VerticalDivider(
+                                                                    width: 2,
+                                                                    color: Color(
+                                                                        0xff5FA9DA),
+                                                                  ),
+                                                                ViewModelBuilder<
+                                                                        DownloadModel>.reactive(
+                                                                  viewModelBuilder: ()=>DownloadModel(),
+                                                                    builder:
+                                                                        (context,
+                                                                            model,
+                                                                            child) {
+                                                                      return FutureBuilder(
+                                                                          future: model.fileExists(mail.files[index]["libelle"]),
+                                                                          initialData:
+                                                                              false,
+                                                                          builder:
+                                                                              (context,
+                                                                                  snapshot) {
+                                                                            if (snapshot.data ==
+                                                                                false) {
+                                                                              if (model.isDownloading) {
+                                                                                /// If download is in progress or connecting
+                                                                                if (model.downloadProgress == null || model.downloadProgress < 100) {
+                                                                                  return Container(
+                                                                                    padding: EdgeInsets.symmetric(
+                                                                                      horizontal: screenSize.size.width / 5 * 0.2,
+                                                                                    ),
+                                                                                    child: Center(
+                                                                                      child: SizedBox(
+                                                                                        width: screenSize.size.width / 5 * 0.3,
+                                                                                        height: screenSize.size.width / 5 * 0.3,
+                                                                                        child: CircularProgressIndicator(
+                                                                                          backgroundColor: Colors.green,
+                                                                                          strokeWidth: screenSize.size.width / 5 * 0.05,
+                                                                                          value: model.downloadProgress,
+                                                                                        ),
                                                                                       ),
                                                                                     ),
-                                                                                  ),
-                                                                                );
+                                                                                  );
+                                                                                }
+
+                                                                                ///Download is ended
+                                                                                else {
+                                                                                  return Container(
+                                                                                      child: IconButton(
+                                                                                    icon: Icon(
+                                                                                      MdiIcons.check,
+                                                                                      color: Colors.green,
+                                                                                    ),
+                                                                                    onPressed: () async {
+                                                                                      openFile(mail.files[index]["libelle"]);
+                                                                                    },
+                                                                                  ));
+                                                                                }
                                                                               }
 
-                                                                              ///Download is ended
-                                                                              else {
-                                                                                return Container(
-                                                                                    child: IconButton(
+                                                                              ///Isn't downloading
+                                                                              if (!model.isDownloading) {
+                                                                                return IconButton(
                                                                                   icon: Icon(
-                                                                                    MdiIcons.check,
-                                                                                    color: Colors.green,
+                                                                                    MdiIcons.fileDownloadOutline,
+                                                                                    color: Colors.white,
                                                                                   ),
                                                                                   onPressed: () async {
-                                                                                    openFile(mail.files[index]["libelle"]);
+                                                                                    await model.download(mail.files[index]["id"],mail.files[index]["type"],mail.files[index]["libelle"]);
                                                                                   },
-                                                                                ));
+                                                                                );
                                                                               }
                                                                             }
 
-                                                                            ///Isn't downloading
-                                                                            if (!model.isDownloading) {
-                                                                              return IconButton(
+                                                                            ///If file already exists
+                                                                            else {
+                                                                              return Container(
+                                                                                  child: IconButton(
                                                                                 icon: Icon(
-                                                                                  MdiIcons.fileDownloadOutline,
-                                                                                  color: Colors.white,
+                                                                                  MdiIcons.check,
+                                                                                  color: Colors.green,
                                                                                 ),
                                                                                 onPressed: () async {
-                                                                                  await model.download(mail.files[index]["id"],mail.files[index]["type"],mail.files[index]["libelle"]);
+                                                                                  openFile(mail.files[index]["libelle"]);
                                                                                 },
-                                                                              );
+                                                                              ));
                                                                             }
-                                                                          }
-
-                                                                          ///If file already exists
-                                                                          else {
-                                                                            return Container(
-                                                                                child: IconButton(
-                                                                              icon: Icon(
-                                                                                MdiIcons.check,
-                                                                                color: Colors.green,
-                                                                              ),
-                                                                              onPressed: () async {
-                                                                                openFile(mail.files[index]["libelle"]);
-                                                                              },
-                                                                            ));
-                                                                          }
-                                                                        });
-                                                                  }),
-                                                            ],
+                                                                          });
+                                                                    }),
+                                                              ],
+                                                            ),
                                                           ),
                                                         ),
-                                                      ),
-                                                    ],
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
                                               ),
