@@ -68,7 +68,9 @@ dependencies:
   pointycastle: ^1.0.2
   file_picker: ^1.4.3+1
   dio: ^3.0.9
-  giffy_dialog: ^1.7.0
+  giffy_dialog:
+    git:
+      url: https://github.com/ModernChocolate/giffy_dialog
   uuid: ^2.1.0
   steel_crypt: ^2.0.0
   highlight_text: ^0.7.2

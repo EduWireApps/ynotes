@@ -465,9 +465,11 @@ packages:
   giffy_dialog:
     dependency: "direct main"
     description:
-      name: giffy_dialog
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: "79528293f365f0398c46f0f464e046423dff71b5"
+      url: "https://github.com/ModernChocolate/giffy_dialog"
+    source: git
     version: "1.7.0"
   glob:
     dependency: transitive
