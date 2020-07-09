@@ -6,6 +6,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:package_info/package_info.dart';
+import 'package:ynotes/UI/logsPage.dart';
 import 'package:ynotes/apiManager.dart';
 import 'package:ynotes/main.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -255,6 +256,24 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                   showSpecialtiesChoice(context);
                 },
               ),
+               Divider(),
+              ListTile(
+                leading: Icon(
+                  MdiIcons.bug,
+                  color:  isDarkModeEnabled ? Colors.white : Colors.black,
+                ),
+                title: Text(
+                  "Logs",
+                  style: TextStyle(fontFamily: "Asap", color:  isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.3),
+                ),
+                 subtitle: Text(
+                        "Utilisable à des fins de deboguage",
+                        style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.2),
+                      ),
+                onTap: ()  {
+                     Navigator.of(context).push(router(LogsPage()));
+                },
+              ),
               Divider(),
               ListTile(
                 leading: Icon(
@@ -292,7 +311,8 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                 onTap: () async {
                   showExitDialog(context);
                 },
-              )
+              ),
+              
             ],
           ),
         ),

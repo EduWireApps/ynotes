@@ -25,13 +25,14 @@ import 'UI/schoolAPIChoicePage.dart';
 
 var uuid = Uuid();
 
-API localApi=APIManager();
+API localApi = APIManager();
+
 ///TO DO : Disable after bêta, Sentry is used to send bug reports
-final SentryClient _sentry = SentryClient(
-    uuidGenerator: uuid.v4,
-    dsn: "");
+final SentryClient _sentry = SentryClient(uuidGenerator: uuid.v4, dsn: "");
 Future<Null> _reportError(dynamic error, dynamic stackTrace) async {
   try {
+    print("THERE IS AN ERROR");
+    await logFile(error.toString());
     final SentryResponse response = await _sentry.captureException(
       exception: error,
       stackTrace: stackTrace,
@@ -45,17 +46,13 @@ final logger = loader();
 //Background task when when app is closed
 void backgroundFetchHeadlessTask(String taskId) async {
   print("Starting the headless closed bakground task");
-  var initializationSettingsAndroid =
-      new AndroidInitializationSettings('newgradeicon');
+  var initializationSettingsAndroid = new AndroidInitializationSettings('newgradeicon');
   var initializationSettingsIOS = new IOSInitializationSettings();
-  var initializationSettings = new InitializationSettings(
-      initializationSettingsAndroid, initializationSettingsIOS);
+  var initializationSettings = new InitializationSettings(initializationSettingsAndroid, initializationSettingsIOS);
   flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
-  flutterLocalNotificationsPlugin.initialize(initializationSettings,
-      onSelectNotification:BackgroundServices.onSelectNotification);
+  flutterLocalNotificationsPlugin.initialize(initializationSettings, onSelectNotification: BackgroundServices.onSelectNotification);
 //Ensure that grades notification are enabled and battery saver disabled
-  if (await getSetting("notificationNewGrade") &&
-      !await getSetting("batterySaver")) {
+  if (await getSetting("notificationNewGrade") && !await getSetting("batterySaver")) {
     if (await mainTestNewGrades()) {
       BackgroundServices.showNotificationNewGrade();
     } else {
@@ -65,8 +62,7 @@ void backgroundFetchHeadlessTask(String taskId) async {
   } else {
     print("New grade notification disabled");
   }
-  if (await getSetting("notificationNewMail") &&
-      !await getSetting("batterySaver")) {
+  if (await getSetting("notificationNewMail") && !await getSetting("batterySaver")) {
     if (await mainTestNewMails()) {
       BackgroundServices.showNotificationNewMail();
     } else {
@@ -81,12 +77,10 @@ void backgroundFetchHeadlessTask(String taskId) async {
 mainTestNewGrades() async {
   try {
     //Getting the offline count of grades
-    List<grade> listOfflineGrades =
-        getAllGrades(await getGradesFromDB(), overrideLimit: true);
+    List<grade> listOfflineGrades = getAllGrades(await getGradesFromDB(), overrideLimit: true);
     print("Offline length is ${listOfflineGrades.length}");
     //Getting the online count of grades
-    List<grade> listOnlineGrades =
-        getAllGrades(await getGradesFromInternet(), overrideLimit: true);
+    List<grade> listOnlineGrades = getAllGrades(await getGradesFromInternet(), overrideLimit: true);
 
     print("Online length is ${listOnlineGrades.length}");
     if (listOfflineGrades.length < listOnlineGrades.length) {
@@ -109,28 +103,22 @@ mainTestNewMails() async {
     await getMails();
     var newMailLength = await getIntSetting("mailNumber");
     print("New length is ${newMailLength}");
-    if(oldMailLength!=0)
-    {
-
-        
-    if (oldMailLength<(newMailLength!= null?newMailLength:0)) {
-      return true;
+    if (oldMailLength != 0) {
+      if (oldMailLength < (newMailLength != null ? newMailLength : 0)) {
+        return true;
+      } else {
+        return false;
+      }
     } else {
       return false;
     }
-    }
-    else {
-      return false;
-    }
   } catch (e) {
-    print("Erreur dans la verification de nouveaux mails hors ligne "+e.toString());
+    print("Erreur dans la verification de nouveaux mails hors ligne " + e.toString());
     return null;
   }
 }
 
 Future main() async {
-
-  
 //Init the local notifications
   WidgetsFlutterBinding.ensureInitialized();
   BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
@@ -142,8 +130,7 @@ Future main() async {
     );
   };
 
-  ConnectionStatusSingleton connectionStatus =
-      ConnectionStatusSingleton.getInstance();
+  ConnectionStatusSingleton connectionStatus = ConnectionStatusSingleton.getInstance();
   connectionStatus.initialize();
   runZoned<Future<Null>>(() async {
     runApp(
@@ -155,11 +142,9 @@ Future main() async {
       ),
     );
   }, onError: (error, stackTrace) async {
+    print("there is error");
     await _reportError(error, stackTrace);
   });
-
-
-
 }
 
 class HomeApp extends StatelessWidget {

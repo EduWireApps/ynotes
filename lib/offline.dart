@@ -21,7 +21,7 @@ putGrades(List<discipline> listD) async {
     } catch (e) {
       //OVERRIDE THE ADAPTER ALREADY REGISTERED ERROR
     }
-    
+
     //Format the actual date
     var now = DateFormat("yyyy-MM-dd HH:mm").format(DateTime.now()).toString();
 
@@ -34,6 +34,7 @@ putGrades(List<discipline> listD) async {
     print("The offline grades save succeeded.");
   } catch (e) {
     print("Failed to save grades offline : $e");
+    await logFile("Failed to save grades offline" + "\n" + e.toString());
   }
 }
 
@@ -67,10 +68,13 @@ getGradesFromDB({bool online = true}) async {
       Map<dynamic, dynamic> mapToReturn;
       try {
         print("Returned grades from offline");
+
         List<discipline> listToReturn = gradesBox.getAt(0).cast<discipline>();
         return listToReturn;
       } catch (e) {
         print("Failed to get grades offline data");
+        await logFile("Failed to get grades offline data" + "\n" + e.toString());
+    
         return null;
       }
     } else {
@@ -134,6 +138,7 @@ putHomework(List<homework> listHW, {bool add = false}) async {
     print("The offline homework save succeeded.");
   } catch (e) {
     print("Failed to save homework offline : $e");
+    await logFile("Failed to save homework offline" + "\n" + e.toString());
   }
 }
 
@@ -171,7 +176,9 @@ getHomeworkFromDB({bool online = true}) async {
 
         return listToReturn;
       } catch (e) {
-        print("Failed to decode homework offline data $e");
+        print("Failed to get homework offline data $e");
+        await logFile("Failed to get homework offline"+"\n"+e.toString());
+
         return null;
       }
     } else {

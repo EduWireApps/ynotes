@@ -249,13 +249,7 @@ class APIPronote extends API {
         return ("Oups, une erreur a eu lieu. Vérifiez votre mot de passe et les autres informations de connexion.");
       }
     } catch (e) {
-      final directory = await getDirectory();
-      try {
-        final File file = File('${directory.path}/loginLogs.txt');
-        await file.writeAsString("\n\n"+DateTime.now().toString() + "\n"+e.toString(), mode: FileMode.append);
-      } catch (e) {
-        print("PIPI" + e.toString());
-      }
+      await logFile(e.toString());
       print(e);
       String error = "Une erreur a eu lieu.";
       if (e.toString().contains("invalid url")) {

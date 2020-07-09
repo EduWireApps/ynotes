@@ -438,6 +438,14 @@ exitApp() async {
   }
 }
 
+
+logFile(String error) async {
+final directory = await getDirectory();
+final File file = File('${directory.path}/logs.txt');
+await file.writeAsString("\n\n"+DateTime.now().toString() + "\n"+error, mode: FileMode.append);
+     
+}
+
 specialtiesSelectionAvailable() async {
   await getChosenParser();
 
