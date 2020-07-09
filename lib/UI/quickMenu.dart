@@ -120,7 +120,7 @@ class _QuickMenuState extends State<QuickMenu> with TickerProviderStateMixin {
                                                 case 2:
                                                   {
                                                     
-                                                    helpDialogs[0].resetEveryHelpDialog();
+                                                    //helpDialogs[0].resetEveryHelpDialog();
                                                   }
                                                   break;
                                               }
