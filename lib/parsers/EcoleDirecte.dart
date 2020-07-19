@@ -83,12 +83,17 @@ class APIEcoleDirecte extends API {
         //Store the token
         token = req['token'];
         //Create secure storage for credentials
+        try{
         CreateStorage("password", password);
         CreateStorage("username", username);
         //IMPORTANT ! store the user ID
         CreateStorage("userID", userID);
         CreateStorage("classe", classe);
-        CreateStorage("userFullName", actualUser);
+        CreateStorage("userFullName", actualUser);}
+        catch(e){
+        //log in file
+        logFile(e.toString());
+        }
         //Ensure that the user will not see the carousel anymore
         prefs.setBool('firstUse', false);
         return "Bienvenue ${actualUser[0].toUpperCase()}${actualUser.substring(1).toLowerCase()} !";
