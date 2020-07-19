@@ -76,6 +76,8 @@ class APIEcoleDirecte extends API {
     if (response.statusCode == 200) {
       Map<String, dynamic> req = jsonDecode(response.body);
       if (req['code'] == 200) {
+      
+      try{
         //Put the value of the name in a variable
         actualUser = req['data']['accounts'][0]['prenom'];
         String userID = req['data']['accounts'][0]['id'].toString();
@@ -83,19 +85,23 @@ class APIEcoleDirecte extends API {
         //Store the token
         token = req['token'];
         //Create secure storage for credentials
-        try{
+        
         CreateStorage("password", password);
         CreateStorage("username", username);
         //IMPORTANT ! store the user ID
         CreateStorage("userID", userID);
         CreateStorage("classe", classe);
-        CreateStorage("userFullName", actualUser);}
+        CreateStorage("userFullName", actualUser);
+        
+        //Ensure that the user will not see the carousel anymore
+        prefs.setBool('firstUse', false);
+        
+        }
         catch(e){
         //log in file
         logFile(e.toString());
+        
         }
-        //Ensure that the user will not see the carousel anymore
-        prefs.setBool('firstUse', false);
         return "Bienvenue ${actualUser[0].toUpperCase()}${actualUser.substring(1).toLowerCase()} !";
       }
       //Return an error
