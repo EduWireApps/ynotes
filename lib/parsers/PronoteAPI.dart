@@ -18,6 +18,7 @@ import 'package:pointycastle/asymmetric/api.dart';
 import 'package:pointycastle/asymmetric/rsa.dart';
 import 'package:steel_crypt/steel_crypt.dart';
 import 'package:ynotes/apiManager.dart' as localapi;
+import 'package:ynotes/parsers/PronoteCas.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:http/http.dart';
 import '../apiManager.dart';
@@ -98,7 +99,7 @@ class Client {
     this.attributes = attributesandfunctions[0];
     this.func_options = attributesandfunctions[1];
 
-    if (this.attributes.toString().contains("e") && this.attributes.toString().contains("f")) {
+    if (this.attributes["e"]!=null && this.attributes["f"]!=null) {
       print("LOGIN AS ENT");
       this.ent = true;
     } else {
@@ -262,7 +263,7 @@ class Client {
 
   periods() {
     print("GETTING PERIODS");
-    printWrapped(this.func_options['donneesSec']['donnees'].toString());
+    //printWrapped(this.func_options['donneesSec']['donnees'].toString());
 
     var json;
     try {
@@ -271,7 +272,6 @@ class Client {
       print(e);
     }
 
-    print("PERIODS JSON " + json.toString());
     List toReturn = List();
     json.forEach((j) {
       toReturn.add(Period(this, j));
@@ -553,7 +553,7 @@ class _Encryption {
     var data2 = utf8.decode(data);
     var key = Key.fromBase16(this.aes_key.toString());
     final encrypter = Encrypter(AES(key, mode: AESMode.cbc, padding: "PKCS7"));
-   
+
     final encrypted = encrypter.encrypt(data2.toString(), iv: this.aes_iv).base16;
 
     return (encrypted);
@@ -676,6 +676,16 @@ class Period {
     }
   }
 
+  average(var json, var codeMatiere) {
+    //The services for the period
+    List services = json['donneesSec']['donnees']['listeServices']['V'];
+    //The average data for the given matiere
+    var averageData = services.firstWhere((element) => element["N"] == codeMatiere);
+    //print(averageData["moyEleve"]["V"]);
+    //Return the eleve average, the max average, and the class average
+    return [averageData["moyEleve"]["V"], averageData["moyMax"]["V"], averageData["moyClasse"]["V"]];
+  }
+
   grades(int codePeriode) async {
     //Get grades from the period.
     List<grade> list = List();
@@ -689,8 +699,9 @@ class Period {
     var grades = response['donneesSec']['donnees']['listeDevoirs']['V'];
     this.moyenneGenerale = response['donneesSec']['donnees']['moyGenerale']['V'];
     this.moyenneGeneraleClasse = response['donneesSec']['donnees']['moyGeneraleClasse']['V'];
-    var other;
-    grades.forEach((element) {
+    printWrapped(response['donneesSec']['donnees'].toString());
+    var other = List();
+    grades.forEach((element) async {
       list.add(grade(
           valeur: this.gradeTranslate(element["note"]["V"]),
           devoir: element["commentaire"],
@@ -701,12 +712,13 @@ class Period {
           letters: element["note"]["V"].contains("|"),
           coef: element["coefficient"].toString(),
           noteSur: element["bareme"]["V"],
-          moyenneClasse: element["moyenne"]["V"].toString(),
+          moyenneClasse: average(response, element["service"]["V"]["N"])[2],
           date: element["date"]["V"],
           nonSignificatif: this.gradeTranslate(element["note"]["V"]) == "NonNote" ? true : false,
+          typeDevoir: "Interrogation",
           dateSaisie: element["date"]["V"]));
+      other.add(average(response, element["service"]["V"]["N"]));
     });
-
-    return list;
+    return [list, other];
   }
 }

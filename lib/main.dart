@@ -31,7 +31,7 @@ API localApi = APIManager();
 final SentryClient _sentry = SentryClient(uuidGenerator: uuid.v4, dsn: "");
 Future<Null> _reportError(dynamic error, dynamic stackTrace) async {
   try {
-    print("THERE IS AN ERROR");
+  
     await logFile(error.toString());
     final SentryResponse response = await _sentry.captureException(
       exception: error,
@@ -142,7 +142,6 @@ Future main() async {
       ),
     );
   }, onError: (error, stackTrace) async {
-    print("there is error");
     await _reportError(error, stackTrace);
   });
 }

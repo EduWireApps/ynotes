@@ -42,7 +42,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
     super.initState();
     leftToRightAnimation = AnimationController(duration: Duration(milliseconds: 800), vsync: this);
     rightToLeftAnimation = AnimationController(duration: Duration(milliseconds: 800), vsync: this);
-    getActualUser();
+  
   }
 
   @override
@@ -51,17 +51,6 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
     leftToRightAnimation.dispose();
     rightToLeftAnimation.dispose();
     super.dispose();
-  }
-
-  getActualUser() async {
-    String toGet = await storage.read(key: "userFullName");
-    if (toGet != null) {
-      setState(() {
-        actualUser = toGet;
-        fullUserName = toGet;
-        actualUser = '${actualUser[0].toUpperCase()}${actualUser.toLowerCase().substring(1)}';
-      });
-    }
   }
 
   @override
@@ -124,7 +113,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
               Center(
                   child: Container(
                       margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1, bottom: screenSize.size.height / 10 * 0.2),
-                      child: Text("Bonjour ${fullUserName.length > 0 ? fullUserName : "Invité"}", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.3)))),
+                      child: Text("Bonjour ${actualUser.length > 0 ? actualUser : "Invité"}", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.3)))),
               FutureBuilder(
                   future: getSetting("nightmode"),
                   initialData: false,
@@ -256,22 +245,22 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                   showSpecialtiesChoice(context);
                 },
               ),
-               Divider(),
+              Divider(),
               ListTile(
                 leading: Icon(
                   MdiIcons.bug,
-                  color:  isDarkModeEnabled ? Colors.white : Colors.black,
+                  color: isDarkModeEnabled ? Colors.white : Colors.black,
                 ),
                 title: Text(
                   "Logs",
-                  style: TextStyle(fontFamily: "Asap", color:  isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.3),
+                  style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.3),
                 ),
-                 subtitle: Text(
-                        "Utilisable à des fins de deboguage",
-                        style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.2),
-                      ),
-                onTap: ()  {
-                     Navigator.of(context).push(router(LogsPage()));
+                subtitle: Text(
+                  "Utilisable à des fins de deboguage",
+                  style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.2),
+                ),
+                onTap: () {
+                  Navigator.of(context).push(router(LogsPage()));
                 },
               ),
               Divider(),
@@ -312,7 +301,6 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                   showExitDialog(context);
                 },
               ),
-              
             ],
           ),
         ),

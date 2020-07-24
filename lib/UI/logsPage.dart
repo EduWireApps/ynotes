@@ -19,7 +19,7 @@ class _LogsPageState extends State<LogsPage> {
         appBar: new AppBar(
           backgroundColor: Theme.of(context).primaryColor,
           title: new Text("Logs"),
-          leading: new IconButton(
+          leading: IconButton(
             icon: new Icon(Icons.arrow_back),
             onPressed: () {
               Navigator.pop(context);
@@ -27,25 +27,38 @@ class _LogsPageState extends State<LogsPage> {
           ),
         ),
         body: Container(
-          child: SingleChildScrollView(
-            child: FutureBuilder(
-                future: getFileData(),
-                builder: (BuildContext context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Center(
+          child: MediaQuery.removePadding(
+            context: context,
+            removeBottom: true,
+            removeTop: true,
+            child: SingleChildScrollView(
+              padding: EdgeInsets.zero,
+              child: FutureBuilder(
+                  future: getFileData(),
+                  builder: (BuildContext context, snapshot) {
+                    if (snapshot.hasData) {
+                      return Center(
                           child: Container(
-                            height: screenSize.size.height,
+                              height: screenSize.size.height,
                               width: screenSize.size.width / 5 * 4.5,
-                              child: SingleChildScrollView(
-                                                              child: SelectableText(
-                                  snapshot.data,
-                                  style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                              child: MediaQuery.removePadding(
+                                context: context,
+                                removeBottom: true,
+                                removeTop: true,
+                                child: SingleChildScrollView(
+                                  padding: EdgeInsets.zero,
+                                  reverse: true,
+                                  child: SelectableText(
+                                    snapshot.data,
+                                    style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                  ),
                                 ),
                               )));
-                  } else {
-                    return Container();
-                  }
-                }),
+                    } else {
+                      return Container();
+                    }
+                  }),
+            ),
           ),
         ));
   }

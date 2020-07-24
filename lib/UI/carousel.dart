@@ -12,6 +12,7 @@ import 'package:ynotes/apiManager.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/parsers/EcoleDirecte.dart';
 import 'package:ynotes/usefulMethods.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class SlidingCarousel extends StatefulWidget {
   SlidingCarousel({Key key}) : super(key: key);
@@ -444,7 +445,7 @@ class _page4State extends State<page4> {
     carouselDisciplineListFuture = localApi.getGrades();
   }
 
-  void refreshCarouselDLFuture() async {
+  void refreshCarouselDLFuture() {
     setState(() {
       carouselDisciplineListFuture = localApi.getGrades();
     });
@@ -452,18 +453,23 @@ class _page4State extends State<page4> {
 
   void getSpecialitiesChoiceAvailability() async {
     var list = await specialtiesSelectionAvailable();
-    setState(() {
-      localClasse = list[1];
-      specialtiesAvailable = list[0];
-    });
+    if (mounted) {
+      setState(() {
+        localClasse = list[1];
+        specialtiesAvailable = list[0];
+      });
+    }
   }
 
   List<String> chosenSpecialties = List();
   @override
   Widget build(BuildContext context) {
-    SchedulerBinding.instance.addPostFrameCallback((_) => setState(() {
-          isDarkModeEnabled = Provider.of<AppStateNotifier>(context, listen: false).isDarkMode;
-        }));
+    SchedulerBinding.instance.addPostFrameCallback((_) => mounted
+        ? setState(() {
+            isDarkModeEnabled = Provider.of<AppStateNotifier>(context, listen: false).isDarkMode;
+          })
+        : null);
+
     var screenSize = MediaQuery.of(context);
     double opacityvalue = 0;
     if (widget.offset - 1 > 0 && widget.offset - 1 < 1) {
@@ -709,11 +715,14 @@ class _SlidingCarouselState extends State<SlidingCarousel> {
   List<PageInfo> _pageInfoList;
 
   PageController _pageController;
+
   double _pageOffset;
+  int _pageIndex;
   int _currentPageId;
 
   void initState() {
     super.initState();
+
     _pageOffset = 0.0;
 
     _currentPageId = 0;
@@ -722,6 +731,8 @@ class _SlidingCarouselState extends State<SlidingCarousel> {
       ..addListener(() {
         setState(() {
           _pageOffset = _pageController.page;
+
+          _pageIndex = _pageController.page.round();
         });
       });
     _list(_pageOffset, 0);
@@ -778,6 +789,7 @@ class _SlidingCarouselState extends State<SlidingCarousel> {
 
   @override
   Widget build(BuildContext context) {
+    var screenSize = MediaQuery.of(context);
     return Scaffold(
       backgroundColor: _getBGColor(),
       body: //Disable back button
@@ -789,12 +801,61 @@ class _SlidingCarouselState extends State<SlidingCarousel> {
         child: Column(
           children: <Widget>[
             Expanded(
-              child: PageView.builder(
-                  controller: _pageController,
-                  itemCount: _pageInfoList.length,
-                  itemBuilder: (context, idx) {
-                    return Container(height: MediaQuery.of(context).size.height, child: Center(child: _setOffset(idx)));
-                  }),
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    height: screenSize.size.height / 10 * 9,
+                    child: PageView.builder(
+                        controller: _pageController,
+                        itemCount: _pageInfoList.length,
+                        itemBuilder: (context, idx) {
+                          return Container(height: MediaQuery.of(context).size.height, child: Center(child: _setOffset(idx)));
+                        }),
+                  ),
+                  Container(
+                    width: screenSize.size.width,
+                    height: screenSize.size.height / 10 * 0.5,
+                    child: Stack(
+                      children: <Widget>[
+                        Align(
+                         alignment: Alignment.centerRight,
+                         
+                          child: Visibility(
+                            visible: _pageController.hasClients ? (_pageIndex != 3) : true,
+                            child: Container(
+                             
+                         margin: EdgeInsets.only(right: screenSize.size.width / 5 * 0.1, top:  screenSize.size.height/10*0.08),
+                              child: OutlineButton(
+                                color: Colors.transparent,
+                                highlightColor: Colors.black,
+                                focusColor: Colors.black,
+                                borderSide: BorderSide(color: Colors.indigo),
+                                shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
+                                highlightedBorderColor: Colors.black,
+                                onPressed: () async {
+                                  _pageController.animateToPage(3, duration: Duration(milliseconds: 250), curve: Curves.easeIn);
+                                },
+                                child: Text(
+                                  "Passer",
+                                  style: TextStyle(fontFamily: "Asap", fontSize: screenSize.size.width / 5 * 0.3, fontWeight: FontWeight.bold, color: Colors.indigo),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.center,
+                          child: SmoothPageIndicator(
+                            controller: _pageController, // PageController
+                            count: 4,
+                            effect: WormEffect(), // your preferred effect
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
             )
           ],
         ),

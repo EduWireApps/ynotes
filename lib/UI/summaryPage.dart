@@ -44,9 +44,7 @@ class _SummaryPageState extends State<SummaryPage> {
   List items = [1, 2, 3, 4, 5];
   bool firstStart = true;
   initState() {
-      super.initState();
-    
-    
+    super.initState();
 
     todoSettingsController = new PageController(initialPage: 0);
     initialIndexGradesOffset = 0;
@@ -57,10 +55,11 @@ class _SummaryPageState extends State<SummaryPage> {
         offset = _pageControllerSummaryPage.offset;
       });
     });
-          homeworkListFuture= localApi.getNextHomework();
-
-          _disciplinesListFuture = localApi.getGrades();
-
+    homeworkListFuture = localApi.getNextHomework();
+   setState(() {
+     doneListFuture= getHomeworkDonePercent();
+   });
+    _disciplinesListFuture = localApi.getGrades();
   }
 
   @override
@@ -91,7 +90,7 @@ class _SummaryPageState extends State<SummaryPage> {
     helpDialogs[0].showDialog(context);
     MediaQueryData screenSize = MediaQuery.of(context);
     return Container(
-      margin: EdgeInsets.only(top:screenSize.size.height / 10 * 0.1 ),
+      margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
       height: screenSize.size.height / 10 * 8.8,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -105,6 +104,7 @@ class _SummaryPageState extends State<SummaryPage> {
                 future: doneListFuture,
                 initialData: 0,
                 builder: (context, snapshot) {
+                
                   return Stack(
                     children: <Widget>[
                       ClipRect(
@@ -368,127 +368,122 @@ class _SummaryPageState extends State<SummaryPage> {
             ),
             child: FutureBuilder<void>(
                 future: _disciplinesListFuture,
-                builder: (context,AsyncSnapshot snapshot) {
+                builder: (context, AsyncSnapshot snapshot) {
                   if (snapshot.hasData) {
-               if(getAllGrades(snapshot.data).length>0)
-               {
-
-               
-                    return ClipRRect(
-                      child: Stack(
-                        children: <Widget>[
-                          Center(
-                            child: PageView.builder(
-                                controller: _pageControllerSummaryPage,
-                                itemCount: getAllGrades(snapshot.data).length,
-                                itemBuilder: (context, position) {
-                                  return Material(
-                                    color: Colors.transparent,
-                                    child: InkWell(
-                                      onTap: () {
-                                        widget.tabController.animateTo(2);
-                                      },
-                                      child: Container(
-                                        height: (screenSize.size.height / 10 * 8.8) / 10 * 1.8,
-                                        width: screenSize.size.width / 5 * 4,
-                                        child: FittedBox(
-                                          child: Center(
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                              children: <Widget>[
-                                                Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: <Widget>[
-                                                    Container(
-                                                      
-                                                      child: Badge(
-                                                        showBadge: getAllGrades(snapshot.data)[position].dateSaisie == DateFormat('yyyy-MM-dd').format(DateTime.now()),
-                                                        animationType: BadgeAnimationType.scale,
-                                                        toAnimate: true,
-                                                        elevation: 0,
-                                                        position: BadgePosition.topRight(),
-                                                        badgeColor: Colors.blue,
+                    if (getAllGrades(snapshot.data).length > 0) {
+                      return ClipRRect(
+                        child: Stack(
+                          children: <Widget>[
+                            Center(
+                              child: PageView.builder(
+                                  controller: _pageControllerSummaryPage,
+                                  itemCount: getAllGrades(snapshot.data).length,
+                                  itemBuilder: (context, position) {
+                                    return Material(
+                                      color: Colors.transparent,
+                                      child: InkWell(
+                                        onTap: () {
+                                          widget.tabController.animateTo(2);
+                                        },
+                                        child: Container(
+                                          height: (screenSize.size.height / 10 * 8.8) / 10 * 1.8,
+                                          width: screenSize.size.width / 5 * 4,
+                                          child: FittedBox(
+                                            child: Center(
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                children: <Widget>[
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: <Widget>[
+                                                      Container(
+                                                        child: Badge(
+                                                          showBadge: getAllGrades(snapshot.data)[position].dateSaisie == DateFormat('yyyy-MM-dd').format(DateTime.now()),
+                                                          animationType: BadgeAnimationType.scale,
+                                                          toAnimate: true,
+                                                          elevation: 0,
+                                                          position: BadgePosition.topRight(),
+                                                          badgeColor: Colors.blue,
+                                                        ),
                                                       ),
-                                                    ),
-                                                    Text(
-                                                      getAllGrades(snapshot.data)[position].libelleMatiere + " - " + getAllGrades(snapshot.data)[position].date,
-                                                      style: TextStyle(fontFamily: "Asap", color: (isDarkModeEnabled ? Colors.white : Colors.black)), textAlign: TextAlign.center,
-                                                    ),
-                                                  ],
-                                                ),
-                                                AutoSizeText.rich(
-                                                  //MARK
-                                                  TextSpan(
-                                                    text: (getAllGrades(snapshot.data)[position].nonSignificatif ? "(" + getAllGrades(snapshot.data)[position].valeur : getAllGrades(snapshot.data)[position].valeur),
-                                                    style: TextStyle(color: (isDarkModeEnabled ? Colors.white : Colors.black), fontFamily: "Asap", fontWeight: FontWeight.normal, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.7),
-                                                    children: <TextSpan>[
-                                                      if (getAllGrades(snapshot.data)[position].noteSur != "20")
-
-                                                        //MARK ON
-                                                        TextSpan(
-                                                            text: '/' + getAllGrades(snapshot.data)[position].noteSur,
-                                                            style: TextStyle(color: (isDarkModeEnabled ? Colors.white : Colors.black), fontWeight: FontWeight.normal, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.4)),
-                                                      if (getAllGrades(snapshot.data)[position].nonSignificatif == true)
-                                                        TextSpan(text: ")", style: TextStyle(color: (isDarkModeEnabled ? Colors.white : Colors.black), fontWeight: FontWeight.normal, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.7)),
+                                                      Text(
+                                                        getAllGrades(snapshot.data)[position].libelleMatiere + " - " + getAllGrades(snapshot.data)[position].date,
+                                                        style: TextStyle(fontFamily: "Asap", color: (isDarkModeEnabled ? Colors.white : Colors.black)),
+                                                        textAlign: TextAlign.center,
+                                                      ),
                                                     ],
                                                   ),
-                                                ),
-                                                if( getAllGrades(snapshot.data)[position].devoir!="")
-                                                SizedBox(height: screenSize.size.height / 10 * 0.1),
-                                                if( getAllGrades(snapshot.data)[position].devoir!="")
-                                                SizedBox(
-                                                  width: screenSize.size.width / 5 * 3,
-                                                  child: Text(
-                                                    getAllGrades(snapshot.data)[position].devoir,
-                                                    textAlign: TextAlign.center,
-                                                    overflow: TextOverflow.ellipsis,
-                                                    style: TextStyle(fontSize: 15, fontFamily: "Asap", color: (isDarkModeEnabled ? Colors.white : Colors.black)),
+                                                  AutoSizeText.rich(
+                                                    //MARK
+                                                    TextSpan(
+                                                      text: (getAllGrades(snapshot.data)[position].nonSignificatif ? "(" + getAllGrades(snapshot.data)[position].valeur : getAllGrades(snapshot.data)[position].valeur),
+                                                      style: TextStyle(color: (isDarkModeEnabled ? Colors.white : Colors.black), fontFamily: "Asap", fontWeight: FontWeight.normal, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.7),
+                                                      children: <TextSpan>[
+                                                        if (getAllGrades(snapshot.data)[position].noteSur != "20")
+
+                                                          //MARK ON
+                                                          TextSpan(
+                                                              text: '/' + getAllGrades(snapshot.data)[position].noteSur,
+                                                              style: TextStyle(color: (isDarkModeEnabled ? Colors.white : Colors.black), fontWeight: FontWeight.normal, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.4)),
+                                                        if (getAllGrades(snapshot.data)[position].nonSignificatif == true)
+                                                          TextSpan(text: ")", style: TextStyle(color: (isDarkModeEnabled ? Colors.white : Colors.black), fontWeight: FontWeight.normal, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.7)),
+                                                      ],
+                                                    ),
                                                   ),
-                                                )
-                                              ],
+                                                  if (getAllGrades(snapshot.data)[position].devoir != "") SizedBox(height: screenSize.size.height / 10 * 0.1),
+                                                  if (getAllGrades(snapshot.data)[position].devoir != "")
+                                                    SizedBox(
+                                                      width: screenSize.size.width / 5 * 3,
+                                                      child: Text(
+                                                        getAllGrades(snapshot.data)[position].devoir,
+                                                        textAlign: TextAlign.center,
+                                                        overflow: TextOverflow.ellipsis,
+                                                        style: TextStyle(fontSize: 15, fontFamily: "Asap", color: (isDarkModeEnabled ? Colors.white : Colors.black)),
+                                                      ),
+                                                    )
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         ),
                                       ),
-                                    ),
-                                  );
-                                }),
-                          ),
-                          if (actualPage != null && actualPage != 0)
-                            FadeAnimationLeftToRight(
-                              0.5,
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: RaisedButton(
-                                  color: Theme.of(context).primaryColor.withOpacity(0.6),
-                                  shape: CircleBorder(),
-                                  onPressed: () {
-                                    setState(() {
-                                      actualPage = 0;
-                                    });
-                                    _pageControllerSummaryPage.animateToPage(0, duration: Duration(milliseconds: 250), curve: Curves.easeInOutQuint);
-                                  },
-                                  child: Container(
-                                      padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
-                                      child: Icon(
-                                        Icons.arrow_left,
-                                        color: isDarkModeEnabled ? Colors.white : Colors.black,
-                                        size: screenSize.size.width / 5 * 0.4,
-                                      )),
+                                    );
+                                  }),
+                            ),
+                            if (actualPage != null && actualPage != 0)
+                              FadeAnimationLeftToRight(
+                                0.5,
+                                Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: RaisedButton(
+                                    color: Theme.of(context).primaryColor.withOpacity(0.6),
+                                    shape: CircleBorder(),
+                                    onPressed: () {
+                                      setState(() {
+                                        actualPage = 0;
+                                      });
+                                      _pageControllerSummaryPage.animateToPage(0, duration: Duration(milliseconds: 250), curve: Curves.easeInOutQuint);
+                                    },
+                                    child: Container(
+                                        padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
+                                        child: Icon(
+                                          Icons.arrow_left,
+                                          color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                          size: screenSize.size.width / 5 * 0.4,
+                                        )),
+                                  ),
                                 ),
                               ),
-                            ),
-                        ],
-                      ),
-                    );
+                          ],
+                        ),
+                      );
+                    } else {
+                      return SpinKitFadingFour(
+                        color: Theme.of(context).primaryColorDark,
+                        size: screenSize.size.width / 5 * 0.7,
+                      );
                     }
-                    else {
-                    return SpinKitFadingFour(
-                      color: Theme.of(context).primaryColorDark,
-                      size: screenSize.size.width / 5 * 0.7,
-                    );
-                  }
                   } else {
                     return SpinKitFadingFour(
                       color: Theme.of(context).primaryColorDark,
@@ -628,6 +623,7 @@ Future<int> getHomeworkDonePercent() async {
     if (total == 0) {
       return 100;
     } else {
+      print("LIST IS 0");
       int done = 0;
 
       await Future.forEach(list, (element) async {
@@ -642,7 +638,8 @@ Future<int> getHomeworkDonePercent() async {
       return percent;
     }
   } else {
-    return 0;
+    print("LIST IS NULL");
+    return 100;
   }
 }
 

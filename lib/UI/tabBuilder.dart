@@ -74,7 +74,7 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
       homeworkListFuture = localApi.getNextHomework();
       firstStart = false;
     }
-    removeQuickMenu();
+    //removeQuickMenu();
     ConnectionStatusSingleton connectionStatus = ConnectionStatusSingleton.getInstance();
     tabBarconnexion = connectionStatus.connectionChange.listen(connectionChanged);
     isOffline = !connectionStatus.hasConnection;
@@ -184,9 +184,9 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
                                                 _currentIndex = 0;
                                               });
                                               tabController.animateTo(0);
-                                              removeQuickMenu();
+                                            //removeQuickMenu();
                                             },
-                                            onVerticalDragStart: (details) {
+                                            /*onVerticalDragStart: (details) {
                                               quickMenuAnimationController.forward().then((value) {
                                                 quickMenuAnimationController.reverse();
                                               });
@@ -202,7 +202,7 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
                                                   WidgetsBinding.instance.addPostFrameCallback((_) => overlayState.insert(_overlayEntry));
                                                 });
                                               }
-                                            },
+                                            },*/
                                             onLongPress: () {},
                                             child: Tab(
                                               child: AnimatedContainer(
@@ -368,7 +368,7 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
               ),
               body: GestureDetector(
                 onTap: () {
-                  removeQuickMenu();
+                  //removeQuickMenu();
                 },
                 child: Container(
                   child: Stack(

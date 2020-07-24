@@ -451,7 +451,7 @@ specialtiesSelectionAvailable() async {
 
   if (chosenParser == 0) {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    String classe = await storage.read(key: "classe");
+    String classe = await storage.read(key: "classe")??"";
 
 //E.G : It is always something like "Première blabla"
     var split = classe.split(" ");

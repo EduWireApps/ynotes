@@ -71,10 +71,17 @@ class APIPronote extends API {
         List periods = await localClient.periods();
 
         List<grade> grades = List<grade>();
+        List averages = List();
         List<discipline> listDisciplines = List<discipline>();
         for (var i = 0; i < 3; i++) {
-          grades.addAll(await periods[i].grades(i + 1));
+          //Grades and average
+          List data = await periods[i].grades(i + 1);
 
+          grades.addAll(data[0]);
+          averages.addAll(data[1]);
+          print(grades.length);
+          print(averages.length);
+          var z = 0;
           grades.forEach((element) {
             if (listDisciplines.every((listDisciplineEl) => listDisciplineEl.nomDiscipline != element.libelleMatiere || listDisciplineEl.periode != element.codePeriode)) {
               listDisciplines.add(discipline(
@@ -84,10 +91,13 @@ class APIPronote extends API {
                   periode: "A00" + (i + 1).toString(),
                   gradesList: List(),
                   professeurs: List(),
+                  moyenne: averages[z][0],
+                  moyenneMax: averages[z][1],
                   moyenneClasse: element.moyenneClasse,
                   moyenneGeneraleClasse: periods[i].moyenneGeneraleClasse,
                   moyenneGenerale: periods[i].moyenneGenerale));
             }
+            z++;
           });
         }
 
@@ -102,7 +112,7 @@ class APIPronote extends API {
         return listDisciplines;
       } catch (e) {
         gradeLock = false;
-
+        print("HEY" + e.toString());
         List<discipline> listDisciplines = List<discipline>();
         if (gradeRefreshRecursive == false) {
           await refreshClient();

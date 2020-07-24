@@ -12,7 +12,7 @@ description: YNotes first version
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.
 
-version: 0.8+1
+version: 0.8.1+1
 
 environment:
   sdk: ">=2.2.2 <3.0.0"
@@ -78,6 +78,7 @@ dependencies:
   device_apps: ^1.0.10
   autocomplete_textfield: ^1.7.3
   rxdart: ^0.24.1
+  smooth_page_indicator: ^0.1.5
 
 dev_dependencies:
   flutter_test:

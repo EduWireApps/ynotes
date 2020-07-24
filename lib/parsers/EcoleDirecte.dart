@@ -80,18 +80,19 @@ class APIEcoleDirecte extends API {
       try{
         //Put the value of the name in a variable
         actualUser = req['data']['accounts'][0]['prenom'];
+           CreateStorage("userFullName", actualUser??"");
         String userID = req['data']['accounts'][0]['id'].toString();
         String classe = req['data']['accounts'][0]['profile']["classe"]["libelle"].toString();
         //Store the token
         token = req['token'];
         //Create secure storage for credentials
-        
-        CreateStorage("password", password);
-        CreateStorage("username", username);
+     
+        CreateStorage("password", password??"");
+        CreateStorage("username", username??"");
         //IMPORTANT ! store the user ID
-        CreateStorage("userID", userID);
-        CreateStorage("classe", classe);
-        CreateStorage("userFullName", actualUser);
+        CreateStorage("userID", userID??"");
+        CreateStorage("classe", classe??"");
+        
         
         //Ensure that the user will not see the carousel anymore
         prefs.setBool('firstUse', false);

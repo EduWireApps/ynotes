@@ -19,7 +19,6 @@ class SpacePage extends StatefulWidget {
 class _SpacePageState extends State<SpacePage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     //Show the space dialog
-    helpDialogs[1].showDialog(context);
     MediaQueryData screenSize = MediaQuery.of(context);
     return Container(
       width: screenSize.size.width / 5 * 3.2,
