@@ -31,7 +31,7 @@ atrium_sud(String username, String password) async {
   var headers = {'connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/73.0'};
   // Ent connection
   //Session session = Session();
-  var response = await Requests.get(ent_login,persistCookies: true);
+  var response = await Requests.get(ent_login, persistCookies: true);
   //var cookies = await Requests.getStoredCookies(Requests.getHostname(ent_login));
 
   print("[ATRIUM LOGIN] with $username");
@@ -44,12 +44,14 @@ atrium_sud(String username, String password) async {
   input_ = parsed.getElementsByTagName("input").firstWhere((element) => element.attributes.toString().contains("hidden") && element.attributes.toString().contains("execution"));
   var execution = input_.attributes["value"];
   var payload = {'execution': execution, '_eventId': 'submit', 'submit': '', 'lt': lt, 'username': username, 'password': password};
-  var response2 = await Requests.post(ent_login, body:payload,persistCookies: true, bodyEncoding: RequestBodyEncoding.FormURLEncoded);
-  print(payload);
+  var response2 = await Requests.post(ent_login, body: payload, persistCookies: true, bodyEncoding: RequestBodyEncoding.FormURLEncoded);
+
   var cookies = await Requests.getStoredCookies(Requests.getHostname(ent_login));
   printWrapped(cookies.toString());
-  
 
+  if (response2.content().contains("Vous devez activer votre compte Atrium")) {
+   // throw "runes";
+  }
 
   return cookies;
 }

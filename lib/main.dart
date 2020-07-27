@@ -6,11 +6,10 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:logging/logging.dart';
 import 'package:http/http.dart';
 import 'package:provider/provider.dart';
-import 'package:ynotes/UI/carousel.dart';
-import 'package:ynotes/UI/gradesPage.dart';
-import 'package:ynotes/UI/loadingPage.dart';
-import 'package:ynotes/UI/loginPage.dart';
-import 'package:ynotes/UI/tabBuilder.dart';
+import 'package:ynotes/UI/screens/carousel.dart';
+import 'package:ynotes/UI/screens/loadingPage.dart';
+import 'package:ynotes/UI/screens/loginPage.dart';
+import 'package:ynotes/UI/screens/tabBuilder.dart';
 import 'package:sentry/sentry.dart';
 import 'package:ynotes/offline.dart';
 import 'package:ynotes/usefulMethods.dart';
@@ -21,7 +20,7 @@ import 'package:ynotes/parsers/EcoleDirecte.dart';
 import 'package:ynotes/background.dart';
 import 'package:uuid/uuid.dart';
 
-import 'UI/schoolAPIChoicePage.dart';
+import 'UI/screens/schoolAPIChoicePage.dart';
 
 var uuid = Uuid();
 

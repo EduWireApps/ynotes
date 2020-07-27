@@ -12,7 +12,7 @@ description: YNotes first version
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.
 
-version: 0.8.1+1
+version: 0.8.3+1
 
 environment:
   sdk: ">=2.2.2 <3.0.0"
@@ -68,9 +68,6 @@ dependencies:
   pointycastle: ^1.0.2
   file_picker: ^1.4.3+1
   dio: ^3.0.9
-  giffy_dialog:
-    git:
-      url: https://github.com/ModernChocolate/giffy_dialog
   uuid: ^2.1.0
   steel_crypt: ^2.0.0
   highlight_text: ^0.7.2

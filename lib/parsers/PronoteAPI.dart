@@ -98,8 +98,8 @@ class Client {
 
     this.attributes = attributesandfunctions[0];
     this.func_options = attributesandfunctions[1];
-
-    if (this.attributes["e"]!=null && this.attributes["f"]!=null) {
+    printWrapped(this.attributes.toString());
+    if (this.attributes.toString().contains("e") && this.attributes.toString().contains("f")) {
       print("LOGIN AS ENT");
       this.ent = true;
     } else {
@@ -168,11 +168,18 @@ class Client {
     } else {
       var u = this.username;
       var p = this.password;
-      if (idr['donneesSec']['donnees']['modeCompLog'] != null) {
+  
+
+      //Convert credentials to lowercase if needed (API returns 1)
+      if (idr['donneesSec']['donnees']['modeCompLog'] != null && idr['donneesSec']['donnees']['modeCompLog']!=0) {
+        print("LOWER CASE ID");
+        print(idr['donneesSec']['donnees']['modeCompLog']);
         u = u.toString().toLowerCase();
       }
 
-      if (idr['donneesSec']['donnees']['modeCompMdp'] != null) {
+      if (idr['donneesSec']['donnees']['modeCompMdp'] != null && idr['donneesSec']['donnees']['modeCompMdp']!=0) {
+        print("LOWER CASE PASSWORD");
+        print(idr['donneesSec']['donnees']['modeCompMdp']);
         p = p.toString().toLowerCase();
       }
 
@@ -343,7 +350,7 @@ class _Communication {
     }
 
     this.attributes = this._parse_html(get_response.content());
-
+    print("test" + this.attributes['ER']);
     //uuid
     this.encryption.rsa_keys = {'MR': this.attributes['MR'], 'ER': this.attributes['ER']};
 
@@ -541,7 +548,7 @@ class _Encryption {
     this.aes_iv = IV.fromBase16("00000000000000000000000000000000");
 
     this.aes_iv_temp = Uint8List.fromList(list);
-    this.aes_key = md5.convert(utf8.encode("")).toString();
+    this.aes_key = generateMd5("");
 
     this.rsa_keys = {};
   }
@@ -561,9 +568,11 @@ class _Encryption {
 
   aes_decrypt(var data) {
     var key = Key.fromBase16(this.aes_key.toString());
-    print(key.base64);
+    print(this.aes_key.toString());
     final aesEncrypter = Encrypter(AES(key, mode: AESMode.cbc, padding: "PKCS7"));
     //generate AES CBC block encrypter with key and PKCS7 padding
+    print(data);
+    print(this.aes_iv);
 
     try {
       return aesEncrypter.decrypt64(base64.encode(data), iv: this.aes_iv);

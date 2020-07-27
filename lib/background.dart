@@ -3,7 +3,7 @@ import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:ynotes/main.dart';
-import 'package:ynotes/UI/tabBuilder.dart';
+import 'package:ynotes/UI/screens/tabBuilder.dart';
 
 //The main class for everything done in background
 class BackgroundServices {
