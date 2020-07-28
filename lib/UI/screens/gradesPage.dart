@@ -26,7 +26,7 @@ double average = 0.0;
 //This boolean show a little badge if true
 bool newGrades = false;
 //The periode to show at start
-String periodeToUse = "A001";
+String periodeToUse = "";
 //Filter to use
 String filter = "all";
 //If true, show a carousel
@@ -45,7 +45,7 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
 
     initializeDateFormatting("fr_FR", null);
     getListSpecialties(); //Test if it's the first start
-    ;
+
     refreshLocalGradeListWithoutForce();
 
     //Get the actual periode (based on grades)
@@ -77,9 +77,9 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
 
   //Get the actual periode
   getActualPeriode() async {
-    List<discipline> list = await localApi.getGrades();
+    List<Discipline> list = await localApi.getGrades();
 
-    periodeToUse = list.lastWhere((list) => list.gradesList.length > 0).gradesList.last.codePeriode;
+    periodeToUse = list.lastWhere((list) => list.gradesList.length > 0).gradesList.last.nomPeriode;
   }
 
   openSortBox() {
@@ -251,7 +251,7 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
   }
 
   ///Calculate the user average
-  void setAverage(List<discipline> disciplineList) {
+  void setAverage(List<Discipline> disciplineList) {
     average = 0;
     double counter = 0;
     disciplineList.where((i) => i.periode == periodeToUse).forEach((f) {
@@ -266,8 +266,8 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
   }
 
   ///Get the corresponding disciplines and responding to the filter chosen
-  List<discipline> getDisciplinesForPeriod(List<discipline> list, periode, String sortBy) {
-    List<discipline> toReturn = new List<discipline>();
+  List<Discipline> getDisciplinesForPeriod(List<Discipline> list, periode, String sortBy) {
+    List<Discipline> toReturn = new List<Discipline>();
     list.forEach((f) {
       switch (sortBy) {
         case "all":
@@ -290,7 +290,7 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
               toReturn.add(f);
             }
           } else {
-            List<String> codeMatiere = ["FRANCAIS", "ANGLAIS", "ESPAGNOL", "ALLEMAND"];
+            List<String> codeMatiere = ["FRANCAIS", "ANGLAIS", "ESPAGNOL", "ALLEMAND", "HISTOIRE", "PHILO"];
 
             if (f.periode == periode &&
                 codeMatiere.any((test) {
@@ -424,43 +424,54 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
               Container(
                 height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
                 width: (screenSize.size.width / 5) * 2.2,
+                padding: EdgeInsets.symmetric(horizontal: (screenSize.size.width / 5) * 0.4),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(11),
                   color: Theme.of(context).primaryColorDark,
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Theme(
-                      data: Theme.of(context).copyWith(
-                        canvasColor: Theme.of(context).primaryColorDark,
-                      ),
-                      child: DropdownButtonHideUnderline(
-                        child: DropdownButton<String>(
-                          value: getCorrespondingPeriod(periodeToUse),
-                          iconSize: 0.0,
-                          style: TextStyle(fontSize: 18, fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
-                          onChanged: (String newValue) {
-                            setState(() {
-                              periodeToUse = getCorrespondingPeriod(newValue);
-                            });
-                          },
-                          focusColor: Theme.of(context).primaryColor,
-                          items: <String>['Trimestre 1', 'Trimestre 2', 'Trimestre 3'].map<DropdownMenuItem<String>>((String value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(
-                                value,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 18, fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
-                              ),
-                            );
-                          }).toList(),
+                child: FittedBox(
+                  fit: BoxFit.fitWidth,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Theme(
+                        data: Theme.of(context).copyWith(
+                          canvasColor: Theme.of(context).primaryColorDark,
                         ),
-                      ),
-                    )
-                  ],
+                        child: FutureBuilder<List<Period>>(
+                            future: localApi.getPeriods(),
+                            builder: (context, snapshot) {
+                              
+                              return (snapshot.data == null || !snapshot.hasData || periodeToUse==null || snapshot.data.length==0)
+                                  ? Container()
+                                  : DropdownButtonHideUnderline(
+                                      child: DropdownButton<String>(
+                                        value: periodeToUse,
+                                        iconSize: 0.0,
+                                        style: TextStyle(fontSize: 18, fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                        onChanged: (String newValue) {
+                                          setState(() {
+                                            periodeToUse = newValue;
+                                          });
+                                        },
+                                        focusColor: Theme.of(context).primaryColor,
+                                        items: snapshot.data.toSet().map<DropdownMenuItem<String>>((Period period) {
+                                          return DropdownMenuItem<String>(
+                                            value: period != null ? period.name : "-",
+                                            child: Text(
+                                              period != null ? period.name : "-",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(fontSize: 18, fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                            ),
+                                          );
+                                        }).toList(),
+                                      ),
+                                    );
+                            }),
+                      )
+                    ],
+                  ),
                 ),
               ),
               Container(
@@ -613,8 +624,8 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
               child: FutureBuilder<void>(
                   future: disciplinesListFuture,
                   builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    List<discipline> disciplineList;
-                    discipline getLastDiscipline;
+                    List<Discipline> disciplineList;
+                    Discipline getLastDiscipline;
                     if (snapshot.hasData) {
                       if (snapshot.data != null) {
                         try {
@@ -797,7 +808,7 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
 }
 
 class GradesGroup extends StatefulWidget {
-  final discipline disciplinevar;
+  final Discipline disciplinevar;
   const GradesGroup({this.disciplinevar});
 
   State<StatefulWidget> createState() {
@@ -978,12 +989,12 @@ class _GradesGroupState extends State<GradesGroup> {
     );
   }
 
-  List<grade> getGradesForDiscipline(int sousMatiereIndex, String chosenPeriode) {
-    List<grade> toReturn = List();
+  List<Grade> getGradesForDiscipline(int sousMatiereIndex, String chosenPeriode) {
+    List<Grade> toReturn = List();
 
     if (widget.disciplinevar != null) {
       widget.disciplinevar.gradesList.forEach((element) {
-        if (element.codePeriode == periodeToUse) {
+        if (element.nomPeriode == periodeToUse) {
           if (widget.disciplinevar.codeSousMatiere.length > 1) {
             if (element.codeSousMatiere == widget.disciplinevar.codeSousMatiere[sousMatiereIndex]) {
               toReturn.add(element);
@@ -995,6 +1006,7 @@ class _GradesGroupState extends State<GradesGroup> {
       });
       return toReturn;
     } else {
+ 
       return null;
     }
   }
@@ -1006,7 +1018,7 @@ class _GradesGroupState extends State<GradesGroup> {
     }
 
     bool canShow = false;
-    List<grade> localList = getGradesForDiscipline(sousMatiereIndex, periodeToUse);
+    List<Grade> localList = getGradesForDiscipline(sousMatiereIndex, periodeToUse);
     if (localList == null) {
       canShow = false;
     } else {
@@ -1141,7 +1153,7 @@ class _GradesGroupState extends State<GradesGroup> {
   }
 
 //Modal share box
-  shareBox(grade grade, discipline discipline) {
+  shareBox(Grade grade, Discipline discipline) {
     MediaQueryData screenSize;
     screenSize = MediaQuery.of(context);
 
@@ -1277,8 +1289,7 @@ class _GradesGroupState extends State<GradesGroup> {
         pageBuilder: (context, animation1, animation2) {});
   }
 
-  
-  colorPicker(context, discipline discipline, Function callback) async {
+  colorPicker(context, Discipline discipline, Function callback) async {
     Color pickerColor = Color(widget.disciplinevar.color);
 
     void changeColor(Color color) {
@@ -1393,5 +1404,4 @@ class _GradesGroupState extends State<GradesGroup> {
       ),
     );
   }
-
 }

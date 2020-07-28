@@ -369,8 +369,8 @@ class ConnectionStatusSingleton {
 }
 
 //Get only grades as a list
-List<grade> getAllGrades(List<discipline> list, {bool overrideLimit = false}) {
-  List<grade> listToReturn = List<grade>();
+List<Grade> getAllGrades(List<Discipline> list, {bool overrideLimit = false}) {
+  List<Grade> listToReturn = List<Grade>();
   list.forEach((element) {
     listToReturn.addAll(element.gradesList);
   });
@@ -400,31 +400,28 @@ TValue case2<TOptionType, TValue>(
   return branches[selectedOption];
 }
 
-List<discipline> specialities = List<discipline>();
+List<Discipline> specialities = List<Discipline>();
 //Refresh colors
-refreshDisciplinesListColors(List<discipline> list) async {
+refreshDisciplinesListColors(List<Discipline> list) async {
   list.forEach((f) async {
- 
     f.color = await getColor(f.codeMatiere);
   });
 }
 
 //Leave app
 exitApp() async {
-//Delete sharedPref
-  SharedPreferences preferences = await SharedPreferences.getInstance();
-  await preferences.clear();
-//Import secureStorage
-  final storage = new FlutterSecureStorage();
-// Delete all
-  await storage.deleteAll();
-
-  isDarkModeEnabled = false;
-
-//delete hive files
-  final dir = await getDirectory();
-  Hive.init("${dir.path}/offline");
   try {
+    //Delete sharedPref
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    await preferences.clear();
+    //Import secureStorage
+    final storage = new FlutterSecureStorage();
+    //Delete all
+    await storage.deleteAll();
+    isDarkModeEnabled = false;
+    //delete hive files
+    final dir = await getDirectory();
+    Hive.init("${dir.path}/offline");
     var homeworkBox = await Hive.openBox('homework');
     await homeworkBox.clear();
     var gradeBox = await Hive.openBox('grades');
@@ -438,20 +435,18 @@ exitApp() async {
   }
 }
 
-
 logFile(String error) async {
-final directory = await getDirectory();
-final File file = File('${directory.path}/logs.txt');
-await file.writeAsString("\n\n"+DateTime.now().toString() + "\n"+error, mode: FileMode.append);
-     
+  final directory = await getDirectory();
+  final File file = File('${directory.path}/logs.txt');
+  await file.writeAsString("\n\n" + DateTime.now().toString() + "\n" + error, mode: FileMode.append);
 }
 
 specialtiesSelectionAvailable() async {
   await getChosenParser();
-
+  return  [false];
   if (chosenParser == 0) {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    String classe = await storage.read(key: "classe")??"";
+    String classe = await storage.read(key: "classe") ?? "";
 
 //E.G : It is always something like "Première blabla"
     var split = classe.split(" ");
@@ -462,7 +457,8 @@ specialtiesSelectionAvailable() async {
       return [false];
     }
   } else {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
+    return  [false];
+    /*SharedPreferences preferences = await SharedPreferences.getInstance();
     String classe = await storage.read(key: "classe");
     if (classe != null) {
       if (classe.toLowerCase().contains("1e") || classe.toLowerCase().contains("terminale")) {
@@ -478,7 +474,7 @@ specialtiesSelectionAvailable() async {
       }
     } else {
       return [false];
-    }
+    }*/
   }
 }
 

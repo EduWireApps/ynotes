@@ -14,7 +14,7 @@ part 'apiManager.g.dart';
 //Class of a piece homework
 
 @HiveType(typeId: 0)
-class homework extends HiveObject {
+class Homework extends HiveObject {
   @HiveField(0)
   final String matiere;
   @HiveField(1)
@@ -36,17 +36,17 @@ class homework extends HiveObject {
   @HiveField(9)
   final bool interrogation;
   @HiveField(10)
-  final List<document> documents;
+  final List<Document> documents;
   @HiveField(11)
-  final List<document> documentsContenuDeSeance;
+  final List<Document> documentsContenuDeSeance;
   @HiveField(12)
   final String nomProf;
-  homework(this.matiere, this.codeMatiere, this.idDevoir, this.contenu, this.contenuDeSeance, this.date, this.datePost, this.done, this.rendreEnLigne, this.interrogation, this.documents, this.documentsContenuDeSeance, this.nomProf);
+  Homework(this.matiere, this.codeMatiere, this.idDevoir, this.contenu, this.contenuDeSeance, this.date, this.datePost, this.done, this.rendreEnLigne, this.interrogation, this.documents, this.documentsContenuDeSeance, this.nomProf);
 }
 
 //Class of a downloadable document
 @HiveType(typeId: 1)
-class document {
+class Document {
   @HiveField(0)
   final String libelle;
   @HiveField(1)
@@ -55,12 +55,12 @@ class document {
   final String type;
   @HiveField(3)
   final int length;
-  document(this.libelle, this.id, this.type, this.length);
+  Document(this.libelle, this.id, this.type, this.length);
 }
 
 //Marks class
 @HiveType(typeId: 2)
-class grade {
+class Grade {
   //E.G : "génétique"
   @HiveField(0)
   final String devoir;
@@ -102,11 +102,28 @@ class grade {
   final String dateSaisie;
   @HiveField(13)
   final bool nonSignificatif;
+  @HiveField(14)
+  //E.G : Trimestre 1
+  final String nomPeriode;
+  Grade(
+      {this.devoir,
+      this.codePeriode,
+      this.codeMatiere,
+      this.codeSousMatiere,
+      this.libelleMatiere,
+      this.letters,
+      this.valeur,
+      this.coef,
+      this.noteSur,
+      this.moyenneClasse,
+      this.typeDevoir,
+      this.date,
+      this.dateSaisie,
+      this.nonSignificatif,
+      this.nomPeriode});
 
-  grade({this.devoir, this.codePeriode, this.codeMatiere, this.codeSousMatiere, this.libelleMatiere, this.letters, this.valeur, this.coef, this.noteSur, this.moyenneClasse, this.typeDevoir, this.date, this.dateSaisie, this.nonSignificatif});
-
-  factory grade.fromJson(Map<String, dynamic> json) {
-    return grade(
+  factory Grade.fromJson(Map<String, dynamic> json) {
+    return Grade(
         devoir: json['devoir'],
         codePeriode: json['codePeriode'],
         codeMatiere: json['codeMatiere'],
@@ -123,9 +140,10 @@ class grade {
         nonSignificatif: json['nonSignificatif']);
   }
 }
+
 @HiveType(typeId: 3)
 //Discipline class
-class discipline {
+class Discipline {
   @HiveField(0)
   final String moyenneGenerale;
   @HiveField(1)
@@ -151,10 +169,10 @@ class discipline {
   @HiveField(11)
   final String periode;
   @HiveField(12)
-  List<grade> gradesList;
+  List<Grade> gradesList;
   @HiveField(13)
   int color;
-  discipline(
+  Discipline(
       {this.gradesList,
       this.moyenneGeneralClasseMax,
       this.moyenneGeneraleClasse,
@@ -174,12 +192,12 @@ class discipline {
     color = newcolor.value;
   }
 
-  set setGradeList(List<grade> list) {
+  set setGradeList(List<Grade> list) {
     gradesList = list;
   }
 
-  factory discipline.fromJson(Map<String, dynamic> json, List<String> profs, String codeMatiere, String periode, Color color, String moyenneG, String bmoyenneClasse, String moyenneClasse) {
-    return discipline(
+  factory Discipline.fromJson(Map<String, dynamic> json, List<String> profs, String codeMatiere, String periode, Color color, String moyenneG, String bmoyenneClasse, String moyenneClasse) {
+    return Discipline(
       codeSousMatiere: [],
       codeMatiere: codeMatiere,
       nomDiscipline: json['discipline'],
@@ -244,22 +262,36 @@ class CloudItem {
   CloudItem(this.title, this.type, this.author, this.isMainFolder, this.date, {this.isMemberOf, this.isLoaded, this.id});
 }
 
+class Period {
+  final String name;
+  final String id;
+
+  Period(this.name, this.id);
+}
+
 abstract class API {
+   bool loggedIn=false;
+
+
+
 //Connect to the API
 //Should return a connection status
   Future<String> login(username, password, {url, cas});
 
+//Get years periods
+  Future<List<Period>> getPeriods();
+
 //Get marks
-  Future<List<discipline>> getGrades({bool forceReload});
+  Future<List<Discipline>> getGrades({bool forceReload});
 
 //Get the dates of next homework (deprecated)
   Future<List<DateTime>> getDatesNextHomework();
 
 //Get the list of all the next homework (sent by specifics API)
-  Future<List<homework>> getNextHomework({bool forceReload});
+  Future<List<Homework>> getNextHomework({bool forceReload});
 
 //Get the list of homework only for a specific day (time travel feature)
-  Future<List<homework>> getHomeworkFor(DateTime dateHomework);
+  Future<List<Homework>> getHomeworkFor(DateTime dateHomework);
 
   //Test to know if there are new grades
   Future<bool> testNewGrades();

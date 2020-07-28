@@ -75,8 +75,8 @@ class _LoginPageState extends State<LoginPage> {
     String z = await storage.read(key: "agreedTermsAndConfiguredApp");
   
     if (u != null && p != null && z != null) {
-      connectionData =  localApi.login(u, p, url: url, cas: cas);
-      openLoadingDialog();
+      /*connectionData =  localApi.login(u, p, url: url, cas: cas);
+      openLoadingDialog();*/
     }
   }
 
@@ -437,9 +437,10 @@ class _LoginPageState extends State<LoginPage> {
                                 margin: EdgeInsets.only(
                                   left: screenSize.size.height / 10 * 0.1,
                                 ),
-                                height: screenSize.size.height / 10 * 0.4,
+                            
                                 child: TextFormField(
                                   controller: _username,
+                               
                                   decoration: InputDecoration(
                                     enabledBorder: UnderlineInputBorder(
                                       borderSide: BorderSide(color: Colors.black),

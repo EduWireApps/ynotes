@@ -4,41 +4,28 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:giffy_dialog/giffy_dialog.dart';
 import '../../usefulMethods.dart';
-import 'giffy_dialog/lib/giffy_dialog.dart';
+
 
 class CustomDialogs {
   static void showGiffyDialog(BuildContext context, HelpDialog hd) {
     PageController controller = PageController();
     var screenSize = MediaQuery.of(context);
+
     //Show a dialog with a gif
     showDialog(
         barrierDismissible: false,
         context: context,
         builder: (_) => AssetGiffyDialog(
+            
               image: Image.asset(hd.gifPath),
               title: Text(
                 hd.title,
                 style: TextStyle(fontSize: screenSize.size.height / 10 * 0.3, fontWeight: FontWeight.w600),
                 textScaleFactor: 1.0,
               ),
-              description: Container(
-                width: screenSize.size.width / 5 * 3,
-                height: screenSize.size.width / 10 * 3,
-                child: PageView.builder(
-                    controller: controller,
-                    itemCount: hd.description.length,
-                    itemBuilder: (context, index) {
-                      return SingleChildScrollView(
-                        child: Text(hd.description[index],
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              fontFamily: "Asap",
-                              fontSize: screenSize.size.height / 10 * 0.2,
-                            )),
-                      );
-                    }),
-              ),
+              description: Text(hd.description[0]),
               buttonOkText: Text(
                 "J'ai compris",
                 style: TextStyle(fontFamily: "Asap", color: Colors.white),
@@ -50,17 +37,15 @@ class CustomDialogs {
                 textScaleFactor: 1.0,
               ),
               onlyOkButton: false,
-              entryAnimation: EntryAnimation.LEFT,
+              onlyCancelButton: false,
               onCancelButtonPressed: () async {
                 await hd.skipEveryHelpDialog();
                 Navigator.pop(_);
               },
               onOkButtonPressed: () {
-                if (controller.page.round() < hd.description.length - 1) {
-                  controller.animateToPage(controller.page.round() + 1, duration: Duration(milliseconds: 250), curve: Curves.easeIn);
-                } else {
+               
                   Navigator.pop(_);
-                }
+               
               },
             ));
   }

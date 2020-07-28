@@ -17,6 +17,7 @@ import 'package:alice/alice.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:ynotes/apiManager.dart';
 import 'package:ynotes/parsers/EcoleDirecte.dart';
+import 'package:ynotes/parsers/Pronote.dart';
 import 'package:ynotes/background.dart';
 import 'package:uuid/uuid.dart';
 
@@ -30,7 +31,6 @@ API localApi = APIManager();
 final SentryClient _sentry = SentryClient(uuidGenerator: uuid.v4, dsn: "");
 Future<Null> _reportError(dynamic error, dynamic stackTrace) async {
   try {
-  
     await logFile(error.toString());
     final SentryResponse response = await _sentry.captureException(
       exception: error,
@@ -76,10 +76,17 @@ void backgroundFetchHeadlessTask(String taskId) async {
 mainTestNewGrades() async {
   try {
     //Getting the offline count of grades
-    List<grade> listOfflineGrades = getAllGrades(await getGradesFromDB(), overrideLimit: true);
+    List<Grade> listOfflineGrades = getAllGrades(await getGradesFromDB(), overrideLimit: true);
     print("Offline length is ${listOfflineGrades.length}");
     //Getting the online count of grades
-    List<grade> listOnlineGrades = getAllGrades(await getGradesFromInternet(), overrideLimit: true);
+    getChosenParser();
+    List<Grade> listOnlineGrades = List<Grade>();
+    if (chosenParser == 0) {
+      List<Grade> listOnlineGrades = getAllGrades(await getGradesFromInternet(), overrideLimit: true);
+    }
+    if (chosenParser == 1) {
+      List<Grade> listOnlineGrades = getAllGrades(await getPronoteGradesFromInternet(), overrideLimit: true);
+    }
 
     print("Online length is ${listOnlineGrades.length}");
     if (listOfflineGrades.length < listOnlineGrades.length) {

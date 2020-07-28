@@ -145,7 +145,7 @@ class _HomeworkFirstPageState extends State<HomeworkFirstPage> {
 class HomeworkContainer extends StatefulWidget {
   final DateTime date;
   final Function callback;
-  final List<homework> listHW;
+  final List<Homework> listHW;
   const HomeworkContainer(this.date, this.callback, this.listHW);
 
   @override
@@ -202,8 +202,8 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
     }
   }
 
-  getHomeworkInList(List<homework> list) {
-    List<homework> listToReturn = new List<homework>();
+  getHomeworkInList(List<Homework> list) {
+    List<Homework> listToReturn = new List<Homework>();
     listToReturn.clear();
     list.forEach((element) {
       if (element.date == widget.date) {

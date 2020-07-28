@@ -10,7 +10,7 @@ import 'dart:convert';
 import 'package:ynotes/usefulMethods.dart';
 
 //To put grades in db
-putGrades(List<discipline> listD) async {
+putGrades(List<Discipline> listD) async {
   try {
     final dir = await getDirectory();
     await Hive.init("${dir.path}/offline");
@@ -32,6 +32,7 @@ putGrades(List<discipline> listD) async {
 
     await gradesBox.put(now, listD);
     print("The offline grades save succeeded.");
+    await gradesBox.close();
   } catch (e) {
     print("Failed to save grades offline : $e");
     await logFile("Failed to save grades offline" + "\n" + e.toString());
@@ -69,12 +70,12 @@ getGradesFromDB({bool online = true}) async {
       try {
         print("Returned grades from offline");
 
-        List<discipline> listToReturn = gradesBox.getAt(0).cast<discipline>();
+        List<Discipline> listToReturn = gradesBox.getAt(0).cast<Discipline>();
         return listToReturn;
       } catch (e) {
         print("Failed to get grades offline data");
         await logFile("Failed to get grades offline data" + "\n" + e.toString());
-    
+
         return null;
       }
     } else {
@@ -84,7 +85,7 @@ getGradesFromDB({bool online = true}) async {
       } else {
         try {
           //Force the cast
-          List<discipline> listToReturn = gradesBox.getAt(0).cast<discipline>();
+          List<Discipline> listToReturn = gradesBox.getAt(0).cast<Discipline>();
 
           return listToReturn;
         } catch (e) {
@@ -94,6 +95,7 @@ getGradesFromDB({bool online = true}) async {
         }
       }
     }
+    
   } catch (e) {
     print("Getting grades from offline returned null : $e");
     return null;
@@ -101,7 +103,7 @@ getGradesFromDB({bool online = true}) async {
 }
 
 //To put homework in db
-putHomework(List<homework> listHW, {bool add = false}) async {
+putHomework(List<Homework> listHW, {bool add = false}) async {
   try {
     final dir = await getDirectory();
     await Hive.init("${dir.path}/offline");
@@ -125,9 +127,9 @@ putHomework(List<homework> listHW, {bool add = false}) async {
     if (homeworkBox.keys.contains(now) && add == true) {
       print("here");
 
-      List<homework> oldHW = homeworkBox.getAt(0).cast<homework>();
+      List<Homework> oldHW = homeworkBox.getAt(0).cast<Homework>();
 
-      List<homework> combinedList = oldHW + listHW;
+      List<Homework> combinedList = oldHW + listHW;
       combinedList = combinedList.toSet().toList();
 
       await homeworkBox.put(now, combinedList);
@@ -172,12 +174,12 @@ getHomeworkFromDB({bool online = true}) async {
     if (difference.inHours < (batterySaver ? 24 : 6)) {
       try {
         print("Returned homework from offline");
-        List<homework> listToReturn = homeworkBox.getAt(0).cast<homework>();
+        List<Homework> listToReturn = homeworkBox.getAt(0).cast<Homework>();
 
         return listToReturn;
       } catch (e) {
         print("Failed to get homework offline data $e");
-        await logFile("Failed to get homework offline"+"\n"+e.toString());
+        await logFile("Failed to get homework offline" + "\n" + e.toString());
 
         return null;
       }
@@ -188,7 +190,7 @@ getHomeworkFromDB({bool online = true}) async {
       } else {
         try {
           //Force the cast
-          List<homework> listToReturn = homeworkBox.getAt(0).cast<homework>();
+          List<Homework> listToReturn = homeworkBox.getAt(0).cast<Homework>();
 
           return listToReturn;
         } catch (e) {

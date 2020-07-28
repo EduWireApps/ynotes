@@ -56,9 +56,9 @@ class _SummaryPageState extends State<SummaryPage> {
       });
     });
     homeworkListFuture = localApi.getNextHomework();
-   setState(() {
-     doneListFuture= getHomeworkDonePercent();
-   });
+    setState(() {
+      doneListFuture = getHomeworkDonePercent();
+    });
     _disciplinesListFuture = localApi.getGrades();
   }
 
@@ -104,7 +104,6 @@ class _SummaryPageState extends State<SummaryPage> {
                 future: doneListFuture,
                 initialData: 0,
                 builder: (context, snapshot) {
-                
                   return Stack(
                     children: <Widget>[
                       ClipRect(
@@ -199,7 +198,7 @@ class _SummaryPageState extends State<SummaryPage> {
                           child: RefreshIndicator(
                             onRefresh: refreshLocalHomeworkList,
                             child: CupertinoScrollbar(
-                              child: FutureBuilder<List<homework>>(
+                              child: FutureBuilder<List<Homework>>(
                                   future: homeworkListFuture,
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
@@ -306,8 +305,8 @@ class _SummaryPageState extends State<SummaryPage> {
                                     CupertinoSlider(
                                         value: _slider.toDouble(),
                                         min: 1.0,
-                                        max: 10.0,
-                                        divisions: 10,
+                                        max: 11.0,
+                                        divisions: 11,
                                         onChanged: (double newValue) async {
                                           await setIntSetting("summaryQuickHomework", newValue.round());
                                           setState(() {
@@ -317,7 +316,7 @@ class _SummaryPageState extends State<SummaryPage> {
                                     Container(
                                       margin: EdgeInsets.only(top: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
                                       child: AutoSizeText(
-                                        "Devoirs sur :\n" + _slider.toString() + " jour" + (_slider > 1 ? "s" : ""),
+                                        "Devoirs sur :\n" + (_slider.toString() == "11" ? "∞" : _slider.toString()) + " jour" + (_slider > 1 ? "s" : ""),
                                         textAlign: TextAlign.center,
                                         style: TextStyle(fontFamily: "Asap", fontSize: 15, color: isDarkModeEnabled ? Colors.white : Colors.black),
                                       ),
@@ -518,7 +517,7 @@ class _SummaryPageState extends State<SummaryPage> {
 
 //The basic ticket for homeworks with the discipline and the description and a checkbox
 class HomeworkTicket extends StatefulWidget {
-  final homework _homework;
+  final Homework _homework;
   final Color color;
   final Function refreshCallback;
 
@@ -643,12 +642,14 @@ Future<int> getHomeworkDonePercent() async {
   }
 }
 
-Future<List<homework>> getReducedListHomework() async {
+Future<List<Homework>> getReducedListHomework() async {
   int reduce = await getIntSetting("summaryQuickHomework");
-
-  List<homework> localList = await localApi.getNextHomework();
+  if (reduce == 11) {
+    reduce = -1;
+  }
+  List<Homework> localList = await localApi.getNextHomework();
   if (localList != null) {
-    List<homework> listToReturn = List<homework>();
+    List<Homework> listToReturn = List<Homework>();
     localList.forEach((element) {
       var now = DateTime.now();
       var date = element.date;

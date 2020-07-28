@@ -43,7 +43,6 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
     super.initState();
     leftToRightAnimation = AnimationController(duration: Duration(milliseconds: 800), vsync: this);
     rightToLeftAnimation = AnimationController(duration: Duration(milliseconds: 800), vsync: this);
-  
   }
 
   @override
@@ -243,7 +242,8 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                   style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.3),
                 ),
                 onTap: () {
-                  showSpecialtiesChoice(context);
+                  CustomDialogs.showUnimplementedSnackBar(context);
+                  //showSpecialtiesChoice(context);
                 },
               ),
               Divider(),
@@ -264,7 +264,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                   Navigator.of(context).push(router(LogsPage()));
                 },
               ),
-               Divider(),
+              Divider(),
               ListTile(
                 leading: Icon(
                   MdiIcons.restore,
@@ -274,7 +274,6 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                   "Réinitialiser le tutoriel",
                   style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.3),
                 ),
-               
                 onTap: () {
                   HelpDialog.resetEveryHelpDialog();
                 },

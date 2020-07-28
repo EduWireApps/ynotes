@@ -11,7 +11,6 @@ import 'package:ynotes/UI/screens/homeworkPage.dart';
 import 'package:ynotes/UI/screens/gradesPage.dart';
 import 'package:ynotes/UI/screens/spacePage.dart';
 import 'package:ynotes/UI/screens/summaryPage.dart';
-import 'package:ynotes/UI/screens/settingsPage.dart';
 import 'package:ynotes/UI/components/quickMenu.dart';
 import 'package:ynotes/apiManager.dart';
 import 'package:ynotes/background.dart';
@@ -54,7 +53,9 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    
     initPlatformState();
+    
     _overlayEntry = OverlayEntry(
       builder: (BuildContext context) => QuickMenu(removeQuickMenu),
     );
@@ -67,17 +68,40 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
       end: 1.3,
     ).animate(new CurvedAnimation(parent: quickMenuAnimationController, curve: Curves.easeIn, reverseCurve: Curves.easeOut));
     tabController.addListener(_handleTabChange);
+
+    tabController.animation
+      ..addListener(() {
+        setState(() {
+          tabController.index = (tabController.animation.value).round(); //_tabController.animation.value returns double
+        });
+      });
+
     if (firstStart == true) {
       //Get grades before
       disciplinesListFuture = localApi.getGrades();
       //Get homework before
       homeworkListFuture = localApi.getNextHomework();
-      firstStart = false;
+     firstStart = false;
     }
     //removeQuickMenu();
     ConnectionStatusSingleton connectionStatus = ConnectionStatusSingleton.getInstance();
     tabBarconnexion = connectionStatus.connectionChange.listen(connectionChanged);
     isOffline = !connectionStatus.hasConnection;
+  }
+
+  tryToConnect() async {
+
+    getChosenParser();
+    String u = await ReadStorage("username");
+    String p = await ReadStorage("password");
+    String url = await ReadStorage("pronoteurl");
+    String cas = await ReadStorage("pronotecas");
+    var z = await storage.read(key: "agreedTermsAndConfiguredApp");
+    if (u != null && p != null && z != null) {
+      return localApi.login(u, p, url: url, cas: cas);
+    } else {
+      Navigator.of(context).pushReplacement(router(login()));
+    }
   }
 
   void removeQuickMenu() {
@@ -158,7 +182,7 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
                                   child: TabBar(
                                       onTap: (index) {
                                         setState(() {
-                                          _currentIndex = index;
+                                          tabController.index = index;
                                         });
                                       },
                                       controller: tabController,
@@ -181,28 +205,11 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
                                             onLongPressEnd: (_) {},
                                             onTap: () {
                                               setState(() {
-                                                _currentIndex = 0;
+                                                tabController.index = 0;
                                               });
                                               tabController.animateTo(0);
-                                            //removeQuickMenu();
+                                              //removeQuickMenu();
                                             },
-                                            /*onVerticalDragStart: (details) {
-                                              quickMenuAnimationController.forward().then((value) {
-                                                quickMenuAnimationController.reverse();
-                                              });
-
-                                              setState(() {
-                                                isQuickMenuShown = false;
-                                              });
-                                              overlayState = Overlay.of(context);
-
-                                              if (!isQuickMenuShown) {
-                                                isQuickMenuShown = true;
-                                                setState(() {
-                                                  WidgetsBinding.instance.addPostFrameCallback((_) => overlayState.insert(_overlayEntry));
-                                                });
-                                              }
-                                            },*/
                                             onLongPress: () {},
                                             child: Tab(
                                               child: AnimatedContainer(
@@ -241,26 +248,33 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
 
                                         ///Summary page
                                         Tab(
-                                          child: AnimatedContainer(
-                                            margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.15),
-                                            duration: Duration(milliseconds: 170),
-                                            width: (actualIndex == 1 ? MediaQuery.of(context).size.width / 5 * 1.5 : MediaQuery.of(context).size.width / 5 * 0.5),
-                                            child: Align(
-                                              alignment: Alignment.center,
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                children: <Widget>[
-                                                  Icon(
-                                                    Icons.info,
-                                                    color: isDarkModeEnabled ? Colors.white : Colors.black,
-                                                  ),
-                                                  if (actualIndex == 1)
-                                                    Flexible(
-                                                      child: FittedBox(
-                                                        child: Text("Résumé", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black)),
-                                                      ),
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                tabController.index = 1;
+                                              });
+                                            },
+                                            child: AnimatedContainer(
+                                              margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.15),
+                                              duration: Duration(milliseconds: 170),
+                                              width: (actualIndex == 1 ? MediaQuery.of(context).size.width / 5 * 1.5 : MediaQuery.of(context).size.width / 5 * 0.5),
+                                              child: Align(
+                                                alignment: Alignment.center,
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                  children: <Widget>[
+                                                    Icon(
+                                                      Icons.info,
+                                                      color: isDarkModeEnabled ? Colors.white : Colors.black,
                                                     ),
-                                                ],
+                                                    if (actualIndex == 1)
+                                                      Flexible(
+                                                        child: FittedBox(
+                                                          child: Text("Résumé", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black)),
+                                                        ),
+                                                      ),
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                           ),
@@ -274,27 +288,34 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
                                           elevation: 0,
                                           position: BadgePosition.topRight(right: MediaQuery.of(context).size.width / 10 * 0.001, top: MediaQuery.of(context).size.height / 15 * 0.11),
                                           badgeColor: Colors.blue,
-                                          child: Tab(
-                                            child: AnimatedContainer(
-                                              margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.15),
-                                              duration: Duration(milliseconds: 170),
-                                              width: (actualIndex == 2 ? MediaQuery.of(context).size.width / 5 * 1.5 : MediaQuery.of(context).size.width / 5 * 0.5),
-                                              child: Align(
-                                                alignment: Alignment.center,
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                  children: <Widget>[
-                                                    Icon(
-                                                      Icons.format_list_numbered,
-                                                      color: isDarkModeEnabled ? Colors.white : Colors.black,
-                                                    ),
-                                                    if (actualIndex == 2)
-                                                      Flexible(
-                                                        child: FittedBox(
-                                                          child: Text("Notes", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black)),
-                                                        ),
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                tabController.index = 2;
+                                              });
+                                            },
+                                            child: Tab(
+                                              child: AnimatedContainer(
+                                                margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.15),
+                                                duration: Duration(milliseconds: 170),
+                                                width: (actualIndex == 2 ? MediaQuery.of(context).size.width / 5 * 1.5 : MediaQuery.of(context).size.width / 5 * 0.5),
+                                                child: Align(
+                                                  alignment: Alignment.center,
+                                                  child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                    children: <Widget>[
+                                                      Icon(
+                                                        Icons.format_list_numbered,
+                                                        color: isDarkModeEnabled ? Colors.white : Colors.black,
                                                       ),
-                                                  ],
+                                                      if (actualIndex == 2)
+                                                        Flexible(
+                                                          child: FittedBox(
+                                                            child: Text("Notes", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black)),
+                                                          ),
+                                                        ),
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
                                             ),
@@ -306,51 +327,65 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
                                           margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.15),
                                           duration: Duration(milliseconds: 170),
                                           width: (actualIndex == 3 ? MediaQuery.of(context).size.width / 5 * 1.2 : MediaQuery.of(context).size.width / 5 * 0.45),
-                                          child: Tab(
-                                            child: Align(
-                                              alignment: Alignment.center,
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                children: <Widget>[
-                                                  Icon(
-                                                    MdiIcons.viewAgenda,
-                                                    color: isDarkModeEnabled ? Colors.white : Colors.black,
-                                                  ),
-                                                  if (actualIndex == 3)
-                                                    Flexible(
-                                                      child: FittedBox(
-                                                        child: Text("Devoirs", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black)),
-                                                      ),
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                tabController.index = 3;
+                                              });
+                                            },
+                                            child: Tab(
+                                              child: Align(
+                                                alignment: Alignment.center,
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                  children: <Widget>[
+                                                    Icon(
+                                                      MdiIcons.viewAgenda,
+                                                      color: isDarkModeEnabled ? Colors.white : Colors.black,
                                                     ),
-                                                ],
+                                                    if (actualIndex == 3)
+                                                      Flexible(
+                                                        child: FittedBox(
+                                                          child: Text("Devoirs", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black)),
+                                                        ),
+                                                      ),
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                           ),
                                         ),
 
                                         ///Apps page
-                                        AnimatedContainer(
-                                          duration: Duration(milliseconds: 170),
-                                          margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.15),
-                                          width: (actualIndex == 4 ? MediaQuery.of(context).size.width / 5 * 1.5 : MediaQuery.of(context).size.width / 5 * 0.5),
-                                          child: Tab(
-                                            child: Align(
-                                              alignment: Alignment.center,
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                children: <Widget>[
-                                                  Icon(
-                                                    Icons.apps,
-                                                    color: isDarkModeEnabled ? Colors.white : Colors.black,
-                                                  ),
-                                                  if (actualIndex == 4)
-                                                    Flexible(
-                                                      child: FittedBox(
-                                                        fit: BoxFit.fitWidth,
-                                                        child: Text("Applications", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black)),
-                                                      ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            setState(() {
+                                              tabController.index = 4;
+                                            });
+                                          },
+                                          child: AnimatedContainer(
+                                            duration: Duration(milliseconds: 170),
+                                            margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.15),
+                                            width: (actualIndex == 4 ? MediaQuery.of(context).size.width / 5 * 1.5 : MediaQuery.of(context).size.width / 5 * 0.5),
+                                            child: Tab(
+                                              child: Align(
+                                                alignment: Alignment.center,
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                  children: <Widget>[
+                                                    Icon(
+                                                      Icons.apps,
+                                                      color: isDarkModeEnabled ? Colors.white : Colors.black,
                                                     ),
-                                                ],
+                                                    if (actualIndex == 4)
+                                                      Flexible(
+                                                        child: FittedBox(
+                                                          fit: BoxFit.fitWidth,
+                                                          child: Text("Applications", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black)),
+                                                        ),
+                                                      ),
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                           ),
@@ -366,80 +401,61 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
                   ),
                 ),
               ),
-              body: GestureDetector(
-                onTap: () {
-                  //removeQuickMenu();
-                },
-                child: Container(
-                  child: Stack(
-                    children: <Widget>[
-                      Stack(fit: StackFit.expand, children: [
-                        Positioned(
-                          left: 0.0,
-                          right: 0.0,
-                          child: AnimatedContainer(
-                            height: isOffline ? screenSize.size.height / 10 * 0.4 : 0,
-                            curve: Interval(0.3, 1.0, curve: Curves.fastOutSlowIn),
-                            duration: Duration(milliseconds: 800),
-                            child: Container(
-                              color: !isOffline ? Colors.greenAccent : Colors.deepOrange,
-                              child: Center(
-                                child: Text("${!isOffline ? 'Vous avez été reconnecté' : 'Vous êtes hors-ligne'}"),
+              body: Container(
+                child: Stack(
+                  children: <Widget>[
+                    Stack(fit: StackFit.expand, children: [
+                      Positioned(
+                        left: 0.0,
+                        right: 0.0,
+                        child: AnimatedContainer(
+                          height: (isOffline || !localApi.loggedIn) ? screenSize.size.height / 10 * 0.4 : 0,
+                          curve: Interval(0.3, 1.0, curve: Curves.fastOutSlowIn),
+                          duration: Duration(milliseconds: 800),
+                          child: Container(
+                            width: screenSize.size.width,
+                            color: !isOffline ? (!localApi.loggedIn) ? Colors.grey.shade300 : Colors.greenAccent : Colors.deepOrange.shade200,
+                            child: Center(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  Container(
+                                      margin: EdgeInsets.only(right: screenSize.size.width / 5 * 0.1),
+                                      height: screenSize.size.height / 10 * 0.25,
+                                      width: screenSize.size.height / 10 * 0.25,
+                                      child: isOffline ? Icon(MdiIcons.networkStrengthOff) : CircularProgressIndicator(backgroundColor: Colors.grey)),
+                                  Container(child: Text((!isOffline && localApi.loggedIn) ? 'Vous avez été reconnecté' : (localApi.loggedIn ? 'Vous êtes hors-ligne' : 'Connexion...'))),
+                                ],
                               ),
                             ),
                           ),
                         ),
-                      ]),
-                      NotificationListener(
-                        onNotification: (scrollNotification) {
-                          if (scrollNotification is ScrollUpdateNotification) {
-                            _onStartScroll(scrollNotification.metrics);
-                          }
-                          return true;
-                        },
-                        child: TabBarView(controller: tabController, children: [
-                          SpacePage(),
-                          SummaryPage(tabController: tabController),
-                          SingleChildScrollView(physics: NeverScrollableScrollPhysics(), child: GradesPage()),
-                          SingleChildScrollView(physics: NeverScrollableScrollPhysics(), child: HomeworkPage()),
-                          AnimatedContainer(
-                              duration: Duration(milliseconds: 200),
-                              margin: EdgeInsets.only(top: isOffline ? screenSize.size.height / 10 * 0.4 : 0),
-                              child: AppsPage(
-                                rootcontext: this.context,
-                              ))
-                        ]),
                       ),
-                      if (isQuickMenuShown)
-                        AnimatedContainer(
-                          duration: Duration(milliseconds: 800),
-                          color: isQuickMenuShown ? Colors.black.withOpacity(0.5) : Colors.black.withOpacity(0),
-                          height: MediaQuery.of(context).size.height,
-                          width: MediaQuery.of(context).size.width,
-                        ),
-                    ],
-                  ),
+                    ]),
+                    TabBarView(controller: tabController, children: [
+                      SpacePage(),
+                      SummaryPage(tabController: tabController),
+                      SingleChildScrollView(physics: NeverScrollableScrollPhysics(), child: GradesPage()),
+                      SingleChildScrollView(physics: NeverScrollableScrollPhysics(), child: HomeworkPage()),
+                      AnimatedContainer(
+                          duration: Duration(milliseconds: 200),
+                          margin: EdgeInsets.only(top: isOffline ? screenSize.size.height / 10 * 0.4 : 0),
+                          child: AppsPage(
+                            rootcontext: this.context,
+                          ))
+                    ]),
+                    if (isQuickMenuShown)
+                      AnimatedContainer(
+                        duration: Duration(milliseconds: 800),
+                        color: isQuickMenuShown ? Colors.black.withOpacity(0.5) : Colors.black.withOpacity(0),
+                        height: MediaQuery.of(context).size.height,
+                        width: MediaQuery.of(context).size.width,
+                      ),
+                  ],
                 ),
               ))),
     );
-  }
-
-//Function to start the animation of the tab during tab changing
-  _onStartScroll(ScrollMetrics metrics) {
-    if (tabController.indexIsChanging == false) {
-      if (tabController.offset > 0.8) {
-        setState(() {
-          actualIndex = tabController.index + 1;
-          tabController.index = tabController.index + 1;
-        });
-      }
-      if (tabController.offset < -0.8) {
-        setState(() {
-          actualIndex = tabController.index - 1;
-          tabController.index = tabController.index - 1;
-        });
-      }
-    }
   }
 
   Future<void> initPlatformState() async {

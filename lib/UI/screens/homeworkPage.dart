@@ -28,7 +28,7 @@ import 'package:file_picker/file_picker.dart';
 import 'homeworkPageWidgets/HWfirstPage.dart';
 import 'homeworkPageWidgets/HWsettingsPage.dart';
 
-Future<List<homework>> homeworkListFuture;
+Future<List<Homework>> homeworkListFuture;
 PageController _pageControllerHW;
 
 class HomeworkPage extends StatefulWidget {
@@ -45,7 +45,7 @@ bool isPinnedDateToUse = false;
 //Public list of dates to be easily deleted
 List dates = List();
 //Only use to add homework to database
-List<homework> localListHomeworkDateToUse;
+List<Homework> localListHomeworkDateToUse;
 
 class _HomeworkPageState extends State<HomeworkPage> {
   void initState() {
@@ -247,7 +247,7 @@ class _HomeworkPageState extends State<HomeworkPage> {
   }
 }
 
-getDates(List<homework> list) {
+getDates(List<Homework> list) {
   List<DateTime> listtoReturn = List<DateTime>();
   list.forEach((element) {
     if (!listtoReturn.contains(element.date)) {
@@ -259,7 +259,7 @@ getDates(List<homework> list) {
 }
 
 //Function that returns string like "In two weeks" with time relation
-getWeeksRelation(int index, List<homework> list) {
+getWeeksRelation(int index, List<Homework> list) {
   try {
     DateTime dateToUse = list[index].date;
 
@@ -372,7 +372,7 @@ getWeeksRelation(int index, List<homework> list) {
 
 //Represents the element containing details about homework
 class HomeworkElement extends StatefulWidget {
-  final homework homeworkForThisDay;
+  final Homework homeworkForThisDay;
   final bool initialExpansion;
   HomeworkElement(this.homeworkForThisDay, this.initialExpansion);
 

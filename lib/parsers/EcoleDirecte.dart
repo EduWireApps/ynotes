@@ -50,6 +50,8 @@ List<String> CoolcolorList = ["#f07aa0", "#17d0c9", "#a3f7bf", "#cecece", "#ffa4
 
 //The ecole directe api extended from the apiManager.dart API class
 class APIEcoleDirecte extends API {
+
+
   @override
   // TODO: implement listApp
   List<App> get listApp => [App("Messagerie", MdiIcons.mail, route: "mail"), App("Cloud", Icons.cloud, route: "cloud")];
@@ -103,6 +105,7 @@ class APIEcoleDirecte extends API {
         logFile(e.toString());
         
         }
+        this.loggedIn = true;
         return "Bienvenue ${actualUser[0].toUpperCase()}${actualUser.substring(1).toLowerCase()} !";
       }
       //Return an error
@@ -114,10 +117,14 @@ class APIEcoleDirecte extends API {
       return "Erreur";
     }
   }
-
+ @override
+  Future<List<Period>> getPeriods() {
+    // TODO: implement getPeriods
+    throw UnimplementedError();
+  }
   @override
 //Getting grades
-  Future<List<discipline>> getGrades({bool forceReload}) async {
+  Future<List<Discipline>> getGrades({bool forceReload}) async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     var offlineGrades = await getGradesFromDB(online: connectivityResult != ConnectivityResult.none);
 
@@ -130,7 +137,7 @@ class APIEcoleDirecte extends API {
         getGrades(forceReload: true);
       }
 
-      List<discipline> grades = await getGradesFromDB();
+      List<Discipline> grades = await getGradesFromDB();
       await refreshDisciplinesListColors(grades);
       return grades;
     } else {
@@ -157,7 +164,7 @@ class APIEcoleDirecte extends API {
 
     if (response.statusCode == 200) {
       //The list of dates to fetch
-      List<homework> local = List<homework>();
+      List<Homework> local = List<Homework>();
       Map<String, dynamic> req = json.decode(utf8.decode(response.bodyBytes));
       if (req['code'] == 200) {
         print("Homework request succeed");
@@ -189,7 +196,7 @@ class APIEcoleDirecte extends API {
   }
 
 //Get dates of the the next homework (based on the EcoleDirecte API)
-  Future<List<homework>> getNextHomework({bool forceReload}) async {
+  Future<List<Homework>> getNextHomework({bool forceReload}) async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     var offlineHomework = await getHomeworkFromDB(online: connectivityResult != ConnectivityResult.none);
 
@@ -214,10 +221,10 @@ class APIEcoleDirecte extends API {
     }
   }
 
-  Future<List<homework>> asyncTask(List<DateTime> datesList) async {
-    List<homework> listToReturn = List<homework>();
+  Future<List<Homework>> asyncTask(List<DateTime> datesList) async {
+    List<Homework> listToReturn = List<Homework>();
     await Future.forEach(datesList, (date) async {
-      List<homework> list;
+      List<Homework> list;
       list = await getHomeworkFor(date);
 
       list.forEach((h) {
@@ -230,7 +237,7 @@ class APIEcoleDirecte extends API {
   }
 
 //Get homeworks for a specific date
-  Future<List<homework>> getHomeworkFor(DateTime dateHomework) async {
+  Future<List<Homework>> getHomeworkFor(DateTime dateHomework) async {
     //Autorefresh token
     initializeDateFormatting();
     if (dateHomework != null) {
@@ -247,7 +254,7 @@ class APIEcoleDirecte extends API {
       });
       if (response.statusCode == 200) {
         //The list of dates to fetch
-        List<homework> homeworkList = List<homework>();
+        List<Homework> homeworkList = List<Homework>();
         homeworkList.clear();
         Map<String, dynamic> req = json.decode(utf8.decode(response.bodyBytes));
         if (req['code'] == 200) {
@@ -260,8 +267,8 @@ class APIEcoleDirecte extends API {
               bool rendreEnLigne = false;
 
               bool interrogation = false;
-              List<document> documentsAFaire = List<document>();
-              List<document> documentsContenuDeCours = List<document>();
+              List<Document> documentsAFaire = List<Document>();
+              List<Document> documentsContenuDeCours = List<Document>();
               try {
                 encodedContent = element['aFaire']['contenu'];
                 rendreEnLigne = element['aFaire']['rendreEnLigne'];
@@ -270,14 +277,14 @@ class APIEcoleDirecte extends API {
                 List docs = element['aFaire']['documents'];
                 if (docs != null) {
                   docs.forEach((e) {
-                    documentsAFaire.add(new document(e["libelle"], e["id"], e["type"], e["taille"]));
+                    documentsAFaire.add(new Document(e["libelle"], e["id"], e["type"], e["taille"]));
                   });
                 }
 
                 List docsContenu = element['contenuDeSeance']['documents'];
                 if (docsContenu != null) {
                   docsContenu.forEach((e) {
-                    documentsContenuDeCours.add(new document(e["libelle"], e["id"], e["type"], e["taille"]));
+                    documentsContenuDeCours.add(new Document(e["libelle"], e["id"], e["type"], e["taille"]));
                   });
                 }
                 interrogation = element['interrogation'];
@@ -291,7 +298,7 @@ class APIEcoleDirecte extends API {
 
               decodedContenuDeSeance = utf8.decode(base64.decode(aFaireEncoded));
 
-              homeworkList.add(new homework(
+              homeworkList.add(new Homework(
                 element['matiere'],
                 element['codeMatiere'],
                 element['id'].toString(),
@@ -324,11 +331,11 @@ class APIEcoleDirecte extends API {
   Future<bool> testNewGrades() async {
     try {
       //Getting the offline count of grades
-      List<grade> listOfflineGrades = getAllGrades(await getGradesFromDB(), overrideLimit: true);
+      List<Grade> listOfflineGrades = getAllGrades(await getGradesFromDB(), overrideLimit: true);
 
       print("Offline length is ${listOfflineGrades.length}");
       //Getting the online count of grades
-      List<grade> listOnlineGrades = getAllGrades(await getGradesFromInternet(), overrideLimit: true);
+      List<Grade> listOnlineGrades = getAllGrades(await getGradesFromInternet(), overrideLimit: true);
       print("Online length is ${listOnlineGrades.length}");
       if (listOfflineGrades.length < listOnlineGrades.length) {
         return true;
@@ -382,6 +389,8 @@ class APIEcoleDirecte extends API {
         }
     }
   }
+
+ 
 
   ///END OF THE API CLASS
 }
@@ -658,7 +667,7 @@ refreshToken() async {
 }
 
 getGradesFromInternet() async {
-  List<discipline> disciplinesList = List<discipline>();
+  List<Discipline> disciplinesList = List<Discipline>();
   //Check and autorefresh the token
   await testToken();
   String id = await storage.read(key: "userID");
@@ -677,7 +686,7 @@ getGradesFromInternet() async {
     if (req['code'] == 200) {
       //Get all the marks
       List data = req['data']['notes'];
-      List<grade> gradesList = List<grade>();
+      List<Grade> gradesList = List<Grade>();
 
       //Get all the disciplines
       List periodes = req['data']['periodes'];
@@ -697,7 +706,7 @@ getGradesFromInternet() async {
           });
 //Making objects
           if (element['codeSousMatiere'] == "") {
-            disciplinesList.add(discipline.fromJson(element, profsNoms, element['codeMatiere'], periodeElement["idPeriode"], Colors.blue, periodeElement["ensembleMatieres"]["moyenneGenerale"], periodeElement["ensembleMatieres"]["moyenneMax"],
+            disciplinesList.add(Discipline.fromJson(element, profsNoms, element['codeMatiere'], periodeElement["idPeriode"], Colors.blue, periodeElement["ensembleMatieres"]["moyenneGenerale"], periodeElement["ensembleMatieres"]["moyenneMax"],
                 periodeElement["ensembleMatieres"]["moyenneClasse"]));
           } else {
             try {
@@ -709,12 +718,12 @@ getGradesFromInternet() async {
         });
       });
       disciplinesList.forEach((f) {
-        final List<grade> localGradesList = List<grade>();
+        final List<Grade> localGradesList = List<Grade>();
 
         data.forEach((element) {
           if (element["codeMatiere"] == f.codeMatiere && element["codePeriode"] == f.periode.toString()) {
             //print("IT WAS OK" + element.toString());
-            localGradesList.add(grade.fromJson(element));
+            localGradesList.add(Grade.fromJson(element));
           }
         });
 

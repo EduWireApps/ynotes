@@ -48,7 +48,7 @@ class Client {
 
   var week;
 
-  var periods_;
+  var localPeriods;
 
   bool _expired;
 
@@ -67,8 +67,8 @@ class Client {
     this.encryption = _Encryption();
     this.encryption.aes_iv = this.communication.encryption.aes_iv;
     await this._login();
-    this.periods_ = null;
-    this.periods_ = this.periods();
+    this.localPeriods = null;
+    this.localPeriods = this.periods();
     this.week = this._get_week(DateTime.now());
     this._expired = true;
   }
@@ -98,7 +98,7 @@ class Client {
 
     this.attributes = attributesandfunctions[0];
     this.func_options = attributesandfunctions[1];
-    printWrapped(this.attributes.toString());
+
     if (this.attributes.toString().contains("e") && this.attributes.toString().contains("f")) {
       print("LOGIN AS ENT");
       this.ent = true;
@@ -119,7 +119,7 @@ class Client {
     this.start_day = inputFormat.parse(this.func_options['donneesSec']['donnees']['General']['PremierLundi']['V']);
     this.week = this._get_week(DateTime.now());
 
-    this.periods_ = this.periods;
+    this.localPeriods = this.periods;
     this.logged_in = await this._login();
     this._expired = false;
   }
@@ -255,9 +255,9 @@ class Client {
 
     var response = await this.communication.post("PageCahierDeTexte", data: json_data);
     var h_list = response['donneesSec']['donnees']['ListeTravauxAFaire']['V'];
-    List<localapi.homework> listHW = List();
+    List<localapi.Homework> listHW = List();
     h_list.forEach((h) {
-      listHW.add(localapi.homework(
+      listHW.add(localapi.Homework(
           h["Matiere"]["V"]["L"], h["Matiere"]["V"]["N"], h["N"], h["descriptif"]["V"], null, DateFormat("dd/MM/yyyy").parse(h["PourLe"]["V"]), DateFormat("dd/MM/yyyy").parse(h["DonneLe"]["V"]), h["TAFFait"], false, false, null, null, ""));
     });
     return listHW;
@@ -281,7 +281,7 @@ class Client {
 
     List toReturn = List();
     json.forEach((j) {
-      toReturn.add(Period(this, j));
+      toReturn.add(PronotePeriod(this, j));
     });
     return toReturn;
   }
@@ -393,8 +393,7 @@ class _Communication {
   post(String function_name, {var data, bool recursive = false, var decryption_change = null}) async {
     if (data != null) {
       if (data["_Signature_"] != null && !this.authorized_onglets.toString().contains(data['_Signature_']['onglet'].toString())) {
-        print(data['_Signature_']['onglet']);
-        print(this.authorized_onglets.toString());
+
         throw ('Action not permitted. (onglet is not normally accessible)');
       }
     }
@@ -571,13 +570,13 @@ class _Encryption {
     print(this.aes_key.toString());
     final aesEncrypter = Encrypter(AES(key, mode: AESMode.cbc, padding: "PKCS7"));
     //generate AES CBC block encrypter with key and PKCS7 padding
-    print(data);
+
     print(this.aes_iv);
 
     try {
       return aesEncrypter.decrypt64(base64.encode(data), iv: this.aes_iv);
     } catch (e) {
-      print("Error during decryption : $e");
+      throw("Error during decryption : $e");
     }
   }
 
@@ -641,7 +640,7 @@ class KeepAlive {
 
 Uint8List int32BigEndianBytes(int value) => Uint8List(4)..buffer.asByteData().setInt32(0, value, Endian.big);
 
-class Period {
+class PronotePeriod {
   DateTime end;
 
   DateTime start;
@@ -668,7 +667,7 @@ class Period {
   // end : str
   //     date on which the period ends
 
-  Period(Client client, Map parsed_json) {
+  PronotePeriod(Client client, Map parsed_json) {
     this._client = client;
     this.id = parsed_json['N'];
     this.name = parsed_json['L'];
@@ -684,7 +683,7 @@ class Period {
       return value;
     }
   }
-
+  
   average(var json, var codeMatiere) {
     //The services for the period
     List services = json['donneesSec']['donnees']['listeServices']['V'];
@@ -692,12 +691,12 @@ class Period {
     var averageData = services.firstWhere((element) => element["N"] == codeMatiere);
     //print(averageData["moyEleve"]["V"]);
     //Return the eleve average, the max average, and the class average
-    return [averageData["moyEleve"]["V"], averageData["moyMax"]["V"], averageData["moyClasse"]["V"]];
+    return [gradeTranslate(averageData["moyEleve"]["V"]), gradeTranslate(averageData["moyMax"]["V"]), gradeTranslate(averageData["moyClasse"]["V"])];
   }
 
   grades(int codePeriode) async {
     //Get grades from the period.
-    List<grade> list = List();
+    List<Grade> list = List();
     var json_data = {
       'donnees': {
         'Periode': {'N': this.id, 'L': this.name}
@@ -706,15 +705,16 @@ class Period {
     };
     var response = await _client.communication.post('DernieresNotes', data: json_data);
     var grades = response['donneesSec']['donnees']['listeDevoirs']['V'];
-    this.moyenneGenerale = response['donneesSec']['donnees']['moyGenerale']['V'];
-    this.moyenneGeneraleClasse = response['donneesSec']['donnees']['moyGeneraleClasse']['V'];
-    printWrapped(response['donneesSec']['donnees'].toString());
+    this.moyenneGenerale = gradeTranslate(response['donneesSec']['donnees']['moyGenerale']['V']);
+    this.moyenneGeneraleClasse = gradeTranslate(response['donneesSec']['donnees']['moyGeneraleClasse']['V']);
+
     var other = List();
     grades.forEach((element) async {
-      list.add(grade(
+      list.add(Grade(
           valeur: this.gradeTranslate(element["note"]["V"]),
           devoir: element["commentaire"],
-          codePeriode: "A00" + codePeriode.toString(),
+          codePeriode: this.id,
+          nomPeriode: this.name,
           codeMatiere: element["service"]["V"]["N"],
           codeSousMatiere: null,
           libelleMatiere: element["service"]["V"]["L"],

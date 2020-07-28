@@ -18,7 +18,7 @@ import 'package:ynotes/main.dart';
 
 import 'gradesChart.dart';
 
-void gradesModalBottomSheet(context, grade grade, discipline discipline, Function callback, var widget, Function colorPicker) {
+void gradesModalBottomSheet(context, Grade grade, Discipline discipline, Function callback, var widget, Function colorPicker) {
   MediaQueryData screenSize = MediaQuery.of(context);
   Color colorGroup;
   if (widget.disciplinevar == null) {
@@ -32,12 +32,12 @@ void gradesModalBottomSheet(context, grade grade, discipline discipline, Functio
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).primaryColorDark,
       context: context,
       builder: (BuildContext bc) {
-        print(ThemeUtils.textColor(bc));
+
         return new Container(
-            height: (screenSize.size.height / 10 * 6),
+            height: (screenSize.size.height / 10 * 3.5),
             padding: EdgeInsets.all(0),
             child: new Stack(
               children: <Widget>[
@@ -58,6 +58,7 @@ void gradesModalBottomSheet(context, grade grade, discipline discipline, Functio
                       children: <Widget>[
                         Text(
                           grade.valeur != null ? grade.valeur : "-",
+                          textAlign: TextAlign.center,
                           style: TextStyle(color: isDarkModeEnabled ? Colors.white : Colors.black, fontFamily: "Asap", fontWeight: FontWeight.w600, fontSize: (screenSize.size.width / 5) * 0.3),
                         ),
                         Container(
@@ -116,7 +117,7 @@ void gradesModalBottomSheet(context, grade grade, discipline discipline, Functio
                     ),
                   ),
                 ),
-                Align(alignment: Alignment.center, child: Container(height: (screenSize.size.height / 10 * 4), width: screenSize.size.width, child: gradesChart())),
+                //Align(alignment: Alignment.center, child: Container(height: (screenSize.size.height / 10 * 4), width: screenSize.size.width, child: gradesChart())),
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Container(
@@ -130,7 +131,7 @@ void gradesModalBottomSheet(context, grade grade, discipline discipline, Functio
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              Text("Moyenne de la classe :", style: TextStyle(fontFamily: "Asap")),
+                              Text("Moyenne de la classe :", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black)),
                               Container(
                                 margin: EdgeInsets.only(left: (screenSize.size.width / 5) * 0.2),
                                 decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Theme.of(context).primaryColor),
@@ -148,7 +149,7 @@ void gradesModalBottomSheet(context, grade grade, discipline discipline, Functio
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              Text("Type de devoir :", style: TextStyle(fontFamily: "Asap")),
+                              Text("Type de devoir :", style: TextStyle(fontFamily: "Asap", color:  isDarkModeEnabled ? Colors.white : Colors.black)),
                               Container(
                                 margin: EdgeInsets.only(left: (screenSize.size.width / 5) * 0.2),
                                 decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Theme.of(context).primaryColor),
@@ -166,7 +167,7 @@ void gradesModalBottomSheet(context, grade grade, discipline discipline, Functio
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              Text("Date du devoir :", style: TextStyle(fontFamily: "Asap")),
+                              Text("Date du devoir :", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black)),
                               Container(
                                 margin: EdgeInsets.only(left: (screenSize.size.width / 5) * 0.2),
                                 decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Theme.of(context).primaryColor),
@@ -191,7 +192,7 @@ void gradesModalBottomSheet(context, grade grade, discipline discipline, Functio
 }
 
 ///Bottom windows with some infos on the discipline and the possibility to change the discipline color
-void disciplineModalBottomSheet(context, discipline discipline, Function callback, var widget, Function colorPicker) {
+void disciplineModalBottomSheet(context, Discipline discipline, Function callback, var widget, Function colorPicker) {
   Color colorGroup;
   if (widget.disciplinevar == null) {
     colorGroup = Colors.blueAccent;

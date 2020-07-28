@@ -509,7 +509,7 @@ class _page4State extends State<page4> {
                   height: screenSize.size.height / 10 * 3,
                   width: screenSize.size.width / 5 * 4.8,
                   decoration: BoxDecoration(borderRadius: BorderRadius.circular(11), color: Theme.of(context).primaryColor),
-                  child: FutureBuilder<List<discipline>>(
+                  child: FutureBuilder<List<Discipline>>(
                       future: carouselDisciplineListFuture,
                       builder: (BuildContext context, snapshot) {
                         List disciplines = List();
