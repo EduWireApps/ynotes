@@ -25,7 +25,6 @@ class _LoadingPageState extends State<LoadingPage> {
   String z;
   @override
   void initState() {
-    tryToConnect();
     getDarkModeSetting();
   }
 
@@ -64,7 +63,6 @@ class _LoadingPageState extends State<LoadingPage> {
           loopAnimation: 'Load',
           endAnimation: 'Ended',
           onSuccess: (value) {
-            
             Navigator.of(context).pushReplacement(router(homePage()));
           },
           onError: (__, _) async {

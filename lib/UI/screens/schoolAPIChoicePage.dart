@@ -148,7 +148,7 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
                         );
                       },
                       child: Material(
-                        color: Color(0xff4BA55D),
+                        color: Color(0xff61b872),
                         borderRadius: BorderRadius.circular(25),
                         child: InkWell(
                           onTap: () {

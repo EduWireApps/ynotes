@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
@@ -20,8 +22,9 @@ import 'package:ynotes/UI/screens/homeworkPage.dart';
 import '../../apiManager.dart';
 import '../../offline.dart';
 
-int done = 50;
 
+
+///First page to access quickly to last grades, homework and 
 class SummaryPage extends StatefulWidget {
   final TabController tabController;
 
@@ -99,7 +102,11 @@ class _SummaryPageState extends State<SummaryPage> {
           Container(
             width: screenSize.size.width / 5 * 4.5,
             height: (screenSize.size.height / 10 * 8.8) / 10 * 2,
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(12), color: Theme.of(context).primaryColor),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              color: Theme.of(context).primaryColor,
+             
+            ),
             child: FutureBuilder<int>(
                 future: doneListFuture,
                 initialData: 0,

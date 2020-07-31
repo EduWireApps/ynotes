@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/UI/screens/homeworkPage.dart';
+
 class HomeworkSettingPage extends StatefulWidget {
   final Function animateToPage;
 
@@ -9,7 +10,6 @@ class HomeworkSettingPage extends StatefulWidget {
   State<StatefulWidget> createState() {
     return _HomeworkSettingPageState();
   }
-  
 }
 
 class _HomeworkSettingPageState extends State<HomeworkSettingPage> {
@@ -20,7 +20,11 @@ class _HomeworkSettingPageState extends State<HomeworkSettingPage> {
         children: <Widget>[
           Text(
             "Paramètres des devoirs",
-            style: TextStyle(fontSize: screenSize.size.height / 10 * 0.3),
+            style: TextStyle(
+              fontSize: screenSize.size.height / 10 * 0.3,
+              fontFamily: "Asap",
+              color: isDarkModeEnabled ? Colors.white : Colors.black,
+            ),
           ),
           SizedBox(
             height: screenSize.size.height / 10 * 0.3,
@@ -34,8 +38,7 @@ class _HomeworkSettingPageState extends State<HomeworkSettingPage> {
                   title: Text("Étendre les devoirs",
                       style: TextStyle(
                           fontFamily: "Asap",
-                          color:
-                              isDarkModeEnabled ? Colors.white : Colors.black,
+                          color: isDarkModeEnabled ? Colors.white : Colors.black,
                           fontSize: screenSize.size.height / 10 * 0.25)),
                   subtitle: Text(
                     "Afficher les détails des devoirs par défaut.",

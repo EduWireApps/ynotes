@@ -20,8 +20,9 @@ import 'package:ynotes/parsers/EcoleDirecte.dart';
 import 'package:ynotes/parsers/Pronote.dart';
 import 'package:ynotes/background.dart';
 import 'package:uuid/uuid.dart';
-
+import 'package:wiredash/wiredash.dart';
 import 'UI/screens/schoolAPIChoicePage.dart';
+import 'multilanguage.dart';
 
 var uuid = Uuid();
 
@@ -47,9 +48,11 @@ void backgroundFetchHeadlessTask(String taskId) async {
   print("Starting the headless closed bakground task");
   var initializationSettingsAndroid = new AndroidInitializationSettings('newgradeicon');
   var initializationSettingsIOS = new IOSInitializationSettings();
-  var initializationSettings = new InitializationSettings(initializationSettingsAndroid, initializationSettingsIOS);
+  var initializationSettings =
+      new InitializationSettings(initializationSettingsAndroid, initializationSettingsIOS);
   flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
-  flutterLocalNotificationsPlugin.initialize(initializationSettings, onSelectNotification: BackgroundServices.onSelectNotification);
+  flutterLocalNotificationsPlugin.initialize(initializationSettings,
+      onSelectNotification: BackgroundServices.onSelectNotification);
 //Ensure that grades notification are enabled and battery saver disabled
   if (await getSetting("notificationNewGrade") && !await getSetting("batterySaver")) {
     if (await mainTestNewGrades()) {
@@ -82,10 +85,10 @@ mainTestNewGrades() async {
     getChosenParser();
     List<Grade> listOnlineGrades = List<Grade>();
     if (chosenParser == 0) {
-      List<Grade> listOnlineGrades = getAllGrades(await getGradesFromInternet(), overrideLimit: true);
+      listOnlineGrades = getAllGrades(await getGradesFromInternet(), overrideLimit: true);
     }
     if (chosenParser == 1) {
-      List<Grade> listOnlineGrades = getAllGrades(await getPronoteGradesFromInternet(), overrideLimit: true);
+      listOnlineGrades = getAllGrades(await getPronoteGradesFromInternet(), overrideLimit: true);
     }
 
     print("Online length is ${listOnlineGrades.length}");
@@ -135,7 +138,9 @@ Future main() async {
       stackTrace: details.stack,
     );
   };
-
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      systemNavigationBarColor: isDarkModeEnabled ? Color(0xff414141) : Color(0xffF3F3F3),
+      statusBarColor: Colors.transparent));
   ConnectionStatusSingleton connectionStatus = ConnectionStatusSingleton.getInstance();
   connectionStatus.initialize();
   runZoned<Future<Null>>(() async {
@@ -143,6 +148,7 @@ Future main() async {
       ChangeNotifierProvider<AppStateNotifier>(
         child: HomeApp(),
         create: (BuildContext context) {
+          MultiLanguage.setLanguage(path: Languages.fr, context: context);
           return AppStateNotifier();
         },
       ),
@@ -153,28 +159,42 @@ Future main() async {
 }
 
 class HomeApp extends StatelessWidget {
+  
+  final _navigatorKey = GlobalKey<NavigatorState>();
+
   @override
   Widget build(BuildContext context) {
     return Consumer<AppStateNotifier>(
       builder: (context, appState, child) {
-        return MaterialApp(
-          localizationsDelegates: [
-            // ... app-specific localization delegate[s] here
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: [
-            const Locale('en'), // English (could be useless ?)
-            const Locale('fr'), //French
+        return Wiredash(
+          projectId: "ynotes-giw0qs2",
+          secret: "y9zengsvskpriizwniqxr6vxa1ka1n6u",
+          navigatorKey: _navigatorKey,
+          options: WiredashOptionsData(
+    /// You can set your own locale to override device default (`window.locale` by default)
+    locale: const Locale.fromSubtags(languageCode: 'fr'),
+    showDebugFloatingEntryPoint: false
+  ),
+          child: MaterialApp(
+            localizationsDelegates: [
+              // ... app-specific localization delegate[s] here
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: [
+              const Locale('en'), // English (could be useless ?)
+              const Locale('fr'), //French
 
-            // ... other locales the app supports
-          ],
-          debugShowCheckedModeBanner: false,
-          theme: lightTheme,
-          darkTheme: darkTheme,
-          home: loader(),
-          themeMode: appState.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+              // ... other locales the app supports
+            ],
+            debugShowCheckedModeBanner: false,
+            theme: lightTheme,
+             navigatorKey: _navigatorKey,
+            darkTheme: darkTheme,
+            home: loader(),
+            themeMode: appState.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+          ),
         );
       },
     );

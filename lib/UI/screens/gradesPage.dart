@@ -256,7 +256,8 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
     double counter = 0;
     disciplineList.where((i) => i.periode == periodeToUse).forEach((f) {
       f.gradesList.forEach((z) {
-        if (z.letters == false && z.nonSignificatif == false) {
+   
+        if (z.letters == false && z.nonSignificatif == false && z.nomPeriode==periodeToUse) {
           average += double.tryParse(z.valeur.replaceAll(',', '.')) * 20 / double.tryParse(z.noteSur.replaceAll(',', '.')) * double.tryParse(z.coef.replaceAll(',', '.'));
           counter += double.tryParse(z.coef.replaceAll(',', '.'));
         }
@@ -409,14 +410,17 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
     ///Button container
     return Container(
       height: screenSize.size.height / 10 * 8.8,
+      
       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
         Container(
           padding: EdgeInsets.only(top: (screenSize.size.height / 10 * 8.8) / 10 * 1 / 6),
+          height: screenSize.size.height / 10 * 0.7,
           width: screenSize.size.width / 5 * 4.7,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
             border: Border.all(width: 0.00000, color: Colors.transparent),
             color: Theme.of(context).primaryColor,
+            
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -442,8 +446,7 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
                         child: FutureBuilder<List<Period>>(
                             future: localApi.getPeriods(),
                             builder: (context, snapshot) {
-                              
-                              return (snapshot.data == null || !snapshot.hasData || periodeToUse==null || snapshot.data.length==0)
+                              return (snapshot.data == null || !snapshot.hasData || periodeToUse == "" || snapshot.data.length == 0)
                                   ? Container()
                                   : DropdownButtonHideUnderline(
                                       child: DropdownButton<String>(
@@ -1006,7 +1009,6 @@ class _GradesGroupState extends State<GradesGroup> {
       });
       return toReturn;
     } else {
- 
       return null;
     }
   }

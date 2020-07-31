@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart';
+import 'package:flutter/services.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/UI/screens/homeworkPage.dart';
@@ -21,7 +22,7 @@ import 'package:ynotes/parsers/EcoleDirecte.dart';
 import '../../usefulMethods.dart';
 import 'appsPage.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-
+///Build a bottom tabbar and tabs
 class TabBuilder extends StatefulWidget {
   State<StatefulWidget> createState() {
     return _TabBuilderState();
@@ -32,6 +33,7 @@ class TabBuilder extends StatefulWidget {
 
 int _currentIndex = 0;
 bool isQuickMenuShown = false;
+
 
 class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
   //This controller allow the app to toggle a function when there is a tab change
@@ -55,6 +57,7 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
     super.initState();
     
     initPlatformState();
+   
     
     _overlayEntry = OverlayEntry(
       builder: (BuildContext context) => QuickMenu(removeQuickMenu),
@@ -149,9 +152,11 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
         Future.value(false);
         return false;
       },
+      //PAppbar
       child: DefaultTabController(
           length: 5,
           child: Scaffold(
+      
               resizeToAvoidBottomInset: false,
               backgroundColor: Theme.of(context).backgroundColor,
               bottomNavigationBar: Container(

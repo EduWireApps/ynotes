@@ -35,7 +35,6 @@ void gradesModalBottomSheet(context, Grade grade, Discipline discipline, Functio
       backgroundColor: Theme.of(context).primaryColorDark,
       context: context,
       builder: (BuildContext bc) {
-
         return new Container(
             height: (screenSize.size.height / 10 * 3.5),
             padding: EdgeInsets.all(0),
@@ -56,10 +55,12 @@ void gradesModalBottomSheet(context, Grade grade, Discipline discipline, Functio
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
-                        Text(
-                          grade.valeur != null ? grade.valeur : "-",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: isDarkModeEnabled ? Colors.white : Colors.black, fontFamily: "Asap", fontWeight: FontWeight.w600, fontSize: (screenSize.size.width / 5) * 0.3),
+                        FittedBox(
+                                                  child: Text(
+                            grade.valeur != null ? grade.valeur : "-",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: isDarkModeEnabled ? Colors.white : Colors.black, fontFamily: "Asap", fontWeight: FontWeight.w600, fontSize: (screenSize.size.width / 5) * 0.3),
+                          ),
                         ),
                         Container(
                           padding: EdgeInsets.symmetric(horizontal: (screenSize.size.width / 5) * 0.4),
@@ -108,7 +109,7 @@ void gradesModalBottomSheet(context, Grade grade, Discipline discipline, Functio
                             child: AutoSizeText(
                               grade.devoir != null ? grade.devoir : "-",
                               minFontSize: 18,
-                              style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
+                              style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: isDarkModeEnabled ? Colors.white : Colors.black),
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -117,54 +118,59 @@ void gradesModalBottomSheet(context, Grade grade, Discipline discipline, Functio
                     ),
                   ),
                 ),
+                
                 //Align(alignment: Alignment.center, child: Container(height: (screenSize.size.height / 10 * 4), width: screenSize.size.width, child: gradesChart())),
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Container(
-                    height: (screenSize.size.height / 3) / 1.5,
+              
+               height: (screenSize.size.height / 3) / 1.5,
                     width: (screenSize.size.width * 0.8),
                     margin: EdgeInsets.only(top: (screenSize.size.height / 3) / 10),
-                    child: FittedBox(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text("Moyenne de la classe :", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black)),
-                              Container(
-                                margin: EdgeInsets.only(left: (screenSize.size.width / 5) * 0.2),
-                                decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Theme.of(context).primaryColor),
-                                padding: EdgeInsets.symmetric(horizontal: (screenSize.size.width / 5) * 0.2, vertical: (screenSize.size.width / 5) * 0.1),
-                                child: Text(
-                                  (grade.moyenneClasse != "" && grade.moyenneClasse != null ? grade.moyenneClasse : "-"),
-                                  style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
-                                ),
-                              )
-                            ],
-                          ),
-                          SizedBox(
-                            height: (screenSize.size.height / 3) / 25,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text("Type de devoir :", style: TextStyle(fontFamily: "Asap", color:  isDarkModeEnabled ? Colors.white : Colors.black)),
-                              Container(
-                                margin: EdgeInsets.only(left: (screenSize.size.width / 5) * 0.2),
-                                decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Theme.of(context).primaryColor),
-                                padding: EdgeInsets.symmetric(horizontal: (screenSize.size.width / 5) * 0.2, vertical: (screenSize.size.width / 5) * 0.1),
-                                child: Text(
-                                  grade.typeDevoir != null ? grade.typeDevoir : "-",
-                                  style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
-                                ),
-                              )
-                            ],
-                          ),
-                          SizedBox(
-                            height: (screenSize.size.height / 3) / 25,
-                          ),
-                          Row(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                       
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text("Moyenne de la classe :", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black)),
+                            Container(
+                              margin: EdgeInsets.only(left: (screenSize.size.width / 5) * 0.2),
+                              decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Theme.of(context).primaryColor),
+                              padding: EdgeInsets.symmetric(horizontal: (screenSize.size.width / 5) * 0.2, vertical: (screenSize.size.width / 5) * 0.1),
+                              child: Text(
+                                (grade.moyenneClasse != "" && grade.moyenneClasse != null ? grade.moyenneClasse : "-"),
+                                style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                              ),
+                            )
+                          ],
+                        ),
+                        SizedBox(
+                          height: (screenSize.size.height / 3) / 25,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text("Type de devoir :", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black)),
+                            Container(
+                              margin: EdgeInsets.only(left: (screenSize.size.width / 5) * 0.2),
+                              decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Theme.of(context).primaryColor),
+                              padding: EdgeInsets.symmetric(horizontal: (screenSize.size.width / 5) * 0.2, vertical: (screenSize.size.width / 5) * 0.1),
+                              child: Text(
+                                grade.typeDevoir != null ? grade.typeDevoir : "-",
+                                style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                              ),
+                            )
+                          ],
+                        ),
+                        SizedBox(
+                          height: (screenSize.size.height / 3) / 25,
+                        ),
+                        FittedBox(
+                                  fit: BoxFit.fitWidth,
+                                  
+                                                  child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
                               Text("Date du devoir :", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black)),
@@ -172,17 +178,20 @@ void gradesModalBottomSheet(context, Grade grade, Discipline discipline, Functio
                                 margin: EdgeInsets.only(left: (screenSize.size.width / 5) * 0.2),
                                 decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Theme.of(context).primaryColor),
                                 padding: EdgeInsets.symmetric(horizontal: (screenSize.size.width / 5) * 0.2, vertical: (screenSize.size.width / 5) * 0.1),
-                                child: Text(
-                                  grade.date != null
-                                      ? (!grade.date.contains("/") ? DateFormat("dd MMMM yyyy", "fr_FR").format(DateTime.parse(grade.date)) : DateFormat("dd MMMM yyyy", "fr_FR").format(DateFormat("dd/MM/yyyy").parse(grade.date)))
-                                      : "-",
-                                  style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                child: FittedBox(
+                           
+                                                                child: Text(
+                                    grade.date != null
+                                        ? (!grade.date.contains("/") ? DateFormat("dd MMMM yyyy", "fr_FR").format(DateTime.parse(grade.date)) : DateFormat("dd MMMM yyyy", "fr_FR").format(DateFormat("dd/MM/yyyy").parse(grade.date)))
+                                        : "-",
+                                    style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                  ),
                                 ),
                               )
                             ],
-                          )
-                        ],
-                      ),
+                          ),
+                        )
+                      ],
                     ),
                   ),
                 )
@@ -207,7 +216,7 @@ void disciplineModalBottomSheet(context, Discipline discipline, Function callbac
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
       ),
-      backgroundColor: Colors.white,
+      backgroundColor: Theme.of(context).primaryColorDark,
       context: context,
       builder: (BuildContext bc) {
         return Container(
@@ -265,7 +274,7 @@ void disciplineModalBottomSheet(context, Discipline discipline, Function callbac
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            Text("Votre moyenne :", style: TextStyle(fontFamily: "Asap")),
+                            Text("Votre moyenne :", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black)),
                             Container(
                               margin: EdgeInsets.only(left: (screenSize.size.width / 5) * 0.2),
                               decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Theme.of(context).primaryColor),
@@ -283,7 +292,7 @@ void disciplineModalBottomSheet(context, Discipline discipline, Function callbac
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            Text("Moyenne de la classe :", style: TextStyle(fontFamily: "Asap")),
+                            Text("Moyenne de la classe :", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black)),
                             Container(
                               margin: EdgeInsets.only(left: (screenSize.size.width / 5) * 0.2),
                               decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Theme.of(context).primaryColor),
@@ -301,7 +310,7 @@ void disciplineModalBottomSheet(context, Discipline discipline, Function callbac
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            Text("Meilleure moyenne :", style: TextStyle(fontFamily: "Asap")),
+                            Text("Meilleure moyenne :", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black)),
                             Container(
                               margin: EdgeInsets.only(left: (screenSize.size.width / 5) * 0.2),
                               decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Theme.of(context).primaryColor),
@@ -319,7 +328,7 @@ void disciplineModalBottomSheet(context, Discipline discipline, Function callbac
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            Text("Moyenne de la classe :", style: TextStyle(fontFamily: "Asap")),
+                            Text("Moyenne de la classe :", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black)),
                             Container(
                               margin: EdgeInsets.only(left: (screenSize.size.width / 5) * 0.2),
                               decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Theme.of(context).primaryColor),

@@ -50,8 +50,6 @@ List<String> CoolcolorList = ["#f07aa0", "#17d0c9", "#a3f7bf", "#cecece", "#ffa4
 
 //The ecole directe api extended from the apiManager.dart API class
 class APIEcoleDirecte extends API {
-
-
   @override
   // TODO: implement listApp
   List<App> get listApp => [App("Messagerie", MdiIcons.mail, route: "mail"), App("Cloud", Icons.cloud, route: "cloud")];
@@ -78,32 +76,27 @@ class APIEcoleDirecte extends API {
     if (response.statusCode == 200) {
       Map<String, dynamic> req = jsonDecode(response.body);
       if (req['code'] == 200) {
-      
-      try{
-        //Put the value of the name in a variable
-        actualUser = req['data']['accounts'][0]['prenom'];
-           CreateStorage("userFullName", actualUser??"");
-        String userID = req['data']['accounts'][0]['id'].toString();
-        String classe = req['data']['accounts'][0]['profile']["classe"]["libelle"].toString();
-        //Store the token
-        token = req['token'];
-        //Create secure storage for credentials
-     
-        CreateStorage("password", password??"");
-        CreateStorage("username", username??"");
-        //IMPORTANT ! store the user ID
-        CreateStorage("userID", userID??"");
-        CreateStorage("classe", classe??"");
-        
-        
-        //Ensure that the user will not see the carousel anymore
-        prefs.setBool('firstUse', false);
-        
-        }
-        catch(e){
-        //log in file
-        logFile(e.toString());
-        
+        try {
+          //Put the value of the name in a variable
+          actualUser = req['data']['accounts'][0]['prenom'];
+          CreateStorage("userFullName", actualUser ?? "");
+          String userID = req['data']['accounts'][0]['id'].toString();
+          String classe = req['data']['accounts'][0]['profile']["classe"]["libelle"].toString();
+          //Store the token
+          token = req['token'];
+          //Create secure storage for credentials
+
+          CreateStorage("password", password ?? "");
+          CreateStorage("username", username ?? "");
+          //IMPORTANT ! store the user ID
+          CreateStorage("userID", userID ?? "");
+          CreateStorage("classe", classe ?? "");
+
+          //Ensure that the user will not see the carousel anymore
+          prefs.setBool('firstUse', false);
+        } catch (e) {
+          //log in file
+          logFile(e.toString());
         }
         this.loggedIn = true;
         return "Bienvenue ${actualUser[0].toUpperCase()}${actualUser.substring(1).toLowerCase()} !";
@@ -117,11 +110,42 @@ class APIEcoleDirecte extends API {
       return "Erreur";
     }
   }
- @override
-  Future<List<Period>> getPeriods() {
-    // TODO: implement getPeriods
-    throw UnimplementedError();
+
+  @override
+  Future<List<Period>> getPeriods() async {
+    List<Period> periods = List();
+    //Check and autorefresh the token
+    await testToken();
+    String id = await storage.read(key: "userID");
+
+    //Use the grades address
+    var url = 'https://api.ecoledirecte.com/v3/Eleves/$id/notes.awp?verbe=get&';
+
+    Map<String, String> headers = {"Content-type": "text/plain"};
+    String data = 'data={"token": "$token"}';
+
+    var body = data;
+    var response = await http.post(url, headers: headers, body: body).catchError((e) {
+      throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.");
+    });
+    if (response.statusCode == 200) {
+      Map<String, dynamic> req = json.decode(utf8.decode(response.bodyBytes));
+      if (req['code'] == 200) {
+        List periodes = req['data']['periodes'];
+        periodes.forEach((element) {
+          periods.add(Period(element["nomPeriode"], element["idPeriode"]));
+        });
+        return periods;
+      } else {
+        throw "Error while getting period. ${url}";
+      }
+    } else {
+      throw "Error while getting periods. ${url}";
+    }
+    return null;
+
   }
+
   @override
 //Getting grades
   Future<List<Discipline>> getGrades({bool forceReload}) async {
@@ -389,8 +413,6 @@ class APIEcoleDirecte extends API {
         }
     }
   }
-
- 
 
   ///END OF THE API CLASS
 }

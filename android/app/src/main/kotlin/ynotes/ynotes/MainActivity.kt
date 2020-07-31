@@ -1,4 +1,4 @@
-package ynotes.ynotes
+package fr.ynotes
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity

@@ -79,8 +79,7 @@ class APIPronote extends API {
 
           grades.addAll(data[0]);
           averages.addAll(data[1]);
-          print(grades.length);
-          print(averages.length);
+
           var z = 0;
           grades.forEach((element) {
             if (listDisciplines.every((listDisciplineEl) => listDisciplineEl.nomDiscipline != element.libelleMatiere || listDisciplineEl.periode != element.nomPeriode)) {
@@ -256,7 +255,7 @@ class APIPronote extends API {
       await localClient.init();
       if (localClient.logged_in) {
         this.loggedIn = true;
-        return ("Bienvenue !");
+        return ("Bienvenue $actualUser!");
       } else {
         return ("Oups, une erreur a eu lieu. Vérifiez votre mot de passe et les autres informations de connexion.");
       }

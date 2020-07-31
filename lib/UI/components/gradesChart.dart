@@ -1,27 +1,46 @@
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 final Color darkBlue = Color.fromARGB(255, 18, 32, 47);
 
 //Lowest, avg, highest, personal
-List val = [8, 12, 13.8, 13.8];
+List val = [8, 12, 13.8, 18];
 int outOf = 20;
 
-class gradesChart extends StatelessWidget {
+class GradesChart extends StatelessWidget {
+  const GradesChart({
+    Key key,
+    @required this.barLength,
+    @required this.screenSize,
+    @required this.height,
+  }) : super(key: key);
+
+  final double barLength;
+  final double height;
+  final MediaQueryData screenSize;
+
   @override
   Widget build(BuildContext context) {
-         var screenSize = MediaQuery.of(context);
-        var barLength = screenSize.size.width * 0.8;
-    return Container(
-width:   screenSize.size.width,
-   child:
-         Center(
-            child: Stack(
-          children: [
-            Align(
-              alignment: Alignment.center,
-              child: Container(height: screenSize.size.height / 5 * 0.005, width: barLength, color: Colors.white),
+    return Center(
+        child: Container(
+      decoration: BoxDecoration(
+        border: Border.all(width: 1, color: Colors.black),
+      ),
+      width: screenSize.size.width,
+      height: height,
+      child: Stack(
+        children: [
+          Align(
+            alignment: Alignment.center,
+            child: Container(
+              height: screenSize.size.height / 5 * 0.02,
+              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(50)),
+              width: barLength,
             ),
-            Center(
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: Center(
               child: Container(
                 width: barLength + screenSize.size.width / 5 * 0.3,
                 margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.9),
@@ -29,16 +48,16 @@ width:   screenSize.size.width,
                   children: [
                     if (val[0] != val[3]) Container(margin: EdgeInsets.only(left: getMargin(val[0], barLength)), child: Point(Colors.red, Icons.arrow_downward, 0, true)),
                     Container(margin: EdgeInsets.only(left: getMargin(val[1], barLength)), child: Point(Colors.grey, null, 1, true)),
-                    if (val[2] != val[3]) Container(margin: EdgeInsets.only(left: getMargin(val[2], barLength)), child: Point(Colors.green, Icons.arrow_upward, 2, true)),
+                    if (val[2] != val[3]) Container(margin: EdgeInsets.only(left: getMargin(val[2], barLength)), child: Point(Colors.green, MdiIcons.arrowUpThick, 2, true)),
                     Container(margin: EdgeInsets.only(left: getMargin(val[3], barLength)), child: Point(Colors.blue, Icons.person, 3, false)),
                   ],
                 ),
               ),
             ),
-          ],
-        ))
-    
-    );
+          ),
+        ],
+      ),
+    ));
   }
 }
 
@@ -98,12 +117,12 @@ class _PointState extends State<Point> {
     var screenSize = MediaQuery.of(context);
     return Column(
       children: [
-        if (this.widget.isGradeBelow) Container(color: this.widget.color, height: getHeight(val, this.widget.index, screenSize, screenSize.size.width * 0.25, screenSize.size.width / 5 * 0.3), width: screenSize.size.width / 5 * 0.01),
+        if (this.widget.isGradeBelow) Container(color: this.widget.color, height: getHeight(val, this.widget.index, screenSize, screenSize.size.width * 0.25, screenSize.size.width / 5 * 0.8), width: screenSize.size.width / 5 * 0.01),
         Container(
             child: Center(child: FittedBox(child: Text(val[this.widget.index].toString()))),
-            width: screenSize.size.width / 5 * 0.3,
-            height: screenSize.size.height / 10 * 0.5,
-            decoration: BoxDecoration(border: Border.all(width: 2, color: this.widget.color), borderRadius: BorderRadius.circular(15))),
+            width: screenSize.size.width / 5 * 0.8,
+            height: screenSize.size.height / 10 * 0.4,
+            decoration: BoxDecoration(border: Border.all(width: 2, color: this.widget.color), color: this.widget.color, borderRadius: BorderRadius.circular(15))),
         if (!this.widget.isGradeBelow) Container(color: this.widget.color, height: screenSize.size.height / 10 * 0.4, width: screenSize.size.width / 5 * 0.01),
       ],
     );
@@ -126,21 +145,21 @@ class _PointState extends State<Point> {
     }
 
     var screenSize = MediaQuery.of(context);
-    return Container(
-      margin: EdgeInsets.only(
-          bottom: !this.widget.isGradeBelow ? screenSize.size.height / 10 * 1.8 : 0,
-          top: this.widget.isGradeBelow ? getHeight(val, this.widget.index, screenSize, screenSize.size.width * 0.25, screenSize.size.width / 5 * 0.3) - screenSize.size.height / 10 * 0.4 : 0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          if (!this.widget.isGradeBelow) buildBubble(),
-          Container(
-              width: screenSize.size.width / 5 * 0.2,
-              height: screenSize.size.width / 5 * 0.2,
-              decoration: BoxDecoration(color: getBorderColor(this.widget.index), borderRadius: BorderRadius.circular(50)),
-              child: Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[Center(child: FittedBox(child: Icon(this.widget.icon)))])),
-          if (this.widget.isGradeBelow) buildBubble(),
-        ],
+    return Transform.translate(
+      offset: Offset(0, (this.widget.isGradeBelow ? (getHeight(val, this.widget.index, screenSize, screenSize.size.width * 0.25, screenSize.size.width / 5 * 0.3) - screenSize.size.height / 10 * 0.5) * 0.5 : -(screenSize.size.height / 10 * 0.85))),
+      child: Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (!this.widget.isGradeBelow) buildBubble(),
+            Container(
+                width: screenSize.size.width / 5 * 0.35,
+                height: screenSize.size.width / 5 * 0.35,
+                decoration: BoxDecoration(color: getBorderColor(this.widget.index), borderRadius: BorderRadius.circular(50)),
+                child: Row(mainAxisAlignment: MainAxisAlignment.center, crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[Center(child: FittedBox(child: Icon(this.widget.icon)))])),
+            if (this.widget.isGradeBelow) buildBubble(),
+          ],
+        ),
       ),
     );
   }

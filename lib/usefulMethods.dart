@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:connectivity/connectivity.dart';
 import 'package:dio/dio.dart' as dio;
 import 'package:flushbar/flushbar.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
@@ -44,6 +45,12 @@ class AppStateNotifier extends ChangeNotifier {
     this.isDarkMode = isDarkMode;
     isDarkModeEnabled = isDarkMode;
 
+       SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    systemNavigationBarColor: isDarkModeEnabled ? Color(0xff414141) : Color(0xffF3F3F3),
+    statusBarColor: Colors.transparent // navigation bar color
+    // status bar color
+  ));
+  
     notifyListeners();
   }
 }
@@ -252,6 +259,10 @@ class FileAppUtil {
     }
   }
 
+  static Future<String> loadAsset(path) async {
+    return await rootBundle.loadString(path);
+  }
+
   static remove(File file) async {
     if (await file.exists()) {
       file.delete();
@@ -443,7 +454,7 @@ logFile(String error) async {
 
 specialtiesSelectionAvailable() async {
   await getChosenParser();
-  return  [false];
+  return [false];
   if (chosenParser == 0) {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String classe = await storage.read(key: "classe") ?? "";
@@ -457,7 +468,7 @@ specialtiesSelectionAvailable() async {
       return [false];
     }
   } else {
-    return  [false];
+    return [false];
     /*SharedPreferences preferences = await SharedPreferences.getInstance();
     String classe = await storage.read(key: "classe");
     if (classe != null) {

@@ -6,6 +6,8 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:package_info/package_info.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:wiredash/wiredash.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/UI/screens/logsPage.dart';
 import 'package:ynotes/apiManager.dart';
@@ -31,7 +33,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
   Animation<double> movingRow;
   //To use by the actual image when switching
   Animation<double> avatarSize;
-  String fullUserName = "";
+
   //Disable new grades when battery saver is enabled
   bool disableNotification;
   @override
@@ -39,10 +41,19 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
     setState(() {
       isFirstAvatarSelected = true;
     });
-
+    getUsername();
     super.initState();
     leftToRightAnimation = AnimationController(duration: Duration(milliseconds: 800), vsync: this);
     rightToLeftAnimation = AnimationController(duration: Duration(milliseconds: 800), vsync: this);
+  }
+
+  void getUsername() async {
+
+     var actualUserAsync = await ReadStorage("userFullName");
+    setState(() {
+      actualUser = actualUserAsync;
+    });
+    
   }
 
   @override
@@ -100,10 +111,14 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                           backgroundColor: Colors.transparent,
                           child: Text(
                             '${actualUser.length > 0 ? actualUser[0] : "I"}',
-                            style: TextStyle(fontSize: screenSize.size.width / 5 * 0.4, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                            style: TextStyle(
+                                fontSize: screenSize.size.width / 5 * 0.4,
+                                color: isDarkModeEnabled ? Colors.white : Colors.black),
                             textAlign: TextAlign.center,
                           ),
-                          radius: (isFirstAvatarSelected ? screenSize.size.width / 5 * 0.55 : screenSize.size.width / 5 * 0.4),
+                          radius: (isFirstAvatarSelected
+                              ? screenSize.size.width / 5 * 0.55
+                              : screenSize.size.width / 5 * 0.4),
                         ),
                       ),
                     ),
@@ -112,18 +127,31 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
               )),
               Center(
                   child: Container(
-                      margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1, bottom: screenSize.size.height / 10 * 0.2),
-                      child: Text("Bonjour ${actualUser.length > 0 ? actualUser : "Invité"}", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.3)))),
+                      margin: EdgeInsets.only(
+                          top: screenSize.size.height / 10 * 0.1,
+                          bottom: screenSize.size.height / 10 * 0.2),
+                      child: Text("Bonjour ${actualUser.length > 0 ? actualUser : "Invité"}",
+                          style: TextStyle(
+                              fontFamily: "Asap",
+                              color: isDarkModeEnabled ? Colors.white : Colors.black,
+                              fontSize: screenSize.size.height / 10 * 0.3)))),
               FutureBuilder(
                   future: getSetting("nightmode"),
                   initialData: false,
                   builder: (context, snapshot) {
                     return SwitchListTile(
                       value: snapshot.data,
-                      title: Text("Mode nuit", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.3)),
+                      title: Text("Mode nuit",
+                          style: TextStyle(
+                              fontFamily: "Asap",
+                              color: isDarkModeEnabled ? Colors.white : Colors.black,
+                              fontSize: screenSize.size.height / 10 * 0.3)),
                       subtitle: Text(
                         "Lisez vos notes de jour comme de nuit.",
-                        style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.2),
+                        style: TextStyle(
+                            fontFamily: "Asap",
+                            color: isDarkModeEnabled ? Colors.white : Colors.black,
+                            fontSize: screenSize.size.height / 10 * 0.2),
                       ),
                       onChanged: (value) {
                         setState(() {
@@ -150,10 +178,17 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     }
                     return SwitchListTile(
                       value: snapshot.data,
-                      title: Text("Economie de données", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.3)),
+                      title: Text("Economie de données",
+                          style: TextStyle(
+                              fontFamily: "Asap",
+                              color: isDarkModeEnabled ? Colors.white : Colors.black,
+                              fontSize: screenSize.size.height / 10 * 0.3)),
                       subtitle: Text(
                         "Réduit les interactions réseaux au minimum pour sauver vos 15 pourcents restants.",
-                        style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.2),
+                        style: TextStyle(
+                            fontFamily: "Asap",
+                            color: isDarkModeEnabled ? Colors.white : Colors.black,
+                            fontSize: screenSize.size.height / 10 * 0.2),
                       ),
                       onChanged: (value) {
                         setState(() {
@@ -184,10 +219,15 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                       value: snapshot.data,
                       title: Text(
                         "Notification de nouvelle note",
-                        style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.3),
+                        style: TextStyle(
+                            fontFamily: "Asap",
+                            color: isDarkModeEnabled ? Colors.white : Colors.black,
+                            fontSize: screenSize.size.height / 10 * 0.3),
                       ),
                       subtitle: Text(
-                        (disableNotification == true ? "Ne peut fonctionner si l'économie de données est activée" : ""),
+                        (disableNotification == true
+                            ? "Ne peut fonctionner si l'économie de données est activée"
+                            : ""),
                         style: TextStyle(fontFamily: "Asap", color: Colors.red.shade700),
                       ),
                       onChanged: (disableNotification == true)
@@ -212,10 +252,15 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                       value: snapshot.data,
                       title: Text(
                         "Notification de nouveau mail",
-                        style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.3),
+                        style: TextStyle(
+                            fontFamily: "Asap",
+                            color: isDarkModeEnabled ? Colors.white : Colors.black,
+                            fontSize: screenSize.size.height / 10 * 0.3),
                       ),
                       subtitle: Text(
-                        (disableNotification == true ? "Ne peut fonctionner si l'économie de données est activée" : ""),
+                        (disableNotification == true
+                            ? "Ne peut fonctionner si l'économie de données est activée"
+                            : ""),
                         style: TextStyle(fontFamily: "Asap", color: Colors.red.shade700),
                       ),
                       onChanged: (disableNotification == true)
@@ -232,6 +277,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     );
                   }),
               Divider(),
+              //choose specialties
               ListTile(
                 leading: Icon(
                   MdiIcons.selection,
@@ -239,7 +285,10 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                 ),
                 title: Text(
                   "Mes spécialités",
-                  style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.3),
+                  style: TextStyle(
+                      fontFamily: "Asap",
+                      color: isDarkModeEnabled ? Colors.white : Colors.black,
+                      fontSize: screenSize.size.height / 10 * 0.3),
                 ),
                 onTap: () {
                   CustomDialogs.showUnimplementedSnackBar(context);
@@ -247,18 +296,42 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                 },
               ),
               Divider(),
+              //open the wiredash modal bottomsheet
               ListTile(
                 leading: Icon(
                   MdiIcons.bug,
                   color: isDarkModeEnabled ? Colors.white : Colors.black,
                 ),
                 title: Text(
+                  "Signaler un bug",
+                  style: TextStyle(
+                      fontFamily: "Asap",
+                      color: isDarkModeEnabled ? Colors.white : Colors.black,
+                      fontSize: screenSize.size.height / 10 * 0.3),
+                ),
+                onTap: () {
+                  Wiredash.of(context).show();
+                },
+              ),
+              Divider(),
+              ListTile(
+                leading: Icon(
+                  MdiIcons.text,
+                  color: isDarkModeEnabled ? Colors.white : Colors.black,
+                ),
+                title: Text(
                   "Logs",
-                  style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.3),
+                  style: TextStyle(
+                      fontFamily: "Asap",
+                      color: isDarkModeEnabled ? Colors.white : Colors.black,
+                      fontSize: screenSize.size.height / 10 * 0.3),
                 ),
                 subtitle: Text(
                   "Utilisable à des fins de deboguage",
-                  style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.2),
+                  style: TextStyle(
+                      fontFamily: "Asap",
+                      color: isDarkModeEnabled ? Colors.white : Colors.black,
+                      fontSize: screenSize.size.height / 10 * 0.2),
                 ),
                 onTap: () {
                   Navigator.of(context).push(router(LogsPage()));
@@ -272,7 +345,10 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                 ),
                 title: Text(
                   "Réinitialiser le tutoriel",
-                  style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.3),
+                  style: TextStyle(
+                      fontFamily: "Asap",
+                      color: isDarkModeEnabled ? Colors.white : Colors.black,
+                      fontSize: screenSize.size.height / 10 * 0.3),
                 ),
                 onTap: () {
                   HelpDialog.resetEveryHelpDialog();
@@ -286,7 +362,10 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                 ),
                 title: Text(
                   "A propos",
-                  style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.3),
+                  style: TextStyle(
+                      fontFamily: "Asap",
+                      color: isDarkModeEnabled ? Colors.white : Colors.black,
+                      fontSize: screenSize.size.height / 10 * 0.3),
                 ),
                 onTap: () async {
                   PackageInfo packageInfo = await PackageInfo.fromPlatform();
@@ -297,9 +376,10 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                         image: AssetImage('assets/appico/foreground.png'),
                         width: screenSize.size.width / 5 * 0.7,
                       ),
+                    
                       applicationName: "yNotes",
                       applicationVersion: packageInfo.version,
-                      applicationLegalese: "Developpé avec amour en France");
+                      applicationLegalese: "Developpé avec amour en France.\nAPI Pronote adaptée à l'aide de l'API pronotepy développée par Bain sous licence MIT.\nJe remercie la participation des bêta testeurs et des développeurs ayant participé au développement de l'application.");
                 },
               ),
               Divider(),
@@ -310,7 +390,10 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                 ),
                 title: Text(
                   "Se déconnecter",
-                  style: TextStyle(fontFamily: "Asap", color: Colors.red.shade300, fontSize: screenSize.size.height / 10 * 0.3),
+                  style: TextStyle(
+                      fontFamily: "Asap",
+                      color: Colors.red.shade300,
+                      fontSize: screenSize.size.height / 10 * 0.3),
                 ),
                 onTap: () async {
                   showExitDialog(context);
@@ -373,7 +456,8 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
 
               return AlertDialog(
                   backgroundColor: Theme.of(context).primaryColor,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0))),
+                  shape:
+                      RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0))),
                   contentPadding: EdgeInsets.only(top: 10.0),
                   content: Container(
                       height: screenSize.size.height / 10 * 4,
@@ -393,12 +477,14 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
                                   onChanged: (value) {
                                     if (chosenSpecialties.contains(disciplines[index])) {
                                       setState(() {
-                                        chosenSpecialties.removeWhere((element) => element == disciplines[index]);
+                                        chosenSpecialties.removeWhere(
+                                            (element) => element == disciplines[index]);
                                       });
                                       print(chosenSpecialties);
                                       setChosenSpecialties();
                                     } else {
-                                      if (chosenSpecialties.length < (classe[1] == "Première" ? 3 : 2)) {
+                                      if (chosenSpecialties.length <
+                                          (classe[1] == "Première" ? 3 : 2)) {
                                         setState(() {
                                           chosenSpecialties.add(disciplines[index]);
                                         });
@@ -410,7 +496,9 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
                                 ),
                                 Text(
                                   disciplines[index],
-                                  style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                  style: TextStyle(
+                                      fontFamily: "Asap",
+                                      color: isDarkModeEnabled ? Colors.white : Colors.black),
                                 ),
                               ],
                             ),
@@ -449,11 +537,13 @@ showExitDialog(BuildContext context) {
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
           title: Text(
             "Confirmation",
-            style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+            style: TextStyle(
+                fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
           ),
           content: Text(
             "Voulez vous vraiment vous deconnecter ?",
-            style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+            style: TextStyle(
+                fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
           ),
           actions: [
             FlatButton(

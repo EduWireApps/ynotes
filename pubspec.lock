@@ -64,13 +64,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.0"
-  autocomplete_textfield:
-    dependency: "direct main"
-    description:
-      name: autocomplete_textfield
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.7.3"
   background_fetch:
     dependency: "direct main"
     description:
@@ -1139,6 +1132,15 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.0"
+  wiredash:
+    dependency: "direct main"
+    description:
+      path: "."
+      ref: master
+      resolved-ref: "117657215b3eecd1f3bad4f977b82dd32c71978c"
+      url: "https://github.com/wiredashio/wiredash-sdk"
+    source: git
+    version: "0.2.0"
   xml:
     dependency: transitive
     description:
@@ -1154,5 +1156,5 @@ packages:
     source: hosted
     version: "2.2.0"
 sdks:
-  dart: ">=2.7.2 <3.0.0"
-  flutter: ">=1.12.13+hotfix.5 <2.0.0"
+  dart: ">=2.8.0 <3.0.0"
+  flutter: ">=1.17.0 <2.0.0"

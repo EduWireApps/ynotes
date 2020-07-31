@@ -115,8 +115,8 @@ class CustomDialogs {
       ),
       mainButton: FlatButton(
         onPressed: () {
-          //const url = 'https://flutter.dev';
-          //launchURL(url);
+          const url = 'https://view.monday.com/486453658-df7d6a346f0accba2e9d6a3c45b3f7c1';
+          launchURL(url);
         },
         child: Text(
           "En savoir plus",

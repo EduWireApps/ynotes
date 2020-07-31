@@ -1,5 +1,5 @@
 name: ynotes
-description: YNotes first version
+description: yNotes application de gestion de vie scolaire
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -12,7 +12,7 @@ description: YNotes first version
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.
 
-version: 0.8.3+1
+version: 0.8.6+1
 
 environment:
   sdk: ">=2.2.2 <3.0.0"
@@ -74,9 +74,12 @@ dependencies:
   highlight_text: ^0.7.2
   android_intent: ^0.3.7+2
   device_apps: ^1.0.10
-  autocomplete_textfield: ^1.7.3
   rxdart: ^0.24.1
   smooth_page_indicator: ^0.1.5
+  wiredash:
+    git:
+      url: https://github.com/wiredashio/wiredash-sdk
+      ref: master
 
 dev_dependencies:
   flutter_test:
@@ -169,3 +172,4 @@ flutter:
     - assets/appico/foreground.png
     - assets/gifs/
     - assets/lessons.json
+    - assets/TOS_fr.txt
