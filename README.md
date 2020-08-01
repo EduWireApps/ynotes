@@ -21,7 +21,7 @@ Les fonctionnalités de yNotes s'étendent chaque jour pour permettre d'être le
 
 ## Compatibilité (apps scolaires)
 yNotes se veut multi compatible et ainsi permettre un portage vers n'importe quelle application scolaire à l'aide d'une API. Cette implémentation n'est pas encore faite et demande du travail, mais sera faite le plus rapidement possible pour permettre à n'importe qui de créer son parser vers une application scolaire. Peut-être même de rendre l'application internationale ?
-*Note du **22/06** je travaille actuellement sur l'implémentation de l'application scolaire Pronote. Cette dernière devrait être effective en cours d'année.*
+*Note du **01/08** la connexion via Pronote est quasiment effective en connexion directe (?login=true à la fin de l'adresse ou sans ENT). L'intégration des ENT va bientôt commencer.*
 
 ## Fonctionnalité générale Space
 Space, pour espace de l'étudiant, est un algorithme qui permettrait à l'étudiant d'aménager sa vie en fonction de son emploi du temps tout en suggérant un plan de travail.
