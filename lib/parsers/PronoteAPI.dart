@@ -225,9 +225,10 @@ class Client {
             this.communication.authorized_onglets =
                 _prepare_onglets(paramsUser['donneesSec']['donnees']['listeOnglets']);
             try {
+              CreateStorage("classe",
+                  paramsUser['donneesSec']['donnees']['ressource']["classeDEleve"]["L"] ?? "");
               CreateStorage(
-                  "classe", paramsUser['donneesSec']['donnees']['ressource']["classeDEleve"]["L"]);
-              CreateStorage("userFullName", paramsUser['donneesSec']['donnees']['ressource']["L"]);
+                  "userFullName", paramsUser['donneesSec']['donnees']['ressource']["L"] ?? "");
               actualUser = paramsUser['donneesSec']['donnees']['ressource']["L"];
             } catch (e) {
               print("Failed to register UserInfos");
@@ -761,6 +762,9 @@ class PronotePeriod {
       },
       "_Signature_": {"onglet": 198}
     };
+    //Tests
+    //var a = await Requests.get("http://demo2235921.mockable.io/2");
+    //var response = a.json();
     var response = await _client.communication.post('DernieresNotes', data: json_data);
     var grades = response['donneesSec']['donnees']['listeDevoirs']['V'];
     this.moyenneGenerale = gradeTranslate(response['donneesSec']['donnees']['moyGenerale']['V']);

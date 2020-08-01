@@ -92,20 +92,7 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
     isOffline = !connectionStatus.hasConnection;
   }
 
-  tryToConnect() async {
-
-    getChosenParser();
-    String u = await ReadStorage("username");
-    String p = await ReadStorage("password");
-    String url = await ReadStorage("pronoteurl");
-    String cas = await ReadStorage("pronotecas");
-    var z = await storage.read(key: "agreedTermsAndConfiguredApp");
-    if (u != null && p != null && z != null) {
-      return localApi.login(u, p, url: url, cas: cas);
-    } else {
-      Navigator.of(context).pushReplacement(router(login()));
-    }
-  }
+  
 
   void removeQuickMenu() {
     if (isQuickMenuShown) {

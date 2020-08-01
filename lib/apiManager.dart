@@ -41,7 +41,20 @@ class Homework extends HiveObject {
   final List<Document> documentsContenuDeSeance;
   @HiveField(12)
   final String nomProf;
-  Homework(this.matiere, this.codeMatiere, this.idDevoir, this.contenu, this.contenuDeSeance, this.date, this.datePost, this.done, this.rendreEnLigne, this.interrogation, this.documents, this.documentsContenuDeSeance, this.nomProf);
+  Homework(
+      this.matiere,
+      this.codeMatiere,
+      this.idDevoir,
+      this.contenu,
+      this.contenuDeSeance,
+      this.date,
+      this.datePost,
+      this.done,
+      this.rendreEnLigne,
+      this.interrogation,
+      this.documents,
+      this.documentsContenuDeSeance,
+      this.nomProf);
 }
 
 //Class of a downloadable document
@@ -196,7 +209,8 @@ class Discipline {
     gradesList = list;
   }
 
-  factory Discipline.fromJson(Map<String, dynamic> json, List<String> profs, String codeMatiere, String periode, Color color, String moyenneG, String bmoyenneClasse, String moyenneClasse) {
+  factory Discipline.fromJson(Map<String, dynamic> json, List<String> profs, String codeMatiere,
+      String periode, Color color, String moyenneG, String bmoyenneClasse, String moyenneClasse) {
     return Discipline(
       codeSousMatiere: [],
       codeMatiere: codeMatiere,
@@ -230,7 +244,8 @@ class Mail {
   final String date;
   final String content;
   final List files;
-  Mail(this.id, this.mtype, this.read, this.idClasseur, this.from, this.subject, this.date, {this.content, this.to, this.files});
+  Mail(this.id, this.mtype, this.read, this.idClasseur, this.from, this.subject, this.date,
+      {this.content, this.to, this.files});
 }
 
 class Classeur {
@@ -259,7 +274,8 @@ class CloudItem {
   final String id;
   final String date;
 
-  CloudItem(this.title, this.type, this.author, this.isMainFolder, this.date, {this.isMemberOf, this.isLoaded, this.id});
+  CloudItem(this.title, this.type, this.author, this.isMainFolder, this.date,
+      {this.isMemberOf, this.isLoaded, this.id});
 }
 
 class Period {
@@ -270,35 +286,34 @@ class Period {
 }
 
 abstract class API {
-   bool loggedIn=false;
+  bool loggedIn = false;
 
-
-
-//Connect to the API
-//Should return a connection status
+  ///Connect to the API
+  ///Should return a connection status
   Future<String> login(username, password, {url, cas});
 
-//Get years periods
+  ///Get years periods
   Future<List<Period>> getPeriods();
 
-//Get marks
+  ///Get marks
   Future<List<Discipline>> getGrades({bool forceReload});
+  
 
-//Get the dates of next homework (deprecated)
+  ///Get the dates of next homework (deprecated)
   Future<List<DateTime>> getDatesNextHomework();
 
-//Get the list of all the next homework (sent by specifics API)
+  ///Get the list of all the next homework (sent by specifics API)
   Future<List<Homework>> getNextHomework({bool forceReload});
 
-//Get the list of homework only for a specific day (time travel feature)
+  ///Get the list of homework only for a specific day (time travel feature)
   Future<List<Homework>> getHomeworkFor(DateTime dateHomework);
 
-  //Test to know if there are new grades
+  ///Test to know if there are new grades
   Future<bool> testNewGrades();
   //Send file to cloud or anywhere
   Future uploadFile(String contexte, String id, String filepath);
 
-  //Apps
+  ///Apps
   Future app(String appname, {String args, String action, CloudItem folder});
 
   List<App> listApp;

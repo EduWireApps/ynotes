@@ -447,7 +447,7 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
                             future: localApi.getPeriods(),
                             builder: (context, snapshot) {
                               return (snapshot.data == null || !snapshot.hasData || periodeToUse == "" || snapshot.data.length == 0)
-                                  ? Container()
+                                  ? Container(child: Text("Pas de periode"),)
                                   : DropdownButtonHideUnderline(
                                       child: DropdownButton<String>(
                                         value: periodeToUse,

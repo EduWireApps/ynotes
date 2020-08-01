@@ -82,12 +82,13 @@ mainTestNewGrades() async {
     List<Grade> listOfflineGrades = getAllGrades(await getGradesFromDB(), overrideLimit: true);
     print("Offline length is ${listOfflineGrades.length}");
     //Getting the online count of grades
-    getChosenParser();
+    await getChosenParser();
     List<Grade> listOnlineGrades = List<Grade>();
     if (chosenParser == 0) {
       listOnlineGrades = getAllGrades(await getGradesFromInternet(), overrideLimit: true);
     }
     if (chosenParser == 1) {
+      print("Getting grades from Pronote");
       listOnlineGrades = getAllGrades(await getPronoteGradesFromInternet(), overrideLimit: true);
     }
 
@@ -159,7 +160,6 @@ Future main() async {
 }
 
 class HomeApp extends StatelessWidget {
-  
   final _navigatorKey = GlobalKey<NavigatorState>();
 
   @override
@@ -171,10 +171,10 @@ class HomeApp extends StatelessWidget {
           secret: "y9zengsvskpriizwniqxr6vxa1ka1n6u",
           navigatorKey: _navigatorKey,
           options: WiredashOptionsData(
-    /// You can set your own locale to override device default (`window.locale` by default)
-    locale: const Locale.fromSubtags(languageCode: 'fr'),
-    showDebugFloatingEntryPoint: false
-  ),
+
+              /// You can set your own locale to override device default (`window.locale` by default)
+              locale: const Locale.fromSubtags(languageCode: 'fr'),
+              showDebugFloatingEntryPoint: false),
           child: MaterialApp(
             localizationsDelegates: [
               // ... app-specific localization delegate[s] here
@@ -190,7 +190,7 @@ class HomeApp extends StatelessWidget {
             ],
             debugShowCheckedModeBanner: false,
             theme: lightTheme,
-             navigatorKey: _navigatorKey,
+            navigatorKey: _navigatorKey,
             darkTheme: darkTheme,
             home: loader(),
             themeMode: appState.isDarkMode ? ThemeMode.dark : ThemeMode.light,
