@@ -1,9 +1,20 @@
 # yNotes
-yNotes est un gestionnaire de notes, d'emploi du temps et de devoirs qui vous permet de voir toutes ces informations scolaires dans une interface moderne et intuitive. L'application actuelle est basée sur les APIs du site **EcoleDirecte**. Je travaille actuellement dur pour adapter l'application à d'autres "applications d'accès aux devoirs". 
+<img src="https://github.com/ModernChocolate/ynotes/blob/master/screenshots/brandLarge.png" width="800">
+
+yNotes est un gestionnaire de notes, d'emploi du temps et de devoirs qui vous permet d'accéder à toutes ces informations scolaires dans une interface moderne et intuitive. L'application actuelle est basée sur les APIs des site **EcoleDirecte** et **Pronote**. Je travaille actuellement dur pour adapter l'application à d'autres "applications scolaires". 
+
+yNotes est un projet ouvert et collaboratif ! N'hésitez pas à soumettre une pull request ou me contacter directement pour aider au projet **(discord : JsonLines
+#0721)**.
+
+__yNotes n'est **pas un client officiel** et utilise directement les APIs d'applications scolaires. Vos identifiants sont chiffrés et stockés sur votre appareil, mais nous ne nous portons pas responsable en cas de sanction de l'application scolaire. De plus, les fonctionnalités proposées par yNotes peuvent varier à tout moment, par décision externe ou interne.__
+
+J'ai décidé de créer yNotes en constatant que les demandes des utilisateurs des applications scolaires n'étaient pas écoutées, et que les applications mobile de vie scolaire étaient basiques, à l'interface peu élaborée. Bien que la propriété intellectuelle m'empêche de diffuser yNotes à grande ampleur, j'espère que les éditeurs des applications scolaires entendront un jour nos réclamations !
+
 ## Fonctionnalités 
 Les fonctionnalités de yNotes s'étendent chaque jour pour permettre d'être le plus efficace dans son travail, et l'interface est régulièrement revue pour être la plus intuitive possible
-
 #### Fonctionnalités mises en place
+
+
 - Accès au notes : Affichage des notes et des données liées, partage des notes (en cours), tri des notes
 - Accès aux devoirs : Accès aux prochains devoirs, affichage des pièces jointes liées (en cours)
 - Coloration des matières personnalisable
@@ -11,12 +22,13 @@ Les fonctionnalités de yNotes s'étendent chaque jour pour permettre d'être le
 - Application hors ligne, nulle besoin d'Internet pour accéder à ses notes 
 - Accès aux applications supplémentaires : mail et cloud (disponible sur Ecole Directe)
 - Ajout aux favoris de devoirs. (fonctionnalité d'épinglage)
-- Mise en place d'un "Quick menu" (menu rapide) pour accéder rapidement aux documents téléchargés
+- ~~Mise en place d'un "Quick menu" (menu rapide) pour accéder rapidement aux documents téléchargés~~ (supprimé car non intuitif)
 #### Fonctionnalités à venir
 
 - Fonctionnalités supplémentaires dans l'affichage des devoirs, partage et recherche rapide par mot clé (partenariat avec applications scolaires ?)
 - Visualisation de l'emploi du temps et organisation de la vie d'étudiant
-- Ajout de la foncionnalité envoyer des mails au Quick menu, ~~devoirs favoris~~
+- yNotes web
+- ~~Ajout de la foncionnalité envoyer des mails au Quick menu,~~ ~~devoirs favoris~~
 ~~- Multicomptes~~ (abandonné)
 
 ## Compatibilité (apps scolaires)
@@ -70,7 +82,7 @@ Assurez vous que votre téléphone est connecté à votre ordinateur si vous sou
 Suivez les étapes de compilation de la documentation officielle :
 * [Compiler pour Android](https://flutter.dev/docs/deployment/android)
 * [Compiler pour iOS](https://flutter.dev/docs/deployment/ios)
-*Vous devez disposer d'un compte Apple Developer gratuit pour installer l'application sur un appareil iOS*
+*Vous devez disposer d'un compte Apple Developer gratuit (ou payant) pour installer l'application sur un appareil iOS*
 
 ## Documentation 
 La documentation spécifique au développement vous permettant de modifier les layouts selon vos goûts, ajouter vos fonctionnalités, votre touche.
@@ -83,8 +95,12 @@ décomposés par "pages".
 
 ### Back-end
 Le traitement des données est maintenant effectué dans des parsers distincts situés dans `/lib/parsers`
-Ces fichiers contiennent des classes étendues de la classe API disponible dans le fichier `/lib/APIManager.dart` qui contient également toutes les classes importantes de l'application. L'ajout de fonctionnalités spécifiques nécessite une modification de l'APIManager ce qui est fortement déconseillé. Ainsi la fonction app() permet l'ajout de fonctionnalités spéficiques en toute liberté.
+Ces fichiers contiennent des classes étendues de la classe API disponible dans le fichier `/lib/APIManager.dart` qui contient également toutes les classes importantes de l'application. L'ajout de fonctionnalités spécifiques nécessite une modification de l'APIManager ce qui est fortement déconseillé. Ainsi la fonction `app()` permet l'ajout de fonctionnalités spéficiques en toute liberté.
 
 ### Ressources
 Les ressources sont dans `/assets`
 On y distingue les animations, (utilisant le moteur de rendu *Flare*, qui diffèrent des animations dans `/lib/UI/animations` qui sont des animations utilisant le langage Dart) ainsi que les images et les gifs animés.
+
+### Mentions spéciales
+* Merci aux développeurs et bêta testeurs qui ont aidé à participer au projet en me suggérant des fonctionnalités et en montrant des bugs que je n'aurai sûrement jamais remarqués
+* L'API Pronote est une recopie de [pronotepy](https://github.com/bain3/pronotepy), développée par [bain](https://github.com/bain3) que je remercie énormément pour ses explications et sa disponibilité :)
