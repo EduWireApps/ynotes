@@ -3,6 +3,8 @@
 
 yNotes est un gestionnaire de notes, d'emploi du temps et de devoirs qui vous permet d'accéder à toutes ces informations scolaires dans une interface moderne et intuitive. L'application actuelle est basée sur les APIs des site **EcoleDirecte** et **Pronote**. Je travaille actuellement dur pour adapter l'application à d'autres "applications scolaires". 
 
+Téléchargez dès maintenant yNotes sur le [Google Play Store](https://play.google.com/store/apps/details?id=fr.ynotes) !
+
 yNotes est un projet ouvert et collaboratif ! N'hésitez pas à soumettre une pull request ou me contacter directement pour aider au projet **(discord : JsonLines
 #0721)**.
 
