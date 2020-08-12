@@ -78,10 +78,10 @@ class APIEcoleDirecte extends API {
       if (req['code'] == 200) {
         try {
           //Put the value of the name in a variable
-          actualUser = req['data']['accounts'][0]['prenom'];
+          actualUser = req['data']['accounts'][0]['Prenom'] ?? "";
           CreateStorage("userFullName", actualUser ?? "");
-          String userID = req['data']['accounts'][0]['id'].toString();
-          String classe = req['data']['accounts'][0]['profile']["classe"]["libelle"].toString();
+          String userID = req['data']['accounts'][0]['id'].toString() ?? "";
+          String classe = req['data']['accounts'][0]['profile']["classe"]["libelle"].toString() ?? "";
           //Store the token
           token = req['token'];
           //Create secure storage for credentials
