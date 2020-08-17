@@ -16,20 +16,21 @@ import 'package:rxdart/rxdart.dart';
 import '../apiManager.dart';
 import 'package:flutter/services.dart';
 
+import '../main.dart';
 import '../offline.dart';
 import '../usefulMethods.dart';
 import 'EcoleDirecte.dart';
 
 Client localClient;
-  //Locks are use to prohibit the app to send too much requests while collecting data and ensure there are made one by one
-  //They are ABSOLUTELY needed or user will be quickly IP suspended
-  bool gradeLock = false;
-  bool hwLock = false;
-  bool gradeRefreshRecursive = false;
-  bool hwRefreshRecursive = false;
-  bool loginLock = false;
-class APIPronote extends API {
+//Locks are use to prohibit the app to send too much requests while collecting data and ensure there are made one by one
+//They are ABSOLUTELY needed or user will be quickly IP suspended
+bool gradeLock = false;
+bool hwLock = false;
+bool gradeRefreshRecursive = false;
+bool hwRefreshRecursive = false;
+bool loginLock = false;
 
+class APIPronote extends API {
   @override
   // TODO: implement listApp
   List<App> get listApp => [];
@@ -37,8 +38,7 @@ class APIPronote extends API {
   @override
   Future<List<Discipline>> getGrades({bool forceReload}) async {
     var connectivityResult = await (Connectivity().checkConnectivity());
-    var offlineGrades =
-        await getGradesFromDB(online: connectivityResult != ConnectivityResult.none);
+    var offlineGrades = await offline.disciplines();
 
     //If force reload enabled the grades will be loaded online
     if ((connectivityResult == ConnectivityResult.none ||
@@ -46,12 +46,9 @@ class APIPronote extends API {
             forceReload == null) &&
         offlineGrades != null) {
       print("Loading grades from offline storage.");
-      //RELOAD THE GRADES ANYWAY
-      //NDLR : await is not needed, grades will be refreshed later
-      if (connectivityResult != ConnectivityResult.none) {
-        getGrades(forceReload: true);
-      }
-      var toReturn = await getGradesFromDB();
+     
+     
+      var toReturn = await offline.disciplines();
       await refreshDisciplinesListColors(toReturn);
       return toReturn;
     } else {
@@ -62,7 +59,7 @@ class APIPronote extends API {
     }
   }
 
-   getGradesFromInternet() async {
+  getGradesFromInternet() async {
     int req = 0;
     //Time out of 20 seconds. Wait until the task is unlocked
     while (gradeLock == true && req < 10) {
@@ -116,7 +113,7 @@ class APIPronote extends API {
         refreshDisciplinesListColors(listDisciplines);
         gradeLock = false;
         gradeRefreshRecursive = false;
-        putGrades(listDisciplines);
+        offline.updateDisciplines(listDisciplines);
         return listDisciplines;
       } catch (e) {
         gradeLock = false;
@@ -185,8 +182,7 @@ class APIPronote extends API {
   @override
   Future<List<Homework>> getNextHomework({bool forceReload}) async {
     var connectivityResult = await (Connectivity().checkConnectivity());
-    var offlineHomework =
-        await getHomeworkFromDB(online: connectivityResult != ConnectivityResult.none);
+    var offlineHomework = await offline.homework();
 
     //If force reload enabled the grades will be loaded online
     if ((connectivityResult == ConnectivityResult.none ||
@@ -194,12 +190,7 @@ class APIPronote extends API {
             forceReload == null) &&
         offlineHomework != null) {
       print("Loading homework from offline storage.");
-      //RELOAD THE HOMEWORK ANYWAY
-      //NDLR : await is not needed, homework will be refreshed later
-      //getNextHomework(forceReload:true);
-      if (connectivityResult != ConnectivityResult.none) {
-        getNextHomework(forceReload: true);
-      }
+     
 
       return offlineHomework;
     } else {
@@ -224,7 +215,7 @@ class APIPronote extends API {
         List<Homework> listHW = List<Homework>();
         List<Homework> hws = await localClient.homework(now);
         listHW.addAll(hws);
-        List<DateTime> pinnedDates = await getPinnedHomeworkDates();
+        List<DateTime> pinnedDates = await offline.getPinnedHomeworkDates();
         //Wait for add pinned content
         await Future.wait(pinnedDates.map((element) async {
           List<Homework> pinnedHomework = await localClient.homework(element, date_to: element);
@@ -237,7 +228,7 @@ class APIPronote extends API {
 
         hwLock = false;
         hwRefreshRecursive = false;
-        putHomework(listHW);
+        offline.updateHomework(listHW);
 
         return listHW;
       } catch (e) {
@@ -260,18 +251,13 @@ class APIPronote extends API {
 
   @override
   Future<String> login(username, password, {url, cas}) async {
+    print(username + " " + password + " " + url);
     int req = 0;
-    //Time out of 20 seconds. Wait until the task is unlocked
-    while (loginLock == true && req < 10) {
-      req++;
-      await Future.delayed(const Duration(seconds: 2), () => "1");
-    }
+    //allows only one request
     if (loginLock == false) {
       loginLock = true;
       try {
-        localClient = null;
         var cookies = await callCas(cas, username, password);
-        //localClient = null;
         localClient = Client(url, username: username, password: password, cookies: cookies);
         await localClient.init();
         if (localClient.logged_in) {
@@ -365,10 +351,9 @@ class APIPronote extends API {
 }
 
 getOfflinePeriods() async {
-  print("Getting offline periods");
   try {
     List<Period> listPeriods = List();
-    List<Discipline> disciplines = await getGradesFromDB();
+    List<Discipline> disciplines = await offline.disciplines();
     List<Grade> grades = getAllGrades(disciplines, overrideLimit: true);
     grades.forEach((grade) {
       if (!listPeriods
@@ -392,7 +377,7 @@ getOnlinePeriods() async {
       localClient.localPeriods.forEach((pronotePeriod) {
         listPeriod.add(Period(pronotePeriod.name, pronotePeriod.id));
       });
-      //listPeriod.add(Period("test", "test"));
+      listPeriod.add(Period("test", "test"));
       return listPeriod;
     } else {
       var listPronotePeriods = await localClient.periods();
@@ -409,82 +394,71 @@ getOnlinePeriods() async {
 }
 
 refreshClient() async {
-  getChosenParser();
-  String u = await ReadStorage("username");
-  String p = await ReadStorage("password");
-  String url = await ReadStorage("pronoteurl");
-  String cas = await ReadStorage("pronotecas");
-
-  if (u != null && p != null) {
-    print("LOGIN");
-    await APIPronote().login(u, p, url: url, cas: cas);
-  }
+  await tlogin.login();
 }
 
 getPronoteGradesFromInternet() async {
+  int req = 0;
+  //Time out of 20 seconds. Wait until the task is unlocked
+  while (gradeLock == true && req < 10) {
+    req++;
+    await Future.delayed(const Duration(seconds: 2), () => "1");
+  }
+  //Wait until task is unlocked to avoid parallels execution
+  if (gradeLock == false) {
+    print("GETTING GRADES");
+    gradeLock = true;
+    try {
+      List periods = await localClient.periods();
 
-   int req = 0;
-    //Time out of 20 seconds. Wait until the task is unlocked
-    while (gradeLock == true && req < 10) {
-      req++;
-      await Future.delayed(const Duration(seconds: 2), () => "1");
-    }
-    //Wait until task is unlocked to avoid parallels execution
-    if (gradeLock == false) {
-      print("GETTING GRADES");
-      gradeLock = true;
-      try {
-        List periods = await localClient.periods();
-
-        List<Grade> grades = List<Grade>();
-        List averages = List();
-        List<Discipline> listDisciplines = List<Discipline>();
-        for (var i = 0; i < periods.length; i++) {
-          //Grades and average
-          List data = await periods[i].grades(i + 1);
-
-          grades.addAll(data[0]);
-          averages.addAll(data[1]);
-
-          var z = 0;
-          grades.forEach((element) {
-            if (listDisciplines.every((listDisciplineEl) =>
-                listDisciplineEl.nomDiscipline != element.libelleMatiere ||
-                listDisciplineEl.periode != element.nomPeriode)) {
-              listDisciplines.add(Discipline(
-                  codeMatiere: element.codeMatiere,
-                  codeSousMatiere: List(),
-                  nomDiscipline: element.libelleMatiere,
-                  periode: element.nomPeriode,
-                  gradesList: List(),
-                  professeurs: List(),
-                  moyenne: averages[z][0],
-                  moyenneMax: averages[z][1],
-                  moyenneClasse: element.moyenneClasse,
-                  moyenneGeneraleClasse: periods[i].moyenneGeneraleClasse,
-                  moyenneGenerale: periods[i].moyenneGenerale));
-            }
-            z++;
-          });
-        }
-
-        listDisciplines.forEach((element) {
-          element.gradesList
-              .addAll(grades.where((grade) => grade.libelleMatiere == element.nomDiscipline));
-        });
-        int index = 0;
-        refreshDisciplinesListColors(listDisciplines);
-        gradeLock = false;
-        gradeRefreshRecursive = false;
-        putGrades(listDisciplines);
-        return listDisciplines;
-      } catch (e) {
-        gradeLock = false;
-       
-      }
-    } else {
-      print("GRADES WERE LOCKED");
+      List<Grade> grades = List<Grade>();
+      List averages = List();
       List<Discipline> listDisciplines = List<Discipline>();
+      for (var i = 0; i < periods.length; i++) {
+        //Grades and average
+        List data = await periods[i].grades(i + 1);
+
+        grades.addAll(data[0]);
+        averages.addAll(data[1]);
+
+        var z = 0;
+        grades.forEach((element) {
+          if (listDisciplines.every((listDisciplineEl) =>
+              listDisciplineEl.nomDiscipline != element.libelleMatiere ||
+              listDisciplineEl.periode != element.nomPeriode)) {
+            listDisciplines.add(Discipline(
+                codeMatiere: element.codeMatiere,
+                codeSousMatiere: List(),
+                nomDiscipline: element.libelleMatiere,
+                periode: element.nomPeriode,
+                gradesList: List(),
+                professeurs: List(),
+                moyenne: averages[z][0],
+                moyenneMax: averages[z][1],
+                moyenneClasse: element.moyenneClasse,
+                moyenneGeneraleClasse: periods[i].moyenneGeneraleClasse,
+                moyenneGenerale: periods[i].moyenneGenerale));
+          }
+          z++;
+        });
+      }
+
+      listDisciplines.forEach((element) {
+        element.gradesList
+            .addAll(grades.where((grade) => grade.libelleMatiere == element.nomDiscipline));
+      });
+      int index = 0;
+      refreshDisciplinesListColors(listDisciplines);
+      gradeLock = false;
+      gradeRefreshRecursive = false;
+      offline.updateDisciplines(listDisciplines);
       return listDisciplines;
+    } catch (e) {
+      gradeLock = false;
     }
+  } else {
+    print("GRADES WERE LOCKED");
+    List<Discipline> listDisciplines = List<Discipline>();
+    return listDisciplines;
+  }
 }

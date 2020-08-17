@@ -11,6 +11,7 @@ import 'package:ynotes/UI/screens/loadingPage.dart';
 import 'package:ynotes/UI/screens/loginPage.dart';
 import 'package:ynotes/UI/screens/tabBuilder.dart';
 import 'package:sentry/sentry.dart';
+import 'package:ynotes/models.dart';
 import 'package:ynotes/offline.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:alice/alice.dart';
@@ -26,7 +27,11 @@ import 'multilanguage.dart';
 
 var uuid = Uuid();
 
+//login manager
+TransparentLogin tlogin = TransparentLogin();
+
 API localApi = APIManager();
+Offline offline = Offline();
 
 ///TO DO : Disable after bêta, Sentry is used to send bug reports
 final SentryClient _sentry = SentryClient(uuidGenerator: uuid.v4, dsn: "");
@@ -79,7 +84,7 @@ void backgroundFetchHeadlessTask(String taskId) async {
 mainTestNewGrades() async {
   try {
     //Getting the offline count of grades
-    List<Grade> listOfflineGrades = getAllGrades(await getGradesFromDB(), overrideLimit: true);
+    List<Grade> listOfflineGrades = getAllGrades(await offline.disciplines(), overrideLimit: true);
     print("Offline length is ${listOfflineGrades.length}");
     //Getting the online count of grades
     await getChosenParser();
@@ -89,7 +94,14 @@ mainTestNewGrades() async {
     }
     if (chosenParser == 1) {
       print("Getting grades from Pronote");
-      listOnlineGrades = getAllGrades(await getPronoteGradesFromInternet(), overrideLimit: true);
+      API api = APIPronote();
+      //Login creds
+      String u = await ReadStorage("username");
+      String p = await ReadStorage("password");
+      String url = await ReadStorage("pronoteurl");
+      String cas = await ReadStorage("pronotecas");
+      await api.login(u, p, url: url, cas: cas);
+      listOnlineGrades = getAllGrades(await api.getGrades(), overrideLimit: true);
     }
 
     print("Online length is ${listOnlineGrades.length}");
@@ -139,6 +151,8 @@ Future main() async {
       stackTrace: details.stack,
     );
   };
+  //Init offline data
+  await offline.init();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       systemNavigationBarColor: isDarkModeEnabled ? Color(0xff414141) : Color(0xffF3F3F3),
       statusBarColor: Colors.transparent));

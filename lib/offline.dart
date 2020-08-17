@@ -9,6 +9,194 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:ynotes/usefulMethods.dart';
 
+class Offline {
+  //Return disciplines + grades
+  List<Discipline> disciplinesData;
+  //Return homework
+  List<Homework> homeworkData;
+
+  Box _offlineBox;
+  Box _homeworkDoneBox;
+  Box _pinnedHomeworkBox;
+  init() async {
+    final dir = await getDirectory();
+    Hive.init("${dir.path}/offline");
+    //Register adapters once
+    Hive.registerAdapter(gradeAdapter());
+    Hive.registerAdapter(disciplineAdapter());
+    Hive.registerAdapter(documentAdapter());
+    Hive.registerAdapter(homeworkAdapter());
+    _offlineBox = await Hive.openBox("offlineData");
+    _homeworkDoneBox = await Hive.openBox('doneHomework');
+    _pinnedHomeworkBox = await Hive.openBox('pinnedHomework');
+  }
+
+  //Refresh lists when needed
+  refreshData() async {
+    try {
+      if (!_offlineBox.isOpen) {
+        _offlineBox = await Hive.openBox("offlineData");
+      }
+      //Get data and cast it
+      disciplinesData = _offlineBox.get("disciplines").cast<Discipline>();
+      homeworkData = _offlineBox.get("homework").cast<Homework>();
+
+      _homeworkDoneBox.close();
+      _offlineBox.close();
+    } catch (e) {}
+  }
+
+  //Clear all databases
+  clearAll() async {
+    try {
+      if (!_offlineBox.isOpen) {
+        _offlineBox = await Hive.openBox("offlineData");
+      }
+      if (!_homeworkDoneBox.isOpen) {
+        _homeworkDoneBox = await Hive.openBox("doneHomework");
+      }
+      if (!_pinnedHomeworkBox.isOpen) {
+        _pinnedHomeworkBox = await Hive.openBox('pinnedHomework');
+      }
+      _offlineBox.clear();
+      _homeworkDoneBox.clear();
+      _pinnedHomeworkBox.clear();
+    } catch (e) {
+      print("Failed to clear all db " + e.toString());
+    }
+  }
+
+  updateDisciplines(List<Discipline> newData) async {
+     
+    try {
+      if (!_offlineBox.isOpen) {
+        _offlineBox = await Hive.openBox("offlineData");
+      }
+      print("Updating disciplines");
+      await _offlineBox.delete("disciplines");
+      await _offlineBox.put("disciplines", newData);
+      this.refreshData();
+    } catch (e) {
+      print("Error while updating disciplines " + e);
+    }
+  }
+
+  updateHomework(List<Homework> newData, {bool add = false}) async {
+    
+    try { 
+      if (!_offlineBox.isOpen) {
+        _offlineBox = await Hive.openBox("offlineData");
+      }
+      if (add == true) {
+        List<Homework> oldHW = _offlineBox.get("homework").cast<Homework>();
+
+        List<Homework> combinedList = oldHW + newData;
+        combinedList = combinedList.toSet().toList();
+
+        await _offlineBox.put("homework", combinedList);
+      } else {
+        await _offlineBox.put("homework", newData);
+      }
+      this.refreshData();
+    } catch (e) {
+      print("Error while updating homework " + e.toString());
+    }
+  }
+
+  setPinnedHomeworkDate(String date, bool value) async {
+    try {
+      _pinnedHomeworkBox.put(date, value);
+    } catch (e) {
+      print("Error during the setPinnedHomeworkDateProcess $e");
+    }
+  }
+
+  getPinnedHomeworkDates() async {
+    try {
+      Map notParsedList = _pinnedHomeworkBox.toMap();
+      List<DateTime> parsedList = List<DateTime>();
+      notParsedList.removeWhere((key, value) => value == false);
+      notParsedList.keys.forEach((element) {
+        parsedList.add(DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.parse(element))));
+      });
+      return parsedList;
+    } catch (e) {
+      print("Error during the getPinnedHomeworkDateProcess $e");
+    }
+  }
+
+  Future<bool> getPinnedHomeworkSingleDate(String date) async {
+    try {
+      bool toReturn = _pinnedHomeworkBox.get(date);
+
+      //If to return is null return false
+      return (toReturn != null) ? toReturn : false;
+    } catch (e) {
+      print("Error during the getHomeworkDoneProcess $e");
+
+      return null;
+    }
+  }
+
+  //Used to get disciplines, from db or locally
+  Future<List<Discipline>> disciplines() async {
+    try {
+      if (disciplinesData != null) {
+        return disciplinesData;
+      } else {
+        await refreshData();
+        return disciplinesData;
+      }
+    } catch (e) {
+      print("Error while returning disciplines" + e.toString());
+    }
+  }
+
+  Future<List<Homework>> homework() async {
+    try {
+
+  
+    if (homeworkData != null) {
+      return homeworkData;
+    } else {
+      await refreshData();
+      return homeworkData;
+    }
+      }
+      catch(e)
+      {
+            print("Error while returning homework" + e.toString());
+      }
+  }
+
+  getHWCompletion(String id) async {
+    try {
+      final dir = await getDirectory();
+      Hive.init("${dir.path}/offline");
+
+      bool toReturn = _homeworkDoneBox.get(id.toString());
+
+      //If to return is null return false
+      return (toReturn != null) ? toReturn : false;
+    } catch (e) {
+      print("Error during the getHomeworkDoneProcess $e");
+
+      return null;
+    }
+  }
+
+  setHWCompletion(String id, bool state) async {
+    try {
+      final dir = await getDirectory();
+      Hive.init("${dir.path}/offline");
+
+      _homeworkDoneBox.put(id.toString(), state);
+    } catch (e) {
+      print("Error during the setHomeworkDoneProcess $e");
+    }
+  }
+}
+/*
 //To put grades in db
 putGrades(List<Discipline> listD) async {
   try {
@@ -80,7 +268,8 @@ getGradesFromDB({bool online = true}) async {
       }
     } else {
       if (online == true) {
-        print("Offline grades data is too old of ${difference.inHours - (batterySaver ? 8 : 3)} hours.");
+        print(
+            "Offline grades data is too old of ${difference.inHours - (batterySaver ? 8 : 3)} hours.");
         return null;
       } else {
         try {
@@ -95,7 +284,6 @@ getGradesFromDB({bool online = true}) async {
         }
       }
     }
-    
   } catch (e) {
     print("Getting grades from offline returned null : $e");
     return null;
@@ -125,8 +313,6 @@ putHomework(List<Homework> listHW, {bool add = false}) async {
     }
 
     if (homeworkBox.keys.contains(now) && add == true) {
-      print("here");
-
       List<Homework> oldHW = homeworkBox.getAt(0).cast<Homework>();
 
       List<Homework> combinedList = oldHW + listHW;
@@ -185,7 +371,8 @@ getHomeworkFromDB({bool online = true}) async {
       }
     } else {
       if (online == true) {
-        print("Offline homework data is too old of ${difference.inHours - (batterySaver ? 8 : 3)} hours.");
+        print(
+            "Offline homework data is too old of ${difference.inHours - (batterySaver ? 8 : 3)} hours.");
         return null;
       } else {
         try {
@@ -282,3 +469,4 @@ Future<bool> getPinnedHomeworkSingleDate(String date) async {
     return null;
   }
 }
+*/

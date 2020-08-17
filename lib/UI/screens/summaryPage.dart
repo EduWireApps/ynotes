@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
 import 'dart:math';
 import 'package:circular_check_box/circular_check_box.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -22,9 +23,7 @@ import 'package:ynotes/UI/screens/homeworkPage.dart';
 import '../../apiManager.dart';
 import '../../offline.dart';
 
-
-
-///First page to access quickly to last grades, homework and 
+///First page to access quickly to last grades, homework and
 class SummaryPage extends StatefulWidget {
   final TabController tabController;
 
@@ -36,7 +35,7 @@ class SummaryPage extends StatefulWidget {
 
 Future doneListFuture;
 Future _disciplinesListFuture;
-
+bool firstStart = true;
 class _SummaryPageState extends State<SummaryPage> {
   double actualPage;
   PageController _pageControllerSummaryPage;
@@ -45,7 +44,7 @@ class _SummaryPageState extends State<SummaryPage> {
   double offset;
   int _slider = 1;
   List items = [1, 2, 3, 4, 5];
-  bool firstStart = true;
+  
   initState() {
     super.initState();
 
@@ -59,10 +58,17 @@ class _SummaryPageState extends State<SummaryPage> {
       });
     });
     homeworkListFuture = localApi.getNextHomework();
+    _disciplinesListFuture = localApi.getGrades();
     setState(() {
       doneListFuture = getHomeworkDonePercent();
     });
-    _disciplinesListFuture = localApi.getGrades();
+    SchedulerBinding.instance.addPostFrameCallback((_) => tlogin.init().then((var f) {
+          if (firstStart == true) {
+            homeworkListFuture = localApi.getNextHomework(forceReload: true);
+            _disciplinesListFuture = localApi.getGrades(forceReload: true);
+            firstStart = false;
+          }
+        }));
   }
 
   @override
@@ -105,7 +111,6 @@ class _SummaryPageState extends State<SummaryPage> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
               color: Theme.of(context).primaryColor,
-             
             ),
             child: FutureBuilder<int>(
                 future: doneListFuture,
@@ -121,8 +126,14 @@ class _SummaryPageState extends State<SummaryPage> {
                               child: Container(
                                 padding: EdgeInsets.all(0),
                                 //Gauge
-                                child: charts.PieChart(_getDoneTasks(snapshot.hasError ? 0 : snapshot.data),
-                                    animate: false, defaultRenderer: charts.ArcRendererConfig(arcWidth: (screenSize.size.width < 500) ? 5 : 10, startAngle: pi, arcLength: pi, strokeWidthPx: 1)),
+                                child: charts.PieChart(
+                                    _getDoneTasks(snapshot.hasError ? 0 : snapshot.data),
+                                    animate: false,
+                                    defaultRenderer: charts.ArcRendererConfig(
+                                        arcWidth: (screenSize.size.width < 500) ? 5 : 10,
+                                        startAngle: pi,
+                                        arcLength: pi,
+                                        strokeWidthPx: 1)),
                               )),
                         ),
                       ),
@@ -132,7 +143,10 @@ class _SummaryPageState extends State<SummaryPage> {
                           child: Text(
                             (snapshot.hasError ? "0" : snapshot.data.toString()) + "%",
                             textAlign: TextAlign.center,
-                            style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.width / 11),
+                            style: TextStyle(
+                                fontFamily: "Asap",
+                                color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                fontSize: screenSize.size.width / 11),
                           ),
                         ),
                       ),
@@ -143,7 +157,10 @@ class _SummaryPageState extends State<SummaryPage> {
                           child: Text(
                             'du travail fait !',
                             textAlign: TextAlign.center,
-                            style: TextStyle(color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.2, fontFamily: "Asap"),
+                            style: TextStyle(
+                                color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                fontSize: screenSize.size.height / 10 * 0.2,
+                                fontFamily: "Asap"),
                           ),
                         ),
                       ),
@@ -157,7 +174,8 @@ class _SummaryPageState extends State<SummaryPage> {
             margin: EdgeInsets.only(top: (screenSize.size.height / 10 * 8.8) / 10 * 1 / 3),
             width: screenSize.size.width / 5 * 4.5,
             height: (screenSize.size.height / 10 * 8.8) / 10 * 4.2,
-            decoration: BoxDecoration(color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(12)),
+            decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(12)),
             child: ClipRRect(
               borderRadius: BorderRadius.all(Radius.circular(12)),
               child: PageView(
@@ -174,7 +192,8 @@ class _SummaryPageState extends State<SummaryPage> {
                           height: screenSize.size.height / 10 * 0.5,
                           child: RawMaterialButton(
                             onPressed: () {
-                              todoSettingsController.animateToPage(1, duration: Duration(milliseconds: 300), curve: Curves.ease);
+                              todoSettingsController.animateToPage(1,
+                                  duration: Duration(milliseconds: 300), curve: Curves.ease);
                             },
                             child: new Icon(
                               Icons.settings,
@@ -190,17 +209,23 @@ class _SummaryPageState extends State<SummaryPage> {
                       Align(
                           alignment: Alignment.topCenter,
                           child: Container(
-                            margin: EdgeInsets.only(top: (screenSize.size.height / 10 * 8.8) / 10 * 0.1),
+                            margin: EdgeInsets.only(
+                                top: (screenSize.size.height / 10 * 8.8) / 10 * 0.1),
                             child: Text(
                               "A faire",
                               textAlign: TextAlign.center,
-                              style: TextStyle(fontFamily: "Asap", fontSize: 18, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                              style: TextStyle(
+                                  fontFamily: "Asap",
+                                  fontSize: 18,
+                                  color: isDarkModeEnabled ? Colors.white : Colors.black),
                             ),
                           )),
                       Align(
                         alignment: Alignment.bottomCenter,
                         child: Container(
-                          margin: EdgeInsets.only(bottom: (screenSize.size.height / 10 * 8.8) / 10 * 0.2, top: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
+                          margin: EdgeInsets.only(
+                              bottom: (screenSize.size.height / 10 * 8.8) / 10 * 0.2,
+                              top: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
                           height: (screenSize.size.height / 10 * 8.8) / 10 * 3,
                           child: RefreshIndicator(
                             onRefresh: refreshLocalHomeworkList,
@@ -219,30 +244,48 @@ class _SummaryPageState extends State<SummaryPage> {
                                                 future: getColor(snapshot.data[index].codeMatiere),
                                                 builder: (context, color) => Column(
                                                   children: <Widget>[
-                                                    if (index == 0 || snapshot.data[index - 1].date != snapshot.data[index].date)
+                                                    if (index == 0 ||
+                                                        snapshot.data[index - 1].date !=
+                                                            snapshot.data[index].date)
                                                       Row(children: <Widget>[
                                                         Expanded(
                                                           child: new Container(
-                                                              margin: const EdgeInsets.only(left: 10.0, right: 20.0),
+                                                              margin: const EdgeInsets.only(
+                                                                  left: 10.0, right: 20.0),
                                                               child: Divider(
-                                                                color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                                                color: isDarkModeEnabled
+                                                                    ? Colors.white
+                                                                    : Colors.black,
                                                                 height: 36,
                                                               )),
                                                         ),
                                                         Text(
-                                                          DateFormat("EEEE d MMMM", "fr_FR").format(snapshot.data[index].date).toString(),
-                                                          style: TextStyle(color: isDarkModeEnabled ? Colors.white : Colors.black, fontFamily: "Asap"),
+                                                          DateFormat("EEEE d MMMM", "fr_FR")
+                                                              .format(snapshot.data[index].date)
+                                                              .toString(),
+                                                          style: TextStyle(
+                                                              color: isDarkModeEnabled
+                                                                  ? Colors.white
+                                                                  : Colors.black,
+                                                              fontFamily: "Asap"),
                                                         ),
                                                         Expanded(
                                                           child: Container(
-                                                              margin: const EdgeInsets.only(left: 20.0, right: 10.0),
+                                                              margin: const EdgeInsets.only(
+                                                                  left: 20.0, right: 10.0),
                                                               child: Divider(
-                                                                color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                                                color: isDarkModeEnabled
+                                                                    ? Colors.white
+                                                                    : Colors.black,
                                                                 height: 36,
                                                               )),
                                                         ),
                                                       ]),
-                                                    HomeworkTicket(snapshot.data[index], Color(color.data), widget.tabController, refreshCallback),
+                                                    HomeworkTicket(
+                                                        snapshot.data[index],
+                                                        Color(color.data),
+                                                        widget.tabController,
+                                                        refreshCallback),
                                                   ],
                                                 ),
                                               );
@@ -252,21 +295,44 @@ class _SummaryPageState extends State<SummaryPage> {
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: <Widget>[
                                             Container(
-                                              height: (screenSize.size.height / 10 * 8.8) / 10 * 1.5,
-                                              child: Image(fit: BoxFit.fitWidth, image: AssetImage('assets/images/noHomework.png')),
+                                              height:
+                                                  (screenSize.size.height / 10 * 8.8) / 10 * 1.5,
+                                              child: Image(
+                                                  fit: BoxFit.fitWidth,
+                                                  image:
+                                                      AssetImage('assets/images/noHomework.png')),
                                             ),
                                             Text(
                                               "Pas de devoirs à l'horizon... \non se détend ?",
                                               textAlign: TextAlign.center,
-                                              style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
+                                              style: TextStyle(
+                                                  fontFamily: "Asap",
+                                                  color: isDarkModeEnabled
+                                                      ? Colors.white
+                                                      : Colors.black,
+                                                  fontSize: (screenSize.size.height / 10 * 8.8) /
+                                                      10 *
+                                                      0.2),
                                             ),
                                             FlatButton(
                                               onPressed: () {
                                                 //Reload list
                                                 refreshLocalHomeworkList();
                                               },
-                                              child: Text("Recharger", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2)),
-                                              shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(18.0), side: BorderSide(color: Theme.of(context).primaryColorDark)),
+                                              child: Text("Recharger",
+                                                  style: TextStyle(
+                                                      fontFamily: "Asap",
+                                                      color: isDarkModeEnabled
+                                                          ? Colors.white
+                                                          : Colors.black,
+                                                      fontSize:
+                                                          (screenSize.size.height / 10 * 8.8) /
+                                                              10 *
+                                                              0.2)),
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius: new BorderRadius.circular(18.0),
+                                                  side: BorderSide(
+                                                      color: Theme.of(context).primaryColorDark)),
                                             )
                                           ],
                                         );
@@ -289,17 +355,23 @@ class _SummaryPageState extends State<SummaryPage> {
                       Align(
                           alignment: Alignment.topCenter,
                           child: Container(
-                            margin: EdgeInsets.only(top: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
+                            margin: EdgeInsets.only(
+                                top: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
                             child: AutoSizeText(
                               "Paramètres des devoirs rapides",
                               textAlign: TextAlign.center,
-                              style: TextStyle(fontFamily: "Asap", fontSize: 16, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                              style: TextStyle(
+                                  fontFamily: "Asap",
+                                  fontSize: 16,
+                                  color: isDarkModeEnabled ? Colors.white : Colors.black),
                             ),
                           )),
                       Align(
                         alignment: Alignment.bottomCenter,
                         child: Container(
-                          margin: EdgeInsets.only(bottom: (screenSize.size.height / 10 * 8.8) / 10 * 0.2, top: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
+                          margin: EdgeInsets.only(
+                              bottom: (screenSize.size.height / 10 * 8.8) / 10 * 0.2,
+                              top: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
                           height: (screenSize.size.height / 10 * 8.8) / 10 * 3,
                           child: FutureBuilder(
                               future: getIntSetting("summaryQuickHomework"),
@@ -315,17 +387,27 @@ class _SummaryPageState extends State<SummaryPage> {
                                         max: 11.0,
                                         divisions: 11,
                                         onChanged: (double newValue) async {
-                                          await setIntSetting("summaryQuickHomework", newValue.round());
+                                          await setIntSetting(
+                                              "summaryQuickHomework", newValue.round());
                                           setState(() {
                                             _slider = newValue.round();
                                           });
                                         }),
                                     Container(
-                                      margin: EdgeInsets.only(top: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
+                                      margin: EdgeInsets.only(
+                                          top: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
                                       child: AutoSizeText(
-                                        "Devoirs sur :\n" + (_slider.toString() == "11" ? "∞" : _slider.toString()) + " jour" + (_slider > 1 ? "s" : ""),
+                                        "Devoirs sur :\n" +
+                                            (_slider.toString() == "11"
+                                                ? "∞"
+                                                : _slider.toString()) +
+                                            " jour" +
+                                            (_slider > 1 ? "s" : ""),
                                         textAlign: TextAlign.center,
-                                        style: TextStyle(fontFamily: "Asap", fontSize: 15, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                        style: TextStyle(
+                                            fontFamily: "Asap",
+                                            fontSize: 15,
+                                            color: isDarkModeEnabled ? Colors.white : Colors.black),
                                       ),
                                     )
                                   ],
@@ -345,7 +427,8 @@ class _SummaryPageState extends State<SummaryPage> {
                               borderRadius: new BorderRadius.circular(18.0),
                             ),
                             onPressed: () {
-                              todoSettingsController.animateToPage(0, duration: Duration(milliseconds: 400), curve: Curves.ease);
+                              todoSettingsController.animateToPage(0,
+                                  duration: Duration(milliseconds: 400), curve: Curves.ease);
                               refreshCallback();
                             },
                             child: Text(
@@ -405,7 +488,11 @@ class _SummaryPageState extends State<SummaryPage> {
                                                     children: <Widget>[
                                                       Container(
                                                         child: Badge(
-                                                          showBadge: getAllGrades(snapshot.data)[position].dateSaisie == DateFormat('yyyy-MM-dd').format(DateTime.now()),
+                                                          showBadge:
+                                                              getAllGrades(snapshot.data)[position]
+                                                                      .dateSaisie ==
+                                                                  DateFormat('yyyy-MM-dd')
+                                                                      .format(DateTime.now()),
                                                           animationType: BadgeAnimationType.scale,
                                                           toAnimate: true,
                                                           elevation: 0,
@@ -414,8 +501,16 @@ class _SummaryPageState extends State<SummaryPage> {
                                                         ),
                                                       ),
                                                       Text(
-                                                        getAllGrades(snapshot.data)[position].libelleMatiere + " - " + getAllGrades(snapshot.data)[position].date,
-                                                        style: TextStyle(fontFamily: "Asap", color: (isDarkModeEnabled ? Colors.white : Colors.black)),
+                                                        getAllGrades(snapshot.data)[position]
+                                                                .libelleMatiere +
+                                                            " - " +
+                                                            getAllGrades(snapshot.data)[position]
+                                                                .date,
+                                                        style: TextStyle(
+                                                            fontFamily: "Asap",
+                                                            color: (isDarkModeEnabled
+                                                                ? Colors.white
+                                                                : Colors.black)),
                                                         textAlign: TextAlign.center,
                                                       ),
                                                     ],
@@ -423,29 +518,85 @@ class _SummaryPageState extends State<SummaryPage> {
                                                   AutoSizeText.rich(
                                                     //MARK
                                                     TextSpan(
-                                                      text: (getAllGrades(snapshot.data)[position].nonSignificatif ? "(" + getAllGrades(snapshot.data)[position].valeur : getAllGrades(snapshot.data)[position].valeur),
-                                                      style: TextStyle(color: (isDarkModeEnabled ? Colors.white : Colors.black), fontFamily: "Asap", fontWeight: FontWeight.normal, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.7),
+                                                      text: (getAllGrades(snapshot.data)[position]
+                                                              .nonSignificatif
+                                                          ? "(" +
+                                                              getAllGrades(snapshot.data)[position]
+                                                                  .valeur
+                                                          : getAllGrades(snapshot.data)[position]
+                                                              .valeur),
+                                                      style: TextStyle(
+                                                          color: (isDarkModeEnabled
+                                                              ? Colors.white
+                                                              : Colors.black),
+                                                          fontFamily: "Asap",
+                                                          fontWeight: FontWeight.normal,
+                                                          fontSize:
+                                                              (screenSize.size.height / 10 * 8.8) /
+                                                                  10 *
+                                                                  0.7),
                                                       children: <TextSpan>[
-                                                        if (getAllGrades(snapshot.data)[position].noteSur != "20")
+                                                        if (getAllGrades(snapshot.data)[position]
+                                                                .noteSur !=
+                                                            "20")
 
                                                           //MARK ON
                                                           TextSpan(
-                                                              text: '/' + getAllGrades(snapshot.data)[position].noteSur,
-                                                              style: TextStyle(color: (isDarkModeEnabled ? Colors.white : Colors.black), fontWeight: FontWeight.normal, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.4)),
-                                                        if (getAllGrades(snapshot.data)[position].nonSignificatif == true)
-                                                          TextSpan(text: ")", style: TextStyle(color: (isDarkModeEnabled ? Colors.white : Colors.black), fontWeight: FontWeight.normal, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.7)),
+                                                              text: '/' +
+                                                                  getAllGrades(
+                                                                          snapshot.data)[position]
+                                                                      .noteSur,
+                                                              style: TextStyle(
+                                                                  color: (isDarkModeEnabled
+                                                                      ? Colors.white
+                                                                      : Colors.black),
+                                                                  fontWeight: FontWeight.normal,
+                                                                  fontSize:
+                                                                      (screenSize.size.height /
+                                                                              10 *
+                                                                              8.8) /
+                                                                          10 *
+                                                                          0.4)),
+                                                        if (getAllGrades(snapshot.data)[position]
+                                                                .nonSignificatif ==
+                                                            true)
+                                                          TextSpan(
+                                                              text: ")",
+                                                              style: TextStyle(
+                                                                  color: (isDarkModeEnabled
+                                                                      ? Colors.white
+                                                                      : Colors.black),
+                                                                  fontWeight: FontWeight.normal,
+                                                                  fontSize:
+                                                                      (screenSize.size.height /
+                                                                              10 *
+                                                                              8.8) /
+                                                                          10 *
+                                                                          0.7)),
                                                       ],
                                                     ),
                                                   ),
-                                                  if (getAllGrades(snapshot.data)[position].devoir != "") SizedBox(height: screenSize.size.height / 10 * 0.1),
-                                                  if (getAllGrades(snapshot.data)[position].devoir != "")
+                                                  if (getAllGrades(snapshot.data)[position]
+                                                          .devoir !=
+                                                      "")
+                                                    SizedBox(
+                                                        height: screenSize.size.height / 10 * 0.1),
+                                                  if (getAllGrades(snapshot.data)[position]
+                                                          .devoir !=
+                                                      "")
                                                     SizedBox(
                                                       width: screenSize.size.width / 5 * 3,
                                                       child: Text(
-                                                        getAllGrades(snapshot.data)[position].devoir,
+                                                        getAllGrades(snapshot.data)[position]
+                                                            .devoir,
                                                         textAlign: TextAlign.center,
                                                         overflow: TextOverflow.ellipsis,
-                                                        style: TextStyle(fontSize: 15, fontFamily: "Asap", color: (isDarkModeEnabled ? Colors.white : Colors.black)),
+                                                        style: TextStyle(
+                                                            fontSize: 15,
+                                                            fontFamily: "Asap",
+                                                            color: (isDarkModeEnabled
+                                                                ? Colors.white
+                                                                : Colors.black)),
                                                       ),
                                                     )
                                                 ],
@@ -469,7 +620,9 @@ class _SummaryPageState extends State<SummaryPage> {
                                       setState(() {
                                         actualPage = 0;
                                       });
-                                      _pageControllerSummaryPage.animateToPage(0, duration: Duration(milliseconds: 250), curve: Curves.easeInOutQuint);
+                                      _pageControllerSummaryPage.animateToPage(0,
+                                          duration: Duration(milliseconds: 250),
+                                          curve: Curves.easeInOutQuint);
                                     },
                                     child: Container(
                                         padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
@@ -558,7 +711,7 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
             child: Row(
               children: <Widget>[
                 FutureBuilder(
-                    future: getHomeworkCompletion(widget._homework.idDevoir),
+                    future: offline.getHWCompletion(widget._homework.idDevoir),
                     initialData: false,
                     builder: (context, snapshot) {
                       bool done = snapshot.data;
@@ -573,7 +726,7 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
                             doneListFuture = getHomeworkDonePercent();
                             widget.refreshCallback();
                           });
-                          setHomeworkCompletion(widget._homework.idDevoir, x);
+                          offline.setHWCompletion(widget._homework.idDevoir, x);
                         },
                       );
                     }),
@@ -581,12 +734,21 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Text(widget._homework.matiere, textScaleFactor: 1.0, textAlign: TextAlign.left, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 14, fontFamily: "Asap", fontWeight: FontWeight.bold)),
+                    Text(widget._homework.matiere,
+                        textScaleFactor: 1.0,
+                        textAlign: TextAlign.left,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            fontSize: 14, fontFamily: "Asap", fontWeight: FontWeight.bold)),
                     Row(
                       children: <Widget>[
                         Container(
-                          padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.height / 10 * 0.05),
-                          decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), borderRadius: BorderRadius.circular(15)),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: screenSize.size.width / 5 * 0.1,
+                              vertical: screenSize.size.height / 10 * 0.05),
+                          decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(15)),
                           child: Text(
                             widget._homework.interrogation ? "Interro" : "Travail",
                           ),
@@ -594,8 +756,12 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
                         if (widget._homework.rendreEnLigne)
                           Container(
                             margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
-                            padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.height / 10 * 0.05),
-                            decoration: BoxDecoration(color: Colors.orange.withOpacity(0.5), borderRadius: BorderRadius.circular(15)),
+                            padding: EdgeInsets.symmetric(
+                                horizontal: screenSize.size.width / 5 * 0.1,
+                                vertical: screenSize.size.height / 10 * 0.05),
+                            decoration: BoxDecoration(
+                                color: Colors.orange.withOpacity(0.5),
+                                borderRadius: BorderRadius.circular(15)),
                             child: Text("A rendre"),
                           )
                       ],
@@ -633,7 +799,7 @@ Future<int> getHomeworkDonePercent() async {
       int done = 0;
 
       await Future.forEach(list, (element) async {
-        bool isDone = await getHomeworkCompletion(element.idDevoir);
+        bool isDone = await offline.getHWCompletion(element.idDevoir);
         if (isDone) {
           done++;
         }
@@ -661,7 +827,8 @@ Future<List<Homework>> getReducedListHomework() async {
       var now = DateTime.now();
       var date = element.date;
 //ensure that the list doesn't contain the pinned homework
-      if (date.difference(now).inDays < reduce && date.isAfter(DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now())))) {
+      if (date.difference(now).inDays < reduce &&
+          date.isAfter(DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now())))) {
         listToReturn.add(element);
       }
     });

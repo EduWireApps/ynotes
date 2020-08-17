@@ -55,72 +55,6 @@ class AppStateNotifier extends ChangeNotifier {
   }
 }
 
-///Class download to notify view when download is ended
-class DownloadModel extends ChangeNotifier {
-  bool _isDownloading = false;
-  double _progress = 0;
-  get downloadProgress => _progress;
-  get isDownloading => _isDownloading;
-
-  ///Check if file exists
-  Future<bool> fileExists(filename) async {
-    final dir = await getDirectory();
-    return File("${dir.path}/downloads/$filename").exists();
-  }
-
-//Download a file in the app directory
-  download(id, type, filename) async {
-    _isDownloading = true;
-    _progress = null;
-    notifyListeners();
-    var url = 'https://api.ecoledirecte.com/v3/telechargement.awp?verbe=get';
-
-    Map<String, String> headers = {"Content-type": "x"};
-
-    String body = "leTypeDeFichier=$type&fichierId=$id&token=$token";
-    Request request = Request('POST', Uri.parse(url));
-    request.body = body.toString();
-
-    //Make a response client
-    final StreamedResponse response = await Client().send(request);
-    final contentLength = response.contentLength;
-    // final contentLength = double.parse(response.headers['x-decompressed-content-length']);
-
-    _progress = 0;
-    notifyListeners();
-    print("Downloading a file : $filename");
-
-    List<int> bytes = [];
-    final file = await FileAppUtil.getFilePath(filename);
-    response.stream.listen(
-      (List<int> newBytes) {
-        bytes.addAll(newBytes);
-        final downloadedLength = bytes.length;
-        _progress = downloadedLength / contentLength;
-
-        notifyListeners();
-      },
-      onDone: () async {
-        _progress = 100;
-        notifyListeners();
-        print("Téléchargement du fichier terminé : $filename");
-        final dir = await getDirectory();
-        final Directory _appDocDirFolder = Directory('${dir.path}/downloads/');
-
-        if (!await _appDocDirFolder.exists()) {
-          //if folder already exists return path
-          final Directory _appDocDirNewFolder = await _appDocDirFolder.create(recursive: true);
-        } //if folder not exists create folder and then return its path
-
-        await file.writeAsBytes(bytes);
-      },
-      onError: (e) {
-        print("Downloading file error : $e, on $filename");
-      },
-      cancelOnError: true,
-    );
-  }
-}
 
 Route router(Widget widget) {
   return PageRouteBuilder(
@@ -505,7 +439,7 @@ class AppNews {
   }
 }
 
-String cloudUsedFolder = "";
+
 ReadStorage(_key) async {
   String u = await storage.read(key: _key);
   return u;

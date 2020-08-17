@@ -363,11 +363,12 @@ class _Communication {
     //some headers to be real
     var headers = {
       'connection': 'keep-alive',
-      'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/73.0'
+      'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/74.0'
     };
 
     // get rsa keys and session id
     String hostName = Requests.getHostname(this.root_site + "/" + this.html_page);
+    Requests.setStoredCookies(hostName, this.cookies);
     //set the cookies for ENT
     if (cookies != null) {
       print("Cookies set");
@@ -461,6 +462,9 @@ class _Communication {
         r_number;
 
     this.request_number += 2;
+    if (request_number > 90) {
+      await this.client.refresh();
+    }
 
     var response = await Requests.post(p_site, json: json).catchError((onError) {
       print("Error occured during request : $onError");
@@ -763,8 +767,8 @@ class PronotePeriod {
       "_Signature_": {"onglet": 198}
     };
     //Tests
-    //var a = await Requests.get("http://demo2235921.mockable.io/2");
-    //var response = a.json();
+    /*var a = await Requests.get("http://demo2235921.mockable.io/2");
+    var response = a.json();*/
     var response = await _client.communication.post('DernieresNotes', data: json_data);
     var grades = response['donneesSec']['donnees']['listeDevoirs']['V'];
     this.moyenneGenerale = gradeTranslate(response['donneesSec']['donnees']['moyGenerale']['V']);

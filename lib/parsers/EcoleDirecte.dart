@@ -12,6 +12,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:quiver/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:stack/stack.dart' as sta;
+import 'package:ynotes/main.dart';
 import 'package:ynotes/parsers/EcoleDirecteCloud.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/offline.dart';
@@ -46,13 +47,27 @@ class HexColor extends Color {
 String token;
 
 final storage = new FlutterSecureStorage();
-List<String> CoolcolorList = ["#f07aa0", "#17d0c9", "#a3f7bf", "#cecece", "#ffa41b", "#ff5151", "#b967e1", "#8a7ca7", "#f18867", "#ffc0da", "#739832", "#8ac6d1"];
+List<String> CoolcolorList = [
+  "#f07aa0",
+  "#17d0c9",
+  "#a3f7bf",
+  "#cecece",
+  "#ffa41b",
+  "#ff5151",
+  "#b967e1",
+  "#8a7ca7",
+  "#f18867",
+  "#ffc0da",
+  "#739832",
+  "#8ac6d1"
+];
 
 //The ecole directe api extended from the apiManager.dart API class
 class APIEcoleDirecte extends API {
   @override
   // TODO: implement listApp
-  List<App> get listApp => [App("Messagerie", MdiIcons.mail, route: "mail"), App("Cloud", Icons.cloud, route: "cloud")];
+  List<App> get listApp =>
+      [App("Messagerie", MdiIcons.mail, route: "mail"), App("Cloud", Icons.cloud, route: "cloud")];
   @override
 //Get connection message and store token
   Future<String> login(username, password, {url, cas}) async {
@@ -78,10 +93,15 @@ class APIEcoleDirecte extends API {
       if (req['code'] == 200) {
         try {
           //Put the value of the name in a variable
-          actualUser = req['data']['accounts'][0]['Prenom'] ?? "";
+          actualUser = req['data']['accounts'][0]['Prenom'] ?? "Invité";
           CreateStorage("userFullName", actualUser ?? "");
           String userID = req['data']['accounts'][0]['id'].toString() ?? "";
-          String classe = req['data']['accounts'][0]['profile']["classe"]["libelle"].toString() ?? "";
+          String classe;
+          try {
+            classe = req['data']['accounts'][0]['profile']["classe"]["libelle"] ?? "";
+          } catch (e) {
+            classe = "";
+          }
           //Store the token
           token = req['token'];
           //Create secure storage for credentials
@@ -143,17 +163,20 @@ class APIEcoleDirecte extends API {
       throw "Error while getting periods. ${url}";
     }
     return null;
-
   }
 
   @override
 //Getting grades
   Future<List<Discipline>> getGrades({bool forceReload}) async {
     var connectivityResult = await (Connectivity().checkConnectivity());
-    var offlineGrades = await getGradesFromDB(online: connectivityResult != ConnectivityResult.none);
+    var offlineGrades =
+        await offline.disciplines();
 
     //If force reload enabled the grades will be loaded online
-    if ((connectivityResult == ConnectivityResult.none || forceReload == false || forceReload == null) && offlineGrades != null) {
+    if ((connectivityResult == ConnectivityResult.none ||
+            forceReload == false ||
+            forceReload == null) &&
+        offlineGrades != null) {
       print("Loading grades from offline storage.");
       //RELOAD THE GRADES ANYWAY
       //NDLR : await is not needed, grades will be refreshed later
@@ -161,7 +184,7 @@ class APIEcoleDirecte extends API {
         getGrades(forceReload: true);
       }
 
-      List<Discipline> grades = await getGradesFromDB();
+      List<Discipline> grades = await offline.disciplines();
       await refreshDisciplinesListColors(grades);
       return grades;
     } else {
@@ -200,12 +223,15 @@ class APIEcoleDirecte extends API {
         }
         data2.forEach((key, value) {
           if (isLimitedTo7Days == true) {
-            if (DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.parse(key))).difference(DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now()))).inDays > 7) homeworkDatesListToReturn.add(DateTime.parse(key));
+            if (DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.parse(key)))
+                    .difference(DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now())))
+                    .inDays >
+                7) homeworkDatesListToReturn.add(DateTime.parse(key));
           } else {
             homeworkDatesListToReturn.add(DateTime.parse(key));
           }
         });
-        List<DateTime> pinnedDates = await getPinnedHomeworkDates();
+        List<DateTime> pinnedDates = await offline.getPinnedHomeworkDates();
         //Combine lists
         List<DateTime> combinedList = homeworkDatesListToReturn + pinnedDates;
         combinedList = combinedList.toSet().toList();
@@ -222,10 +248,14 @@ class APIEcoleDirecte extends API {
 //Get dates of the the next homework (based on the EcoleDirecte API)
   Future<List<Homework>> getNextHomework({bool forceReload}) async {
     var connectivityResult = await (Connectivity().checkConnectivity());
-    var offlineHomework = await getHomeworkFromDB(online: connectivityResult != ConnectivityResult.none);
+    var offlineHomework =
+        await offline.homework();
 
     //If force reload enabled the grades will be loaded online
-    if ((connectivityResult == ConnectivityResult.none || forceReload == false || forceReload == null) && offlineHomework != null) {
+    if ((connectivityResult == ConnectivityResult.none ||
+            forceReload == false ||
+            forceReload == null) &&
+        offlineHomework != null) {
       print("Loading homework from offline storage.");
       //RELOAD THE HOMEWORK ANYWAY
       //NDLR : await is not needed, homework will be refreshed later
@@ -256,7 +286,7 @@ class APIEcoleDirecte extends API {
       });
     });
 
-    await putHomework(listToReturn);
+    await offline.updateHomework(listToReturn);
     return listToReturn;
   }
 
@@ -268,7 +298,8 @@ class APIEcoleDirecte extends API {
       String dateToUse = DateFormat("yyyy-MM-dd").format(dateHomework).toString();
       await testToken();
       String id = await storage.read(key: "userID");
-      var url = 'https://api.ecoledirecte.com/v3/Eleves/$id/cahierdetexte/$dateToUse.awp?verbe=get&';
+      var url =
+          'https://api.ecoledirecte.com/v3/Eleves/$id/cahierdetexte/$dateToUse.awp?verbe=get&';
       Map<String, String> headers = {"Con*nt-type": "text/plain"};
       String data = 'data={"token": "$token"}';
 
@@ -301,14 +332,16 @@ class APIEcoleDirecte extends API {
                 List docs = element['aFaire']['documents'];
                 if (docs != null) {
                   docs.forEach((e) {
-                    documentsAFaire.add(new Document(e["libelle"], e["id"], e["type"], e["taille"]));
+                    documentsAFaire
+                        .add(new Document(e["libelle"], e["id"], e["type"], e["taille"]));
                   });
                 }
 
                 List docsContenu = element['contenuDeSeance']['documents'];
                 if (docsContenu != null) {
                   docsContenu.forEach((e) {
-                    documentsContenuDeCours.add(new Document(e["libelle"], e["id"], e["type"], e["taille"]));
+                    documentsContenuDeCours
+                        .add(new Document(e["libelle"], e["id"], e["type"], e["taille"]));
                   });
                 }
                 interrogation = element['interrogation'];
@@ -355,11 +388,12 @@ class APIEcoleDirecte extends API {
   Future<bool> testNewGrades() async {
     try {
       //Getting the offline count of grades
-      List<Grade> listOfflineGrades = getAllGrades(await getGradesFromDB(), overrideLimit: true);
+      List<Grade> listOfflineGrades = getAllGrades(await offline.disciplines(), overrideLimit: true);
 
       print("Offline length is ${listOfflineGrades.length}");
       //Getting the online count of grades
-      List<Grade> listOnlineGrades = getAllGrades(await getGradesFromInternet(), overrideLimit: true);
+      List<Grade> listOnlineGrades =
+          getAllGrades(await getGradesFromInternet(), overrideLimit: true);
       print("Online length is ${listOnlineGrades.length}");
       if (listOfflineGrades.length < listOnlineGrades.length) {
         return true;
@@ -399,11 +433,13 @@ class APIEcoleDirecte extends API {
         {
           //Ensure that token is refreshed
           await testToken();
-          var uri = Uri.parse('https://api.ecoledirecte.com/v3/televersement.awp?verbe=post&mode=CDT');
+          var uri =
+              Uri.parse('https://api.ecoledirecte.com/v3/televersement.awp?verbe=post&mode=CDT');
           var request = http.MultipartRequest('POST', uri)
             ..headers["user-agent"] = "PostmanRuntime/7.25.0"
             ..headers["accept"] = "*/*"
-            ..fields['asap'] = '\nContent-Disposition: form-data; name="data"\n\n{"token":"$token","idContexte":$id}';
+            ..fields['asap'] =
+                '\nContent-Disposition: form-data; name="data"\n\n{"token":"$token","idContexte":$id}';
 
           var response = await request.send();
           if (response.statusCode == 200) print('Uploaded!');
@@ -492,7 +528,8 @@ Future getCloud(String args, String action, CloudItem item) async {
 Future getMails({bool checking}) async {
   await testToken();
   String id = await storage.read(key: "userID");
-  var url = 'https://api.ecoledirecte.com/v3/eleves/$id/messages.awp?verbe=getall&typeRecuperation=all';
+  var url =
+      'https://api.ecoledirecte.com/v3/eleves/$id/messages.awp?verbe=getall&typeRecuperation=all';
 
   Map<String, String> headers = {"Content-type": "text/plain"};
   String data = 'data={"token": "$token"}';
@@ -532,7 +569,10 @@ Future getMails({bool checking}) async {
           messagesList.forEach((element) {
             Map<String, dynamic> mail = element;
             mailsList.add(
-              Mail(mail["id"].toString(), mail["mtype"], mail["read"], mail["idClasseur"].toString(), mail["from"], mail["subject"], mail["date"], to: (mail["to"] != null) ? mail["to"] : null, files: (mail["files"] != null) ? mail["files"] : null),
+              Mail(mail["id"].toString(), mail["mtype"], mail["read"],
+                  mail["idClasseur"].toString(), mail["from"], mail["subject"], mail["date"],
+                  to: (mail["to"] != null) ? mail["to"] : null,
+                  files: (mail["files"] != null) ? mail["files"] : null),
             );
           });
           //This is the root class of message or message type ("sent", "archived", "received")
@@ -547,7 +587,8 @@ Future getMails({bool checking}) async {
         print("Returned mails");
         if (checking == null) {
           print("checking mails");
-          List<Mail> receivedMails = mailsList.where((element) => element.mtype == "received").toList();
+          List<Mail> receivedMails =
+              mailsList.where((element) => element.mtype == "received").toList();
 
           setIntSetting("mailNumber", receivedMails.length);
           print("checked mails");
@@ -728,13 +769,24 @@ getGradesFromInternet() async {
           });
 //Making objects
           if (element['codeSousMatiere'] == "") {
-            disciplinesList.add(Discipline.fromJson(element, profsNoms, element['codeMatiere'], periodeElement["idPeriode"], Colors.blue, periodeElement["ensembleMatieres"]["moyenneGenerale"], periodeElement["ensembleMatieres"]["moyenneMax"],
+            disciplinesList.add(Discipline.fromJson(
+                element,
+                profsNoms,
+                element['codeMatiere'],
+                periodeElement["idPeriode"],
+                Colors.blue,
+                periodeElement["ensembleMatieres"]["moyenneGenerale"],
+                periodeElement["ensembleMatieres"]["moyenneMax"],
                 periodeElement["ensembleMatieres"]["moyenneClasse"]));
           } else {
             try {
               print(element["idPeriode"]);
 
-              disciplinesList[disciplinesList.lastIndexWhere((disciplinesList) => disciplinesList.codeMatiere == element['codeMatiere'] && disciplinesList.periode == periodeElement["idPeriode"])].codeSousMatiere.add(element['codeSousMatiere']);
+              disciplinesList[disciplinesList.lastIndexWhere((disciplinesList) =>
+                      disciplinesList.codeMatiere == element['codeMatiere'] &&
+                      disciplinesList.periode == periodeElement["idPeriode"])]
+                  .codeSousMatiere
+                  .add(element['codeSousMatiere']);
             } catch (e) {}
           }
         });
@@ -743,7 +795,8 @@ getGradesFromInternet() async {
         final List<Grade> localGradesList = List<Grade>();
 
         data.forEach((element) {
-          if (element["codeMatiere"] == f.codeMatiere && element["codePeriode"] == f.periode.toString()) {
+          if (element["codeMatiere"] == f.codeMatiere &&
+              element["codePeriode"] == f.periode.toString()) {
             //print("IT WAS OK" + element.toString());
             localGradesList.add(Grade.fromJson(element));
           }
@@ -751,7 +804,7 @@ getGradesFromInternet() async {
 
         f.gradesList = localGradesList;
       });
-      await putGrades(disciplinesList);
+      await offline.updateDisciplines(disciplinesList);
       createStack();
       refreshDisciplinesListColors(disciplinesList);
 

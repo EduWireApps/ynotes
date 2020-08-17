@@ -56,12 +56,12 @@ class _HomeworkSecondPageState extends State<HomeworkSecondPage> {
                                 : () {
                                     setState(() {
                                       isPinnedDateToUse = !isPinnedDateToUse;
-                                      setPinnedHomeworkDate(
+                                      offline.setPinnedHomeworkDate(
                                           dateToUse.toString(),
                                           isPinnedDateToUse);
                                     });
                                     if (isPinnedDateToUse) {
-                                      putHomework(localListHomeworkDateToUse,
+                                      offline.updateHomework(localListHomeworkDateToUse,
                                           add: true);
                                     }
                                   },

@@ -6,11 +6,12 @@ import 'package:ynotes/main.dart';
 import 'package:stacked/stacked.dart';
 
 import '../../../apiManager.dart';
+import '../../../models.dart';
 import '../../../usefulMethods.dart';
 import '../appsPage.dart';
 import '../gradesPage.dart';
 import 'mail.dart';
-
+String cloudUsedFolder = "";
 class CloudPage extends StatefulWidget {
   State<StatefulWidget> createState() {
     return _CloudPageState();

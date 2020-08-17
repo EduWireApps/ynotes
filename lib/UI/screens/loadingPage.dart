@@ -26,9 +26,11 @@ class _LoadingPageState extends State<LoadingPage> {
   @override
   void initState() {
     getDarkModeSetting();
+    tryToConnect();
   }
 
   tryToConnect() async {
+     await Future.delayed(const Duration(milliseconds: 500), () => "1");
     getChosenParser();
     String u = await ReadStorage("username");
     String p = await ReadStorage("password");
@@ -36,7 +38,7 @@ class _LoadingPageState extends State<LoadingPage> {
     String cas = await ReadStorage("pronotecas");
     z = await storage.read(key: "agreedTermsAndConfiguredApp");
     if (u != null && p != null && z != null) {
-      return localApi.login(u, p, url: url, cas: cas);
+      Navigator.of(context).pushReplacement(router(homePage()));
     } else {
       Navigator.of(context).pushReplacement(router(login()));
     }
@@ -52,35 +54,16 @@ class _LoadingPageState extends State<LoadingPage> {
     MediaQueryData screenSize = MediaQuery.of(context);
 
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: FadeAnimation(
-        0.8,
-        Center(
-            child: FlareLoading(
-          until: () => tryToConnect(),
-          name: 'assets/animations/ynotes.flr',
-          startAnimation: 'Load',
-          loopAnimation: 'Load',
-          endAnimation: 'Ended',
-          onSuccess: (value) {
-            Navigator.of(context).pushReplacement(router(homePage()));
-          },
-          onError: (__, _) async {
-            var connectivityResult = await (Connectivity().checkConnectivity());
-            // If offline
-            if (connectivityResult == ConnectivityResult.none) {
-              if (await testIfExistingAccount()) {
-                print("Starting app offline");
-                Navigator.of(context).pushReplacement(router(homePage()));
-              } else {
-                Navigator.of(context).pushReplacement(router(login()));
-              }
-            } else {
-              Navigator.of(context).pushReplacement(router(login()));
-            }
-          },
-        )),
-      ),
+      backgroundColor: Color(0xff252B62),
+      body: 
+        FadeAnimation(
+                0.2,Center(
+              child: Image(
+            image: AssetImage('assets/images/LogoYNotes.png'),
+            width: screenSize.size.width / 5 * 1,
+          )),
+        ),
+      
     );
   }
 }

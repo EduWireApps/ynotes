@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -139,7 +140,8 @@ class _LoginPageState extends State<LoginPage> {
                                 color: Colors.redAccent,
                               ),
                               Text(
-                                snapshot.data.toString(),
+                                utf8convert(snapshot.data.toString()),
+                                
                                 textAlign: TextAlign.center,
                               )
                             ],
@@ -161,7 +163,10 @@ class _LoginPageState extends State<LoginPage> {
           );
         });
   }
-
+static String utf8convert(String text) {
+    List<int> bytes = text.toString().codeUnits;
+    return utf8.decode(bytes);
+}
   @override
   void dispose() {
     super.dispose();

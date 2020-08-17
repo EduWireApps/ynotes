@@ -18,6 +18,7 @@ import 'package:ynotes/kartable/kartableAdapter.dart';
 import 'package:ynotes/parsers/EcoleDirecte.dart';
 import 'package:ynotes/main.dart';
 import '../../apiManager.dart';
+import '../../models.dart';
 import '../../offline.dart';
 import '../../usefulMethods.dart';
 import 'package:highlight_text/highlight_text.dart';
@@ -63,7 +64,7 @@ class _HomeworkPageState extends State<HomeworkPage> {
 
   getPinnedStateDayToUse() async {
     print(dateToUse);
-    var pinnedStatus = await getPinnedHomeworkSingleDate(dateToUse.toString());
+    var pinnedStatus = await offline.getPinnedHomeworkSingleDate(dateToUse.toString());
     setState(() {
       isPinnedDateToUse = pinnedStatus;
     });

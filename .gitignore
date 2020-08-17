@@ -38,4 +38,5 @@ lib/generated_plugin_registrant.dart
 # Important
 /android/key.properties
 /android/app/key.jks
+pronoteAPI.py
 

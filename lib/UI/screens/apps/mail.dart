@@ -11,6 +11,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/apiManager.dart';
 import 'package:ynotes/parsers/EcoleDirecte.dart';
 import 'package:ynotes/main.dart';
+import '../../../models.dart';
 import '../../../usefulMethods.dart';
 import '../appsPage.dart';
       List<Mail> localList = List();

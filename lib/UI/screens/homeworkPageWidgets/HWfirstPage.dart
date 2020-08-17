@@ -166,7 +166,7 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
   }
 
   getPinnedStatus() async {
-    var defaultValue = await getPinnedHomeworkSingleDate(widget.date.toString());
+    var defaultValue = await offline.getPinnedHomeworkSingleDate(widget.date.toString());
     setState(() {
       isPinned = defaultValue;
     });
@@ -353,7 +353,7 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
                                   onPressed: () async {
                                     setState(() {
                                       isPinned = !isPinned;
-                                      setPinnedHomeworkDate(widget.date.toString(), isPinned);
+                                      offline.setPinnedHomeworkDate(widget.date.toString(), isPinned);
                                       //If date pinned is before actual date (can be deleted)
                                     });
                                     if (isPinned != true && widget.date.isBefore(DateTime.now())) {

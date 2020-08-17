@@ -543,9 +543,9 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
                             return false;
                           }
                         })) {
-                          return ScrollablePositionedList.builder(
-                              itemScrollController: gradesItemScrollController,
-                              initialScrollIndex: 0,
+                          return ListView.builder(
+                            
+                             physics: AlwaysScrollableScrollPhysics(),
                               itemCount: getDisciplinesForPeriod(snapshot.data, periodeToUse, filter).length,
                               padding: EdgeInsets.symmetric(vertical: screenSize.size.width / 5 * 0.1, horizontal: screenSize.size.width / 5 * 0.125),
                               itemBuilder: (BuildContext context, int index) {
@@ -558,7 +558,7 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
                               Image(image: AssetImage('assets/images/book.png'), width: screenSize.size.width / 5 * 4),
                               Container(
                                 margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.5),
-                                child: AutoSizeText("Pas de données pour cette periode.", textAlign: TextAlign.center, style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black)),
+                                child: AutoSizeText("Pas de notes pour cette periode.", textAlign: TextAlign.center, style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black)),
                               ),
                               FlatButton(
                                 onPressed: () {
