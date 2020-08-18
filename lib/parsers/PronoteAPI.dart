@@ -365,16 +365,23 @@ class _Communication {
       'connection': 'keep-alive',
       'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/74.0'
     };
-
+    print("Getting hostname");
     // get rsa keys and session id
     String hostName = Requests.getHostname(this.root_site + "/" + this.html_page);
+
     Requests.setStoredCookies(hostName, this.cookies);
     //set the cookies for ENT
     if (cookies != null) {
       print("Cookies set");
       Requests.setStoredCookies(hostName, this.cookies);
     }
-    var get_response = await Requests.get(this.root_site + "/" + this.html_page, headers: headers);
+    print(this.root_site + "/" + this.html_page);
+
+    var get_response =
+        await Requests.get(this.root_site + "/" + this.html_page, headers: headers).catchError((e) {
+      throw("Impossible de se connecter");
+    });
+
     if (get_response.hasError) {
       print("|pImpossible de se connecter à l'adresse fournie");
     }
@@ -728,13 +735,13 @@ class PronotePeriod {
   gradeTranslate(String value) {
     List grade_translate = [
       'Absent',
-      'Dispense',
-      'NonNote',
+      'Dispensé',
+      'Non noté',
       'Inapte',
-      'NonRendu',
-      'AbsentZero',
-      'NonRenduZero',
-      'Felicitations'
+      'Non rendu',
+      'Absent zéro',
+      'Non rendu zéro',
+      'Félicitations'
     ];
     if (value.contains("|")) {
       return grade_translate[int.parse(value[1])];

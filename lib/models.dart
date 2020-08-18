@@ -95,6 +95,11 @@ class TransparentLogin extends ChangeNotifier {
 
   init() async {
     ConnectionStatusSingleton connectionStatus = ConnectionStatusSingleton.getInstance();
+    if (await connectionStatus.checkConnection() == false) {
+      _actualState = loginStatus.offline;
+      _details = "Vous êtes hors ligne";
+      notifyListeners();
+    }
     internetConnexion = connectionStatus.connectionChange.listen(connectionChanged);
     if (_actualState != loginStatus.offline && localApi.loggedIn == false) {
       await login();
@@ -119,35 +124,41 @@ class TransparentLogin extends ChangeNotifier {
       _actualState = loginStatus.loggedOff;
       _details = "Connexion à l'API...";
       notifyListeners();
-      getChosenParser();
+      await getChosenParser();
       String u = await ReadStorage("username");
       String p = await ReadStorage("password");
       String url = await ReadStorage("pronoteurl");
       String cas = await ReadStorage("pronotecas");
       var z = await storage.read(key: "agreedTermsAndConfiguredApp");
       if (u != null && p != null && z != null) {
-        try {
-        
-          await localApi.login(u, p, url: url, cas: cas);
-          _details = "Connecté";
-          _actualState = loginStatus.loggedIn;
-          notifyListeners();
-        } catch (e) {
-          _details = "Erreur de connexion.";
-          _logs = e.toString();
-          _actualState = loginStatus.error;
-          notifyListeners();
-        }
+        await localApi.login(u, p, url: url, cas: cas).then((String value) {
+          if (value == null) {
+            _actualState = loginStatus.loggedOff;
+            _details = "Connexion à l'API...";
+            notifyListeners();
+          }
+          if (value.contains("Bienvenue")) {
+            _details = "Connecté";
+            _actualState = loginStatus.loggedIn;
+            notifyListeners();
+          } else {
+            print("La valeur est :" + value.toString());
+            if (value.contains("IP")) {
+              _details = "Ban temporaire IP !";
+            } else {
+              _details = "Erreur de connexion.";
+            }
+
+            _logs = value.toString();
+            _actualState = loginStatus.error;
+            notifyListeners();
+          }
+        });
       } else {
         _details = "Déconnecté";
         _actualState = loginStatus.loggedOff;
         notifyListeners();
       }
-    } catch (e) {
-      _details = "Erreur de connexion.";
-      _logs = e.toString();
-      _actualState = loginStatus.error;
-      notifyListeners();
-    }
+    } catch (e) {}
   }
 }

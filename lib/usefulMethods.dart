@@ -45,16 +45,15 @@ class AppStateNotifier extends ChangeNotifier {
     this.isDarkMode = isDarkMode;
     isDarkModeEnabled = isDarkMode;
 
-       SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-    systemNavigationBarColor: isDarkModeEnabled ? Color(0xff414141) : Color(0xffF3F3F3),
-    statusBarColor: Colors.transparent // navigation bar color
-    // status bar color
-  ));
-  
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        systemNavigationBarColor: isDarkModeEnabled ? Color(0xff414141) : Color(0xffF3F3F3),
+        statusBarColor: Colors.transparent // navigation bar color
+        // status bar color
+        ));
+
     notifyListeners();
   }
 }
-
 
 Route router(Widget widget) {
   return PageRouteBuilder(
@@ -106,7 +105,12 @@ ThemeData darkTheme = ThemeData(
     indicatorColor: Color(0xff525252),
     tabBarTheme: TabBarTheme(labelColor: Colors.black));
 
-ThemeData lightTheme = ThemeData(backgroundColor: Colors.white, primaryColor: Color(0xffF3F3F3), primaryColorDark: Color(0xffDCDCDC), indicatorColor: Color(0xffDCDCDC), tabBarTheme: TabBarTheme(labelColor: Colors.black));
+ThemeData lightTheme = ThemeData(
+    backgroundColor: Colors.white,
+    primaryColor: Color(0xffF3F3F3),
+    primaryColorDark: Color(0xffDCDCDC),
+    indicatorColor: Color(0xffDCDCDC),
+    tabBarTheme: TabBarTheme(labelColor: Colors.black));
 
 Future<bool> getSetting(String setting) async {
   final prefs = await SharedPreferences.getInstance();
@@ -225,7 +229,8 @@ Future<List<FileInfo>> getListOfFiles() async {
 
     await Future.forEach(file, (element) async {
       try {
-        listFiles.add(new FileInfo(element, await FileAppUtil.getLastModifiedDate(element), await FileAppUtil.getFileNameWithExtension(element)));
+        listFiles.add(new FileInfo(element, await FileAppUtil.getLastModifiedDate(element),
+            await FileAppUtil.getFileNameWithExtension(element)));
         listFiles.sort((a, b) => a.lastModifiedDate.compareTo(b.lastModifiedDate));
       } catch (e) {
         print(e);
@@ -313,18 +318,29 @@ class ConnectionStatusSingleton {
   }
 }
 
+var allGradesOld;
 //Get only grades as a list
 List<Grade> getAllGrades(List<Discipline> list, {bool overrideLimit = false}) {
   List<Grade> listToReturn = List<Grade>();
   list.forEach((element) {
     listToReturn.addAll(element.gradesList);
   });
-
+  if (allGradesOld!=null&&listToReturn.length == allGradesOld.length) {
+    return allGradesOld;
+  }
   if (chosenParser == 0) {
     listToReturn.sort((a, b) => a.dateSaisie.compareTo(b.dateSaisie));
+  } else {
+    listToReturn.sort((a, b) {
+      //Format dates and compare
+      var adate = DateFormat("dd/MM/yyyy").parse(a.date);
+      var bdate = DateFormat("dd/MM/yyyy").parse(b.date);
+
+      return adate.compareTo(bdate);
+    });
   }
   listToReturn = listToReturn.reversed.toList();
-
+  allGradesOld = listToReturn;
   if (overrideLimit == false && listToReturn != null) {
     listToReturn = listToReturn.sublist(0, (listToReturn.length >= 5) ? 5 : listToReturn.length);
   }
@@ -383,7 +399,8 @@ exitApp() async {
 logFile(String error) async {
   final directory = await getDirectory();
   final File file = File('${directory.path}/logs.txt');
-  await file.writeAsString("\n\n" + DateTime.now().toString() + "\n" + error, mode: FileMode.append);
+  await file.writeAsString("\n\n" + DateTime.now().toString() + "\n" + error,
+      mode: FileMode.append);
 }
 
 specialtiesSelectionAvailable() async {
@@ -426,7 +443,8 @@ specialtiesSelectionAvailable() async {
 class AppNews {
   static Future<List> checkAppNews() async {
     try {
-      dioResponse.Response response = await dio.Dio().get("https://ynotes.fr/src/app-src/news.json", options: dio.Options(responseType: dio.ResponseType.plain));
+      dioResponse.Response response = await dio.Dio().get("https://ynotes.fr/src/app-src/news.json",
+          options: dio.Options(responseType: dio.ResponseType.plain));
 
       Map map = json.decode(response.data.toString());
       List list = map["tickets"];
@@ -438,7 +456,6 @@ class AppNews {
     }
   }
 }
-
 
 ReadStorage(_key) async {
   String u = await storage.read(key: _key);

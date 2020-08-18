@@ -68,9 +68,9 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
       end: 0.0,
     ).animate(new CurvedAnimation(
         parent: showTransparentLoginStatusController,
-        curve: Interval(0.3, 1.0, curve: Curves.fastOutSlowIn)));
+        curve: Interval(0.5, 1.0, curve: Curves.fastOutSlowIn)));
     initPlatformState();
-    
+
     _overlayEntry = OverlayEntry(
       builder: (BuildContext context) => QuickMenu(removeQuickMenu),
     );
@@ -518,6 +518,7 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
                         ),
                       ),
                     ]),*/
+
                     TabBarView(controller: tabController, children: [
                       SpacePage(),
                       SummaryPage(tabController: tabController),
@@ -545,6 +546,7 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
                           width: MediaQuery.of(context).size.width,
                         ),
                       ),
+                    //Transparent login panel
                     ChangeNotifierProvider.value(
                       value: tlogin,
                       child: Consumer<TransparentLogin>(builder: (context, model, child) {
@@ -564,12 +566,12 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
                                         1.2 *
                                         showTransparentLoginStatus.value),
                                 child: Opacity(
-                                  opacity: 0.6,
+                                  opacity: 0.55,
                                   child: Container(
                                     margin: EdgeInsets.only(
                                         left: screenSize.size.width / 5 * 0.15,
                                         right: screenSize.size.width / 5 * 0.15),
-                                    height: screenSize.size.height / 10 * 0.6,
+                                    height: screenSize.size.height / 10 * 0.55,
                                     decoration: BoxDecoration(
                                       color: case2(model.actualState, {
                                         loginStatus.loggedIn: Colors.green,
@@ -607,11 +609,31 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
                                             color: Theme.of(context).primaryColorDark,
                                           ),
                                         ),
-                                        Text(
-                                          model.details,
-                                          style: TextStyle(
-                                              fontFamily: "Asap",
-                                              color: Theme.of(context).primaryColorDark),
+                                        FittedBox(
+                                          child: Row(
+                                            children: <Widget>[
+                                              Text(
+                                                model.details,
+                                                style: TextStyle(
+                                                    fontFamily: "Asap",
+                                                    color: Theme.of(context).primaryColorDark),
+                                              ),
+                                              SizedBox(
+                                                width: screenSize.size.width / 5 * 0.1,
+                                              ),
+                                              if(model.actualState==loginStatus.error)
+                                              GestureDetector(
+                                                onTap: () async{
+                                                  await model.login();
+                                                },
+                                                child: Text(
+                                                  "Réessayer",
+                                                  style: TextStyle(
+                                                      fontFamily: "Asap", color: Colors.blue.shade50),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         )
                                       ],
                                     ),

@@ -36,6 +36,7 @@ class SummaryPage extends StatefulWidget {
 Future doneListFuture;
 Future _disciplinesListFuture;
 bool firstStart = true;
+
 class _SummaryPageState extends State<SummaryPage> {
   double actualPage;
   PageController _pageControllerSummaryPage;
@@ -44,7 +45,7 @@ class _SummaryPageState extends State<SummaryPage> {
   double offset;
   int _slider = 1;
   List items = [1, 2, 3, 4, 5];
-  
+
   initState() {
     super.initState();
 
@@ -62,13 +63,17 @@ class _SummaryPageState extends State<SummaryPage> {
     setState(() {
       doneListFuture = getHomeworkDonePercent();
     });
-    SchedulerBinding.instance.addPostFrameCallback((_) => tlogin.init().then((var f) {
+    SchedulerBinding.instance.addPostFrameCallback((_) => initTransparentLogin().then((var f) {
           if (firstStart == true) {
-            homeworkListFuture = localApi.getNextHomework(forceReload: true);
-            _disciplinesListFuture = localApi.getGrades(forceReload: true);
+            refreshLocalHomeworkList();
+            refreshLocalGradesList();
             firstStart = false;
           }
         }));
+  }
+
+  initTransparentLogin() async {
+    await tlogin.init();
   }
 
   @override
@@ -81,7 +86,9 @@ class _SummaryPageState extends State<SummaryPage> {
 
   @override
   Future<void> refreshLocalGradesList() async {
+    
     setState(() {
+      allGradesOld =null;
       _disciplinesListFuture = localApi.getGrades(forceReload: true);
     });
     var realGL = await _disciplinesListFuture;

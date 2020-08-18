@@ -22,13 +22,13 @@ class _SpacePageState extends State<SpacePage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
     final Map<int, Widget> spaceTabs = <int, Widget>{
-      0: Text("Emploi du temps",
+      0: Text("Outils",
           style: TextStyle(
               color: isDarkModeEnabled ? Colors.white : Colors.black,
               fontFamily: "Asap",
               fontWeight: FontWeight.bold,
               fontSize: screenSize.size.width / 5 * 0.2)),
-      1: Text("Outils",
+      1: Text("Organisation",
           style: TextStyle(
               color: isDarkModeEnabled ? Colors.white : Colors.black,
               fontFamily: "Asap",
@@ -86,16 +86,25 @@ class _SpacePageState extends State<SpacePage> with TickerProviderStateMixin {
                   bottom: screenSize.size.height / 10 * 0.4),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(11),
-               // color: Theme.of(context).primaryColorDark,
+                //color: Theme.of(context).primaryColorDark,
               ),
+
               ///Soon
-              /*
-              padding: EdgeInsets.symmetric(
+
+              /*  padding: EdgeInsets.symmetric(
                   vertical: screenSize.size.height / 10 * 0.2,
                   horizontal: screenSize.size.width / 5 * 0.1),*/
               child: Column(
                 children: <Widget>[
-                 
+                  /* CupertinoSlidingSegmentedControl(
+                      groupValue: segmentedControlGroupValue,
+                      children: spaceTabs,
+                      onValueChanged: (i) {
+                        setState(() {
+                          segmentedControlGroupValue = i;
+                        });
+                      }),
+*/
                   //Documents
                   Container(
                     margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
