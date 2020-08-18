@@ -318,14 +318,17 @@ class ConnectionStatusSingleton {
   }
 }
 
-var allGradesOld;
+List<Grade> allGradesOld;
 //Get only grades as a list
 List<Grade> getAllGrades(List<Discipline> list, {bool overrideLimit = false}) {
   List<Grade> listToReturn = List<Grade>();
   list.forEach((element) {
     listToReturn.addAll(element.gradesList);
   });
-  if (allGradesOld!=null&&listToReturn.length == allGradesOld.length) {
+  listToReturn = listToReturn.toSet().toList();
+  print(listToReturn.length);
+  if (allGradesOld != null && listToReturn.length == allGradesOld.length) {
+   
     return allGradesOld;
   }
   if (chosenParser == 0) {
@@ -339,8 +342,12 @@ List<Grade> getAllGrades(List<Discipline> list, {bool overrideLimit = false}) {
       return adate.compareTo(bdate);
     });
   }
+
   listToReturn = listToReturn.reversed.toList();
-  allGradesOld = listToReturn;
+  allGradesOld = null;
+  print("updating all grades old");
+  allGradesOld = List();
+  allGradesOld.addAll(listToReturn);
   if (overrideLimit == false && listToReturn != null) {
     listToReturn = listToReturn.sublist(0, (listToReturn.length >= 5) ? 5 : listToReturn.length);
   }
@@ -394,13 +401,6 @@ exitApp() async {
   } catch (e) {
     print(e);
   }
-}
-
-logFile(String error) async {
-  final directory = await getDirectory();
-  final File file = File('${directory.path}/logs.txt');
-  await file.writeAsString("\n\n" + DateTime.now().toString() + "\n" + error,
-      mode: FileMode.append);
 }
 
 specialtiesSelectionAvailable() async {

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
 
@@ -39,19 +40,16 @@ class _LogsPageState extends State<LogsPage> {
                     if (snapshot.hasData) {
                       return Center(
                           child: Container(
-                              height: screenSize.size.height,
                               width: screenSize.size.width / 5 * 4.5,
-                              child: MediaQuery.removePadding(
-                                context: context,
-                                removeBottom: true,
-                                removeTop: true,
-                                child: SingleChildScrollView(
-                                  padding: EdgeInsets.zero,
-                                  reverse: true,
-                                  child: SelectableText(
-                                    snapshot.data,
-                                    style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
-                                  ),
+                              child: SingleChildScrollView(
+                                padding: EdgeInsets.zero,
+                                reverse: true,
+                                
+                                child: SelectableText(
+                                  snapshot.data,
+                                  style: TextStyle(
+                                      fontFamily: "Asap",
+                                      color: isDarkModeEnabled ? Colors.white : Colors.black),
                                 ),
                               )));
                     } else {
@@ -69,4 +67,10 @@ Future<String> getFileData() async {
   final File file = File('${dir.path}/logs.txt');
 
   return await file.readAsString();
+}
+logFile(String error) async {
+  final directory = await getDirectory();
+  final File file = File('${directory.path}/logs.txt');
+  await file.writeAsString("\n\n" + DateTime.now().toString() + "\n" + error,
+      mode: FileMode.append);
 }

@@ -378,7 +378,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                       ),
                     
                       applicationName: "yNotes",
-                      applicationVersion: packageInfo.version,
+                      applicationVersion: packageInfo.version+"+"+packageInfo.buildNumber,
                       applicationLegalese: "Developpé avec amour en France.\nAPI Pronote adaptée à l'aide de l'API pronotepy développée par Bain sous licence MIT.\nJe remercie la participation des bêta testeurs et des développeurs ayant participé au développement de l'application.");
                 },
               ),

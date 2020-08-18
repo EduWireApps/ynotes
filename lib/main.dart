@@ -22,6 +22,7 @@ import 'package:ynotes/parsers/Pronote.dart';
 import 'package:ynotes/background.dart';
 import 'package:uuid/uuid.dart';
 import 'package:wiredash/wiredash.dart';
+import 'UI/screens/logsPage.dart';
 import 'UI/screens/schoolAPIChoicePage.dart';
 import 'multilanguage.dart';
 

@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:requests/requests.dart';
+import 'package:ynotes/UI/screens/logsPage.dart';
 import 'package:ynotes/parsers/PronoteAPI.dart';
 import 'package:ynotes/parsers/PronoteAPI.dart' as papi;
 import 'package:ynotes/parsers/PronoteCas.dart';
@@ -46,8 +47,7 @@ class APIPronote extends API {
             forceReload == null) &&
         offlineGrades != null) {
       print("Loading grades from offline storage.");
-     
-     
+
       var toReturn = await offline.disciplines();
       await refreshDisciplinesListColors(toReturn);
       return toReturn;
@@ -190,7 +190,6 @@ class APIPronote extends API {
             forceReload == null) &&
         offlineHomework != null) {
       print("Loading homework from offline storage.");
-     
 
       return offlineHomework;
     } else {
@@ -253,7 +252,10 @@ class APIPronote extends API {
   Future<String> login(username, password, {url, cas}) async {
     print(username + " " + password + " " + url);
     int req = 0;
-    //allows only one request
+    while (loginLock == true && req < 3) {
+      req++;
+      await Future.delayed(const Duration(seconds: 2), () => "1");
+    }
     if (loginLock == false) {
       loginLock = true;
       try {
