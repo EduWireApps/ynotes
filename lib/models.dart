@@ -103,6 +103,10 @@ class TransparentLogin extends ChangeNotifier {
     internetConnexion = connectionStatus.connectionChange.listen(connectionChanged);
     if (_actualState != loginStatus.offline && localApi.loggedIn == false) {
       await login();
+    } else if (localApi.loggedIn) {
+      _details = "Connecté";
+      _actualState = loginStatus.loggedIn;
+      notifyListeners();
     }
   }
 

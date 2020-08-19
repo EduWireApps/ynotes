@@ -16,6 +16,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:http/http.dart';
+import 'package:ynotes/main.dart';
 import 'package:ynotes/parsers/EcoleDirecte.dart';
 import 'dart:io';
 import 'package:dio/src/response.dart' as dioResponse;
@@ -321,16 +322,20 @@ class ConnectionStatusSingleton {
 List<Grade> allGradesOld;
 //Get only grades as a list
 List<Grade> getAllGrades(List<Discipline> list, {bool overrideLimit = false}) {
-  List<Grade> listToReturn = List<Grade>();
-  list.forEach((element) {
-    listToReturn.addAll(element.gradesList);
-  });
-  listToReturn = listToReturn.toSet().toList();
-  print(listToReturn.length);
-  if (allGradesOld != null && listToReturn.length == allGradesOld.length) {
-   
-    return allGradesOld;
+  List<Grade> listToReturn = List();
+  if (localApi.gradesList != null && localApi.gradesList.length > 0) {
+    return localApi.gradesList;
+  } else {
+    list.forEach((element) {
+      element.gradesList.forEach((grade) {
+        if (!listToReturn.contains(grade)) {
+          listToReturn.add(grade);
+        }
+      });
+    });
   }
+  listToReturn = listToReturn.toSet().toList();
+  print("Refreshing all grades");
   if (chosenParser == 0) {
     listToReturn.sort((a, b) => a.dateSaisie.compareTo(b.dateSaisie));
   } else {
@@ -344,10 +349,11 @@ List<Grade> getAllGrades(List<Discipline> list, {bool overrideLimit = false}) {
   }
 
   listToReturn = listToReturn.reversed.toList();
-  allGradesOld = null;
-  print("updating all grades old");
-  allGradesOld = List();
-  allGradesOld.addAll(listToReturn);
+  if (localApi.gradesList == null) {
+    localApi.gradesList = List<Grade>();
+  }
+  localApi.gradesList.addAll(listToReturn);
+
   if (overrideLimit == false && listToReturn != null) {
     listToReturn = listToReturn.sublist(0, (listToReturn.length >= 5) ? 5 : listToReturn.length);
   }
@@ -389,15 +395,7 @@ exitApp() async {
     isDarkModeEnabled = false;
     //delete hive files
     final dir = await getDirectory();
-    Hive.init("${dir.path}/offline");
-    var homeworkBox = await Hive.openBox('homework');
-    await homeworkBox.clear();
-    var gradeBox = await Hive.openBox('grades');
-    await gradeBox.clear();
-    var done = await Hive.openBox('doneHomework');
-    await done.clear();
-    var pinned = await Hive.openBox('pinnedHomework');
-    await pinned.clear();
+    offline.clearAll();
   } catch (e) {
     print(e);
   }

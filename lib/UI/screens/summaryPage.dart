@@ -10,6 +10,7 @@ import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/UI/screens/gradesPage.dart';
@@ -35,6 +36,7 @@ class SummaryPage extends StatefulWidget {
 
 Future doneListFuture;
 Future _disciplinesListFuture;
+Future allGrades;
 bool firstStart = true;
 
 class _SummaryPageState extends State<SummaryPage> {
@@ -60,6 +62,7 @@ class _SummaryPageState extends State<SummaryPage> {
     });
     homeworkListFuture = localApi.getNextHomework();
     _disciplinesListFuture = localApi.getGrades();
+
     setState(() {
       doneListFuture = getHomeworkDonePercent();
     });
@@ -86,9 +89,8 @@ class _SummaryPageState extends State<SummaryPage> {
 
   @override
   Future<void> refreshLocalGradesList() async {
-    
     setState(() {
-      allGradesOld =null;
+      allGradesOld = null;
       _disciplinesListFuture = localApi.getGrades(forceReload: true);
     });
     var realGL = await _disciplinesListFuture;
@@ -119,61 +121,31 @@ class _SummaryPageState extends State<SummaryPage> {
               borderRadius: BorderRadius.circular(12),
               color: Theme.of(context).primaryColor,
             ),
-            child: FutureBuilder<int>(
-                future: doneListFuture,
-                initialData: 0,
-                builder: (context, snapshot) {
-                  return Stack(
-                    children: <Widget>[
-                      ClipRect(
-                        child: Transform.translate(
-                          offset: Offset(0, (screenSize.size.height / 10 * 8.8) / 15),
-                          child: Transform.scale(
-                              scale: 1.9,
-                              child: Container(
-                                padding: EdgeInsets.all(0),
-                                //Gauge
-                                child: charts.PieChart(
-                                    _getDoneTasks(snapshot.hasError ? 0 : snapshot.data),
-                                    animate: false,
-                                    defaultRenderer: charts.ArcRendererConfig(
-                                        arcWidth: (screenSize.size.width < 500) ? 5 : 10,
-                                        startAngle: pi,
-                                        arcLength: pi,
-                                        strokeWidthPx: 1)),
-                              )),
-                        ),
+            child: FittedBox(
+              child: FutureBuilder<int>(
+                  future: doneListFuture,
+                  initialData: 0,
+                  builder: (context, snapshot) {
+                    return CircularPercentIndicator(
+                      radius: 120.0,
+                      lineWidth: 13.0,
+                      animation: true,
+                      percent: snapshot.data / 100,
+                      center: new Text(
+                        snapshot.data.toString() + "%",
+                        style: new TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 20.0, fontFamily: "Asap"),
                       ),
-                      Center(
-                        child: Container(
-                          margin: EdgeInsets.only(top: 10),
-                          child: Text(
-                            (snapshot.hasError ? "0" : snapshot.data.toString()) + "%",
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                fontFamily: "Asap",
-                                color: isDarkModeEnabled ? Colors.white : Colors.black,
-                                fontSize: screenSize.size.width / 11),
-                          ),
-                        ),
+                      header: new Text(
+                        "Travail fait",
+                        style: new TextStyle(fontSize: 17.0, fontFamily: "Asap"),
                       ),
-                      Positioned(
-                        bottom: (screenSize.size.height / 10 * 8.8) / 10 * 0.2,
-                        child: Container(
-                          width: screenSize.size.width / 5 * 4.5,
-                          child: Text(
-                            'du travail fait !',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                                color: isDarkModeEnabled ? Colors.white : Colors.black,
-                                fontSize: screenSize.size.height / 10 * 0.2,
-                                fontFamily: "Asap"),
-                          ),
-                        ),
-                      ),
-                    ],
-                  );
-                }),
+                      animationDuration: 150,
+                      circularStrokeCap: CircularStrokeCap.round,
+                      progressColor: Colors.green.shade300,
+                    );
+                  }),
+            ),
           ),
 
           //SecondDivision (homeworks)

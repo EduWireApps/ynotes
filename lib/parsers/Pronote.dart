@@ -104,7 +104,7 @@ class APIPronote extends API {
             z++;
           });
         }
-
+        this.gradesList =null;
         listDisciplines.forEach((element) {
           element.gradesList
               .addAll(grades.where((grade) => grade.libelleMatiere == element.nomDiscipline));
@@ -248,15 +248,17 @@ class APIPronote extends API {
     }
   }
 
+  int loginReqNumber = 0;
   @override
   Future<String> login(username, password, {url, cas}) async {
     print(username + " " + password + " " + url);
     int req = 0;
-    while (loginLock == true && req < 3) {
+    while (loginLock == true && req < 2) {
       req++;
       await Future.delayed(const Duration(seconds: 2), () => "1");
     }
-    if (loginLock == false) {
+    if (loginLock == false && loginReqNumber <= 2) {
+      loginReqNumber = 0;
       loginLock = true;
       try {
         var cookies = await callCas(cas, username, password);
@@ -301,6 +303,8 @@ class APIPronote extends API {
 
         return (error);
       }
+    } else {
+      loginReqNumber++;
     }
   }
 

@@ -297,7 +297,6 @@ abstract class API {
 
   ///Get marks
   Future<List<Discipline>> getGrades({bool forceReload});
-  
 
   ///Get the dates of next homework (deprecated)
   Future<List<DateTime>> getDatesNextHomework();
@@ -317,6 +316,7 @@ abstract class API {
   Future app(String appname, {String args, String action, CloudItem folder});
 
   List<App> listApp;
+  List<Grade> gradesList;
 }
 
 //Return the good API (will be extended to Pronote)

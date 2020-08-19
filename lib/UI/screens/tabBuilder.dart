@@ -68,7 +68,7 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
       end: 0.0,
     ).animate(new CurvedAnimation(
         parent: showTransparentLoginStatusController,
-        curve: Interval(0.5, 1.0, curve: Curves.fastOutSlowIn)));
+        curve: Interval(0.1, 1.0, curve: Curves.fastOutSlowIn)));
     initPlatformState();
 
     _overlayEntry = OverlayEntry(
