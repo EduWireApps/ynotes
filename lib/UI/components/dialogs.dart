@@ -27,8 +27,8 @@ class CustomDialogs {
                 textScaleFactor: 1.0,
                 textAlign: TextAlign.center,
               ),
-              description: Text(hd.description[0],style:TextStyle(
-                    fontSize: screenSize.size.height / 10 * 0.2)),
+              description: Text(hd.description[0],
+                  style: TextStyle(fontSize: screenSize.size.height / 10 * 0.2)),
               buttonOkText: Text(
                 "J'ai compris",
                 style: TextStyle(fontFamily: "Asap", color: Colors.white),
@@ -225,9 +225,7 @@ List<HelpDialog> helpDialogs = [
       1),
   HelpDialog(
       "Épingler",
-      [
-        "Restez appuyé puis épinglez un devoir pour le revoir même après sa date d'échéance."
-      ],
+      ["Restez appuyé puis épinglez un devoir pour le revoir même après sa date d'échéance."],
       "assets/gifs/PinHomework720.gif",
       2),
   HelpDialog(
@@ -242,7 +240,7 @@ List<HelpDialog> helpDialogs = [
 class FolderChoiceWidget extends StatefulWidget {
   BuildContext context;
   String path;
-  List<FileInfo> files;
+  List<FileInfo> files = List();
   bool selectionMode;
   Function callback;
   FolderChoiceWidget(this.context, this.path, this.files, this.selectionMode, this.callback);
@@ -261,13 +259,12 @@ class _FolderChoiceWidgetState extends State<FolderChoiceWidget> {
   @override
   void initState() {
     // TODO: implement initState
+    List<FileInfo> folderList = List();
+    if (widget.files != null) {
+      folderList = widget.files.where((element) => element.element is Directory).toList();
 
-    var folderList = widget.files.where((element) => element.element is Directory);
-    print(folderList.length);
-
-    filesToMove = widget.files
-        .where((element) => !(element.element is Directory) && element.selected)
-        .toList();
+      filesToMove = widget.files.where((element) => element.selected).toList();
+    }
 
     folderNames.add("Aucun");
 
@@ -394,13 +391,22 @@ class _FolderChoiceWidgetState extends State<FolderChoiceWidget> {
           onPressed: () async {
             if (widget.selectionMode) {
               await Future.forEach(filesToMove, (element) async {
-                await element.element.copy(widget.path +
-                    "/" +
-                    value +
-                    '/' +
-                    element.fileName +
-                    ((element.element is Directory) ? "/" : ""));
-                await element.element.delete(recursive: true);
+                try {
+                  await element.element.copy(widget.path +
+                      "/" +
+                      value +
+                      '/' +
+                      element.fileName +
+                      ((element.element is Directory) ? "/" : ""));
+                  await element.element.delete(recursive: true);
+                } catch (e) {
+                  if (Platform.isAndroid) {
+                    print("Trying with commandlines");
+                    await Process.run(
+                        'cp', ['-r', element.element.path, widget.path + "/" + value]);
+                    await element.element.delete(recursive: true);
+                  }
+                }
               });
             } else {
               await FolderAppUtil.createDirectory(widget.path + "/" + value + "/");

@@ -61,7 +61,7 @@ class DownloadModel extends ChangeNotifier {
         notifyListeners();
         print("Téléchargement du fichier terminé : $filename");
         final dir = await FolderAppUtil.getDirectory(download: true);
-        final Directory _appDocDirFolder = Directory('${dir.path}/yNotes/');
+        final Directory _appDocDirFolder = Directory('$dir/yNotes/');
 
         if (!await _appDocDirFolder.exists()) {
           //if folder already exists return path

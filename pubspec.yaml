@@ -29,7 +29,6 @@ dependencies:
   charts_flutter: ^0.8.1
   shared_preferences: ^0.5.6+1
   circular_check_box: ^1.0.1
-
   shimmer: ^1.0.1
   badges: ^1.1.0
   intl: ^0.16.0
@@ -48,7 +47,7 @@ dependencies:
   flutter_widget_from_html_core: ^0.3.3
   path_provider: ^1.6.7
   marquee: ^1.3.1
-  url_launcher: ^5.4.7
+  url_launcher: ^5.5.0
   stacked: ^1.6.0
   alice: ^0.0.33
   open_file: ^3.0.1
@@ -73,12 +72,11 @@ dependencies:
   uuid: ^2.1.0
   steel_crypt: ^2.0.0
   highlight_text: ^0.7.2
-  android_intent: ^0.3.7+2
   device_apps: ^1.0.10
   rxdart: ^0.24.1
   smooth_page_indicator: ^0.1.5
   percent_indicator: ^2.1.5
-  downloads_path_provider: ^0.1.0
+  ext_storage: ^1.0.3
   permission_handler: ^5.0.1+1
   wiredash:
     git:

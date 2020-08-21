@@ -44,7 +44,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
     var a = await FolderAppUtil.getDirectory(download: true);
 
     setState(() {
-      initialPath = a.path + "/yNotesDownloads";
+      initialPath = a + "/yNotesDownloads";
       path = "";
     });
 
@@ -265,7 +265,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                             bool response =
                                 await CustomDialogs.showConfirmationDialog(context, null);
                             if (response) {
-                              Future.forEach(listFiles.where((element) => element.selected),
+                              await Future.forEach(listFiles.where((element) => element.selected),
                                   (fileinfo) async {
                                 await FileAppUtil.remove(fileinfo.element);
                               });
@@ -377,7 +377,11 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                                       await element.element
                                           .copy(initialPath + path + "/" + element.fileName);
                                     } catch (e) {
-                                      print("Failed to paste some elements");
+                                      if (Platform.isAndroid) {
+                                        print("try to paste");
+                                        await Process.run(
+                                            'cp', ['-r', element.element.path, initialPath + path+"/"]);
+                                      }
                                     }
                                   });
 
@@ -592,6 +596,9 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                       );
                     }
                   } else {
+                    if (snapshot.hasError) {
+                      print("Erreur blabla " + snapshot.error);
+                    }
                     return SpinKitFadingFour(
                       color: Theme.of(context).primaryColorDark,
                       size: screenSize.size.width / 5 * 1,

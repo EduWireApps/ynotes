@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:downloads_path_provider/downloads_path_provider.dart';
+import 'package:ext_storage/ext_storage.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/services.dart';
@@ -24,7 +24,9 @@ class FileInfo {
 class FolderAppUtil {
   static getDirectory({bool download = false}) async {
     if (download && Platform.isAndroid) {
-      final dir = await DownloadsPathProvider.downloadsDirectory;
+      final dir =
+          await ExtStorage.getExternalStoragePublicDirectory(ExtStorage.DIRECTORY_DOWNLOADS);
+ 
       return dir;
     }
     if (Platform.isAndroid) {
@@ -65,7 +67,7 @@ class FileAppUtil {
   ///Get new file path
   static Future<File> getFilePath(String filename) async {
     final dir = await FolderAppUtil.getDirectory(download: true);
-    return File("${dir.path}/yNotesDownloads/$filename");
+    return File("$dir/yNotesDownloads/$filename");
   }
 
   static Future<DateTime> getLastModifiedDate(var item) async {
@@ -84,7 +86,7 @@ class FileAppUtil {
 
   static remove(var file) async {
     if (await file.exists()) {
-      file.delete(recursive:true);
+      file.delete(recursive: true);
     } else {
       return null;
     }
@@ -93,17 +95,16 @@ class FileAppUtil {
 //Open a file
   static Future<void> openFile(filename) async {
     final dir = await FolderAppUtil.getDirectory(download: true);
-    final filePath = '${dir.path}/yNotesDownloads';
+    final filePath = '$dir/yNotesDownloads';
     await OpenFile.open(filePath);
   }
 
   static Future<List<FileInfo>> getFilesList(String path) async {
-
     try {
       String directory;
       List file = new List();
 
-      directory = (await FolderAppUtil.getDirectory(download: true)).path;
+
 
       if (await Permission.storage.request().isGranted) {
         try {

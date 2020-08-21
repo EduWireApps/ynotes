@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:connectivity/connectivity.dart';
 import 'package:dio/dio.dart' as dio;
-import 'package:downloads_path_provider/downloads_path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/services.dart';
