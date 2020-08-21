@@ -23,7 +23,7 @@ import '../../offline.dart';
 import '../../usefulMethods.dart';
 import 'package:highlight_text/highlight_text.dart';
 import 'package:html/parser.dart';
-
+import 'package:ynotes/UI/utils/fileUtils.dart';
 import 'package:file_picker/file_picker.dart';
 
 import 'homeworkPageWidgets/HWfirstPage.dart';
@@ -673,7 +673,7 @@ class _HomeworkElementState extends State<HomeworkElement> {
                                                                                 ],
                                                                               ),
                                                                               onPressed: () async {
-                                                                                openFile((segmentedControlIndex == 0 ? widget.homeworkForThisDay.documents : widget.homeworkForThisDay.documentsContenuDeSeance)[index].libelle);
+                                                                                FileAppUtil.openFile((segmentedControlIndex == 0 ? widget.homeworkForThisDay.documents : widget.homeworkForThisDay.documentsContenuDeSeance)[index].libelle);
                                                                               },
                                                                             ));
                                                                           }
@@ -708,7 +708,7 @@ class _HomeworkElementState extends State<HomeworkElement> {
                                                                                 color: Colors.green,
                                                                               ),
                                                                               onPressed: () async {
-                                                                                openFile((segmentedControlIndex == 0 ? widget.homeworkForThisDay.documents : widget.homeworkForThisDay.documentsContenuDeSeance)[index].libelle);
+                                                                                FileAppUtil.openFile((segmentedControlIndex == 0 ? widget.homeworkForThisDay.documents : widget.homeworkForThisDay.documentsContenuDeSeance)[index].libelle);
                                                                               },
                                                                             ));
                                                                       }

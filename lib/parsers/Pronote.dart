@@ -190,7 +190,7 @@ class APIPronote extends API {
             forceReload == null) &&
         offlineHomework != null) {
       print("Loading homework from offline storage.");
-
+         
       return offlineHomework;
     } else {
       print("Loading homework inline.");
@@ -257,7 +257,7 @@ class APIPronote extends API {
       req++;
       await Future.delayed(const Duration(seconds: 2), () => "1");
     }
-    if (loginLock == false && loginReqNumber <= 2) {
+    if (loginLock == false && loginReqNumber < 2) {
       loginReqNumber = 0;
       loginLock = true;
       try {

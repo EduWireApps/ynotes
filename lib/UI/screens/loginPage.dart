@@ -14,7 +14,7 @@ import 'package:ynotes/parsers/EcoleDirecte.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:connectivity/connectivity.dart';
 import '../../apiManager.dart';
-
+import 'package:ynotes/UI/utils/fileUtils.dart';
 Color textButtonColor = Color(0xff252B62);
 
 class LoginPage extends StatefulWidget {

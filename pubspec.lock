@@ -56,7 +56,7 @@ packages:
       name: async
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.4.1"
+    version: "2.4.2"
   auto_size_text:
     dependency: "direct main"
     description:
@@ -147,7 +147,7 @@ packages:
       name: characters
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.1"
+    version: "1.0.0"
   charcode:
     dependency: transitive
     description:
@@ -217,7 +217,7 @@ packages:
       name: collection
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.14.12"
+    version: "1.14.13"
   connectivity:
     dependency: "direct main"
     description:
@@ -275,12 +275,12 @@ packages:
     source: hosted
     version: "1.3.6"
   dartx:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
       name: dartx
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.0"
+    version: "0.5.0"
   device_apps:
     dependency: "direct main"
     description:
@@ -295,6 +295,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.9"
+  downloads_path_provider:
+    dependency: "direct main"
+    description:
+      name: downloads_path_provider
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.0"
   encrypt:
     dependency: "direct main"
     description:
@@ -302,6 +309,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.2"
+  fake_async:
+    dependency: transitive
+    description:
+      name: fake_async
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.0"
   ffi:
     dependency: transitive
     description:
@@ -437,7 +451,7 @@ packages:
       name: flutter_svg
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.17.4"
+    version: "0.18.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -455,13 +469,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.3.3+4"
-  giffy_dialog:
-    dependency: "direct main"
-    description:
-      name: giffy_dialog
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.8.0"
   glob:
     dependency: transitive
     description:
@@ -496,14 +503,21 @@ packages:
       name: hive
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.4.1+1"
+    version: "1.4.3"
+  hive_flutter:
+    dependency: "direct main"
+    description:
+      name: hive_flutter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.3.1"
   hive_generator:
     dependency: "direct dev"
     description:
       name: hive_generator
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.7.0+2"
+    version: "0.7.1"
   html:
     dependency: transitive
     description:
@@ -538,7 +552,7 @@ packages:
       name: image
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.1.12"
+    version: "2.1.14"
   intl:
     dependency: "direct main"
     description:
@@ -594,7 +608,7 @@ packages:
       name: matcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.12.6"
+    version: "0.12.8"
   material_design_icons_flutter:
     dependency: "direct main"
     description:
@@ -678,7 +692,7 @@ packages:
       name: path
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.6.4"
+    version: "1.7.0"
   path_drawing:
     dependency: transitive
     description:
@@ -729,26 +743,26 @@ packages:
     source: hosted
     version: "2.1.5"
   permission_handler:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: permission_handler
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.0.0+hotfix.6"
+    version: "5.0.1+1"
   permission_handler_platform_interface:
     dependency: transitive
     description:
       name: permission_handler_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "2.0.1"
   petitparser:
     dependency: transitive
     description:
       name: petitparser
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.4.0"
+    version: "3.0.4"
   pigment:
     dependency: transitive
     description:
@@ -963,7 +977,7 @@ packages:
       name: stack_trace
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.9.3"
+    version: "1.9.5"
   stacked:
     dependency: "direct main"
     description:
@@ -1012,7 +1026,7 @@ packages:
       name: test_api
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.15"
+    version: "0.2.17"
   time:
     dependency: transitive
     description:
@@ -1040,7 +1054,7 @@ packages:
       name: typed_data
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.1.6"
+    version: "1.2.0"
   union:
     dependency: transitive
     description:
@@ -1154,7 +1168,7 @@ packages:
       name: xml
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.6.1"
+    version: "4.2.0"
   yaml:
     dependency: transitive
     description:
@@ -1163,5 +1177,5 @@ packages:
     source: hosted
     version: "2.2.0"
 sdks:
-  dart: ">=2.8.0 <3.0.0"
-  flutter: ">=1.17.0 <2.0.0"
+  dart: ">=2.9.0-14.0.dev <3.0.0"
+  flutter: ">=1.18.0-6.0.pre <2.0.0"

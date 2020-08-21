@@ -11,13 +11,12 @@ import 'package:ynotes/UI/screens/tabBuilder.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:ynotes/apiManager.dart';
 import 'package:ynotes/background.dart';
-import 'package:ynotes/encrypttest.dart';
 import 'package:ynotes/parsers/Pronote.dart';
 import 'package:ynotes/parsers/PronoteAPI.dart';
 import '../../main.dart';
 import '../../usefulMethods.dart';
 import 'dialogs.dart';
-
+import 'package:ynotes/UI/utils/fileUtils.dart';
 class QuickMenu extends StatefulWidget {
   final Function close;
 
@@ -157,7 +156,7 @@ class _QuickMenuState extends State<QuickMenu> with TickerProviderStateMixin {
                               Material(
                                 color: Theme.of(context).primaryColor,
                                 child: FutureBuilder(
-                                  future: getListOfFiles(),
+                                  future: FileAppUtil.getFilesList(""),
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
                                       if (snapshot.data.length != 0) {
@@ -176,10 +175,10 @@ class _QuickMenuState extends State<QuickMenu> with TickerProviderStateMixin {
                                                   setState(() {
                                                     visibility = false;
                                                   });
-                                                  return await CustomDialogs.showConfirmationDialog(context, listFiles[index].file, show) == true;
+                                                  return await CustomDialogs.showConfirmationDialog(context, show) == true;
                                                 },
                                                 onDismissed: (direction) async {
-                                                  await FileAppUtil.remove(listFiles[index].file);
+                                                  await FileAppUtil.remove(listFiles[index].element);
                                                   setState(() {
                                                     listFiles.removeAt(index);
                                                   });
@@ -199,7 +198,7 @@ class _QuickMenuState extends State<QuickMenu> with TickerProviderStateMixin {
                                                             child: InkWell(
                                                               splashColor: Color(0xff525252),
                                                               onTap: () {
-                                                                openFile(listFiles[index].fileName);
+                                                               FileAppUtil.openFile(listFiles[index].fileName);
                                                               },
                                                               child: Container(
                                                                 width: screenSize.size.width / 5 * 3,

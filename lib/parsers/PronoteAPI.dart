@@ -379,7 +379,7 @@ class _Communication {
 
     var get_response =
         await Requests.get(this.root_site + "/" + this.html_page, headers: headers).catchError((e) {
-      throw("Impossible de se connecter");
+      throw ("Impossible de se connecter");
     });
 
     if (get_response.hasError) {
@@ -744,7 +744,9 @@ class PronotePeriod {
       'Félicitations'
     ];
     if (value.contains("|")) {
-      return grade_translate[int.parse(value[1])];
+      
+        return grade_translate[int.parse(value[1])-1];
+     
     } else {
       return value;
     }

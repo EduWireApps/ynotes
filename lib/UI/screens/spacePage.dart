@@ -1,15 +1,14 @@
-import 'dart:math';
-
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:intl/intl.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/UI/screens/settingsPage.dart';
 import 'package:ynotes/UI/screens/spacePageWidgets/downloadsExplorer.dart';
+import 'package:ynotes/UI/screens/tabBuilder.dart';
 import 'package:ynotes/usefulMethods.dart';
-
+import 'package:dio/src/response.dart' as dioResponse;
 import 'package:ynotes/UI/components/dialogs.dart';
+import 'package:dio/dio.dart' as dio;
 
 class SpacePage extends StatefulWidget {
   State<StatefulWidget> createState() {
@@ -20,6 +19,13 @@ class SpacePage extends StatefulWidget {
 int segmentedControlGroupValue = 0;
 
 class _SpacePageState extends State<SpacePage> with TickerProviderStateMixin {
+  // ignore: must_call_super
+  void initState() {
+    if (!tabController.indexIsChanging) {
+      helpDialogs[3].showDialog(context);
+    }
+  }
+
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
     final Map<int, Widget> spaceTabs = <int, Widget>{
@@ -101,15 +107,15 @@ class _SpacePageState extends State<SpacePage> with TickerProviderStateMixin {
                         height: screenSize.size.height / 10 * 0.1,
                       ),
                       CupertinoSlidingSegmentedControl(
-                        thumbColor: Theme.of(context).primaryColor,
-                        backgroundColor: darken(Theme.of(context).primaryColorDark)
-                        ,
+                          thumbColor: Theme.of(context).primaryColor,
+                          backgroundColor: darken(Theme.of(context).primaryColorDark),
                           groupValue: segmentedControlGroupValue,
                           children: spaceTabs,
                           onValueChanged: (i) {
-                            setState(() {
+                            CustomDialogs.showUnimplementedSnackBar(context);
+                            /* setState(() {
                               segmentedControlGroupValue = i;
-                            });
+                            });*/
                           }),
                       SizedBox(
                         height: screenSize.size.height / 10 * 0.1,
@@ -118,6 +124,7 @@ class _SpacePageState extends State<SpacePage> with TickerProviderStateMixin {
                       Container(
                         height: screenSize.size.height / 10 * 6.8,
                         child: SingleChildScrollView(
+                          padding: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.3),
                           scrollDirection: Axis.vertical,
                           physics: AlwaysScrollableScrollPhysics(),
                           child: Column(
@@ -125,7 +132,6 @@ class _SpacePageState extends State<SpacePage> with TickerProviderStateMixin {
                               DownloadsExplorer(),
                               //News
                               Container(
-                            
                                 margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(11),
@@ -201,10 +207,10 @@ class _SpacePageState extends State<SpacePage> with TickerProviderStateMixin {
                                                           return SingleChildScrollView(
                                                             child: CupertinoScrollbar(
                                                               child: Container(
-                                                              
                                                                 child: SingleChildScrollView(
                                                                   child: Column(
-                                                                     mainAxisAlignment: MainAxisAlignment.center,
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment.center,
                                                                     children: <Widget>[
                                                                       Text(
                                                                         snapshot.data[index]
@@ -271,5 +277,22 @@ class _SpacePageState extends State<SpacePage> with TickerProviderStateMixin {
         ),
       ),
     );
+  }
+}
+
+class AppNews {
+  static Future<List> checkAppNews() async {
+    try {
+      dioResponse.Response response = await dio.Dio().get("https://ynotes.fr/src/app-src/news.json",
+          options: dio.Options(responseType: dio.ResponseType.plain));
+
+      Map map = json.decode(response.data.toString());
+      List list = map["tickets"];
+      list.sort((a, b) => a["ticketnb"].compareTo(b["ticketnb"]));
+      return list.reversed.toList();
+    } catch (e) {
+      print(e);
+      return null;
+    }
   }
 }

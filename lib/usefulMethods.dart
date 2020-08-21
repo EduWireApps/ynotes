@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:connectivity/connectivity.dart';
 import 'package:dio/dio.dart' as dio;
+import 'package:downloads_path_provider/downloads_path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -19,10 +21,10 @@ import 'package:http/http.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/parsers/EcoleDirecte.dart';
 import 'dart:io';
+import 'package:ynotes/UI/utils/fileUtils.dart';
+import 'package:ynotes/apiManager.dart';
 import 'package:dio/src/response.dart' as dioResponse;
-import 'apiManager.dart';
 
-//L
 launchURL(url) async {
   if (await canLaunch(url)) {
     await launch(url);
@@ -74,44 +76,9 @@ Route router(Widget widget) {
   );
 }
 
-getDirectory() async {
-  if (Platform.isAndroid) {
-    final dir = await getExternalStorageDirectory();
-    return dir;
-  }
-  if (Platform.isIOS) {
-    final dir = await getApplicationDocumentsDirectory();
-    return dir;
-  } else {
-    ///DO NOTHING
-  }
-}
-
-//Open a file
-Future<void> openFile(filename) async {
-  final dir = await getDirectory();
-  final filePath = '${dir.path}/downloads/$filename';
-  await OpenFile.open(filePath);
-}
-
 ///Color theme switcher, actually 0 for darkmode and 1 for lightmode
 int colorTheme = 0;
 String actualUser = "";
-
-ThemeData darkTheme = ThemeData(
-    backgroundColor: Color(0xff313131),
-    primaryColor: Color(0xff414141),
-    //In reality that is primary ColorLighter
-    primaryColorDark: Color(0xff525252),
-    indicatorColor: Color(0xff525252),
-    tabBarTheme: TabBarTheme(labelColor: Colors.black));
-
-ThemeData lightTheme = ThemeData(
-    backgroundColor: Colors.white,
-    primaryColor: Color(0xffF3F3F3),
-    primaryColorDark: Color(0xffDCDCDC),
-    indicatorColor: Color(0xffDCDCDC),
-    tabBarTheme: TabBarTheme(labelColor: Colors.black));
 
 Future<bool> getSetting(String setting) async {
   final prefs = await SharedPreferences.getInstance();
@@ -172,78 +139,6 @@ Color darken(Color color, {double forceAmount}) {
   final hslDark = hsl.withLightness((hsl.lightness - amount).clamp(0.0, 1.0));
 
   return hslDark.toColor();
-}
-
-///Every action related to files
-class FileAppUtil {
-  static Future<String> getFileNameWithExtension(File file) async {
-    if (await file.exists()) {
-      return path.basename(file.path);
-    } else {
-      return null;
-    }
-  }
-
-  ///Get new file path
-  static Future<File> getFilePath(String filename) async {
-    final dir = await getDirectory();
-    return File("${dir.path}/downloads/$filename");
-  }
-
-  static Future<DateTime> getLastModifiedDate(File file) async {
-    if (await file.exists()) {
-      return await file.lastModified();
-    } else {
-      return null;
-    }
-  }
-
-  static Future<String> loadAsset(path) async {
-    return await rootBundle.loadString(path);
-  }
-
-  static remove(File file) async {
-    if (await file.exists()) {
-      file.delete();
-    } else {
-      return null;
-    }
-  }
-}
-
-class FileInfo {
-  final File file;
-  final DateTime lastModifiedDate;
-  final String fileName;
-
-  FileInfo(this.file, this.lastModifiedDate, this.fileName);
-}
-
-Future<List<FileInfo>> getListOfFiles() async {
-  try {
-    String directory;
-    List file = new List();
-    directory = (await getDirectory()).path;
-
-    file = Directory("$directory/downloads").listSync(); //use your folder name insted of resume.
-    List<FileInfo> listFiles = List<FileInfo>();
-
-    await Future.forEach(file, (element) async {
-      try {
-        listFiles.add(new FileInfo(element, await FileAppUtil.getLastModifiedDate(element),
-            await FileAppUtil.getFileNameWithExtension(element)));
-        listFiles.sort((a, b) => a.lastModifiedDate.compareTo(b.lastModifiedDate));
-      } catch (e) {
-        print(e);
-      }
-    });
-
-    listFiles = listFiles.reversed.toList();
-    return listFiles;
-  } catch (e) {
-    List<FileInfo> listFiles = List<FileInfo>();
-    return listFiles;
-  }
 }
 
 //Used in the app page
@@ -394,7 +289,9 @@ exitApp() async {
     await storage.deleteAll();
     isDarkModeEnabled = false;
     //delete hive files
-    final dir = await getDirectory();
+    localApi.gradesList = null;
+    
+
     offline.clearAll();
   } catch (e) {
     print(e);
@@ -438,24 +335,8 @@ specialtiesSelectionAvailable() async {
   }
 }
 
-class AppNews {
-  static Future<List> checkAppNews() async {
-    try {
-      dioResponse.Response response = await dio.Dio().get("https://ynotes.fr/src/app-src/news.json",
-          options: dio.Options(responseType: dio.ResponseType.plain));
-
-      Map map = json.decode(response.data.toString());
-      List list = map["tickets"];
-      list.sort((a, b) => a["ticketnb"].compareTo(b["ticketnb"]));
-      return list.reversed.toList();
-    } catch (e) {
-      print(e);
-      return null;
-    }
-  }
-}
-
 ReadStorage(_key) async {
   String u = await storage.read(key: _key);
+
   return u;
 }

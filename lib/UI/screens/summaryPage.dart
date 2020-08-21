@@ -66,7 +66,7 @@ class _SummaryPageState extends State<SummaryPage> {
     setState(() {
       doneListFuture = getHomeworkDonePercent();
     });
-    SchedulerBinding.instance.addPostFrameCallback((_) => initTransparentLogin().then((var f) {
+    SchedulerBinding.instance.addPostFrameCallback(!mounted?null:(_) => initTransparentLogin().then((var f) {
           if (firstStart == true) {
             refreshLocalHomeworkList();
             refreshLocalGradesList();
@@ -130,17 +130,22 @@ class _SummaryPageState extends State<SummaryPage> {
                       radius: 120.0,
                       lineWidth: 13.0,
                       animation: true,
-                      percent: snapshot.data / 100,
+                      percent: snapshot.data/100,
                       center: new Text(
                         snapshot.data.toString() + "%",
                         style: new TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20.0, fontFamily: "Asap"),
+                            fontWeight: FontWeight.bold, fontSize: 20.0, fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
                       ),
                       header: new Text(
                         "Travail fait",
-                        style: new TextStyle(fontSize: 17.0, fontFamily: "Asap"),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                            fontFamily: "Asap",
+                            fontSize: 18,
+                            color: isDarkModeEnabled ? Colors.white : Colors.black),
                       ),
-                      animationDuration: 150,
+                      backgroundColor: Colors.orange.shade400,
+                      animationDuration: 550,
                       circularStrokeCap: CircularStrokeCap.round,
                       progressColor: Colors.green.shade300,
                     );

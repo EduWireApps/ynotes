@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
-
+import 'package:ynotes/UI/utils/fileUtils.dart';
 import '../../usefulMethods.dart';
 
 class LogsPage extends StatefulWidget {
@@ -63,13 +63,13 @@ class _LogsPageState extends State<LogsPage> {
 }
 
 Future<String> getFileData() async {
-  final dir = await getDirectory();
+  final dir = await FolderAppUtil.getDirectory();
   final File file = File('${dir.path}/logs.txt');
 
   return await file.readAsString();
 }
 logFile(String error) async {
-  final directory = await getDirectory();
+  final directory = await FolderAppUtil.getDirectory();
   final File file = File('${directory.path}/logs.txt');
   await file.writeAsString("\n\n" + DateTime.now().toString() + "\n" + error,
       mode: FileMode.append);

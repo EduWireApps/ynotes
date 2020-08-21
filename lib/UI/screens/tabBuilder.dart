@@ -38,10 +38,10 @@ class TabBuilder extends StatefulWidget {
 
 int _currentIndex = 0;
 bool isQuickMenuShown = false;
-
-class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
-  //This controller allow the app to toggle a function when there is a tab change
+ //This controller allow the app to toggle a function when there is a tab change
   TabController tabController;
+class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
+ 
   //Boolean
   bool isChanging = false;
   int actualIndex = 1;

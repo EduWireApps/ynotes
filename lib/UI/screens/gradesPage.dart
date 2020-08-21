@@ -62,9 +62,8 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
 
   @override
   Future<void> refreshLocalGradeList() async {
-    
     setState(() {
-      allGradesOld =null;
+      allGradesOld = null;
       disciplinesListFuture = localApi.getGrades(forceReload: true);
     });
     var realdisciplinesListFuture = await disciplinesListFuture;
@@ -1238,9 +1237,15 @@ class _GradesGroupState extends State<GradesGroup> {
             itemBuilder: (BuildContext context, int index) {
               DateTime now = DateTime.now();
               String formattedDate = DateFormat('yyyy-MM-dd').format(now);
-              if (localList != null) {
-                marksColumnController.animateTo(localList.length * screenSize.size.width / 5 * 1.2,
-                    duration: new Duration(microseconds: 5), curve: Curves.ease);
+              if (localList != null && localList.length != null) {
+                try {
+                  marksColumnController.animateTo(
+                      localList.length * screenSize.size.width / 5 * 1.2,
+                      duration: new Duration(microseconds: 5),
+                      curve: Curves.ease);
+                } catch (e) {
+             
+                }
                 if (localList[index].dateSaisie == formattedDate) {
                   newGrades = true;
                 }

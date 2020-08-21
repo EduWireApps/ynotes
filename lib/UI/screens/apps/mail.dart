@@ -14,6 +14,7 @@ import 'package:ynotes/main.dart';
 import '../../../models.dart';
 import '../../../usefulMethods.dart';
 import '../appsPage.dart';
+import 'package:ynotes/UI/utils/fileUtils.dart';
       List<Mail> localList = List();
 class MailPage extends StatefulWidget {
   final BuildContext context;
@@ -791,7 +792,7 @@ class _MailPageState extends State<MailPage> {
                                                                                       color: Colors.green,
                                                                                     ),
                                                                                     onPressed: () async {
-                                                                                      openFile(mail.files[index]["libelle"]);
+                                                                                      FileAppUtil.openFile(mail.files[index]["libelle"]);
                                                                                     },
                                                                                   ));
                                                                                 }
@@ -820,7 +821,7 @@ class _MailPageState extends State<MailPage> {
                                                                                   color: Colors.green,
                                                                                 ),
                                                                                 onPressed: () async {
-                                                                                  openFile(mail.files[index]["libelle"]);
+                                                                                  FileAppUtil.openFile(mail.files[index]["libelle"]);
                                                                                 },
                                                                               ));
                                                                             }

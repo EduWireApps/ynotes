@@ -94,7 +94,8 @@ class APIEcoleDirecte extends API {
       if (req['code'] == 200) {
         try {
           //Put the value of the name in a variable
-          actualUser = req['data']['accounts'][0]['Prenom'] ?? "Invité";
+          actualUser = req['data']['accounts'][0]['prenom'] ?? "Invité";
+          print(actualUser);
           CreateStorage("userFullName", actualUser ?? "");
           String userID = req['data']['accounts'][0]['id'].toString() ?? "";
           String classe;
@@ -116,6 +117,7 @@ class APIEcoleDirecte extends API {
           //Ensure that the user will not see the carousel anymore
           prefs.setBool('firstUse', false);
         } catch (e) {
+          print("Error while getting user info " + e.toString());
           //log in file
           logFile(e.toString());
         }
@@ -170,8 +172,7 @@ class APIEcoleDirecte extends API {
 //Getting grades
   Future<List<Discipline>> getGrades({bool forceReload}) async {
     var connectivityResult = await (Connectivity().checkConnectivity());
-    var offlineGrades =
-        await offline.disciplines();
+    var offlineGrades = await offline.disciplines();
 
     //If force reload enabled the grades will be loaded online
     if ((connectivityResult == ConnectivityResult.none ||
@@ -249,8 +250,7 @@ class APIEcoleDirecte extends API {
 //Get dates of the the next homework (based on the EcoleDirecte API)
   Future<List<Homework>> getNextHomework({bool forceReload}) async {
     var connectivityResult = await (Connectivity().checkConnectivity());
-    var offlineHomework =
-        await offline.homework();
+    var offlineHomework = await offline.homework();
 
     //If force reload enabled the grades will be loaded online
     if ((connectivityResult == ConnectivityResult.none ||
@@ -389,7 +389,8 @@ class APIEcoleDirecte extends API {
   Future<bool> testNewGrades() async {
     try {
       //Getting the offline count of grades
-      List<Grade> listOfflineGrades = getAllGrades(await offline.disciplines(), overrideLimit: true);
+      List<Grade> listOfflineGrades =
+          getAllGrades(await offline.disciplines(), overrideLimit: true);
 
       print("Offline length is ${listOfflineGrades.length}");
       //Getting the online count of grades

@@ -3,18 +3,14 @@ import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:logging/logging.dart';
-import 'package:http/http.dart';
 import 'package:provider/provider.dart';
 import 'package:ynotes/UI/screens/carousel.dart';
 import 'package:ynotes/UI/screens/loadingPage.dart';
-import 'package:ynotes/UI/screens/loginPage.dart';
 import 'package:ynotes/UI/screens/tabBuilder.dart';
 import 'package:sentry/sentry.dart';
 import 'package:ynotes/models.dart';
 import 'package:ynotes/offline.dart';
 import 'package:ynotes/usefulMethods.dart';
-import 'package:alice/alice.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:ynotes/apiManager.dart';
 import 'package:ynotes/parsers/EcoleDirecte.dart';
@@ -25,7 +21,7 @@ import 'package:wiredash/wiredash.dart';
 import 'UI/screens/logsPage.dart';
 import 'UI/screens/schoolAPIChoicePage.dart';
 import 'multilanguage.dart';
-
+import 'UI/utils/themeUtils.dart';
 var uuid = Uuid();
 
 //login manager

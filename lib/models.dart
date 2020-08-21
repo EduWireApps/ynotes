@@ -10,7 +10,7 @@ import 'package:ynotes/parsers/EcoleDirecte.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 import 'apiManager.dart';
-
+import 'package:ynotes/UI/utils/fileUtils.dart';
 ///Class download to notify view when download is ended
 class DownloadModel extends ChangeNotifier {
   bool _isDownloading = false;
@@ -20,7 +20,7 @@ class DownloadModel extends ChangeNotifier {
 
   ///Check if file exists
   Future<bool> fileExists(filename) async {
-    final dir = await getDirectory();
+    final dir = await FolderAppUtil.getDirectory();
     return File("${dir.path}/downloads/$filename").exists();
   }
 
@@ -60,8 +60,8 @@ class DownloadModel extends ChangeNotifier {
         _progress = 100;
         notifyListeners();
         print("Téléchargement du fichier terminé : $filename");
-        final dir = await getDirectory();
-        final Directory _appDocDirFolder = Directory('${dir.path}/downloads/');
+        final dir = await FolderAppUtil.getDirectory(download: true);
+        final Directory _appDocDirFolder = Directory('${dir.path}/yNotes/');
 
         if (!await _appDocDirFolder.exists()) {
           //if folder already exists return path

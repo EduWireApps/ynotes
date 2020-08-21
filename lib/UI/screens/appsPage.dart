@@ -5,6 +5,8 @@ import '../../main.dart';
 import '../../usefulMethods.dart';
 import 'apps/cloud.dart';
 import 'apps/mail.dart';
+import 'package:ynotes/UI/utils/themeUtils.dart';
+
 
 class AppsPage extends StatefulWidget {
   final BuildContext rootcontext;

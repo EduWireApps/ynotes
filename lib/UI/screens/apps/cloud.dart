@@ -11,6 +11,7 @@ import '../../../usefulMethods.dart';
 import '../appsPage.dart';
 import '../gradesPage.dart';
 import 'mail.dart';
+import 'package:ynotes/UI/utils/fileUtils.dart';
 String cloudUsedFolder = "";
 class CloudPage extends StatefulWidget {
   State<StatefulWidget> createState() {
@@ -240,7 +241,7 @@ class _CloudPageState extends State<CloudPage> {
                                                 }
                                                 if (localFoldersList[index].type == "FILE") {
                                                   if (await model.fileExists(localFoldersList[index].title)) {
-                                                    openFile(localFoldersList[index].title);
+                                                    FileAppUtil.openFile(localFoldersList[index].title);
                                                   } else {
                                                     model.download(localFoldersList[index].id, "CLOUD", localFoldersList[index].title);
                                                   }

@@ -12,7 +12,7 @@ description: yNotes application de gestion de vie scolaire
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.
 
-version: 0.8.7+2
+version: 0.8.8+3
 
 environment:
   sdk: ">=2.2.2 <3.0.0"
@@ -22,14 +22,14 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  flutter_svg: ^0.17.3+1
+  flutter_svg: ^0.18.0
   flutter_secure_storage: ^3.3.3
   auto_size_text: ^2.1.0
   http: ^0.12.0+4
   charts_flutter: ^0.8.1
   shared_preferences: ^0.5.6+1
   circular_check_box: ^1.0.1
-  giffy_dialog: ^1.8.0
+
   shimmer: ^1.0.1
   badges: ^1.1.0
   intl: ^0.16.0
@@ -53,7 +53,8 @@ dependencies:
   alice: ^0.0.33
   open_file: ^3.0.1
   flushbar: ^1.10.4
-  hive: ^1.4.1+1
+  hive: ^1.4.3
+  hive_flutter: ^0.3.1
   flutter_local_notifications: ^1.4.3
   connectivity: ^0.4.8+6
   background_fetch: "^0.5.1"
@@ -77,6 +78,8 @@ dependencies:
   rxdart: ^0.24.1
   smooth_page_indicator: ^0.1.5
   percent_indicator: ^2.1.5
+  downloads_path_provider: ^0.1.0
+  permission_handler: ^5.0.1+1
   wiredash:
     git:
       url: https://github.com/wiredashio/wiredash-sdk
@@ -86,11 +89,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_launcher_icons: ^0.7.4
+  hive_generator: ^0.7.1
   build_runner: ^1.10.0
-  hive_generator: ^0.7.0+2
-
-dependency_overrides:
-  dartx: ^0.3.0
 
 flutter_icons:
   ios: true

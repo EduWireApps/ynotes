@@ -1,25 +1,20 @@
-import 'package:connectivity/connectivity.dart';
 import 'package:hive/hive.dart';
 import 'dart:async';
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:path_provider/path_provider.dart';
 import 'apiManager.dart';
-import 'dart:io';
-import 'dart:convert';
-import 'package:ynotes/usefulMethods.dart';
+import 'package:ynotes/UI/utils/fileUtils.dart';
 
 class Offline {
   //Return disciplines + grades
-  List<Discipline> disciplinesData;
+  List<Discipline> disciplinesData= List();
   //Return homework
-  List<Homework> homeworkData;
+  List<Homework> homeworkData= List();
 
   Box _offlineBox;
   Box _homeworkDoneBox;
   Box _pinnedHomeworkBox;
   init() async {
-    final dir = await getDirectory();
+    final dir = await FolderAppUtil.getDirectory();
     Hive.init("${dir.path}/offline");
     //Register adapters once
     Hive.registerAdapter(gradeAdapter());
@@ -67,7 +62,6 @@ class Offline {
   }
 
   updateDisciplines(List<Discipline> newData) async {
-     
     try {
       if (!_offlineBox.isOpen) {
         _offlineBox = await Hive.openBox("offlineData");
@@ -82,12 +76,12 @@ class Offline {
   }
 
   updateHomework(List<Homework> newData, {bool add = false}) async {
-    
-    try { 
+    print("Update offline homework");
+    try {
       if (!_offlineBox.isOpen) {
         _offlineBox = await Hive.openBox("offlineData");
       }
-      if (add == true) {
+      if (add == true && newData != null) {
         List<Homework> oldHW = _offlineBox.get("homework").cast<Homework>();
 
         List<Homework> combinedList = oldHW + newData;
@@ -154,24 +148,23 @@ class Offline {
 
   Future<List<Homework>> homework() async {
     try {
-
+      if (homeworkData != null) {
+         
+        return homeworkData;
+      } else {
   
-    if (homeworkData != null) {
-      return homeworkData;
-    } else {
-      await refreshData();
-      return homeworkData;
+        await refreshData();
+      
+        return homeworkData;
+      }
+    } catch (e) {
+      print("Error while returning homework" + e.toString());
     }
-      }
-      catch(e)
-      {
-            print("Error while returning homework" + e.toString());
-      }
   }
 
   getHWCompletion(String id) async {
     try {
-      final dir = await getDirectory();
+      final dir = await FolderAppUtil.getDirectory();
       Hive.init("${dir.path}/offline");
 
       bool toReturn = _homeworkDoneBox.get(id.toString());
@@ -187,7 +180,7 @@ class Offline {
 
   setHWCompletion(String id, bool state) async {
     try {
-      final dir = await getDirectory();
+      final dir = await FolderAppUtil.getDirectory();
       Hive.init("${dir.path}/offline");
 
       _homeworkDoneBox.put(id.toString(), state);
