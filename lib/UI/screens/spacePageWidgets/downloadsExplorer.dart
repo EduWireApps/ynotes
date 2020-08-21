@@ -372,15 +372,15 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                           onTap: !(clipboard.length > 0)
                               ? null
                               : () async {
-                                  Future.forEach(clipboard, (FileInfo element) async {
+                                  await Future.forEach(clipboard, (FileInfo element) async {
                                     try {
                                       await element.element
                                           .copy(initialPath + path + "/" + element.fileName);
                                     } catch (e) {
                                       if (Platform.isAndroid) {
                                         print("try to paste");
-                                        await Process.run(
-                                            'cp', ['-r', element.element.path, initialPath + path+"/"]);
+                                        await Process.run('cp',
+                                            ['-r', element.element.path, initialPath + path + "/"]);
                                       }
                                     }
                                   });
