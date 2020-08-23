@@ -6,9 +6,9 @@ import 'package:ynotes/UI/utils/fileUtils.dart';
 
 class Offline {
   //Return disciplines + grades
-  List<Discipline> disciplinesData= List();
+  List<Discipline> disciplinesData;
   //Return homework
-  List<Homework> homeworkData= List();
+  List<Homework> homeworkData;
 
   Box _offlineBox;
   Box _homeworkDoneBox;
@@ -33,6 +33,7 @@ class Offline {
         _offlineBox = await Hive.openBox("offlineData");
       }
       //Get data and cast it
+
       disciplinesData = _offlineBox.get("disciplines").cast<Discipline>();
       homeworkData = _offlineBox.get("homework").cast<Homework>();
 
@@ -149,12 +150,10 @@ class Offline {
   Future<List<Homework>> homework() async {
     try {
       if (homeworkData != null) {
-         
         return homeworkData;
       } else {
-  
         await refreshData();
-      
+
         return homeworkData;
       }
     } catch (e) {

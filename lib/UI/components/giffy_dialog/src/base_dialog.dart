@@ -137,24 +137,26 @@ class _BaseGiffyDialogState extends State<BaseGiffyDialog> with TickerProviderSt
           ),
         ),
         Expanded(
-          child: SingleChildScrollView(
-                      child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(top: 16.0),
-                    child: widget.title,
-                  ),
-                  Container(
-                    height:120,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top:8.0,left:8.0,right:8.0,),
-                      child: CupertinoScrollbar(child: SingleChildScrollView(child: widget.description)),
+          child: CupertinoScrollbar(
+                      child: SingleChildScrollView(
+                        child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16.0),
+                      child: widget.title,
                     ),
-                  ),
-                  _buildButtonsBar(context)
-                ],
-              ),
+                    Container(
+                      height:120,
+                      child: Padding(
+                        padding: const EdgeInsets.only(top:8.0,left:8.0,right:8.0,),
+                        child: CupertinoScrollbar(child: SingleChildScrollView(child: widget.description)),
+                      ),
+                    ),
+                    _buildButtonsBar(context)
+                  ],
+                ),
+            ),
           ),
         ),
       ],
@@ -195,39 +197,43 @@ class _BaseGiffyDialogState extends State<BaseGiffyDialog> with TickerProviderSt
   }
 
   Widget _buildButtonsBar(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top:8.0,left:8.0,right:8.0,),
-      child: Row(
-        mainAxisAlignment:
-            !widget.onlyOkButton ? MainAxisAlignment.spaceEvenly : MainAxisAlignment.center,
-        children: <Widget>[
-          if (!widget.onlyOkButton) ...[
-            RaisedButton(
-              color: widget.buttonCancelColor,
-              shape:
-                  RoundedRectangleBorder(borderRadius: BorderRadius.circular(widget.buttonRadius)),
-              onPressed: widget.onCancelButtonPressed ?? () => Navigator.of(context).pop(),
-              child: widget.buttonCancelText ??
-                  Text(
-                    'Cancel',
-                    style: TextStyle(color: Colors.white),
-                  ),
-            )
+    return FittedBox(
+          child: Padding(
+        padding: const EdgeInsets.only(top:8.0,left:8.0,right:8.0,),
+        child: Row(
+          mainAxisAlignment:
+              MainAxisAlignment.center,
+          children: <Widget>[
+            if (!widget.onlyOkButton) ...[
+              RaisedButton(
+                color: widget.buttonCancelColor,
+                shape:
+                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(widget.buttonRadius)),
+                onPressed: widget.onCancelButtonPressed ?? () => Navigator.of(context).pop(),
+                child: widget.buttonCancelText ??
+                    Text(
+                      'Cancel',
+                      style: TextStyle(color: Colors.white),
+                    ),
+              )
+            ],
+            if(!widget.onlyOkButton)
+             SizedBox(width: 15,),
+            if (!widget.onlyCancelButton) ...[
+              RaisedButton(
+                color: widget.buttonOkColor,
+                shape:
+                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(widget.buttonRadius)),
+                onPressed: widget.onOkButtonPressed,
+                child: widget.buttonOkText ??
+                    Text(
+                      'OK',
+                      style: TextStyle(color: Colors.white),
+                    ),
+              ),
+            ],
           ],
-          if (!widget.onlyCancelButton) ...[
-            RaisedButton(
-              color: widget.buttonOkColor,
-              shape:
-                  RoundedRectangleBorder(borderRadius: BorderRadius.circular(widget.buttonRadius)),
-              onPressed: widget.onOkButtonPressed,
-              child: widget.buttonOkText ??
-                  Text(
-                    'OK',
-                    style: TextStyle(color: Colors.white),
-                  ),
-            ),
-          ],
-        ],
+        ),
       ),
     );
   }

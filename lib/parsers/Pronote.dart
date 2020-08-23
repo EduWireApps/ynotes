@@ -54,6 +54,9 @@ class APIPronote extends API {
     } else {
       print("Loading grades inline.");
       var toReturn = await getGradesFromInternet();
+      if (toReturn == null) {
+        toReturn = await offline.disciplines();
+      }
       await refreshDisciplinesListColors(toReturn);
       return toReturn;
     }
@@ -104,7 +107,7 @@ class APIPronote extends API {
             z++;
           });
         }
-        this.gradesList =null;
+        this.gradesList = null;
         listDisciplines.forEach((element) {
           element.gradesList
               .addAll(grades.where((grade) => grade.libelleMatiere == element.nomDiscipline));
@@ -190,11 +193,14 @@ class APIPronote extends API {
             forceReload == null) &&
         offlineHomework != null) {
       print("Loading homework from offline storage.");
-         
+
       return offlineHomework;
     } else {
       print("Loading homework inline.");
       var toReturn = await getNextHomeworkFromInternet();
+      if (toReturn == null) {
+        toReturn = await offline.homework();
+      }
       return toReturn;
     }
   }
