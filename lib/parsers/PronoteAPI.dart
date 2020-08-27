@@ -60,6 +60,13 @@ class Client {
   bool logged_in;
 
   var auth_cookie;
+  var paramsUser;
+
+  DateTime hour_end;
+
+  DateTime hour_start;
+
+  int one_hour_duration;
   refresh() async {
     print("Reinitialisation");
 
@@ -73,6 +80,15 @@ class Client {
     this.localPeriods = null;
     this.localPeriods = this.periods();
     this.week = this._get_week(DateTime.now());
+
+    this.hour_start = DateFormat("""'hh'h'mm'""")
+        .parse(this.func_options['donneesSec']['donnees']['General']['ListeHeures']['V'][0]['L']);
+    this.hour_end = DateFormat("""'hh'h'mm'""").parse(
+        this.func_options['donneesSec']['donnees']['General']['ListeHeuresFin']['V'][0]['L']);
+
+    this.one_hour_duration = hour_end.difference(hour_start).inMinutes;
+    print("ohduration " + one_hour_duration.toString());
+
     this._expired = true;
   }
 
@@ -125,6 +141,13 @@ class Client {
 
     this.localPeriods = this.periods;
     this.logged_in = await this._login();
+
+    this.hour_start = DateFormat("hh'h'mm")
+        .parse(this.func_options['donneesSec']['donnees']['General']['ListeHeures']['V'][0]['L']);
+    this.hour_end = DateFormat("hh'h'mm").parse(
+        this.func_options['donneesSec']['donnees']['General']['ListeHeuresFin']['V'][0]['L']);
+
+    this.one_hour_duration = hour_end.difference(hour_start).inMinutes;
     this._expired = false;
   }
 
@@ -219,7 +242,7 @@ class Client {
         this.encryption.aes_key = e.aes_key;
         if (isOldAPIUsed == false) {
           try {
-            var paramsUser =
+            paramsUser =
                 await this.communication.post("ParametresUtilisateur", data: {'donnees': {}});
 
             this.communication.authorized_onglets =
@@ -310,6 +333,82 @@ class Client {
       toReturn.add(PronotePeriod(this, j));
     });
     return toReturn;
+  }
+
+  lessons(DateTime date_from, {DateTime date_to}) async {
+    var user = this.paramsUser['donneesSec']['donnees']['ressource'];
+    List<Lesson> listToReturn = List();
+    Map data = {
+      "_Signature_": {"onglet": 16},
+      "donnees": {
+        "ressource": user,
+        "avecAbsencesEleve": false,
+        "avecConseilDeClasse": true,
+        "estEDTPermanence": false,
+        "avecAbsencesRessource": true,
+        "avecDisponibilites": true,
+        "avecInfosPrefsGrille": true,
+        "Ressource": user,
+      }
+    };
+
+    var output = [];
+    var first_week = this._get_week(date_from);
+    print(first_week);
+    if (date_to == null) {
+      date_to = date_from;
+    }
+    var last_week = this._get_week(date_to);
+    for (int week = first_week; week < last_week + 1; ++week) {
+      data["donnees"]["NumeroSemaine"] = week;
+      data["donnees"]["numeroSemaine"] = week;
+
+      var response = await this.communication.post('PageEmploiDuTemps', data: data);
+
+      var l_list = response['donneesSec']['donnees']['ListeCours'];
+      l_list.forEach((lesson) {
+        try {
+          //Lesson(String room, List<String> teachers, DateTime start, int duration, bool canceled, String status, List<String> groups, String content, String matiere, String codeMatiere)
+          String room;
+          if (lesson["ListeContenus"]["V"].length > 2) {
+            room = lesson["ListeContenus"]["V"][2]["L"];
+          }
+
+          List<String> teachers = List();
+          teachers = [lesson["ListeContenus"]["V"][1]["L"]];
+          DateTime start =
+              DateFormat("dd/MM/yyyy HH:mm:ss", "fr_FR").parse(lesson["DateDuCours"]["V"]);
+          DateTime end = start.add(Duration(minutes: this.one_hour_duration * lesson["duree"]));
+          int duration = this.one_hour_duration * lesson["duree"];
+          String matiere = lesson["ListeContenus"]["V"][0]["L"];
+          String codeMatiere = lesson["ListeContenus"]["V"][0]["N"];
+          String id = lesson["N"];
+          String status;
+          bool canceled = false;
+          if (lesson["Statut"] != null) {
+            status = lesson["Statut"];
+          }
+          if (lesson["estAnnule"] != null) {
+            canceled = lesson["estAnnule"];
+          }
+          listToReturn.add(Lesson(
+              room: room,
+              teachers: teachers,
+              start: start,
+              end: end,
+              duration: duration,
+              canceled: canceled,
+              status: status,
+              matiere: matiere,
+              id: id,
+              codeMatiere: codeMatiere));
+        } catch (e) {
+          print("Error while getting lessons " + e.toString());
+        }
+      });
+      print("Agenda collecte succeeded");
+      return listToReturn;
+    }
   }
 }
 
@@ -744,9 +843,7 @@ class PronotePeriod {
       'Félicitations'
     ];
     if (value.contains("|")) {
-      
-        return grade_translate[int.parse(value[1])-1];
-     
+      return grade_translate[int.parse(value[1]) - 1];
     } else {
       return value;
     }
@@ -805,5 +902,23 @@ class PronotePeriod {
       other.add(average(response, element["service"]["V"]["N"]));
     });
     return [list, other];
+  }
+}
+
+class PronoteLesson {
+  String id;
+  String teacher_name;
+  String classroom;
+  bool canceled;
+  String status;
+  String background_color;
+  String outing;
+  DateTime start;
+  String group_name;
+  var _content;
+  Client _client;
+  PronoteLesson(Client client, var parsed_json) {
+    this._client = client;
+    this._content = null;
   }
 }

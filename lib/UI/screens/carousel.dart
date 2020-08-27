@@ -455,7 +455,7 @@ class _page4State extends State<page4> {
     var list = await specialtiesSelectionAvailable();
     if (mounted) {
       setState(() {
-        localClasse = list[1];
+        //localClasse = list[1];
         specialtiesAvailable = list[0];
       });
     }

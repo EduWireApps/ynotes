@@ -153,6 +153,7 @@ class _HomeworkPageState extends State<HomeworkPage> {
                     color: Theme.of(context).primaryColorDark,
                     borderRadius: BorderRadius.circular(11),
                     child: InkWell(
+                       borderRadius: BorderRadius.circular(11),
                       onTap: () {
                         _pageControllerHW.animateTo(0, duration: Duration(milliseconds: 250), curve: Curves.ease);
                       },
@@ -183,6 +184,7 @@ class _HomeworkPageState extends State<HomeworkPage> {
                     color: Theme.of(context).primaryColorDark,
                     borderRadius: BorderRadius.circular(11),
                     child: InkWell(
+                       borderRadius: BorderRadius.circular(11),
                       onTap: () async {
                         DateTime someDate = await showDatePicker(
                           locale: Locale('fr', 'FR'),
@@ -192,13 +194,15 @@ class _HomeworkPageState extends State<HomeworkPage> {
                           lastDate: DateTime(2030),
                           helpText: "",
                           builder: (BuildContext context, Widget child) {
-                            return Material(
-                              color: Colors.transparent,
-                              child: Theme(
-                                data: isDarkModeEnabled ? ThemeData.dark() : ThemeData.light(),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[SizedBox(child: child)],
+                            return FittedBox(
+                                                          child: Material(
+                                color: Colors.transparent,
+                                child: Theme(
+                                  data: isDarkModeEnabled ? ThemeData.dark() : ThemeData.light(),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[SizedBox(child: child)],
+                                  ),
                                 ),
                               ),
                             );

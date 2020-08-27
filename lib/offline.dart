@@ -1,4 +1,5 @@
 import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
 import 'apiManager.dart';
@@ -9,7 +10,8 @@ class Offline {
   List<Discipline> disciplinesData;
   //Return homework
   List<Homework> homeworkData;
-
+  //Return lessons
+  List<Lesson> lessonsData;
   Box _offlineBox;
   Box _homeworkDoneBox;
   Box _pinnedHomeworkBox;
@@ -17,10 +19,11 @@ class Offline {
     final dir = await FolderAppUtil.getDirectory();
     Hive.init("${dir.path}/offline");
     //Register adapters once
-    Hive.registerAdapter(gradeAdapter());
-    Hive.registerAdapter(disciplineAdapter());
-    Hive.registerAdapter(documentAdapter());
-    Hive.registerAdapter(homeworkAdapter());
+    Hive.registerAdapter(GradeAdapter());
+    Hive.registerAdapter(DisciplineAdapter());
+    Hive.registerAdapter(DocumentAdapter());
+    Hive.registerAdapter(HomeworkAdapter());
+    Hive.registerAdapter(LessonAdapter());
     _offlineBox = await Hive.openBox("offlineData");
     _homeworkDoneBox = await Hive.openBox('doneHomework');
     _pinnedHomeworkBox = await Hive.openBox('pinnedHomework');
@@ -34,11 +37,9 @@ class Offline {
       }
       //Get data and cast it
 
-      disciplinesData = _offlineBox.get("disciplines").cast<Discipline>();
-      homeworkData = _offlineBox.get("homework").cast<Homework>();
-
-      _homeworkDoneBox.close();
-      _offlineBox.close();
+      disciplinesData = await _offlineBox.get("disciplines").cast<Discipline>();
+      homeworkData = await _offlineBox.get("homework").cast<Homework>();
+      lessonsData = await _offlineBox.get("lessons").cast<Lesson>();
     } catch (e) {}
   }
 
@@ -54,9 +55,12 @@ class Offline {
       if (!_pinnedHomeworkBox.isOpen) {
         _pinnedHomeworkBox = await Hive.openBox('pinnedHomework');
       }
-      _offlineBox.clear();
-      _homeworkDoneBox.clear();
-      _pinnedHomeworkBox.clear();
+      await _offlineBox.clear();
+      await _homeworkDoneBox.clear();
+      await _pinnedHomeworkBox.clear();
+      disciplinesData = null;
+      lessonsData = null;
+      disciplinesData = null;
     } catch (e) {
       print("Failed to clear all db " + e.toString());
     }
@@ -70,7 +74,7 @@ class Offline {
       print("Updating disciplines");
       await _offlineBox.delete("disciplines");
       await _offlineBox.put("disciplines", newData);
-      this.refreshData();
+      await refreshData();
     } catch (e) {
       print("Error while updating disciplines " + e);
     }
@@ -92,9 +96,27 @@ class Offline {
       } else {
         await _offlineBox.put("homework", newData);
       }
-      this.refreshData();
+      await refreshData();
     } catch (e) {
       print("Error while updating homework " + e.toString());
+    }
+  }
+
+  updateLessons(List<Lesson> newData) async {
+    try {
+      if (!_offlineBox.isOpen) {
+        _offlineBox = await Hive.openBox("offlineData");
+      }
+      if (newData != null) {
+        print("Update offline lessons (length : ${newData.length})");
+        await _offlineBox.delete("lessons");
+        await _offlineBox.put("lessons", newData);
+        await refreshData();
+      }
+
+      return true;
+    } catch (e) {
+      print("Error while updating offline lessons " + e.toString());
     }
   }
 
@@ -144,6 +166,7 @@ class Offline {
       }
     } catch (e) {
       print("Error while returning disciplines" + e.toString());
+      return null;
     }
   }
 
@@ -158,6 +181,18 @@ class Offline {
       }
     } catch (e) {
       print("Error while returning homework" + e.toString());
+      return null;
+    }
+  }
+
+  Future<List<Lesson>> lessons() async {
+    try {
+      await refreshData();
+
+      return lessonsData;
+    } catch (e) {
+      print("Error while returning lessons" + e.toString());
+      return null;
     }
   }
 

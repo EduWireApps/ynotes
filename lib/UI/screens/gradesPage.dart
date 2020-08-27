@@ -44,12 +44,13 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
     super.initState();
 
     initializeDateFormatting("fr_FR", null);
-    getListSpecialties(); //Test if it's the first start
+  
+      //getListSpecialties();
+      refreshLocalGradeListWithoutForce();
+      //Get the actual periode (based on grades)
+      getActualPeriode();
+   
 
-    refreshLocalGradeListWithoutForce();
-
-    //Get the actual periode (based on grades)
-    getActualPeriode();
     circleAnimation = AnimationController(duration: Duration(milliseconds: 450), vsync: this);
   }
 
@@ -532,6 +533,7 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
                   color: Theme.of(context).primaryColorDark,
                   borderRadius: BorderRadius.circular(11),
                   child: InkWell(
+                    borderRadius: BorderRadius.circular(11),
                     onTap: () {
                       openSortBox();
                     },
@@ -1243,9 +1245,7 @@ class _GradesGroupState extends State<GradesGroup> {
                       localList.length * screenSize.size.width / 5 * 1.2,
                       duration: new Duration(microseconds: 5),
                       curve: Curves.ease);
-                } catch (e) {
-             
-                }
+                } catch (e) {}
                 if (localList[index].dateSaisie == formattedDate) {
                   newGrades = true;
                 }

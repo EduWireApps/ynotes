@@ -125,114 +125,138 @@ class _BaseGiffyDialogState extends State<BaseGiffyDialog> with TickerProviderSt
   }
 
   Widget _buildPortraitWidget(BuildContext context, Widget imageWidget) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: <Widget>[
-        Expanded(
-          child: ClipRRect(
-            borderRadius: BorderRadius.only(
-                topRight: Radius.circular(widget.cornerRadius),
-                topLeft: Radius.circular(widget.cornerRadius)),
-            child: imageWidget,
-          ),
-        ),
-        Expanded(
-          child: CupertinoScrollbar(
-                      child: SingleChildScrollView(
-                        child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(top: 16.0),
-                      child: widget.title,
-                    ),
-                    Container(
-                      height:120,
-                      child: Padding(
-                        padding: const EdgeInsets.only(top:8.0,left:8.0,right:8.0,),
-                        child: CupertinoScrollbar(child: SingleChildScrollView(child: widget.description)),
-                      ),
-                    ),
-                    _buildButtonsBar(context)
-                  ],
-                ),
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.55,
+      child: Stack(
+        children: <Widget>[
+          Align(
+            alignment: Alignment.topCenter,
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.2,
+              child: ClipRRect(
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(widget.cornerRadius),
+                    topLeft: Radius.circular(widget.cornerRadius)),
+                child: imageWidget,
+              ),
             ),
           ),
-        ),
-      ],
+          Align(
+            alignment: Alignment.center,
+            child: Container(
+              margin: EdgeInsets.only(
+                top: MediaQuery.of(context).size.height * 0.1,
+              ),
+              height: MediaQuery.of(context).size.height * 0.25,
+              child: CupertinoScrollbar(
+                              child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16.0),
+                        child: widget.title,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          top: 8.0,
+                          left: 8.0,
+                          right: 8.0,
+                        ),
+                        child: widget.description,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Align(alignment: Alignment.bottomCenter, child: _buildButtonsBar(context))
+        ],
+      ),
     );
   }
 
   Widget _buildLandscapeWidget(BuildContext context, Widget imageWidget) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: <Widget>[
-        Expanded(
-          child: ClipRRect(
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(widget.cornerRadius),
-                bottomLeft: Radius.circular(widget.cornerRadius)),
-            child: imageWidget,
+    return Container(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(widget.cornerRadius),
+                  bottomLeft: Radius.circular(widget.cornerRadius)),
+              child: imageWidget,
+            ),
           ),
-        ),
-        Expanded(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(top: 16.0),
-                child: widget.title,
-              ),
-              Padding(
-                padding: const EdgeInsets.all(3.0),
-                child: SingleChildScrollView(child: widget.description),
-              ),
-              _buildButtonsBar(context),
-            ],
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(top: 16.0),
+                  child: widget.title,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(3.0),
+                  child: SingleChildScrollView(child: widget.description),
+                ),
+                _buildButtonsBar(context),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
   Widget _buildButtonsBar(BuildContext context) {
-    return FittedBox(
-          child: Padding(
-        padding: const EdgeInsets.only(top:8.0,left:8.0,right:8.0,),
-        child: Row(
-          mainAxisAlignment:
-              MainAxisAlignment.center,
-          children: <Widget>[
-            if (!widget.onlyOkButton) ...[
-              RaisedButton(
-                color: widget.buttonCancelColor,
-                shape:
-                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(widget.buttonRadius)),
-                onPressed: widget.onCancelButtonPressed ?? () => Navigator.of(context).pop(),
-                child: widget.buttonCancelText ??
-                    Text(
-                      'Cancel',
-                      style: TextStyle(color: Colors.white),
-                    ),
-              )
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.1,
+      child: FittedBox(
+        child: Padding(
+          padding: const EdgeInsets.only(
+            top: 8.0,
+            left: 8.0,
+            right: 8.0,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              if (!widget.onlyOkButton) ...[
+                RaisedButton(
+                  color: widget.buttonCancelColor,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(widget.buttonRadius)),
+                  onPressed: widget.onCancelButtonPressed ?? () => Navigator.of(context).pop(),
+                  child: widget.buttonCancelText ??
+                      Text(
+                        'Cancel',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                )
+              ],
+              if (!widget.onlyOkButton)
+                SizedBox(
+                  width: 15,
+                ),
+              if (!widget.onlyCancelButton) ...[
+                RaisedButton(
+                  color: widget.buttonOkColor,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(widget.buttonRadius)),
+                  onPressed: widget.onOkButtonPressed,
+                  child: widget.buttonOkText ??
+                      Text(
+                        'OK',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                ),
+              ],
             ],
-            if(!widget.onlyOkButton)
-             SizedBox(width: 15,),
-            if (!widget.onlyCancelButton) ...[
-              RaisedButton(
-                color: widget.buttonOkColor,
-                shape:
-                    RoundedRectangleBorder(borderRadius: BorderRadius.circular(widget.buttonRadius)),
-                onPressed: widget.onOkButtonPressed,
-                child: widget.buttonOkText ??
-                    Text(
-                      'OK',
-                      style: TextStyle(color: Colors.white),
-                    ),
-              ),
-            ],
-          ],
+          ),
         ),
       ),
     );
@@ -243,7 +267,6 @@ class _BaseGiffyDialogState extends State<BaseGiffyDialog> with TickerProviderSt
     final width = MediaQuery.of(context).size.width;
     final isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
     return Dialog(
-      
       elevation: 0.0,
       backgroundColor: Colors.transparent,
       child: Container(

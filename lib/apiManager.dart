@@ -244,6 +244,57 @@ class Mail {
       {this.content, this.to, this.files});
 }
 
+@HiveType(typeId: 4)
+class Lesson {
+  //E.G : Salle 215
+  @HiveField(0)
+  final String room;
+  //E.G : Monsieur machin
+  @HiveField(1)
+  final List<String> teachers;
+  //E.G : 9h30
+  @HiveField(2)
+  final DateTime start;
+  //E.G : 10h30
+  @HiveField(3)
+  final DateTime end;
+  //E.G : 45
+  @HiveField(4)
+  final int duration;
+  @HiveField(5)
+  final bool canceled;
+  //E.G : cours déplacé
+  @HiveField(6)
+  final String status;
+  //E.G : groupe C
+  @HiveField(7)
+  final List<String> groups;
+  //Description
+  @HiveField(8)
+  final String content;
+  @HiveField(9)
+  final String matiere;
+  @HiveField(10)
+  final String codeMatiere;
+  @HiveField(11)
+  final String id;
+
+  Lesson({
+    this.room,
+    this.teachers,
+    this.start,
+    this.duration,
+    this.canceled,
+    this.status,
+    this.groups,
+    this.content,
+    this.matiere,
+    this.codeMatiere,
+    this.end,
+    this.id,
+  });
+}
+
 class Classeur {
   //E.G: "Mails Maths"
   final String libelle;
@@ -303,10 +354,13 @@ abstract class API {
   ///Get the list of homework only for a specific day (time travel feature)
   Future<List<Homework>> getHomeworkFor(DateTime dateHomework);
 
+  //Get a list of lessons for the agenda part
+  Future getNextLessons(DateTime from, {bool forceReload});
+
   ///Test to know if there are new grades
   Future<bool> testNewGrades();
   //Send file to cloud or anywhere
-  Future uploadFile(String contexte, String id, String filepath);
+  Future uploadFile(String context, String id, String filepath);
 
   ///Apps
   Future app(String appname, {String args, String action, CloudItem folder});

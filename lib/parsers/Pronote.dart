@@ -6,6 +6,7 @@ import 'dart:ui';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:requests/requests.dart';
@@ -29,7 +30,9 @@ bool gradeLock = false;
 bool hwLock = false;
 bool gradeRefreshRecursive = false;
 bool hwRefreshRecursive = false;
+bool lessonsRefreshRecursive = false;
 bool loginLock = false;
+bool lessonsLock = false;
 
 class APIPronote extends API {
   @override
@@ -360,117 +363,170 @@ class APIPronote extends API {
       }
     }
   }
-}
 
-getOfflinePeriods() async {
-  try {
-    List<Period> listPeriods = List();
-    List<Discipline> disciplines = await offline.disciplines();
-    List<Grade> grades = getAllGrades(disciplines, overrideLimit: true);
-    grades.forEach((grade) {
-      if (!listPeriods
-          .any((period) => period.name == grade.nomPeriode && period.id == grade.codePeriode)) {
-        listPeriods.add(Period(grade.nomPeriode, grade.codePeriode));
+  @override
+  Future getNextLessons(DateTime dateToUse, {bool forceReload}) async {
+    List<Lesson> toReturn;
+    int req = 0;
+    while (lessonsLock == true && req < 10) {
+      req++;
+      await Future.delayed(const Duration(seconds: 2), () => "1");
+    }
+
+    if (lessonsLock == false) {
+      lessonsLock = true;
+      try {
+        toReturn = List();
+        var offlineLesson = await offline.lessons();
+        if (offlineLesson != null) {
+          toReturn.addAll(offlineLesson);
+          toReturn.removeWhere((lesson) =>
+              DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) !=
+              DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)));
+        }
+        if (forceReload==true||toReturn == null || toReturn.length == 0 ) {
+          print(toReturn.length);
+          toReturn = await localClient.lessons(dateToUse);
+          await offline.updateLessons(toReturn);
+        }
+
+        lessonsLock = false;
+        toReturn.sort((a, b) => a.start.compareTo(b.start));
+        return toReturn
+            .where((lesson) =>
+                DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) ==
+                DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)))
+            .toList();
+      } catch (e) {
+        print("Error while getting next lessons " + e.toString());
+        lessonsLock = false;
+        if (lessonsRefreshRecursive == false) {
+          lessonsRefreshRecursive = true;
+          await refreshClient();
+          toReturn = await localClient.lessons(dateToUse);
+          toReturn.removeWhere((lesson) =>
+              DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) !=
+              DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)));
+          toReturn.sort((a, b) => a.start.compareTo(b.start));
+
+          return toReturn;
+        }
       }
-    });
-
-    listPeriods.sort((a, b) => a.name.compareTo(b.name));
-
-    return listPeriods;
-  } catch (e) {
-    print("Error while collecting offline periods " + e.toString());
-  }
-}
-
-getOnlinePeriods() async {
-  try {
-    List<Period> listPeriod = List<Period>();
-    if (localClient.localPeriods != null) {
-      localClient.localPeriods.forEach((pronotePeriod) {
-        listPeriod.add(Period(pronotePeriod.name, pronotePeriod.id));
-      });
-      listPeriod.add(Period("test", "test"));
-      return listPeriod;
     } else {
-      var listPronotePeriods = await localClient.periods();
-      //refresh local pronote periods
-      localClient.localPeriods = listPronotePeriods;
-      listPronotePeriods.forEach((pronotePeriod) {
-        listPeriod.add(Period(pronotePeriod.name, pronotePeriod.id));
-      });
-      return listPeriod;
+      print("Was locked");
     }
-  } catch (e) {
-    print("Erreur while getting period " + e.toString());
   }
-}
 
-refreshClient() async {
-  await tlogin.login();
-}
-
-getPronoteGradesFromInternet() async {
-  int req = 0;
-  //Time out of 20 seconds. Wait until the task is unlocked
-  while (gradeLock == true && req < 10) {
-    req++;
-    await Future.delayed(const Duration(seconds: 2), () => "1");
-  }
-  //Wait until task is unlocked to avoid parallels execution
-  if (gradeLock == false) {
-    print("GETTING GRADES");
-    gradeLock = true;
+  getOfflinePeriods() async {
     try {
-      List periods = await localClient.periods();
-
-      List<Grade> grades = List<Grade>();
-      List averages = List();
-      List<Discipline> listDisciplines = List<Discipline>();
-      for (var i = 0; i < periods.length; i++) {
-        //Grades and average
-        List data = await periods[i].grades(i + 1);
-
-        grades.addAll(data[0]);
-        averages.addAll(data[1]);
-
-        var z = 0;
-        grades.forEach((element) {
-          if (listDisciplines.every((listDisciplineEl) =>
-              listDisciplineEl.nomDiscipline != element.libelleMatiere ||
-              listDisciplineEl.periode != element.nomPeriode)) {
-            listDisciplines.add(Discipline(
-                codeMatiere: element.codeMatiere,
-                codeSousMatiere: List(),
-                nomDiscipline: element.libelleMatiere,
-                periode: element.nomPeriode,
-                gradesList: List(),
-                professeurs: List(),
-                moyenne: averages[z][0],
-                moyenneMax: averages[z][1],
-                moyenneClasse: element.moyenneClasse,
-                moyenneGeneraleClasse: periods[i].moyenneGeneraleClasse,
-                moyenneGenerale: periods[i].moyenneGenerale));
-          }
-          z++;
-        });
-      }
-
-      listDisciplines.forEach((element) {
-        element.gradesList
-            .addAll(grades.where((grade) => grade.libelleMatiere == element.nomDiscipline));
+      List<Period> listPeriods = List();
+      List<Discipline> disciplines = await offline.disciplines();
+      List<Grade> grades = getAllGrades(disciplines, overrideLimit: true);
+      grades.forEach((grade) {
+        if (!listPeriods
+            .any((period) => period.name == grade.nomPeriode && period.id == grade.codePeriode)) {
+          listPeriods.add(Period(grade.nomPeriode, grade.codePeriode));
+        }
       });
-      int index = 0;
-      refreshDisciplinesListColors(listDisciplines);
-      gradeLock = false;
-      gradeRefreshRecursive = false;
-      offline.updateDisciplines(listDisciplines);
-      return listDisciplines;
+
+      listPeriods.sort((a, b) => a.name.compareTo(b.name));
+
+      return listPeriods;
     } catch (e) {
-      gradeLock = false;
+      print("Error while collecting offline periods " + e.toString());
     }
-  } else {
-    print("GRADES WERE LOCKED");
-    List<Discipline> listDisciplines = List<Discipline>();
-    return listDisciplines;
+  }
+
+  getOnlinePeriods() async {
+    try {
+      List<Period> listPeriod = List<Period>();
+      if (localClient.localPeriods != null) {
+        localClient.localPeriods.forEach((pronotePeriod) {
+          listPeriod.add(Period(pronotePeriod.name, pronotePeriod.id));
+        });
+
+        return listPeriod;
+      } else {
+        var listPronotePeriods = await localClient.periods();
+        //refresh local pronote periods
+        localClient.localPeriods = listPronotePeriods;
+        listPronotePeriods.forEach((pronotePeriod) {
+          listPeriod.add(Period(pronotePeriod.name, pronotePeriod.id));
+        });
+        return listPeriod;
+      }
+    } catch (e) {
+      print("Erreur while getting period " + e.toString());
+    }
+  }
+
+  refreshClient() async {
+    await tlogin.login();
+  }
+
+  getPronoteGradesFromInternet() async {
+    int req = 0;
+    //Time out of 20 seconds. Wait until the task is unlocked
+    while (gradeLock == true && req < 10) {
+      req++;
+      await Future.delayed(const Duration(seconds: 2), () => "1");
+    }
+    //Wait until task is unlocked to avoid parallels execution
+    if (gradeLock == false) {
+      print("GETTING GRADES");
+      gradeLock = true;
+      try {
+        List periods = await localClient.periods();
+
+        List<Grade> grades = List<Grade>();
+        List averages = List();
+        List<Discipline> listDisciplines = List<Discipline>();
+        for (var i = 0; i < periods.length; i++) {
+          //Grades and average
+          List data = await periods[i].grades(i + 1);
+
+          grades.addAll(data[0]);
+          averages.addAll(data[1]);
+
+          var z = 0;
+          grades.forEach((element) {
+            if (listDisciplines.every((listDisciplineEl) =>
+                listDisciplineEl.nomDiscipline != element.libelleMatiere ||
+                listDisciplineEl.periode != element.nomPeriode)) {
+              listDisciplines.add(Discipline(
+                  codeMatiere: element.codeMatiere,
+                  codeSousMatiere: List(),
+                  nomDiscipline: element.libelleMatiere,
+                  periode: element.nomPeriode,
+                  gradesList: List(),
+                  professeurs: List(),
+                  moyenne: averages[z][0],
+                  moyenneMax: averages[z][1],
+                  moyenneClasse: element.moyenneClasse,
+                  moyenneGeneraleClasse: periods[i].moyenneGeneraleClasse,
+                  moyenneGenerale: periods[i].moyenneGenerale));
+            }
+            z++;
+          });
+        }
+
+        listDisciplines.forEach((element) {
+          element.gradesList
+              .addAll(grades.where((grade) => grade.libelleMatiere == element.nomDiscipline));
+        });
+        int index = 0;
+        refreshDisciplinesListColors(listDisciplines);
+        gradeLock = false;
+        gradeRefreshRecursive = false;
+        offline.updateDisciplines(listDisciplines);
+        return listDisciplines;
+      } catch (e) {
+        gradeLock = false;
+      }
+    } else {
+      print("GRADES WERE LOCKED");
+      List<Discipline> listDisciplines = List<Discipline>();
+      return listDisciplines;
+    }
   }
 }

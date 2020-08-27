@@ -16,6 +16,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_multiselect/flutter_multiselect.dart';
 import '../../usefulMethods.dart';
 import 'package:dio/src/response.dart' as dioResponse;
+
 class SettingsPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -48,12 +49,10 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
   }
 
   void getUsername() async {
-
-     var actualUserAsync = await ReadStorage("userFullName");
+    var actualUserAsync = await ReadStorage("userFullName");
     setState(() {
       actualUser = actualUserAsync;
     });
-    
   }
 
   @override
@@ -376,10 +375,10 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                         image: AssetImage('assets/appico/foreground.png'),
                         width: screenSize.size.width / 5 * 0.7,
                       ),
-                    
                       applicationName: "yNotes",
-                      applicationVersion: packageInfo.version+"+"+packageInfo.buildNumber,
-                      applicationLegalese: "Developpé avec amour en France.\nAPI Pronote adaptée à l'aide de l'API pronotepy développée par Bain sous licence MIT.\nJe remercie la participation des bêta testeurs et des développeurs ayant participé au développement de l'application.");
+                      applicationVersion: packageInfo.version + "+" + packageInfo.buildNumber,
+                      applicationLegalese:
+                          "Developpé avec amour en France.\nAPI Pronote adaptée à l'aide de l'API pronotepy développée par Bain sous licence MIT.\nJe remercie la participation des bêta testeurs et des développeurs ayant participé au développement de l'application.");
                 },
               ),
               Divider(),
@@ -561,9 +560,11 @@ showExitDialog(BuildContext context) {
                 style: TextStyle(color: Colors.red),
               ),
               onPressed: () async {
-                Navigator.of(context).pushReplacement(router(login()));
-                Provider.of<AppStateNotifier>(context, listen: false).updateTheme(false);
                 await exitApp();
+                try {
+                  Provider.of<AppStateNotifier>(context, listen: false).updateTheme(false);
+                } catch (e) {}
+                Navigator.of(context).pushReplacement(router(login()));
               },
             )
           ]);

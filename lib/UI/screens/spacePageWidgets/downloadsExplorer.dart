@@ -85,7 +85,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
   }
 
   refreshFileListFuture() async {
-    print("New path : $path");
+
     selectionMode = false;
     setState(() {
       filesListFuture = FileAppUtil.getFilesList(initialPath + path);

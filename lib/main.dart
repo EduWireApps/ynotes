@@ -20,8 +20,8 @@ import 'package:uuid/uuid.dart';
 import 'package:wiredash/wiredash.dart';
 import 'UI/screens/logsPage.dart';
 import 'UI/screens/schoolAPIChoicePage.dart';
-import 'multilanguage.dart';
 import 'UI/utils/themeUtils.dart';
+
 var uuid = Uuid();
 
 //login manager
@@ -31,16 +31,6 @@ API localApi = APIManager();
 Offline offline = Offline();
 
 ///TO DO : Disable after bêta, Sentry is used to send bug reports
-final SentryClient _sentry = SentryClient(uuidGenerator: uuid.v4, dsn: "");
-Future<Null> _reportError(dynamic error, dynamic stackTrace) async {
-  try {
-    await logFile(error.toString());
-    final SentryResponse response = await _sentry.captureException(
-      exception: error,
-      stackTrace: stackTrace,
-    );
-  } catch (e) {}
-}
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 final logger = loader();
@@ -141,13 +131,15 @@ Future main() async {
 //Init the local notifications
   WidgetsFlutterBinding.ensureInitialized();
   BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
-  // This captures errors reported by the Flutter framework.
-  FlutterError.onError = (FlutterErrorDetails details) async {
-    _sentry.captureException(
-      exception: details.exception,
-      stackTrace: details.stack,
-    );
-  };
+
+  var initializationSettingsAndroid = new AndroidInitializationSettings('newgradeicon',
+  );
+  var initializationSettingsIOS = new IOSInitializationSettings();
+  var initializationSettings =
+      new InitializationSettings(initializationSettingsAndroid, initializationSettingsIOS);
+  flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+  flutterLocalNotificationsPlugin.initialize(initializationSettings,
+      onSelectNotification: BackgroundServices.onSelectNotification);
   //Init offline data
   await offline.init();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -160,13 +152,10 @@ Future main() async {
       ChangeNotifierProvider<AppStateNotifier>(
         child: HomeApp(),
         create: (BuildContext context) {
-          MultiLanguage.setLanguage(path: Languages.fr, context: context);
           return AppStateNotifier();
         },
       ),
     );
-  }, onError: (error, stackTrace) async {
-    await _reportError(error, stackTrace);
   });
 }
 

@@ -452,6 +452,12 @@ class APIEcoleDirecte extends API {
     }
   }
 
+  @override
+  Future getNextLessons(DateTime dateToUse, {bool forceReload}) {
+    // TODO: implement getNextLessons
+    throw UnimplementedError();
+  }
+
   ///END OF THE API CLASS
 }
 

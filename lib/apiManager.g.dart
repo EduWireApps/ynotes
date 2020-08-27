@@ -6,15 +6,15 @@ part of 'apiManager.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-class homeworkAdapter extends TypeAdapter<Homework> {
+class HomeworkAdapter extends TypeAdapter<Homework> {
   @override
-  final typeId = 0;
+  final int typeId = 0;
 
   @override
   Homework read(BinaryReader reader) {
-    var numOfFields = reader.readByte();
-    var fields = <int, dynamic>{
-      for (var i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Homework(
       fields[0] as String,
@@ -64,17 +64,27 @@ class homeworkAdapter extends TypeAdapter<Homework> {
       ..writeByte(12)
       ..write(obj.nomProf);
   }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is HomeworkAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
 }
 
-class documentAdapter extends TypeAdapter<Document> {
+class DocumentAdapter extends TypeAdapter<Document> {
   @override
-  final typeId = 1;
+  final int typeId = 1;
 
   @override
   Document read(BinaryReader reader) {
-    var numOfFields = reader.readByte();
-    var fields = <int, dynamic>{
-      for (var i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Document(
       fields[0] as String,
@@ -97,17 +107,27 @@ class documentAdapter extends TypeAdapter<Document> {
       ..writeByte(3)
       ..write(obj.length);
   }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is DocumentAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
 }
 
-class gradeAdapter extends TypeAdapter<Grade> {
+class GradeAdapter extends TypeAdapter<Grade> {
   @override
-  final typeId = 2;
+  final int typeId = 2;
 
   @override
   Grade read(BinaryReader reader) {
-    var numOfFields = reader.readByte();
-    var fields = <int, dynamic>{
-      for (var i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Grade(
       devoir: fields[0] as String,
@@ -163,17 +183,27 @@ class gradeAdapter extends TypeAdapter<Grade> {
       ..writeByte(14)
       ..write(obj.nomPeriode);
   }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is GradeAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
 }
 
-class disciplineAdapter extends TypeAdapter<Discipline> {
+class DisciplineAdapter extends TypeAdapter<Discipline> {
   @override
-  final typeId = 3;
+  final int typeId = 3;
 
   @override
   Discipline read(BinaryReader reader) {
-    var numOfFields = reader.readByte();
-    var fields = <int, dynamic>{
-      for (var i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Discipline(
       gradesList: (fields[12] as List)?.cast<Grade>(),
@@ -226,4 +256,81 @@ class disciplineAdapter extends TypeAdapter<Discipline> {
       ..writeByte(13)
       ..write(obj.color);
   }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is DisciplineAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class LessonAdapter extends TypeAdapter<Lesson> {
+  @override
+  final int typeId = 4;
+
+  @override
+  Lesson read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return Lesson(
+      room: fields[0] as String,
+      teachers: (fields[1] as List)?.cast<String>(),
+      start: fields[2] as DateTime,
+      duration: fields[4] as int,
+      canceled: fields[5] as bool,
+      status: fields[6] as String,
+      groups: (fields[7] as List)?.cast<String>(),
+      content: fields[8] as String,
+      matiere: fields[9] as String,
+      codeMatiere: fields[10] as String,
+      end: fields[3] as DateTime,
+      id: fields[11] as String,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, Lesson obj) {
+    writer
+      ..writeByte(12)
+      ..writeByte(0)
+      ..write(obj.room)
+      ..writeByte(1)
+      ..write(obj.teachers)
+      ..writeByte(2)
+      ..write(obj.start)
+      ..writeByte(3)
+      ..write(obj.end)
+      ..writeByte(4)
+      ..write(obj.duration)
+      ..writeByte(5)
+      ..write(obj.canceled)
+      ..writeByte(6)
+      ..write(obj.status)
+      ..writeByte(7)
+      ..write(obj.groups)
+      ..writeByte(8)
+      ..write(obj.content)
+      ..writeByte(9)
+      ..write(obj.matiere)
+      ..writeByte(10)
+      ..write(obj.codeMatiere)
+      ..writeByte(11)
+      ..write(obj.id);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is LessonAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
 }

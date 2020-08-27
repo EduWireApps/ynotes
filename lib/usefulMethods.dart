@@ -279,6 +279,7 @@ refreshDisciplinesListColors(List<Discipline> list) async {
 //Leave app
 exitApp() async {
   try {
+    await offline.clearAll();
     //Delete sharedPref
     SharedPreferences preferences = await SharedPreferences.getInstance();
     await preferences.clear();
@@ -289,9 +290,6 @@ exitApp() async {
     isDarkModeEnabled = false;
     //delete hive files
     localApi.gradesList = null;
-    
-
-    offline.clearAll();
   } catch (e) {
     print(e);
   }

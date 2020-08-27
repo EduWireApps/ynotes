@@ -105,7 +105,11 @@ class _SummaryPageState extends State<SummaryPage> {
   @override
   Widget build(BuildContext context) {
     //Show the hello dialog
-    helpDialogs[0].showDialog(context);
+    if(mounted)
+    {
+      helpDialogs[0].showDialog(context);
+    }
+    
     MediaQueryData screenSize = MediaQuery.of(context);
     return Container(
       margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
@@ -275,50 +279,52 @@ class _SummaryPageState extends State<SummaryPage> {
                                               );
                                             });
                                       } else {
-                                        return Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            Container(
-                                              height:
-                                                  (screenSize.size.height / 10 * 8.8) / 10 * 1.5,
-                                              child: Image(
-                                                  fit: BoxFit.fitWidth,
-                                                  image:
-                                                      AssetImage('assets/images/noHomework.png')),
-                                            ),
-                                            Text(
-                                              "Pas de devoirs à l'horizon... \non se détend ?",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  fontFamily: "Asap",
-                                                  color: isDarkModeEnabled
-                                                      ? Colors.white
-                                                      : Colors.black,
-                                                  fontSize: (screenSize.size.height / 10 * 8.8) /
-                                                      10 *
-                                                      0.2),
-                                            ),
-                                            FlatButton(
-                                              onPressed: () {
-                                                //Reload list
-                                                refreshLocalHomeworkList();
-                                              },
-                                              child: Text("Recharger",
-                                                  style: TextStyle(
-                                                      fontFamily: "Asap",
-                                                      color: isDarkModeEnabled
-                                                          ? Colors.white
-                                                          : Colors.black,
-                                                      fontSize:
-                                                          (screenSize.size.height / 10 * 8.8) /
-                                                              10 *
-                                                              0.2)),
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius: new BorderRadius.circular(18.0),
-                                                  side: BorderSide(
-                                                      color: Theme.of(context).primaryColorDark)),
-                                            )
-                                          ],
+                                        return FittedBox(
+                                                                                  child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              Container(
+                                                height:
+                                                    (screenSize.size.height / 10 * 8.8) / 10 * 1.5,
+                                                child: Image(
+                                                    fit: BoxFit.fitWidth,
+                                                    image:
+                                                        AssetImage('assets/images/noHomework.png')),
+                                              ),
+                                              Text(
+                                                "Pas de devoirs à l'horizon... \non se détend ?",
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                    fontFamily: "Asap",
+                                                    color: isDarkModeEnabled
+                                                        ? Colors.white
+                                                        : Colors.black,
+                                                    fontSize: (screenSize.size.height / 10 * 8.8) /
+                                                        10 *
+                                                        0.2),
+                                              ),
+                                              FlatButton(
+                                                onPressed: () {
+                                                  //Reload list
+                                                  refreshLocalHomeworkList();
+                                                },
+                                                child: Text("Recharger",
+                                                    style: TextStyle(
+                                                        fontFamily: "Asap",
+                                                        color: isDarkModeEnabled
+                                                            ? Colors.white
+                                                            : Colors.black,
+                                                        fontSize:
+                                                            (screenSize.size.height / 10 * 8.8) /
+                                                                10 *
+                                                                0.2)),
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius: new BorderRadius.circular(18.0),
+                                                    side: BorderSide(
+                                                        color: Theme.of(context).primaryColorDark)),
+                                              )
+                                            ],
+                                          ),
                                         );
                                       }
                                     } else {
