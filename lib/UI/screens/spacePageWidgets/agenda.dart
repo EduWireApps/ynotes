@@ -16,7 +16,7 @@ import 'package:ynotes/UI/utils/fileUtils.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/apiManager.dart';
 import 'dart:async';
-import 'package:expandable_bottom_sheet/expandable_bottom_sheet.dart';
+import 'package:ynotes/UI/components/expandable_bottom_sheet-master/src/raw_expandable_bottom_sheet.dart';
 import 'dart:io';
 
 class Agenda extends StatefulWidget {
@@ -63,7 +63,8 @@ class _AgendaState extends State<Agenda> {
             shape: BoxShape.circle,
             gradient: LinearGradient(
               begin: Alignment.topLeft,
-              end: Alignment(0.8, 0.0), // 10% of the width, so there are ten blinds.
+              end: Alignment(
+                  0.8, 0.0), // 10% of the width, so there are ten blinds.
               colors: [const Color(0xFFFFFFEE), const Color(0xFFB4ACDC)],
             )),
       ),
@@ -97,26 +98,33 @@ class _AgendaState extends State<Agenda> {
                       Container(
                         width: screenSize.size.width / 5 * 4.4,
                         height: screenSize.size.height / 10 * 1.57,
-                        padding: EdgeInsets.all(screenSize.size.height / 10 * 0.05),
+                        padding:
+                            EdgeInsets.all(screenSize.size.height / 10 * 0.05),
                         child: FittedBox(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
                                 lesson.matiere,
-                                style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w800),
+                                style: TextStyle(
+                                    fontFamily: "Asap",
+                                    fontWeight: FontWeight.w800),
                                 maxLines: 4,
                                 textAlign: TextAlign.center,
                               ),
                               Text(
                                 lesson.teachers[0],
-                                style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w600),
+                                style: TextStyle(
+                                    fontFamily: "Asap",
+                                    fontWeight: FontWeight.w600),
                                 textAlign: TextAlign.center,
                                 maxLines: 4,
                               ),
                               Text(
                                 lesson.room,
-                                style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w500),
+                                style: TextStyle(
+                                    fontFamily: "Asap",
+                                    fontWeight: FontWeight.w500),
                                 textAlign: TextAlign.center,
                                 maxLines: 4,
                               ),
@@ -125,7 +133,8 @@ class _AgendaState extends State<Agenda> {
                         ),
                       ),
                       Container(
-                        margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.1),
+                        margin: EdgeInsets.only(
+                            bottom: screenSize.size.height / 10 * 0.1),
                         width: screenSize.size.width / 5 * 2.5,
                         height: screenSize.size.height / 10 * 0.5,
                         decoration: BoxDecoration(
@@ -140,16 +149,22 @@ class _AgendaState extends State<Agenda> {
                                 style: TextStyle(
                                     fontFamily: "Asap",
                                     fontWeight: FontWeight.bold,
-                                    color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                    color: isDarkModeEnabled
+                                        ? Colors.white
+                                        : Colors.black),
                               ),
                               Icon(MdiIcons.arrowRight,
-                                  color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                  color: isDarkModeEnabled
+                                      ? Colors.white
+                                      : Colors.black),
                               Text(
                                 DateFormat.Hm().format(lesson.end),
                                 style: TextStyle(
                                     fontFamily: "Asap",
                                     fontWeight: FontWeight.bold,
-                                    color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                    color: isDarkModeEnabled
+                                        ? Colors.white
+                                        : Colors.black),
                               )
                             ],
                           ),
@@ -173,13 +188,15 @@ class _AgendaState extends State<Agenda> {
           vertical: screenSize.size.height / 10 * 0.005,
           horizontal: screenSize.size.width / 5 * 0.05),
       decoration: BoxDecoration(
-          color: Theme.of(context).primaryColorDark, borderRadius: BorderRadius.circular(11)),
+          color: Theme.of(context).primaryColorDark,
+          borderRadius: BorderRadius.circular(11)),
       child: FittedBox(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.05),
+              padding: EdgeInsets.symmetric(
+                  vertical: screenSize.size.height / 10 * 0.05),
               child: Material(
                 color: Theme.of(context).primaryColor,
                 borderRadius: BorderRadius.circular(11),
@@ -201,7 +218,9 @@ class _AgendaState extends State<Agenda> {
                           children: <Widget>[
                             Icon(
                               MdiIcons.arrowLeft,
-                              color: isDarkModeEnabled ? Colors.white : Colors.black,
+                              color: isDarkModeEnabled
+                                  ? Colors.white
+                                  : Colors.black,
                             ),
                           ],
                         ),
@@ -210,8 +229,10 @@ class _AgendaState extends State<Agenda> {
               ),
             ),
             Container(
-              margin: EdgeInsets.only(left: (screenSize.size.height / 10 * 8.8) / 10 * 0.05),
-              padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.05),
+              margin: EdgeInsets.only(
+                  left: (screenSize.size.height / 10 * 8.8) / 10 * 0.05),
+              padding: EdgeInsets.symmetric(
+                  vertical: screenSize.size.height / 10 * 0.05),
               child: Material(
                 color: Theme.of(context).primaryColor,
                 borderRadius: BorderRadius.circular(11),
@@ -230,7 +251,9 @@ class _AgendaState extends State<Agenda> {
                           child: Material(
                             color: Colors.transparent,
                             child: Theme(
-                              data: isDarkModeEnabled ? ThemeData.dark() : ThemeData.light(),
+                              data: isDarkModeEnabled
+                                  ? ThemeData.dark()
+                                  : ThemeData.light(),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[SizedBox(child: child)],
@@ -259,7 +282,9 @@ class _AgendaState extends State<Agenda> {
                               DateFormat("EEEE dd MMMM", "fr_FR").format(date),
                               style: TextStyle(
                                 fontFamily: "Asap",
-                                color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                color: isDarkModeEnabled
+                                    ? Colors.white
+                                    : Colors.black,
                               ),
                             ),
                           ],
@@ -269,8 +294,10 @@ class _AgendaState extends State<Agenda> {
               ),
             ),
             Container(
-              margin: EdgeInsets.only(left: (screenSize.size.height / 10 * 8.8) / 10 * 0.05),
-              padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.05),
+              margin: EdgeInsets.only(
+                  left: (screenSize.size.height / 10 * 8.8) / 10 * 0.05),
+              padding: EdgeInsets.symmetric(
+                  vertical: screenSize.size.height / 10 * 0.05),
               child: Material(
                 color: Theme.of(context).primaryColor,
                 borderRadius: BorderRadius.circular(11),
@@ -292,7 +319,9 @@ class _AgendaState extends State<Agenda> {
                           children: <Widget>[
                             Icon(
                               MdiIcons.arrowRight,
-                              color: isDarkModeEnabled ? Colors.white : Colors.black,
+                              color: isDarkModeEnabled
+                                  ? Colors.white
+                                  : Colors.black,
                             ),
                           ],
                         ),
@@ -337,7 +366,8 @@ class _AgendaState extends State<Agenda> {
                     _buildAgendaButtons(context),
                     Container(
                       height: screenSize.size.height / 10 * 5.8,
-                      padding: EdgeInsets.all(screenSize.size.height / 10 * 0.1),
+                      padding:
+                          EdgeInsets.all(screenSize.size.height / 10 * 0.1),
                       child: Stack(
                         children: [
                           FutureBuilder(
@@ -352,36 +382,49 @@ class _AgendaState extends State<Agenda> {
                                       onRefresh: refreshAgendaFuture,
                                       child: ListView.builder(
                                           itemCount: snapshot.data.length,
-                                          itemBuilder: (BuildContext context, int index) {
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
                                             return _buildAgendaElement(
                                                 context, snapshot.data[index]);
                                           }),
                                     ),
                                   );
                                 }
-                                if (snapshot.data != null && snapshot.data.length == 0) {
+                                if (snapshot.data != null &&
+                                    snapshot.data.length == 0) {
                                   return Center(
                                     child: FittedBox(
                                       child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
                                         children: <Widget>[
                                           Container(
                                             margin: EdgeInsets.only(
-                                                left: screenSize.size.width / 5 * 0.5),
-                                            height: screenSize.size.height / 10 * 1.9,
+                                                left: screenSize.size.width /
+                                                    5 *
+                                                    0.5),
+                                            height: screenSize.size.height /
+                                                10 *
+                                                1.9,
                                             child: Image(
                                                 fit: BoxFit.fitWidth,
-                                                image: AssetImage('assets/images/coffee.png')),
+                                                image: AssetImage(
+                                                    'assets/images/coffee.png')),
                                           ),
                                           Text(
                                             "Journée détente ?",
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                                 fontFamily: "Asap",
-                                                color:
-                                                    isDarkModeEnabled ? Colors.white : Colors.black,
+                                                color: isDarkModeEnabled
+                                                    ? Colors.white
+                                                    : Colors.black,
                                                 fontSize:
-                                                    (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
+                                                    (screenSize.size.height /
+                                                            10 *
+                                                            8.8) /
+                                                        10 *
+                                                        0.2),
                                           ),
                                           FlatButton(
                                             onPressed: () {
@@ -394,13 +437,19 @@ class _AgendaState extends State<Agenda> {
                                                     color: isDarkModeEnabled
                                                         ? Colors.white
                                                         : Colors.black,
-                                                    fontSize: (screenSize.size.height / 10 * 8.8) /
+                                                    fontSize: (screenSize
+                                                                .size.height /
+                                                            10 *
+                                                            8.8) /
                                                         10 *
                                                         0.2)),
                                             shape: RoundedRectangleBorder(
-                                                borderRadius: new BorderRadius.circular(18.0),
+                                                borderRadius:
+                                                    new BorderRadius.circular(
+                                                        18.0),
                                                 side: BorderSide(
-                                                    color: Theme.of(context).primaryColorDark)),
+                                                    color: Theme.of(context)
+                                                        .primaryColorDark)),
                                           )
                                         ],
                                       ),
@@ -419,57 +468,71 @@ class _AgendaState extends State<Agenda> {
                   ],
                 ),
               ),
-              persistentHeader: Container(
-                width: screenSize.size.width,
-                height: screenSize.size.height,
-                child: FutureBuilder(
-                    future: agendaFuture,
-                    builder: (context, pheaderData) {
-                      if (pheaderData.hasData && getCurrentLesson(pheaderData.data) != null) {
-                        print("OK");
+              persistentHeader: FutureBuilder(
+                  future: agendaFuture,
+                  builder: (context, pheaderData) {
+                    if (pheaderData.hasData &&
+                        getCurrentLesson(pheaderData.data) != null) {
+                     
 
-                        return FutureBuilder(
-                            future: getColor(getCurrentLesson(pheaderData.data).codeMatiere),
-                            initialData: 0,
-                            builder: (context, snapshot) {
-                              Color color = Color(snapshot.data);
-                              return Container(
-                                height: screenSize.size.height / 10 * 0.4,
+                      return FutureBuilder(
+                          future: getColor(
+                              getCurrentLesson(pheaderData.data).codeMatiere),
+                          initialData: 0,
+                          builder: (context, snapshot) {
+                            Color color = Color(snapshot.data);
+                            return Container(
+                              height: screenSize.size.height / 10 * 0.4,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(11),
+                                    topRight: Radius.circular(11)),
+                                color: color.withOpacity(0.85),
+                              ),
+                              child: Center(
+                                  child: Container(
+                                width: screenSize.size.width / 5 * 3,
+                                height: screenSize.size.height / 10 * 0.05,
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(11), topRight: Radius.circular(11)),
-                                  color: color.withOpacity(0.85),
+                                  borderRadius: BorderRadius.circular(25),
+                                  color: Colors.grey.shade700,
                                 ),
-                                child: Center(
-                                    child: Container(
-                                  width: screenSize.size.width / 5 * 3,
-                                  height: screenSize.size.height / 10 * 0.05,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(25),
-                                    color: Colors.grey.shade700,
-                                  ),
-                                )),
-                              );
-                            });
-                      } else {
-                        return Container(
-                          height: 0,
-                          width: 0,
-                        );
-                      }
-                    }),
-              ),
+                              )),
+                            );
+                          });
+                    } else {
+                      return Container(
+                              height: screenSize.size.height / 10 * 0.4,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                    topLeft: Radius.circular(11),
+                                    topRight: Radius.circular(11)),
+                                color: Colors.grey.shade300.withOpacity(0.85),
+                              ),
+                              child: Center(
+                                  child: Container(
+                                width: screenSize.size.width / 5 * 3,
+                                height: screenSize.size.height / 10 * 0.05,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(25),
+                                  color: Colors.grey.shade700,
+                                ),
+                              )),
+                            );
+                    }
+                  }),
               expandableContent: Container(
-                width: screenSize.size.width,
-                height: screenSize.size.height,
+              
                 margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0),
                 child: FutureBuilder(
                     future: agendaFuture,
                     builder: (context, econtentdata) {
-                      if (econtentdata.hasData && getCurrentLesson(econtentdata.data) != null) {
+                      if (econtentdata.hasData &&
+                          getCurrentLesson(econtentdata.data) != null) {
                         return Align(
                           alignment: Alignment.center,
-                          child: _buildActualLesson(context, getCurrentLesson(econtentdata.data)),
+                          child: _buildActualLesson(
+                              context, getCurrentLesson(econtentdata.data)),
                         );
                       } else {
                         return Container(
@@ -519,7 +582,8 @@ class _AgendaElementState extends State<AgendaElement> {
                 },
                 child: AnimatedSwitcher(
                   duration: const Duration(milliseconds: 200),
-                  transitionBuilder: (Widget child, Animation<double> animation) {
+                  transitionBuilder:
+                      (Widget child, Animation<double> animation) {
                     return ScaleTransition(child: child, scale: animation);
                   },
                   child: buttons
@@ -531,7 +595,8 @@ class _AgendaElementState extends State<AgendaElement> {
                             children: [
                               //Pin button
                               FutureBuilder(
-                                  future: getSetting(widget.lesson.id.hashCode.toString()),
+                                  future: getSetting(
+                                      widget.lesson.id.hashCode.toString()),
                                   initialData: false,
                                   builder: (context, snapshot) {
                                     return RaisedButton(
@@ -540,32 +605,48 @@ class _AgendaElementState extends State<AgendaElement> {
                                         if (snapshot.data == false) {
                                           try {
                                             await setSetting(
-                                                widget.lesson.id.hashCode.toString(), true);
+                                                widget.lesson.id.hashCode
+                                                    .toString(),
+                                                true);
                                             setState(() {});
-                                            await _scheduleNotification(widget.lesson);
+                                            await _scheduleNotification(
+                                                widget.lesson);
                                             CustomDialogs.showAnyDialog(context,
                                                 "yNotes vous rappelera ce cours 5 minutes avant son commencement.");
                                           } catch (e) {
-                                            print("Error while scheduling " + e.toString());
+                                            print("Error while scheduling " +
+                                                e.toString());
                                           }
                                         } else {
-                                          print("Canceled " + widget.lesson.id.hashCode.toString());
+                                          print("Canceled " +
+                                              widget.lesson.id.hashCode
+                                                  .toString());
                                           await setSetting(
-                                              widget.lesson.id.hashCode.toString(), false);
+                                              widget.lesson.id.hashCode
+                                                  .toString(),
+                                              false);
                                           setState(() {});
-                                          await _cancelNotification(widget.lesson.id.hashCode);
+                                          await _cancelNotification(
+                                              widget.lesson.id.hashCode);
                                         }
                                       },
                                       shape: CircleBorder(),
                                       child: Container(
-                                          width: screenSize.size.width / 5 * 0.7,
-                                          height: screenSize.size.width / 5 * 0.7,
+                                          width:
+                                              screenSize.size.width / 5 * 0.7,
+                                          height:
+                                              screenSize.size.width / 5 * 0.7,
                                           padding: EdgeInsets.only(
-                                              bottom: screenSize.size.height / 10 * 0.05),
+                                              bottom: screenSize.size.height /
+                                                  10 *
+                                                  0.05),
                                           child: Icon(
                                             MdiIcons.alarm,
-                                            color: snapshot.data ? Colors.green : Colors.white,
-                                            size: screenSize.size.width / 5 * 0.5,
+                                            color: snapshot.data
+                                                ? Colors.green
+                                                : Colors.white,
+                                            size:
+                                                screenSize.size.width / 5 * 0.5,
                                           )),
                                     );
                                   }),
@@ -588,20 +669,24 @@ class _AgendaElementState extends State<AgendaElement> {
                               child: Column(
                                 children: [
                                   Transform.translate(
-                                    offset: Offset(0, -screenSize.size.height / 10 * 0.03),
+                                    offset: Offset(
+                                        0, -screenSize.size.height / 10 * 0.03),
                                     child: Container(
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(5),
-                                        color: Theme.of(context).primaryColorDark,
+                                        color:
+                                            Theme.of(context).primaryColorDark,
                                       ),
                                       width: screenSize.size.width / 5 * 1.1,
                                       height: screenSize.size.height / 10 * 0.4,
-                                      padding: EdgeInsets.all(screenSize.size.width / 5 * 0.05),
+                                      padding: EdgeInsets.all(
+                                          screenSize.size.width / 5 * 0.05),
                                       child: FittedBox(
                                         child: Row(
                                           children: [
                                             Text(
-                                              DateFormat.Hm().format(widget.lesson.start),
+                                              DateFormat.Hm()
+                                                  .format(widget.lesson.start),
                                               style: TextStyle(
                                                   fontFamily: "Asap",
                                                   fontWeight: FontWeight.bold,
@@ -614,7 +699,8 @@ class _AgendaElementState extends State<AgendaElement> {
                                                     ? Colors.white
                                                     : Colors.black),
                                             Text(
-                                              DateFormat.Hm().format(widget.lesson.end),
+                                              DateFormat.Hm()
+                                                  .format(widget.lesson.end),
                                               style: TextStyle(
                                                   fontFamily: "Asap",
                                                   fontWeight: FontWeight.bold,
@@ -642,8 +728,10 @@ class _AgendaElementState extends State<AgendaElement> {
                                       width: screenSize.size.width / 5 * 1.2,
                                       height: screenSize.size.height / 10 * 0.8,
                                       child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           AutoSizeText(
                                             widget.lesson.matiere,
@@ -657,7 +745,9 @@ class _AgendaElementState extends State<AgendaElement> {
                                           FittedBox(
                                             child: AutoSizeText(
                                               widget.lesson.teachers[0],
-                                              style: TextStyle(fontFamily: "Asap", fontSize: 15),
+                                              style: TextStyle(
+                                                  fontFamily: "Asap",
+                                                  fontSize: 15),
                                               textAlign: TextAlign.left,
                                             ),
                                           ),
@@ -666,14 +756,20 @@ class _AgendaElementState extends State<AgendaElement> {
                                     ),
                                     if (widget.lesson.canceled)
                                       Container(
-                                        margin:
-                                            EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
+                                        margin: EdgeInsets.only(
+                                            left: screenSize.size.width /
+                                                5 *
+                                                0.1),
                                         width: screenSize.size.width / 5 * 1.5,
-                                        height: screenSize.size.height / 10 * 0.5,
-                                        padding: EdgeInsets.all(screenSize.size.width / 5 * 0.05),
+                                        height:
+                                            screenSize.size.height / 10 * 0.5,
+                                        padding: EdgeInsets.all(
+                                            screenSize.size.width / 5 * 0.05),
                                         decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(15),
-                                            border: Border.all(color: Colors.black, width: 2)),
+                                            borderRadius:
+                                                BorderRadius.circular(15),
+                                            border: Border.all(
+                                                color: Colors.black, width: 2)),
                                         child: Center(
                                           child: AutoSizeText(
                                             widget.lesson.status,
@@ -696,7 +792,8 @@ class _AgendaElementState extends State<AgendaElement> {
                                   Container(
                                     width: screenSize.size.width / 5 * 1.2,
                                     height: screenSize.size.height / 10 * 0.8,
-                                    padding: EdgeInsets.all(screenSize.size.width / 5 * 0.08),
+                                    padding: EdgeInsets.all(
+                                        screenSize.size.width / 5 * 0.08),
                                     child: AutoSizeText(
                                       widget.lesson.room ?? "",
                                       style: TextStyle(
@@ -728,7 +825,8 @@ getCurrentLesson(List<Lesson> lessons, {DateTime now}) {
   dailyLessons = lessons
       .where((lesson) =>
           DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) ==
-          DateTime.parse(DateFormat("yyyy-MM-dd").format(now ?? DateTime.now())))
+          DateTime.parse(
+              DateFormat("yyyy-MM-dd").format(now ?? DateTime.now())))
       .toList();
   if (dailyLessons != null && dailyLessons.length != 0) {
     //Get current lesson
@@ -747,7 +845,6 @@ getCurrentLesson(List<Lesson> lessons, {DateTime now}) {
 }
 
 Future<void> _scheduleNotification(Lesson lesson) async {
-  
   //var scheduledNotificationDateTime = lesson.start.subtract(Duration(minutes: 5));
   var scheduledNotificationDateTime = DateTime.now().add(Duration(seconds: 5));
 
@@ -762,8 +859,8 @@ Future<void> _scheduleNotification(Lesson lesson) async {
     styleInformation: BigTextStyleInformation(''),
   );
   var iOSPlatformChannelSpecifics = IOSNotificationDetails();
-  var platformChannelSpecifics =
-      NotificationDetails(androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+  var platformChannelSpecifics = NotificationDetails(
+      androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
   var id = lesson.id.hashCode;
 
   await flutterLocalNotificationsPlugin.schedule(
@@ -772,6 +869,7 @@ Future<void> _scheduleNotification(Lesson lesson) async {
       'Le cours ${lesson.matiere} dans la salle ${lesson.room} aura lieu dans 5 minutes',
       scheduledNotificationDateTime,
       platformChannelSpecifics);
+  print("Registered " + lesson.id.hashCode.toString());
 }
 
 Future<void> _cancelNotification(int id) async {

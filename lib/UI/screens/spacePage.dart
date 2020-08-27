@@ -126,7 +126,7 @@ class _SpacePageState extends State<SpacePage> with TickerProviderStateMixin {
                         child: SingleChildScrollView(
                           padding: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.3),
                           scrollDirection: Axis.vertical,
-                          physics: AlwaysScrollableScrollPhysics(),
+                
                           child: Column(
                             children: <Widget>[
                               AnimatedSwitcher(
