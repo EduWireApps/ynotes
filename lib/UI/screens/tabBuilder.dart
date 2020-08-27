@@ -98,9 +98,9 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
 
     if (firstStart == true) {
       //Get grades before
-      disciplinesListFuture = localApi.getGrades();
+      //disciplinesListFuture = localApi.getGrades();
       //Get homework before
-      homeworkListFuture = localApi.getNextHomework();
+      //homeworkListFuture = localApi.getNextHomework();
       firstStart = false;
     }
     //removeQuickMenu();

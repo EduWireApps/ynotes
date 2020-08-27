@@ -747,8 +747,9 @@ getCurrentLesson(List<Lesson> lessons, {DateTime now}) {
 }
 
 Future<void> _scheduleNotification(Lesson lesson) async {
-  var scheduledNotificationDateTime = lesson.start.subtract(Duration(minutes: 5));
-  //var scheduledNotificationDateTime = DateTime.now().add(Duration(seconds: 5));
+  
+  //var scheduledNotificationDateTime = lesson.start.subtract(Duration(minutes: 5));
+  var scheduledNotificationDateTime = DateTime.now().add(Duration(seconds: 5));
 
   var androidPlatformChannelSpecifics = AndroidNotificationDetails(
     '2006',
