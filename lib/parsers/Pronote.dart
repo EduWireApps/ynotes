@@ -245,8 +245,9 @@ class APIPronote extends API {
         List<Homework> listHW = List<Homework>();
 
         if (hwRefreshRecursive == false) {
-          hwRefreshRecursive = true;
+          
           await refreshClient();
+          hwRefreshRecursive = true;
           listHW.addAll(await getNextHomework());
         }
       }

@@ -804,7 +804,7 @@ class _SlidingCarouselState extends State<SlidingCarousel> {
               child: Column(
                 children: <Widget>[
                   Container(
-                    height: screenSize.size.height / 10 * 9,
+                    height: screenSize.size.height / 10 * 8.5,
                     child: PageView.builder(
                         controller: _pageController,
                         itemCount: _pageInfoList.length,

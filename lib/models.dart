@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/parsers/EcoleDirecte.dart';
+import 'package:ynotes/parsers/Pronote.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 import 'apiManager.dart';
@@ -142,6 +143,9 @@ class TransparentLogin extends ChangeNotifier {
             notifyListeners();
           }
           if (value.contains("Bienvenue")) {
+            gradeRefreshRecursive=false;
+            hwRefreshRecursive=false;
+            lessonsRefreshRecursive=false;
             _details = "Connecté";
             _actualState = loginStatus.loggedIn;
             notifyListeners();

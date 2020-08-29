@@ -385,6 +385,7 @@ APIManager() {
 getChosenParser() async {
   final prefs = await SharedPreferences.getInstance();
   chosenParser = prefs.getInt('chosenParser') ?? null;
+  
 }
 
 setChosenParser(int chosen) async {

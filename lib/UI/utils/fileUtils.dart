@@ -30,12 +30,13 @@ class FolderAppUtil {
       return dir;
     }
     if (Platform.isAndroid) {
-      final dir = await getExternalStorageDirectory();
-      return dir;
+      var dir = await getExternalStorageDirectory();
+      
+      return download?dir.path:dir;
     }
     if (Platform.isIOS) {
-      final dir = await getApplicationDocumentsDirectory();
-      return dir;
+      var dir = await getApplicationDocumentsDirectory();
+      return download?dir.path:dir;
     } else {
       ///DO NOTHING
     }
