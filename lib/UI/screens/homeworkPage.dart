@@ -425,7 +425,7 @@ class _HomeworkElementState extends State<HomeworkElement> {
     return Container(
       margin: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.1),
       child: FutureBuilder(
-          future: getColor(this.widget.homeworkForThisDay.codeMatiere),
+          future: getColor(this.widget.homeworkForThisDay.codeMatiere??""),
           initialData: 0,
           builder: (context, snapshot) {
             Color color = Color(snapshot.data);

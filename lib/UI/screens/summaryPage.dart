@@ -701,7 +701,7 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
             child: Row(
               children: <Widget>[
                 FutureBuilder(
-                    future: offline.getHWCompletion(widget._homework.idDevoir),
+                    future: offline.getHWCompletion(widget._homework.idDevoir??''),
                     initialData: false,
                     builder: (context, snapshot) {
                       bool done = snapshot.data;

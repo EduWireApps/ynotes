@@ -18,6 +18,7 @@ import 'package:pointycastle/asymmetric/api.dart';
 import 'package:pointycastle/asymmetric/rsa.dart';
 import 'package:steel_crypt/steel_crypt.dart';
 import 'package:ynotes/apiManager.dart' as localapi;
+import 'package:ynotes/main.dart';
 import 'package:ynotes/parsers/PronoteCas.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:http/http.dart';
@@ -30,10 +31,12 @@ Map error_messages = {
   10: '[ERROR 10] Session has expired and pronotepy was not able to reinitialise the connection.'
 };
 bool isOldAPIUsed = false;
-get_week(DateTime date) async{
-    
-    return (1 + (date.difference(DateTime.parse(await storage.read(key: "startday"))).inDays / 7).floor()).round();
+get_week(DateTime date) async {
+  return (1 +
+          (date.difference(DateTime.parse(await storage.read(key: "startday"))).inDays / 7).floor())
+      .round();
 }
+
 class Client {
   var username;
   var password;
@@ -94,8 +97,6 @@ class Client {
 
     this._expired = true;
   }
-
-  
 
   Client(String pronote_url, {String username, String password, var cookies}) {
     if (cookies == null && password == null && username == null) {
@@ -287,8 +288,44 @@ class Client {
       },
       '_Signature_': {'onglet': 88}
     };
-
     var response = await this.communication.post("PageCahierDeTexte", data: json_data);
+    var json_data_contenu = {
+      'donnees': {
+        'domaine': {'_T': 8, 'V': "[${1}..${62}]"}
+      },
+      '_Signature_': {'onglet': 89}
+    };
+   /* //Get "Contenu de cours"
+    var responseContent =
+        await this.communication.post("PageCahierDeTexte", data: json_data_contenu);
+
+    var c_list = responseContent['donneesSec']['donnees']['ListeCahierDeTextes']['V'];
+    //Content homework
+    List<localapi.Homework> listCHW = List();
+    c_list.forEach((h) {
+      //description
+      String description = "";
+      h["listeContenus"]["V"].forEach((value) {
+        if (value["descriptif"]["V"] != null) {
+          description += value["descriptif"]["V"] + "<br>";
+        }
+      });
+      listCHW.add(localapi.Homework(
+          h["Matiere"]["V"]["L"],
+          h["Matiere"]["V"]["N"],
+          "",
+          "",
+          description,
+          DateFormat("dd/MM/yyyy hh:mm:ss").parse(h["DateFin"]["V"]),
+          DateFormat("dd/MM/yyyy hh:mm:ss").parse(h["Date"]["V"]),
+          false,
+          false,
+          false,
+          null,
+          null,
+          ""));
+    });*/
+    //Homework(matiere, codeMatiere, idDevoir, contenu, contenuDeSeance, date, datePost, done, rendreEnLigne, interrogation, documents, documentsContenuDeSeance, nomProf)
     var h_list = response['donneesSec']['donnees']['ListeTravauxAFaire']['V'];
     List<localapi.Homework> listHW = List();
     h_list.forEach((h) {
@@ -307,6 +344,7 @@ class Client {
           null,
           ""));
     });
+
     return listHW;
   }
 
