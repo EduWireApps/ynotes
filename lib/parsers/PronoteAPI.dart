@@ -30,7 +30,10 @@ Map error_messages = {
   10: '[ERROR 10] Session has expired and pronotepy was not able to reinitialise the connection.'
 };
 bool isOldAPIUsed = false;
-
+get_week(DateTime date) async{
+    
+    return (1 + (date.difference(DateTime.parse(await storage.read(key: "startday"))).inDays / 7).floor()).round();
+}
 class Client {
   var username;
   var password;
@@ -79,7 +82,7 @@ class Client {
     await this._login();
     this.localPeriods = null;
     this.localPeriods = this.periods();
-    this.week = this._get_week(DateTime.now());
+    this.week = await get_week(DateTime.now());
 
     this.hour_start = DateFormat("""'hh'h'mm'""")
         .parse(this.func_options['donneesSec']['donnees']['General']['ListeHeures']['V'][0]['L']);
@@ -92,14 +95,7 @@ class Client {
     this._expired = true;
   }
 
-  _get_week(DateTime date) {
-    try {
-      var test = (1 + (date.difference(this.start_day).inDays / 7).floor()).round();
-    } catch (e) {
-      print(e.toString());
-    }
-    return (1 + (date.difference(this.start_day).inDays / 7).floor()).round();
-  }
+  
 
   Client(String pronote_url, {String username, String password, var cookies}) {
     if (cookies == null && password == null && username == null) {
@@ -137,7 +133,9 @@ class Client {
     var inputFormat = DateFormat("dd/MM/yyyy");
     this.start_day = inputFormat
         .parse(this.func_options['donneesSec']['donnees']['General']['PremierLundi']['V']);
-    this.week = this._get_week(DateTime.now());
+    final storage = new FlutterSecureStorage();
+    await storage.write(key: "startday", value: this.start_day.toString());
+    this.week = await get_week(DateTime.now());
 
     this.localPeriods = this.periods;
     this.logged_in = await this._login();
@@ -285,7 +283,7 @@ class Client {
     }
     var json_data = {
       'donnees': {
-        'domaine': {'_T': 8, 'V': "[${this._get_week(date_from)}..${this._get_week(date_to)}]"}
+        'domaine': {'_T': 8, 'V': "[${await get_week(date_from)}..${await get_week(date_to)}]"}
       },
       '_Signature_': {'onglet': 88}
     };
@@ -353,12 +351,12 @@ class Client {
     };
 
     var output = [];
-    var first_week = this._get_week(date_from);
+    var first_week = await get_week(date_from);
     print(first_week);
     if (date_to == null) {
       date_to = date_from;
     }
-    var last_week = this._get_week(date_to);
+    var last_week = await get_week(date_to);
     for (int week = first_week; week < last_week + 1; ++week) {
       data["donnees"]["NumeroSemaine"] = week;
       data["donnees"]["numeroSemaine"] = week;

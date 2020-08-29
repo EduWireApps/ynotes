@@ -302,13 +302,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "4.0.2"
-  expandable_bottom_sheet:
-    dependency: "direct main"
-    description:
-      name: expandable_bottom_sheet
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.2.1+1"
   ext_storage:
     dependency: "direct main"
     description:
@@ -875,6 +868,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.1"
+  settings_ui:
+    dependency: "direct main"
+    description:
+      name: settings_ui
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.0"
   shake:
     dependency: transitive
     description:

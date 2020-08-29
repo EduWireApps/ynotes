@@ -16,6 +16,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_multiselect/flutter_multiselect.dart';
 import '../../usefulMethods.dart';
 import 'package:dio/src/response.dart' as dioResponse;
+import 'package:settings_ui/settings_ui.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -28,6 +29,15 @@ bool isFirstAvatarSelected;
 final storage = new FlutterSecureStorage();
 
 class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMixin {
+  //Settings
+  var boolSettings = {
+    "nightmode": false,
+    "batterySaver": false,
+    "notificationNewMail": false,
+    "notificationNewGrade": false,
+    "lighteningOverride": false
+  };
+
   AnimationController leftToRightAnimation;
   AnimationController rightToLeftAnimation;
   //Avatar's animations :
@@ -43,9 +53,19 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
       isFirstAvatarSelected = true;
     });
     getUsername();
+    getSettings();
     super.initState();
     leftToRightAnimation = AnimationController(duration: Duration(milliseconds: 800), vsync: this);
     rightToLeftAnimation = AnimationController(duration: Duration(milliseconds: 800), vsync: this);
+  }
+
+  void getSettings() async {
+    await Future.forEach(boolSettings.keys, (key) async {
+      var value = await getSetting(key);
+      setState(() {
+        boolSettings[key] = value;
+      });
+    });
   }
 
   void getUsername() async {
@@ -69,340 +89,269 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
 //animation left to right
 
     return new Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
-      appBar: new AppBar(
-        backgroundColor: Theme.of(context).primaryColor,
-        title: new Text("Paramètres"),
-        leading: new IconButton(
-          icon: new Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
-      body: Container(
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              SizedBox(
-                height: screenSize.size.height / 10 * 0.1,
-              ),
-              Center(
-                  child: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    ///Always the first avatar
-                    Material(
-                      borderRadius: BorderRadius.circular(100),
-                      color: Colors.lightGreen,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(100),
-                        onTap: () {
-                          if (!isFirstAvatarSelected) {
-                            setState(() {
-                              isFirstAvatarSelected = true;
-                            });
-                          }
-                        },
-                        child: CircleAvatar(
-                          backgroundColor: Colors.transparent,
-                          child: Text(
-                            '${actualUser.length > 0 ? actualUser[0] : "I"}',
-                            style: TextStyle(
-                                fontSize: screenSize.size.width / 5 * 0.4,
-                                color: isDarkModeEnabled ? Colors.white : Colors.black),
-                            textAlign: TextAlign.center,
-                          ),
-                          radius: (isFirstAvatarSelected
-                              ? screenSize.size.width / 5 * 0.55
-                              : screenSize.size.width / 5 * 0.4),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              )),
-              Center(
-                  child: Container(
-                      margin: EdgeInsets.only(
-                          top: screenSize.size.height / 10 * 0.1,
-                          bottom: screenSize.size.height / 10 * 0.2),
-                      child: Text("Bonjour ${actualUser.length > 0 ? actualUser : "Invité"}",
-                          style: TextStyle(
-                              fontFamily: "Asap",
-                              color: isDarkModeEnabled ? Colors.white : Colors.black,
-                              fontSize: screenSize.size.height / 10 * 0.3)))),
-              FutureBuilder(
-                  future: getSetting("nightmode"),
-                  initialData: false,
-                  builder: (context, snapshot) {
-                    return SwitchListTile(
-                      value: snapshot.data,
-                      title: Text("Mode nuit",
-                          style: TextStyle(
-                              fontFamily: "Asap",
-                              color: isDarkModeEnabled ? Colors.white : Colors.black,
-                              fontSize: screenSize.size.height / 10 * 0.3)),
-                      subtitle: Text(
-                        "Lisez vos notes de jour comme de nuit.",
-                        style: TextStyle(
-                            fontFamily: "Asap",
-                            color: isDarkModeEnabled ? Colors.white : Colors.black,
-                            fontSize: screenSize.size.height / 10 * 0.2),
-                      ),
-                      onChanged: (value) {
-                        setState(() {
-                          Provider.of<AppStateNotifier>(context, listen: false).updateTheme(value);
-                          setSetting("nightmode", value);
-                        });
-                      },
-                      secondary: Icon(
-                        Icons.lightbulb_outline,
-                        color: isDarkModeEnabled ? Colors.white : Colors.black,
-                      ),
-                    );
-                  }),
-              Divider(),
-              FutureBuilder(
-                  future: getSetting("batterySaver"),
-                  initialData: false,
-                  builder: (context, snapshot) {
-                    if (snapshot.data == true) {
-                      setSetting("notificationNewGrade", false);
-                      disableNotification = true;
-                    } else {
-                      disableNotification = false;
-                    }
-                    return SwitchListTile(
-                      value: snapshot.data,
-                      title: Text("Economie de données",
-                          style: TextStyle(
-                              fontFamily: "Asap",
-                              color: isDarkModeEnabled ? Colors.white : Colors.black,
-                              fontSize: screenSize.size.height / 10 * 0.3)),
-                      subtitle: Text(
-                        "Réduit les interactions réseaux au minimum pour sauver vos 15 pourcents restants.",
-                        style: TextStyle(
-                            fontFamily: "Asap",
-                            color: isDarkModeEnabled ? Colors.white : Colors.black,
-                            fontSize: screenSize.size.height / 10 * 0.2),
-                      ),
-                      onChanged: (value) {
-                        setState(() {
-                          setSetting("batterySaver", value);
-
-                          //disable the notificationNewGrade because it can't work with the battery saver enabled
-                          if (value == true) {
-                            setSetting("notificationNewGrade", false);
-                            setSetting("notificationNewMail", false);
-                            disableNotification = true;
-                          } else {
-                            disableNotification = false;
-                          }
-                        });
-                      },
-                      secondary: Icon(
-                        Icons.battery_charging_full,
-                        color: isDarkModeEnabled ? Colors.white : Colors.black,
-                      ),
-                    );
-                  }),
-              Divider(),
-              FutureBuilder(
-                  future: getSetting("notificationNewGrade"),
-                  initialData: false,
-                  builder: (context, snapshot) {
-                    return SwitchListTile(
-                      value: snapshot.data,
-                      title: Text(
-                        "Notification de nouvelle note",
-                        style: TextStyle(
-                            fontFamily: "Asap",
-                            color: isDarkModeEnabled ? Colors.white : Colors.black,
-                            fontSize: screenSize.size.height / 10 * 0.3),
-                      ),
-                      subtitle: Text(
-                        (disableNotification == true
-                            ? "Ne peut fonctionner si l'économie de données est activée"
-                            : ""),
-                        style: TextStyle(fontFamily: "Asap", color: Colors.red.shade700),
-                      ),
-                      onChanged: (disableNotification == true)
-                          ? null
-                          : (value) {
-                              setState(() {
-                                setSetting("notificationNewGrade", value);
-                              });
-                            },
-                      secondary: Icon(
-                        MdiIcons.newBox,
-                        color: isDarkModeEnabled ? Colors.white : Colors.black,
-                      ),
-                    );
-                  }),
-              Divider(),
-              FutureBuilder(
-                  future: getSetting("notificationNewMail"),
-                  initialData: false,
-                  builder: (context, snapshot) {
-                    return SwitchListTile(
-                      value: snapshot.data,
-                      title: Text(
-                        "Notification de nouveau mail",
-                        style: TextStyle(
-                            fontFamily: "Asap",
-                            color: isDarkModeEnabled ? Colors.white : Colors.black,
-                            fontSize: screenSize.size.height / 10 * 0.3),
-                      ),
-                      subtitle: Text(
-                        (disableNotification == true
-                            ? "Ne peut fonctionner si l'économie de données est activée"
-                            : ""),
-                        style: TextStyle(fontFamily: "Asap", color: Colors.red.shade700),
-                      ),
-                      onChanged: (disableNotification == true)
-                          ? null
-                          : (value) {
-                              setState(() {
-                                setSetting("notificationNewMail", value);
-                              });
-                            },
-                      secondary: Icon(
-                        MdiIcons.newBox,
-                        color: isDarkModeEnabled ? Colors.white : Colors.black,
-                      ),
-                    );
-                  }),
-              Divider(),
-              //choose specialties
-              ListTile(
-                leading: Icon(
-                  MdiIcons.selection,
-                  color: isDarkModeEnabled ? Colors.white : Colors.black,
-                ),
-                title: Text(
-                  "Mes spécialités",
-                  style: TextStyle(
-                      fontFamily: "Asap",
-                      color: isDarkModeEnabled ? Colors.white : Colors.black,
-                      fontSize: screenSize.size.height / 10 * 0.3),
-                ),
-                onTap: () {
-                  CustomDialogs.showUnimplementedSnackBar(context);
-                  //showSpecialtiesChoice(context);
-                },
-              ),
-              Divider(),
-              //open the wiredash modal bottomsheet
-              ListTile(
-                leading: Icon(
-                  MdiIcons.bug,
-                  color: isDarkModeEnabled ? Colors.white : Colors.black,
-                ),
-                title: Text(
-                  "Signaler un bug",
-                  style: TextStyle(
-                      fontFamily: "Asap",
-                      color: isDarkModeEnabled ? Colors.white : Colors.black,
-                      fontSize: screenSize.size.height / 10 * 0.3),
-                ),
-                onTap: () {
-                  Wiredash.of(context).show();
-                },
-              ),
-              Divider(),
-              ListTile(
-                leading: Icon(
-                  MdiIcons.text,
-                  color: isDarkModeEnabled ? Colors.white : Colors.black,
-                ),
-                title: Text(
-                  "Logs",
-                  style: TextStyle(
-                      fontFamily: "Asap",
-                      color: isDarkModeEnabled ? Colors.white : Colors.black,
-                      fontSize: screenSize.size.height / 10 * 0.3),
-                ),
-                subtitle: Text(
-                  "Utilisable à des fins de deboguage",
-                  style: TextStyle(
-                      fontFamily: "Asap",
-                      color: isDarkModeEnabled ? Colors.white : Colors.black,
-                      fontSize: screenSize.size.height / 10 * 0.2),
-                ),
-                onTap: () {
-                  Navigator.of(context).push(router(LogsPage()));
-                },
-              ),
-              Divider(),
-              ListTile(
-                leading: Icon(
-                  MdiIcons.restore,
-                  color: isDarkModeEnabled ? Colors.white : Colors.black,
-                ),
-                title: Text(
-                  "Réinitialiser le tutoriel",
-                  style: TextStyle(
-                      fontFamily: "Asap",
-                      color: isDarkModeEnabled ? Colors.white : Colors.black,
-                      fontSize: screenSize.size.height / 10 * 0.3),
-                ),
-                onTap: () {
-                  HelpDialog.resetEveryHelpDialog();
-                },
-              ),
-              Divider(),
-              ListTile(
-                leading: Icon(
-                  MdiIcons.commentQuestion,
-                  color: isDarkModeEnabled ? Colors.white : Colors.black,
-                ),
-                title: Text(
-                  "A propos",
-                  style: TextStyle(
-                      fontFamily: "Asap",
-                      color: isDarkModeEnabled ? Colors.white : Colors.black,
-                      fontSize: screenSize.size.height / 10 * 0.3),
-                ),
-                onTap: () async {
-                  PackageInfo packageInfo = await PackageInfo.fromPlatform();
-
-                  showAboutDialog(
-                      context: this.context,
-                      applicationIcon: Image(
-                        image: AssetImage('assets/appico/foreground.png'),
-                        width: screenSize.size.width / 5 * 0.7,
-                      ),
-                      applicationName: "yNotes",
-                      applicationVersion: packageInfo.version + "+" + packageInfo.buildNumber,
-                      applicationLegalese:
-                          "Developpé avec amour en France.\nAPI Pronote adaptée à l'aide de l'API pronotepy développée par Bain sous licence MIT.\nJe remercie la participation des bêta testeurs et des développeurs ayant participé au développement de l'application.");
-                },
-              ),
-              Divider(),
-              ListTile(
-                leading: Icon(
-                  MdiIcons.exitRun,
-                  color: Colors.red.shade300,
-                ),
-                title: Text(
-                  "Se déconnecter",
-                  style: TextStyle(
-                      fontFamily: "Asap",
-                      color: Colors.red.shade300,
-                      fontSize: screenSize.size.height / 10 * 0.3),
-                ),
-                onTap: () async {
-                  showExitDialog(context);
-                },
-              ),
-            ],
+        backgroundColor: Theme.of(context).backgroundColor,
+        appBar: new AppBar(
+          backgroundColor: Theme.of(context).primaryColor,
+          title: new Text("Paramètres"),
+          leading: new IconButton(
+            icon: new Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.pop(context);
+            },
           ),
         ),
-      ),
-    );
+        body: SettingsList(
+          backgroundColor: Theme.of(context).backgroundColor,
+          sections: [
+            SettingsSection(
+              title: 'Mon compte',
+              tiles: [
+                SettingsTile(
+                  title: 'Compte actuellement connecté',
+                  titleTextStyle: TextStyle(
+                      fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                  subtitleTextStyle: TextStyle(
+                      fontFamily: "Asap",
+                      color: isDarkModeEnabled
+                          ? Colors.white.withOpacity(0.7)
+                          : Colors.black.withOpacity(0.7)),
+                  subtitle: '${actualUser.length > 0 ? actualUser : "Invité"}',
+                  leading: Icon(MdiIcons.account,
+                      color: isDarkModeEnabled ? Colors.white : Colors.black),
+                  onTap: () {},
+                ),
+                SettingsTile(
+                  title: 'Déconnexion',
+                  titleTextStyle: TextStyle(fontFamily: "Asap", color: Colors.red),
+                  leading: Icon(
+                    MdiIcons.logout,
+                    color: Colors.red,
+                  ),
+                  onTap: () {
+                    showExitDialog(context);
+                  },
+                )
+              ],
+            ),
+            SettingsSection(
+              title: 'Apparence/Comportement',
+              tiles: [
+                SettingsTile.switchTile(
+                  title: 'Mode nuit',
+                  titleTextStyle: TextStyle(
+                      fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                  subtitleTextStyle: TextStyle(
+                      fontFamily: "Asap",
+                      color: isDarkModeEnabled
+                          ? Colors.white.withOpacity(0.7)
+                          : Colors.black.withOpacity(0.7)),
+                  leading: Icon(MdiIcons.themeLightDark,
+                      color: isDarkModeEnabled ? Colors.white : Colors.black),
+                  switchValue: boolSettings["nightmode"],
+                  onToggle: (value) async {
+                    setState(() {
+                      Provider.of<AppStateNotifier>(context, listen: false).updateTheme(value);
+                      boolSettings["nightmode"] = value;
+                    });
+
+                    await setSetting("nightmode", value);
+                  },
+                ),
+                SettingsTile.switchTile(
+                  title: 'Economiseur de batterie',
+                  subtitle: "Réduit les interactions reseaux",
+                  titleTextStyle: TextStyle(
+                      fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                  subtitleTextStyle: TextStyle(
+                      fontFamily: "Asap",
+                      color: isDarkModeEnabled
+                          ? Colors.white.withOpacity(0.7)
+                          : Colors.black.withOpacity(0.7)),
+                  leading: Icon(MdiIcons.batteryHeart,
+                      color: isDarkModeEnabled ? Colors.white : Colors.black),
+                  switchValue: boolSettings["batterySaver"],
+                  onToggle: (value) async {
+                    setState(() {
+                      Provider.of<AppStateNotifier>(context, listen: false).updateTheme(value);
+                      boolSettings["batterySaver"] = value;
+                    });
+
+                    await setSetting("nightmode", value);
+                  },
+                ),
+                 SettingsTile.switchTile(
+                  title: 'Ignorer la réduction de stockage hors ligne',
+                  subtitle: "Peut améliorer certaines performances mais également augmenter la taille de l'application",
+                  enabled: !boolSettings["batterySaver"],
+                  titleTextStyle: TextStyle(
+                      fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                  subtitleTextStyle: TextStyle(
+                      fontFamily: "Asap",
+                      color: isDarkModeEnabled
+                          ? Colors.white.withOpacity(0.7)
+                          : Colors.black.withOpacity(0.7)),
+                  switchValue: boolSettings["lighteningOverride"],
+                    leading: Icon(MdiIcons.zipBox,
+                      color: isDarkModeEnabled ? Colors.white : Colors.black),
+                  onToggle: (bool value) async {
+                    setState(() {
+                      boolSettings["lighteningOverride"] = value;
+                    });
+
+                    await setSetting("lighteningOverride", value);
+                  },
+                ),
+              ],
+            ),
+            SettingsSection(
+              title: 'Notifications',
+              tiles: [
+                SettingsTile.switchTile(
+                  title: 'Notification de nouveau mail',
+                  enabled: !boolSettings["batterySaver"],
+                  titleTextStyle: TextStyle(
+                      fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                  subtitleTextStyle: TextStyle(
+                      fontFamily: "Asap",
+                      color: isDarkModeEnabled
+                          ? Colors.white.withOpacity(0.7)
+                          : Colors.black.withOpacity(0.7)),
+                  switchValue: boolSettings["notificationNewMail"],
+                  onToggle: (bool value) async {
+                    setState(() {
+                      boolSettings["notificationNewMail"] = value;
+                    });
+
+                    await setSetting("notificationNewMail", value);
+                  },
+                ),
+                SettingsTile.switchTile(
+                  title: 'Notification de nouvelle note',
+                  enabled: !boolSettings["batterySaver"],
+                  titleTextStyle: TextStyle(
+                      fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                  subtitleTextStyle: TextStyle(
+                      fontFamily: "Asap",
+                      color: isDarkModeEnabled
+                          ? Colors.white.withOpacity(0.7)
+                          : Colors.black.withOpacity(0.7)),
+                  switchValue: boolSettings["notificationNewGrade"],
+                  onToggle: (bool value) async {
+                    setState(() {
+                      boolSettings["notificationNewGrade"] = value;
+                    });
+
+                    await setSetting("notificationNewGrade", value);
+                  },
+                ),
+               
+              ],
+            ),
+            SettingsSection(
+              title: 'Paramètres scolaires',
+              tiles: [
+                SettingsTile(
+                  title: 'Choisir mes spécialités',
+                  titleTextStyle: TextStyle(
+                      fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                  subtitleTextStyle: TextStyle(
+                      fontFamily: "Asap",
+                      color: isDarkModeEnabled
+                          ? Colors.white.withOpacity(0.7)
+                          : Colors.black.withOpacity(0.7)),
+                  leading: Icon(MdiIcons.formatListBulleted,
+                      color: isDarkModeEnabled ? Colors.white : Colors.black),
+                  onTap: () {
+                    CustomDialogs.showUnimplementedSnackBar(context);
+                  },
+                ),
+              ],
+            ),
+            SettingsSection(
+              title: 'Assistance',
+              tiles: [
+                SettingsTile(
+                  title: 'Afficher les logs',
+                  leading:
+                      Icon(MdiIcons.bug, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                  onTap: () {
+                    Navigator.of(context).push(router(LogsPage()));
+                  },
+                  titleTextStyle: TextStyle(
+                      fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                  subtitleTextStyle: TextStyle(
+                      fontFamily: "Asap",
+                      color: isDarkModeEnabled
+                          ? Colors.white.withOpacity(0.7)
+                          : Colors.black.withOpacity(0.7)),
+                ),
+                SettingsTile(
+                  title: 'Signaler un bug',
+                  subtitle: 'Ou nous recommander quelque chose',
+                  leading: Icon(MdiIcons.commentAlert,
+                      color: isDarkModeEnabled ? Colors.white : Colors.black),
+                  onTap: () {
+                    Wiredash.of(context).show();
+                  },
+                  titleTextStyle: TextStyle(
+                      fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                  subtitleTextStyle: TextStyle(
+                      fontFamily: "Asap",
+                      color: isDarkModeEnabled
+                          ? Colors.white.withOpacity(0.7)
+                          : Colors.black.withOpacity(0.7)),
+                ),
+              ],
+            ),
+            SettingsSection(
+              title: 'Autres paramètres',
+              tiles: [
+                SettingsTile(
+                  title: 'Réinitialiser le tutoriel',
+                  leading: Icon(MdiIcons.restore,
+                      color: isDarkModeEnabled ? Colors.white : Colors.black),
+                  onTap: () {
+                    HelpDialog.resetEveryHelpDialog();
+                  },
+                  titleTextStyle: TextStyle(
+                      fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                  subtitleTextStyle: TextStyle(
+                      fontFamily: "Asap",
+                      color: isDarkModeEnabled
+                          ? Colors.white.withOpacity(0.7)
+                          : Colors.black.withOpacity(0.7)),
+                ),
+                SettingsTile(
+                  title: 'A propos de cette application',
+                  leading: Icon(MdiIcons.information,
+                      color: isDarkModeEnabled ? Colors.white : Colors.black),
+                  onTap: () async {
+                    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+                    showAboutDialog(
+                        context: this.context,
+                        applicationIcon: Image(
+                          image: AssetImage('assets/appico/foreground.png'),
+                          width: screenSize.size.width / 5 * 0.7,
+                        ),
+                        applicationName: "yNotes",
+                        applicationVersion: packageInfo.version + "+" + packageInfo.buildNumber,
+                        applicationLegalese:
+                            "Developpé avec amour en France.\nAPI Pronote adaptée à l'aide de l'API pronotepy développée par Bain sous licence MIT.\nJe remercie la participation des bêta testeurs et des développeurs ayant participé au développement de l'application.");
+                  },
+                  titleTextStyle: TextStyle(
+                      fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                  subtitleTextStyle: TextStyle(
+                      fontFamily: "Asap",
+                      color: isDarkModeEnabled
+                          ? Colors.white.withOpacity(0.7)
+                          : Colors.black.withOpacity(0.7)),
+                ),
+              ],
+            ),
+           
+          ],
+        ));
   }
 }
 

@@ -366,6 +366,7 @@ class APIPronote extends API {
 
   @override
   Future getNextLessons(DateTime dateToUse, {bool forceReload}) async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
     List<Lesson> toReturn;
     int req = 0;
     while (lessonsLock == true && req < 10) {
@@ -377,17 +378,30 @@ class APIPronote extends API {
       lessonsLock = true;
       try {
         toReturn = List();
-        var offlineLesson = await offline.lessons();
+
+        //get lessons from offline storage
+        var offlineLesson = await offline.lessons(await get_week(dateToUse));
         if (offlineLesson != null) {
           toReturn.addAll(offlineLesson);
+
+          //filter lessons
           toReturn.removeWhere((lesson) =>
               DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) !=
               DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)));
         }
-        if (forceReload==true||toReturn == null || toReturn.length == 0 ) {
-          print(toReturn.length);
-          toReturn = await localClient.lessons(dateToUse);
-          await offline.updateLessons(toReturn);
+        //Check if needed to force refresh if not offline
+        if (forceReload == true ||
+            toReturn == null ||
+            toReturn.length == 0 && connectivityResult != ConnectivityResult.none) {
+          try {
+            List<Lesson> onlineLessons = await localClient.lessons(dateToUse);
+
+            await offline.updateLessons(onlineLessons, await get_week(dateToUse));
+
+            toReturn = onlineLessons;
+          } catch (e) {
+            print("Failed to force refresh " + e.toString());
+          }
         }
 
         lessonsLock = false;
@@ -400,7 +414,8 @@ class APIPronote extends API {
       } catch (e) {
         print("Error while getting next lessons " + e.toString());
         lessonsLock = false;
-        if (lessonsRefreshRecursive == false) {
+        //If not recursive and if not offline
+        if (lessonsRefreshRecursive == false && connectivityResult != ConnectivityResult.none) {
           lessonsRefreshRecursive = true;
           await refreshClient();
           toReturn = await localClient.lessons(dateToUse);

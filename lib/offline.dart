@@ -2,6 +2,8 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
+import 'package:ynotes/parsers/PronoteAPI.dart';
+import 'package:ynotes/usefulMethods.dart';
 import 'apiManager.dart';
 import 'package:ynotes/UI/utils/fileUtils.dart';
 
@@ -11,7 +13,7 @@ class Offline {
   //Return homework
   List<Homework> homeworkData;
   //Return lessons
-  List<Lesson> lessonsData;
+  Map<dynamic, dynamic> lessonsData;
   Box _offlineBox;
   Box _homeworkDoneBox;
   Box _pinnedHomeworkBox;
@@ -36,11 +38,21 @@ class Offline {
         _offlineBox = await Hive.openBox("offlineData");
       }
       //Get data and cast it
-
-      disciplinesData = await _offlineBox.get("disciplines").cast<Discipline>();
-      homeworkData = await _offlineBox.get("homework").cast<Homework>();
-      lessonsData = await _offlineBox.get("lessons").cast<Lesson>();
-    } catch (e) {}
+      var offlineLessons = await _offlineBox.get("lessons");
+      var offlineDisciplines = await _offlineBox.get("disciplines");
+      var offlinehomeworkData = await _offlineBox.get("homework");
+      if (offlineLessons != null) {
+        lessonsData = Map<dynamic, dynamic>.from(offlineLessons);
+      }
+      if (offlineDisciplines != null) {
+        disciplinesData = offlineDisciplines.cast<Discipline>();
+      }
+      if (offlinehomeworkData != null) {
+        homeworkData = offlinehomeworkData.cast<Homework>();
+      }
+    } catch (e) {
+      print("Error while refreshing " + e.toString());
+    }
   }
 
   //Clear all databases
@@ -102,15 +114,39 @@ class Offline {
     }
   }
 
-  updateLessons(List<Lesson> newData) async {
+  updateLessons(List<Lesson> newData, int week) async {
     try {
       if (!_offlineBox.isOpen) {
         _offlineBox = await Hive.openBox("offlineData");
       }
       if (newData != null) {
-        print("Update offline lessons (length : ${newData.length})");
-        await _offlineBox.delete("lessons");
-        await _offlineBox.put("lessons", newData);
+        print("Update offline lessons (week : $week)");
+        Map<dynamic, dynamic> timeTable = Map();
+        var offline = await _offlineBox.get("lessons");
+        if (offline != null) {
+          timeTable = Map<dynamic, dynamic>.from(await _offlineBox.get("lessons"));
+        }
+
+        if (timeTable == null) {
+          timeTable = Map();
+        }
+
+        int todayWeek = await get_week(DateTime.now());
+
+        bool lighteningOverride = await getSetting("lighteningOverride");
+
+        //Remove old lessons in order to lighten the db
+        //Can be overriden in settings
+        if (!lighteningOverride) {
+          timeTable.removeWhere((key, value) {
+            return ((key < todayWeek - 2) || key > todayWeek + 3);
+          });
+
+          print("Size reducing succeeded");
+        }
+        //Update the timetable
+        timeTable.update(week, (value) => newData, ifAbsent: () {});
+        await _offlineBox.put("lessons", timeTable);
         await refreshData();
       }
 
@@ -185,11 +221,14 @@ class Offline {
     }
   }
 
-  Future<List<Lesson>> lessons() async {
+  Future<List<Lesson>> lessons(int week) async {
     try {
-      await refreshData();
-
-      return lessonsData;
+      if (lessonsData != null) {
+        return lessonsData[week].cast<Lesson>();
+      } else {
+        await refreshData();
+        return lessonsData[week].cast<Lesson>();
+      }
     } catch (e) {
       print("Error while returning lessons" + e.toString());
       return null;

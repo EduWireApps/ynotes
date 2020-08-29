@@ -16,7 +16,6 @@ import 'package:ynotes/UI/utils/fileUtils.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/apiManager.dart';
 import 'dart:async';
-import 'package:expandable_bottom_sheet/expandable_bottom_sheet.dart';
 import 'dart:io';
 
 class Agenda extends StatefulWidget {
@@ -43,9 +42,13 @@ class _AgendaState extends State<Agenda> {
   }
 
   Future<void> refreshAgendaFuture({bool force = true}) async {
-    setState(() {
+    if(mounted)
+    {
+ setState(() {
       agendaFuture = localApi.getNextLessons(date, forceReload: force);
     });
+    }
+   
 
     var realLF = await agendaFuture;
   }
