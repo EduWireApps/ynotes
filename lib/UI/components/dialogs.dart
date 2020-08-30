@@ -104,6 +104,18 @@ class CustomDialogs {
     );
   }
 
+  static Future<int> showNumberChoiceDialog(BuildContext context,
+      {String text = ""}) {
+    // show the dialog
+    return showDialog<int>(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return NumberChoice(text);
+      },
+    );
+  }
+
   static Future<bool> showNewFolderDialog(BuildContext context, String path, List<FileInfo> files,
       bool selectionMode, Function callback) {
     // show the dialog
@@ -377,7 +389,7 @@ class _FolderChoiceWidgetState extends State<FolderChoiceWidget> {
       ),
       actions: [
         FlatButton(
-          child: const Text('ANNULER', style: TextStyle(color: Colors.green), textScaleFactor: 1.0),
+          child: const Text('ANNULER', style: TextStyle(color: Colors.red), textScaleFactor: 1.0),
           onPressed: () {
             Navigator.pop(context, false);
           },
@@ -385,7 +397,7 @@ class _FolderChoiceWidgetState extends State<FolderChoiceWidget> {
         FlatButton(
           child: Text(
             dropDownValue != "Aucun" ? "DÉPLACER" : "CRÉER",
-            style: TextStyle(color: Colors.red),
+            style: TextStyle(color: Colors.green),
             textScaleFactor: 1.0,
           ),
           onPressed: () async {
@@ -418,5 +430,86 @@ class _FolderChoiceWidgetState extends State<FolderChoiceWidget> {
       ],
     );
     ;
+  }
+}
+
+class NumberChoice extends StatefulWidget {
+  final String unit;
+
+
+  const NumberChoice(this.unit);
+  @override
+  _NumberChoiceState createState() => _NumberChoiceState();
+}
+
+class _NumberChoiceState extends State<NumberChoice> {
+  TextEditingController textController = TextEditingController(text: "");
+  int value;
+  @override
+  Widget build(BuildContext context) {
+    var screenSize = MediaQuery.of(context);
+    return AlertDialog(
+      elevation: 50,
+      backgroundColor: Theme.of(context).primaryColor,
+      content: Container(
+        height: screenSize.size.height / 10 * 1.2,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              child: Text(
+                "Choisir ${widget.unit}",
+                style: TextStyle(
+                    fontFamily: 'Asap', color: isDarkModeEnabled ? Colors.white : Colors.black),
+                textAlign: TextAlign.left,
+              ),
+            ),
+            Container(
+              width: screenSize.size.width / 5 * 4.3,
+              height: screenSize.size.height / 10 * 0.8,
+              child: TextFormField(
+                controller: textController,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  enabledBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: isDarkModeEnabled ? Colors.white : Colors.black),
+                  ),
+                  focusedBorder: UnderlineInputBorder(
+                    borderSide: BorderSide(color: isDarkModeEnabled ? Colors.white : Colors.black),
+                  ),
+                ),
+                onChanged: (newValue) {
+                  setState(() {
+                    value = int.parse(newValue);
+                  });
+                },
+                style: TextStyle(
+                  fontFamily: 'Asap',
+                  color: isDarkModeEnabled ? Colors.white : Colors.black,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        FlatButton(
+          child: const Text('ANNULER', style: TextStyle(color: Colors.red), textScaleFactor: 1.0),
+          onPressed: () {
+            Navigator.pop(context, null);
+          },
+        ),
+        FlatButton(
+          child: Text(
+            "VALIDER",
+            style: TextStyle(color: Colors.green),
+            textScaleFactor: 1.0,
+          ),
+          onPressed: () async {
+            Navigator.pop(context, value);
+          },
+        )
+      ],
+    );
   }
 }

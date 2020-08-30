@@ -63,7 +63,7 @@ class _HomeworkSettingPageState extends State<HomeworkSettingPage> {
             height: (screenSize.size.height / 10 * 8.8) / 10 * 0.75,
             width: screenSize.size.width / 5 * 2,
             child: RaisedButton(
-              color: Color(0xff5DADE2),
+              color: Theme.of(context).primaryColorDark,
               shape: RoundedRectangleBorder(
                 borderRadius: new BorderRadius.circular(18.0),
               ),
@@ -71,9 +71,9 @@ class _HomeworkSettingPageState extends State<HomeworkSettingPage> {
                 widget.animateToPage(1);
               },
               child: Text(
-                "Enregistrer",
+                "Retour",
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 18, fontFamily: "Asap"),
+                style: TextStyle(fontSize: 18, fontFamily: "Asap", color:isDarkModeEnabled?Colors.white:Colors.black),
               ),
             ),
           )

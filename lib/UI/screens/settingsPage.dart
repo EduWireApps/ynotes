@@ -161,7 +161,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                   title: 'Economiseur de batterie',
                   subtitle: "Réduit les interactions reseaux",
                   titleTextStyle: TextStyle(
-                      fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                      fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black,),
                   subtitleTextStyle: TextStyle(
                       fontFamily: "Asap",
                       color: isDarkModeEnabled
@@ -179,28 +179,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     await setSetting("nightmode", value);
                   },
                 ),
-                 SettingsTile.switchTile(
-                  title: 'Ignorer la réduction de stockage hors ligne',
-                  subtitle: "Peut améliorer certaines performances mais également augmenter la taille de l'application",
-                  enabled: !boolSettings["batterySaver"],
-                  titleTextStyle: TextStyle(
-                      fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
-                  subtitleTextStyle: TextStyle(
-                      fontFamily: "Asap",
-                      color: isDarkModeEnabled
-                          ? Colors.white.withOpacity(0.7)
-                          : Colors.black.withOpacity(0.7)),
-                  switchValue: boolSettings["lighteningOverride"],
-                    leading: Icon(MdiIcons.zipBox,
-                      color: isDarkModeEnabled ? Colors.white : Colors.black),
-                  onToggle: (bool value) async {
-                    setState(() {
-                      boolSettings["lighteningOverride"] = value;
-                    });
-
-                    await setSetting("lighteningOverride", value);
-                  },
-                ),
+                
               ],
             ),
             SettingsSection(

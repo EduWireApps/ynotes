@@ -66,13 +66,15 @@ class _SummaryPageState extends State<SummaryPage> {
     setState(() {
       doneListFuture = getHomeworkDonePercent();
     });
-    SchedulerBinding.instance.addPostFrameCallback(!mounted?null:(_) => initTransparentLogin().then((var f) {
-          if (firstStart == true) {
-            refreshLocalHomeworkList();
-            refreshLocalGradesList();
-            firstStart = false;
-          }
-        }));
+    SchedulerBinding.instance.addPostFrameCallback(!mounted
+        ? null
+        : (_) => initTransparentLogin().then((var f) {
+              if (firstStart == true) {
+                refreshLocalHomeworkList();
+                refreshLocalGradesList();
+                firstStart = false;
+              }
+            }));
   }
 
   initTransparentLogin() async {
@@ -105,11 +107,10 @@ class _SummaryPageState extends State<SummaryPage> {
   @override
   Widget build(BuildContext context) {
     //Show the hello dialog
-    if(mounted)
-    {
+    if (mounted) {
       helpDialogs[0].showDialog(context);
     }
-    
+
     MediaQueryData screenSize = MediaQuery.of(context);
     return Container(
       margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
@@ -134,11 +135,14 @@ class _SummaryPageState extends State<SummaryPage> {
                       radius: 120.0,
                       lineWidth: 13.0,
                       animation: true,
-                      percent: snapshot.data/100,
+                      percent: (snapshot.data ?? 100) / 100,
                       center: new Text(
-                        snapshot.data.toString() + "%",
+                        (snapshot.data ?? "100").toString() + "%",
                         style: new TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 20.0, fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                            fontWeight: FontWeight.bold,
+                            fontSize: 20.0,
+                            fontFamily: "Asap",
+                            color: isDarkModeEnabled ? Colors.white : Colors.black),
                       ),
                       header: new Text(
                         "Travail fait",
@@ -280,7 +284,7 @@ class _SummaryPageState extends State<SummaryPage> {
                                             });
                                       } else {
                                         return FittedBox(
-                                                                                  child: Column(
+                                          child: Column(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: <Widget>[
                                               Container(
@@ -412,7 +416,7 @@ class _SummaryPageState extends State<SummaryPage> {
                           height: (screenSize.size.height / 10 * 8.8) / 10 * 0.75,
                           width: screenSize.size.width / 5 * 2,
                           child: RaisedButton(
-                            color: Color(0xff5DADE2),
+                            color: Theme.of(context).primaryColorDark,
                             shape: RoundedRectangleBorder(
                               borderRadius: new BorderRadius.circular(18.0),
                             ),
@@ -422,9 +426,9 @@ class _SummaryPageState extends State<SummaryPage> {
                               refreshCallback();
                             },
                             child: Text(
-                              "Enregistrer",
+                              "Retour",
                               textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 18, fontFamily: "Asap"),
+                              style: TextStyle(fontSize: 18, fontFamily: "Asap", color:isDarkModeEnabled?Colors.white:Colors.black),
                             ),
                           ),
                         ),
@@ -701,7 +705,7 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
             child: Row(
               children: <Widget>[
                 FutureBuilder(
-                    future: offline.getHWCompletion(widget._homework.idDevoir??''),
+                    future: offline.getHWCompletion(widget._homework.idDevoir ?? ''),
                     initialData: false,
                     builder: (context, snapshot) {
                       bool done = snapshot.data;

@@ -96,13 +96,15 @@ setSetting(String setting, bool value) async {
 
 Future<int> getIntSetting(String setting) async {
   final prefs = await SharedPreferences.getInstance();
-  int value = prefs.getInt(setting);
+  var value = prefs.getInt(setting);
   if (value == null) {
     value = 0;
     if (setting == "summaryQuickHomework") {
       value = 10;
     }
-
+    if (setting == "lessonReminderDelay") {
+      value = 5;
+    }
     setIntSetting(setting, value);
   }
   return value;

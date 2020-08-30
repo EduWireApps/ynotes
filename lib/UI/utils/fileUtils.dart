@@ -111,7 +111,7 @@ class FileAppUtil {
         try {
           file = Directory(path).listSync();
         } catch (e) {
-          print("HOLA " + e.toString());
+          print("Error while getting file list " + e.toString());
         }
         //use your folder name insted of resume.
         List<FileInfo> listFiles = List<FileInfo>();

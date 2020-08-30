@@ -6,6 +6,7 @@ import 'package:ynotes/UI/screens/settingsPage.dart';
 import 'package:ynotes/UI/screens/spacePageWidgets/agenda.dart';
 import 'package:ynotes/UI/screens/spacePageWidgets/downloadsExplorer.dart';
 import 'package:ynotes/UI/screens/spacePageWidgets/news.dart';
+import 'package:ynotes/UI/screens/spacePageWidgets/spacePageSettings.dart';
 import 'package:ynotes/UI/screens/tabBuilder.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:dio/src/response.dart' as dioResponse;
@@ -19,11 +20,21 @@ class SpacePage extends StatefulWidget {
 }
 
 int segmentedControlGroupValue = 0;
+PageController spacePageInternalSettingsController = PageController(initialPage: 0);
 
 class _SpacePageState extends State<SpacePage> with TickerProviderStateMixin {
   // ignore: must_call_super
   void initState() {
     helpDialogs[3].showDialog(context);
+    getDefaultPage();
+  }
+
+  getDefaultPage() async {
+    if (await getSetting("organisationIsDefault")) {
+      setState(() {
+        segmentedControlGroupValue = 1;
+      });
+    }
   }
 
   Widget build(BuildContext context) {
@@ -101,55 +112,132 @@ class _SpacePageState extends State<SpacePage> with TickerProviderStateMixin {
                 padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
                 child: SingleChildScrollView(
                   physics: NeverScrollableScrollPhysics(),
-                  child: Column(
-                    children: <Widget>[
-                      SizedBox(
-                        height: screenSize.size.height / 10 * 0.1,
-                      ),
-                      CupertinoSlidingSegmentedControl(
-                          thumbColor: Theme.of(context).primaryColor,
-                          backgroundColor: darken(Theme.of(context).primaryColorDark),
-                          groupValue: segmentedControlGroupValue,
-                          children: spaceTabs,
-                          onValueChanged: (int i) {
-                     
-                              setState(() {
-                                segmentedControlGroupValue = i;
-                              });
-                            
-                          }),
-                      SizedBox(
-                        height: screenSize.size.height / 10 * 0.1,
-                      ),
-                      Container(
-                        height: screenSize.size.height / 10 * 6.8,
-                        child: SingleChildScrollView(
-                          padding: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.3),
-                          scrollDirection: Axis.vertical,
-                
-                          child: Column(
-                            children: <Widget>[
-                              AnimatedSwitcher(
-                                  duration: const Duration(milliseconds: 400),
-                                  transitionBuilder: (Widget child, Animation<double> animation) {
-                                   
-                                    return FadeTransition(child: child, opacity: animation);
-                                  },
-                                  child: segmentedControlGroupValue == 0
-                                      ? Column(
-                                        key:  ValueKey<int>(segmentedControlGroupValue),
-                                          children: [
-                                            DownloadsExplorer(),
-                                            //News
-                                            News(),
-                                          ],
-                                        )
-                                      : Agenda()),
-
-                              //News
-                            ],
+                  child: Stack(
+                    children: [
+                      Positioned(
+                        top: screenSize.size.height / 10 * 0.06,
+                        right: screenSize.size.width / 5 * 0.01,
+                        child: Container(
+                          width: screenSize.size.height / 10 * 0.5,
+                          height: screenSize.size.height / 10 * 0.5,
+                          child: RawMaterialButton(
+                            onPressed: () {
+                              spacePageInternalSettingsController.animateToPage(1,
+                                  duration: Duration(milliseconds: 300), curve: Curves.ease);
+                            },
+                            child: new Icon(
+                              Icons.settings,
+                              color: isDarkModeEnabled ? Colors.white : Colors.black,
+                              size: screenSize.size.height / 10 * 0.4,
+                            ),
+                            shape: new CircleBorder(),
+                            elevation: 1.0,
+                            fillColor: !isDarkModeEnabled ? Colors.white : Colors.black,
                           ),
                         ),
+                      ),
+                      Column(
+                        children: <Widget>[
+                          SizedBox(
+                            height: screenSize.size.height / 10 * 0.1,
+                          ),
+                          CupertinoSlidingSegmentedControl(
+                              thumbColor: Theme.of(context).primaryColor,
+                              backgroundColor: darken(Theme.of(context).primaryColorDark),
+                              groupValue: segmentedControlGroupValue,
+                              children: spaceTabs,
+                              onValueChanged: (int i) {
+                                setState(() {
+                                  segmentedControlGroupValue = i;
+                                });
+                              }),
+                          SizedBox(
+                            height: screenSize.size.height / 10 * 0.1,
+                          ),
+                          Container(
+                            height: screenSize.size.height / 10 * 6.8,
+                            width: screenSize.size.width / 5 * 4.5,
+                            child: PageView(
+                              
+                              physics: NeverScrollableScrollPhysics(),
+                              controller: spacePageInternalSettingsController,
+                              children: [
+                                Container(
+                                  height: screenSize.size.height / 10 * 6.8,
+                                  child: SingleChildScrollView(
+                                    padding:
+                                        EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.3),
+                                    scrollDirection: Axis.vertical,
+                                    child: Column(
+                                      children: <Widget>[
+                                        AnimatedSwitcher(
+                                            duration: const Duration(milliseconds: 400),
+                                            transitionBuilder:
+                                                (Widget child, Animation<double> animation) {
+                                              return FadeTransition(
+                                                  child: child, opacity: animation);
+                                            },
+                                            child: segmentedControlGroupValue == 0
+                                                ? Column(
+                                                    key: ValueKey<int>(segmentedControlGroupValue),
+                                                    children: [
+                                                      DownloadsExplorer(),
+                                                      //News
+                                                      News(),
+                                                    ],
+                                                  )
+                                                : Agenda()),
+
+                                        //News
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  height: screenSize.size.height / 10 * 6.8,
+                                  child: SingleChildScrollView(
+                                    padding:
+                                        EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.3),
+                                    scrollDirection: Axis.vertical,
+                                    child: Column(
+                                      children: <Widget>[
+                                        SpacePageGlobalSettings(),
+                                        OrganisationSettings(),
+                                        Container(
+                                          margin:
+                                              EdgeInsets.only(top: screenSize.size.width / 5 * 0.2),
+                                          height: (screenSize.size.height / 10 * 8.8) / 10 * 0.75,
+                                          width: screenSize.size.width / 5 * 2,
+                                          child: RaisedButton(
+                                            color: Theme.of(context).primaryColor,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius: new BorderRadius.circular(18.0),
+                                            ),
+                                            onPressed: () {
+                                              spacePageInternalSettingsController.animateToPage(0,
+                                                  duration: Duration(milliseconds: 300),
+                                                  curve: Curves.ease);
+                                            },
+                                            child: Text(
+                                              "Retour",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontFamily: "Asap",
+                                                  color: isDarkModeEnabled
+                                                      ? Colors.white
+                                                      : Colors.black),
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -160,22 +248,5 @@ class _SpacePageState extends State<SpacePage> with TickerProviderStateMixin {
         ),
       ),
     );
-  }
-}
-
-class AppNews {
-  static Future<List> checkAppNews() async {
-    try {
-      dioResponse.Response response = await dio.Dio().get("https://ynotes.fr/src/app-src/news.json",
-          options: dio.Options(responseType: dio.ResponseType.plain));
-
-      Map map = json.decode(response.data.toString());
-      List list = map["tickets"];
-      list.sort((a, b) => a["ticketnb"].compareTo(b["ticketnb"]));
-      return list.reversed.toList();
-    } catch (e) {
-      print(e);
-      return null;
-    }
   }
 }

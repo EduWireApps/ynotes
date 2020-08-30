@@ -43,13 +43,11 @@ class _AgendaState extends State<Agenda> {
   }
 
   Future<void> refreshAgendaFuture({bool force = true}) async {
-    if(mounted)
-    {
- setState(() {
-      agendaFuture = localApi.getNextLessons(date, forceReload: force);
-    });
+    if (mounted) {
+      setState(() {
+        agendaFuture = localApi.getNextLessons(date, forceReload: force);
+      });
     }
-   
 
     var realLF = await agendaFuture;
   }
@@ -547,8 +545,13 @@ class _AgendaElementState extends State<AgendaElement> {
                                                 widget.lesson.id.hashCode.toString(), true);
                                             setState(() {});
                                             await _scheduleNotification(widget.lesson);
+                                            //Get the delay between lesson and reminder
+                                            int minutes =
+                                                await getIntSetting("lessonReminderDelay");
                                             CustomDialogs.showAnyDialog(context,
-                                                "yNotes vous rappelera ce cours 5 minutes avant son commencement.");
+                                                "yNotes vous rappelera ce cours $minutes minutes avant son commencement.");
+                                            print("Registered " +
+                                                widget.lesson.id.hashCode.toString());
                                           } catch (e) {
                                             print("Error while scheduling " + e.toString());
                                           }

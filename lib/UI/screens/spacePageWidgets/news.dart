@@ -1,9 +1,14 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-
+import 'package:dio/src/response.dart' as dioResponse;
+import 'package:ynotes/UI/utils/fileUtils.dart';
 import '../../../usefulMethods.dart';
 import '../spacePage.dart';
+import 'package:dio/dio.dart' as dio;
 
 class News extends StatefulWidget {
   @override
@@ -38,7 +43,7 @@ class _NewsState extends State<News> {
                   textAlign: TextAlign.left,
                 )),
             Container(
-              height: screenSize.size.height / 10 * 1.8,
+              height: screenSize.size.height / 10 * 1.2,
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(11),
                 child: FutureBuilder(
@@ -124,5 +129,34 @@ class _NewsState extends State<News> {
         ),
       ),
     );
+  }
+}
+
+class AppNews {
+  static Future<List> checkAppNews() async {
+    try {
+      dioResponse.Response response = await dio.Dio().get("https://raw.githubusercontent.com/ModernChocolate/ynotes-website/master/src/app-src/news.json",
+          options: dio.Options(responseType: dio.ResponseType.plain));
+      var dir = await FolderAppUtil.getDirectory();
+      File jsonfile = File(dir.path + "/news.json");
+      jsonfile.writeAsString(response.data.toString());
+      Map map = json.decode(response.data.toString());
+      List list = map["tickets"];
+      list.sort((a, b) => a["ticketnb"].compareTo(b["ticketnb"]));
+      return list.reversed.toList();
+    } catch (e) {
+      print("AppNews error (type0) " + e.toString());
+      try {
+        var dir = await FolderAppUtil.getDirectory();
+        File jsonfile = File(dir.path + "/news.json");
+        Map map = json.decode(await jsonfile.readAsString());
+        List list = map["tickets"];
+        list.sort((a, b) => a["ticketnb"].compareTo(b["ticketnb"]));
+        return list.reversed.toList();
+      } catch (e) {
+        print("AppNews error (type1) " + e.toString());
+        return null;
+      }
+    }
   }
 }
