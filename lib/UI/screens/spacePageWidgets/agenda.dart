@@ -422,8 +422,7 @@ class _AgendaState extends State<Agenda> {
                 ),
               ),
               persistentHeader: Container(
-                width: screenSize.size.width,
-                height: screenSize.size.height,
+              
                 child: FutureBuilder(
                     future: agendaFuture,
                     builder: (context, pheaderData) {
@@ -462,8 +461,7 @@ class _AgendaState extends State<Agenda> {
                     }),
               ),
               expandableContent: Container(
-                width: screenSize.size.width,
-                height: screenSize.size.height,
+              
                 margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0),
                 child: FutureBuilder(
                     future: agendaFuture,
