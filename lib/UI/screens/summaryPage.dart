@@ -87,6 +87,9 @@ class _SummaryPageState extends State<SummaryPage> {
       homeworkListFuture = localApi.getNextHomework(forceReload: true);
     });
     var realHW = await homeworkListFuture;
+    setState(() {
+      doneListFuture = getHomeworkDonePercent();
+    });
   }
 
   @override
@@ -428,7 +431,10 @@ class _SummaryPageState extends State<SummaryPage> {
                             child: Text(
                               "Retour",
                               textAlign: TextAlign.center,
-                              style: TextStyle(fontSize: 18, fontFamily: "Asap", color:isDarkModeEnabled?Colors.white:Colors.black),
+                              style: TextStyle(
+                                  fontSize: 18,
+                                  fontFamily: "Asap",
+                                  color: isDarkModeEnabled ? Colors.white : Colors.black),
                             ),
                           ),
                         ),
@@ -783,13 +789,13 @@ class GaugeSegment {
 //Homework done percent
 Future<int> getHomeworkDonePercent() async {
   List list = await getReducedListHomework();
+  print("LIST LENGTH " +list.length.toString());
   if (list != null) {
     //Number of elements in list
     int total = list.length;
     if (total == 0) {
       return 100;
     } else {
-      print("LIST IS 0");
       int done = 0;
 
       await Future.forEach(list, (element) async {
@@ -804,7 +810,6 @@ Future<int> getHomeworkDonePercent() async {
       return percent;
     }
   } else {
-    print("LIST IS NULL");
     return 100;
   }
 }
@@ -812,7 +817,7 @@ Future<int> getHomeworkDonePercent() async {
 Future<List<Homework>> getReducedListHomework() async {
   int reduce = await getIntSetting("summaryQuickHomework");
   if (reduce == 11) {
-    reduce = -1;
+    reduce = 770;
   }
   List<Homework> localList = await localApi.getNextHomework();
   if (localList != null) {
@@ -820,12 +825,14 @@ Future<List<Homework>> getReducedListHomework() async {
     localList.forEach((element) {
       var now = DateTime.now();
       var date = element.date;
-//ensure that the list doesn't contain the pinned homework
+
+      //ensure that the list doesn't contain the pinned homework
       if (date.difference(now).inDays < reduce &&
           date.isAfter(DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now())))) {
         listToReturn.add(element);
       }
     });
+    print(listToReturn.length);
     return listToReturn;
   } else {
     return null;

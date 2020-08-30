@@ -14,7 +14,7 @@ Future<List<Map>> gettingRelatedLessons(String content) async {
     } catch (e) {
       print(e);
     }
-    print(jsonMap);
+  
     List lessons = jsonMap["dictionnary"];
     List<Map> maps = List();
 //testing each lesson

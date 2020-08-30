@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -558,10 +559,7 @@ class _HomeworkElementState extends State<HomeworkElement> {
                                     : null,
                                 child: Column(
                                   children: <Widget>[
-                                    if (widget.homeworkForThisDay.documentsContenuDeSeance !=
-                                            null &&
-                                        widget.homeworkForThisDay.documentsContenuDeSeance.length !=
-                                            0)
+                                    if (widget.homeworkForThisDay.contenuDeSeance!=null||(widget.homeworkForThisDay.documentsContenuDeSeance!=null&&widget.homeworkForThisDay.documentsContenuDeSeance.length>0))
                                       Container(
                                         height: screenSize.size.height / 10 * 0.6,
                                         width: screenSize.size.width / 5 * 3.2,
@@ -1022,16 +1020,13 @@ class _DialogHomeworkState extends State<DialogHomework> {
               child: SingleChildScrollView(
                 child: Material(
                   color: Colors.transparent,
-                  child: Text(
+                  child: AutoSizeText(
                     parsedHtml, // You need to pass the string you want the highlights
 
-                    style: TextStyle(
-                        // You can set the general style, like a Text()
-                        fontFamily: "Asap",
-                        fontSize: 20.0,
-                        color: isDarkModeEnabled ? Colors.white : Colors.black),
+                    style: TextStyle(fontSize: 20, fontFamily: "Asap"),
                     textAlign: TextAlign.justify,
-                    // You can use any attribute of the RichText widget
+                    minFontSize: 10,
+                    stepGranularity: 5,
                   ),
                 ),
               ),
@@ -1048,16 +1043,12 @@ class _DialogHomeworkState extends State<DialogHomework> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Container(
-                      child: FittedBox(
-                          child: Text(
-                    "kartable",
-                    textAlign: TextAlign.left,
-                    style: TextStyle(
-                        fontFamily: "ProximaNova",
-                        color: Color(0xff26c0ff),
-                        fontSize: screenSize.size.height / 10 * 0.32),
-                  ))),
+                  Align(
+                                      child: Container(
+                      width: screenSize.size.width / 5 * 1.8,
+                        child: Image(
+                            fit: BoxFit.fill, image: AssetImage('assets/images/schoolmouv.png'))),
+                  ),
                   FutureBuilder(
                       future: gettingRelatedLessons(parsedHtml),
                       builder: (context, snapshot) {
@@ -1110,7 +1101,7 @@ class _DialogHomeworkState extends State<DialogHomework> {
                                                                     overflow: TextOverflow.ellipsis,
                                                                     textAlign: TextAlign.left,
                                                                     style: TextStyle(
-                                                                        fontFamily: "ProximaNova",
+                                                                        fontFamily: "Asap",
                                                                         color: Colors.grey.shade600,
                                                                         fontSize:
                                                                             screenSize.size.height /
@@ -1129,7 +1120,7 @@ class _DialogHomeworkState extends State<DialogHomework> {
                                                                     snapshot.data[index]["chapter"],
                                                                     textAlign: TextAlign.left,
                                                                     style: TextStyle(
-                                                                        fontFamily: "ProximaNova",
+                                                                        fontFamily: "Asap",
                                                                         color: isDarkModeEnabled
                                                                             ? Colors.grey.shade400
                                                                             : Colors.grey.shade500,
@@ -1156,7 +1147,7 @@ class _DialogHomeworkState extends State<DialogHomework> {
                             "Aucun cours trouvé",
                             textAlign: TextAlign.left,
                             style: TextStyle(
-                                fontFamily: "ProximaNova",
+                                fontFamily: "Asap",
                                 color: isDarkModeEnabled ? Colors.grey.shade200 : Colors.black54,
                                 fontSize: screenSize.size.height / 10 * 0.25),
                           )));

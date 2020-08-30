@@ -295,7 +295,7 @@ class Client {
       },
       '_Signature_': {'onglet': 89}
     };
-   /* //Get "Contenu de cours"
+    /* //Get "Contenu de cours"
     var responseContent =
         await this.communication.post("PageCahierDeTexte", data: json_data_contenu);
 

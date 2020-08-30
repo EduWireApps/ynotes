@@ -235,7 +235,7 @@ class Offline {
     }
   }
 
-  getHWCompletion(String id) async {
+  Future<bool> getHWCompletion(String id) async {
     try {
       final dir = await FolderAppUtil.getDirectory();
       Hive.init("${dir.path}/offline");
