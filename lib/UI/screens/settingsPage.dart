@@ -161,7 +161,9 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                   title: 'Economiseur de batterie',
                   subtitle: "Réduit les interactions reseaux",
                   titleTextStyle: TextStyle(
-                      fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black,),
+                    fontFamily: "Asap",
+                    color: isDarkModeEnabled ? Colors.white : Colors.black,
+                  ),
                   subtitleTextStyle: TextStyle(
                       fontFamily: "Asap",
                       color: isDarkModeEnabled
@@ -172,14 +174,12 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                   switchValue: boolSettings["batterySaver"],
                   onToggle: (value) async {
                     setState(() {
-                      Provider.of<AppStateNotifier>(context, listen: false).updateTheme(value);
                       boolSettings["batterySaver"] = value;
                     });
 
-                    await setSetting("nightmode", value);
+                    await setSetting("batterySaver", value);
                   },
                 ),
-                
               ],
             ),
             SettingsSection(
@@ -223,7 +223,6 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     await setSetting("notificationNewGrade", value);
                   },
                 ),
-               
               ],
             ),
             SettingsSection(
@@ -328,7 +327,6 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                 ),
               ],
             ),
-           
           ],
         ));
   }

@@ -131,7 +131,7 @@ class _AgendaState extends State<Agenda> {
                         width: screenSize.size.width / 5 * 2.5,
                         height: screenSize.size.height / 10 * 0.5,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(11),
+                          borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                           color: Color(0xffC4C4C4),
                         ),
                         child: FittedBox(
@@ -175,7 +175,8 @@ class _AgendaState extends State<Agenda> {
           vertical: screenSize.size.height / 10 * 0.005,
           horizontal: screenSize.size.width / 5 * 0.05),
       decoration: BoxDecoration(
-          color: Theme.of(context).primaryColorDark, borderRadius: BorderRadius.circular(11)),
+          color: Theme.of(context).primaryColorDark,
+          borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15)),
       child: FittedBox(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -184,9 +185,9 @@ class _AgendaState extends State<Agenda> {
               padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.05),
               child: Material(
                 color: Theme.of(context).primaryColor,
-                borderRadius: BorderRadius.circular(11),
+                borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                 child: InkWell(
-                  borderRadius: BorderRadius.circular(11),
+                  borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                   onTap: () {
                     setState(() {
                       date = date.subtract(Duration(days: 1));
@@ -216,9 +217,9 @@ class _AgendaState extends State<Agenda> {
               padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.05),
               child: Material(
                 color: Theme.of(context).primaryColor,
-                borderRadius: BorderRadius.circular(11),
+                borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                 child: InkWell(
-                  borderRadius: BorderRadius.circular(11),
+                  borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                   onTap: () async {
                     DateTime someDate = await showDatePicker(
                       locale: Locale('fr', 'FR'),
@@ -275,9 +276,9 @@ class _AgendaState extends State<Agenda> {
               padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.05),
               child: Material(
                 color: Theme.of(context).primaryColor,
-                borderRadius: BorderRadius.circular(11),
+                borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                 child: InkWell(
-                  borderRadius: BorderRadius.circular(11),
+                  borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                   onTap: () {
                     setState(() {
                       date = date.add(Duration(days: 1));
@@ -320,12 +321,12 @@ class _AgendaState extends State<Agenda> {
         height: screenSize.size.height / 10 * 6.5,
         margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(11),
+          borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
           color: Theme.of(context).primaryColor,
         ),
         width: screenSize.size.width / 5 * 4.5,
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(11),
+          borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
           child: Container(
             width: screenSize.size.width,
             height: screenSize.size.height,
@@ -334,95 +335,101 @@ class _AgendaState extends State<Agenda> {
                 width: screenSize.size.width,
                 height: screenSize.size.height,
                 padding: EdgeInsets.all(screenSize.size.width / 5 * 0.05),
-                child: Column(
-                  children: <Widget>[
-                    _buildAgendaButtons(context),
-                    Container(
-                      height: screenSize.size.height / 10 * 5.8,
-                      padding: EdgeInsets.all(screenSize.size.height / 10 * 0.1),
-                      child: Stack(
-                        children: [
-                          FutureBuilder(
-                              future: agendaFuture,
-                              builder: (context, snapshot) {
-                                if (snapshot.hasData &&
-                                    snapshot.data != null &&
-                                    snapshot.data.length != 0) {
-                                  return ClipRRect(
-                                    borderRadius: BorderRadius.circular(11),
-                                    child: RefreshIndicator(
-                                      onRefresh: refreshAgendaFuture,
-                                      child: ListView.builder(
-                                          itemCount: snapshot.data.length,
-                                          itemBuilder: (BuildContext context, int index) {
-                                            return _buildAgendaElement(
-                                                context, snapshot.data[index]);
-                                          }),
-                                    ),
-                                  );
-                                }
-                                if (snapshot.data != null && snapshot.data.length == 0) {
-                                  return Center(
-                                    child: FittedBox(
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          Container(
-                                            margin: EdgeInsets.only(
-                                                left: screenSize.size.width / 5 * 0.5),
-                                            height: screenSize.size.height / 10 * 1.9,
-                                            child: Image(
-                                                fit: BoxFit.fitWidth,
-                                                image: AssetImage('assets/images/coffee.png')),
-                                          ),
-                                          Text(
-                                            "Journée détente ?",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                fontFamily: "Asap",
-                                                color:
-                                                    isDarkModeEnabled ? Colors.white : Colors.black,
-                                                fontSize:
-                                                    (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
-                                          ),
-                                          FlatButton(
-                                            onPressed: () {
-                                              //Reload list
-                                              getLessons(date);
-                                            },
-                                            child: Text("Recharger",
-                                                style: TextStyle(
-                                                    fontFamily: "Asap",
-                                                    color: isDarkModeEnabled
-                                                        ? Colors.white
-                                                        : Colors.black,
-                                                    fontSize: (screenSize.size.height / 10 * 8.8) /
-                                                        10 *
-                                                        0.2)),
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius: new BorderRadius.circular(18.0),
-                                                side: BorderSide(
-                                                    color: Theme.of(context).primaryColorDark)),
-                                          )
-                                        ],
+                child: SingleChildScrollView(
+                  physics: NeverScrollableScrollPhysics(),
+                  child: Column(
+                    children: <Widget>[
+                      _buildAgendaButtons(context),
+                      Container(
+                        height: screenSize.size.height / 10 * 5.8,
+                        padding: EdgeInsets.all(screenSize.size.height / 10 * 0.1),
+                        child: Stack(
+                          children: [
+                            FutureBuilder(
+                                future: agendaFuture,
+                                builder: (context, snapshot) {
+                                  if (snapshot.hasData &&
+                                      snapshot.data != null &&
+                                      snapshot.data.length != 0) {
+                                    return ClipRRect(
+                                      borderRadius:
+                                          BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                                      child: RefreshIndicator(
+                                        onRefresh: refreshAgendaFuture,
+                                        child: ListView.builder(
+                                            itemCount: snapshot.data.length,
+                                            itemBuilder: (BuildContext context, int index) {
+                                              return _buildAgendaElement(
+                                                  context, snapshot.data[index]);
+                                            }),
                                       ),
-                                    ),
-                                  );
-                                } else {
-                                  return SpinKitFadingFour(
-                                    color: Theme.of(context).primaryColorDark,
-                                    size: screenSize.size.width / 5 * 1,
-                                  );
-                                }
-                              }),
-                        ],
-                      ),
-                    )
-                  ],
+                                    );
+                                  }
+                                  if (snapshot.data != null && snapshot.data.length == 0) {
+                                    return Center(
+                                      child: FittedBox(
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            Container(
+                                              margin: EdgeInsets.only(
+                                                  left: screenSize.size.width / 5 * 0.5),
+                                              height: screenSize.size.height / 10 * 1.9,
+                                              child: Image(
+                                                  fit: BoxFit.fitWidth,
+                                                  image: AssetImage('assets/images/coffee.png')),
+                                            ),
+                                            Text(
+                                              "Journée détente ?",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                  fontFamily: "Asap",
+                                                  color: isDarkModeEnabled
+                                                      ? Colors.white
+                                                      : Colors.black,
+                                                  fontSize: (screenSize.size.height / 10 * 8.8) /
+                                                      10 *
+                                                      0.2),
+                                            ),
+                                            FlatButton(
+                                              onPressed: () {
+                                                //Reload list
+                                                getLessons(date);
+                                              },
+                                              child: Text("Recharger",
+                                                  style: TextStyle(
+                                                      fontFamily: "Asap",
+                                                      color: isDarkModeEnabled
+                                                          ? Colors.white
+                                                          : Colors.black,
+                                                      fontSize:
+                                                          (screenSize.size.height / 10 * 8.8) /
+                                                              10 *
+                                                              0.2)),
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius: new BorderRadius.circular(18.0),
+                                                  side: BorderSide(
+                                                      color: Theme.of(context).primaryColorDark)),
+                                            )
+                                          ],
+                                        ),
+                                      ),
+                                    );
+                                  } else {
+                                    return SpinKitFadingFour(
+                                      color: Theme.of(context).primaryColorDark,
+                                      size: screenSize.size.width / 5 * 1,
+                                    );
+                                  }
+                                }),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
               persistentHeader: Container(
-              
                 child: FutureBuilder(
                     future: agendaFuture,
                     builder: (context, pheaderData) {
@@ -461,7 +468,6 @@ class _AgendaState extends State<Agenda> {
                     }),
               ),
               expandableContent: Container(
-              
                 margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0),
                 child: FutureBuilder(
                     future: agendaFuture,
@@ -509,9 +515,9 @@ class _AgendaElementState extends State<AgendaElement> {
             margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.1),
             child: Material(
               color: color,
-              borderRadius: BorderRadius.circular(11),
+              borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
               child: InkWell(
-                borderRadius: BorderRadius.circular(11),
+                borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                 onLongPress: () {
                   setState(() {
                     buttons = !buttons;
@@ -752,8 +758,9 @@ getCurrentLesson(List<Lesson> lessons, {DateTime now}) {
 }
 
 Future<void> _scheduleNotification(Lesson lesson) async {
-  var scheduledNotificationDateTime = lesson.start.subtract(Duration(minutes: 5));
-  //var scheduledNotificationDateTime = DateTime.now().add(Duration(seconds: 5));
+  int minutes = await getIntSetting("lessonReminderDelay");
+  var scheduledNotificationDateTime = lesson.start.subtract(Duration(minutes: minutes));
+
 
   var androidPlatformChannelSpecifics = AndroidNotificationDetails(
     '2006',

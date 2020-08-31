@@ -433,6 +433,9 @@ class APIEcoleDirecte extends API {
     switch (contexte) {
       case ("CDT"):
         {
+
+        var altClient = HttpClient();
+ 
           //Ensure that token is refreshed
           await testToken();
           var uri =

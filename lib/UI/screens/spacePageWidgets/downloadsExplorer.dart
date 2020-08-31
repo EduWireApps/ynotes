@@ -85,7 +85,6 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
   }
 
   refreshFileListFuture() async {
-
     selectionMode = false;
     setState(() {
       filesListFuture = FileAppUtil.getFilesList(initialPath + path);
@@ -99,7 +98,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
     return Container(
       margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(11),
+        borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
         color: Theme.of(context).primaryColor,
       ),
       width: screenSize.size.width / 5 * 4.5,
@@ -135,9 +134,10 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                             margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.2),
                             child: Material(
                               color: Theme.of(context).primaryColorDark,
-                              borderRadius: BorderRadius.circular(11),
+                              borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                               child: InkWell(
-                                borderRadius: BorderRadius.circular(11),
+                                borderRadius:
+                                    BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                                 onTap: () async {
                                   if (initialPath + path != initialPath) {
                                     var splits = path.split("/");
@@ -196,9 +196,10 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                             margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
                             child: Material(
                               color: Theme.of(context).primaryColorDark,
-                              borderRadius: BorderRadius.circular(11),
+                              borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                               child: InkWell(
-                                borderRadius: BorderRadius.circular(11),
+                                borderRadius:
+                                    BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                                 onTap: () {
                                   setState(() {
                                     selectionMode = false;
@@ -227,9 +228,9 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                     margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
                     child: Material(
                       color: Theme.of(context).primaryColorDark,
-                      borderRadius: BorderRadius.circular(11),
+                      borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                       child: InkWell(
-                        borderRadius: BorderRadius.circular(11),
+                        borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                         onTap: () async {
                           CustomDialogs.showNewFolderDialog(context, initialPath + path, listFiles,
                               selectionMode, refreshFileListFuture);
@@ -257,9 +258,9 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                     margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
                     child: Material(
                       color: Theme.of(context).primaryColorDark,
-                      borderRadius: BorderRadius.circular(11),
+                      borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                       child: InkWell(
-                        borderRadius: BorderRadius.circular(11),
+                        borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                         onTap: () async {
                           if (selectionMode) {
                             bool response =
@@ -328,9 +329,10 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                             margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
                             child: Material(
                               color: Theme.of(context).primaryColorDark,
-                              borderRadius: BorderRadius.circular(11),
+                              borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                               child: InkWell(
-                                borderRadius: BorderRadius.circular(11),
+                                borderRadius:
+                                    BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                                 onTap: () {
                                   setState(() {
                                     clipboard.clear();
@@ -366,9 +368,9 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                       margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
                       child: Material(
                         color: Theme.of(context).primaryColorDark,
-                        borderRadius: BorderRadius.circular(11),
+                        borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                         child: InkWell(
-                          borderRadius: BorderRadius.circular(11),
+                          borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                           onTap: !(clipboard.length > 0)
                               ? null
                               : () async {
@@ -421,7 +423,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                 horizontal: screenSize.size.width / 5 * 0.1,
                 vertical: screenSize.size.height / 10 * 0.02),
             child: ClipRRect(
-              borderRadius: BorderRadius.circular(11),
+              borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
               child: FutureBuilder(
                 future: filesListFuture,
                 builder: (context, snapshot) {
@@ -579,10 +581,16 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            Icon(
-                              MdiIcons.downloadOffOutline,
-                              color: isDarkModeEnabled ? Colors.white : Colors.black,
-                              size: screenSize.size.width / 5 * 1.5,
+                            ConstrainedBox(
+                              constraints:
+                                  BoxConstraints(maxHeight: screenSize.size.height / 10 * 1.2),
+                              child: FittedBox(
+                                child: Icon(
+                                  MdiIcons.downloadOffOutline,
+                                  color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                  size: screenSize.size.width / 5 * 1.5,
+                                ),
+                              ),
                             ),
                             Text(
                               "Aucun élément.",

@@ -156,9 +156,9 @@ class _HomeworkPageState extends State<HomeworkPage> {
                 children: <Widget>[
                   Material(
                     color: Theme.of(context).primaryColorDark,
-                    borderRadius: BorderRadius.circular(11),
+                    borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                     child: InkWell(
-                      borderRadius: BorderRadius.circular(11),
+                      borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                       onTap: () {
                         _pageControllerHW.animateTo(0,
                             duration: Duration(milliseconds: 250), curve: Curves.ease);
@@ -188,9 +188,9 @@ class _HomeworkPageState extends State<HomeworkPage> {
                   ),
                   Material(
                     color: Theme.of(context).primaryColorDark,
-                    borderRadius: BorderRadius.circular(11),
+                    borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                     child: InkWell(
-                      borderRadius: BorderRadius.circular(11),
+                      borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                       onTap: () async {
                         DateTime someDate = await showDatePicker(
                           locale: Locale('fr', 'FR'),
@@ -559,7 +559,12 @@ class _HomeworkElementState extends State<HomeworkElement> {
                                     : null,
                                 child: Column(
                                   children: <Widget>[
-                                    if (widget.homeworkForThisDay.contenuDeSeance!=null||(widget.homeworkForThisDay.documentsContenuDeSeance!=null&&widget.homeworkForThisDay.documentsContenuDeSeance.length>0))
+                                    if (widget.homeworkForThisDay.contenuDeSeance != null ||
+                                        (widget.homeworkForThisDay.documentsContenuDeSeance !=
+                                                null &&
+                                            widget.homeworkForThisDay.documentsContenuDeSeance
+                                                    .length >
+                                                0))
                                       Container(
                                         height: screenSize.size.height / 10 * 0.6,
                                         width: screenSize.size.width / 5 * 3.2,
@@ -1016,7 +1021,8 @@ class _DialogHomeworkState extends State<DialogHomework> {
               width: screenSize.size.width / 5 * 4.5,
               padding: EdgeInsets.all(screenSize.size.height / 10 * 0.2),
               decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(11)),
+                  color: Theme.of(context).primaryColor,
+                  borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15)),
               child: SingleChildScrollView(
                 child: Material(
                   color: Colors.transparent,
@@ -1039,13 +1045,14 @@ class _DialogHomeworkState extends State<DialogHomework> {
               width: screenSize.size.width / 5 * 4.5,
               padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.2),
               decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(11)),
+                  color: Theme.of(context).primaryColor,
+                  borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Align(
-                                      child: Container(
-                      width: screenSize.size.width / 5 * 1.8,
+                    child: Container(
+                        width: screenSize.size.width / 5 * 1.8,
                         child: Image(
                             fit: BoxFit.fill, image: AssetImage('assets/images/schoolmouv.png'))),
                   ),
@@ -1064,21 +1071,25 @@ class _DialogHomeworkState extends State<DialogHomework> {
                                   itemCount: snapshot.data.length,
                                   itemBuilder: (BuildContext context, int index) {
                                     return ClipRRect(
-                                      borderRadius: BorderRadius.circular(11),
+                                      borderRadius:
+                                          BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                                       child: Container(
                                         margin: EdgeInsets.only(
                                             bottom: screenSize.size.height / 10 * 0.1),
                                         child: Material(
-                                            borderRadius: BorderRadius.circular(11),
+                                            borderRadius: BorderRadius.circular(
+                                                screenSize.size.width / 5 * 0.5),
                                             color: Theme.of(context).primaryColorDark,
                                             child: InkWell(
-                                                borderRadius: BorderRadius.circular(11),
+                                                borderRadius: BorderRadius.circular(
+                                                    screenSize.size.width / 5 * 0.5),
                                                 onTap: () {
                                                   launchURL(snapshot.data[index]["url"]);
                                                 },
                                                 child: Container(
                                                     decoration: BoxDecoration(
-                                                        borderRadius: BorderRadius.circular(11)),
+                                                        borderRadius: BorderRadius.circular(
+                                                            screenSize.size.width / 5 * 0.5)),
                                                     child: Column(
                                                         crossAxisAlignment:
                                                             CrossAxisAlignment.center,

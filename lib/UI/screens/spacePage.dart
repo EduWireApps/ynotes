@@ -62,18 +62,18 @@ class _SpacePageState extends State<SpacePage> with TickerProviderStateMixin {
         child: Column(
           children: <Widget>[
             Material(
-              borderRadius: BorderRadius.circular(11),
+              borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
               color: Theme.of(context).primaryColor,
               child: InkWell(
                 onTap: () {
                   Navigator.of(context).push(router(SettingsPage()));
                 },
-                borderRadius: BorderRadius.circular(11),
+                borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                 child: Container(
                   padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.2),
                   width: screenSize.size.width / 5 * 4.5,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(11),
+                    borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                     color: Theme.of(context).primaryColor,
                   ),
                   child: Row(
@@ -105,7 +105,7 @@ class _SpacePageState extends State<SpacePage> with TickerProviderStateMixin {
                     top: screenSize.size.height / 10 * 0.2,
                     bottom: screenSize.size.height / 10 * 0.4),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(11),
+                  borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                   color: Theme.of(context).primaryColorDark,
                 ),
                 height: screenSize.size.height / 10 * 7.5,
@@ -158,7 +158,6 @@ class _SpacePageState extends State<SpacePage> with TickerProviderStateMixin {
                             height: screenSize.size.height / 10 * 6.8,
                             width: screenSize.size.width / 5 * 4.5,
                             child: PageView(
-                              
                               physics: NeverScrollableScrollPhysics(),
                               controller: spacePageInternalSettingsController,
                               children: [

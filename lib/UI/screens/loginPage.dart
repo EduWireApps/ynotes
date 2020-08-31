@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -385,22 +386,24 @@ static String utf8convert(String text) {
                                                         crossAxisAlignment: CrossAxisAlignment.center,
                                                         children: <Widget>[
                                                           Container(
-                                                              child: Text(
+                                                              child: AutoSizeText(
                                                                 "Bienvenue sur yNotes",
                                                                 style: TextStyle(
                                                                     fontFamily: 'Asap',
                                                                     fontWeight: FontWeight.bold,
                                                                     color: Colors.black),
+                                                                    minFontSize: 18,
                                                                 textAlign: TextAlign.center,
                                                               ),
                                                           ),
                                                           Container(
                                                               width: screenSize.size.width / 5 * 3,
-                                                              child: Text(
+                                                              child: AutoSizeText(
                                                                 "Connectez vous à votre espace scolaire",
                                                                 style: TextStyle(
                                                                     fontFamily: 'Asap',
                                                                     color: Colors.black),
+                                                                    minFontSize: 16,
                                                                 textAlign: TextAlign.center,
                                                               ),
                                                           ),
@@ -418,11 +421,12 @@ static String utf8convert(String text) {
                                                       mainAxisAlignment: MainAxisAlignment.start,
                                                       children: <Widget>[
                                                         Container(
-                                                          child: Text(
+                                                          child: AutoSizeText(
                                                               "Identifiant",
                                                               style: TextStyle(
                                                                   fontFamily: 'Asap', color: Colors.black),
                                                               textAlign: TextAlign.left,
+                                                              minFontSize: 18,
                                                           ),
                                                         ),
                                                         Text(_obligationText,
@@ -458,11 +462,12 @@ static String utf8convert(String text) {
                                                     ),
                                                     child: Row(
                                                       children: <Widget>[
-                                                        Text(
+                                                        AutoSizeText(
                                                           "Mot de passe",
                                                           style: TextStyle(
                                                                 fontFamily: 'Asap', color: Colors.black),
                                                           textAlign: TextAlign.center,
+                                                          minFontSize: 18,
                                                         ),
                                                       ],
                                                     ),
@@ -499,12 +504,13 @@ static String utf8convert(String text) {
                                                       child: Row(
                                                         children: <Widget>[
                                                           Container(
-                                                              child: Text(
+                                                              child: AutoSizeText(
                                                                 "Adresse Pronote",
                                                                 style: TextStyle(
                                                                     fontFamily: 'Asap',
                                                                     color: Colors.black),
                                                                 textAlign: TextAlign.center,
+                                                                minFontSize: 18,
                                                               ),
                                                           ),
                                                           Text(_obligationText,
@@ -543,11 +549,12 @@ static String utf8convert(String text) {
                                                       ),
                                                       child: Row(
                                                         children: <Widget>[
-                                                          Text(
+                                                          AutoSizeText(
                                                               "ENT",
                                                               style: TextStyle(
                                                                   fontFamily: 'Asap', color: Colors.black),
                                                               textAlign: TextAlign.center,
+                                                              minFontSize: 18,
                                                           ),
                                                         ],
                                                       ),
@@ -577,11 +584,12 @@ static String utf8convert(String text) {
                                                           ].map<DropdownMenuItem<String>>((String value) {
                                                               return DropdownMenuItem<String>(
                                                                 value: value,
-                                                                child: Text(
+                                                                child: AutoSizeText(
                                                                   value,
                                                                   style: TextStyle(
                                                                       fontFamily: 'Asap',
                                                                       color: Colors.black),
+                                                                      minFontSize: 18,
                                                                 ),
                                                               );
                                                           }).toList(),
@@ -687,7 +695,7 @@ static String utf8convert(String text) {
                                                                       });
                                                                     }
                                                                   },
-                                                                  child: Text(
+                                                                  child: AutoSizeText(
                                                                     "Allons-y",
                                                                     style: TextStyle(
                                                                         fontFamily: "Asap",
@@ -695,6 +703,7 @@ static String utf8convert(String text) {
                                                                             screenSize.size.width / 5 * 0.3,
                                                                         fontWeight: FontWeight.bold,
                                                                         color: textButtonColor),
+                                                                        maxFontSize: 45,
                                                                   ),
                                                                 ),
                                                               ],

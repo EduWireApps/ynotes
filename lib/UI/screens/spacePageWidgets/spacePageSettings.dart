@@ -40,7 +40,7 @@ class _SpacePageGlobalSettingsState extends State<SpacePageGlobalSettings> {
     return Container(
       margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(11),
+        borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
         color: Theme.of(context).primaryColor,
       ),
       width: screenSize.size.width / 5 * 4.5,
@@ -64,7 +64,6 @@ class _SpacePageGlobalSettingsState extends State<SpacePageGlobalSettings> {
                     fontFamily: "Asap",
                     color: isDarkModeEnabled ? Colors.white : Colors.black,
                     fontSize: screenSize.size.height / 10 * 0.21)),
-           
             onChanged: (value) async {
               setState(() {
                 boolSettings["organisationIsDefault"] = value;
@@ -77,7 +76,6 @@ class _SpacePageGlobalSettingsState extends State<SpacePageGlobalSettings> {
               color: isDarkModeEnabled ? Colors.white : Colors.black,
             ),
           ),
-          
         ],
       ),
     );
@@ -122,7 +120,7 @@ class _OrganisationSettingsState extends State<OrganisationSettings> {
     return Container(
       margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(11),
+        borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
         color: Theme.of(context).primaryColor,
       ),
       width: screenSize.size.width / 5 * 4.5,

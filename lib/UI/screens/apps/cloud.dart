@@ -12,7 +12,9 @@ import '../appsPage.dart';
 import '../gradesPage.dart';
 import 'mail.dart';
 import 'package:ynotes/UI/utils/fileUtils.dart';
+
 String cloudUsedFolder = "";
+
 class CloudPage extends StatefulWidget {
   State<StatefulWidget> createState() {
     return _CloudPageState();
@@ -75,7 +77,7 @@ class _CloudPageState extends State<CloudPage> {
             left: screenSize.size.width / 5 * 0.2,
             top: screenSize.size.height / 10 * 0.1,
             child: Material(
-              borderRadius: BorderRadius.circular(11),
+              borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
               color: Theme.of(context).primaryColor,
               child: InkWell(
                 onTap: () {
@@ -113,7 +115,7 @@ class _CloudPageState extends State<CloudPage> {
             height: path != "/" ? screenSize.size.height / 10 * 0.5 : 0,
             width: screenSize.size.width,
             child: Material(
-              borderRadius: BorderRadius.circular(11),
+              borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
               color: Theme.of(context).primaryColor,
               child: InkWell(
                 onTap: () {
@@ -202,21 +204,28 @@ class _CloudPageState extends State<CloudPage> {
                                       Row(children: <Widget>[
                                         Expanded(
                                           child: new Container(
-                                              margin: const EdgeInsets.only(left: 10.0, right: 20.0),
+                                              margin:
+                                                  const EdgeInsets.only(left: 10.0, right: 20.0),
                                               child: Divider(
-                                                color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                                color:
+                                                    isDarkModeEnabled ? Colors.white : Colors.black,
                                                 height: 36,
                                               )),
                                         ),
                                         Text(
                                           "Autres clouds",
-                                          style: TextStyle(color: isDarkModeEnabled ? Colors.white : Colors.black, fontFamily: "Asap"),
+                                          style: TextStyle(
+                                              color:
+                                                  isDarkModeEnabled ? Colors.white : Colors.black,
+                                              fontFamily: "Asap"),
                                         ),
                                         Expanded(
                                           child: new Container(
-                                              margin: const EdgeInsets.only(left: 20.0, right: 10.0),
+                                              margin:
+                                                  const EdgeInsets.only(left: 20.0, right: 10.0),
                                               child: Divider(
-                                                color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                                color:
+                                                    isDarkModeEnabled ? Colors.white : Colors.black,
                                                 height: 36,
                                               )),
                                         ),
@@ -225,7 +234,6 @@ class _CloudPageState extends State<CloudPage> {
                                     ViewModelBuilder<DownloadModel>.reactive(
                                         viewModelBuilder: () => DownloadModel(),
                                         builder: (context, model, child) {
-                                          
                                           return Material(
                                             color: Theme.of(context).primaryColor,
                                             child: InkWell(
@@ -240,36 +248,59 @@ class _CloudPageState extends State<CloudPage> {
                                                   changeDirectory(localFoldersList[index]);
                                                 }
                                                 if (localFoldersList[index].type == "FILE") {
-                                                  if (await model.fileExists(localFoldersList[index].title)) {
-                                                    FileAppUtil.openFile(localFoldersList[index].title);
+                                                  if (await model
+                                                      .fileExists(localFoldersList[index].title)) {
+                                                    FileAppUtil.openFile(
+                                                        localFoldersList[index].title);
                                                   } else {
-                                                    model.download(localFoldersList[index].id, "CLOUD", localFoldersList[index].title);
+                                                    model.download(localFoldersList[index].id,
+                                                        "CLOUD", localFoldersList[index].title);
                                                   }
                                                 }
                                               },
                                               child: Container(
-                                                padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.1),
+                                                padding: EdgeInsets.symmetric(
+                                                    vertical: screenSize.size.height / 10 * 0.1),
                                                 margin: EdgeInsets.all(0),
                                                 child: Row(
                                                   children: <Widget>[
                                                     FutureBuilder(
-                                                        future: model.fileExists(localFoldersList[index].title),
+                                                        future: model.fileExists(
+                                                            localFoldersList[index].title),
                                                         initialData: false,
                                                         builder: (context, snapshot) {
                                                           return Container(
-                                                            margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.2),
+                                                            margin: EdgeInsets.only(
+                                                                left: screenSize.size.width /
+                                                                    5 *
+                                                                    0.2),
                                                             child: Icon(
-                                                              (localFoldersList[index].type == "FOLDER") ? MdiIcons.folder : (snapshot.data||model.downloadProgress == 100 ? MdiIcons.fileCheck : MdiIcons.file),
-                                                              color: ((localFoldersList[index].type == "FOLDER") ? Colors.yellow.shade600 : isDarkModeEnabled?Colors.grey.shade300:Colors.grey.shade400),
+                                                              (localFoldersList[index].type ==
+                                                                      "FOLDER")
+                                                                  ? MdiIcons.folder
+                                                                  : (snapshot.data ||
+                                                                          model.downloadProgress ==
+                                                                              100
+                                                                      ? MdiIcons.fileCheck
+                                                                      : MdiIcons.file),
+                                                              color:
+                                                                  ((localFoldersList[index].type ==
+                                                                          "FOLDER")
+                                                                      ? Colors.yellow.shade600
+                                                                      : isDarkModeEnabled
+                                                                          ? Colors.grey.shade300
+                                                                          : Colors.grey.shade400),
                                                             ),
                                                           );
                                                         }),
                                                     Container(
-                                                      margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.4),
+                                                      margin: EdgeInsets.only(
+                                                          left: screenSize.size.width / 5 * 0.4),
                                                       width: screenSize.size.width / 5 * 4,
                                                       child: Column(
                                                         mainAxisAlignment: MainAxisAlignment.start,
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment.start,
                                                         children: <Widget>[
                                                           Container(
                                                             child: Text(
@@ -277,8 +308,12 @@ class _CloudPageState extends State<CloudPage> {
                                                               textAlign: TextAlign.start,
                                                               style: TextStyle(
                                                                 fontFamily: "Asap",
-                                                                fontSize: screenSize.size.height / 10 * 0.25,
-                                                                color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                                                fontSize: screenSize.size.height /
+                                                                    10 *
+                                                                    0.25,
+                                                                color: isDarkModeEnabled
+                                                                    ? Colors.white
+                                                                    : Colors.black,
                                                               ),
                                                               overflow: TextOverflow.ellipsis,
                                                             ),
@@ -289,8 +324,12 @@ class _CloudPageState extends State<CloudPage> {
                                                               textAlign: TextAlign.start,
                                                               style: TextStyle(
                                                                 fontFamily: "Asap",
-                                                                fontSize: screenSize.size.height / 10 * 0.2,
-                                                                color: isDarkModeEnabled ? Colors.white60 : Colors.black87,
+                                                                fontSize: screenSize.size.height /
+                                                                    10 *
+                                                                    0.2,
+                                                                color: isDarkModeEnabled
+                                                                    ? Colors.white60
+                                                                    : Colors.black87,
                                                               ),
                                                               overflow: TextOverflow.ellipsis,
                                                             ),
@@ -298,22 +337,32 @@ class _CloudPageState extends State<CloudPage> {
                                                             Row(
                                                               children: <Widget>[
                                                                 Text(
-                                                                  localFoldersList[index].date.toString(),
+                                                                  localFoldersList[index]
+                                                                      .date
+                                                                      .toString(),
                                                                   textAlign: TextAlign.start,
                                                                   style: TextStyle(
                                                                     fontFamily: "Asap",
-                                                                    fontSize: screenSize.size.height / 10 * 0.2,
-                                                                    color: isDarkModeEnabled ? Colors.white38 : Colors.black38,
+                                                                    fontSize:
+                                                                        screenSize.size.height /
+                                                                            10 *
+                                                                            0.2,
+                                                                    color: isDarkModeEnabled
+                                                                        ? Colors.white38
+                                                                        : Colors.black38,
                                                                   ),
                                                                   overflow: TextOverflow.ellipsis,
                                                                 ),
                                                               ],
                                                             ),
 
-                                                           //File downloading 
-                                                          if (model.isDownloading && model.downloadProgress != null && model.downloadProgress < 100)
+                                                          //File downloading
+                                                          if (model.isDownloading &&
+                                                              model.downloadProgress != null &&
+                                                              model.downloadProgress < 100)
                                                             Container(
-                                                                width: screenSize.size.width / 5 * 4,
+                                                                width:
+                                                                    screenSize.size.width / 5 * 4,
                                                                 child: LinearProgressIndicator(
                                                                   value: model.downloadProgress,
                                                                 ))
@@ -346,7 +395,9 @@ class _CloudPageState extends State<CloudPage> {
                           children: <Widget>[
                             Text(
                               "Une erreur a eu lieu",
-                              style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                              style: TextStyle(
+                                  fontFamily: "Asap",
+                                  color: isDarkModeEnabled ? Colors.white : Colors.black),
                             ),
                             FlatButton(
                               onPressed: () {
@@ -358,7 +409,9 @@ class _CloudPageState extends State<CloudPage> {
                                     fontFamily: "Asap",
                                     color: isDarkModeEnabled ? Colors.white : Colors.black,
                                   )),
-                              shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(18.0), side: BorderSide(color: Theme.of(context).primaryColorDark)),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: new BorderRadius.circular(18.0),
+                                  side: BorderSide(color: Theme.of(context).primaryColorDark)),
                             ),
                           ],
                         ),
@@ -374,7 +427,8 @@ class _CloudPageState extends State<CloudPage> {
           ),
           if (isLoading)
             Container(
-              decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), color: Colors.black.withOpacity(0.4)),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(15), color: Colors.black.withOpacity(0.4)),
               margin: EdgeInsets.only(
                 top: screenSize.size.height / 10 * 1.35,
               ),

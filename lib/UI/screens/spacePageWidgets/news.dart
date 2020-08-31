@@ -23,7 +23,7 @@ class _NewsState extends State<News> {
     return Container(
       margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(11),
+        borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
         color: Theme.of(context).primaryColor,
       ),
       width: screenSize.size.width / 5 * 4.5,
@@ -45,7 +45,7 @@ class _NewsState extends State<News> {
             Container(
               height: screenSize.size.height / 10 * 1.2,
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(11),
+                borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                 child: FutureBuilder(
                     future: AppNews.checkAppNews(),
                     builder: (context, snapshot) {
@@ -135,7 +135,8 @@ class _NewsState extends State<News> {
 class AppNews {
   static Future<List> checkAppNews() async {
     try {
-      dioResponse.Response response = await dio.Dio().get("https://raw.githubusercontent.com/ModernChocolate/ynotes-website/master/src/app-src/news.json",
+      dioResponse.Response response = await dio.Dio().get(
+          "https://raw.githubusercontent.com/ModernChocolate/ynotes-website/master/src/app-src/news.json",
           options: dio.Options(responseType: dio.ResponseType.plain));
       var dir = await FolderAppUtil.getDirectory();
       File jsonfile = File(dir.path + "/news.json");

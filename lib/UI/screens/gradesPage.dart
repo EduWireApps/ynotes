@@ -44,12 +44,11 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
     super.initState();
 
     initializeDateFormatting("fr_FR", null);
-  
-      //getListSpecialties();
-      refreshLocalGradeListWithoutForce();
-      //Get the actual periode (based on grades)
-      getActualPeriode();
-   
+
+    //getListSpecialties();
+    refreshLocalGradeListWithoutForce();
+    //Get the actual periode (based on grades)
+    getActualPeriode();
 
     circleAnimation = AnimationController(duration: Duration(milliseconds: 450), vsync: this);
   }
@@ -465,7 +464,7 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
                 width: (screenSize.size.width / 5) * 2.2,
                 padding: EdgeInsets.symmetric(horizontal: (screenSize.size.width / 5) * 0.4),
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(11),
+                  borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                   color: Theme.of(context).primaryColorDark,
                 ),
                 child: FittedBox(
@@ -531,9 +530,9 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
                 margin: EdgeInsets.only(left: (screenSize.size.height / 10 * 8.8) / 10 * 0.1),
                 child: Material(
                   color: Theme.of(context).primaryColorDark,
-                  borderRadius: BorderRadius.circular(11),
+                  borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                   child: InkWell(
-                    borderRadius: BorderRadius.circular(11),
+                    borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                     onTap: () {
                       openSortBox();
                     },
@@ -696,7 +695,8 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
           height: (screenSize.size.height / 10 * 8.8) / 10 * 1.8,
           margin: EdgeInsets.only(top: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(11), color: Theme.of(context).primaryColor),
+              borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+              color: Theme.of(context).primaryColor),
           child: ClipRRect(
               borderRadius: BorderRadius.circular(15),
               child: FutureBuilder<void>(
@@ -1073,8 +1073,9 @@ class _GradesGroupState extends State<GradesGroup> {
                                     Container(
                                         margin:
                                             EdgeInsets.only(left: screenSize.size.width / 5 * 0.3),
-                                        decoration:
-                                            BoxDecoration(borderRadius: BorderRadius.circular(11)),
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(
+                                                screenSize.size.width / 5 * 0.5)),
                                         width: screenSize.size.width / 5 * 2,
                                         height: screenSize.size.height / 10 * 0.3,
                                         child: ClipRRect(
@@ -1368,7 +1369,8 @@ class _GradesGroupState extends State<GradesGroup> {
                                       width: screenSize.size.width / 5 * 3.2,
                                       height: (screenSize.size.height / 10 * 8.8) / 10 * 0.8,
                                       decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(11),
+                                          borderRadius: BorderRadius.circular(
+                                              screenSize.size.width / 5 * 0.5),
                                           color: Theme.of(context).primaryColorDark),
                                     )),
                             ],

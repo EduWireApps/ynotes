@@ -197,7 +197,7 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
                             });
                             Navigator.of(context).pushReplacement(router(LoginPage()));
                           },
-                    child: const Text('Connexion', style: TextStyle(fontSize: 20)),
+                    child:  Text('Connexion', style: TextStyle(fontSize: screenSize.size.width / 5 * 0.2)),
                   ),
                 )
               ],
