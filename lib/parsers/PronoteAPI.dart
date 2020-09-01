@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:crypto/crypto.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:pointycastle/asymmetric/pkcs1.dart';
 import 'package:requests/requests.dart';
@@ -19,6 +20,7 @@ import 'package:pointycastle/asymmetric/rsa.dart';
 import 'package:steel_crypt/steel_crypt.dart';
 import 'package:ynotes/apiManager.dart' as localapi;
 import 'package:ynotes/main.dart';
+import 'package:ynotes/models.dart';
 import 'package:ynotes/parsers/PronoteCas.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:http/http.dart';
@@ -371,7 +373,52 @@ class Client {
     return toReturn;
   }
 
+  polls() async {
+    print("GETTING POLLS");
+    Map data = {
+      "_Signature_": {"onglet": 8},
+    };
+    var response = await this.communication.post('PageActualites', data: data);
+    var listActus = response['donneesSec']['donnees']['listeActualites']["V"];
+    List<PollInfo> listInfosPolls = List();
+    listActus.forEach((element) {
+      try {
+        //PollInfo(this.auteur, this.datedebut, this.questions, this.read);
+        List<String> questions = List();
+        element["listeQuestions"]["V"].forEach((question) {
+          questions.add(question["texte"]["V"]);
+        });
+        listInfosPolls.add(localapi.PollInfo(
+          element["elmauteur"]["V"]["L"],
+          DateFormat("dd/MM/yyyy").parse(element["dateDebut"]["V"]),
+          questions,
+          element["lue"],
+          element["L"],
+          element["N"],
+        ));
+      } catch (e) {
+        print("Failed to add an element to the polls list " + e.toString());
+      }
+    });
+    return listInfosPolls;
+  }
+
+  setPollRead(String meta) async {
+    List metas = meta.split("/");
+    Map data = {
+      "_Signature_": {"onglet": 8},
+      "donnees": {
+        "listeActualites": [
+          {"N": metas[0], "L": metas[1], "validationDirecte": true, "lue": (metas[2] == "true")}
+        ]
+      }
+    };
+    var response = await this.communication.post('SaisieActualites', data: data);
+    print(response);
+  }
+
   lessons(DateTime date_from, {DateTime date_to}) async {
+    initializeDateFormatting();
     var user = this.paramsUser['donneesSec']['donnees']['ressource'];
     List<Lesson> listToReturn = List();
     Map data = {
@@ -619,11 +666,14 @@ class _Communication {
     }
     if (response.content().contains("Erreur")) {
       print("Error occured");
+      print(response.content());
       var r_json = response.json();
       if (r_json["Erreur"]['G'] == 22) {
         throw error_messages["22"];
       }
-
+      if (r_json["Erreur"]['G'] == 10) {
+        throw error_messages["10"];
+      }
       if (recursive != null && recursive) {
         throw "Unknown error from pronote: ${r_json["Erreur"]["G"]} | ${r_json["Erreur"]["Titre"]}\n$r_json";
       }

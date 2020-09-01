@@ -1,10 +1,18 @@
 import 'dart:async';
+import 'package:android_alarm_manager/android_alarm_manager.dart';
+import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:ynotes/apiManager.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/parsers/Pronote.dart';
+import 'package:ynotes/usefulMethods.dart';
 
+import 'UI/screens/logsPage.dart';
+import 'UI/screens/spacePageWidgets/agenda.dart';
+import 'offline.dart';
 
 //The main class for everything done in background
-class BackgroundServices {
+class BackgroundService {
   static Future<void> showNotificationNewGrade() async {
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
         '2004', 'yNotes', 'Nouvelle note',
@@ -13,16 +21,14 @@ class BackgroundServices {
         ticker: 'ticker',
         visibility: NotificationVisibility.Public);
     var iOSPlatformChannelSpecifics = IOSNotificationDetails();
-    var platformChannelSpecifics = NotificationDetails(
-        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-    await flutterLocalNotificationsPlugin.show(
-        0,
-        'Vous avez une toute nouvelle note !',
-        'Cliquez pour la consulter.',
-        platformChannelSpecifics,
+    var platformChannelSpecifics =
+        NotificationDetails(androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+    await flutterLocalNotificationsPlugin.show(0, 'Vous avez une toute nouvelle note !',
+        'Cliquez pour la consulter.', platformChannelSpecifics,
         payload: 'grade');
   }
-static Future<void> showNotificationNewMail() async {
+
+  static Future<void> showNotificationNewMail() async {
     var androidPlatformChannelSpecifics = AndroidNotificationDetails(
         '2005', 'yNotes', 'Nouveau mail',
         importance: Importance.Max,
@@ -30,13 +36,10 @@ static Future<void> showNotificationNewMail() async {
         ticker: 'ticker',
         visibility: NotificationVisibility.Public);
     var iOSPlatformChannelSpecifics = IOSNotificationDetails();
-    var platformChannelSpecifics = NotificationDetails(
-        androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+    var platformChannelSpecifics =
+        NotificationDetails(androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
     await flutterLocalNotificationsPlugin.show(
-        0,
-        'Vous avez reçu un mail.',
-        'Cliquez pour la consulter.',
-        platformChannelSpecifics,
+        0, 'Vous avez reçu un mail.', 'Cliquez pour la consulter.', platformChannelSpecifics,
         payload: 'mail');
   }
 
@@ -45,4 +48,168 @@ static Future<void> showNotificationNewMail() async {
       print(payload);
     }
   }
+
+  //Currently Pronote only feature
+  static Future<void> refreshOnGoingNotif() async {
+    API api = APIPronote();
+    //Login creds
+    String u = await ReadStorage("username");
+    String p = await ReadStorage("password");
+    String url = await ReadStorage("pronoteurl");
+    String cas = await ReadStorage("pronotecas");
+    await api.login(u, p, url: url, cas: cas);
+    var date = DateTime.now();
+    List<Lesson> lessons = await api.getNextLessons(date);
+    await Future.forEach(lessons, (lesson) async {
+      await LocalNotification.scheduleNotification(lesson, onGoing: true);
+    });
+  }
 }
+
+class LocalNotification {
+  static Future<void> scheduleNotification(Lesson lesson, {bool onGoing = false}) async {
+    int minutes = await getIntSetting("lessonReminderDelay");
+    var scheduledNotificationDateTime =
+        lesson.start.subtract(Duration(minutes: onGoing ? 5 : minutes));
+
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      onGoing ? '2007' : '2006',
+      'yNotes',
+      onGoing ? 'Rappel de cours constant' : 'Rappels de cours',
+      importance: Importance.Max,
+      priority: Priority.High,
+      visibility: NotificationVisibility.Public,
+      icon: "clock",
+      enableVibration: !onGoing,
+      playSound: !onGoing,
+      styleInformation: BigTextStyleInformation(''),
+      ongoing: onGoing,
+    );
+    var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+    var platformChannelSpecifics =
+        NotificationDetails(androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+    var id = lesson.id.hashCode;
+    if (onGoing) {
+      id = 333;
+    }
+    await flutterLocalNotificationsPlugin.schedule(
+        id,
+        onGoing ? 'Rappel de cours constant' : 'Rappels de cours',
+        onGoing
+            ? 'Vous êtes en ${lesson.matiere} dans la salle ${lesson.room}'
+            : 'Le cours ${lesson.matiere} dans la salle ${lesson.room} aura lieu dans 5 minutes',
+        scheduledNotificationDateTime,
+        platformChannelSpecifics);
+  }
+
+  static Future<void> showOngoingNotification(Lesson lesson) async {
+    var id = 333;
+
+    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      '2007',
+      'yNotes',
+      'Rappel de cours constant',
+      importance: Importance.Min,
+      priority: Priority.Low,
+      ongoing: true,
+      autoCancel: false,
+      enableLights: false,
+      playSound: false,
+      enableVibration: false,
+      icon: "clock",
+      styleInformation: BigTextStyleInformation(''),
+    );
+    var iOSPlatformChannelSpecifics = IOSNotificationDetails();
+    var platformChannelSpecifics =
+        NotificationDetails(androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
+
+    var sentence = lesson == null
+        ? "Vous êtes en pause."
+        : 'Vous êtes en ${lesson.matiere} dans la salle ${lesson.room}.';
+    if (lesson.canceled) {
+      sentence = "Votre cours a été annulé.";
+    }
+    await flutterLocalNotificationsPlugin.show(
+        id, 'Rappel de cours constant', sentence, platformChannelSpecifics);
+  }
+
+  static Future<void> cancelNotification(int id) async {
+    await flutterLocalNotificationsPlugin.cancel(id);
+  }
+
+  static Future<void> setOnGoingNotification() async {
+    API api = APIPronote();
+    //Login creds
+    String u = await ReadStorage("username");
+    String p = await ReadStorage("password");
+    String url = await ReadStorage("pronoteurl");
+    String cas = await ReadStorage("pronotecas");
+    await api.login(u, p, url: url, cas: cas);
+    var date = DateTime.now();
+    lessons = await api.getNextLessons(date);
+    Lesson getActualLesson = await getCurrentLesson(lessons);
+    await showOngoingNotification(getActualLesson);
+    int minutes = await getIntSetting("lessonReminderDelay");
+    await Future.forEach(lessons, (Lesson lesson) async {
+      if (lesson.start.isAfter(date)) {
+        try {
+          await AndroidAlarmManager.oneShotAt(
+              lesson.start.subtract(Duration(minutes: minutes)), lesson.id.hashCode, callback,
+              exact: true);
+
+          print("scheduled " + lesson.id);
+        } catch (e) {
+          print("failed " + e.toString());
+        }
+      }
+    });
+    await AndroidAlarmManager.oneShotAt(
+        lessons.last.end.subtract(Duration(minutes: minutes)), lessons.last.id.hashCode, callback,
+        exact: true);
+  }
+
+  static Future<void> cancelOnGoingNotification() async {
+    await cancelNotification(333);
+    //Make sure notification is deleted by deleting it's channel
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        ?.deleteNotificationChannel("2007");
+
+    print("Cancelled on going notification");
+  }
+
+  static Future<void> cancellAll() async {
+    await flutterLocalNotificationsPlugin.cancelAll();
+  }
+
+  static Future<void> callback() async {
+    offline = Offline();
+    await offline.init();
+    var initializationSettingsAndroid = new AndroidInitializationSettings('newgradeicon');
+    var initializationSettingsIOS = new IOSInitializationSettings();
+    var initializationSettings =
+        new InitializationSettings(initializationSettingsAndroid, initializationSettingsIOS);
+    flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: BackgroundService.onSelectNotification);
+    API api = APIPronote();
+    //Login creds
+    String u = await ReadStorage("username");
+    String p = await ReadStorage("password");
+    String url = await ReadStorage("pronoteurl");
+    String cas = await ReadStorage("pronotecas");
+    await api.login(u, p, url: url, cas: cas);
+    var date = DateTime.now();
+    lessons = await api.getNextLessons(date);
+    Lesson getActualLesson = await getNextLesson(lessons);
+
+    if (getActualLesson == null) {
+      await setSetting("agendaOnGoingNotification", false);
+      await cancelOnGoingNotification();
+    } else {
+      await showOngoingNotification(getActualLesson);
+    }
+  }
+}
+
+List<Lesson> lessons = List();

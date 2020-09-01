@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:io';
+import 'package:android_alarm_manager/android_alarm_manager.dart';
 import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -44,11 +46,11 @@ void backgroundFetchHeadlessTask(String taskId) async {
       new InitializationSettings(initializationSettingsAndroid, initializationSettingsIOS);
   flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
   flutterLocalNotificationsPlugin.initialize(initializationSettings,
-      onSelectNotification: BackgroundServices.onSelectNotification);
+      onSelectNotification: BackgroundService.onSelectNotification);
 //Ensure that grades notification are enabled and battery saver disabled
   if (await getSetting("notificationNewGrade") && !await getSetting("batterySaver")) {
     if (await mainTestNewGrades()) {
-      BackgroundServices.showNotificationNewGrade();
+      BackgroundService.showNotificationNewGrade();
     } else {
       print("Nothing updated");
     }
@@ -58,7 +60,7 @@ void backgroundFetchHeadlessTask(String taskId) async {
   }
   if (await getSetting("notificationNewMail") && !await getSetting("batterySaver")) {
     if (await mainTestNewMails()) {
-      BackgroundServices.showNotificationNewMail();
+      BackgroundService.showNotificationNewMail();
     } else {
       print("Nothing updated");
     }
@@ -132,14 +134,15 @@ Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
 
-  var initializationSettingsAndroid = new AndroidInitializationSettings('newgradeicon',
+  var initializationSettingsAndroid = new AndroidInitializationSettings(
+    'newgradeicon',
   );
   var initializationSettingsIOS = new IOSInitializationSettings();
   var initializationSettings =
       new InitializationSettings(initializationSettingsAndroid, initializationSettingsIOS);
   flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
   flutterLocalNotificationsPlugin.initialize(initializationSettings,
-      onSelectNotification: BackgroundServices.onSelectNotification);
+      onSelectNotification: BackgroundService.onSelectNotification);
   //Init offline data
   await offline.init();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -157,6 +160,9 @@ Future main() async {
       ),
     );
   });
+  if (Platform.isAndroid) {
+    await AndroidAlarmManager.initialize();
+  }
 }
 
 class HomeApp extends StatelessWidget {

@@ -7,6 +7,8 @@ import 'apps/cloud.dart';
 import 'apps/mail.dart';
 import 'package:ynotes/UI/utils/themeUtils.dart';
 
+import 'apps/polls.dart';
+
 
 class AppsPage extends StatefulWidget {
   final BuildContext rootcontext;
@@ -30,6 +32,7 @@ class _AppsPageState extends State<AppsPage> {
       '/homePage': (context) => Material(child: HomePage()),
       '/cloud': (context) => Material(child: CloudPage()),
       '/mail': (context) => Material(child: MailPage(context: widget.rootcontext)),
+      '/polls': (context) => Material(child: PollsAndInfosPage()),
     }));
   }
 }

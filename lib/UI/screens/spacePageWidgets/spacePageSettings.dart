@@ -5,6 +5,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:settings_ui/settings_ui.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:flutter/src/scheduler/binding.dart';
+import 'package:ynotes/background.dart';
 import '../../../usefulMethods.dart';
 import 'package:ynotes/UI/utils/fileUtils.dart';
 import 'dart:async';
@@ -96,7 +97,7 @@ class _OrganisationSettingsState extends State<OrganisationSettings> {
   }
 
   //Settings
-  var boolSettings = {"lighteningOverride": false};
+  var boolSettings = {"lighteningOverride": false, "agendaOnGoingNotification": false};
   var intSettings = {"lessonReminderDelay": 5};
   void getSettings() async {
     await Future.forEach(boolSettings.keys, (key) async {
@@ -190,7 +191,32 @@ class _OrganisationSettingsState extends State<OrganisationSettings> {
               MdiIcons.clockAlert,
               color: isDarkModeEnabled ? Colors.white : Colors.black,
             ),
-          )
+          ),
+          SwitchListTile(
+            value: boolSettings["agendaOnGoingNotification"],
+            title: Text("Notification constante (beta)",
+                style: TextStyle(
+                    fontFamily: "Asap",
+                    color: isDarkModeEnabled ? Colors.white : Colors.black,
+                    fontSize: screenSize.size.height / 10 * 0.21)),
+            onChanged: (value) async {
+              setState(() {
+                boolSettings["agendaOnGoingNotification"] = value;
+              });
+
+              await setSetting("agendaOnGoingNotification", value);
+              if (value) {
+                await LocalNotification.setOnGoingNotification();
+              } else {
+                await LocalNotification.cancelOnGoingNotification();
+              }
+            },
+            secondary: Icon(
+              MdiIcons.viewAgendaOutline,
+              color: isDarkModeEnabled ? Colors.white : Colors.black,
+            ),
+          ),
+          
         ],
       ),
     );

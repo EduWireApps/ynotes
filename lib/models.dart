@@ -92,6 +92,7 @@ class TransparentLogin extends ChangeNotifier {
   var internetConnexion;
   //getters
   get actualState => _actualState;
+  set actualState(loginStatus) => _actualState;
   get details => _details;
 
   init() async {

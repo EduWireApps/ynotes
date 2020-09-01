@@ -675,12 +675,12 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
           new InitializationSettings(initializationSettingsAndroid, initializationSettingsIOS);
       flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
       flutterLocalNotificationsPlugin.initialize(initializationSettings,
-          onSelectNotification: BackgroundServices.onSelectNotification);
+          onSelectNotification: BackgroundService.onSelectNotification);
 
 //Ensure that grades notification are enabled and battery saver disabled
       if (await getSetting("notificationNewGrade") && !await getSetting("batterySaver")) {
         if (await mainTestNewGrades()) {
-          BackgroundServices.showNotificationNewGrade();
+          BackgroundService.showNotificationNewGrade();
         } else {
           print("Nothing updated");
         }
@@ -690,7 +690,7 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
       }
       if (await getSetting("notificationNewMail") && !await getSetting("batterySaver")) {
         if (await mainTestNewMails()) {
-          BackgroundServices.showNotificationNewMail();
+          BackgroundService.showNotificationNewMail();
         } else {
           print("Nothing updated");
         }

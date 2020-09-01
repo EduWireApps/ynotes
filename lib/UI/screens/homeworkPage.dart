@@ -463,7 +463,8 @@ class _HomeworkElementState extends State<HomeworkElement> {
                               context,
                               segmentedControlIndex == 0
                                   ? this.widget.homeworkForThisDay.contenu
-                                  : this.widget.homeworkForThisDay.contenuDeSeance);
+                                  : this.widget.homeworkForThisDay.contenuDeSeance,
+                              this.widget.homeworkForThisDay);
                         },
                         child: Container(
                           decoration: BoxDecoration(
@@ -479,25 +480,27 @@ class _HomeworkElementState extends State<HomeworkElement> {
                                   left: screenSize.size.width / 5 * 0.2,
                                   top: (screenSize.size.height / 10 * 8.8) / 10 * 0.1),
                               padding: EdgeInsets.symmetric(horizontal: 4),
-                              child: Row(
-                                children: <Widget>[
-                                  Text(
-                                    this.widget.homeworkForThisDay.matiere,
-                                    overflow: TextOverflow.ellipsis,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontFamily: "Asap", fontWeight: FontWeight.normal),
-                                  ),
-                                  if (widget.homeworkForThisDay.interrogation == true)
-                                    Container(
-                                      margin:
-                                          EdgeInsets.only(left: screenSize.size.width / 5 * 0.15),
-                                      width: screenSize.size.width / 5 * 0.15,
-                                      height: screenSize.size.width / 5 * 0.15,
-                                      decoration: BoxDecoration(
-                                          shape: BoxShape.circle, color: Colors.redAccent),
-                                    )
-                                ],
+                              child: FittedBox(
+                                child: Row(
+                                  children: <Widget>[
+                                    Text(
+                                      this.widget.homeworkForThisDay.matiere,
+                                      overflow: TextOverflow.ellipsis,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontFamily: "Asap", fontWeight: FontWeight.normal),
+                                    ),
+                                    if (widget.homeworkForThisDay.interrogation == true)
+                                      Container(
+                                        margin:
+                                            EdgeInsets.only(left: screenSize.size.width / 5 * 0.15),
+                                        width: screenSize.size.width / 5 * 0.15,
+                                        height: screenSize.size.width / 5 * 0.15,
+                                        decoration: BoxDecoration(
+                                            shape: BoxShape.circle, color: Colors.redAccent),
+                                      )
+                                  ],
+                                ),
                               ),
                             ),
                           ]),
@@ -968,8 +971,8 @@ class _HomeworkElementState extends State<HomeworkElement> {
 
 class DialogHomework extends StatefulWidget {
   final String html;
-
-  const DialogHomework(this.html);
+  final Homework hw;
+  const DialogHomework(this.html, this.hw);
   State<StatefulWidget> createState() {
     return _DialogHomeworkState();
   }
@@ -1027,9 +1030,11 @@ class _DialogHomeworkState extends State<DialogHomework> {
                 child: Material(
                   color: Colors.transparent,
                   child: AutoSizeText(
-                    parsedHtml, // You need to pass the string you want the highlights
-
-                    style: TextStyle(fontSize: 20, fontFamily: "Asap"),
+                    parsedHtml,
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: "Asap",
+                        color: isDarkModeEnabled ? Colors.white : Colors.black),
                     textAlign: TextAlign.justify,
                     minFontSize: 10,
                     stepGranularity: 5,
@@ -1168,18 +1173,46 @@ class _DialogHomeworkState extends State<DialogHomework> {
                             size: screenSize.size.width / 5 * 1,
                           );
                         }
-                      })
+                      }),
                 ],
               ),
             ),
-          )
+          ),
+          FutureBuilder(
+              future: getColor(this.widget.hw.codeMatiere),
+              initialData: 0,
+              builder: (context, snapshot) {
+                Color color = Color(snapshot.data);
+                return Material(
+                  type: MaterialType.transparency,
+                  child: Container(
+                      margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
+                      width: screenSize.size.width / 5 * 4.5,
+                      padding: EdgeInsets.all(screenSize.size.height / 10 * 0.2),
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor,
+                          borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15)),
+                      child: Column(
+                        children: [
+                          Text(
+                            this.widget.hw.matiere,
+                            textAlign: TextAlign.left,
+                            style: TextStyle(
+                                fontFamily: "Asap",
+                                color: isDarkModeEnabled ? Colors.grey.shade200 : Colors.black54,
+                                fontSize: screenSize.size.height / 10 * 0.25),
+                          )
+                        ],
+                      )),
+                );
+              }),
         ],
       ),
     );
   }
 }
 
-showHomeworkDetails(BuildContext context, String html) {
+showHomeworkDetails(BuildContext context, String html, Homework hw) {
   return showGeneralDialog(
       context: context,
       barrierColor: Colors.black.withOpacity(0.5),
@@ -1190,6 +1223,6 @@ showHomeworkDetails(BuildContext context, String html) {
       transitionBuilder: (context, a1, a2, widget) {
         MediaQueryData screenSize;
         screenSize = MediaQuery.of(context);
-        return Transform.scale(scale: a1.value, child: Container(child: DialogHomework(html)));
+        return Transform.scale(scale: a1.value, child: Container(child: DialogHomework(html, hw)));
       });
 }

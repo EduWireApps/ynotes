@@ -11,6 +11,7 @@ import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:flutter/src/scheduler/binding.dart';
 import 'package:ynotes/UI/components/modalsBottomSheets.dart';
 import 'package:ynotes/parsers/EcoleDirecte.dart';
+import '../../../background.dart';
 import '../../../usefulMethods.dart';
 import 'package:ynotes/UI/utils/fileUtils.dart';
 import 'package:ynotes/main.dart';
@@ -548,7 +549,8 @@ class _AgendaElementState extends State<AgendaElement> {
                                             await setSetting(
                                                 widget.lesson.id.hashCode.toString(), true);
                                             setState(() {});
-                                            await _scheduleNotification(widget.lesson);
+                                            await LocalNotification.scheduleNotification(
+                                                widget.lesson);
                                             //Get the delay between lesson and reminder
                                             int minutes =
                                                 await getIntSetting("lessonReminderDelay");
@@ -564,7 +566,8 @@ class _AgendaElementState extends State<AgendaElement> {
                                           await setSetting(
                                               widget.lesson.id.hashCode.toString(), false);
                                           setState(() {});
-                                          await _cancelNotification(widget.lesson.id.hashCode);
+                                          await LocalNotification.cancelNotification(
+                                              widget.lesson.id.hashCode);
                                         }
                                       },
                                       shape: CircleBorder(),
@@ -757,34 +760,25 @@ getCurrentLesson(List<Lesson> lessons, {DateTime now}) {
   }
 }
 
-Future<void> _scheduleNotification(Lesson lesson) async {
-  int minutes = await getIntSetting("lessonReminderDelay");
-  var scheduledNotificationDateTime = lesson.start.subtract(Duration(minutes: minutes));
+getNextLesson(List<Lesson> lessons) {
+  List<Lesson> dailyLessons = List();
+  Lesson lesson;
+  dailyLessons = lessons
+      .where((lesson) =>
+          DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) ==
+          DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now())))
+      .toList();
+  if (dailyLessons != null && dailyLessons.length != 0) {
+    //Get current lesson
+    try {
+      dailyLessons.sort((a, b) => a.start.compareTo(b.start));
+      lesson = dailyLessons.firstWhere((lesson) => DateTime.now().isBefore(lesson.start));
+    } catch (e) {
+      print(e.toString());
+    }
 
-
-  var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-    '2006',
-    'yNotes',
-    'Rappels de cours',
-    importance: Importance.Max,
-    priority: Priority.High,
-    visibility: NotificationVisibility.Public,
-    icon: "clock",
-    styleInformation: BigTextStyleInformation(''),
-  );
-  var iOSPlatformChannelSpecifics = IOSNotificationDetails();
-  var platformChannelSpecifics =
-      NotificationDetails(androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-  var id = lesson.id.hashCode;
-
-  await flutterLocalNotificationsPlugin.schedule(
-      id,
-      'Rappel de cours',
-      'Le cours ${lesson.matiere} dans la salle ${lesson.room} aura lieu dans 5 minutes',
-      scheduledNotificationDateTime,
-      platformChannelSpecifics);
-}
-
-Future<void> _cancelNotification(int id) async {
-  await flutterLocalNotificationsPlugin.cancel(id);
+    return lesson;
+  } else {
+    return null;
+  }
 }

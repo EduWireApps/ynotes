@@ -11,6 +11,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:path_provider/path_provider.dart';
 import 'package:requests/requests.dart';
 import 'package:ynotes/UI/screens/logsPage.dart';
+import 'package:ynotes/models.dart';
 import 'package:ynotes/parsers/PronoteAPI.dart';
 import 'package:ynotes/parsers/PronoteAPI.dart' as papi;
 import 'package:ynotes/parsers/PronoteCas.dart';
@@ -28,16 +29,18 @@ Client localClient;
 //They are ABSOLUTELY needed or user will be quickly IP suspended
 bool gradeLock = false;
 bool hwLock = false;
+bool loginLock = false;
+bool lessonsLock = false;
+bool pollsLock = false;
 bool gradeRefreshRecursive = false;
 bool hwRefreshRecursive = false;
 bool lessonsRefreshRecursive = false;
-bool loginLock = false;
-bool lessonsLock = false;
+bool pollsRefreshRecursive = false;
 
 class APIPronote extends API {
   @override
   // TODO: implement listApp
-  List<App> get listApp => [];
+  List<App> get listApp => [App("Sondages et infos", Icons.poll, route: "polls")];
 
   @override
   Future<List<Discipline>> getGrades({bool forceReload}) async {
@@ -196,14 +199,15 @@ class APIPronote extends API {
             forceReload == null) &&
         offlineHomework != null) {
       print("Loading homework from offline storage.");
-
+      offlineHomework.sort((a, b) => a.date.compareTo(b.date));
       return offlineHomework;
     } else {
       print("Loading homework inline.");
-      var toReturn = await getNextHomeworkFromInternet();
+      List<Homework> toReturn = await getNextHomeworkFromInternet();
       if (toReturn == null) {
         toReturn = await offline.homework();
       }
+      toReturn.sort((a, b) => a.date.compareTo(b.date));
       return toReturn;
     }
   }
@@ -245,7 +249,6 @@ class APIPronote extends API {
         List<Homework> listHW = List<Homework>();
 
         if (hwRefreshRecursive == false) {
-          
           await refreshClient();
           hwRefreshRecursive = true;
           listHW.addAll(await getNextHomework());
@@ -263,11 +266,11 @@ class APIPronote extends API {
   Future<String> login(username, password, {url, cas}) async {
     print(username + " " + password + " " + url);
     int req = 0;
-    while (loginLock == true && req < 2) {
+    while (loginLock == true && req < 5) {
       req++;
       await Future.delayed(const Duration(seconds: 2), () => "1");
     }
-    if (loginLock == false && loginReqNumber < 2) {
+    if (loginLock == false && loginReqNumber < 5) {
       loginReqNumber = 0;
       loginLock = true;
       try {
@@ -324,9 +327,57 @@ class APIPronote extends API {
   }
 
   @override
-  Future app(String appname, {String args, String action, CloudItem folder}) {
-    // TODO: implement app
-    throw UnimplementedError();
+  Future app(String appname, {String args, String action, CloudItem folder}) async {
+    switch (appname) {
+      case "polls":
+        {
+          if (action == "get") {
+            int req = 0;
+            while (pollsLock == true && req < 10) {
+              req++;
+              await Future.delayed(const Duration(seconds: 2), () => "1");
+            }
+            if (pollsLock == false) {
+              try {
+                pollsLock = true;
+                List<PollInfo> toReturn = await getPronotePolls(args == "forced");
+                pollsLock = false;
+                return toReturn;
+              } catch (e) {
+                if (!pollsRefreshRecursive) {
+                  pollsRefreshRecursive = true;
+                  pollsLock = false;
+                  await refreshClient();
+                  List<PollInfo> toReturn = await getPronotePolls(args == "forced");
+
+                  return toReturn;
+                }
+                pollsLock = false;
+                print("Erreur pendant la collection des sondages/informations " + e.toString());
+              }
+            }
+          }
+          if (action == "read") {
+            int req = 0;
+            while (pollsLock == true && req < 10) {
+              req++;
+              await Future.delayed(const Duration(seconds: 2), () => "1");
+            }
+            try {
+              pollsLock = true;
+              await localClient.setPollRead(args);
+              pollsLock = false;
+            } catch (e) {
+              pollsLock = false;
+              if (!pollsRefreshRecursive) {
+                await refreshClient();
+                await localClient.setPollRead(args);
+              }
+            }
+          }
+        }
+        break;
+    }
   }
 
   @override
@@ -478,6 +529,13 @@ class APIPronote extends API {
 
   refreshClient() async {
     await tlogin.login();
+    //reset all recursives
+    if (tlogin.actualState == loginStatus.loggedIn) {
+      gradeRefreshRecursive = false;
+      hwRefreshRecursive = false;
+      lessonsRefreshRecursive = false;
+      pollsRefreshRecursive = false;
+    }
   }
 
   getPronoteGradesFromInternet() async {
@@ -544,5 +602,29 @@ class APIPronote extends API {
       List<Discipline> listDisciplines = List<Discipline>();
       return listDisciplines;
     }
+  }
+}
+
+Future<List<PollInfo>> getPronotePolls(bool forced) async {
+  List<PollInfo> listPolls;
+  try {
+    if (forced) {
+      listPolls = await localClient.polls() as List<PollInfo>;
+      await offline.updatePolls(listPolls);
+      return listPolls;
+    } else {
+      listPolls = await offline.polls();
+      if (listPolls == null) {
+        print("Error while returning offline polls");
+        listPolls = await localClient.polls() as List<PollInfo>;
+        await offline.updatePolls(listPolls);
+        return listPolls;
+      } else {
+        return listPolls;
+      }
+    }
+  } catch (e) {
+    listPolls = await offline.polls();
+    return listPolls;
   }
 }

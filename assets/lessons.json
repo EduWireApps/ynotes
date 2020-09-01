@@ -1,13 +1,6 @@
 {
   "dictionnary": [
-    {
-      "class": "Tale",
-      "discipline": "Histoire",
-      "theme": "La Seconde Guerre mondiale",
-      "chapter": "La guerre c'est pas bien du tout",
-      "keywords": ["Seconde guerre mondiale", "guerre"],
-      "url": "https://www.schoolmouv.fr/eleves/cours/la-seconde-guerre-mondiale/fiche-de-cours"
-    }
+    
   ],
   "version": "1.0"
 }

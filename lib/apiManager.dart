@@ -304,6 +304,24 @@ class Classeur {
   Classeur(this.libelle, this.id);
 }
 
+@HiveType(typeId: 5)
+class PollInfo {
+  //E.G : M. Delaruelle
+  @HiveField(0)
+  final String auteur;
+  @HiveField(1)
+  final DateTime datedebut;
+  @HiveField(2)
+  final List<String> questions;
+  @HiveField(3)
+  bool read;
+  @HiveField(4)
+  final String title;
+  @HiveField(5)
+  final String id;
+  PollInfo(this.auteur, this.datedebut, this.questions, this.read, this.title, this.id);
+}
+
 class CloudItem {
   //E.G "test.txt"
   final String title;
@@ -385,7 +403,6 @@ APIManager() {
 getChosenParser() async {
   final prefs = await SharedPreferences.getInstance();
   chosenParser = prefs.getInt('chosenParser') ?? null;
-  
 }
 
 setChosenParser(int chosen) async {
