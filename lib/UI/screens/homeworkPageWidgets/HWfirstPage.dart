@@ -119,11 +119,11 @@ class _HomeworkFirstPageState extends State<HomeworkFirstPage> {
                           //Reload list
                           refreshLocalHomeworkList();
                         },
-                        child: Text("Recharger",
+                        child:snapshot.connectionState != ConnectionState.waiting? Text("Recharger",
                             style: TextStyle(
                               fontFamily: "Asap",
                               color: isDarkModeEnabled ? Colors.white : Colors.black,
-                            )),
+                            )):FittedBox(child: SpinKitThreeBounce(color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4)),
                         shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(18.0), side: BorderSide(color: Theme.of(context).primaryColorDark)),
                       )
                     ],
@@ -228,7 +228,7 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
         width: screenSize.size.width / 5 * 5,
         decoration: BoxDecoration(
           color: Theme.of(context).primaryColorDark,
-          borderRadius: BorderRadius.circular(25),
+          borderRadius: BorderRadius.circular(11),
         ),
         child: Stack(
           children: <Widget>[

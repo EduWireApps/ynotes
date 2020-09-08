@@ -88,7 +88,7 @@ class DocumentAdapter extends TypeAdapter<Document> {
     };
     return Document(
       fields[0] as String,
-      fields[1] as int,
+      fields[1] as String,
       fields[2] as String,
       fields[3] as int,
     );
@@ -352,13 +352,14 @@ class PollInfoAdapter extends TypeAdapter<PollInfo> {
       fields[3] as bool,
       fields[4] as String,
       fields[5] as String,
+      (fields[6] as List)?.cast<Document>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, PollInfo obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(7)
       ..writeByte(0)
       ..write(obj.auteur)
       ..writeByte(1)
@@ -370,7 +371,9 @@ class PollInfoAdapter extends TypeAdapter<PollInfo> {
       ..writeByte(4)
       ..write(obj.title)
       ..writeByte(5)
-      ..write(obj.id);
+      ..write(obj.id)
+      ..writeByte(6)
+      ..write(obj.documents);
   }
 
   @override

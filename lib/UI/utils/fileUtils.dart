@@ -24,19 +24,18 @@ class FileInfo {
 class FolderAppUtil {
   static getDirectory({bool download = false}) async {
     if (download && Platform.isAndroid) {
-      final dir =
-          await ExtStorage.getExternalStoragePublicDirectory(ExtStorage.DIRECTORY_DOWNLOADS);
- 
+      final dir = await ExtStorage.getExternalStoragePublicDirectory(ExtStorage.DIRECTORY_DOWNLOADS);
+
       return dir;
     }
     if (Platform.isAndroid) {
       var dir = await getExternalStorageDirectory();
-      
-      return download?dir.path:dir;
+
+      return download ? dir.path : dir;
     }
     if (Platform.isIOS) {
       var dir = await getApplicationDocumentsDirectory();
-      return download?dir.path:dir;
+      return download ? dir.path : dir;
     } else {
       ///DO NOTHING
     }
@@ -94,18 +93,28 @@ class FileAppUtil {
   }
 
 //Open a file
-  static Future<void> openFile(filename) async {
-    final dir = await FolderAppUtil.getDirectory(download: true);
-    final filePath = '$dir/yNotesDownloads';
-    await OpenFile.open(filePath);
+  static Future<void> openFile(String filePath, {bool usingFileName = false}) async {
+    try {
+      var path = "";
+
+      //Get root dir path
+      if (usingFileName) {
+        final dir = await FolderAppUtil.getDirectory(download: true);
+        path = '$dir/yNotesDownloads/$filePath';
+      } else {
+        path = filePath;
+      }
+
+      await OpenFile.open(path);
+    } catch (e) {
+      print("Failed to open file : " + e.toString());
+    }
   }
 
   static Future<List<FileInfo>> getFilesList(String path) async {
     try {
       String directory;
       List file = new List();
-
-
 
       if (await Permission.storage.request().isGranted) {
         try {
@@ -118,8 +127,7 @@ class FileAppUtil {
 
         await Future.forEach(file, (element) async {
           try {
-            listFiles.add(new FileInfo(element, await FileAppUtil.getLastModifiedDate(element),
-                await FileAppUtil.getFileNameWithExtension(element)));
+            listFiles.add(new FileInfo(element, await FileAppUtil.getLastModifiedDate(element), await FileAppUtil.getFileNameWithExtension(element)));
           } catch (e) {
             print(e);
           }

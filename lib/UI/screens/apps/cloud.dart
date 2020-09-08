@@ -250,11 +250,12 @@ class _CloudPageState extends State<CloudPage> {
                                                 if (localFoldersList[index].type == "FILE") {
                                                   if (await model
                                                       .fileExists(localFoldersList[index].title)) {
+                                                    
                                                     FileAppUtil.openFile(
                                                         localFoldersList[index].title);
                                                   } else {
-                                                    model.download(localFoldersList[index].id,
-                                                        "CLOUD", localFoldersList[index].title);
+                                                    model.download(Document(localFoldersList[index].title, localFoldersList[index].id,
+                                                        "CLOUD", 0));
                                                   }
                                                 }
                                               },

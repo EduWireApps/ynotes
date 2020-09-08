@@ -12,6 +12,7 @@ import 'package:ynotes/usefulMethods.dart';
 
 import 'apiManager.dart';
 import 'package:ynotes/UI/utils/fileUtils.dart';
+
 ///Class download to notify view when download is ended
 class DownloadModel extends ChangeNotifier {
   bool _isDownloading = false;
@@ -21,23 +22,25 @@ class DownloadModel extends ChangeNotifier {
 
   ///Check if file exists
   Future<bool> fileExists(filename) async {
-    final dir = await FolderAppUtil.getDirectory();
-    return File("${dir.path}/downloads/$filename").exists();
+    final dir = await FolderAppUtil.getDirectory(download: true);
+    Directory downloadsDir = Directory("$dir/yNotesDownloads/");
+    List<FileSystemEntity> list = downloadsDir.listSync(recursive: true);
+    bool toReturn = false;
+    await Future.forEach(list, (element) async {
+      if (filename == await FileAppUtil.getFileNameWithExtension(element)) {
+        toReturn = true;
+      }
+    });
+    return toReturn;
   }
 
 //Download a file in the app directory
-  download(id, type, filename) async {
+  download(Document document) async {
     _isDownloading = true;
     _progress = null;
+  String filename = document.libelle;
     notifyListeners();
-    var url = 'https://api.ecoledirecte.com/v3/telechargement.awp?verbe=get';
-
-    Map<String, String> headers = {"Content-type": "x"};
-
-    String body = "leTypeDeFichier=$type&fichierId=$id&token=$token";
-    Request request = Request('POST', Uri.parse(url));
-    request.body = body.toString();
-
+    Request request = await localApi.downloadRequest(document);
     //Make a response client
     final StreamedResponse response = await Client().send(request);
     final contentLength = response.contentLength;
@@ -60,9 +63,9 @@ class DownloadModel extends ChangeNotifier {
       onDone: () async {
         _progress = 100;
         notifyListeners();
-        print("Téléchargement du fichier terminé : $filename");
+        print("Téléchargement du fichier terminé : ${file.path}");
         final dir = await FolderAppUtil.getDirectory(download: true);
-        final Directory _appDocDirFolder = Directory('$dir/yNotes/');
+        final Directory _appDocDirFolder = Directory('$dir/yNotesDownloads/');
 
         if (!await _appDocDirFolder.exists()) {
           //if folder already exists return path
@@ -92,8 +95,16 @@ class TransparentLogin extends ChangeNotifier {
   var internetConnexion;
   //getters
   get actualState => _actualState;
-  set actualState(loginStatus) => _actualState;
+  set actualState(loginStatus) {
+    _actualState = loginStatus;
+    notifyListeners();
+  }
+
   get details => _details;
+  set details(details) {
+    _details = details;
+    notifyListeners();
+  }
 
   init() async {
     ConnectionStatusSingleton connectionStatus = ConnectionStatusSingleton.getInstance();
@@ -144,9 +155,9 @@ class TransparentLogin extends ChangeNotifier {
             notifyListeners();
           }
           if (value.contains("Bienvenue")) {
-            gradeRefreshRecursive=false;
-            hwRefreshRecursive=false;
-            lessonsRefreshRecursive=false;
+            gradeRefreshRecursive = false;
+            hwRefreshRecursive = false;
+            lessonsRefreshRecursive = false;
             _details = "Connecté";
             _actualState = loginStatus.loggedIn;
             notifyListeners();

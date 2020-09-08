@@ -42,11 +42,9 @@ void backgroundFetchHeadlessTask(String taskId) async {
   print("Starting the headless closed bakground task");
   var initializationSettingsAndroid = new AndroidInitializationSettings('newgradeicon');
   var initializationSettingsIOS = new IOSInitializationSettings();
-  var initializationSettings =
-      new InitializationSettings(initializationSettingsAndroid, initializationSettingsIOS);
+  var initializationSettings = new InitializationSettings(initializationSettingsAndroid, initializationSettingsIOS);
   flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
-  flutterLocalNotificationsPlugin.initialize(initializationSettings,
-      onSelectNotification: BackgroundService.onSelectNotification);
+  flutterLocalNotificationsPlugin.initialize(initializationSettings, onSelectNotification: BackgroundService.onSelectNotification);
 //Ensure that grades notification are enabled and battery saver disabled
   if (await getSetting("notificationNewGrade") && !await getSetting("batterySaver")) {
     if (await mainTestNewGrades()) {
@@ -54,7 +52,6 @@ void backgroundFetchHeadlessTask(String taskId) async {
     } else {
       print("Nothing updated");
     }
-    BackgroundFetch.finish(taskId);
   } else {
     print("New grade notification disabled");
   }
@@ -64,10 +61,15 @@ void backgroundFetchHeadlessTask(String taskId) async {
     } else {
       print("Nothing updated");
     }
-    BackgroundFetch.finish(taskId);
   } else {
     print("New mail notification disabled");
   }
+  if (await getSetting("agendaOnGoingNotification")) {
+    await LocalNotification.setOnGoingNotification();
+  } else {
+    print("On going notification disabled");
+  }
+  BackgroundFetch.finish(taskId);
 }
 
 mainTestNewGrades() async {
@@ -138,16 +140,12 @@ Future main() async {
     'newgradeicon',
   );
   var initializationSettingsIOS = new IOSInitializationSettings();
-  var initializationSettings =
-      new InitializationSettings(initializationSettingsAndroid, initializationSettingsIOS);
+  var initializationSettings = new InitializationSettings(initializationSettingsAndroid, initializationSettingsIOS);
   flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
-  flutterLocalNotificationsPlugin.initialize(initializationSettings,
-      onSelectNotification: BackgroundService.onSelectNotification);
+  flutterLocalNotificationsPlugin.initialize(initializationSettings, onSelectNotification: BackgroundService.onSelectNotification);
   //Init offline data
   await offline.init();
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      systemNavigationBarColor: isDarkModeEnabled ? Color(0xff414141) : Color(0xffF3F3F3),
-      statusBarColor: Colors.transparent));
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(systemNavigationBarColor: isDarkModeEnabled ? Color(0xff414141) : Color(0xffF3F3F3), statusBarColor: Colors.transparent));
   ConnectionStatusSingleton connectionStatus = ConnectionStatusSingleton.getInstance();
   connectionStatus.initialize();
   runZoned<Future<Null>>(() async {

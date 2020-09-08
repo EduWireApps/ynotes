@@ -198,7 +198,7 @@ class _QuickMenuState extends State<QuickMenu> with TickerProviderStateMixin {
                                                             child: InkWell(
                                                               splashColor: Color(0xff525252),
                                                               onTap: () {
-                                                               FileAppUtil.openFile(listFiles[index].fileName);
+                                                               FileAppUtil.openFile(listFiles[index].element.path,usingFileName: true);
                                                               },
                                                               child: Container(
                                                                 width: screenSize.size.width / 5 * 3,

@@ -140,19 +140,12 @@ class _AgendaState extends State<Agenda> {
                             children: [
                               Text(
                                 DateFormat.Hm().format(lesson.start),
-                                style: TextStyle(
-                                    fontFamily: "Asap",
-                                    fontWeight: FontWeight.bold,
-                                    color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: isDarkModeEnabled ? Colors.white : Colors.black),
                               ),
-                              Icon(MdiIcons.arrowRight,
-                                  color: isDarkModeEnabled ? Colors.white : Colors.black),
+                              Icon(MdiIcons.arrowRight, color: isDarkModeEnabled ? Colors.white : Colors.black),
                               Text(
                                 DateFormat.Hm().format(lesson.end),
-                                style: TextStyle(
-                                    fontFamily: "Asap",
-                                    fontWeight: FontWeight.bold,
-                                    color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: isDarkModeEnabled ? Colors.white : Colors.black),
                               )
                             ],
                           ),
@@ -172,12 +165,8 @@ class _AgendaState extends State<Agenda> {
 
     return Container(
       width: screenSize.size.width / 5 * 4.2,
-      padding: EdgeInsets.symmetric(
-          vertical: screenSize.size.height / 10 * 0.005,
-          horizontal: screenSize.size.width / 5 * 0.05),
-      decoration: BoxDecoration(
-          color: Theme.of(context).primaryColorDark,
-          borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15)),
+      padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.005, horizontal: screenSize.size.width / 5 * 0.05),
+      decoration: BoxDecoration(color: Theme.of(context).primaryColorDark, borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15)),
       child: FittedBox(
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -349,19 +338,15 @@ class _AgendaState extends State<Agenda> {
                             FutureBuilder(
                                 future: agendaFuture,
                                 builder: (context, snapshot) {
-                                  if (snapshot.hasData &&
-                                      snapshot.data != null &&
-                                      snapshot.data.length != 0) {
+                                  if (snapshot.hasData && snapshot.data != null && snapshot.data.length != 0) {
                                     return ClipRRect(
-                                      borderRadius:
-                                          BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                                      borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                                       child: RefreshIndicator(
                                         onRefresh: refreshAgendaFuture,
                                         child: ListView.builder(
                                             itemCount: snapshot.data.length,
                                             itemBuilder: (BuildContext context, int index) {
-                                              return _buildAgendaElement(
-                                                  context, snapshot.data[index]);
+                                              return _buildAgendaElement(context, snapshot.data[index]);
                                             }),
                                       ),
                                     );
@@ -373,44 +358,24 @@ class _AgendaState extends State<Agenda> {
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: <Widget>[
                                             Container(
-                                              margin: EdgeInsets.only(
-                                                  left: screenSize.size.width / 5 * 0.5),
+                                              margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.5),
                                               height: screenSize.size.height / 10 * 1.9,
-                                              child: Image(
-                                                  fit: BoxFit.fitWidth,
-                                                  image: AssetImage('assets/images/coffee.png')),
+                                              child: Image(fit: BoxFit.fitWidth, image: AssetImage('assets/images/relax.png')),
                                             ),
                                             Text(
                                               "Journée détente ?",
                                               textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  fontFamily: "Asap",
-                                                  color: isDarkModeEnabled
-                                                      ? Colors.white
-                                                      : Colors.black,
-                                                  fontSize: (screenSize.size.height / 10 * 8.8) /
-                                                      10 *
-                                                      0.2),
+                                              style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
                                             ),
                                             FlatButton(
                                               onPressed: () {
                                                 //Reload list
                                                 getLessons(date);
                                               },
-                                              child: Text("Recharger",
-                                                  style: TextStyle(
-                                                      fontFamily: "Asap",
-                                                      color: isDarkModeEnabled
-                                                          ? Colors.white
-                                                          : Colors.black,
-                                                      fontSize:
-                                                          (screenSize.size.height / 10 * 8.8) /
-                                                              10 *
-                                                              0.2)),
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius: new BorderRadius.circular(18.0),
-                                                  side: BorderSide(
-                                                      color: Theme.of(context).primaryColorDark)),
+                                              child: snapshot.connectionState != ConnectionState.waiting
+                                                  ? Text("Recharger", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2))
+                                                  : FittedBox(child: SpinKitThreeBounce(color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4)),
+                                              shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(18.0), side: BorderSide(color: Theme.of(context).primaryColorDark)),
                                             )
                                           ],
                                         ),
@@ -445,8 +410,7 @@ class _AgendaState extends State<Agenda> {
                               return Container(
                                 height: screenSize.size.height / 10 * 0.4,
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.only(
-                                      topLeft: Radius.circular(11), topRight: Radius.circular(11)),
+                                  borderRadius: BorderRadius.only(topLeft: Radius.circular(11), topRight: Radius.circular(11)),
                                   color: color.withOpacity(0.85),
                                 ),
                                 child: Center(
@@ -524,6 +488,9 @@ class _AgendaElementState extends State<AgendaElement> {
                     buttons = !buttons;
                   });
                 },
+                onTap: () {
+                  lessonDetails(context, widget.lesson, color);
+                },
                 child: AnimatedSwitcher(
                   duration: const Duration(milliseconds: 200),
                   transitionBuilder: (Widget child, Animation<double> animation) {
@@ -538,7 +505,7 @@ class _AgendaElementState extends State<AgendaElement> {
                             children: [
                               //Pin button
                               FutureBuilder(
-                                  future: getSetting(widget.lesson.id.hashCode.toString()),
+                                  future: getSetting(widget.lesson.start.hashCode.toString()),
                                   initialData: false,
                                   builder: (context, snapshot) {
                                     return RaisedButton(
@@ -546,36 +513,28 @@ class _AgendaElementState extends State<AgendaElement> {
                                       onPressed: () async {
                                         if (snapshot.data == false) {
                                           try {
-                                            await setSetting(
-                                                widget.lesson.id.hashCode.toString(), true);
+                                            await setSetting(widget.lesson.start.hashCode.toString(), true);
                                             setState(() {});
-                                            await LocalNotification.scheduleNotification(
-                                                widget.lesson);
+                                            await LocalNotification.scheduleNotification(widget.lesson);
                                             //Get the delay between lesson and reminder
-                                            int minutes =
-                                                await getIntSetting("lessonReminderDelay");
-                                            CustomDialogs.showAnyDialog(context,
-                                                "yNotes vous rappelera ce cours $minutes minutes avant son commencement.");
-                                            print("Registered " +
-                                                widget.lesson.id.hashCode.toString());
+                                            int minutes = await getIntSetting("lessonReminderDelay");
+                                            CustomDialogs.showAnyDialog(context, "yNotes vous rappelera ce cours $minutes minutes avant son commencement.");
+                                            print("Registered " + widget.lesson.start.hashCode.toString());
                                           } catch (e) {
                                             print("Error while scheduling " + e.toString());
                                           }
                                         } else {
-                                          print("Canceled " + widget.lesson.id.hashCode.toString());
-                                          await setSetting(
-                                              widget.lesson.id.hashCode.toString(), false);
+                                          print("Canceled " + widget.lesson.start.hashCode.toString());
+                                          await setSetting(widget.lesson.start.hashCode.toString(), false);
                                           setState(() {});
-                                          await LocalNotification.cancelNotification(
-                                              widget.lesson.id.hashCode);
+                                          await LocalNotification.cancelNotification(widget.lesson.start.hashCode);
                                         }
                                       },
                                       shape: CircleBorder(),
                                       child: Container(
                                           width: screenSize.size.width / 5 * 0.7,
                                           height: screenSize.size.width / 5 * 0.7,
-                                          padding: EdgeInsets.only(
-                                              bottom: screenSize.size.height / 10 * 0.05),
+                                          padding: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.05),
                                           child: Icon(
                                             MdiIcons.alarm,
                                             color: snapshot.data ? Colors.green : Colors.white,
@@ -588,12 +547,7 @@ class _AgendaElementState extends State<AgendaElement> {
                         )
                       : Container(
                           key: ValueKey<bool>(buttons),
-                          decoration: BoxDecoration(
-                              border: Border.all(
-                                  width: 5,
-                                  color: widget.lesson.canceled
-                                      ? Colors.red.shade600
-                                      : Colors.transparent)),
+                          decoration: BoxDecoration(border: Border.all(width: 5, color: widget.lesson.canceled ? Colors.red.shade600 : Colors.transparent), borderRadius: BorderRadius.circular(11)),
                           width: screenSize.size.width / 5 * 4.2,
                           height: screenSize.size.height / 10 * 1.2,
                           child: Stack(children: [
@@ -616,25 +570,12 @@ class _AgendaElementState extends State<AgendaElement> {
                                           children: [
                                             Text(
                                               DateFormat.Hm().format(widget.lesson.start),
-                                              style: TextStyle(
-                                                  fontFamily: "Asap",
-                                                  fontWeight: FontWeight.bold,
-                                                  color: isDarkModeEnabled
-                                                      ? Colors.white
-                                                      : Colors.black),
+                                              style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: isDarkModeEnabled ? Colors.white : Colors.black),
                                             ),
-                                            Icon(MdiIcons.arrowRight,
-                                                color: isDarkModeEnabled
-                                                    ? Colors.white
-                                                    : Colors.black),
+                                            Icon(MdiIcons.arrowRight, color: isDarkModeEnabled ? Colors.white : Colors.black),
                                             Text(
                                               DateFormat.Hm().format(widget.lesson.end),
-                                              style: TextStyle(
-                                                  fontFamily: "Asap",
-                                                  fontWeight: FontWeight.bold,
-                                                  color: isDarkModeEnabled
-                                                      ? Colors.white
-                                                      : Colors.black),
+                                              style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: isDarkModeEnabled ? Colors.white : Colors.black),
                                             )
                                           ],
                                         ),
@@ -647,9 +588,7 @@ class _AgendaElementState extends State<AgendaElement> {
                             Align(
                               alignment: Alignment.centerLeft,
                               child: Container(
-                                margin: EdgeInsets.only(
-                                    left: screenSize.size.width / 5 * 0.1,
-                                    top: screenSize.size.height / 10 * 0.2),
+                                margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1, top: screenSize.size.height / 10 * 0.2),
                                 child: Row(
                                   children: [
                                     Container(
@@ -661,40 +600,32 @@ class _AgendaElementState extends State<AgendaElement> {
                                         children: [
                                           AutoSizeText(
                                             widget.lesson.matiere,
-                                            style: TextStyle(
-                                                fontFamily: "Asap",
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 15),
+                                            style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, fontSize: 15),
                                             textAlign: TextAlign.left,
                                             overflow: TextOverflow.ellipsis,
                                           ),
-                                          FittedBox(
-                                            child: AutoSizeText(
-                                              widget.lesson.teachers[0],
-                                              style: TextStyle(fontFamily: "Asap", fontSize: 15),
-                                              textAlign: TextAlign.left,
+                                          if (widget.lesson.teachers != null && widget.lesson.teachers.length>0&& widget.lesson.teachers[0] != "")
+                                            FittedBox(
+                                              child: AutoSizeText(
+                                                widget.lesson.teachers[0],
+                                                style: TextStyle(fontFamily: "Asap", fontSize: 15),
+                                                textAlign: TextAlign.left,
+                                              ),
                                             ),
-                                          ),
                                         ],
                                       ),
                                     ),
                                     if (widget.lesson.canceled)
                                       Container(
-                                        margin:
-                                            EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
+                                        margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
                                         width: screenSize.size.width / 5 * 1.5,
                                         height: screenSize.size.height / 10 * 0.5,
                                         padding: EdgeInsets.all(screenSize.size.width / 5 * 0.05),
-                                        decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(15),
-                                            border: Border.all(color: Colors.black, width: 2)),
+                                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), border: Border.all(color: Colors.black, width: 2)),
                                         child: Center(
                                           child: AutoSizeText(
                                             widget.lesson.status,
-                                            style: TextStyle(
-                                                fontFamily: "Asap",
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 32),
+                                            style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, fontSize: 32),
                                           ),
                                         ),
                                       )
@@ -713,10 +644,7 @@ class _AgendaElementState extends State<AgendaElement> {
                                     padding: EdgeInsets.all(screenSize.size.width / 5 * 0.08),
                                     child: AutoSizeText(
                                       widget.lesson.room ?? "",
-                                      style: TextStyle(
-                                          fontSize: 30,
-                                          fontFamily: "Asap",
-                                          fontWeight: FontWeight.bold),
+                                      style: TextStyle(fontSize: 30, fontFamily: "Asap", fontWeight: FontWeight.bold),
                                       minFontSize: 10,
                                       stepGranularity: 5,
                                       maxLines: 4,
@@ -739,17 +667,11 @@ class _AgendaElementState extends State<AgendaElement> {
 getCurrentLesson(List<Lesson> lessons, {DateTime now}) {
   List<Lesson> dailyLessons = List();
   Lesson lesson;
-  dailyLessons = lessons
-      .where((lesson) =>
-          DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) ==
-          DateTime.parse(DateFormat("yyyy-MM-dd").format(now ?? DateTime.now())))
-      .toList();
+  dailyLessons = lessons.where((lesson) => DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) == DateTime.parse(DateFormat("yyyy-MM-dd").format(now ?? DateTime.now()))).toList();
   if (dailyLessons != null && dailyLessons.length != 0) {
     //Get current lesson
     try {
-      lesson = dailyLessons.firstWhere((lesson) =>
-          (now ?? DateTime.now()).isBefore(lesson.end) &&
-          (now ?? DateTime.now()).isAfter(lesson.start));
+      lesson = dailyLessons.firstWhere((lesson) => (now ?? DateTime.now()).isBefore(lesson.end) && (now ?? DateTime.now()).isAfter(lesson.start));
     } catch (e) {
       print(lessons);
     }
@@ -763,11 +685,7 @@ getCurrentLesson(List<Lesson> lessons, {DateTime now}) {
 getNextLesson(List<Lesson> lessons) {
   List<Lesson> dailyLessons = List();
   Lesson lesson;
-  dailyLessons = lessons
-      .where((lesson) =>
-          DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) ==
-          DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now())))
-      .toList();
+  dailyLessons = lessons.where((lesson) => DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) == DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now()))).toList();
   if (dailyLessons != null && dailyLessons.length != 0) {
     //Get current lesson
     try {

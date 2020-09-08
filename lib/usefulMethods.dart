@@ -24,6 +24,8 @@ import 'package:ynotes/UI/utils/fileUtils.dart';
 import 'package:ynotes/apiManager.dart';
 import 'package:dio/src/response.dart' as dioResponse;
 
+import 'UI/screens/summaryPage.dart';
+
 launchURL(url) async {
   if (await canLaunch(url)) {
     await launch(url);
@@ -47,9 +49,7 @@ class AppStateNotifier extends ChangeNotifier {
     this.isDarkMode = isDarkMode;
     isDarkModeEnabled = isDarkMode;
 
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        systemNavigationBarColor: isDarkModeEnabled ? Color(0xff414141) : Color(0xffF3F3F3),
-        statusBarColor: Colors.transparent // navigation bar color
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(systemNavigationBarColor: isDarkModeEnabled ? Color(0xff414141) : Color(0xffF3F3F3), statusBarColor: Colors.transparent // navigation bar color
         // status bar color
         ));
 
@@ -292,6 +292,8 @@ exitApp() async {
     isDarkModeEnabled = false;
     //delete hive files
     localApi.gradesList = null;
+    localApi = null;
+    firstStart = true;
   } catch (e) {
     print(e);
   }

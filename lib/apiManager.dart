@@ -1,5 +1,6 @@
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
+import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:stack/stack.dart' as sta;
@@ -20,7 +21,7 @@ class Homework extends HiveObject {
   @HiveField(3)
   final String contenu;
   @HiveField(4)
-  final String contenuDeSeance;
+  String contenuDeSeance;
   @HiveField(5)
   final DateTime date;
   @HiveField(6)
@@ -37,20 +38,7 @@ class Homework extends HiveObject {
   final List<Document> documentsContenuDeSeance;
   @HiveField(12)
   final String nomProf;
-  Homework(
-      this.matiere,
-      this.codeMatiere,
-      this.idDevoir,
-      this.contenu,
-      this.contenuDeSeance,
-      this.date,
-      this.datePost,
-      this.done,
-      this.rendreEnLigne,
-      this.interrogation,
-      this.documents,
-      this.documentsContenuDeSeance,
-      this.nomProf);
+  Homework(this.matiere, this.codeMatiere, this.idDevoir, this.contenu, this.contenuDeSeance, this.date, this.datePost, this.done, this.rendreEnLigne, this.interrogation, this.documents, this.documentsContenuDeSeance, this.nomProf);
 }
 
 //Class of a downloadable document
@@ -59,7 +47,7 @@ class Document {
   @HiveField(0)
   final String libelle;
   @HiveField(1)
-  final int id;
+  final String id;
   @HiveField(2)
   final String type;
   @HiveField(3)
@@ -114,22 +102,7 @@ class Grade {
   @HiveField(14)
   //E.G : Trimestre 1
   final String nomPeriode;
-  Grade(
-      {this.devoir,
-      this.codePeriode,
-      this.codeMatiere,
-      this.codeSousMatiere,
-      this.libelleMatiere,
-      this.letters,
-      this.valeur,
-      this.coef,
-      this.noteSur,
-      this.moyenneClasse,
-      this.typeDevoir,
-      this.date,
-      this.dateSaisie,
-      this.nonSignificatif,
-      this.nomPeriode});
+  Grade({this.devoir, this.codePeriode, this.codeMatiere, this.codeSousMatiere, this.libelleMatiere, this.letters, this.valeur, this.coef, this.noteSur, this.moyenneClasse, this.typeDevoir, this.date, this.dateSaisie, this.nonSignificatif, this.nomPeriode});
 
   factory Grade.fromJson(Map<String, dynamic> json) {
     return Grade(
@@ -181,21 +154,7 @@ class Discipline {
   List<Grade> gradesList;
   @HiveField(13)
   int color;
-  Discipline(
-      {this.gradesList,
-      this.moyenneGeneralClasseMax,
-      this.moyenneGeneraleClasse,
-      this.moyenneGenerale,
-      this.moyenneClasse,
-      this.moyenneMin,
-      this.moyenneMax,
-      this.codeMatiere,
-      this.codeSousMatiere,
-      this.moyenne,
-      this.professeurs,
-      this.nomDiscipline,
-      this.periode,
-      this.color});
+  Discipline({this.gradesList, this.moyenneGeneralClasseMax, this.moyenneGeneraleClasse, this.moyenneGenerale, this.moyenneClasse, this.moyenneMin, this.moyenneMax, this.codeMatiere, this.codeSousMatiere, this.moyenne, this.professeurs, this.nomDiscipline, this.periode, this.color});
 
   set setcolor(Color newcolor) {
     color = newcolor.value;
@@ -205,8 +164,7 @@ class Discipline {
     gradesList = list;
   }
 
-  factory Discipline.fromJson(Map<String, dynamic> json, List<String> profs, String codeMatiere,
-      String periode, Color color, String moyenneG, String bmoyenneClasse, String moyenneClasse) {
+  factory Discipline.fromJson(Map<String, dynamic> json, List<String> profs, String codeMatiere, String periode, Color color, String moyenneG, String bmoyenneClasse, String moyenneClasse) {
     return Discipline(
       codeSousMatiere: [],
       codeMatiere: codeMatiere,
@@ -240,8 +198,7 @@ class Mail {
   final String date;
   final String content;
   final List files;
-  Mail(this.id, this.mtype, this.read, this.idClasseur, this.from, this.subject, this.date,
-      {this.content, this.to, this.files});
+  Mail(this.id, this.mtype, this.read, this.idClasseur, this.from, this.subject, this.date, {this.content, this.to, this.files});
 }
 
 @HiveType(typeId: 4)
@@ -319,7 +276,10 @@ class PollInfo {
   final String title;
   @HiveField(5)
   final String id;
-  PollInfo(this.auteur, this.datedebut, this.questions, this.read, this.title, this.id);
+  @HiveField(6)
+  final List<Document> documents;
+
+  PollInfo(this.auteur, this.datedebut, this.questions, this.read, this.title, this.id, this.documents);
 }
 
 class CloudItem {
@@ -339,8 +299,7 @@ class CloudItem {
   final String id;
   final String date;
 
-  CloudItem(this.title, this.type, this.author, this.isMainFolder, this.date,
-      {this.isMemberOf, this.isLoaded, this.id});
+  CloudItem(this.title, this.type, this.author, this.isMainFolder, this.date, {this.isMemberOf, this.isLoaded, this.id});
 }
 
 class Period {
@@ -377,8 +336,12 @@ abstract class API {
 
   ///Test to know if there are new grades
   Future<bool> testNewGrades();
-  //Send file to cloud or anywhere
+
+  ///Send file to cloud or anywhere
   Future uploadFile(String context, String id, String filepath);
+
+  ///Download a file from his name
+  Future<Request> downloadRequest(Document document);
 
   ///Apps
   Future app(String appname, {String args, String action, CloudItem folder});

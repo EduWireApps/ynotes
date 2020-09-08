@@ -476,48 +476,7 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
               body: Container(
                 child: Stack(
                   children: <Widget>[
-                    /* Stack(fit: StackFit.expand, children: [
-                      Positioned(
-                        left: 0.0,
-                        right: 0.0,
-                        child: AnimatedContainer(
-                          height: (isOffline || !localApi.loggedIn)
-                              ? screenSize.size.height / 10 * 0.4
-                              : 0,
-                          curve: Interval(0.3, 1.0, curve: Curves.fastOutSlowIn),
-                          duration: Duration(milliseconds: 800),
-                          child: Container(
-                            width: screenSize.size.width,
-                            color: !isOffline
-                                ? (!localApi.loggedIn) ? Colors.grey.shade300 : Colors.greenAccent
-                                : Colors.deepOrange.shade200,
-                            child: Center(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: <Widget>[
-                                  Container(
-                                      margin:
-                                          EdgeInsets.only(right: screenSize.size.width / 5 * 0.1),
-                                      height: screenSize.size.height / 10 * 0.25,
-                                      width: screenSize.size.height / 10 * 0.25,
-                                      child: isOffline
-                                          ? Icon(MdiIcons.networkStrengthOff)
-                                          : CircularProgressIndicator(
-                                              backgroundColor: Colors.grey)),
-                                  Container(
-                                      child: Text((!isOffline && localApi.loggedIn)
-                                          ? 'Vous avez été reconnecté'
-                                          : (localApi.loggedIn
-                                              ? 'Vous êtes hors-ligne'
-                                              : 'Connexion...'))),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ]),*/
+                   
 
                     TabBarView(controller: tabController, children: [
                       SpacePage(),

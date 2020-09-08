@@ -6,6 +6,7 @@ import 'dart:ui';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:http/src/request.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:path_provider/path_provider.dart';
@@ -48,10 +49,7 @@ class APIPronote extends API {
     var offlineGrades = await offline.disciplines();
 
     //If force reload enabled the grades will be loaded online
-    if ((connectivityResult == ConnectivityResult.none ||
-            forceReload == false ||
-            forceReload == null) &&
-        offlineGrades != null) {
+    if ((connectivityResult == ConnectivityResult.none || forceReload == false || forceReload == null) && offlineGrades != null) {
       print("Loading grades from offline storage.");
 
       var toReturn = await offline.disciplines();
@@ -94,9 +92,7 @@ class APIPronote extends API {
 
           var z = 0;
           grades.forEach((element) {
-            if (listDisciplines.every((listDisciplineEl) =>
-                listDisciplineEl.nomDiscipline != element.libelleMatiere ||
-                listDisciplineEl.periode != element.nomPeriode)) {
+            if (listDisciplines.every((listDisciplineEl) => listDisciplineEl.nomDiscipline != element.libelleMatiere || listDisciplineEl.periode != element.nomPeriode)) {
               listDisciplines.add(Discipline(
                   codeMatiere: element.codeMatiere,
                   codeSousMatiere: List(),
@@ -106,6 +102,7 @@ class APIPronote extends API {
                   professeurs: List(),
                   moyenne: averages[z][0],
                   moyenneMax: averages[z][1],
+                  moyenneMin: averages[z][2],
                   moyenneClasse: element.moyenneClasse,
                   moyenneGeneraleClasse: periods[i].moyenneGeneraleClasse,
                   moyenneGenerale: periods[i].moyenneGenerale));
@@ -115,8 +112,7 @@ class APIPronote extends API {
         }
         this.gradesList = null;
         listDisciplines.forEach((element) {
-          element.gradesList
-              .addAll(grades.where((grade) => grade.libelleMatiere == element.nomDiscipline));
+          element.gradesList.addAll(grades.where((grade) => grade.libelleMatiere == element.nomDiscipline));
         });
         int index = 0;
         refreshDisciplinesListColors(listDisciplines);
@@ -194,10 +190,7 @@ class APIPronote extends API {
     var offlineHomework = await offline.homework();
 
     //If force reload enabled the grades will be loaded online
-    if ((connectivityResult == ConnectivityResult.none ||
-            forceReload == false ||
-            forceReload == null) &&
-        offlineHomework != null) {
+    if ((connectivityResult == ConnectivityResult.none || forceReload == false || forceReload == null) && offlineHomework != null) {
       print("Loading homework from offline storage.");
       offlineHomework.sort((a, b) => a.date.compareTo(b.date));
       return offlineHomework;
@@ -294,23 +287,19 @@ class APIPronote extends API {
           error = "L'URL entrée est invalide";
         }
         if (e.toString().contains("split")) {
-          error =
-              "Le format de l'URL entrée est invalide. Vérifiez qu'il correspond bien à celui fourni par votre établissement";
+          error = "Le format de l'URL entrée est invalide. Vérifiez qu'il correspond bien à celui fourni par votre établissement";
         }
         if (e.toString().contains("runes")) {
           error = "Le mot de passe et/ou l'identifiant saisi(s) est/sont incorrect(s)";
         }
         if (e.toString().contains("IP")) {
-          error =
-              "Une erreur inattendue  a eu lieu. Pronote a peut-être temporairement suspendu votre adresse IP. Veuillez recommencer dans quelques minutes.";
+          error = "Une erreur inattendue  a eu lieu. Pronote a peut-être temporairement suspendu votre adresse IP. Veuillez recommencer dans quelques minutes.";
         }
         if (e.toString().contains("SocketException")) {
-          error =
-              "Impossible de se connecter à l'adresse saisie. Vérifiez cette dernière et votre connexion.";
+          error = "Impossible de se connecter à l'adresse saisie. Vérifiez cette dernière et votre connexion.";
         }
         if (e.toString().contains("nombre d'erreurs d'authentification autorisées")) {
-          error =
-              "Vous avez dépassé le nombre d'erreurs d'authentification authorisées ! Réessayez dans quelques minutes.";
+          error = "Vous avez dépassé le nombre d'erreurs d'authentification authorisées ! Réessayez dans quelques minutes.";
         }
         return (error);
 
@@ -437,14 +426,10 @@ class APIPronote extends API {
           toReturn.addAll(offlineLesson);
 
           //filter lessons
-          toReturn.removeWhere((lesson) =>
-              DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) !=
-              DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)));
+          toReturn.removeWhere((lesson) => DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) != DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)));
         }
         //Check if needed to force refresh if not offline
-        if (forceReload == true ||
-            toReturn == null ||
-            toReturn.length == 0 && connectivityResult != ConnectivityResult.none) {
+        if (forceReload == true || toReturn == null || toReturn.length == 0 && connectivityResult != ConnectivityResult.none) {
           try {
             List<Lesson> onlineLessons = await localClient.lessons(dateToUse);
 
@@ -458,11 +443,7 @@ class APIPronote extends API {
 
         lessonsLock = false;
         toReturn.sort((a, b) => a.start.compareTo(b.start));
-        return toReturn
-            .where((lesson) =>
-                DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) ==
-                DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)))
-            .toList();
+        return toReturn.where((lesson) => DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) == DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse))).toList();
       } catch (e) {
         print("Error while getting next lessons " + e.toString());
         lessonsLock = false;
@@ -471,9 +452,7 @@ class APIPronote extends API {
           lessonsRefreshRecursive = true;
           await refreshClient();
           toReturn = await localClient.lessons(dateToUse);
-          toReturn.removeWhere((lesson) =>
-              DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) !=
-              DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)));
+          toReturn.removeWhere((lesson) => DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) != DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)));
           toReturn.sort((a, b) => a.start.compareTo(b.start));
 
           return toReturn;
@@ -490,8 +469,7 @@ class APIPronote extends API {
       List<Discipline> disciplines = await offline.disciplines();
       List<Grade> grades = getAllGrades(disciplines, overrideLimit: true);
       grades.forEach((grade) {
-        if (!listPeriods
-            .any((period) => period.name == grade.nomPeriode && period.id == grade.codePeriode)) {
+        if (!listPeriods.any((period) => period.name == grade.nomPeriode && period.id == grade.codePeriode)) {
           listPeriods.add(Period(grade.nomPeriode, grade.codePeriode));
         }
       });
@@ -564,9 +542,7 @@ class APIPronote extends API {
 
           var z = 0;
           grades.forEach((element) {
-            if (listDisciplines.every((listDisciplineEl) =>
-                listDisciplineEl.nomDiscipline != element.libelleMatiere ||
-                listDisciplineEl.periode != element.nomPeriode)) {
+            if (listDisciplines.every((listDisciplineEl) => listDisciplineEl.nomDiscipline != element.libelleMatiere || listDisciplineEl.periode != element.nomPeriode)) {
               listDisciplines.add(Discipline(
                   codeMatiere: element.codeMatiere,
                   codeSousMatiere: List(),
@@ -585,8 +561,7 @@ class APIPronote extends API {
         }
 
         listDisciplines.forEach((element) {
-          element.gradesList
-              .addAll(grades.where((grade) => grade.libelleMatiere == element.nomDiscipline));
+          element.gradesList.addAll(grades.where((grade) => grade.libelleMatiere == element.nomDiscipline));
         });
         int index = 0;
         refreshDisciplinesListColors(listDisciplines);
@@ -602,6 +577,13 @@ class APIPronote extends API {
       List<Discipline> listDisciplines = List<Discipline>();
       return listDisciplines;
     }
+  }
+
+  @override
+  Future<Request> downloadRequest(Document document) async {
+    String url = await localClient.downloadUrl(document);
+    Request request = Request('GET', Uri.parse(url));
+    return request;
   }
 }
 

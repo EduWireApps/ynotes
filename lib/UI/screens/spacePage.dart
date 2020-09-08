@@ -20,13 +20,17 @@ class SpacePage extends StatefulWidget {
 }
 
 int segmentedControlGroupValue = 0;
-PageController spacePageInternalSettingsController = PageController(initialPage: 0);
 
 class _SpacePageState extends State<SpacePage> with TickerProviderStateMixin {
+  PageController spacePageInternalSettingsController = PageController(initialPage: 0);
   // ignore: must_call_super
   void initState() {
-    helpDialogs[3].showDialog(context);
     getDefaultPage();
+    showDialog();
+  }
+
+  showDialog() async {
+    await helpDialogs[3].showDialog(context);
   }
 
   getDefaultPage() async {
@@ -40,18 +44,8 @@ class _SpacePageState extends State<SpacePage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
     final Map<int, Widget> spaceTabs = <int, Widget>{
-      0: Text("Outils",
-          style: TextStyle(
-              color: isDarkModeEnabled ? Colors.white : Colors.black,
-              fontFamily: "Asap",
-              fontWeight: FontWeight.bold,
-              fontSize: screenSize.size.width / 5 * 0.2)),
-      1: Text("Organisation",
-          style: TextStyle(
-              color: isDarkModeEnabled ? Colors.white : Colors.black,
-              fontFamily: "Asap",
-              fontWeight: FontWeight.bold,
-              fontSize: screenSize.size.width / 5 * 0.2))
+      0: Text("Outils", style: TextStyle(color: isDarkModeEnabled ? Colors.white : Colors.black, fontFamily: "Asap", fontWeight: FontWeight.bold, fontSize: screenSize.size.width / 5 * 0.2)),
+      1: Text("Organisation", style: TextStyle(color: isDarkModeEnabled ? Colors.white : Colors.black, fontFamily: "Asap", fontWeight: FontWeight.bold, fontSize: screenSize.size.width / 5 * 0.2))
     };
 
     return Container(
@@ -87,11 +81,7 @@ class _SpacePageState extends State<SpacePage> with TickerProviderStateMixin {
                       Container(
                         child: Text(
                           "Accéder aux préférences",
-                          style: TextStyle(
-                              color: isDarkModeEnabled ? Colors.white : Colors.black,
-                              fontFamily: "Asap",
-                              fontWeight: FontWeight.bold,
-                              fontSize: screenSize.size.width / 5 * 0.2),
+                          style: TextStyle(color: isDarkModeEnabled ? Colors.white : Colors.black, fontFamily: "Asap", fontWeight: FontWeight.bold, fontSize: screenSize.size.width / 5 * 0.2),
                         ),
                       ),
                     ],
@@ -101,9 +91,7 @@ class _SpacePageState extends State<SpacePage> with TickerProviderStateMixin {
             ),
             SingleChildScrollView(
               child: Container(
-                margin: EdgeInsets.only(
-                    top: screenSize.size.height / 10 * 0.2,
-                    bottom: screenSize.size.height / 10 * 0.4),
+                margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2, bottom: screenSize.size.height / 10 * 0.4),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                   color: Theme.of(context).primaryColorDark,
@@ -122,8 +110,7 @@ class _SpacePageState extends State<SpacePage> with TickerProviderStateMixin {
                           height: screenSize.size.height / 10 * 0.5,
                           child: RawMaterialButton(
                             onPressed: () {
-                              spacePageInternalSettingsController.animateToPage(1,
-                                  duration: Duration(milliseconds: 300), curve: Curves.ease);
+                              spacePageInternalSettingsController.animateToPage(1, duration: Duration(milliseconds: 300), curve: Curves.ease);
                             },
                             child: new Icon(
                               Icons.settings,
@@ -164,17 +151,14 @@ class _SpacePageState extends State<SpacePage> with TickerProviderStateMixin {
                                 Container(
                                   height: screenSize.size.height / 10 * 6.8,
                                   child: SingleChildScrollView(
-                                    padding:
-                                        EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.3),
+                                    padding: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.3),
                                     scrollDirection: Axis.vertical,
                                     child: Column(
                                       children: <Widget>[
                                         AnimatedSwitcher(
                                             duration: const Duration(milliseconds: 400),
-                                            transitionBuilder:
-                                                (Widget child, Animation<double> animation) {
-                                              return FadeTransition(
-                                                  child: child, opacity: animation);
+                                            transitionBuilder: (Widget child, Animation<double> animation) {
+                                              return FadeTransition(child: child, opacity: animation);
                                             },
                                             child: segmentedControlGroupValue == 0
                                                 ? Column(
@@ -195,16 +179,14 @@ class _SpacePageState extends State<SpacePage> with TickerProviderStateMixin {
                                 Container(
                                   height: screenSize.size.height / 10 * 6.8,
                                   child: SingleChildScrollView(
-                                    padding:
-                                        EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.3),
+                                    padding: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.3),
                                     scrollDirection: Axis.vertical,
                                     child: Column(
                                       children: <Widget>[
                                         SpacePageGlobalSettings(),
                                         OrganisationSettings(),
                                         Container(
-                                          margin:
-                                              EdgeInsets.only(top: screenSize.size.width / 5 * 0.2),
+                                          margin: EdgeInsets.only(top: screenSize.size.width / 5 * 0.2),
                                           height: (screenSize.size.height / 10 * 8.8) / 10 * 0.75,
                                           width: screenSize.size.width / 5 * 2,
                                           child: RaisedButton(
@@ -213,19 +195,12 @@ class _SpacePageState extends State<SpacePage> with TickerProviderStateMixin {
                                               borderRadius: new BorderRadius.circular(18.0),
                                             ),
                                             onPressed: () {
-                                              spacePageInternalSettingsController.animateToPage(0,
-                                                  duration: Duration(milliseconds: 300),
-                                                  curve: Curves.ease);
+                                              spacePageInternalSettingsController.animateToPage(0, duration: Duration(milliseconds: 300), curve: Curves.ease);
                                             },
                                             child: Text(
                                               "Retour",
                                               textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  fontSize: 18,
-                                                  fontFamily: "Asap",
-                                                  color: isDarkModeEnabled
-                                                      ? Colors.white
-                                                      : Colors.black),
+                                              style: TextStyle(fontSize: 18, fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
                                             ),
                                           ),
                                         )

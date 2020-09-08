@@ -30,7 +30,9 @@ class Offline {
       Hive.registerAdapter(HomeworkAdapter());
       Hive.registerAdapter(LessonAdapter());
       Hive.registerAdapter(PollInfoAdapter());
-    } catch (e) {}
+    } catch (e) {
+      print("Error " + e.toString());
+    }
     _offlineBox = await Hive.openBox("offlineData");
     _homeworkDoneBox = await Hive.openBox('doneHomework');
     _pinnedHomeworkBox = await Hive.openBox('pinnedHomework');
@@ -49,16 +51,16 @@ class Offline {
       var offlinehomeworkData = await _offlineBox.get("homework");
       var offlinePollsData = await _offlineBox.get("polls");
       if (offlineLessons != null) {
-        lessonsData = Map<dynamic, dynamic>.from(offlineLessons);
+        this.lessonsData = Map<dynamic, dynamic>.from(offlineLessons);
       }
       if (offlineDisciplines != null) {
-        disciplinesData = offlineDisciplines.cast<Discipline>();
+        this.disciplinesData = offlineDisciplines.cast<Discipline>();
       }
       if (offlinehomeworkData != null) {
-        homeworkData = offlinehomeworkData.cast<Homework>();
+        this.homeworkData = offlinehomeworkData.cast<Homework>();
       }
       if (offlinePollsData != null) {
-        pollsData = offlinePollsData.cast<PollInfo>();
+        this.pollsData = offlinePollsData.cast<PollInfo>();
       }
     } catch (e) {
       print("Error while refreshing " + e.toString());
@@ -80,9 +82,10 @@ class Offline {
       await _offlineBox.clear();
       await _homeworkDoneBox.clear();
       await _pinnedHomeworkBox.clear();
-      disciplinesData = null;
-      lessonsData = null;
-      disciplinesData = null;
+      disciplinesData.clear();
+      homeworkData.clear();
+      lessonsData.clear();
+      pollsData.clear();
     } catch (e) {
       print("Failed to clear all db " + e.toString());
     }
@@ -130,7 +133,7 @@ class Offline {
         _offlineBox = await Hive.openBox("offlineData");
       }
       if (newData != null) {
-        print("Update offline lessons (week : $week)");
+        print("Update offline lessons (week : $week, length : ${newData.length})");
         Map<dynamic, dynamic> timeTable = Map();
         var offline = await _offlineBox.get("lessons");
         if (offline != null) {
@@ -245,7 +248,7 @@ class Offline {
 
   Future<List<Lesson>> lessons(int week) async {
     try {
-      if (lessonsData[week] != null) {
+      if (lessonsData != null && lessonsData[week] != null) {
         return lessonsData[week].cast<Lesson>();
       } else {
         await refreshData();

@@ -119,10 +119,7 @@ class _MailPageState extends State<MailPage> {
                             value: dossier,
                             iconSize: (screenSize.size.width / 5) * 0.3,
                             iconEnabledColor: isDarkModeEnabled ? Colors.white : Colors.black,
-                            style: TextStyle(
-                                fontSize: 18,
-                                fontFamily: "Asap",
-                                color: isDarkModeEnabled ? Colors.white : Colors.black),
+                            style: TextStyle(fontSize: 18, fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
                             onChanged: (String newValue) {
                               setState(() {
                                 dossier = newValue;
@@ -138,10 +135,7 @@ class _MailPageState extends State<MailPage> {
                                 child: Text(
                                   value,
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontSize: 18,
-                                      fontFamily: "Asap",
-                                      color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                  style: TextStyle(fontSize: 18, fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
                                 ),
                               );
                             }).toList(),
@@ -160,8 +154,7 @@ class _MailPageState extends State<MailPage> {
                       onTap: () {
                         setState(() {
                           int index = sortValue.values.indexOf(actualSort);
-                          actualSort = sortValue
-                              .values[index + (index == sortValue.values.length - 1 ? -2 : 1)];
+                          actualSort = sortValue.values[index + (index == sortValue.values.length - 1 ? -2 : 1)];
                         });
                       },
                       borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
@@ -208,31 +201,24 @@ class _MailPageState extends State<MailPage> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: <Widget>[
                                     Material(
-                                      color: localList[index].read
-                                          ? Theme.of(context).primaryColor
-                                          : darken(Theme.of(context).primaryColor),
+                                      color: localList[index].read ? Theme.of(context).primaryColor : darken(Theme.of(context).primaryColor),
                                       child: InkWell(
                                         onTap: () {
-                                          mailModalBottomSheet(widget.context, localList[index],
-                                              index: index);
+                                          mailModalBottomSheet(widget.context, localList[index], index: index);
                                         },
                                         child: Container(
                                           margin: EdgeInsets.all(0),
                                           child: Row(
                                             children: <Widget>[
                                               Container(
-                                                margin: EdgeInsets.only(
-                                                    left: screenSize.size.width / 5 * 0.2),
+                                                margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.2),
                                                 child: Icon(
                                                   MdiIcons.account,
-                                                  color: isDarkModeEnabled
-                                                      ? Colors.white
-                                                      : Colors.black,
+                                                  color: isDarkModeEnabled ? Colors.white : Colors.black,
                                                 ),
                                               ),
                                               Container(
-                                                margin: EdgeInsets.only(
-                                                    left: screenSize.size.width / 5 * 0.4),
+                                                margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.4),
                                                 width: screenSize.size.width / 5 * 4,
                                                 child: Column(
                                                   mainAxisAlignment: MainAxisAlignment.start,
@@ -244,11 +230,8 @@ class _MailPageState extends State<MailPage> {
                                                         textAlign: TextAlign.start,
                                                         style: TextStyle(
                                                           fontFamily: "Asap",
-                                                          fontSize:
-                                                              screenSize.size.height / 10 * 0.25,
-                                                          color: isDarkModeEnabled
-                                                              ? Colors.white
-                                                              : Colors.black,
+                                                          fontSize: screenSize.size.height / 10 * 0.25,
+                                                          color: isDarkModeEnabled ? Colors.white : Colors.black,
                                                         ),
                                                         overflow: TextOverflow.ellipsis,
                                                       ),
@@ -259,9 +242,7 @@ class _MailPageState extends State<MailPage> {
                                                       style: TextStyle(
                                                         fontFamily: "Asap",
                                                         fontSize: screenSize.size.height / 10 * 0.2,
-                                                        color: isDarkModeEnabled
-                                                            ? Colors.white60
-                                                            : Colors.black87,
+                                                        color: isDarkModeEnabled ? Colors.white60 : Colors.black87,
                                                       ),
                                                       overflow: TextOverflow.ellipsis,
                                                     ),
@@ -272,20 +253,15 @@ class _MailPageState extends State<MailPage> {
                                                           textAlign: TextAlign.start,
                                                           style: TextStyle(
                                                             fontFamily: "Asap",
-                                                            fontSize:
-                                                                screenSize.size.height / 10 * 0.2,
-                                                            color: isDarkModeEnabled
-                                                                ? Colors.white38
-                                                                : Colors.black38,
+                                                            fontSize: screenSize.size.height / 10 * 0.2,
+                                                            color: isDarkModeEnabled ? Colors.white38 : Colors.black38,
                                                           ),
                                                           overflow: TextOverflow.ellipsis,
                                                         ),
                                                         if (localList[index].files.length > 0)
                                                           Icon(
                                                             MdiIcons.attachment,
-                                                            color: isDarkModeEnabled
-                                                                ? Colors.white38
-                                                                : Colors.black38,
+                                                            color: isDarkModeEnabled ? Colors.white38 : Colors.black38,
                                                           )
                                                       ],
                                                     )
@@ -317,23 +293,21 @@ class _MailPageState extends State<MailPage> {
                           children: <Widget>[
                             Text(
                               "Une erreur a eu lieu",
-                              style: TextStyle(
-                                  fontFamily: "Asap",
-                                  color: isDarkModeEnabled ? Colors.white : Colors.black),
+                              style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
                             ),
                             FlatButton(
                               onPressed: () {
                                 //Reload list
                                 refreshLocalMailsList();
                               },
-                              child: Text("Recharger",
-                                  style: TextStyle(
-                                    fontFamily: "Asap",
-                                    color: isDarkModeEnabled ? Colors.white : Colors.black,
-                                  )),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: new BorderRadius.circular(18.0),
-                                  side: BorderSide(color: Theme.of(context).primaryColorDark)),
+                              child: snapshot.connectionState != ConnectionState.waiting
+                                  ? Text("Recharger",
+                                      style: TextStyle(
+                                        fontFamily: "Asap",
+                                        color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                      ))
+                                  : FittedBox(child: SpinKitThreeBounce(color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4)),
+                              shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(18.0), side: BorderSide(color: Theme.of(context).primaryColorDark)),
                             ),
                           ],
                         ),
@@ -389,10 +363,7 @@ class _MailPageState extends State<MailPage> {
                                 Text(
                                   mail.subject,
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontFamily: "Asap",
-                                      fontWeight: FontWeight.bold,
-                                      color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                  style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: isDarkModeEnabled ? Colors.white : Colors.black),
                                 ),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -402,31 +373,17 @@ class _MailPageState extends State<MailPage> {
                                         width: screenSize.size.width / 5 * 2.6,
                                         height: screenSize.size.height / 10 * 0.45,
                                         padding: EdgeInsets.all(screenSize.size.height / 10 * 0.1),
-                                        decoration: ShapeDecoration(
-                                            shape: StadiumBorder(),
-                                            color: Theme.of(context).primaryColorDark),
+                                        decoration: ShapeDecoration(shape: StadiumBorder(), color: Theme.of(context).primaryColorDark),
                                         child: Row(
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: <Widget>[
                                             Text(
                                               "de : ",
-                                              style: TextStyle(
-                                                  fontFamily: "Asap",
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: screenSize.size.height / 10 * 0.15,
-                                                  color: isDarkModeEnabled
-                                                      ? Colors.white70
-                                                      : Colors.black87),
+                                              style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, fontSize: screenSize.size.height / 10 * 0.15, color: isDarkModeEnabled ? Colors.white70 : Colors.black87),
                                             ),
                                             Text(
                                               mail.from["name"],
-                                              style: TextStyle(
-                                                  fontFamily: "Asap",
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: screenSize.size.height / 10 * 0.15,
-                                                  color: isDarkModeEnabled
-                                                      ? Colors.white70
-                                                      : Colors.black87),
+                                              style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, fontSize: screenSize.size.height / 10 * 0.15, color: isDarkModeEnabled ? Colors.white70 : Colors.black87),
                                             ),
                                           ],
                                         ),
@@ -436,35 +393,21 @@ class _MailPageState extends State<MailPage> {
                                         padding: EdgeInsets.all(screenSize.size.height / 10 * 0.1),
                                         width: screenSize.size.width / 5 * 2.6,
                                         height: screenSize.size.height / 10 * 0.45,
-                                        decoration: ShapeDecoration(
-                                            shape: StadiumBorder(),
-                                            color: Theme.of(context).primaryColorDark),
+                                        decoration: ShapeDecoration(shape: StadiumBorder(), color: Theme.of(context).primaryColorDark),
                                         child: FittedBox(
                                           fit: BoxFit.fitWidth,
                                           child: Row(
                                             children: <Widget>[
                                               Text(
                                                 "à : ",
-                                                style: TextStyle(
-                                                    fontFamily: "Asap",
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: screenSize.size.height / 10 * 0.15,
-                                                    color: isDarkModeEnabled
-                                                        ? Colors.white70
-                                                        : Colors.black87),
+                                                style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, fontSize: screenSize.size.height / 10 * 0.15, color: isDarkModeEnabled ? Colors.white70 : Colors.black87),
                                               ),
                                               Container(
                                                 width: screenSize.size.width / 5 * 2.1,
                                                 height: screenSize.size.height / 10 * 0.45,
                                                 child: Marquee(
                                                   text: to,
-                                                  style: TextStyle(
-                                                      fontFamily: "Asap",
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: screenSize.size.height / 10 * 0.15,
-                                                      color: isDarkModeEnabled
-                                                          ? Colors.white70
-                                                          : Colors.black87),
+                                                  style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, fontSize: screenSize.size.height / 10 * 0.15, color: isDarkModeEnabled ? Colors.white70 : Colors.black87),
                                                 ),
                                               ),
                                             ],
@@ -472,25 +415,15 @@ class _MailPageState extends State<MailPage> {
                                         ),
                                       ),
                                     Container(
-                                      margin:
-                                          EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
+                                      margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
                                       width: screenSize.size.width / 5 * 1.3,
                                       padding: EdgeInsets.all(screenSize.size.height / 10 * 0.1),
                                       height: screenSize.size.height / 10 * 0.45,
-                                      decoration: ShapeDecoration(
-                                          shape: StadiumBorder(),
-                                          color: Theme.of(context).primaryColorDark),
+                                      decoration: ShapeDecoration(shape: StadiumBorder(), color: Theme.of(context).primaryColorDark),
                                       child: FittedBox(
                                         child: Text(
-                                          DateFormat("dd MMMM yyyy", "fr_FR")
-                                              .format(DateTime.parse(mail.date)),
-                                          style: TextStyle(
-                                              fontFamily: "Asap",
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: screenSize.size.height / 10 * 0.15,
-                                              color: isDarkModeEnabled
-                                                  ? Colors.white70
-                                                  : Colors.black87),
+                                          DateFormat("dd MMMM yyyy", "fr_FR").format(DateTime.parse(mail.date)),
+                                          style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, fontSize: screenSize.size.height / 10 * 0.15, color: isDarkModeEnabled ? Colors.white70 : Colors.black87),
                                         ),
                                       ),
                                     )
@@ -517,33 +450,24 @@ class _MailPageState extends State<MailPage> {
                                           throw "Unable to launch url";
                                         }
                                       },
-                                      textStyle: TextStyle(
-                                          color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                      textStyle: TextStyle(color: isDarkModeEnabled ? Colors.white : Colors.black),
                                     ),
                                     AnimatedContainer(
                                       duration: Duration(milliseconds: 75),
                                       width: screenSize.size.width / 5 * 4.4,
-                                      height:
-                                          mail.files.length * (screenSize.size.height / 10 * 0.7),
+                                      height: mail.files.length * (screenSize.size.height / 10 * 0.7),
                                       child: ListView.builder(
                                           itemCount: mail.files.length,
                                           itemBuilder: (BuildContext context, int index) {
                                             return Container(
-                                              margin: EdgeInsets.only(
-                                                  bottom: screenSize.size.height / 10 * 0.2),
+                                              margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.2),
                                               child: Material(
-                                                borderRadius: BorderRadius.circular(
-                                                    screenSize.size.width / 5 * 0.5),
+                                                borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.1),
                                                 color: Color(0xff5FA9DA),
                                                 child: InkWell(
-                                                  borderRadius: BorderRadius.circular(
-                                                      screenSize.size.width / 5 * 0.5),
+                                                  borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.5),
                                                   child: Container(
-                                                    decoration: BoxDecoration(
-                                                        border: Border(
-                                                            bottom: BorderSide(
-                                                                width: 0,
-                                                                color: Colors.transparent))),
+                                                    decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 0, color: Colors.transparent))),
                                                     width: screenSize.size.width / 5 * 4.4,
                                                     height: screenSize.size.height / 10 * 0.7,
                                                     child: Stack(
@@ -551,22 +475,10 @@ class _MailPageState extends State<MailPage> {
                                                         Align(
                                                           alignment: Alignment.centerLeft,
                                                           child: Container(
-                                                            margin: EdgeInsets.only(
-                                                                left: screenSize.size.width /
-                                                                    5 *
-                                                                    0.1),
+                                                            margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
                                                             width: screenSize.size.width / 5 * 2.8,
                                                             child: ClipRRect(
-                                                              child: Marquee(
-                                                                  text: mail.files[index]
-                                                                      ["libelle"],
-                                                                  blankSpace:
-                                                                      screenSize.size.width /
-                                                                          5 *
-                                                                          0.2,
-                                                                  style: TextStyle(
-                                                                      fontFamily: "Asap",
-                                                                      color: Colors.white)),
+                                                              child: Marquee(text: mail.files[index]["libelle"], blankSpace: screenSize.size.width / 5 * 0.2, style: TextStyle(fontFamily: "Asap", color: Colors.white)),
                                                             ),
                                                           ),
                                                         ),
@@ -574,20 +486,12 @@ class _MailPageState extends State<MailPage> {
                                                           right: screenSize.size.width / 5 * 0.1,
                                                           top: screenSize.size.height / 10 * 0.11,
                                                           child: Container(
-                                                            height:
-                                                                screenSize.size.height / 10 * 0.5,
-                                                            decoration: BoxDecoration(
-                                                                color: darken(Color(0xff5FA9DA)),
-                                                                borderRadius:
-                                                                    BorderRadius.circular(50)),
+                                                            height: screenSize.size.height / 10 * 0.5,
+                                                            decoration: BoxDecoration(color: darken(Color(0xff5FA9DA)), borderRadius: BorderRadius.circular(50)),
                                                             child: Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment.spaceEvenly,
+                                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                               children: <Widget>[
-                                                                if ((mail.files[index]["libelle"]
-                                                                            .length -
-                                                                        3) ==
-                                                                    "pdf")
+                                                                if ((mail.files[index]["libelle"].length - 3) == "pdf")
                                                                   IconButton(
                                                                     icon: Icon(
                                                                       MdiIcons.eyeOutline,
@@ -597,71 +501,34 @@ class _MailPageState extends State<MailPage> {
                                                                       // do something
                                                                     },
                                                                   ),
-                                                                if ((mail.files[index]["libelle"]
-                                                                            .length -
-                                                                        3) ==
-                                                                    "pdf")
+                                                                if ((mail.files[index]["libelle"].length - 3) == "pdf")
                                                                   VerticalDivider(
                                                                     width: 2,
                                                                     color: Color(0xff5FA9DA),
                                                                   ),
-                                                                ViewModelBuilder<
-                                                                        DownloadModel>.reactive(
-                                                                    viewModelBuilder: () =>
-                                                                        DownloadModel(),
-                                                                    builder:
-                                                                        (context, model, child) {
+                                                                ViewModelBuilder<DownloadModel>.reactive(
+                                                                    viewModelBuilder: () => DownloadModel(),
+                                                                    builder: (context, model, child) {
                                                                       return FutureBuilder(
-                                                                          future: model.fileExists(
-                                                                              mail.files[index]
-                                                                                  ["libelle"]),
+                                                                          future: model.fileExists(mail.files[index]["libelle"]),
                                                                           initialData: false,
-                                                                          builder:
-                                                                              (context, snapshot) {
-                                                                            if (snapshot.data ==
-                                                                                false) {
-                                                                              if (model
-                                                                                  .isDownloading) {
+                                                                          builder: (context, snapshot) {
+                                                                            if (snapshot.data == false) {
+                                                                              if (model.isDownloading) {
                                                                                 /// If download is in progress or connecting
-                                                                                if (model.downloadProgress ==
-                                                                                        null ||
-                                                                                    model.downloadProgress <
-                                                                                        100) {
+                                                                                if (model.downloadProgress == null || model.downloadProgress < 100) {
                                                                                   return Container(
-                                                                                    padding: EdgeInsets
-                                                                                        .symmetric(
-                                                                                      horizontal:
-                                                                                          screenSize
-                                                                                                  .size
-                                                                                                  .width /
-                                                                                              5 *
-                                                                                              0.2,
+                                                                                    padding: EdgeInsets.symmetric(
+                                                                                      horizontal: screenSize.size.width / 5 * 0.2,
                                                                                     ),
                                                                                     child: Center(
-                                                                                      child:
-                                                                                          SizedBox(
-                                                                                        width: screenSize
-                                                                                                .size
-                                                                                                .width /
-                                                                                            5 *
-                                                                                            0.3,
-                                                                                        height: screenSize
-                                                                                                .size
-                                                                                                .width /
-                                                                                            5 *
-                                                                                            0.3,
-                                                                                        child:
-                                                                                            CircularProgressIndicator(
-                                                                                          backgroundColor:
-                                                                                              Colors
-                                                                                                  .green,
-                                                                                          strokeWidth: screenSize
-                                                                                                  .size
-                                                                                                  .width /
-                                                                                              5 *
-                                                                                              0.05,
-                                                                                          value: model
-                                                                                              .downloadProgress,
+                                                                                      child: SizedBox(
+                                                                                        width: screenSize.size.width / 5 * 0.3,
+                                                                                        height: screenSize.size.width / 5 * 0.3,
+                                                                                        child: CircularProgressIndicator(
+                                                                                          backgroundColor: Colors.green,
+                                                                                          strokeWidth: screenSize.size.width / 5 * 0.05,
+                                                                                          value: model.downloadProgress,
                                                                                         ),
                                                                                       ),
                                                                                     ),
@@ -671,50 +538,27 @@ class _MailPageState extends State<MailPage> {
                                                                                 ///Download is ended
                                                                                 else {
                                                                                   return Container(
-                                                                                      child:
-                                                                                          IconButton(
+                                                                                      child: IconButton(
                                                                                     icon: Icon(
-                                                                                      MdiIcons
-                                                                                          .check,
-                                                                                      color: Colors
-                                                                                          .green,
+                                                                                      MdiIcons.check,
+                                                                                      color: Colors.green,
                                                                                     ),
-                                                                                    onPressed:
-                                                                                        () async {
-                                                                                      FileAppUtil.openFile(
-                                                                                          mail.files[
-                                                                                                  index]
-                                                                                              [
-                                                                                              "libelle"]);
+                                                                                    onPressed: () async {
+                                                                                      FileAppUtil.openFile(mail.files[index]["libelle"], usingFileName: true);
                                                                                     },
                                                                                   ));
                                                                                 }
                                                                               }
 
                                                                               ///Isn't downloading
-                                                                              if (!model
-                                                                                  .isDownloading) {
+                                                                              if (!model.isDownloading) {
                                                                                 return IconButton(
                                                                                   icon: Icon(
-                                                                                    MdiIcons
-                                                                                        .fileDownloadOutline,
-                                                                                    color: Colors
-                                                                                        .white,
+                                                                                    MdiIcons.fileDownloadOutline,
+                                                                                    color: Colors.white,
                                                                                   ),
-                                                                                  onPressed:
-                                                                                      () async {
-                                                                                    await model.download(
-                                                                                        mail.files[
-                                                                                                index]
-                                                                                            ["id"],
-                                                                                        mail.files[
-                                                                                                index]
-                                                                                            [
-                                                                                            "type"],
-                                                                                        mail.files[
-                                                                                                index]
-                                                                                            [
-                                                                                            "libelle"]);
+                                                                                  onPressed: () async {
+                                                                                    await model.download(Document(mail.files[index]["libelle"], mail.files[index]["id"].toString(), mail.files[index]["type"], 0));
                                                                                   },
                                                                                 );
                                                                               }
@@ -726,16 +570,10 @@ class _MailPageState extends State<MailPage> {
                                                                                   child: IconButton(
                                                                                 icon: Icon(
                                                                                   MdiIcons.check,
-                                                                                  color:
-                                                                                      Colors.green,
+                                                                                  color: Colors.green,
                                                                                 ),
-                                                                                onPressed:
-                                                                                    () async {
-                                                                                  FileAppUtil.openFile(
-                                                                                      mail.files[
-                                                                                              index]
-                                                                                          [
-                                                                                          "libelle"]);
+                                                                                onPressed: () async {
+                                                                                  FileAppUtil.openFile(mail.files[index]["libelle"], usingFileName: true);
                                                                                 },
                                                                               ));
                                                                             }

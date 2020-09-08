@@ -28,15 +28,10 @@ import '../apiManager.dart';
 import '../apiManager.dart';
 import 'EcoleDirecte.dart';
 
-Map error_messages = {
-  22: '[ERROR 22] The object was from a previous session. Please read the "Long Term Usage" section in README on github.',
-  10: '[ERROR 10] Session has expired and pronotepy was not able to reinitialise the connection.'
-};
+Map error_messages = {22: '[ERROR 22] The object was from a previous session. Please read the "Long Term Usage" section in README on github.', 10: '[ERROR 10] Session has expired and pronotepy was not able to reinitialise the connection.'};
 bool isOldAPIUsed = false;
 get_week(DateTime date) async {
-  return (1 +
-          (date.difference(DateTime.parse(await storage.read(key: "startday"))).inDays / 7).floor())
-      .round();
+  return (1 + (date.difference(DateTime.parse(await storage.read(key: "startday"))).inDays / 7).floor()).round();
 }
 
 class Client {
@@ -49,7 +44,7 @@ class Client {
 
   bool ent;
 
-  var encryption;
+  _Encryption encryption;
 
   double _last_ping;
 
@@ -89,10 +84,8 @@ class Client {
     this.localPeriods = this.periods();
     this.week = await get_week(DateTime.now());
 
-    this.hour_start = DateFormat("""'hh'h'mm'""")
-        .parse(this.func_options['donneesSec']['donnees']['General']['ListeHeures']['V'][0]['L']);
-    this.hour_end = DateFormat("""'hh'h'mm'""").parse(
-        this.func_options['donneesSec']['donnees']['General']['ListeHeuresFin']['V'][0]['L']);
+    this.hour_start = DateFormat("""'hh'h'mm'""").parse(this.func_options['donneesSec']['donnees']['General']['ListeHeures']['V'][0]['L']);
+    this.hour_end = DateFormat("""'hh'h'mm'""").parse(this.func_options['donneesSec']['donnees']['General']['ListeHeuresFin']['V'][0]['L']);
 
     this.one_hour_duration = hour_end.difference(hour_start).inMinutes;
     print("ohduration " + one_hour_duration.toString());
@@ -134,8 +127,7 @@ class Client {
     this.auth_cookie = null;
     this.date = DateTime.now();
     var inputFormat = DateFormat("dd/MM/yyyy");
-    this.start_day = inputFormat
-        .parse(this.func_options['donneesSec']['donnees']['General']['PremierLundi']['V']);
+    this.start_day = inputFormat.parse(this.func_options['donneesSec']['donnees']['General']['PremierLundi']['V']);
     final storage = new FlutterSecureStorage();
     await storage.write(key: "startday", value: this.start_day.toString());
     this.week = await get_week(DateTime.now());
@@ -143,10 +135,8 @@ class Client {
     this.localPeriods = this.periods;
     this.logged_in = await this._login();
 
-    this.hour_start = DateFormat("hh'h'mm")
-        .parse(this.func_options['donneesSec']['donnees']['General']['ListeHeures']['V'][0]['L']);
-    this.hour_end = DateFormat("hh'h'mm").parse(
-        this.func_options['donneesSec']['donnees']['General']['ListeHeuresFin']['V'][0]['L']);
+    this.hour_start = DateFormat("hh'h'mm").parse(this.func_options['donneesSec']['donnees']['General']['ListeHeures']['V'][0]['L']);
+    this.hour_end = DateFormat("hh'h'mm").parse(this.func_options['donneesSec']['donnees']['General']['ListeHeuresFin']['V'][0]['L']);
 
     this.one_hour_duration = hour_end.difference(hour_start).inMinutes;
     this._expired = false;
@@ -198,15 +188,13 @@ class Client {
       var p = this.password;
 
       //Convert credentials to lowercase if needed (API returns 1)
-      if (idr['donneesSec']['donnees']['modeCompLog'] != null &&
-          idr['donneesSec']['donnees']['modeCompLog'] != 0) {
+      if (idr['donneesSec']['donnees']['modeCompLog'] != null && idr['donneesSec']['donnees']['modeCompLog'] != 0) {
         print("LOWER CASE ID");
         print(idr['donneesSec']['donnees']['modeCompLog']);
         u = u.toString().toLowerCase();
       }
 
-      if (idr['donneesSec']['donnees']['modeCompMdp'] != null &&
-          idr['donneesSec']['donnees']['modeCompMdp'] != 0) {
+      if (idr['donneesSec']['donnees']['modeCompMdp'] != null && idr['donneesSec']['donnees']['modeCompMdp'] != 0) {
         print("LOWER CASE PASSWORD");
         print(idr['donneesSec']['donnees']['modeCompMdp']);
         p = p.toString().toLowerCase();
@@ -228,31 +216,23 @@ class Client {
     Map auth_json = {"connexion": 0, "challenge": ch, "espace": int.parse(this.attributes['a'])};
     try {
       print("Authentification");
-      this.auth_response = await this
-          .communication
-          .post("Authentification", data: {'donnees': auth_json, 'identifiantNav': ''});
+      this.auth_response = await this.communication.post("Authentification", data: {'donnees': auth_json, 'identifiantNav': ''});
     } catch (e) {
       throw ("Error during auth" + e.toString());
     }
 
     try {
       if (this.auth_response['donneesSec']['donnees'].toString().contains("cle")) {
-        await this
-            .communication
-            .after_auth(this.communication.last_response, this.auth_response, e.aes_key);
+        await this.communication.after_auth(this.communication.last_response, this.auth_response, e.aes_key);
         this.encryption.aes_key = e.aes_key;
         if (isOldAPIUsed == false) {
           try {
-            paramsUser =
-                await this.communication.post("ParametresUtilisateur", data: {'donnees': {}});
+            paramsUser = await this.communication.post("ParametresUtilisateur", data: {'donnees': {}});
 
-            this.communication.authorized_onglets =
-                _prepare_onglets(paramsUser['donneesSec']['donnees']['listeOnglets']);
+            this.communication.authorized_onglets = _prepare_onglets(paramsUser['donneesSec']['donnees']['listeOnglets']);
             try {
-              CreateStorage("classe",
-                  paramsUser['donneesSec']['donnees']['ressource']["classeDEleve"]["L"] ?? "");
-              CreateStorage(
-                  "userFullName", paramsUser['donneesSec']['donnees']['ressource']["L"] ?? "");
+              CreateStorage("classe", paramsUser['donneesSec']['donnees']['ressource']["classeDEleve"]["L"] ?? "");
+              CreateStorage("userFullName", paramsUser['donneesSec']['donnees']['ressource']["L"] ?? "");
               actualUser = paramsUser['donneesSec']['donnees']['ressource']["L"];
             } catch (e) {
               print("Failed to register UserInfos");
@@ -278,7 +258,21 @@ class Client {
     return KeepAlive();
   }
 
+  downloadUrl(localapi.Document document) {
+    var data = {"N": document.id.toString(), "G": 1};
+    //Used by pronote to encrypt the data (I don't know why)
+
+    var magic_stuff = this.encryption.aes_encrypt(utf8.encode(data.toString().replaceAll(" ", "")));
+    print(data.toString().replaceAll(" ", ""));
+    String libelle = Uri.encodeComponent(document.libelle);
+    String url = this.communication.root_site + '/FichiersExternes/' + magic_stuff + '/' + libelle + '?Session=' + this.attributes['h'].toString();
+    print(this.attributes.toString());
+    print(url);
+    return url;
+  }
+
   homework(DateTime date_from, {DateTime date_to}) async {
+  
     print(date_from);
     if (date_to == null) {
       final f = new DateFormat('dd/MM/yyyy');
@@ -297,56 +291,49 @@ class Client {
       },
       '_Signature_': {'onglet': 89}
     };
-    /* //Get "Contenu de cours"
-    var responseContent =
-        await this.communication.post("PageCahierDeTexte", data: json_data_contenu);
+    //Get "Contenu de cours"
+    var responseContent = await this.communication.post("PageCahierDeTexte", data: json_data_contenu);
 
     var c_list = responseContent['donneesSec']['donnees']['ListeCahierDeTextes']['V'];
     //Content homework
     List<localapi.Homework> listCHW = List();
+
     c_list.forEach((h) {
+      List<localapi.Document> listDocs = List();
       //description
       String description = "";
       h["listeContenus"]["V"].forEach((value) {
         if (value["descriptif"]["V"] != null) {
           description += value["descriptif"]["V"] + "<br>";
         }
+        try {
+          value["ListePieceJointe"]["V"].forEach((pj) {
+            try {
+              //listDocs.add(localapi.Document(pj["L"], pj["N"], pj["G"].toString(), 0));
+              if(pj["L"]=="The Tales of Mother Goose - Blue Beard.pdf")
+              downloadUrl(localapi.Document(pj["L"], pj["N"], pj["G"].toString(), 0));
+            } catch (e) {}
+          });
+        } catch (e) {
+          //print("PJ ERREUR" + e.toString());
+        }
       });
-      listCHW.add(localapi.Homework(
-          h["Matiere"]["V"]["L"],
-          h["Matiere"]["V"]["N"],
-          "",
-          "",
-          description,
-          DateFormat("dd/MM/yyyy hh:mm:ss").parse(h["DateFin"]["V"]),
-          DateFormat("dd/MM/yyyy hh:mm:ss").parse(h["Date"]["V"]),
-          false,
-          false,
-          false,
-          null,
-          null,
-          ""));
-    });*/
+
+      listCHW.add(localapi.Homework(h["Matiere"]["V"]["L"], h["Matiere"]["V"]["L"].hashCode.toString(), "", "", description, DateFormat("dd/MM/yyyy hh:mm:ss").parse(h["DateFin"]["V"]), DateFormat("dd/MM/yyyy hh:mm:ss").parse(h["Date"]["V"]), false, false, false, listDocs, listDocs, ""));
+    });
+
     //Homework(matiere, codeMatiere, idDevoir, contenu, contenuDeSeance, date, datePost, done, rendreEnLigne, interrogation, documents, documentsContenuDeSeance, nomProf)
     var h_list = response['donneesSec']['donnees']['ListeTravauxAFaire']['V'];
     List<localapi.Homework> listHW = List();
     h_list.forEach((h) {
       listHW.add(localapi.Homework(
-          h["Matiere"]["V"]["L"],
-          h["Matiere"]["V"]["N"],
-          h["N"],
-          h["descriptif"]["V"],
-          null,
-          DateFormat("dd/MM/yyyy").parse(h["PourLe"]["V"]),
-          DateFormat("dd/MM/yyyy").parse(h["DonneLe"]["V"]),
-          h["TAFFait"],
-          false,
-          false,
-          null,
-          null,
-          ""));
+          h["Matiere"]["V"]["L"], h["Matiere"]["V"]["L"].hashCode.toString(), h["N"], h["descriptif"]["V"], null, DateFormat("dd/MM/yyyy").parse(h["PourLe"]["V"]), DateFormat("dd/MM/yyyy").parse(h["DonneLe"]["V"]), h["TAFFait"] ?? false, h["peuRendre"] ?? false, false, null, null, ""));
     });
-
+    listHW.forEach((homework) {
+      try {
+        homework.contenuDeSeance = listCHW.firstWhere((content) => content.codeMatiere == homework.codeMatiere && content.date == homework.date).contenuDeSeance;
+      } catch (e) {}
+    });
     return listHW;
   }
 
@@ -382,20 +369,20 @@ class Client {
     var listActus = response['donneesSec']['donnees']['listeActualites']["V"];
     List<PollInfo> listInfosPolls = List();
     listActus.forEach((element) {
+      List<localapi.Document> documents = List();
+      try {
+        element["listePiecesJointes"]["V"].forEach((pj) {
+          documents.add(localapi.Document(pj["L"], pj["N"], pj["G"], 0));
+        });
+      } catch (e) {}
       try {
         //PollInfo(this.auteur, this.datedebut, this.questions, this.read);
+
         List<String> questions = List();
         element["listeQuestions"]["V"].forEach((question) {
           questions.add(question["texte"]["V"]);
         });
-        listInfosPolls.add(localapi.PollInfo(
-          element["elmauteur"]["V"]["L"],
-          DateFormat("dd/MM/yyyy").parse(element["dateDebut"]["V"]),
-          questions,
-          element["lue"],
-          element["L"],
-          element["N"],
-        ));
+        listInfosPolls.add(localapi.PollInfo(element["elmauteur"]["V"]["L"], DateFormat("dd/MM/yyyy").parse(element["dateDebut"]["V"]), questions, element["lue"], element["L"], element["N"], documents));
       } catch (e) {
         print("Failed to add an element to the polls list " + e.toString());
       }
@@ -453,18 +440,27 @@ class Client {
         try {
           //Lesson(String room, List<String> teachers, DateTime start, int duration, bool canceled, String status, List<String> groups, String content, String matiere, String codeMatiere)
           String room;
-          if (lesson["ListeContenus"]["V"].length > 2) {
-            room = lesson["ListeContenus"]["V"][2]["L"];
+          try {
+            var roomContainer = lesson["ListeContenus"]["V"].firstWhere((element) => element["G"] == 17);
+            room = roomContainer["L"];
           }
+          //Sort of null aware
+          catch (e) {}
 
           List<String> teachers = List();
-          teachers = [lesson["ListeContenus"]["V"][1]["L"]];
-          DateTime start =
-              DateFormat("dd/MM/yyyy HH:mm:ss", "fr_FR").parse(lesson["DateDuCours"]["V"]);
+          try {
+            lesson["ListeContenus"]["V"].forEach((element) {
+              if (element["G"] == 3) {
+                teachers.add(element["L"]);
+              }
+            });
+          } catch (e) {}
+
+          DateTime start = DateFormat("dd/MM/yyyy HH:mm:ss", "fr_FR").parse(lesson["DateDuCours"]["V"]);
           DateTime end = start.add(Duration(minutes: this.one_hour_duration * lesson["duree"]));
           int duration = this.one_hour_duration * lesson["duree"];
           String matiere = lesson["ListeContenus"]["V"][0]["L"];
-          String codeMatiere = lesson["ListeContenus"]["V"][0]["N"];
+          String codeMatiere = lesson["ListeContenus"]["V"][0]["L"].hashCode.toString();
           String id = lesson["N"];
           String status;
           bool canceled = false;
@@ -474,17 +470,7 @@ class Client {
           if (lesson["estAnnule"] != null) {
             canceled = lesson["estAnnule"];
           }
-          listToReturn.add(Lesson(
-              room: room,
-              teachers: teachers,
-              start: start,
-              end: end,
-              duration: duration,
-              canceled: canceled,
-              status: status,
-              matiere: matiere,
-              id: id,
-              codeMatiere: codeMatiere));
+          listToReturn.add(Lesson(room: room, teachers: teachers, start: start, end: end, duration: duration, canceled: canceled, status: status, matiere: matiere, id: id, codeMatiere: codeMatiere));
         } catch (e) {
           print("Error while getting lessons " + e.toString());
         }
@@ -543,10 +529,7 @@ class _Communication {
 
   Future<List<Object>> initialise() async {
     //some headers to be real
-    var headers = {
-      'connection': 'keep-alive',
-      'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/74.0'
-    };
+    var headers = {'connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/74.0'};
     print("Getting hostname");
     // get rsa keys and session id
     String hostName = Requests.getHostname(this.root_site + "/" + this.html_page);
@@ -559,8 +542,7 @@ class _Communication {
     }
     print(this.root_site + "/" + this.html_page);
 
-    var get_response =
-        await Requests.get(this.root_site + "/" + this.html_page, headers: headers).catchError((e) {
+    var get_response = await Requests.get(this.root_site + "/" + this.html_page, headers: headers).catchError((e) {
       throw ("Impossible de se connecter");
     });
 
@@ -578,9 +560,7 @@ class _Communication {
     var json_post = {'Uuid': uuid};
     this.encrypt_requests = (this.attributes["sCra"] != null ? !this.attributes["sCra"] : false);
     this.compress_requests = (this.attributes["sCra"] != null ? !this.attributes["sCoA"] : false);
-    var initial_response = await this.post('FonctionParametres',
-        data: {'donnees': json_post},
-        decryption_change: {'iv': md5.convert(this.encryption.aes_iv_temp).toString()});
+    var initial_response = await this.post('FonctionParametres', data: {'donnees': json_post}, decryption_change: {'iv': md5.convert(this.encryption.aes_iv_temp).toString()});
 
     return [this.attributes, initial_response];
   }
@@ -611,11 +591,9 @@ class _Communication {
     return attributes;
   }
 
-  post(String function_name,
-      {var data, bool recursive = false, var decryption_change = null}) async {
+  post(String function_name, {var data, bool recursive = false, var decryption_change = null}) async {
     if (data != null) {
-      if (data["_Signature_"] != null &&
-          !this.authorized_onglets.toString().contains(data['_Signature_']['onglet'].toString())) {
+      if (data["_Signature_"] != null && !this.authorized_onglets.toString().contains(data['_Signature_']['onglet'].toString())) {
         throw ('Action not permitted. (onglet is not normally accessible)');
       }
     }
@@ -636,19 +614,8 @@ class _Communication {
 
     var r_number = encryption.aes_encrypt(utf8.encode(this.request_number.toString()));
 
-    var json = {
-      'session': int.parse(this.attributes['h']),
-      'numeroOrdre': r_number,
-      'nom': function_name,
-      'donneesSec': data
-    };
-    String p_site = this.root_site +
-        '/appelfonction/' +
-        this.attributes['a'] +
-        '/' +
-        this.attributes['h'] +
-        '/' +
-        r_number;
+    var json = {'session': int.parse(this.attributes['h']), 'numeroOrdre': r_number, 'nom': function_name, 'donneesSec': data};
+    String p_site = this.root_site + '/appelfonction/' + this.attributes['a'] + '/' + this.attributes['h'] + '/' + r_number;
 
     this.request_number += 2;
     if (request_number > 90) {
@@ -672,6 +639,9 @@ class _Communication {
         throw error_messages["22"];
       }
       if (r_json["Erreur"]['G'] == 10) {
+        tlogin.details = "Connexion expirée";
+        tlogin.actualState = loginStatus.error;
+
         throw error_messages["10"];
       }
       if (recursive != null && recursive) {
@@ -701,8 +671,7 @@ class _Communication {
     Map response_data = response.json();
 
     if (this.encrypt_requests) {
-      response_data['donneesSec'] =
-          this.encryption.aes_decrypt(hex.decode(response_data['donneesSec']));
+      response_data['donneesSec'] = this.encryption.aes_decrypt(hex.decode(response_data['donneesSec']));
       print("décrypté données sec");
     }
     var zlibInstanceDecode = ZLibCodec(windowBits: 15);
@@ -743,10 +712,7 @@ class _Communication {
   }
 
   get_root_address(addr) {
-    return [
-      (addr.split('/').sublist(0, addr.split('/').length - 1).join("/")),
-      (addr.split('/').sublist(addr.split('/').length - 1, addr.split('/').length).join("/"))
-    ];
+    return [(addr.split('/').sublist(0, addr.split('/').length - 1).join("/")), (addr.split('/').sublist(addr.split('/').length - 1, addr.split('/').length).join("/"))];
   }
 
   _enBytes(String string) {
@@ -796,10 +762,10 @@ class _Encryption {
     return md5.convert(utf8.encode(input)).toString();
   }
 
-  aes_encrypt(List<int> data) {
+  aes_encrypt(List<int> data, {padding = true}) {
     var data2 = utf8.decode(data);
     var key = Key.fromBase16(this.aes_key.toString());
-    final encrypter = Encrypter(AES(key, mode: AESMode.cbc, padding: "PKCS7"));
+    final encrypter = Encrypter(AES(key, mode: AESMode.cbc, padding: padding ? "PKCS7" : null));
 
     final encrypted = encrypter.encrypt(data2.toString(), iv: this.aes_iv).base16;
 
@@ -879,8 +845,7 @@ class KeepAlive {
   }
 }
 
-Uint8List int32BigEndianBytes(int value) =>
-    Uint8List(4)..buffer.asByteData().setInt32(0, value, Endian.big);
+Uint8List int32BigEndianBytes(int value) => Uint8List(4)..buffer.asByteData().setInt32(0, value, Endian.big);
 
 class PronotePeriod {
   DateTime end;
@@ -918,16 +883,7 @@ class PronotePeriod {
     this.end = inputFormat.parse(parsed_json['dateFin']['V']);
   }
   gradeTranslate(String value) {
-    List grade_translate = [
-      'Absent',
-      'Dispensé',
-      'Non noté',
-      'Inapte',
-      'Non rendu',
-      'Absent zéro',
-      'Non rendu zéro',
-      'Félicitations'
-    ];
+    List grade_translate = ['Absent', 'Dispensé', 'Non noté', 'Inapte', 'Non rendu', 'Absent zéro', 'Non rendu zéro', 'Félicitations'];
     if (value.contains("|")) {
       return grade_translate[int.parse(value[1]) - 1];
     } else {
@@ -935,18 +891,16 @@ class PronotePeriod {
     }
   }
 
+  ///Return the eleve average, the max average, the min average, and the class average
   average(var json, var codeMatiere) {
     //The services for the period
     List services = json['donneesSec']['donnees']['listeServices']['V'];
     //The average data for the given matiere
-    var averageData = services.firstWhere((element) => element["N"] == codeMatiere);
+
+    var averageData = services.firstWhere((element) => element["L"].hashCode.toString() == codeMatiere);
     //print(averageData["moyEleve"]["V"]);
-    //Return the eleve average, the max average, and the class average
-    return [
-      gradeTranslate(averageData["moyEleve"]["V"]),
-      gradeTranslate(averageData["moyMax"]["V"]),
-      gradeTranslate(averageData["moyClasse"]["V"])
-    ];
+
+    return [gradeTranslate(averageData["moyEleve"]["V"]), gradeTranslate(averageData["moyMax"]["V"]), gradeTranslate(averageData["moyMin"]["V"]), gradeTranslate(averageData["moyClasse"]["V"])];
   }
 
   grades(int codePeriode) async {
@@ -964,28 +918,28 @@ class PronotePeriod {
     var response = await _client.communication.post('DernieresNotes', data: json_data);
     var grades = response['donneesSec']['donnees']['listeDevoirs']['V'];
     this.moyenneGenerale = gradeTranslate(response['donneesSec']['donnees']['moyGenerale']['V']);
-    this.moyenneGeneraleClasse =
-        gradeTranslate(response['donneesSec']['donnees']['moyGeneraleClasse']['V']);
+    this.moyenneGeneraleClasse = gradeTranslate(response['donneesSec']['donnees']['moyGeneraleClasse']['V']);
 
     var other = List();
     grades.forEach((element) async {
+      print(element["service"]["V"]["L"]);
       list.add(Grade(
           valeur: this.gradeTranslate(element["note"]["V"]),
           devoir: element["commentaire"],
           codePeriode: this.id,
           nomPeriode: this.name,
-          codeMatiere: element["service"]["V"]["N"],
+          codeMatiere: element["service"]["V"]["L"].hashCode.toString(),
           codeSousMatiere: null,
           libelleMatiere: element["service"]["V"]["L"],
           letters: element["note"]["V"].contains("|"),
           coef: element["coefficient"].toString(),
           noteSur: element["bareme"]["V"],
-          moyenneClasse: average(response, element["service"]["V"]["N"])[2],
+          moyenneClasse: average(response, element["service"]["V"]["L"].hashCode.toString())[3],
           date: element["date"]["V"],
           nonSignificatif: this.gradeTranslate(element["note"]["V"]) == "NonNote" ? true : false,
           typeDevoir: "Interrogation",
           dateSaisie: element["date"]["V"]));
-      other.add(average(response, element["service"]["V"]["N"]));
+      other.add(average(response, element["service"]["V"]["L"].hashCode.toString()));
     });
     return [list, other];
   }
