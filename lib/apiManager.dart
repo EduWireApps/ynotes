@@ -23,7 +23,7 @@ class Homework extends HiveObject {
   @HiveField(4)
   String contenuDeSeance;
   @HiveField(5)
-  final DateTime date;
+  DateTime date;
   @HiveField(6)
   final DateTime datePost;
   @HiveField(7)
@@ -104,10 +104,11 @@ class Grade {
   final String nomPeriode;
   Grade({this.devoir, this.codePeriode, this.codeMatiere, this.codeSousMatiere, this.libelleMatiere, this.letters, this.valeur, this.coef, this.noteSur, this.moyenneClasse, this.typeDevoir, this.date, this.dateSaisie, this.nonSignificatif, this.nomPeriode});
 
-  factory Grade.fromJson(Map<String, dynamic> json) {
+  factory Grade.fromEcoleDirecteJson(Map<String, dynamic> json, String nomPeriode) {
     return Grade(
         devoir: json['devoir'],
         codePeriode: json['codePeriode'],
+        nomPeriode: nomPeriode,
         codeMatiere: json['codeMatiere'],
         codeSousMatiere: json['codeSousMatiere'],
         libelleMatiere: json['libelleMatiere'],
@@ -163,11 +164,13 @@ class Discipline {
   set setGradeList(List<Grade> list) {
     gradesList = list;
   }
+//Map<String, dynamic> json, List<String> profs, String codeMatiere, String periode, Color color, String moyenneG, String bmoyenneClasse, String moyenneClasse
+//disciplinesList.add(Discipline.fromJson(element, teachersNames, element['codeMatiere'], periodeElement["idPeriode"], Colors.blue, periodeElement["ensembleMatieres"]["moyenneGenerale"], periodeElement["ensembleMatieres"]["moyenneMax"], periodeElement["ensembleMatieres"]["moyenneClasse"]));
 
-  factory Discipline.fromJson(Map<String, dynamic> json, List<String> profs, String codeMatiere, String periode, Color color, String moyenneG, String bmoyenneClasse, String moyenneClasse) {
+  factory Discipline.fromEcoleDirecteJson({@required Map<String, dynamic> json, @required List<String> profs, @required String periode, @required String moyenneG, @required String bmoyenneClasse, @required String moyenneClasse, @required Color color}) {
     return Discipline(
       codeSousMatiere: [],
-      codeMatiere: codeMatiere,
+      codeMatiere: json['codeMatiere'],
       nomDiscipline: json['discipline'],
       moyenne: json['moyenne'],
       moyenneClasse: json['moyenneClasse'],
@@ -197,7 +200,7 @@ class Mail {
   final String subject;
   final String date;
   final String content;
-  final List files;
+  final List<Document> files;
   Mail(this.id, this.mtype, this.read, this.idClasseur, this.from, this.subject, this.date, {this.content, this.to, this.files});
 }
 

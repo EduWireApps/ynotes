@@ -478,7 +478,7 @@ class _MailPageState extends State<MailPage> {
                                                             margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
                                                             width: screenSize.size.width / 5 * 2.8,
                                                             child: ClipRRect(
-                                                              child: Marquee(text: mail.files[index]["libelle"], blankSpace: screenSize.size.width / 5 * 0.2, style: TextStyle(fontFamily: "Asap", color: Colors.white)),
+                                                              child: Marquee(text: mail.files[index].libelle, blankSpace: screenSize.size.width / 5 * 0.2, style: TextStyle(fontFamily: "Asap", color: Colors.white)),
                                                             ),
                                                           ),
                                                         ),
@@ -491,7 +491,7 @@ class _MailPageState extends State<MailPage> {
                                                             child: Row(
                                                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                               children: <Widget>[
-                                                                if ((mail.files[index]["libelle"].length - 3) == "pdf")
+                                                                if ((mail.files[index].libelle).contains("pdf"))
                                                                   IconButton(
                                                                     icon: Icon(
                                                                       MdiIcons.eyeOutline,
@@ -501,7 +501,7 @@ class _MailPageState extends State<MailPage> {
                                                                       // do something
                                                                     },
                                                                   ),
-                                                                if ((mail.files[index]["libelle"].length - 3) == "pdf")
+                                                                if ((mail.files[index].libelle).contains("pdf"))
                                                                   VerticalDivider(
                                                                     width: 2,
                                                                     color: Color(0xff5FA9DA),
@@ -510,7 +510,7 @@ class _MailPageState extends State<MailPage> {
                                                                     viewModelBuilder: () => DownloadModel(),
                                                                     builder: (context, model, child) {
                                                                       return FutureBuilder(
-                                                                          future: model.fileExists(mail.files[index]["libelle"]),
+                                                                          future: model.fileExists(mail.files[index].libelle),
                                                                           initialData: false,
                                                                           builder: (context, snapshot) {
                                                                             if (snapshot.data == false) {
@@ -544,7 +544,7 @@ class _MailPageState extends State<MailPage> {
                                                                                       color: Colors.green,
                                                                                     ),
                                                                                     onPressed: () async {
-                                                                                      FileAppUtil.openFile(mail.files[index]["libelle"], usingFileName: true);
+                                                                                      FileAppUtil.openFile(mail.files[index].libelle, usingFileName: true);
                                                                                     },
                                                                                   ));
                                                                                 }
@@ -558,7 +558,7 @@ class _MailPageState extends State<MailPage> {
                                                                                     color: Colors.white,
                                                                                   ),
                                                                                   onPressed: () async {
-                                                                                    await model.download(Document(mail.files[index]["libelle"], mail.files[index]["id"].toString(), mail.files[index]["type"], 0));
+                                                                                    await model.download(mail.files[index]);
                                                                                   },
                                                                                 );
                                                                               }
@@ -573,7 +573,7 @@ class _MailPageState extends State<MailPage> {
                                                                                   color: Colors.green,
                                                                                 ),
                                                                                 onPressed: () async {
-                                                                                  FileAppUtil.openFile(mail.files[index]["libelle"], usingFileName: true);
+                                                                                  FileAppUtil.openFile(mail.files[index].libelle, usingFileName: true);
                                                                                 },
                                                                               ));
                                                                             }

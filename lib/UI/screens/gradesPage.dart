@@ -51,15 +51,17 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
     refreshLocalGradeListWithoutForce();
     //Get the actual periode (based on grades)
     getActualPeriode();
-
+    getListSpecialties();
     circleAnimation = AnimationController(duration: Duration(milliseconds: 450), vsync: this);
   }
 
   getListSpecialties() async {
     final prefs = await SharedPreferences.getInstance();
-    setState(() {
-      specialties = prefs.getStringList("listSpecialties");
-    });
+    if (mounted) {
+      setState(() {
+        specialties = prefs.getStringList("listSpecialties");
+      });
+    }
   }
 
   @override
@@ -354,59 +356,14 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
                 })) {
               toReturn.add(f);
             }
+          } else {
+            debugPrint("Specialties list is null");
           }
           break;
       }
     });
     setAverage(toReturn);
     return toReturn;
-  }
-
-  //Convert period code to period name and reverse
-  getCorrespondingPeriod(String period) {
-    switch (period) {
-      case "A001":
-        {
-          return "Trimestre 1";
-        }
-        break;
-
-      case "A002":
-        {
-          return "Trimestre 2";
-        }
-        break;
-
-      case "A003":
-        {
-          return "Trimestre 3";
-        }
-        break;
-
-      case "Trimestre 1":
-        {
-          return "A001";
-        }
-        break;
-
-      case "Trimestre 2":
-        {
-          return "A002";
-        }
-        break;
-
-      case "Trimestre 3":
-        {
-          return "A003";
-        }
-        break;
-
-      default:
-        {
-          return "";
-        }
-        break;
-    }
   }
 
   ///Start building grades box from here
@@ -452,10 +409,12 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
                         child: FutureBuilder<List<Period>>(
                             future: localApi.getPeriods(),
                             builder: (context, snapshot) {
-                          
                               return (snapshot.data == null || !snapshot.hasData || periodeToUse == "" || snapshot.data.length == 0)
                                   ? Container(
-                                      child: Text("Pas de periode" ,style: TextStyle( fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),),
+                                      child: Text(
+                                        "Pas de periode",
+                                        style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                      ),
                                     )
                                   : DropdownButtonHideUnderline(
                                       child: DropdownButton<String>(
@@ -546,12 +505,9 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
                     future: disciplinesListFuture,
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
                       if (snapshot.hasData) {
+                     
                         if (getDisciplinesForPeriod(snapshot.data, periodeToUse, filter).any((element) {
-                          if (element.gradesList.length > 0) {
-                            return true;
-                          } else {
-                            return false;
-                          }
+                          return (element.gradesList.length > 0);
                         })) {
                           return ListView.builder(
                               physics: AlwaysScrollableScrollPhysics(),

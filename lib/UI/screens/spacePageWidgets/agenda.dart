@@ -399,9 +399,7 @@ class _AgendaState extends State<Agenda> {
                 child: FutureBuilder(
                     future: agendaFuture,
                     builder: (context, pheaderData) {
-                      if (pheaderData.hasData && getCurrentLesson(pheaderData.data) != null) {
-                        print("OK");
-
+                      if (pheaderData.hasData && getCurrentLesson(pheaderData.data) != null && !getCurrentLesson(pheaderData.data).canceled) {
                         return FutureBuilder(
                             future: getColor(getCurrentLesson(pheaderData.data).codeMatiere),
                             initialData: 0,
@@ -426,8 +424,11 @@ class _AgendaState extends State<Agenda> {
                             });
                       } else {
                         return Container(
-                          height: 0,
-                          width: 0,
+                          height: screenSize.size.height / 10 * 0.4,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.only(topLeft: Radius.circular(11), topRight: Radius.circular(11)),
+                            color: Colors.grey.withOpacity(0.85),
+                          ),
                         );
                       }
                     }),
@@ -437,7 +438,7 @@ class _AgendaState extends State<Agenda> {
                 child: FutureBuilder(
                     future: agendaFuture,
                     builder: (context, econtentdata) {
-                      if (econtentdata.hasData && getCurrentLesson(econtentdata.data) != null) {
+                      if (econtentdata.hasData && getCurrentLesson(econtentdata.data) != null && !getCurrentLesson(econtentdata.data).canceled) {
                         return Align(
                           alignment: Alignment.center,
                           child: _buildActualLesson(context, getCurrentLesson(econtentdata.data)),
@@ -604,7 +605,7 @@ class _AgendaElementState extends State<AgendaElement> {
                                             textAlign: TextAlign.left,
                                             overflow: TextOverflow.ellipsis,
                                           ),
-                                          if (widget.lesson.teachers != null && widget.lesson.teachers.length>0&& widget.lesson.teachers[0] != "")
+                                          if (widget.lesson.teachers != null && widget.lesson.teachers.length > 0 && widget.lesson.teachers[0] != "")
                                             FittedBox(
                                               child: AutoSizeText(
                                                 widget.lesson.teachers[0],
@@ -664,7 +665,7 @@ class _AgendaElementState extends State<AgendaElement> {
   }
 }
 
-getCurrentLesson(List<Lesson> lessons, {DateTime now}) {
+Lesson getCurrentLesson(List<Lesson> lessons, {DateTime now}) {
   List<Lesson> dailyLessons = List();
   Lesson lesson;
   dailyLessons = lessons.where((lesson) => DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) == DateTime.parse(DateFormat("yyyy-MM-dd").format(now ?? DateTime.now()))).toList();

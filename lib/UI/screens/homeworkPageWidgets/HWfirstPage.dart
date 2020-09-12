@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/UI/screens/homeworkPage.dart';
+import 'package:ynotes/UI/screens/homeworkPageWidgets/HWElement.dart';
 import 'package:ynotes/offline.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/main.dart';
@@ -119,11 +120,13 @@ class _HomeworkFirstPageState extends State<HomeworkFirstPage> {
                           //Reload list
                           refreshLocalHomeworkList();
                         },
-                        child:snapshot.connectionState != ConnectionState.waiting? Text("Recharger",
-                            style: TextStyle(
-                              fontFamily: "Asap",
-                              color: isDarkModeEnabled ? Colors.white : Colors.black,
-                            )):FittedBox(child: SpinKitThreeBounce(color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4)),
+                        child: snapshot.connectionState != ConnectionState.waiting
+                            ? Text("Recharger",
+                                style: TextStyle(
+                                  fontFamily: "Asap",
+                                  color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                ))
+                            : FittedBox(child: SpinKitThreeBounce(color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4)),
                         shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(18.0), side: BorderSide(color: Theme.of(context).primaryColorDark)),
                       )
                     ],
@@ -171,7 +174,6 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
     setState(() {
       isPinned = defaultValue;
     });
-    print("called");
   }
 
   ///Really important function that indicate for example if homework DateTime is tomorrow
@@ -203,6 +205,7 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
     }
   }
 
+  getAllHWCompletion(List<Homework> list) async {}
   getHomeworkInList(List<Homework> list) {
     List<Homework> listToReturn = new List<Homework>();
     listToReturn.clear();
@@ -312,10 +315,16 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
-                                /* RaisedButton(
+                                RaisedButton(
                                   color: Color(0xff3b3b3b),
                                   shape: CircleBorder(),
-                                  onPressed: () {},
+                                  onPressed: () async {
+                                    await Future.forEach(widget.listHW, (hw) async {
+                                      await offline.setHWCompletion(hw.idDevoir, true);
+                                    });
+                                    print("ok");
+                                    setState(() {});
+                                  },
                                   child: Container(
                                       width: screenSize.size.width / 5 * 0.7,
                                       height: screenSize.size.width / 5 * 0.7,
@@ -330,7 +339,7 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
                                         ],
                                       )),
                                 ),
-                                RaisedButton(
+                                /* RaisedButton(
                                   color: Color(0xff3b3b3b),
                                   onPressed: () {},
                                   shape: CircleBorder(),
@@ -347,8 +356,8 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
                                           ),
                                         ],
                                       )),
-                                ),*/
-                                
+                                ),
+*/
                                 //Pin button
                                 RaisedButton(
                                   color: Color(0xff3b3b3b),

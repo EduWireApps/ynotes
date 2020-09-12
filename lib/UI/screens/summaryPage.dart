@@ -36,7 +36,8 @@ class SummaryPage extends StatefulWidget {
   }
 }
 
-Future doneListFuture;
+Future donePercentFuture;
+
 Future allGrades;
 bool firstStart = true;
 
@@ -65,7 +66,7 @@ class _SummaryPageState extends State<SummaryPage> {
     disciplinesListFuture = localApi.getGrades();
 
     setState(() {
-      doneListFuture = getHomeworkDonePercent();
+      donePercentFuture = getHomeworkDonePercent();
     });
     SchedulerBinding.instance.addPostFrameCallback(!mounted
         ? null
@@ -91,7 +92,7 @@ class _SummaryPageState extends State<SummaryPage> {
     });
     var realHW = await homeworkListFuture;
     setState(() {
-      doneListFuture = getHomeworkDonePercent();
+      donePercentFuture = getHomeworkDonePercent();
     });
   }
 
@@ -106,7 +107,7 @@ class _SummaryPageState extends State<SummaryPage> {
 
   void refreshCallback() {
     setState(() {
-      doneListFuture = getHomeworkDonePercent();
+      donePercentFuture = getHomeworkDonePercent();
     });
   }
 
@@ -141,7 +142,7 @@ class _SummaryPageState extends State<SummaryPage> {
               ),
               child: FittedBox(
                 child: FutureBuilder<int>(
-                    future: doneListFuture,
+                    future: donePercentFuture,
                     initialData: 0,
                     builder: (context, snapshot) {
                       return CircularPercentIndicator(
@@ -626,40 +627,42 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
                         inactiveColor: Colors.white,
                         value: done,
                         materialTapTargetSize: MaterialTapTargetSize.padded,
-                        onChanged: (bool x) {
+                        onChanged: (bool x) async{
                           setState(() {
                             done = !done;
-                            doneListFuture = getHomeworkDonePercent();
+                            donePercentFuture = getHomeworkDonePercent();
                             widget.refreshCallback();
                           });
                           offline.setHWCompletion(widget._homework.idDevoir, x);
                         },
                       );
                     }),
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(widget._homework.matiere, textScaleFactor: 1.0, textAlign: TextAlign.left, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 14, fontFamily: "Asap", fontWeight: FontWeight.bold)),
-                    Row(
-                      children: <Widget>[
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.height / 10 * 0.05),
-                          decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), borderRadius: BorderRadius.circular(15)),
-                          child: Text(
-                            widget._homework.interrogation ? "Interro" : "Travail",
-                          ),
-                        ),
-                        if (widget._homework.rendreEnLigne)
+                FittedBox(
+                                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(widget._homework.matiere, textScaleFactor: 1.0, textAlign: TextAlign.left, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 14, fontFamily: "Asap", fontWeight: FontWeight.bold)),
+                      Row(
+                        children: <Widget>[
                           Container(
-                            margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
                             padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.height / 10 * 0.05),
-                            decoration: BoxDecoration(color: Colors.orange.withOpacity(0.5), borderRadius: BorderRadius.circular(15)),
-                            child: Text("A rendre"),
-                          )
-                      ],
-                    )
-                  ],
+                            decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), borderRadius: BorderRadius.circular(15)),
+                            child: Text(
+                              widget._homework.interrogation ? "Interro" : "Travail",
+                            ),
+                          ),
+                          if (widget._homework.rendreEnLigne)
+                            Container(
+                              margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
+                              padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.height / 10 * 0.05),
+                              decoration: BoxDecoration(color: Colors.orange.withOpacity(0.5), borderRadius: BorderRadius.circular(15)),
+                              child: Text("A rendre"),
+                            )
+                        ],
+                      )
+                    ],
+                  ),
                 )
               ],
             ),

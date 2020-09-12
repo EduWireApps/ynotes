@@ -52,19 +52,12 @@ class _SpacePageGlobalSettingsState extends State<SpacePageGlobalSettings> {
               margin: EdgeInsets.all(screenSize.size.width / 5 * 0.2),
               child: Text(
                 "Paramètres globaux",
-                style: TextStyle(
-                    fontFamily: "Asap",
-                    fontWeight: FontWeight.bold,
-                    color: isDarkModeEnabled ? Colors.white : Colors.black),
+                style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: isDarkModeEnabled ? Colors.white : Colors.black),
                 textAlign: TextAlign.left,
               )),
           SwitchListTile(
             value: boolSettings["organisationIsDefault"],
-            title: Text("Toujours afficher le menu Organisation par défaut",
-                style: TextStyle(
-                    fontFamily: "Asap",
-                    color: isDarkModeEnabled ? Colors.white : Colors.black,
-                    fontSize: screenSize.size.height / 10 * 0.21)),
+            title: Text("Toujours afficher le menu Organisation par défaut", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.21)),
             onChanged: (value) async {
               setState(() {
                 boolSettings["organisationIsDefault"] = value;
@@ -132,25 +125,15 @@ class _OrganisationSettingsState extends State<OrganisationSettings> {
               margin: EdgeInsets.all(screenSize.size.width / 5 * 0.2),
               child: Text(
                 "Paramètres de la section organisation",
-                style: TextStyle(
-                    fontFamily: "Asap",
-                    fontWeight: FontWeight.bold,
-                    color: isDarkModeEnabled ? Colors.white : Colors.black),
+                style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: isDarkModeEnabled ? Colors.white : Colors.black),
                 textAlign: TextAlign.left,
               )),
           SwitchListTile(
             value: boolSettings["lighteningOverride"],
-            title: Text("Ignorer la réduction de stockage hors ligne",
-                style: TextStyle(
-                    fontFamily: "Asap",
-                    color: isDarkModeEnabled ? Colors.white : Colors.black,
-                    fontSize: screenSize.size.height / 10 * 0.21)),
+            title: Text("Ignorer la réduction de stockage hors ligne", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.21)),
             subtitle: Text(
               "Stocke plus de semaines hors ligne mais augmente la taille de l'application",
-              style: TextStyle(
-                  fontFamily: "Asap",
-                  color: isDarkModeEnabled ? Colors.white : Colors.black,
-                  fontSize: screenSize.size.height / 10 * 0.16),
+              style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.16),
             ),
             onChanged: (value) async {
               setState(() {
@@ -165,17 +148,10 @@ class _OrganisationSettingsState extends State<OrganisationSettings> {
             ),
           ),
           ListTile(
-            title: Text("Me rappeler les cours",
-                style: TextStyle(
-                    fontFamily: "Asap",
-                    color: isDarkModeEnabled ? Colors.white : Colors.black,
-                    fontSize: screenSize.size.height / 10 * 0.21)),
+            title: Text("Me rappeler les cours", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.21)),
             subtitle: Text(
               "${(intSettings["lessonReminderDelay"]).toString()} minutes avant",
-              style: TextStyle(
-                  fontFamily: "Asap",
-                  color: isDarkModeEnabled ? Colors.white : Colors.black,
-                  fontSize: screenSize.size.height / 10 * 0.16),
+              style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.16),
             ),
             onTap: () async {
               var value = await CustomDialogs.showNumberChoiceDialog(context, text: "la durée");
@@ -192,31 +168,27 @@ class _OrganisationSettingsState extends State<OrganisationSettings> {
               color: isDarkModeEnabled ? Colors.white : Colors.black,
             ),
           ),
-          SwitchListTile(
-            value: boolSettings["agendaOnGoingNotification"],
-            title: Text("Notification constante (beta)",
-                style: TextStyle(
-                    fontFamily: "Asap",
-                    color: isDarkModeEnabled ? Colors.white : Colors.black,
-                    fontSize: screenSize.size.height / 10 * 0.21)),
-            onChanged: (value) async {
-              setState(() {
-                boolSettings["agendaOnGoingNotification"] = value;
-              });
+          if (Platform.isAndroid)
+            SwitchListTile(
+              value: boolSettings["agendaOnGoingNotification"],
+              title: Text("Notification constante (beta)", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.21)),
+              onChanged: (value) async {
+                setState(() {
+                  boolSettings["agendaOnGoingNotification"] = value;
+                });
 
-              await setSetting("agendaOnGoingNotification", value);
-              if (value) {
-                await LocalNotification.setOnGoingNotification();
-              } else {
-                await LocalNotification.cancelOnGoingNotification();
-              }
-            },
-            secondary: Icon(
-              MdiIcons.viewAgendaOutline,
-              color: isDarkModeEnabled ? Colors.white : Colors.black,
+                await setSetting("agendaOnGoingNotification", value);
+                if (value) {
+                  await LocalNotification.setOnGoingNotification();
+                } else {
+                  await LocalNotification.cancelOnGoingNotification();
+                }
+              },
+              secondary: Icon(
+                MdiIcons.viewAgendaOutline,
+                color: isDarkModeEnabled ? Colors.white : Colors.black,
+              ),
             ),
-          ),
-          
         ],
       ),
     );

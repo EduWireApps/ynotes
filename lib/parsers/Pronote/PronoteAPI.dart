@@ -21,12 +21,12 @@ import 'package:steel_crypt/steel_crypt.dart';
 import 'package:ynotes/apiManager.dart' as localapi;
 import 'package:ynotes/main.dart';
 import 'package:ynotes/models.dart';
-import 'package:ynotes/parsers/PronoteCas.dart';
+import 'package:ynotes/parsers/Pronote/PronoteCas.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:http/http.dart';
-import '../apiManager.dart';
-import '../apiManager.dart';
-import 'EcoleDirecte.dart';
+import '../../apiManager.dart';
+import '../../apiManager.dart';
+import '../EcoleDirecte.dart';
 
 Map error_messages = {22: '[ERROR 22] The object was from a previous session. Please read the "Long Term Usage" section in README on github.', 10: '[ERROR 10] Session has expired and pronotepy was not able to reinitialise the connection.'};
 bool isOldAPIUsed = false;
@@ -259,12 +259,12 @@ class Client {
   }
 
   downloadUrl(localapi.Document document) {
-    var data = {"N": document.id.toString(), "G": 1};
+    var data = {"N": document.id};
     //Used by pronote to encrypt the data (I don't know why)
 
-    var magic_stuff = this.encryption.aes_encrypt(utf8.encode(data.toString().replaceAll(" ", "")));
-    print(data.toString().replaceAll(" ", ""));
-    String libelle = Uri.encodeComponent(document.libelle);
+    var magic_stuff = this.encryption.aes_encryptFromString('"'+jsonEncode((data))+'"');
+
+    String libelle = Uri.encodeComponent(Uri.encodeComponent(document.libelle));
     String url = this.communication.root_site + '/FichiersExternes/' + magic_stuff + '/' + libelle + '?Session=' + this.attributes['h'].toString();
     print(this.attributes.toString());
     print(url);
@@ -272,7 +272,6 @@ class Client {
   }
 
   homework(DateTime date_from, {DateTime date_to}) async {
-  
     print(date_from);
     if (date_to == null) {
       final f = new DateFormat('dd/MM/yyyy');
@@ -310,8 +309,10 @@ class Client {
           value["ListePieceJointe"]["V"].forEach((pj) {
             try {
               //listDocs.add(localapi.Document(pj["L"], pj["N"], pj["G"].toString(), 0));
-              if(pj["L"]=="The Tales of Mother Goose - Blue Beard.pdf")
-              downloadUrl(localapi.Document(pj["L"], pj["N"], pj["G"].toString(), 0));
+              if (pj["L"] == "The Tales of Mother Goose - Blue Beard.pdf") {
+                downloadUrl(localapi.Document(pj["L"], h["N"], pj["G"].toString(), 0));
+                print(pj.toString());
+              }
             } catch (e) {}
           });
         } catch (e) {
@@ -326,8 +327,10 @@ class Client {
     var h_list = response['donneesSec']['donnees']['ListeTravauxAFaire']['V'];
     List<localapi.Homework> listHW = List();
     h_list.forEach((h) {
+      //set a generated ID (Pronote ID is never the same)
+      String idDevoir = (DateFormat("dd/MM/yyyy").parse(h["PourLe"]["V"]).toString() + h["Matiere"]["V"]["L"]).hashCode.toString();
       listHW.add(localapi.Homework(
-          h["Matiere"]["V"]["L"], h["Matiere"]["V"]["L"].hashCode.toString(), h["N"], h["descriptif"]["V"], null, DateFormat("dd/MM/yyyy").parse(h["PourLe"]["V"]), DateFormat("dd/MM/yyyy").parse(h["DonneLe"]["V"]), h["TAFFait"] ?? false, h["peuRendre"] ?? false, false, null, null, ""));
+          h["Matiere"]["V"]["L"], h["Matiere"]["V"]["L"].hashCode.toString(), idDevoir, h["descriptif"]["V"], null, DateFormat("dd/MM/yyyy").parse(h["PourLe"]["V"]), DateFormat("dd/MM/yyyy").parse(h["DonneLe"]["V"]), h["TAFFait"] ?? false, h["peuRendre"] ?? false, false, null, null, ""));
     });
     listHW.forEach((homework) {
       try {
@@ -767,7 +770,16 @@ class _Encryption {
     var key = Key.fromBase16(this.aes_key.toString());
     final encrypter = Encrypter(AES(key, mode: AESMode.cbc, padding: padding ? "PKCS7" : null));
 
-    final encrypted = encrypter.encrypt(data2.toString(), iv: this.aes_iv).base16;
+    final encrypted = encrypter.encrypt(data2, iv: this.aes_iv).base16;
+
+    return (encrypted);
+  }
+
+  aes_encryptFromString(String data, {padding = true}) {
+    var key = Key.fromBase16(this.aes_key.toString());
+    final encrypter = Encrypter(AES(key, mode: AESMode.cbc, padding: padding ? "PKCS7" : null));
+
+    final encrypted = encrypter.encrypt(data, iv: this.aes_iv).base16;
 
     return (encrypted);
   }

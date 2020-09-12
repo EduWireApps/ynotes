@@ -12,6 +12,7 @@ import 'package:ynotes/UI/screens/tabBuilder.dart';
 import 'package:sentry/sentry.dart';
 import 'package:ynotes/models.dart';
 import 'package:ynotes/offline.dart';
+import 'package:ynotes/parsers/EcoleDirecte/ecoleDirecteMethods.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:ynotes/apiManager.dart';
@@ -81,7 +82,7 @@ mainTestNewGrades() async {
     await getChosenParser();
     List<Grade> listOnlineGrades = List<Grade>();
     if (chosenParser == 0) {
-      listOnlineGrades = getAllGrades(await getGradesFromInternet(), overrideLimit: true);
+      listOnlineGrades = getAllGrades(await EcoleDirecteMethod.grades(), overrideLimit: true);
     }
     if (chosenParser == 1) {
       print("Getting grades from Pronote");

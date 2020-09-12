@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:connectivity/connectivity.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
@@ -14,17 +15,20 @@ import 'package:flutter/material.dart';
 import 'package:stack/stack.dart' as sta;
 import 'package:ynotes/UI/screens/logsPage.dart';
 import 'package:ynotes/main.dart';
-import 'package:ynotes/parsers/EcoleDirecteCloud.dart';
-import 'package:ynotes/parsers/PronoteAPI.dart';
-import 'package:ynotes/parsers/PronoteCas.dart';
+import 'package:ynotes/parsers/EcoleDirecte/EcoleDirecteCloud.dart';
+import 'package:ynotes/parsers/EcoleDirecte/ecoleDirecteConverters.dart';
+import 'package:ynotes/parsers/Pronote/PronoteAPI.dart';
+import 'package:ynotes/parsers/Pronote/PronoteCas.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/offline.dart';
 import 'package:ynotes/apiManager.dart';
 import 'package:dio/dio.dart' as dio;
 
+import 'EcoleDirecte/ecoleDirecteMethods.dart';
+
 sta.Stack<String> Colorstack = sta.Stack();
 void createStack() {
-  CoolcolorList.forEach((color) {
+  colorList.forEach((color) {
     Colorstack.push(color);
   });
 }
@@ -50,9 +54,9 @@ class HexColor extends Color {
 String token;
 
 final storage = new FlutterSecureStorage();
-List<String> CoolcolorList = ["#f07aa0", "#17d0c9", "#a3f7bf", "#cecece", "#ffa41b", "#ff5151", "#b967e1", "#8a7ca7", "#f18867", "#ffc0da", "#739832", "#8ac6d1"];
+List<String> colorList = ["#f07aa0", "#17d0c9", "#a3f7bf", "#cecece", "#ffa41b", "#ff5151", "#b967e1", "#8a7ca7", "#f18867", "#ffc0da", "#739832", "#8ac6d1"];
 
-//The ecole directe api extended from the apiManager.dart API class
+///The ecole directe api extended from the apiManager.dart API class
 class APIEcoleDirecte extends API {
   @override
   // TODO: implement listApp
@@ -126,273 +130,27 @@ class APIEcoleDirecte extends API {
 
   @override
   Future<List<Period>> getPeriods() async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    try {
-      return await getOfflinePeriods();
-    } catch (e) {
-      print("Erreur while getting offline period " + e);
-      if (connectivityResult != ConnectivityResult.none) {
-        List<Period> periods = List();
-        //Check and autorefresh the token
-        await testToken();
-        String id = await storage.read(key: "userID");
-
-        //Use the grades address
-        var url = 'https://api.ecoledirecte.com/v3/Eleves/$id/notes.awp?verbe=get&';
-
-        Map<String, String> headers = {"Content-type": "text/plain"};
-        String data = 'data={"token": "$token"}';
-
-        var body = data;
-        var response = await http.post(url, headers: headers, body: body).catchError((e) {
-          throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.");
-        });
-        if (response.statusCode == 200) {
-          Map<String, dynamic> req = json.decode(utf8.decode(response.bodyBytes));
-          if (req['code'] == 200) {
-            List periodes = req['data']['periodes'];
-            periodes.forEach((element) {
-              periods.add(Period(element["periode"], element["idPeriode"]));
-            });
-            return periods;
-          } else {
-            throw "Error while getting period. ${url}";
-          }
-        } else {
-          throw "Error while getting periods. ${url}";
-        }
-      } else {
-        try {
-          return await getOfflinePeriods();
-        } catch (e) {
-          throw ("Error while collecting offline periods");
-        }
-      }
-    }
-  }
-
-  getOfflinePeriods() async {
-    try {
-      List<Period> listPeriods = List();
-      List<Discipline> disciplines = await offline.disciplines();
-      List<Grade> grades = getAllGrades(disciplines, overrideLimit: true);
-      grades.forEach((grade) {
-        if (!listPeriods.any((period) => period.name == grade.nomPeriode && period.id == grade.codePeriode)) {
-          listPeriods.add(Period(grade.nomPeriode, grade.codePeriode));
-        }
-      });
-
-      listPeriods.sort((a, b) => a.name.compareTo(b.name));
-
-      return listPeriods;
-    } catch (e) {
-      print("Error while collecting offline periods " + e.toString());
-    }
+    return await EcoleDirecteMethod.fetchAnyData(EcoleDirecteMethod.periods, offline.periods);
   }
 
   @override
 //Getting grades
   Future<List<Discipline>> getGrades({bool forceReload}) async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    var offlineGrades = await offline.disciplines();
-
-    //If force reload enabled the grades will be loaded online
-    if ((connectivityResult == ConnectivityResult.none || forceReload == false || forceReload == null) && offlineGrades != null) {
-      print("Loading grades from offline storage.");
-      //RELOAD THE GRADES ANYWAY
-      //NDLR : await is not needed, grades will be refreshed later
-      if (connectivityResult != ConnectivityResult.none) {
-        getGrades(forceReload: true);
-      }
-
-      List<Discipline> grades = await offline.disciplines();
-      await refreshDisciplinesListColors(grades);
-      return grades;
-    } else {
-      print("Loading grades inline.");
-      var toReturn = await getGradesFromInternet();
-
-      return toReturn;
-    }
+    return await EcoleDirecteMethod.fetchAnyData(EcoleDirecteMethod.grades, offline.disciplines, forceFetch: forceReload ?? false);
   }
 
   Future<List<DateTime>> getDatesNextHomework() async {
-    List<DateTime> homeworkDatesListToReturn = List<DateTime>();
-    //Autorefresh token
-    await testToken();
-    String id = await storage.read(key: "userID");
-    var url = 'https://api.ecoledirecte.com/v3/Eleves/$id/cahierdetexte.awp?verbe=get&';
-    Map<String, String> headers = {"Content-type": "text/plain"};
-    String data = 'data={"token": "$token"}';
-
-    var body = data;
-    var response = await http.post(url, headers: headers, body: body).catchError((e) {
-      throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard. ${e.toString()}");
-    });
-
-    if (response.statusCode == 200) {
-      //The list of dates to fetch
-      List<Homework> local = List<Homework>();
-      Map<String, dynamic> req = json.decode(utf8.decode(response.bodyBytes));
-      if (req['code'] == 200) {
-        print("Homework request succeed");
-
-        Map<String, dynamic> data2 = req['data'];
-        bool isLimitedTo7Days = await getSetting("7DaysLimit");
-        if (isLimitedTo7Days == null) {
-          isLimitedTo7Days = false;
-        }
-        data2.forEach((key, value) {
-          if (isLimitedTo7Days == true) {
-            if (DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.parse(key))).difference(DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now()))).inDays > 7) homeworkDatesListToReturn.add(DateTime.parse(key));
-          } else {
-            homeworkDatesListToReturn.add(DateTime.parse(key));
-          }
-        });
-        List<DateTime> pinnedDates = await offline.getPinnedHomeworkDates();
-        //Combine lists
-        List<DateTime> combinedList = homeworkDatesListToReturn + pinnedDates;
-        combinedList = combinedList.toSet().toList();
-        combinedList.sort();
-        return combinedList;
-      } else {
-        throw "Erreur durant la récupération des devoirs";
-      }
-    } else {
-      throw "Erreur durant la récupération des devoirs";
-    }
+    return await EcoleDirecteMethod.homeworkDates();
   }
 
 //Get dates of the the next homework (based on the EcoleDirecte API)
   Future<List<Homework>> getNextHomework({bool forceReload}) async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    var offlineHomework = await offline.homework();
-
-    //If force reload enabled the grades will be loaded online
-    if ((connectivityResult == ConnectivityResult.none || forceReload == false || forceReload == null) && offlineHomework != null) {
-      print("Loading homework from offline storage.");
-      //RELOAD THE HOMEWORK ANYWAY
-      //NDLR : await is not needed, homework will be refreshed later
-      //getNextHomework(forceReload:true);
-      if (connectivityResult != ConnectivityResult.none) {
-        getNextHomework(forceReload: true);
-      }
-
-      return offlineHomework;
-    } else {
-      print("Loading homework inline.");
-      List<DateTime> localDTList = await getDatesNextHomework();
-
-      //List<homework> test;
-      var toReturn = await asyncTask(localDTList);
-      return toReturn;
-    }
-  }
-
-  Future<List<Homework>> asyncTask(List<DateTime> datesList) async {
-    List<Homework> listToReturn = List<Homework>();
-    await Future.forEach(datesList, (date) async {
-      List<Homework> list;
-      list = await getHomeworkFor(date);
-
-      list.forEach((h) {
-        listToReturn.add(h);
-      });
-    });
-
-    await offline.updateHomework(listToReturn);
-    return listToReturn;
+    return await EcoleDirecteMethod.fetchAnyData(EcoleDirecteMethod.nextHomework, offline.homework, forceFetch: forceReload ?? false);
   }
 
 //Get homeworks for a specific date
   Future<List<Homework>> getHomeworkFor(DateTime dateHomework) async {
-    //Autorefresh token
-    initializeDateFormatting();
-    if (dateHomework != null) {
-      String dateToUse = DateFormat("yyyy-MM-dd").format(dateHomework).toString();
-      await testToken();
-      String id = await storage.read(key: "userID");
-      var url = 'https://api.ecoledirecte.com/v3/Eleves/$id/cahierdetexte/$dateToUse.awp?verbe=get&';
-      Map<String, String> headers = {"Content-type": "text/plain"};
-      String data = 'data={"token": "$token"}';
-
-      var body = data;
-      var response = await http.post(url, headers: headers, body: body).catchError((e) {
-        print ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard." +e.toString());
-      });
-      if (response.statusCode == 200) {
-        //The list of dates to fetch
-        List<Homework> homeworkList = List<Homework>();
-        homeworkList.clear();
-        Map<String, dynamic> req = json.decode(utf8.decode(response.bodyBytes));
-        if (req['code'] == 200) {
-          List data = req['data']['matieres'];
-
-          data.forEach((element) {
-            if (element['aFaire'] != null) {
-              String encodedContent = "";
-              String aFaireEncoded = "";
-              bool rendreEnLigne = false;
-
-              bool interrogation = false;
-              List<Document> documentsAFaire = List<Document>();
-              List<Document> documentsContenuDeCours = List<Document>();
-              try {
-                encodedContent = element['aFaire']['contenu'];
-                rendreEnLigne = element['aFaire']['rendreEnLigne'];
-
-                aFaireEncoded = element['contenuDeSeance']['contenu'];
-                List docs = element['aFaire']['documents'];
-                if (docs != null) {
-                  docs.forEach((e) {
-                    documentsAFaire.add(Document(e["libelle"], e["id"].toString(), e["type"], e["taille"]));
-                  });
-                }
-
-                List docsContenu = element['contenuDeSeance']['documents'];
-                if (docsContenu != null) {
-                  docsContenu.forEach((e) {
-                    documentsContenuDeCours.add(new Document(e["libelle"], e["id"].toString(), e["type"], e["taille"]));
-                  });
-                }
-                interrogation = element['interrogation'];
-              } catch (e) {
-                print("Erreur:" + e.toString() + dateHomework.toString());
-              }
-
-              String decodedContent = "";
-              String decodedContenuDeSeance = "";
-              decodedContent = utf8.decode(base64.decode(encodedContent));
-
-              decodedContenuDeSeance = utf8.decode(base64.decode(aFaireEncoded));
-
-              homeworkList.add(new Homework(
-                element['matiere'],
-                element['codeMatiere'],
-                element['id'].toString(),
-                decodedContent,
-                decodedContenuDeSeance,
-                dateHomework,
-                DateTime.parse(element['aFaire']['donneLe']),
-                element['aFaire']['effectue'] == 'true',
-                rendreEnLigne,
-                interrogation,
-                documentsAFaire,
-                documentsContenuDeCours,
-                element['nomProf'],
-              ));
-            }
-          });
-          return homeworkList;
-        } else {
-          throw "Erreur durant la récupération des devoirs";
-        }
-      } else {
-        throw "Erreur durant la récupération des devoirs";
-      }
-    } else {
-      //print ("Erreur durant la récupération des devoirs : a date was null");
-    }
+    return await EcoleDirecteMethod.homeworkFor(dateHomework);
   }
 
   @override
@@ -400,16 +158,11 @@ class APIEcoleDirecte extends API {
     try {
       //Getting the offline count of grades
       List<Grade> listOfflineGrades = getAllGrades(await offline.disciplines(), overrideLimit: true);
-
       print("Offline length is ${listOfflineGrades.length}");
       //Getting the online count of grades
-      List<Grade> listOnlineGrades = getAllGrades(await getGradesFromInternet(), overrideLimit: true);
+      List<Grade> listOnlineGrades = getAllGrades(await EcoleDirecteMethod.grades(), overrideLimit: true);
       print("Online length is ${listOnlineGrades.length}");
-      if (listOfflineGrades.length < listOnlineGrades.length) {
-        return true;
-      } else {
-        return false;
-      }
+      return (listOfflineGrades.length < listOnlineGrades.length);
     } catch (e) {
       print(e);
       return null;
@@ -444,7 +197,7 @@ class APIEcoleDirecte extends API {
           var altClient = HttpClient();
 
           //Ensure that token is refreshed
-          await testToken();
+          await EcoleDirecteMethod.testToken();
           var uri = Uri.parse('https://api.ecoledirecte.com/v3/televersement.awp?verbe=post&mode=CDT');
           var request = http.MultipartRequest('POST', uri)
             ..headers["user-agent"] = "PostmanRuntime/7.25.0"
@@ -477,13 +230,13 @@ class APIEcoleDirecte extends API {
       //Check if needed to force refresh if not offline
       if (forceReload == true || toReturn == null || toReturn.length == 0 && connectivityResult != ConnectivityResult.none) {
         try {
-          List<Lesson> onlineLessons = await getOnlineLessons(dateToUse, week);
+          List<Lesson> onlineLessons = await EcoleDirecteMethod.lessons(dateToUse, week);
 
           await offline.updateLessons(onlineLessons, week);
 
           toReturn = onlineLessons;
         } catch (e) {
-          print("Failed to force refresh " + e.toString());
+          print(e.toString());
         }
       }
 
@@ -496,7 +249,7 @@ class APIEcoleDirecte extends API {
 
   Future<http.Request> downloadRequest(Document document) async {
     var url = 'https://api.ecoledirecte.com/v3/telechargement.awp?verbe=get';
-    await refreshToken();
+    await EcoleDirecteMethod.refreshToken();
     Map<String, String> headers = {"Content-type": "x"};
     String type = document.type;
     String id = document.id;
@@ -525,7 +278,7 @@ Future getCloud(String args, String action, CloudItem item) async {
       case ("/"):
         {
           //Refresh the token
-          await testToken();
+          await EcoleDirecteMethod.testToken();
           String id = await storage.read(key: "userID");
           //Get the espaces de travail
           var url = "https://api.ecoledirecte.com/v3/E/$id/espacestravail.awp?verbe=get&";
@@ -581,8 +334,9 @@ Future getCloud(String args, String action, CloudItem item) async {
   }
 }
 
+///Returning Ecole Directe Mails, **checking** bool is used to only returns old mail number
 Future getMails({bool checking}) async {
-  await testToken();
+  await EcoleDirecteMethod.testToken();
   String id = await storage.read(key: "userID");
   var url = 'https://api.ecoledirecte.com/v3/eleves/$id/messages.awp?verbe=getall&typeRecuperation=all';
 
@@ -594,74 +348,59 @@ Future getMails({bool checking}) async {
     throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou reessayez plus tard.");
   });
   print("Starting the mails collection");
-  try {
-    if (response.statusCode == 200) {
-      Map<String, dynamic> req = jsonDecode(utf8.decode(response.bodyBytes));
-      if (req['code'] == 200) {
-        print("Mail request succeeded");
-        List<Mail> mailsList = List<Mail>();
-        List<Classeur> classeursList = List<Classeur>();
 
-        //add the classeurs
-        if (req['data']['classeurs'] != null) {
-          var classeurs = req['data']['classeurs'];
-          classeurs.forEach((element) {
-            classeursList.add(Classeur(element["libelle"], element["id"]));
-          });
-        }
-        List messagesList = List();
-        if (req['data']['messages'] != null) {
-          Map messages = req['data']['messages'];
-          messages.forEach((key, value) {
-            //We finally get in message items
+  if (response.statusCode == 200) {
+    Map<String, dynamic> req = jsonDecode(utf8.decode(response.bodyBytes));
+    if (req['code'] == 200) {
+      print("Mail request succeeded");
+      List<Mail> mailsList = List<Mail>();
+      List<Classeur> classeursList = List<Classeur>();
 
-            value.forEach((e) {
-              messagesList.add(e);
-            });
-
-            // mailsList.add(Mail(message["id"], message["mtype"], message["read"], message["idClasseur"], jsonDecode(message["from"]), message["subject"], message["date"]));
-          });
-          messagesList.forEach((element) {
-            Map<String, dynamic> mail = element;
-            mailsList.add(
-              Mail(mail["id"].toString(), mail["mtype"], mail["read"], mail["idClasseur"].toString(), mail["from"], mail["subject"], mail["date"], to: (mail["to"] != null) ? mail["to"] : null, files: (mail["files"] != null) ? mail["files"] : null),
-            );
-          });
-          //This is the root class of message or message type ("sent", "archived", "received")
-          //List messagesRootClass = req['data']['messages'];
-          /*print(messagesRootClass.length);
-        messagesRootClass.forEach((rootClass){
-         
-       
+      //add the classeurs
+      if (req['data']['classeurs'] != null) {
+        var classeurs = req['data']['classeurs'];
+        classeurs.forEach((element) {
+          classeursList.add(Classeur(element["libelle"], element["id"]));
         });
-*/
-        }
-        print("Returned mails");
-        if (checking == null) {
-          print("checking mails");
-          List<Mail> receivedMails = mailsList.where((element) => element.mtype == "received").toList();
-
-          setIntSetting("mailNumber", receivedMails.length);
-          print("checked mails");
-        }
-
-        return mailsList;
       }
-      //Return an error
-      else {
-        throw "Error.";
+      List messagesList = List();
+      if (req['data']['messages'] != null) {
+        Map messages = req['data']['messages'];
+        messages.forEach((key, value) {
+          //We finally get in message items
+
+          value.forEach((e) {
+            messagesList.add(e);
+          });
+        });
+        messagesList.forEach((element) {
+          Map<String, dynamic> mailData = element;
+          mailsList.add(EcoleDirecteConverter.mail(mailData));
+        });
       }
-    } else {
-      print(response.statusCode);
+      print("Returned mails");
+      if (checking == null) {
+        print("checking mails");
+        List<Mail> receivedMails = mailsList.where((element) => element.mtype == "received").toList();
+
+        setIntSetting("mailNumber", receivedMails.length);
+        print("checked mails");
+      }
+
+      return mailsList;
+    }
+    //Return an error
+    else {
       throw "Error.";
     }
-  } catch (e) {
-    print("error during the mail collection $e");
+  } else {
+    print(response.statusCode);
+    throw "Error.";
   }
 }
 
 Future readMail(String mailId, bool read) async {
-  await testToken();
+  await EcoleDirecteMethod.testToken();
   String id = await storage.read(key: "userID");
   var url = 'https://api.ecoledirecte.com/v3/eleves/$id/messages/${mailId}.awp?verbe=get';
   if (read == false) {
@@ -694,7 +433,7 @@ Future readMail(String mailId, bool read) async {
       throw "Error.";
     }
   } catch (e) {
-    print("error during the mail collection $e");
+    print("error during the mail reading $e");
   }
 }
 
@@ -718,187 +457,4 @@ Future<int> getColor(String disciplineName) async {
 
     return HexColor(color).value;
   }
-}
-
-//Bool value and Token validity tester
-testToken() async {
-  if (token == "" || token == null) {
-    await refreshToken();
-    return false;
-  } else {
-    String id = await storage.read(key: "userID");
-    var url = 'https://api.ecoledirecte.com/v3/$id/login.awp';
-    Map<String, String> headers = {"Content-type": "text/plain"};
-    String data = 'data={"token": "$token"}';
-    //encode Map to JSON
-    var body = data;
-    var response = await http.post(url, headers: headers, body: body).catchError((e) {
-      return false;
-    });
-
-    if (response.statusCode == 200) {
-      Map<String, dynamic> req = jsonDecode(response.body);
-      if (req['code'] == 200) {
-        return true;
-      } else {
-        await refreshToken();
-
-        return false;
-      }
-    } else {
-      await refreshToken();
-      return false;
-    }
-  }
-}
-
-//Refresh the token if expired
-refreshToken() async {
-//Get the password in the secure storage
-  String password = await storage.read(key: "password");
-  String username = await storage.read(key: "username");
-  var url = 'https://api.ecoledirecte.com/v3/login.awp';
-  Map<String, String> headers = {"Content-type": "text/plain"};
-  String data = 'data={"identifiant": "$username", "motdepasse": "$password"}';
-  //encode Map to JSON
-  var body = data;
-  var response = await http.post(url, headers: headers, body: body).catchError((e) {
-    throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou reessayez plus tard. ${e.toString()}");
-  });
-  if (response.statusCode == 200) {
-    Map<String, dynamic> req = jsonDecode(response.body);
-    if (req['code'] == 200) {
-      token = req['token'];
-    }
-    //Return an error
-    else {
-      throw "Error.";
-    }
-  } else {
-    throw "Error.";
-  }
-}
-
-getGradesFromInternet() async {
-  List<Discipline> disciplinesList = List<Discipline>();
-  //Check and autorefresh the token
-  await testToken();
-  String id = await storage.read(key: "userID");
-  var url = 'https://api.ecoledirecte.com/v3/Eleves/$id/notes.awp?verbe=get&';
-  //Only for testing purposes
-  //var url = 'http://demo2235921.mockable.io';
-  Map<String, String> headers = {"Content-type": "text/plain"};
-  String data = 'data={"token": "$token"}';
-
-  var body = data;
-  var response = await http.post(url, headers: headers, body: body).catchError((e) {
-    throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.");
-  });
-  if (response.statusCode == 200) {
-    Map<String, dynamic> req = json.decode(utf8.decode(response.bodyBytes));
-    if (req['code'] == 200) {
-      //Get all the marks
-      List data = req['data']['notes'];
-      List<Grade> gradesList = List<Grade>();
-
-      //Get all the disciplines
-      List periodes = req['data']['periodes'];
-      disciplinesList.clear();
-
-      periodes.forEach((periodeElement) {
-        Color color = Colors.green;
-        //Make a list of grades
-
-        List disciplines = periodeElement["ensembleMatieres"]["disciplines"];
-        disciplines.forEach((element) async {
-          List profs = element['professeurs'];
-          final List<String> profsNoms = List<String>();
-
-          profs.forEach((e) {
-            profsNoms.add(e["nom"]);
-          });
-//Making objects
-          if (element['codeSousMatiere'] == "") {
-            disciplinesList.add(Discipline.fromJson(element, profsNoms, element['codeMatiere'], periodeElement["idPeriode"], Colors.blue, periodeElement["ensembleMatieres"]["moyenneGenerale"], periodeElement["ensembleMatieres"]["moyenneMax"], periodeElement["ensembleMatieres"]["moyenneClasse"]));
-          } else {
-            try {
-              print(element["idPeriode"]);
-
-              disciplinesList[disciplinesList.lastIndexWhere((disciplinesList) => disciplinesList.codeMatiere == element['codeMatiere'] && disciplinesList.periode == periodeElement["idPeriode"])].codeSousMatiere.add(element['codeSousMatiere']);
-            } catch (e) {}
-          }
-        });
-      });
-      disciplinesList.forEach((f) {
-        final List<Grade> localGradesList = List<Grade>();
-
-        data.forEach((element) {
-          if (element["codeMatiere"] == f.codeMatiere && element["codePeriode"] == f.periode.toString()) {
-            //print("IT WAS OK" + element.toString());
-            localGradesList.add(Grade.fromJson(element));
-          }
-        });
-
-        f.gradesList = localGradesList;
-      });
-      await offline.updateDisciplines(disciplinesList);
-      createStack();
-      refreshDisciplinesListColors(disciplinesList);
-
-      return disciplinesList;
-    }
-  } else {
-    throw "Erreur durant la récupération des notes. ${url}";
-  }
-  return null;
-}
-
-getOnlineLessons(DateTime dateToUse, int week) async {
-  await testToken();
-  String id = await storage.read(key: "userID");
-  String dateDebut = DateFormat("yyyy/MM/dd").format(getMonday(dateToUse));
-  String dateFin = DateFormat("yyyy/MM/dd").format(getNextSunday(dateToUse));
-  String data = 'data={"dateDebut":"$dateDebut","dateFin":"$dateFin","avecTrous":false,"token": "$token"}';
-
-  //Use the timetable address
-  var url = 'https://api.ecoledirecte.com/v3/E/$id/emploidutemps.awp?verbe=get&';
-  Map<String, String> headers = {"Content-type": "text/plain"};
-  var body = data;
-  var response = await http.post(url, headers: headers, body: body).catchError((e) {
-    print("Error while getting online lessons");
-  });
-
-  if (response.statusCode == 200) {
-    //The list of dates to fetch
-    List<Lesson> lessonsList = List<Lesson>();
-    Map<String, dynamic> req = json.decode(utf8.decode(response.bodyBytes));
-    //Lesson Lesson({String room, List<String> teachers, DateTime start, int duration, bool canceled, String status, List<String> groups, String content, String matiere, String codeMatiere, DateTime end, String id})
-    if (req['code'] == 200) {
-      req["data"].forEach((element) {
-        lessonsList.add(Lesson(
-            room: element["salle"],
-            teachers: [element["prof"]],
-            start: DateFormat("yyyy-MM-dd HH:mm").parse(element["start_date"]),
-            end: DateFormat("yyyy-MM-dd HH:mm").parse(element["end_date"]),
-            canceled: element["isAnnule"],
-            matiere: element["matiere"],
-            codeMatiere: element["codeMatiere"],
-            id: element["id"].toString()));
-      });
-
-      return lessonsList;
-    } else {
-      print("Error while getting online lessons");
-    }
-  } else {
-    print("Error while getting online lessons");
-  }
-}
-
-getMonday(DateTime date) {
-  return date.subtract(Duration(days: date.weekday - 1));
-}
-
-getNextSunday(DateTime date) {
-  return date.subtract(Duration(days: date.weekday - 1)).add(Duration(days: 6));
 }

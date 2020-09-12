@@ -231,7 +231,7 @@ List<Grade> getAllGrades(List<Discipline> list, {bool overrideLimit = false}) {
     });
   }
   listToReturn = listToReturn.toSet().toList();
-  print("Refreshing all grades");
+  //print("Refreshing all grades");
   if (chosenParser == 0) {
     listToReturn.sort((a, b) => a.dateSaisie.compareTo(b.dateSaisie));
   } else {

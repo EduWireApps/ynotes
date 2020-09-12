@@ -12,7 +12,7 @@ import 'package:flushbar/flushbar.dart';
 import 'package:ynotes/apiManager.dart';
 import 'package:ynotes/background.dart';
 import 'package:ynotes/parsers/Pronote.dart';
-import 'package:ynotes/parsers/PronoteAPI.dart';
+import 'package:ynotes/parsers/Pronote/PronoteAPI.dart';
 import '../../main.dart';
 import '../../usefulMethods.dart';
 import 'dialogs.dart';

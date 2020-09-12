@@ -7,7 +7,7 @@ import 'package:hive/hive.dart';
 import 'package:ynotes/apiManager.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/parsers/Pronote.dart';
-import 'package:ynotes/parsers/PronoteAPI.dart';
+import 'package:ynotes/parsers/Pronote/PronoteAPI.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 import 'UI/screens/logsPage.dart';
@@ -78,8 +78,12 @@ class LocalNotification {
     if (onGoing) {
       id = 333;
     }
+    String room = lesson.room;
+    if (room == null || room == "") {
+      room = "(aucune salle définie)";
+    }
     await flutterLocalNotificationsPlugin.schedule(
-        id, onGoing ? 'Rappel de cours constant' : 'Rappels de cours', onGoing ? 'Vous êtes en ${lesson.matiere} dans la salle ${lesson.room??"(aucune salle définie)"}' : 'Le cours ${lesson.matiere} dans la salle ${lesson.room} aura lieu dans $minutes minutes', scheduledNotificationDateTime, platformChannelSpecifics);
+        id, onGoing ? 'Rappel de cours constant' : 'Rappels de cours', onGoing ? 'Vous êtes en ${lesson.matiere} dans la salle $room' : 'Le cours ${lesson.matiere} dans la salle ${lesson.room} aura lieu dans $minutes minutes', scheduledNotificationDateTime, platformChannelSpecifics);
   }
 
   static Future<void> showOngoingNotification(Lesson lesson) async {
@@ -101,8 +105,11 @@ class LocalNotification {
     );
     var iOSPlatformChannelSpecifics = IOSNotificationDetails();
     var platformChannelSpecifics = NotificationDetails(androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-
-    var sentence = lesson == null ? "Vous êtes en pause." : 'Vous êtes en ${lesson.matiere} dans la salle ${lesson.room}.';
+    String defaultSentence = 'Vous êtes en ${lesson.matiere} dans la salle ${lesson.room}';
+    if (lesson.room == null || lesson.room == "") {
+      defaultSentence = "Vous êtes en ${lesson.matiere}";
+    }
+    var sentence = lesson == null ? "Vous êtes en pause" : defaultSentence;
     try {
       if (lesson.canceled) {
         sentence = "Votre cours a été annulé.";
@@ -117,24 +124,61 @@ class LocalNotification {
 
   ///Set an on going notification which is automatically refreshed (online or not) each hour
   static Future<void> setOnGoingNotification() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
     List<Lesson> lessons = List();
+    var initializationSettingsAndroid = new AndroidInitializationSettings('newgradeicon');
+    var initializationSettingsIOS = new IOSInitializationSettings();
+    var initializationSettings = new InitializationSettings(initializationSettingsAndroid, initializationSettingsIOS);
+    flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+    flutterLocalNotificationsPlugin.initialize(initializationSettings, onSelectNotification: BackgroundService.onSelectNotification);
     await getChosenParser();
     API api = APIManager();
-    try {
-      //Login creds
-      String u = await ReadStorage("username");
-      String p = await ReadStorage("password");
-      String url = await ReadStorage("pronoteurl");
-      String cas = await ReadStorage("pronotecas");
-      await api.login(u, p, url: url, cas: cas);
-      if (api.loggedIn) {
-        print("Logged in");
+    //Login creds
+    String u = await ReadStorage("username");
+    String p = await ReadStorage("password");
+    String url = await ReadStorage("pronoteurl");
+    String cas = await ReadStorage("pronotecas");
+    if (connectivityResult != ConnectivityResult.none) {
+      try {
+        await api.login(u, p, url: url, cas: cas);
+      } catch (e) {
+        print("Error while logging");
       }
-    } catch (e) {
-      print("Failed to log in (on going notification)");
     }
     var date = DateTime.now();
-    lessons = await api.getNextLessons(date);
+    int week = await get_week(date);
+    final dir = await FolderAppUtil.getDirectory();
+    Hive.init("${dir.path}/offline");
+    //Register adapters once
+    try {
+      Hive.registerAdapter(GradeAdapter());
+      Hive.registerAdapter(DisciplineAdapter());
+      Hive.registerAdapter(DocumentAdapter());
+      Hive.registerAdapter(HomeworkAdapter());
+      Hive.registerAdapter(LessonAdapter());
+      Hive.registerAdapter(PollInfoAdapter());
+    } catch (e) {
+      print("Error while registring adapter");
+    }
+    if (connectivityResult == ConnectivityResult.none || !api.loggedIn) {
+      Box _offlineBox = await Hive.openBox("offlineData");
+      var offlineLessons = await _offlineBox.get("lessons");
+      if (offlineLessons[week] != null) {
+        lessons = offlineLessons[week].cast<Lesson>();
+      }
+    } else if (api.loggedIn) {
+      try {
+        lessons = await api.getNextLessons(date);
+      } catch (e) {
+        print("Error while collecting online lessons. ${e.toString()}");
+
+        Box _offlineBox = await Hive.openBox("offlineData");
+        var offlineLessons = await _offlineBox.get("lessons");
+        if (offlineLessons[week] != null) {
+          lessons = offlineLessons[week].cast<Lesson>();
+        }
+      }
+    }
 
     Lesson getActualLesson = await getCurrentLesson(lessons);
     await showOngoingNotification(getActualLesson);
@@ -213,7 +257,7 @@ class LocalNotification {
         lessons = await api.getNextLessons(date);
       } catch (e) {
         print("Error while collecting online lessons. ${e.toString()}");
-        
+
         Box _offlineBox = await Hive.openBox("offlineData");
         var offlineLessons = await _offlineBox.get("lessons");
         if (offlineLessons[week] != null) {
@@ -223,11 +267,6 @@ class LocalNotification {
     }
     Lesson getActualLesson = await getNextLesson(lessons);
 
-    if (getActualLesson == null) {
-      await setSetting("agendaOnGoingNotification", false);
-      await cancelOnGoingNotification();
-    } else {
-      await showOngoingNotification(getActualLesson);
-    }
+    await showOngoingNotification(getActualLesson);
   }
 }

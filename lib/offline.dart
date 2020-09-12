@@ -2,7 +2,7 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
-import 'package:ynotes/parsers/PronoteAPI.dart';
+import 'package:ynotes/parsers/Pronote/PronoteAPI.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'apiManager.dart';
 import 'package:ynotes/UI/utils/fileUtils.dart';
@@ -50,6 +50,8 @@ class Offline {
       var offlineDisciplines = await _offlineBox.get("disciplines");
       var offlinehomeworkData = await _offlineBox.get("homework");
       var offlinePollsData = await _offlineBox.get("polls");
+    
+
       if (offlineLessons != null) {
         this.lessonsData = Map<dynamic, dynamic>.from(offlineLessons);
       }
@@ -228,6 +230,31 @@ class Offline {
     } catch (e) {
       print("Error while returning disciplines" + e.toString());
       return null;
+    }
+  }
+
+  periods() async {
+    try {
+      List<Period> listPeriods = List();
+      List<Discipline> disciplines = await this.disciplines();
+      List<Grade> grades = getAllGrades(disciplines, overrideLimit: true);
+
+      grades.forEach((grade) {
+        if (!listPeriods.any((period) => period.name == grade.nomPeriode && period.id == grade.codePeriode)) {
+          if (grade.nomPeriode != null && grade.nomPeriode != "") {
+            listPeriods.add(Period(grade.nomPeriode, grade.codePeriode));
+          } else {}
+        }
+      });
+      try {
+        listPeriods.sort((a, b) => a.name.compareTo(b.name));
+      } catch (e) {
+        print(e);
+      }
+
+      return listPeriods;
+    } catch (e) {
+      throw ("Error while collecting offline periods " + e.toString());
     }
   }
 
