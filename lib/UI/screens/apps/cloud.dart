@@ -112,52 +112,55 @@ class _CloudPageState extends State<CloudPage> {
             margin: EdgeInsets.only(
               top: screenSize.size.height / 10 * 0.8,
             ),
-            height: path != "/" ? screenSize.size.height / 10 * 0.5 : 0,
+            height: screenSize.size.height / 10 * 0.5,
             width: screenSize.size.width,
-            child: Material(
-              borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-              color: Theme.of(context).primaryColor,
-              child: InkWell(
-                onTap: () {
-                  if (path != "/") {
-                    var splits = path.split("/");
-                    print(splits.length);
-                    if (splits.length > 2) {
-                      var finalList = splits.sublist(1, splits.length - 2);
-                      var concatenate = StringBuffer();
+            child: Opacity(
+              opacity: path == "/" ? 0.4 : 1,
+                          child: Material(
+                borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                color: Theme.of(context).primaryColor,
+                child: InkWell(
+                  onTap:  path == "/" ? null :(){
+                    if (path != "/") {
+                      var splits = path.split("/");
+                      print(splits.length);
+                      if (splits.length > 2) {
+                        var finalList = splits.sublist(1, splits.length - 2);
+                        var concatenate = StringBuffer();
 
-                      finalList.forEach((item) {
-                        concatenate.write(r'/' + item);
-                      });
-                      print(concatenate);
-                      setState(() {
-                        path = concatenate.toString() + '/';
-                      });
-                    } else {
-                      setState(() {
-                        path = "/";
-                      });
+                        finalList.forEach((item) {
+                          concatenate.write(r'/' + item);
+                        });
+                        print(concatenate);
+                        setState(() {
+                          path = concatenate.toString() + '/';
+                        });
+                      } else {
+                        setState(() {
+                          path = "/";
+                        });
+                      }
+                      changeDirectory(null);
                     }
-                    changeDirectory(null);
-                  }
-                },
-                child: Container(
-                  height: screenSize.size.height / 10 * 0.5,
-                  padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
-                  child: FittedBox(
-                    child: Row(
-                      children: <Widget>[
-                        Icon(
-                          MdiIcons.arrowLeft,
-                          color: isDarkModeEnabled ? Colors.white : Colors.black,
-                        ),
-                        Text("Retour",
-                            style: TextStyle(
-                              fontFamily: "Asap",
-                              fontSize: 15,
-                              color: isDarkModeEnabled ? Colors.white : Colors.black,
-                            )),
-                      ],
+                  },
+                  child: Container(
+                    height: screenSize.size.height / 10 * 0.5,
+                    padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
+                    child: FittedBox(
+                      child: Row(
+                        children: <Widget>[
+                          Icon(
+                            MdiIcons.arrowLeft,
+                            color: isDarkModeEnabled ? Colors.white : Colors.black,
+                          ),
+                          Text("Retour",
+                              style: TextStyle(
+                                fontFamily: "Asap",
+                                fontSize: 15,
+                                color: isDarkModeEnabled ? Colors.white : Colors.black,
+                              )),
+                        ],
+                      ),
                     ),
                   ),
                 ),

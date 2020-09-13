@@ -32,7 +32,7 @@ final storage = new FlutterSecureStorage();
 
 class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMixin {
   //Settings
-  var boolSettings = {"nightmode": false, "batterySaver": false, "notificationNewMail": false, "notificationNewGrade": false, "lighteningOverride": false};
+  var boolSettings = {"nightmode": false, "batterySaver": false, "notificationNewMail": false, "notificationNewGrade": false, "lighteningOverride": false, "shakeToReport": false};
 
   AnimationController leftToRightAnimation;
   AnimationController rightToLeftAnimation;
@@ -230,6 +230,20 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                   titleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
                   subtitleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
                 ),
+                /*SettingsTile.switchTile(
+                  title: 'Secouer pour signaler',
+            
+                  titleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                  subtitleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
+                  switchValue: boolSettings["shakeToReport"],
+                  onToggle: (bool value) async {
+                    setState(() {
+                      boolSettings["shakeToReport"] = value;
+                    });
+
+                    await setSetting("shakeToReport", value);
+                  },
+                ),*/
               ],
             ),
             SettingsSection(
@@ -240,6 +254,15 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                   leading: Icon(MdiIcons.restore, color: isDarkModeEnabled ? Colors.white : Colors.black),
                   onTap: () {
                     HelpDialog.resetEveryHelpDialog();
+                  },
+                  titleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                  subtitleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
+                ),
+                SettingsTile(
+                  title: 'Supprimer les données hors ligne',
+                  leading: Icon(MdiIcons.deleteAlert, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                  onTap: () async {
+                    await offline.clearAll();
                   },
                   titleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
                   subtitleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),

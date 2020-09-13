@@ -16,6 +16,7 @@ import 'package:ynotes/usefulMethods.dart';
 import 'package:connectivity/connectivity.dart';
 import '../../apiManager.dart';
 import 'package:ynotes/UI/utils/fileUtils.dart';
+
 Color textButtonColor = Color(0xff252B62);
 
 class LoginPage extends StatefulWidget {
@@ -59,8 +60,7 @@ class _LoginPageState extends State<LoginPage> {
 
   getFirstUse() async {
     final prefs = await SharedPreferences.getInstance();
-    if (prefs.getBool('firstUse') == true &&
-        storage.read(key: 'agreedTermsAndConfiguredApp') == null) {
+    if (prefs.getBool('firstUse') == true && storage.read(key: 'agreedTermsAndConfiguredApp') == null) {
       _isFirstUse = true;
     }
   }
@@ -131,8 +131,7 @@ class _LoginPageState extends State<LoginPage> {
                               )
                             ],
                           );
-                        } else if (snapshot.hasData &&
-                            !snapshot.data.toString().contains("Bienvenue")) {
+                        } else if (snapshot.hasData && !snapshot.data.toString().contains("Bienvenue")) {
                           return Column(
                             children: <Widget>[
                               Icon(
@@ -142,7 +141,6 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                               Text(
                                 utf8convert(snapshot.data.toString()),
-                                
                                 textAlign: TextAlign.center,
                               )
                             ],
@@ -164,10 +162,12 @@ class _LoginPageState extends State<LoginPage> {
           );
         });
   }
-static String utf8convert(String text) {
+
+  static String utf8convert(String text) {
     List<int> bytes = text.toString().codeUnits;
     return utf8.decode(bytes);
-}
+  }
+
   @override
   void dispose() {
     super.dispose();
@@ -189,22 +189,18 @@ static String utf8convert(String text) {
           color: Color(0xFF252B62),
           child: SafeArea(
               child: Container(
-                  height:
-                      screenSize.size.height - screenSize.padding.top - screenSize.padding.bottom,
+                  height: screenSize.size.height - screenSize.padding.top - screenSize.padding.bottom,
                   decoration: BoxDecoration(color: Color(0xFF252B62)),
                   child: SingleChildScrollView(
                     child: Container(
-                        height: screenSize.size.height -
-                            screenSize.padding.top -
-                            screenSize.padding.bottom,
+                        height: screenSize.size.height - screenSize.padding.top - screenSize.padding.bottom,
                         width: screenSize.size.width,
                         child: Stack(
                           //Random icons
                           children: <Widget>[
                             Positioned(
                               right: screenSize.size.width / 5 * 0.4,
-                              bottom:
-                                  screenSize.size.height / 10 * 5 + screenSize.size.width / 5 * 0.6,
+                              bottom: screenSize.size.height / 10 * 5 + screenSize.size.width / 5 * 0.6,
                               child: Transform.rotate(
                                   angle: -0.2,
                                   child: FadeAnimation(
@@ -301,200 +297,83 @@ static String utf8convert(String text) {
                                   )),
                             ),
                             SingleChildScrollView(
-                                                          child: Container(
-                                                            height: screenSize.size.height,
-                                                            child: Align(
-                                alignment: Alignment.centerLeft,
-                                child: FadeAnimation(
-                                  0.8,
-                                  SingleChildScrollView(
-                                                                      child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        Material(
-                                          color:
-                                              chosenParser == 0 ? Color(0xff2874A6) : Color(0xff61b872),
-                                          borderRadius: BorderRadius.only(
-                                              topRight: Radius.circular(25),
-                                              bottomRight: Radius.circular(25)),
-                                          child: InkWell(
-                                            onTap: () {
-                                              Navigator.of(context)
-                                                  .pushReplacement(router(SchoolAPIChoice()));
-                                            },
-                                            borderRadius: BorderRadius.only(
-                                                topRight: Radius.circular(25),
-                                                bottomRight: Radius.circular(25)),
-                                            child: Container(
-                                              width: screenSize.size.width / 5 * 4,
-                                              height: screenSize.size.height / 10 * 1,
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: <Widget>[
-                                                  Container(
-                                                    padding: EdgeInsets.symmetric(
-                                                        vertical: MediaQuery.of(context).size.width /
-                                                              10 *
-                                                              0.1),
-                                                    margin: EdgeInsets.only(
-                                                        right: MediaQuery.of(context).size.width /
-                                                              10 *
-                                                              0.2),
-                                                    child: Image(
-                                                        width:
-                                                              MediaQuery.of(context).size.width / 5 * 0.5,
-                                                        height: screenSize.size.width / 5 * 0.5,
-                                                        fit: BoxFit.fitWidth,
-                                                        image: AssetImage(
-                                                              'assets/images/${chosenParser == 0 ? "EcoleDirecte" : "Pronote"}/${chosenParser == 0 ? "EcoleDirecte" : "Pronote"}Icon.png')),
-                                                  ),
-                                                  Container(
-                                                      width: screenSize.size.width / 5 * 3,
-                                                      child: FittedBox(
-                                                          child: Text(
-                                                                "Connexion avec ${chosenParser == 0 ? "EcoleDirecte" : "Pronote"}",
-                                                                textAlign: TextAlign.center,
-                                                                style: TextStyle(
-                                                                    fontFamily: "Asap",
-                                                                    color: Colors.white)))),
-                                                ],
+                              child: Container(
+                                height: screenSize.size.height,
+                                child: Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: FadeAnimation(
+                                    0.8,
+                                    SingleChildScrollView(
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Material(
+                                            color: chosenParser == 0 ? Color(0xff2874A6) : Color(0xff61b872),
+                                            borderRadius: BorderRadius.only(topRight: Radius.circular(25), bottomRight: Radius.circular(25)),
+                                            child: InkWell(
+                                              onTap: () {
+                                                Navigator.of(context).pushReplacement(router(SchoolAPIChoice()));
+                                              },
+                                              borderRadius: BorderRadius.only(topRight: Radius.circular(25), bottomRight: Radius.circular(25)),
+                                              child: Container(
+                                                width: screenSize.size.width / 5 * 4,
+                                                height: screenSize.size.height / 10 * 1,
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: <Widget>[
+                                                    Container(
+                                                      padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width / 10 * 0.1),
+                                                      margin: EdgeInsets.only(right: MediaQuery.of(context).size.width / 10 * 0.2),
+                                                      child: Image(
+                                                          width: MediaQuery.of(context).size.width / 5 * 0.5,
+                                                          height: screenSize.size.width / 5 * 0.5,
+                                                          fit: BoxFit.fitWidth,
+                                                          image: AssetImage('assets/images/${chosenParser == 0 ? "EcoleDirecte" : "Pronote"}/${chosenParser == 0 ? "EcoleDirecte" : "Pronote"}Icon.png')),
+                                                    ),
+                                                    Container(width: screenSize.size.width / 5 * 3, child: FittedBox(child: Text("Connexion avec ${chosenParser == 0 ? "EcoleDirecte" : "Pronote"}", textAlign: TextAlign.center, style: TextStyle(fontFamily: "Asap", color: Colors.white)))),
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                        SingleChildScrollView(
-                                          child: Container(
-                                            margin:
-                                                EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
-                                            width: screenSize.size.width / 5 * 4,
-                                            padding: EdgeInsets.symmetric(
-                                                vertical: screenSize.size.width / 5 * 0.2),
-                                            decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.only(
-                                                    topRight: Radius.circular(25),
-                                                    bottomRight: Radius.circular(25)),
-                                                color: Colors.white),
-                                            child: SingleChildScrollView(
-                                                                                        child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  Container(
-                                                    height: screenSize.size.height / 10 * 0.9,
-                                                    child: FittedBox(
-                                                      child: Column(
-                                                        mainAxisAlignment: MainAxisAlignment.start,
-                                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                                        children: <Widget>[
-                                                          Container(
+                                          SingleChildScrollView(
+                                            child: Container(
+                                              margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
+                                              width: screenSize.size.width / 5 * 4,
+                                              padding: EdgeInsets.symmetric(vertical: screenSize.size.width / 5 * 0.2),
+                                              decoration: BoxDecoration(borderRadius: BorderRadius.only(topRight: Radius.circular(25), bottomRight: Radius.circular(25)), color: Colors.white),
+                                              child: SingleChildScrollView(
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  children: [
+                                                    Container(
+                                                      height: screenSize.size.height / 10 * 0.9,
+                                                      child: FittedBox(
+                                                        child: Column(
+                                                          mainAxisAlignment: MainAxisAlignment.start,
+                                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                                          children: <Widget>[
+                                                            Container(
                                                               child: AutoSizeText(
                                                                 "Bienvenue sur yNotes",
-                                                                style: TextStyle(
-                                                                    fontFamily: 'Asap',
-                                                                    fontWeight: FontWeight.bold,
-                                                                    color: Colors.black),
-                                                                    minFontSize: 18,
+                                                                style: TextStyle(fontFamily: 'Asap', fontWeight: FontWeight.bold, color: Colors.black),
+                                                                minFontSize: 18,
                                                                 textAlign: TextAlign.center,
                                                               ),
-                                                          ),
-                                                          Container(
+                                                            ),
+                                                            Container(
                                                               width: screenSize.size.width / 5 * 3,
                                                               child: AutoSizeText(
                                                                 "Connectez vous à votre espace scolaire",
-                                                                style: TextStyle(
-                                                                    fontFamily: 'Asap',
-                                                                    color: Colors.black),
-                                                                    minFontSize: 16,
+                                                                style: TextStyle(fontFamily: 'Asap', color: Colors.black),
+                                                                minFontSize: 16,
                                                                 textAlign: TextAlign.center,
                                                               ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Container(
-                                                    margin: EdgeInsets.only(
-                                                      top: screenSize.size.height / 10 * 0.3,
-                                                      left: screenSize.size.height / 10 * 0.4,
-                                                      bottom: screenSize.size.height / 10 * 0.1,
-                                                    ),
-                                                    child: Row(
-                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                      children: <Widget>[
-                                                        Container(
-                                                          child: AutoSizeText(
-                                                              "Identifiant",
-                                                              style: TextStyle(
-                                                                  fontFamily: 'Asap', color: Colors.black),
-                                                              textAlign: TextAlign.left,
-                                                              minFontSize: 18,
-                                                          ),
-                                                        ),
-                                                        Text(_obligationText,
-                                                              style: TextStyle(color: Colors.red))
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  Container(
-                                                    width: screenSize.size.width / 5 * 3.2,
-                                                    margin: EdgeInsets.only(
-                                                      left: screenSize.size.height / 10 * 0.1,
-                                                    ),
-                                                    child: TextFormField(
-                                                      controller: _username,
-                                                      decoration: InputDecoration(
-                                                        enabledBorder: UnderlineInputBorder(
-                                                          borderSide: BorderSide(color: Colors.black),
-                                                        ),
-                                                        focusedBorder: UnderlineInputBorder(
-                                                          borderSide: BorderSide(color: Colors.black),
+                                                            ),
+                                                          ],
                                                         ),
                                                       ),
-                                                      style: TextStyle(
-                                                        color: Colors.black,
-                                                      ),
                                                     ),
-                                                  ),
-                                                  Container(
-                                                    margin: EdgeInsets.only(
-                                                      top: screenSize.size.height / 10 * 0.3,
-                                                      left: screenSize.size.height / 10 * 0.4,
-                                                      bottom: screenSize.size.height / 10 * 0.1,
-                                                    ),
-                                                    child: Row(
-                                                      children: <Widget>[
-                                                        AutoSizeText(
-                                                          "Mot de passe",
-                                                          style: TextStyle(
-                                                                fontFamily: 'Asap', color: Colors.black),
-                                                          textAlign: TextAlign.center,
-                                                          minFontSize: 18,
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  Container(
-                                                    width: screenSize.size.width / 5 * 3.2,
-                                                    margin: EdgeInsets.only(
-                                                      left: screenSize.size.height / 10 * 0.1,
-                                                    ),
-                                                    height: screenSize.size.height / 10 * 0.4,
-                                                    child: TextFormField(
-                                                      controller: _password,
-                                                      obscureText: true,
-                                                      decoration: InputDecoration(
-                                                        enabledBorder: UnderlineInputBorder(
-                                                          borderSide: BorderSide(color: Colors.black),
-                                                        ),
-                                                        focusedBorder: UnderlineInputBorder(
-                                                          borderSide: BorderSide(color: Colors.black),
-                                                        ),
-                                                      ),
-                                                      style: TextStyle(
-                                                        color: Colors.black,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  if (chosenParser == 1)
                                                     Container(
                                                       margin: EdgeInsets.only(
                                                         top: screenSize.size.height / 10 * 0.3,
@@ -502,37 +381,33 @@ static String utf8convert(String text) {
                                                         bottom: screenSize.size.height / 10 * 0.1,
                                                       ),
                                                       child: Row(
+                                                        mainAxisAlignment: MainAxisAlignment.start,
                                                         children: <Widget>[
                                                           Container(
-                                                              child: AutoSizeText(
-                                                                "Adresse Pronote",
-                                                                style: TextStyle(
-                                                                    fontFamily: 'Asap',
-                                                                    color: Colors.black),
-                                                                textAlign: TextAlign.center,
-                                                                minFontSize: 18,
-                                                              ),
+                                                            child: AutoSizeText(
+                                                              "Identifiant",
+                                                              style: TextStyle(fontFamily: 'Asap', color: Colors.black),
+                                                              textAlign: TextAlign.left,
+                                                              minFontSize: 18,
+                                                            ),
                                                           ),
-                                                          Text(_obligationText,
-                                                                style: TextStyle(color: Colors.red))
+                                                          Text(_obligationText, style: TextStyle(color: Colors.red))
                                                         ],
                                                       ),
                                                     ),
-                                                  if (chosenParser == 1)
                                                     Container(
                                                       width: screenSize.size.width / 5 * 3.2,
                                                       margin: EdgeInsets.only(
                                                         left: screenSize.size.height / 10 * 0.1,
                                                       ),
-                                                      height: screenSize.size.height / 10 * 0.8,
                                                       child: TextFormField(
-                                                        controller: _url,
+                                                        controller: _username,
                                                         decoration: InputDecoration(
                                                           enabledBorder: UnderlineInputBorder(
-                                                              borderSide: BorderSide(color: Colors.black),
+                                                            borderSide: BorderSide(color: Colors.black),
                                                           ),
                                                           focusedBorder: UnderlineInputBorder(
-                                                              borderSide: BorderSide(color: Colors.black),
+                                                            borderSide: BorderSide(color: Colors.black),
                                                           ),
                                                         ),
                                                         style: TextStyle(
@@ -540,7 +415,6 @@ static String utf8convert(String text) {
                                                         ),
                                                       ),
                                                     ),
-                                                  if (chosenParser == 1)
                                                     Container(
                                                       margin: EdgeInsets.only(
                                                         top: screenSize.size.height / 10 * 0.3,
@@ -550,78 +424,152 @@ static String utf8convert(String text) {
                                                       child: Row(
                                                         children: <Widget>[
                                                           AutoSizeText(
-                                                              "ENT",
-                                                              style: TextStyle(
-                                                                  fontFamily: 'Asap', color: Colors.black),
-                                                              textAlign: TextAlign.center,
-                                                              minFontSize: 18,
+                                                            "Mot de passe",
+                                                            style: TextStyle(fontFamily: 'Asap', color: Colors.black),
+                                                            textAlign: TextAlign.center,
+                                                            minFontSize: 18,
                                                           ),
                                                         ],
                                                       ),
                                                     ),
-                                                  if (chosenParser == 1)
                                                     Container(
+                                                      width: screenSize.size.width / 5 * 3.2,
+                                                      margin: EdgeInsets.only(
+                                                        left: screenSize.size.height / 10 * 0.1,
+                                                      ),
+                                                      height: screenSize.size.height / 10 * 0.4,
+                                                      child: TextFormField(
+                                                        controller: _password,
+                                                        obscureText: true,
+                                                        decoration: InputDecoration(
+                                                          enabledBorder: UnderlineInputBorder(
+                                                            borderSide: BorderSide(color: Colors.black),
+                                                          ),
+                                                          focusedBorder: UnderlineInputBorder(
+                                                            borderSide: BorderSide(color: Colors.black),
+                                                          ),
+                                                        ),
+                                                        style: TextStyle(
+                                                          color: Colors.black,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    if (chosenParser == 1)
+                                                      Container(
+                                                        margin: EdgeInsets.only(
+                                                          top: screenSize.size.height / 10 * 0.3,
+                                                          left: screenSize.size.height / 10 * 0.4,
+                                                          bottom: screenSize.size.height / 10 * 0.1,
+                                                        ),
+                                                        child: Row(
+                                                          children: <Widget>[
+                                                            Container(
+                                                              child: AutoSizeText(
+                                                                "Adresse Pronote",
+                                                                style: TextStyle(fontFamily: 'Asap', color: Colors.black),
+                                                                textAlign: TextAlign.center,
+                                                                minFontSize: 18,
+                                                              ),
+                                                            ),
+                                                            Text(_obligationText, style: TextStyle(color: Colors.red))
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    if (chosenParser == 1)
+                                                      Container(
                                                         width: screenSize.size.width / 5 * 3.2,
                                                         margin: EdgeInsets.only(
                                                           left: screenSize.size.height / 10 * 0.1,
                                                         ),
-                                                        child: DropdownButton<String>(
-                                                          value: casValue,
-                                                          style: TextStyle(color: Colors.black),
-                                                          icon: null,
-                                                          iconSize: 0,
-                                                          underline: Container(
+                                                        height: screenSize.size.height / 10 * 0.8,
+                                                        child: TextFormField(
+                                                          controller: _url,
+                                                          decoration: InputDecoration(
+                                                            enabledBorder: UnderlineInputBorder(
+                                                              borderSide: BorderSide(color: Colors.black),
+                                                            ),
+                                                            focusedBorder: UnderlineInputBorder(
+                                                              borderSide: BorderSide(color: Colors.black),
+                                                            ),
+                                                          ),
+                                                          style: TextStyle(
+                                                            color: Colors.black,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    if (chosenParser == 1)
+                                                      Container(
+                                                        margin: EdgeInsets.only(
+                                                          top: screenSize.size.height / 10 * 0.3,
+                                                          left: screenSize.size.height / 10 * 0.4,
+                                                          bottom: screenSize.size.height / 10 * 0.1,
+                                                        ),
+                                                        child: Row(
+                                                          children: <Widget>[
+                                                            AutoSizeText(
+                                                              "ENT",
+                                                              style: TextStyle(fontFamily: 'Asap', color: Colors.black),
+                                                              textAlign: TextAlign.center,
+                                                              minFontSize: 18,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    if (chosenParser == 1)
+                                                      Container(
+                                                          width: screenSize.size.width / 5 * 3.2,
+                                                          margin: EdgeInsets.only(
+                                                            left: screenSize.size.height / 10 * 0.1,
+                                                          ),
+                                                          child: DropdownButton<String>(
+                                                            value: casValue,
+                                                            style: TextStyle(color: Colors.black),
+                                                            icon: null,
+                                                            iconSize: 0,
+                                                            underline: Container(
                                                               height: screenSize.size.height / 10 * 0.02,
                                                               color: Colors.black,
-                                                          ),
-                                                          onChanged: (String newValue) {
+                                                            ),
+                                                            onChanged: (String newValue) {
                                                               setState(() {
                                                                 casValue = newValue;
                                                               });
-                                                          },
-                                                          items: <String>[
-                                                              'Aucun'
-                                                          ].map<DropdownMenuItem<String>>((String value) {
+                                                            },
+                                                            items: <String>['Aucun'].map<DropdownMenuItem<String>>((String value) {
                                                               return DropdownMenuItem<String>(
                                                                 value: value,
                                                                 child: AutoSizeText(
                                                                   value,
-                                                                  style: TextStyle(
-                                                                      fontFamily: 'Asap',
-                                                                      color: Colors.black),
-                                                                      minFontSize: 18,
+                                                                  style: TextStyle(fontFamily: 'Asap', color: Colors.black),
+                                                                  minFontSize: 18,
                                                                 ),
                                                               );
-                                                          }).toList(),
-                                                        )),
-                                                  Align(
-                                                    alignment: Alignment.bottomRight,
-                                                    child: Container(
-                                                        width: screenSize.size.width / 5 * 4,
-                                                        height: screenSize.size.height / 10 * 0.55,
-                                                        margin: EdgeInsets.only(
-                                                              top: screenSize.size.height / 10 * 0.55,
-                                                              right: screenSize.size.width / 5 * 0.25),
-                                                        child: GestureDetector(
-                                                          onTapDown: (details) {
+                                                            }).toList(),
+                                                          )),
+                                                    Align(
+                                                      alignment: Alignment.bottomRight,
+                                                      child: Container(
+                                                          width: screenSize.size.width / 5 * 4,
+                                                          height: screenSize.size.height / 10 * 0.55,
+                                                          margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.55, right: screenSize.size.width / 5 * 0.25),
+                                                          child: GestureDetector(
+                                                            onTapDown: (details) {
                                                               setState(() {
                                                                 textButtonColor = Colors.white;
                                                               });
-                                                          },
-                                                          onTapCancel: () {
+                                                            },
+                                                            onTapCancel: () {
                                                               setState(() {
                                                                 textButtonColor = Color(0xff252B62);
                                                               });
-                                                          },
-                                                          child: Row(
+                                                            },
+                                                            child: Row(
                                                               mainAxisAlignment: MainAxisAlignment.end,
                                                               children: <Widget>[
                                                                 if (isOffline)
                                                                   Row(
                                                                     children: <Widget>[
-                                                                      Text("Vous êtes hors ligne",
-                                                                          style:
-                                                                              TextStyle(color: Colors.red)),
+                                                                      Text("Vous êtes hors ligne", style: TextStyle(color: Colors.red)),
                                                                     ],
                                                                   ),
                                                                 SizedBox(
@@ -631,43 +579,24 @@ static String utf8convert(String text) {
                                                                   color: Color(0xff252B62),
                                                                   highlightColor: Color(0xff252B62),
                                                                   focusColor: Color(0xff252B62),
-                                                                  borderSide:
-                                                                      BorderSide(color: Color(0xff252B62)),
-                                                                  shape: new RoundedRectangleBorder(
-                                                                      borderRadius:
-                                                                          new BorderRadius.circular(30.0)),
+                                                                  borderSide: BorderSide(color: Color(0xff252B62)),
+                                                                  shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
                                                                   highlightedBorderColor: Color(0xff252B62),
                                                                   //LOGIN AS pronote DEMO
                                                                   onLongPress: () {
-                                                                    if (chosenParser == 1 &&
-                                                                        _url.text.length == 0 &&
-                                                                        _password.text.length == 0 &&
-                                                                        _username.text.length == 0) {
-                                                                      connectionData = localApi.login(
-                                                                          "demonstration", "pronotevs",
-                                                                          url:
-                                                                              "https://demo.index-education.net/pronote/eleve.html",
-                                                                          cas: "Aucun");
+                                                                    if (chosenParser == 1 && _url.text.length == 0 && _password.text.length == 0 && _username.text.length == 0) {
+                                                                      connectionData = localApi.login("demonstration", "pronotevs", url: "https://demo.index-education.net/pronote/eleve.html", cas: "Aucun");
 
                                                                       openLoadingDialog();
                                                                     } else {
-                                                                      if (_username.text != "" &&
-                                                                          (chosenParser == 1
-                                                                              ? _url.text != null
-                                                                              : true) &&
-                                                                          _password.text != null) {
+                                                                      if (_username.text != "" && (chosenParser == 1 ? _url.text != null : true) && _password.text != null) {
                                                                         //Login using the chosen API
-                                                                        connectionData = localApi.login(
-                                                                            _username.text.trim(),
-                                                                            _password.text.trim(),
-                                                                            url: _url.text.trim(),
-                                                                            cas: casValue);
+                                                                        connectionData = localApi.login(_username.text.trim(), _password.text.trim(), url: _url.text.trim(), cas: casValue);
 
                                                                         openLoadingDialog();
                                                                       } else {
                                                                         setState(() {
-                                                                          _obligationText =
-                                                                              " (obligatoire)";
+                                                                          _obligationText = " (obligatoire)";
                                                                         });
                                                                       }
                                                                     }
@@ -676,17 +605,9 @@ static String utf8convert(String text) {
                                                                     await getChosenParser();
 
                                                                     //Actions when pressing the ok button
-                                                                    if (_username.text != "" &&
-                                                                        (chosenParser == 1
-                                                                            ? _url.text != null
-                                                                            : true) &&
-                                                                        _password.text != null) {
+                                                                    if (_username.text != "" && (chosenParser == 1 ? _url.text != null : true) && _password.text != null) {
                                                                       //Login using the chosen API
-                                                                      connectionData = localApi.login(
-                                                                          _username.text.trim(),
-                                                                          _password.text.trim(),
-                                                                          url: _url.text.trim(),
-                                                                          cas: casValue);
+                                                                      connectionData = localApi.login(_username.text.trim(), _password.text.trim(), url: _url.text.trim(), cas: casValue);
 
                                                                       openLoadingDialog();
                                                                     } else {
@@ -697,81 +618,62 @@ static String utf8convert(String text) {
                                                                   },
                                                                   child: AutoSizeText(
                                                                     "Allons-y",
-                                                                    style: TextStyle(
-                                                                        fontFamily: "Asap",
-                                                                        fontSize:
-                                                                            screenSize.size.width / 5 * 0.3,
-                                                                        fontWeight: FontWeight.bold,
-                                                                        color: textButtonColor),
-                                                                        maxFontSize: 45,
+                                                                    style: TextStyle(fontFamily: "Asap", fontSize: screenSize.size.width / 5 * 0.3, fontWeight: FontWeight.bold, color: textButtonColor),
+                                                                    maxFontSize: 45,
                                                                   ),
                                                                 ),
                                                               ],
-                                                          ),
-                                                        )),
-                                                  ),
-                                                  Container(
-                                                    margin: EdgeInsets.only(
-                                                        top: screenSize.size.height / 10 * 0.2),
-                                                    padding: EdgeInsets.symmetric(
-                                                        horizontal: screenSize.size.width / 5 * 0.4),
-                                                    width: screenSize.size.width,
-                                                    child: FittedBox(
-                                                      fit: BoxFit.fitWidth,
-                                                      child: Row(
-                                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                                        children: <Widget>[
-                                                          InkWell(
+                                                            ),
+                                                          )),
+                                                    ),
+                                                    Container(
+                                                      margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
+                                                      padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.4),
+                                                      width: screenSize.size.width,
+                                                      child: FittedBox(
+                                                        fit: BoxFit.fitWidth,
+                                                        child: Row(
+                                                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                                          children: <Widget>[
+                                                            InkWell(
                                                                 child: new Text(
                                                                   'Foire aux questions',
-                                                                  style: TextStyle(
-                                                                      fontFamily: "Asap",
-                                                                      fontWeight: FontWeight.bold,
-                                                                      color: Colors.black),
+                                                                  style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: Colors.black),
                                                                 ),
-                                                                onTap: () =>
-                                                                    launch('https://ynotes.fr/faq')),
-                                                          SizedBox(
+                                                                onTap: () => launch('https://ynotes.fr/faq')),
+                                                            SizedBox(
                                                               width: screenSize.size.width / 5 * 0.2,
-                                                          ),
-                                                          InkWell(
+                                                            ),
+                                                            InkWell(
                                                                 child: new Text(
                                                                   'PDC',
-                                                                  style: TextStyle(
-                                                                      fontFamily: "Asap",
-                                                                      fontWeight: FontWeight.bold,
-                                                                      color: Colors.black),
+                                                                  style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: Colors.black),
                                                                 ),
-                                                                onTap: () => launch(
-                                                                    'https://ynotes.fr/files/legal/PDCYNotes.pdf')),
-                                                          SizedBox(
+                                                                onTap: () => launch('https://ynotes.fr/files/legal/PDCYNotes.pdf')),
+                                                            SizedBox(
                                                               width: screenSize.size.width / 5 * 0.2,
-                                                          ),
-                                                          InkWell(
+                                                            ),
+                                                            InkWell(
                                                                 child: new Text(
                                                                   'CGU',
-                                                                  style: TextStyle(
-                                                                      fontFamily: "Asap",
-                                                                      fontWeight: FontWeight.bold,
-                                                                      color: Colors.black),
+                                                                  style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: Colors.black),
                                                                 ),
-                                                                onTap: () => launch(
-                                                                    'https://ynotes.fr/files/legal/CGUYNotes.pdf')),
-                                                        ],
+                                                                onTap: () => launch('https://ynotes.fr/files/legal/CGUYNotes.pdf')),
+                                                          ],
+                                                        ),
                                                       ),
-                                                    ),
-                                                  )
-                                                ],
+                                                    )
+                                                  ],
+                                                ),
                                               ),
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
-                                                          ),
                             ),
                           ],
                         )),
@@ -804,8 +706,6 @@ class _AlertBoxWidgetState extends State<AlertBoxWidget> {
     scrollViewController.addListener(() {
       setState(() {
         offset = scrollViewController.offset;
-
-      
       });
     });
   }
@@ -818,8 +718,7 @@ class _AlertBoxWidgetState extends State<AlertBoxWidget> {
       content: Container(
         height: widget.screenSize.size.height / 10 * 6,
         child: ClipRRect(
-          borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(32.0), bottomRight: Radius.circular(32.0)),
+          borderRadius: BorderRadius.all(Radius.circular(32.0)),
           child: Stack(
             children: <Widget>[
               SingleChildScrollView(
@@ -831,16 +730,23 @@ class _AlertBoxWidgetState extends State<AlertBoxWidget> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          Text(
-                            "Conditions d’utilisation",
-                            style: TextStyle(fontSize: 24.0, fontFamily: "Asap"),
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
+                      FittedBox(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Container(
+                              padding: EdgeInsets.all(widget.screenSize.size.width / 5 * 0.1),
+                              child: FittedBox(
+                                child: Text(
+                                  "Conditions d’utilisation",
+                                  style: TextStyle(fontSize: 24.0, fontFamily: "Asap"),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                       SizedBox(
                         height: 5.0,
@@ -873,9 +779,7 @@ class _AlertBoxWidgetState extends State<AlertBoxWidget> {
                         padding: EdgeInsets.only(left: 60, right: 60, top: 15, bottom: 18),
                         color: Color(0xff27AE60),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(32.0),
-                              bottomRight: Radius.circular(32.0)),
+                          borderRadius: BorderRadius.only(bottomLeft: Radius.circular(32.0), bottomRight: Radius.circular(32.0)),
                         ),
                         onPressed: () {
                           Navigator.of(context).pushReplacement(router(carousel()));
@@ -891,20 +795,14 @@ class _AlertBoxWidgetState extends State<AlertBoxWidget> {
                 ),
               ),
               Visibility(
-                visible: (offset -
-                        (scrollViewController.hasClients
-                            ? scrollViewController.position.maxScrollExtent
-                            : 0) <
-                    -45),
+                visible: (offset - (scrollViewController.hasClients ? scrollViewController.position.maxScrollExtent : 0) < -45),
                 child: Align(
                   alignment: Alignment.bottomCenter,
                   child: Container(
                     margin: EdgeInsets.only(bottom: widget.screenSize.size.height / 10 * 0.1),
                     child: FloatingActionButton(
                       onPressed: () {
-                      
-                        scrollViewController.animateTo(scrollViewController.position.maxScrollExtent,
-                            duration: Duration(milliseconds: 250), curve: Curves.easeIn);
+                        scrollViewController.animateTo(scrollViewController.position.maxScrollExtent, duration: Duration(milliseconds: 250), curve: Curves.easeIn);
                       },
                       child: RotatedBox(quarterTurns: 3, child: Icon(Icons.chevron_left)),
                     ),

@@ -12,7 +12,7 @@ description: yNotes application de gestion de vie scolaire
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.
 
-version: 0.8.11+6
+version: 0.8.12+6
 
 environment:
   sdk: ">=2.2.2 <3.0.0"
@@ -83,6 +83,7 @@ dependencies:
   android_alarm_manager: ^0.4.5+11
   workmanager: ^0.2.0
   visibility_detector: ^0.1.5
+  shake: ^0.1.0
   wiredash:
     git:
       url: https://github.com/wiredashio/wiredash-sdk

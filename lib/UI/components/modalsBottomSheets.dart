@@ -392,7 +392,7 @@ void lessonDetails(context, Lesson lesson, Color color) {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        _buildKeyValuesInfo(context, "Horaires", ["${DateFormat("hh:mm").format(lesson.start)} - ${DateFormat("hh:mm").format(lesson.end)}"]),
+                        _buildKeyValuesInfo(context, "Horaires", ["${DateFormat.Hm().format(lesson.start)} - ${DateFormat.Hm().format(lesson.end)}"]),
                         if (lesson.room != null)
                           SizedBox(
                             height: (screenSize.size.height / 3) / 25,

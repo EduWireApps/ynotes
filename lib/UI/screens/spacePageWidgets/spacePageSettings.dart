@@ -171,7 +171,17 @@ class _OrganisationSettingsState extends State<OrganisationSettings> {
           if (Platform.isAndroid)
             SwitchListTile(
               value: boolSettings["agendaOnGoingNotification"],
-              title: Text("Notification constante (beta)", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.21)),
+              title: RichText(
+                text: TextSpan(
+                  style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.21),
+                  children: <TextSpan>[
+                    TextSpan(
+                      text: "Notification constante",
+                    ),
+                    TextSpan(text: '\n(experimental)', style: TextStyle(color: Colors.redAccent)),
+                  ],
+                ),
+              ),
               onChanged: (value) async {
                 setState(() {
                   boolSettings["agendaOnGoingNotification"] = value;

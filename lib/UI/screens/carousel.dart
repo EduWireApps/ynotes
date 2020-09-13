@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:circular_check_box/circular_check_box.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -409,7 +410,7 @@ class _page3State extends State<page3> {
               )),
         ),
         Positioned(
-          bottom: MediaQuery.of(context).size.height / 5,
+          bottom: MediaQuery.of(context).size.height / 15,
           height: 90,
           width: MediaQuery.of(context).size.width,
           child: Transform.translate(
@@ -479,142 +480,146 @@ class _page4State extends State<page4> {
     return Container(
       height: screenSize.size.height,
       color: Theme.of(context).backgroundColor,
-      child: SingleChildScrollView(
-        child: Container(
-          height: screenSize.size.height,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                "Paramètrons votre application",
-                style: TextStyle(fontFamily: "Asap", fontSize: screenSize.size.height / 10 * 0.35, color: isDarkModeEnabled ? Colors.white : Colors.black),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(
-                height: screenSize.size.height / 10 * 0.1,
-              ),
-              SizedBox(
-                height: screenSize.size.height / 10 * 0.2,
-              ),
-              ListTile(
-                  title: Text(
-                    "Choix de spécialités",
-                    style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.3),
+      child: CupertinoScrollbar(
+
+
+              child: SingleChildScrollView(
+          child: Container(
+            height: screenSize.size.height,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  "Paramètrons votre application",
+                  style: TextStyle(fontFamily: "Asap", fontSize: screenSize.size.height / 10 * 0.35, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(
+                  height: screenSize.size.height / 10 * 0.1,
+                ),
+                SizedBox(
+                  height: screenSize.size.height / 10 * 0.2,
+                ),
+                ListTile(
+                    title: Text(
+                      "Choix de spécialités",
+                      style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.3),
+                    ),
+                    leading: Icon(MdiIcons.formatListBulleted, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                    onTap: () {
+                      CustomDialogs.showSpecialtiesChoice(context);
+                    }),
+                SizedBox(
+                  height: screenSize.size.height / 10 * 0.2,
+                ),
+                Text(
+                  "De quel côté de la force êtes vous ?",
+                  style: TextStyle(
+                    fontFamily: "Asap",
+                    fontSize: screenSize.size.height / 10 * 0.27,
+                    color: isDarkModeEnabled ? Colors.white : Colors.black,
                   ),
-                  leading: Icon(MdiIcons.formatListBulleted, color: isDarkModeEnabled ? Colors.white : Colors.black),
-                  onTap: () {
-                    CustomDialogs.showSpecialtiesChoice(context);
-                  }),
-              SizedBox(
-                height: screenSize.size.height / 10 * 0.2,
-              ),
-              Text(
-                "De quel côté de la force êtes vous ?",
-                style: TextStyle(
-                  fontFamily: "Asap",
-                  fontSize: screenSize.size.height / 10 * 0.27,
+                  textAlign: TextAlign.center,
+                ),
+                Divider(
                   color: isDarkModeEnabled ? Colors.white : Colors.black,
                 ),
-                textAlign: TextAlign.center,
-              ),
-              Divider(
-                color: isDarkModeEnabled ? Colors.white : Colors.black,
-              ),
-              FutureBuilder(
-                  future: getSetting("nightmode"),
-                  initialData: false,
-                  builder: (context, snapshot) {
-                    return SwitchListTile(
-                      value: snapshot.data,
-                      title: Text("Mode nuit", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.3)),
-                      onChanged: (value) {
-                        setState(() {
-                          Provider.of<AppStateNotifier>(context, listen: false).updateTheme(value);
-                          setSetting("nightmode", value);
-                        });
-                      },
-                      secondary: Icon(
-                        Icons.lightbulb_outline,
-                        color: isDarkModeEnabled ? Colors.white : Colors.black,
-                      ),
-                    );
-                  }),
-              Divider(
-                color: isDarkModeEnabled ? Colors.white : Colors.black,
-              ),
-              Text(
-                "Notifications",
-                style: TextStyle(fontFamily: "Asap", fontSize: screenSize.size.height / 10 * 0.27, color: isDarkModeEnabled ? Colors.white : Colors.black),
-                textAlign: TextAlign.center,
-              ),
-              Divider(),
-              FutureBuilder(
-                  future: getSetting("notificationNewGrade"),
-                  initialData: false,
-                  builder: (context, snapshot) {
-                    return SwitchListTile(
+                FutureBuilder(
+                    future: getSetting("nightmode"),
+                    initialData: false,
+                    builder: (context, snapshot) {
+                      return SwitchListTile(
+                        value: snapshot.data,
+                        title: Text("Mode nuit", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.3)),
+                        onChanged: (value) {
+                          setState(() {
+                            Provider.of<AppStateNotifier>(context, listen: false).updateTheme(value);
+                            setSetting("nightmode", value);
+                          });
+                        },
+                        secondary: Icon(
+                          Icons.lightbulb_outline,
+                          color: isDarkModeEnabled ? Colors.white : Colors.black,
+                        ),
+                      );
+                    }),
+                Divider(
+                  color: isDarkModeEnabled ? Colors.white : Colors.black,
+                ),
+                Text(
+                  "Notifications",
+                  style: TextStyle(fontFamily: "Asap", fontSize: screenSize.size.height / 10 * 0.27, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                  textAlign: TextAlign.center,
+                ),
+                Divider(),
+                FutureBuilder(
+                    future: getSetting("notificationNewGrade"),
+                    initialData: false,
+                    builder: (context, snapshot) {
+                      return SwitchListTile(
+                          value: snapshot.data,
+                          title: Text(
+                            "Notification de nouvelle note",
+                            style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.3),
+                          ),
+                          secondary: Icon(
+                            MdiIcons.newBox,
+                            color: isDarkModeEnabled ? Colors.white : Colors.black,
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              setSetting("notificationNewGrade", value);
+                            });
+                          });
+                    }),
+                Divider(),
+                FutureBuilder(
+                    future: getSetting("notificationNewMail"),
+                    initialData: false,
+                    builder: (context, snapshot) {
+                      return SwitchListTile(
                         value: snapshot.data,
                         title: Text(
-                          "Notification de nouvelle note",
+                          "Notification de nouveau mail",
                           style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.3),
                         ),
+                        onChanged: (value) {
+                          setState(() {
+                            setSetting("notificationNewMail", value);
+                          });
+                        },
                         secondary: Icon(
                           MdiIcons.newBox,
                           color: isDarkModeEnabled ? Colors.white : Colors.black,
                         ),
-                        onChanged: (value) {
-                          setState(() {
-                            setSetting("notificationNewGrade", value);
-                          });
-                        });
-                  }),
-              Divider(),
-              FutureBuilder(
-                  future: getSetting("notificationNewMail"),
-                  initialData: false,
-                  builder: (context, snapshot) {
-                    return SwitchListTile(
-                      value: snapshot.data,
-                      title: Text(
-                        "Notification de nouveau mail",
-                        style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.3),
-                      ),
-                      onChanged: (value) {
-                        setState(() {
-                          setSetting("notificationNewMail", value);
-                        });
-                      },
-                      secondary: Icon(
-                        MdiIcons.newBox,
-                        color: isDarkModeEnabled ? Colors.white : Colors.black,
-                      ),
-                    );
-                  }),
-              Divider(
-                color: isDarkModeEnabled ? Colors.white : Colors.black,
-              ),
-              RaisedButton(
-                color: Color(0xff5DADE2),
-                shape: StadiumBorder(),
-                onPressed: () async {
-                  var classe = await specialtiesSelectionAvailable();
-                  if (classe[0] && chosenSpecialties.length == (classe[1] == "Première" ? 3 : 2)) {
-                    CreateStorage("agreedTermsAndConfiguredApp", "true");
-                    final prefs = await SharedPreferences.getInstance();
-                    prefs.setStringList("listSpecialties", chosenSpecialties);
-                    Navigator.of(context).pushReplacement(router(homePage()));
-                  } else if (!classe[0]) {
-                    CreateStorage("agreedTermsAndConfiguredApp", "true");
-                    final prefs = await SharedPreferences.getInstance();
-                    prefs.setStringList("listSpecialties", chosenSpecialties);
-                    Navigator.of(context).pushReplacement(router(homePage()));
-                  } else {
-                    CustomDialogs.showAnyDialog(context, "Vous devez renseigner toutes vos spécialités.");
-                  }
-                },
-                child: const Text('Allons-y !', style: TextStyle(fontSize: 20, fontFamily: "Asap")),
-              ),
-            ],
+                      );
+                    }),
+                Divider(
+                  color: isDarkModeEnabled ? Colors.white : Colors.black,
+                ),
+                RaisedButton(
+                  color: Color(0xff5DADE2),
+                  shape: StadiumBorder(),
+                  onPressed: () async {
+                    var classe = await specialtiesSelectionAvailable();
+                    if (classe[0] && chosenSpecialties.length == (classe[1] == "Première" ? 3 : 2)) {
+                      CreateStorage("agreedTermsAndConfiguredApp", "true");
+                      final prefs = await SharedPreferences.getInstance();
+                      prefs.setStringList("listSpecialties", chosenSpecialties);
+                      Navigator.of(context).pushReplacement(router(homePage()));
+                    } else if (!classe[0]) {
+                      CreateStorage("agreedTermsAndConfiguredApp", "true");
+                      final prefs = await SharedPreferences.getInstance();
+                      prefs.setStringList("listSpecialties", chosenSpecialties);
+                      Navigator.of(context).pushReplacement(router(homePage()));
+                    } else {
+                      CustomDialogs.showAnyDialog(context, "Vous devez renseigner toutes vos spécialités.");
+                    }
+                  },
+                  child: const Text('Allons-y !', style: TextStyle(fontSize: 20, fontFamily: "Asap")),
+                ),
+              ],
+            ),
           ),
         ),
       ),

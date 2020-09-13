@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
+import 'package:shake/shake.dart';
 import 'package:ynotes/UI/screens/carousel.dart';
 import 'package:ynotes/UI/screens/loadingPage.dart';
 import 'package:ynotes/UI/screens/tabBuilder.dart';
@@ -32,8 +33,6 @@ TransparentLogin tlogin = TransparentLogin();
 
 API localApi = APIManager();
 Offline offline = Offline();
-
-///TO DO : Disable after bêta, Sentry is used to send bug reports
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 final logger = loader();
@@ -66,6 +65,7 @@ void backgroundFetchHeadlessTask(String taskId) async {
     print("New mail notification disabled");
   }
   if (await getSetting("agendaOnGoingNotification")) {
+    print("Setting On going notification");
     await LocalNotification.setOnGoingNotification();
   } else {
     print("On going notification disabled");
@@ -159,6 +159,7 @@ Future main() async {
       ),
     );
   });
+
   if (Platform.isAndroid) {
     await AndroidAlarmManager.initialize();
   }

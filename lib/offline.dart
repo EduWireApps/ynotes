@@ -212,7 +212,7 @@ class Offline {
       //If to return is null return false
       return (toReturn != null) ? toReturn : false;
     } catch (e) {
-      print("Error during the getHomeworkDoneProcess $e");
+      print("Error during the getPinnedHomeworkProcess $e");
 
       return null;
     }

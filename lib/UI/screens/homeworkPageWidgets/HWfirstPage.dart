@@ -309,55 +309,14 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
                             color: isDarkModeEnabled ? Color(0xff656565) : Colors.white,
                           ),
                           padding: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1, bottom: screenSize.size.height / 10 * 0.1),
+                          
                           height: screenSize.size.width / 10 * containerSize / 1.2,
                           child: ClipRRect(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
-                                RaisedButton(
-                                  color: Color(0xff3b3b3b),
-                                  shape: CircleBorder(),
-                                  onPressed: () async {
-                                    await Future.forEach(widget.listHW, (hw) async {
-                                      await offline.setHWCompletion(hw.idDevoir, true);
-                                    });
-                                    print("ok");
-                                    setState(() {});
-                                  },
-                                  child: Container(
-                                      width: screenSize.size.width / 5 * 0.7,
-                                      height: screenSize.size.width / 5 * 0.7,
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          Icon(
-                                            Icons.done_all,
-                                            color: Colors.greenAccent,
-                                            size: screenSize.size.width / 5 * 0.5,
-                                          ),
-                                        ],
-                                      )),
-                                ),
-                                /* RaisedButton(
-                                  color: Color(0xff3b3b3b),
-                                  onPressed: () {},
-                                  shape: CircleBorder(),
-                                  child: Container(
-                                      width: screenSize.size.width / 5 * 0.7,
-                                      height: screenSize.size.width / 5 * 0.7,
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          Icon(
-                                            Icons.alarm,
-                                            color: Colors.white,
-                                            size: screenSize.size.width / 5 * 0.5,
-                                          ),
-                                        ],
-                                      )),
-                                ),
-*/
+
                                 //Pin button
                                 RaisedButton(
                                   color: Color(0xff3b3b3b),
@@ -393,7 +352,7 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
             ),
             AnimatedContainer(
               duration: Duration(milliseconds: 170),
-              margin: EdgeInsets.only(top: containerSize == 0 ? screenSize.size.height / 10 * 0.8 : screenSize.size.height / 10 * 1.5),
+              margin: EdgeInsets.only(top: containerSize == 0 ? screenSize.size.height / 10 * 0.8 : (screenSize.size.height / 10 * 1.5 + (showSmallLabel?screenSize.size.height / 10 * 0.2:0))),
               padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.1, horizontal: screenSize.size.width / 5 * 0.1),
               child: Container(
                 child: ListView.builder(

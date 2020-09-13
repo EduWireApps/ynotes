@@ -330,7 +330,7 @@ class _MailPageState extends State<MailPage> {
     MediaQueryData screenSize = MediaQuery.of(context);
     showModalBottomSheet(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(25)),
+          borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
         ),
         backgroundColor: Theme.of(context).primaryColor,
         context: context,

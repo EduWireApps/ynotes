@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
@@ -38,6 +39,9 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
           })
         : null);
     sortList();
+    setState(() {
+      actualSort = explorerSortValue.date;
+    });
   }
 
   getInitialPath() async {
@@ -56,7 +60,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
       switch (actualSort) {
         case explorerSortValue.name:
           setState(() {
-            listFiles.sort((a, b) => (a.fileName).compareTo(b.fileName));
+            listFiles.sort((a, b) => (a.fileName.toLowerCase()).compareTo(b.fileName.toLowerCase()));
           });
 
           break;
@@ -355,11 +359,13 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                                             color: Colors.red,
                                           )
                                         : Icon(
+                                        
                                             case2(actualSort, {
                                               explorerSortValue.date: MdiIcons.sortAscending,
                                               explorerSortValue.reversed_date: MdiIcons.sortDescending,
                                               explorerSortValue.name: MdiIcons.sortAlphabeticalAscending,
                                             }),
+                                           
                                             color: isDarkModeEnabled ? Colors.white : Colors.black87,
                                           ),
                                   ),
@@ -535,7 +541,6 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                                                     });
                                                     await refreshFileListFuture();
                                                   } else {
-                                                
                                                     await FileAppUtil.openFile(listFiles[index].element.path);
                                                   }
                                                 }
@@ -613,7 +618,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                     }
                   } else {
                     if (snapshot.hasError) {
-                      print("Erreur blabla " + snapshot.error);
+                      print("Erreur " + snapshot.error);
                     }
                     return SpinKitFadingFour(
                       color: Theme.of(context).primaryColorDark,

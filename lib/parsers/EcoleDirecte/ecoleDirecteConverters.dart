@@ -156,7 +156,6 @@ class EcoleDirecteConverter {
     return homeworkList;
   }
 
-  static CloudItem cloudItem(Map<String, dynamic> cloudItemData) {}
 
   static List<Lesson> lessons(Map<String, dynamic> lessonData) {
     List<Lesson> lessons = List();

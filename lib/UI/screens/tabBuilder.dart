@@ -9,7 +9,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:shake/shake.dart';
 import 'package:stacked/stacked.dart';
+import 'package:wiredash/wiredash.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/UI/screens/homeworkPage.dart';
 import 'package:ynotes/UI/screens/gradesPage.dart';
@@ -38,10 +40,10 @@ class TabBuilder extends StatefulWidget {
 
 int _currentIndex = 0;
 bool isQuickMenuShown = false;
- //This controller allow the app to toggle a function when there is a tab change
-  TabController tabController;
+//This controller allow the app to toggle a function when there is a tab change
+TabController tabController;
+
 class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
- 
   //Boolean
   bool isChanging = false;
   int actualIndex = 1;
@@ -61,14 +63,11 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    showTransparentLoginStatusController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 450));
+    showTransparentLoginStatusController = AnimationController(vsync: this, duration: Duration(milliseconds: 450));
     showTransparentLoginStatus = new Tween(
       begin: 1.0,
       end: 0.0,
-    ).animate(new CurvedAnimation(
-        parent: showTransparentLoginStatusController,
-        curve: Interval(0.1, 1.0, curve: Curves.fastOutSlowIn)));
+    ).animate(new CurvedAnimation(parent: showTransparentLoginStatusController, curve: Interval(0.1, 1.0, curve: Curves.fastOutSlowIn)));
     initPlatformState();
 
     _overlayEntry = OverlayEntry(
@@ -77,21 +76,18 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
 
     //Define a controller in order to control the scrolls
     tabController = TabController(vsync: this, length: 5, initialIndex: 1);
-    quickMenuAnimationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 200));
+    quickMenuAnimationController = AnimationController(vsync: this, duration: Duration(milliseconds: 200));
     quickMenuButtonAnimation = new Tween(
       begin: 1.0,
       end: 1.3,
-    ).animate(new CurvedAnimation(
-        parent: quickMenuAnimationController, curve: Curves.easeIn, reverseCurve: Curves.easeOut));
+    ).animate(new CurvedAnimation(parent: quickMenuAnimationController, curve: Curves.easeIn, reverseCurve: Curves.easeOut));
     tabController.addListener(_handleTabChange);
 
     tabController.animation
       ..addListener(() {
         if (!tabController.indexIsChanging) {
           setState(() {
-            tabController.index = (tabController.animation.value)
-                .round(); //_tabController.animation.value returns double
+            tabController.index = (tabController.animation.value).round(); //_tabController.animation.value returns double
           });
         }
       });
@@ -140,10 +136,20 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
     super.dispose();
   }
 
+  bool wiredashShown = false;
+  callbackOnShake(BuildContext context) async {
+    if (await getSetting("shakeToReport") && !wiredashShown) {
+     
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize;
     screenSize = MediaQuery.of(context);
+    ShakeDetector detector = ShakeDetector.autoStart(onPhoneShake: () {
+      callbackOnShake(context);
+    });
 
     double extrasize = 0;
     return WillPopScope(
@@ -160,20 +166,13 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
               bottomNavigationBar: Container(
                 color: isQuickMenuShown ? Colors.black.withOpacity(0.5) : null,
                 child: Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(30), topRight: Radius.circular(30))),
+                  decoration: BoxDecoration(borderRadius: BorderRadius.only(topLeft: Radius.circular(30), topRight: Radius.circular(30))),
                   width: screenSize.size.width,
                   height: screenSize.size.height / 10 * 1,
                   child: ClipRRect(
                     child: Container(
-                      padding: EdgeInsets.only(
-                          left: screenSize.size.height / 10 * 0.025,
-                          right: screenSize.size.height / 10 * 0.025),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(30), topRight: Radius.circular(30)),
-                          color: Theme.of(context).primaryColor),
+                      padding: EdgeInsets.only(left: screenSize.size.height / 10 * 0.025, right: screenSize.size.height / 10 * 0.025),
+                      decoration: BoxDecoration(borderRadius: BorderRadius.only(topLeft: Radius.circular(30), topRight: Radius.circular(30)), color: Theme.of(context).primaryColor),
                       child: Container(
                         child: Stack(
                           children: [
@@ -224,17 +223,13 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
                                             onLongPress: () {},
                                             child: Tab(
                                               child: AnimatedContainer(
-                                                margin: EdgeInsets.symmetric(
-                                                    horizontal: screenSize.size.width / 5 * 0.15),
+                                                margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.15),
                                                 duration: Duration(milliseconds: 170),
-                                                width: (actualIndex == 0
-                                                    ? MediaQuery.of(context).size.width / 5 * 1.5
-                                                    : MediaQuery.of(context).size.width / 5 * 0.5),
+                                                width: (actualIndex == 0 ? MediaQuery.of(context).size.width / 5 * 1.5 : MediaQuery.of(context).size.width / 5 * 0.5),
                                                 child: Align(
                                                   alignment: Alignment.center,
                                                   child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.spaceEvenly,
+                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                     children: <Widget>[
                                                       AnimatedBuilder(
                                                           animation: quickMenuButtonAnimation,
@@ -242,25 +237,15 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
                                                             return Transform.scale(
                                                               scale: quickMenuButtonAnimation.value,
                                                               child: Image(
-                                                                image: AssetImage(
-                                                                    'assets/images/space/4.0x/space.png'),
-                                                                width: MediaQuery.of(context)
-                                                                        .size
-                                                                        .width /
-                                                                    10 *
-                                                                    0.7,
+                                                                image: AssetImage('assets/images/space/4.0x/space.png'),
+                                                                width: MediaQuery.of(context).size.width / 10 * 0.7,
                                                               ),
                                                             );
                                                           }),
                                                       if (actualIndex == 0)
                                                         Flexible(
                                                           child: FittedBox(
-                                                            child: Text("Space",
-                                                                style: TextStyle(
-                                                                    fontFamily: "Asap",
-                                                                    color: isDarkModeEnabled
-                                                                        ? Colors.white
-                                                                        : Colors.black)),
+                                                            child: Text("Space", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black)),
                                                           ),
                                                         ),
                                                     ],
@@ -281,12 +266,9 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
                                               });
                                             },
                                             child: AnimatedContainer(
-                                              margin: EdgeInsets.symmetric(
-                                                  horizontal: screenSize.size.width / 5 * 0.15),
+                                              margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.15),
                                               duration: Duration(milliseconds: 170),
-                                              width: (actualIndex == 1
-                                                  ? MediaQuery.of(context).size.width / 5 * 1.5
-                                                  : MediaQuery.of(context).size.width / 5 * 0.5),
+                                              width: (actualIndex == 1 ? MediaQuery.of(context).size.width / 5 * 1.5 : MediaQuery.of(context).size.width / 5 * 0.5),
                                               child: Align(
                                                 alignment: Alignment.center,
                                                 child: Row(
@@ -294,19 +276,12 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
                                                   children: <Widget>[
                                                     Icon(
                                                       Icons.info,
-                                                      color: isDarkModeEnabled
-                                                          ? Colors.white
-                                                          : Colors.black,
+                                                      color: isDarkModeEnabled ? Colors.white : Colors.black,
                                                     ),
                                                     if (actualIndex == 1)
                                                       Flexible(
                                                         child: FittedBox(
-                                                          child: Text("Résumé",
-                                                              style: TextStyle(
-                                                                  fontFamily: "Asap",
-                                                                  color: isDarkModeEnabled
-                                                                      ? Colors.white
-                                                                      : Colors.black)),
+                                                          child: Text("Résumé", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black)),
                                                         ),
                                                       ),
                                                   ],
@@ -322,9 +297,7 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
                                           toAnimate: true,
                                           showBadge: newGrades,
                                           elevation: 0,
-                                          position: BadgePosition.topRight(
-                                              right: MediaQuery.of(context).size.width / 10 * 0.001,
-                                              top: MediaQuery.of(context).size.height / 15 * 0.11),
+                                          position: BadgePosition.topRight(right: MediaQuery.of(context).size.width / 10 * 0.001, top: MediaQuery.of(context).size.height / 15 * 0.11),
                                           badgeColor: Colors.blue,
                                           child: GestureDetector(
                                             onTap: () {
@@ -335,33 +308,22 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
                                             },
                                             child: Tab(
                                               child: AnimatedContainer(
-                                                margin: EdgeInsets.symmetric(
-                                                    horizontal: screenSize.size.width / 5 * 0.15),
+                                                margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.15),
                                                 duration: Duration(milliseconds: 170),
-                                                width: (actualIndex == 2
-                                                    ? MediaQuery.of(context).size.width / 5 * 1.5
-                                                    : MediaQuery.of(context).size.width / 5 * 0.5),
+                                                width: (actualIndex == 2 ? MediaQuery.of(context).size.width / 5 * 1.5 : MediaQuery.of(context).size.width / 5 * 0.5),
                                                 child: Align(
                                                   alignment: Alignment.center,
                                                   child: Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.spaceEvenly,
+                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                     children: <Widget>[
                                                       Icon(
                                                         Icons.format_list_numbered,
-                                                        color: isDarkModeEnabled
-                                                            ? Colors.white
-                                                            : Colors.black,
+                                                        color: isDarkModeEnabled ? Colors.white : Colors.black,
                                                       ),
                                                       if (actualIndex == 2)
                                                         Flexible(
                                                           child: FittedBox(
-                                                            child: Text("Notes",
-                                                                style: TextStyle(
-                                                                    fontFamily: "Asap",
-                                                                    color: isDarkModeEnabled
-                                                                        ? Colors.white
-                                                                        : Colors.black)),
+                                                            child: Text("Notes", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black)),
                                                           ),
                                                         ),
                                                     ],
@@ -374,12 +336,9 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
 
                                         ///Homework page
                                         AnimatedContainer(
-                                          margin: EdgeInsets.symmetric(
-                                              horizontal: screenSize.size.width / 5 * 0.15),
+                                          margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.15),
                                           duration: Duration(milliseconds: 170),
-                                          width: (actualIndex == 3
-                                              ? MediaQuery.of(context).size.width / 5 * 1.2
-                                              : MediaQuery.of(context).size.width / 5 * 0.45),
+                                          width: (actualIndex == 3 ? MediaQuery.of(context).size.width / 5 * 1.2 : MediaQuery.of(context).size.width / 5 * 0.45),
                                           child: GestureDetector(
                                             onTap: () {
                                               setState(() {
@@ -395,19 +354,12 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
                                                   children: <Widget>[
                                                     Icon(
                                                       MdiIcons.viewAgenda,
-                                                      color: isDarkModeEnabled
-                                                          ? Colors.white
-                                                          : Colors.black,
+                                                      color: isDarkModeEnabled ? Colors.white : Colors.black,
                                                     ),
                                                     if (actualIndex == 3)
                                                       Flexible(
                                                         child: FittedBox(
-                                                          child: Text("Devoirs",
-                                                              style: TextStyle(
-                                                                  fontFamily: "Asap",
-                                                                  color: isDarkModeEnabled
-                                                                      ? Colors.white
-                                                                      : Colors.black)),
+                                                          child: Text("Devoirs", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black)),
                                                         ),
                                                       ),
                                                   ],
@@ -427,11 +379,8 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
                                           },
                                           child: AnimatedContainer(
                                             duration: Duration(milliseconds: 170),
-                                            margin: EdgeInsets.symmetric(
-                                                horizontal: screenSize.size.width / 5 * 0.15),
-                                            width: (actualIndex == 4
-                                                ? MediaQuery.of(context).size.width / 5 * 1.5
-                                                : MediaQuery.of(context).size.width / 5 * 0.5),
+                                            margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.15),
+                                            width: (actualIndex == 4 ? MediaQuery.of(context).size.width / 5 * 1.5 : MediaQuery.of(context).size.width / 5 * 0.5),
                                             child: Tab(
                                               child: Align(
                                                 alignment: Alignment.center,
@@ -440,20 +389,13 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
                                                   children: <Widget>[
                                                     Icon(
                                                       Icons.apps,
-                                                      color: isDarkModeEnabled
-                                                          ? Colors.white
-                                                          : Colors.black,
+                                                      color: isDarkModeEnabled ? Colors.white : Colors.black,
                                                     ),
                                                     if (actualIndex == 4)
                                                       Flexible(
                                                         child: FittedBox(
                                                           fit: BoxFit.fitWidth,
-                                                          child: Text("Applications",
-                                                              style: TextStyle(
-                                                                  fontFamily: "Asap",
-                                                                  color: isDarkModeEnabled
-                                                                      ? Colors.white
-                                                                      : Colors.black)),
+                                                          child: Text("Applications", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black)),
                                                         ),
                                                       ),
                                                   ],
@@ -476,19 +418,14 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
               body: Container(
                 child: Stack(
                   children: <Widget>[
-                   
-
                     TabBarView(controller: tabController, children: [
                       SpacePage(),
                       SummaryPage(tabController: tabController),
-                      SingleChildScrollView(
-                          physics: NeverScrollableScrollPhysics(), child: GradesPage()),
-                      SingleChildScrollView(
-                          physics: NeverScrollableScrollPhysics(), child: HomeworkPage()),
+                      SingleChildScrollView(physics: NeverScrollableScrollPhysics(), child: GradesPage()),
+                      SingleChildScrollView(physics: NeverScrollableScrollPhysics(), child: HomeworkPage()),
                       AnimatedContainer(
                           duration: Duration(milliseconds: 200),
-                          margin: EdgeInsets.only(
-                              top: isOffline ? screenSize.size.height / 10 * 0.4 : 0),
+                          margin: EdgeInsets.only(top: isOffline ? screenSize.size.height / 10 * 0.4 : 0),
                           child: AppsPage(
                             rootcontext: this.context,
                           ))
@@ -498,9 +435,7 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
                         top: screenSize.size.height / 10 * 0.1,
                         child: AnimatedContainer(
                           duration: Duration(milliseconds: 800),
-                          color: isQuickMenuShown
-                              ? Colors.black.withOpacity(0.5)
-                              : Colors.black.withOpacity(0),
+                          color: isQuickMenuShown ? Colors.black.withOpacity(0.5) : Colors.black.withOpacity(0),
                           height: MediaQuery.of(context).size.height,
                           width: MediaQuery.of(context).size.width,
                         ),
@@ -518,18 +453,11 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
                             animation: showTransparentLoginStatus,
                             builder: (context, snapshot) {
                               return Transform.translate(
-                                offset: Offset(
-                                    0,
-                                    -screenSize.size.height /
-                                        10 *
-                                        1.2 *
-                                        showTransparentLoginStatus.value),
+                                offset: Offset(0, -screenSize.size.height / 10 * 1.2 * showTransparentLoginStatus.value),
                                 child: Opacity(
                                   opacity: 0.55,
                                   child: Container(
-                                    margin: EdgeInsets.only(
-                                        left: screenSize.size.width / 5 * 0.15,
-                                        right: screenSize.size.width / 5 * 0.15),
+                                    margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.15, right: screenSize.size.width / 5 * 0.15),
                                     height: screenSize.size.height / 10 * 0.55,
                                     decoration: BoxDecoration(
                                       color: case2(model.actualState, {
@@ -573,24 +501,21 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
                                             children: <Widget>[
                                               Text(
                                                 model.details,
-                                                style: TextStyle(
-                                                    fontFamily: "Asap",
-                                                    color: Theme.of(context).primaryColorDark),
+                                                style: TextStyle(fontFamily: "Asap", color: Theme.of(context).primaryColorDark),
                                               ),
                                               SizedBox(
                                                 width: screenSize.size.width / 5 * 0.1,
                                               ),
-                                              if(model.actualState==loginStatus.error)
-                                              GestureDetector(
-                                                onTap: () async{
-                                                  await model.login();
-                                                },
-                                                child: Text(
-                                                  "Réessayer",
-                                                  style: TextStyle(
-                                                      fontFamily: "Asap", color: Colors.blue.shade50),
+                                              if (model.actualState == loginStatus.error)
+                                                GestureDetector(
+                                                  onTap: () async {
+                                                    await model.login();
+                                                  },
+                                                  child: Text(
+                                                    "Réessayer",
+                                                    style: TextStyle(fontFamily: "Asap", color: Colors.blue.shade50),
+                                                  ),
                                                 ),
-                                              ),
                                             ],
                                           ),
                                         )
@@ -626,37 +551,38 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
         ), (String taskId) async {
       // This is the fetch-event callback.
 
-      print("Started the background task");
-
-      var initializationSettingsAndroid = new AndroidInitializationSettings('newgradeicon');
-      var initializationSettingsIOS = new IOSInitializationSettings();
-      var initializationSettings =
-          new InitializationSettings(initializationSettingsAndroid, initializationSettingsIOS);
-      flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
-      flutterLocalNotificationsPlugin.initialize(initializationSettings,
-          onSelectNotification: BackgroundService.onSelectNotification);
-
+     print("Starting the headless closed bakground task");
+  var initializationSettingsAndroid = new AndroidInitializationSettings('newgradeicon');
+  var initializationSettingsIOS = new IOSInitializationSettings();
+  var initializationSettings = new InitializationSettings(initializationSettingsAndroid, initializationSettingsIOS);
+  flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
+  flutterLocalNotificationsPlugin.initialize(initializationSettings, onSelectNotification: BackgroundService.onSelectNotification);
 //Ensure that grades notification are enabled and battery saver disabled
-      if (await getSetting("notificationNewGrade") && !await getSetting("batterySaver")) {
-        if (await mainTestNewGrades()) {
-          BackgroundService.showNotificationNewGrade();
-        } else {
-          print("Nothing updated");
-        }
-        BackgroundFetch.finish(taskId);
-      } else {
-        print("New grade notification disabled");
-      }
-      if (await getSetting("notificationNewMail") && !await getSetting("batterySaver")) {
-        if (await mainTestNewMails()) {
-          BackgroundService.showNotificationNewMail();
-        } else {
-          print("Nothing updated");
-        }
-        BackgroundFetch.finish(taskId);
-      } else {
-        print("New mail notification disabled");
-      }
+  if (await getSetting("notificationNewGrade") && !await getSetting("batterySaver")) {
+    if (await mainTestNewGrades()) {
+      BackgroundService.showNotificationNewGrade();
+    } else {
+      print("Nothing updated");
+    }
+  } else {
+    print("New grade notification disabled");
+  }
+  if (await getSetting("notificationNewMail") && !await getSetting("batterySaver")) {
+    if (await mainTestNewMails()) {
+      BackgroundService.showNotificationNewMail();
+    } else {
+      print("Nothing updated");
+    }
+  } else {
+    print("New mail notification disabled");
+  }
+  if (await getSetting("agendaOnGoingNotification")) {
+    print("Setting On going notification");
+    await LocalNotification.setOnGoingNotification();
+  } else {
+    print("On going notification disabled");
+  }
+  BackgroundFetch.finish(taskId);
     }).then((int status) {
       print('[BackgroundFetch] configure success: $status');
     });

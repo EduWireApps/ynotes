@@ -122,7 +122,7 @@ class APIPronote extends API {
         return listDisciplines;
       } catch (e) {
         gradeLock = false;
-        print("HEY" + e.toString());
+        print(e.toString());
         List<Discipline> listDisciplines = List<Discipline>();
         if (gradeRefreshRecursive == false) {
           await refreshClient();

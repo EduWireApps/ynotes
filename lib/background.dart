@@ -93,23 +93,29 @@ class LocalNotification {
       '2007',
       'yNotes',
       'Rappel de cours constant',
-      importance: Importance.Min,
+      importance: Importance.Max,
       priority: Priority.Low,
       ongoing: true,
       autoCancel: false,
       enableLights: false,
       playSound: false,
       enableVibration: false,
-      icon: "clock",
+      icon: "tfiche",
       styleInformation: BigTextStyleInformation(''),
     );
     var iOSPlatformChannelSpecifics = IOSNotificationDetails();
     var platformChannelSpecifics = NotificationDetails(androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-    String defaultSentence = 'Vous êtes en ${lesson.matiere} dans la salle ${lesson.room}';
-    if (lesson.room == null || lesson.room == "") {
-      defaultSentence = "Vous êtes en ${lesson.matiere}";
+    String defaultSentence = "";
+    if (lesson != null) {
+      defaultSentence = 'Vous êtes en ${lesson.matiere} dans la salle ${lesson.room}';
+      if (lesson.room == null || lesson.room == "") {
+        defaultSentence = "Vous êtes en ${lesson.matiere}";
+      }
+    } else {
+      defaultSentence = "Vous êtes en pause";
     }
-    var sentence = lesson == null ? "Vous êtes en pause" : defaultSentence;
+
+    var sentence = defaultSentence;
     try {
       if (lesson.canceled) {
         sentence = "Votre cours a été annulé.";
@@ -124,6 +130,7 @@ class LocalNotification {
 
   ///Set an on going notification which is automatically refreshed (online or not) each hour
   static Future<void> setOnGoingNotification() async {
+    print("Setting on going notification");
     var connectivityResult = await (Connectivity().checkConnectivity());
     List<Lesson> lessons = List();
     var initializationSettingsAndroid = new AndroidInitializationSettings('newgradeicon');
@@ -151,11 +158,11 @@ class LocalNotification {
     Hive.init("${dir.path}/offline");
     //Register adapters once
     try {
+      Hive.registerAdapter(LessonAdapter());
       Hive.registerAdapter(GradeAdapter());
       Hive.registerAdapter(DisciplineAdapter());
       Hive.registerAdapter(DocumentAdapter());
       Hive.registerAdapter(HomeworkAdapter());
-      Hive.registerAdapter(LessonAdapter());
       Hive.registerAdapter(PollInfoAdapter());
     } catch (e) {
       print("Error while registring adapter");
@@ -180,7 +187,7 @@ class LocalNotification {
       }
     }
 
-    Lesson getActualLesson = await getCurrentLesson(lessons);
+    Lesson getActualLesson = getCurrentLesson(lessons);
     await showOngoingNotification(getActualLesson);
     int minutes = await getIntSetting("lessonReminderDelay");
     await Future.forEach(lessons, (Lesson lesson) async {
@@ -194,7 +201,11 @@ class LocalNotification {
         }
       }
     });
-    await AndroidAlarmManager.oneShotAt(lessons.last.end.subtract(Duration(minutes: minutes)), lessons.last.end.hashCode, callback, exact: true);
+    try {
+      await AndroidAlarmManager.oneShotAt(lessons.last.end.subtract(Duration(minutes: minutes)), lessons.last.end.hashCode, callback, exact: true);
+      print("Scheduled last lesson");
+    } catch (e) {}
+    print("Success !");
   }
 
   static Future<void> cancelOnGoingNotification() async {

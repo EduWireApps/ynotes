@@ -593,24 +593,28 @@ class _AgendaElementState extends State<AgendaElement> {
                                 child: Row(
                                   children: [
                                     Container(
-                                      width: screenSize.size.width / 5 * 1.2,
-                                      height: screenSize.size.height / 10 * 0.8,
+                                      width: screenSize.size.width / 5 * 1.8,
+                                      height: screenSize.size.height / 10 * 0.9,
                                       child: Column(
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          AutoSizeText(
-                                            widget.lesson.matiere,
-                                            style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, fontSize: 15),
-                                            textAlign: TextAlign.left,
-                                            overflow: TextOverflow.ellipsis,
+                                          FittedBox(
+                                            child: AutoSizeText(
+                                              widget.lesson.matiere,
+                                              style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
+                                              minFontSize: 18,
+                                              textAlign: TextAlign.left,
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
                                           ),
                                           if (widget.lesson.teachers != null && widget.lesson.teachers.length > 0 && widget.lesson.teachers[0] != "")
                                             FittedBox(
                                               child: AutoSizeText(
                                                 widget.lesson.teachers[0],
-                                                style: TextStyle(fontFamily: "Asap", fontSize: 15),
+                                                style: TextStyle(fontFamily: "Asap"),
                                                 textAlign: TextAlign.left,
+                                                maxFontSize: 12,
                                               ),
                                             ),
                                         ],
