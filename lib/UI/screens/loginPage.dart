@@ -535,7 +535,7 @@ class _LoginPageState extends State<LoginPage> {
                                                                 casValue = newValue;
                                                               });
                                                             },
-                                                            items: <String>['Aucun'].map<DropdownMenuItem<String>>((String value) {
+                                                            items: <String>['Aucun', 'Ile de France'].map<DropdownMenuItem<String>>((String value) {
                                                               return DropdownMenuItem<String>(
                                                                 value: value,
                                                                 child: AutoSizeText(

@@ -96,11 +96,13 @@ class EcoleDirecteMethod {
     //Get pinned dates
     List<DateTime> pinnedDates = await offline.getPinnedHomeworkDates();
     //Combine lists
-    List<DateTime> combinedList = homeworkDates + pinnedDates;
-    combinedList = combinedList.toSet().toList();
-    combinedList.sort();
-
-    return combinedList;
+    pinnedDates.forEach((element) {
+      if (!homeworkDates.any((hwlistelement) => hwlistelement == element)) {
+        homeworkDates.add(element);
+      }
+    });
+ 
+    return homeworkDates;
   }
 
   static nextHomework() async {

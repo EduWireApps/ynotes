@@ -44,12 +44,9 @@ class _LogsPageState extends State<LogsPage> {
                               child: SingleChildScrollView(
                                 padding: EdgeInsets.zero,
                                 reverse: true,
-                                
                                 child: SelectableText(
                                   snapshot.data,
-                                  style: TextStyle(
-                                      fontFamily: "Asap",
-                                      color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                  style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
                                 ),
                               )));
                     } else {
@@ -68,9 +65,10 @@ Future<String> getFileData() async {
 
   return await file.readAsString();
 }
+
 logFile(String error) async {
+  print("logging");
   final directory = await FolderAppUtil.getDirectory();
   final File file = File('${directory.path}/logs.txt');
-  await file.writeAsString("\n\n" + DateTime.now().toString() + "\n" + error,
-      mode: FileMode.append);
+  await file.writeAsString("\n\n" + DateTime.now().toString() + "\n" + error, mode: FileMode.append);
 }

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
@@ -7,7 +8,7 @@ import 'package:html/parser.dart';
 
 ///Redirect to the good CAS
 ///Return type : cookies as Map
-callCas(String cas, String username, String password) async {
+callCas(String cas, String username, String password, String url) async {
   final storage = new FlutterSecureStorage();
   await storage.write(key: "pronotecas", value: cas);
   switch (cas.toLowerCase()) {
@@ -19,6 +20,11 @@ callCas(String cas, String username, String password) async {
     case ("atrium sud"):
       {
         return await atrium_sud(username, password);
+      }
+      break;
+    case ("ile de france"):
+      {
+        return await idf(username, password, url);
       }
       break;
   }
@@ -50,7 +56,7 @@ atrium_sud(String username, String password) async {
   printWrapped(cookies.toString());
 
   if (response2.content().contains("Vous devez activer votre compte Atrium")) {
-   // throw "runes";
+    // throw "runes";
   }
 
   return cookies;
@@ -61,18 +67,35 @@ void printWrapped(String text) {
   pattern.allMatches(text).forEach((match) => print(match.group(0)));
 }
 
-/*idf(String username, String password) async {
-  // ENT / PRONOTE required URLs
-  var ent_login = 'https://ent.iledefrance.fr/auth/login';
-  // ENT / PRONOTE required URLs
-  var headers = {'connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/73.0'};
-  // Ent connection
-  var response = await Requests.get(ent_login, headers: headers);
-  print("[IDF ENT LOGIN] with $username");
-  var payload = {'execution': execution, '_eventId': 'submit', 'submit': '', 'lt': lt, 'username': username, 'password': password};
+idf(String username, String password, String url) async {
 
+  var headers = {'connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/73.0'};
+
+  final client = HttpClient();
+// ignore: close_sinks
+  final request = await client.getUrl(Uri.parse(url));
+  request.headers.set(HttpHeaders.contentTypeHeader, "plain/text");
+  request.followRedirects = false;
+  final response = await request.close();
+  //Get location from headers
+  String redirectedUrl = response.headers.value(HttpHeaders.locationHeader);
+  String service = Uri.encodeComponent(url);
+
+  if (redirectedUrl.startsWith('http') && redirectedUrl.contains('service=')) {
+    service = redirectedUrl.substring(redirectedUrl.indexOf('=') + 1);
+  }
+  String ent_login = "https://ent.iledefrance.fr/auth/login";
+  String callback = Uri.encodeComponent(Uri.encodeComponent("/cas/login?service=$service"));
+  //payload to send 
+  var payload = {"email": username, "password": password, "callback": callback};
+  print(payload);
+  var response2 = await Requests.post(ent_login, body: payload, persistCookies: true, bodyEncoding: RequestBodyEncoding.FormURLEncoded);
+
+  var cookies = await Requests.getStoredCookies(Requests.getHostname(ent_login));
+  printWrapped(cookies.toString());
   return cookies;
-}*/
+}
+
 class Session {
   Map<String, String> headers = {};
 

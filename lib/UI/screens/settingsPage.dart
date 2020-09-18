@@ -16,6 +16,7 @@ import 'package:ynotes/apiManager.dart';
 import 'package:ynotes/main.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_multiselect/flutter_multiselect.dart';
+import 'package:ynotes/parsers/Pronote.dart';
 import '../../usefulMethods.dart';
 import 'package:dio/src/response.dart' as dioResponse;
 import 'package:settings_ui/settings_ui.dart';
@@ -290,9 +291,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                   SettingsTile(
                     title: 'Bouton magique',
                     leading: Icon(MdiIcons.testTube, color: isDarkModeEnabled ? Colors.white : Colors.black),
-                    onTap: () async {
-                      await localApi.getNextHomework(forceReload: true);
-                    },
+                    onTap: () async {},
                     titleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
                     subtitleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
                   ),

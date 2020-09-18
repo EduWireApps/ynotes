@@ -25,6 +25,7 @@ import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/UI/screens/homeworkPage.dart';
 import '../../apiManager.dart';
 import '../../offline.dart';
+import 'package:html/parser.dart';
 
 ///First page to access quickly to last grades, homework and
 class SummaryPage extends StatefulWidget {
@@ -617,52 +618,47 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
             ),
             child: Row(
               children: <Widget>[
-                FutureBuilder(
-                    future: offline.getHWCompletion(widget._homework.idDevoir ?? ''),
-                    initialData: false,
-                    builder: (context, snapshot) {
-                      bool done = snapshot.data;
-                      return CircularCheckBox(
-                        activeColor: Colors.blue,
-                        inactiveColor: Colors.white,
-                        value: done,
-                        materialTapTargetSize: MaterialTapTargetSize.padded,
-                        onChanged: (bool x) async{
-                          setState(() {
-                            done = !done;
-                            donePercentFuture = getHomeworkDonePercent();
-                            widget.refreshCallback();
-                          });
-                          offline.setHWCompletion(widget._homework.idDevoir, x);
-                        },
-                      );
-                    }),
+                Container(
+                  width: screenSize.size.width / 5 * 0.8,
+                  child: FutureBuilder(
+                      future: offline.getHWCompletion(widget._homework.idDevoir ?? ''),
+                      initialData: false,
+                      builder: (context, snapshot) {
+                        bool done = snapshot.data;
+                        return CircularCheckBox(
+                          activeColor: Colors.blue,
+                          inactiveColor: Colors.white,
+                          value: done,
+                          materialTapTargetSize: MaterialTapTargetSize.padded,
+                          onChanged: (bool x) async {
+                            setState(() {
+                              done = !done;
+                              donePercentFuture = getHomeworkDonePercent();
+                              widget.refreshCallback();
+                            });
+                            offline.setHWCompletion(widget._homework.idDevoir, x);
+                          },
+                        );
+                      }),
+                ),
                 FittedBox(
-                                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(widget._homework.matiere, textScaleFactor: 1.0, textAlign: TextAlign.left, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 14, fontFamily: "Asap", fontWeight: FontWeight.bold)),
-                      Row(
-                        children: <Widget>[
-                          Container(
-                            padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.height / 10 * 0.05),
-                            decoration: BoxDecoration(color: Colors.white.withOpacity(0.2), borderRadius: BorderRadius.circular(15)),
-                            child: Text(
-                              widget._homework.interrogation ? "Interro" : "Travail",
-                            ),
+                                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(widget._homework.matiere, textScaleFactor: 1.0, textAlign: TextAlign.left, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 14, fontFamily: "Asap", fontWeight: FontWeight.bold)),
+                        Container(
+                          width: screenSize.size.width / 5 * 2.8,
+                          child: AutoSizeText(
+                            parse(widget._homework.contenu).documentElement.text,
+                            style: TextStyle(fontFamily: "Asap"),
+                    
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          if (widget._homework.rendreEnLigne)
-                            Container(
-                              margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
-                              padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.height / 10 * 0.05),
-                              decoration: BoxDecoration(color: Colors.orange.withOpacity(0.5), borderRadius: BorderRadius.circular(15)),
-                              child: Text("A rendre"),
-                            )
-                        ],
-                      )
-                    ],
-                  ),
+                        )
+                      ],
+                    ),
                 )
               ],
             ),

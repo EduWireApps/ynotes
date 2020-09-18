@@ -130,6 +130,8 @@ class LocalNotification {
 
   ///Set an on going notification which is automatically refreshed (online or not) each hour
   static Future<void> setOnGoingNotification() async {
+    //Logs for tests
+    await logFile("Setting on going notification");
     print("Setting on going notification");
     var connectivityResult = await (Connectivity().checkConnectivity());
     List<Lesson> lessons = List();
@@ -277,7 +279,13 @@ class LocalNotification {
       }
     }
     Lesson getActualLesson = await getNextLesson(lessons);
+    //Logs for tests
 
     await showOngoingNotification(getActualLesson);
+    if (getActualLesson != null) {
+      await logFile("Persistant login next lesson callback triggered for the lesson ${getActualLesson.codeMatiere} ${getActualLesson.room}");
+    } else {
+      await logFile("Persistant login next lesson callback triggered : you are in break.");
+    }
   }
 }

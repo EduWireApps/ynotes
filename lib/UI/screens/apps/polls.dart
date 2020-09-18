@@ -35,9 +35,8 @@ class _PollsAndInfosPageState extends State<PollsAndInfosPage> {
   }
 
   Future<void> refreshPolls({bool forced = false}) async {
-
     setState(() {
-      pollsFuture = localApi.app("polls", action: "get", args: (forced)?"forced":null);
+      pollsFuture = localApi.app("polls", action: "get", args: (forced) ? "forced" : null);
     });
     var realFuture = await pollsFuture;
   }
@@ -115,8 +114,7 @@ class _PollsAndInfosPageState extends State<PollsAndInfosPage> {
                                   borderRadius: BorderRadius.circular(11),
                                   child: Card(
                                     color: Theme.of(context).primaryColor,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(11)),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(11),
                                       child: ExpansionTile(
@@ -125,24 +123,12 @@ class _PollsAndInfosPageState extends State<PollsAndInfosPage> {
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             AutoSizeText(
-                                              snapshot.data[index].title +
-                                                  " - " +
-                                                  DateFormat("dd/MM/yyyy")
-                                                      .format(snapshot.data[index].datedebut),
-                                              style: TextStyle(
-                                                  fontFamily: "Asap",
-                                                  fontWeight: FontWeight.bold,
-                                                  color: isDarkModeEnabled
-                                                      ? Colors.white
-                                                      : Colors.black),
+                                              snapshot.data[index].title + " - " + DateFormat("dd/MM/yyyy").format(snapshot.data[index].datedebut),
+                                              style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: isDarkModeEnabled ? Colors.white : Colors.black),
                                             ),
                                             AutoSizeText(
                                               snapshot.data[index].auteur,
-                                              style: TextStyle(
-                                                  fontFamily: "Asap",
-                                                  color: isDarkModeEnabled
-                                                      ? Colors.white
-                                                      : Colors.black),
+                                              style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
                                             ),
                                           ],
                                         ),
@@ -150,23 +136,23 @@ class _PollsAndInfosPageState extends State<PollsAndInfosPage> {
                                           Column(
                                             children: [
                                               Container(
-                                                padding:
-                                                    EdgeInsets.all(screenSize.size.width / 5 * 0.1),
-                                                child: HtmlWidget(snapshot.data[index].questions[0],
-                                                    bodyPadding: EdgeInsets.symmetric(
-                                                        vertical:
-                                                            screenSize.size.height / 10 * 0.1),
-                                                    textStyle: TextStyle(
-                                                        color: isDarkModeEnabled
-                                                            ? Colors.white
-                                                            : Colors.black,
-                                                        fontFamily: "Asap"), onTapUrl: (url) async {
-                                                  if (await canLaunch(url)) {
-                                                    await launch(url);
-                                                  } else {
-                                                    throw "Unable to launch url";
-                                                  }
-                                                }),
+                                                height: screenSize.size.height / 10 * 4.2,
+                                                padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
+                                                child: ListView.builder(
+                                                    itemCount: snapshot.data[index].questions.length,
+                                                    itemBuilder: (BuildContext context, index2) {
+                                                      return Container(
+                                                        padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
+                                                        child: HtmlWidget(snapshot.data[index].questions[index2], bodyPadding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.1), textStyle: TextStyle(color: isDarkModeEnabled ? Colors.white : Colors.black, fontFamily: "Asap"),
+                                                            onTapUrl: (url) async {
+                                                          if (await canLaunch(url)) {
+                                                            await launch(url);
+                                                          } else {
+                                                            throw "Unable to launch url";
+                                                          }
+                                                        }),
+                                                      );
+                                                    }),
                                               ),
                                               FittedBox(
                                                 child: Row(
@@ -176,23 +162,13 @@ class _PollsAndInfosPageState extends State<PollsAndInfosPage> {
                                                         setState(() {
                                                           pollsList[index].read = value;
                                                         });
-                                                        await localApi.app("polls",
-                                                            action: "read",
-                                                            args: pollsList[index].id +
-                                                                "/" +
-                                                                pollsList[index].title +
-                                                                "/" +
-                                                                value.toString());
+                                                        await localApi.app("polls", action: "read", args: pollsList[index].id + "/" + pollsList[index].title + "/" + value.toString());
                                                       },
                                                       value: pollsList[index].read,
                                                     ),
                                                     AutoSizeText(
                                                       "J'ai pris connaissance de cette information",
-                                                      style: TextStyle(
-                                                          fontFamily: "Asap",
-                                                          color: isDarkModeEnabled
-                                                              ? Colors.white
-                                                              : Colors.black),
+                                                      style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
                                                     )
                                                   ],
                                                 ),

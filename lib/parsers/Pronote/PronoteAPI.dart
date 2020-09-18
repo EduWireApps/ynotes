@@ -179,9 +179,11 @@ class Client {
 
     if (this.ent != null && this.ent == true) {
       List<int> encoded = utf8.encode(this.password);
-      motdepasse = sha256.convert(encoded);
+
+      motdepasse = sha256.convert(encoded).bytes;
       motdepasse = hex.encode(motdepasse);
       motdepasse = motdepasse.toString().toUpperCase();
+      print("t");
       e.aes_key = md5.convert(utf8.encode(motdepasse));
     } else {
       var u = this.username;
@@ -262,7 +264,7 @@ class Client {
     var data = {"N": document.id};
     //Used by pronote to encrypt the data (I don't know why)
 
-    var magic_stuff = this.encryption.aes_encryptFromString('"'+jsonEncode((data))+'"');
+    var magic_stuff = this.encryption.aes_encryptFromString('"' + jsonEncode((data)) + '"');
 
     String libelle = Uri.encodeComponent(Uri.encodeComponent(document.libelle));
     String url = this.communication.root_site + '/FichiersExternes/' + magic_stuff + '/' + libelle + '?Session=' + this.attributes['h'].toString();
@@ -328,7 +330,7 @@ class Client {
     List<localapi.Homework> listHW = List();
     h_list.forEach((h) {
       //set a generated ID (Pronote ID is never the same)
-      String idDevoir = (DateFormat("dd/MM/yyyy").parse(h["PourLe"]["V"]).toString() + h["Matiere"]["V"]["L"]).hashCode.toString();
+      String idDevoir = (DateFormat("dd/MM/yyyy").parse(h["PourLe"]["V"]).toString() + h["Matiere"]["V"]["L"]).hashCode.toString() + h["descriptif"]["V"].hashCode.toString();
       listHW.add(localapi.Homework(
           h["Matiere"]["V"]["L"], h["Matiere"]["V"]["L"].hashCode.toString(), idDevoir, h["descriptif"]["V"], null, DateFormat("dd/MM/yyyy").parse(h["PourLe"]["V"]), DateFormat("dd/MM/yyyy").parse(h["DonneLe"]["V"]), h["TAFFait"] ?? false, h["peuRendre"] ?? false, false, null, null, ""));
     });
@@ -532,7 +534,7 @@ class _Communication {
 
   Future<List<Object>> initialise() async {
     //some headers to be real
-    var headers = {'connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/74.0'};
+
     print("Getting hostname");
     // get rsa keys and session id
     String hostName = Requests.getHostname(this.root_site + "/" + this.html_page);
@@ -544,8 +546,9 @@ class _Communication {
       Requests.setStoredCookies(hostName, this.cookies);
     }
     print(this.root_site + "/" + this.html_page);
+    var headers = {'User-Agent': ' Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:80.0) Gecko/20100101 Firefox/80.0'};
 
-    var get_response = await Requests.get(this.root_site + "/" + this.html_page, headers: headers).catchError((e) {
+    var get_response = await Requests.get(this.root_site + "/" + this.html_page + "?fd=1", headers: headers).catchError((e) {
       throw ("Impossible de se connecter");
     });
 
@@ -580,6 +583,7 @@ class _Communication {
       if (html.contains("IP")) {
         throw ('Your IP address is suspended.');
       } else {
+        printWrapped(html.toString());
         throw ("Error with HTML PAGE");
       }
     }

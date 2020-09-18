@@ -221,11 +221,15 @@ class APIPronote extends API {
         List<Homework> hws = await localClient.homework(now);
         listHW.addAll(hws);
         List<DateTime> pinnedDates = await offline.getPinnedHomeworkDates();
-        //Wait for add pinned content
+        //Add pinned content
         await Future.wait(pinnedDates.map((element) async {
           List<Homework> pinnedHomework = await localClient.homework(element, date_to: element);
           pinnedHomework.removeWhere((pinnedHWElement) => element.day != pinnedHWElement.date.day);
-          listHW = listHW + pinnedHomework;
+          pinnedHomework.forEach((pinned) {
+            if (!listHW.any((hw) => hw.idDevoir == pinned.idDevoir)) {
+              listHW.add(pinned);
+            }
+          });
         }));
 
         //delete duplicates
@@ -267,7 +271,7 @@ class APIPronote extends API {
       loginReqNumber = 0;
       loginLock = true;
       try {
-        var cookies = await callCas(cas, username, password);
+        var cookies = await callCas(cas, username, password,  url??"");
         localClient = Client(url, username: username, password: password, cookies: cookies);
         await localClient.init();
         if (localClient.logged_in) {

@@ -36,6 +36,7 @@ import 'package:ynotes/kartable/kartableAdapter.dart';
 import 'package:ynotes/parsers/EcoleDirecte.dart';
 
 import '../../../models.dart';
+
 //Represents the element containing details about homework
 class HomeworkElement extends StatefulWidget {
   final Homework homeworkForThisDay;
@@ -93,86 +94,6 @@ class _HomeworkElementState extends State<HomeworkElement> {
 
             return Stack(
               children: <Widget>[
-                //Label
-                Align(
-                  alignment: Alignment.topCenter,
-                  child: Material(
-                    borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
-                    color: color,
-                    child: InkWell(
-                      onTap: () {
-                        setState(() {
-                          isExpanded = !isExpanded;
-                        });
-                      },
-                      borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
-                      child: GestureDetector(
-                        excludeFromSemantics: true,
-                        onLongPress: () async {
-                          await showHomeworkDetails(context, this.widget.homeworkForThisDay);
-                          setState(() {});
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(width: 0, color: Colors.transparent),
-                          ),
-                          width: screenSize.size.width / 5 * 4.5,
-                          height: isExpanded ? (screenSize.size.height / 10 * 8.8) / 10 * 0.6 : (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
-                          child: Stack(children: <Widget>[
-                            Container(
-                              margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.2, top: (screenSize.size.height / 10 * 8.8) / 10 * 0.1),
-                              padding: EdgeInsets.symmetric(horizontal: 4),
-                              child: FittedBox(
-                                child: FutureBuilder(
-                                    future: offline.getHWCompletion(widget.homeworkForThisDay.idDevoir ?? ''),
-                                    initialData: false,
-                                    builder: (context, snapshot) {
-                                      return Row(
-                                        children: <Widget>[
-                                          Text(
-                                            this.widget.homeworkForThisDay.matiere,
-                                            overflow: TextOverflow.ellipsis,
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.normal),
-                                          ),
-                                          if (widget.homeworkForThisDay.interrogation == true)
-                                            Container(
-                                              margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.15),
-                                              width: screenSize.size.width / 5 * 0.15,
-                                              height: screenSize.size.width / 5 * 0.15,
-                                              decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.redAccent),
-                                            ),
-                                          if (widget.homeworkForThisDay.rendreEnLigne == true)
-                                            Container(
-                                              margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.15),
-                                              width: screenSize.size.width / 5 * 0.15,
-                                              height: screenSize.size.width / 5 * 0.15,
-                                              decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.orangeAccent),
-                                            ),
-                                          if (snapshot.data)
-                                            Container(
-                                              margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.15),
-                                              width: screenSize.size.width / 5 * 0.25,
-                                              height: screenSize.size.width / 5 * 0.25,
-                                              decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.green),
-                                              child: FittedBox(
-                                                  child: Icon(
-                                                Icons.check,
-                                                color: Colors.white,
-                                              )),
-                                            )
-                                        ],
-                                      );
-                                    }),
-                              ),
-                            ),
-                          ]),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-
                 Align(
                   alignment: Alignment.bottomLeft,
                   child: Container(
@@ -471,7 +392,97 @@ class _HomeworkElementState extends State<HomeworkElement> {
                           ],
                         ),
                       )),
-                )
+                ),
+                //Label
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: Material(
+                    borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
+                    color: color,
+                    child: InkWell(
+                      onTap: () {
+                        setState(() {
+                          isExpanded = !isExpanded;
+                        });
+                      },
+                      borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
+                      child: GestureDetector(
+                        excludeFromSemantics: true,
+                        onLongPress: () async {
+                          await showHomeworkDetails(context, this.widget.homeworkForThisDay);
+                          setState(() {});
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(width: 0, color: Colors.transparent),
+                          ),
+                          width: screenSize.size.width / 5 * 4.5,
+                          height: isExpanded ? (screenSize.size.height / 10 * 8.8) / 10 * 0.6 : (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
+                          child: Stack(children: <Widget>[
+                            Container(
+                              margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.2, top: (screenSize.size.height / 10 * 8.8) / 10 * 0.1),
+                              padding: EdgeInsets.symmetric(horizontal: 4),
+                              child: FittedBox(
+                                  child: Row(
+                                children: [
+                                  Row(
+                                    children: <Widget>[
+                                      Text(
+                                        this.widget.homeworkForThisDay.matiere,
+                                        overflow: TextOverflow.ellipsis,
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.normal),
+                                      ),
+                                      if (widget.homeworkForThisDay.interrogation == true)
+                                        Container(
+                                          margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.15),
+                                          width: screenSize.size.width / 5 * 0.15,
+                                          height: screenSize.size.width / 5 * 0.15,
+                                          decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.redAccent),
+                                        ),
+                                      if (widget.homeworkForThisDay.rendreEnLigne == true)
+                                        Container(
+                                          margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.15),
+                                          width: screenSize.size.width / 5 * 0.15,
+                                          height: screenSize.size.width / 5 * 0.15,
+                                          decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.orangeAccent),
+                                        ),
+                                      Container(
+                                        width: screenSize.size.width / 5 * 0.5,
+                                        height: screenSize.size.width / 5 * 0.5,
+                                        child: FittedBox(
+                                          child: FutureBuilder(
+                                              future: offline.getHWCompletion(widget.homeworkForThisDay.idDevoir ?? ''),
+                                              initialData: false,
+                                              builder: (context, snapshot) {
+                                                bool done = snapshot.data;
+                                                return CircularCheckBox(
+                                                  activeColor: Colors.blue,
+                                                  inactiveColor: Colors.white,
+                                                  value: done,
+                                                  materialTapTargetSize: MaterialTapTargetSize.padded,
+                                                  onChanged: (bool x) async {
+                                                    setState(() {
+                                                      done = !done;
+                                                      donePercentFuture = getHomeworkDonePercent();
+                                                    });
+                                                    offline.setHWCompletion(widget.homeworkForThisDay.idDevoir, x);
+                                                  },
+                                                );
+                                              }),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              )),
+                            ),
+                          ]),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ],
             );
           }),

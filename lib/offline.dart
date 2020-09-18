@@ -50,7 +50,6 @@ class Offline {
       var offlineDisciplines = await _offlineBox.get("disciplines");
       var offlinehomeworkData = await _offlineBox.get("homework");
       var offlinePollsData = await _offlineBox.get("polls");
-    
 
       if (offlineLessons != null) {
         this.lessonsData = Map<dynamic, dynamic>.from(offlineLessons);
@@ -116,7 +115,13 @@ class Offline {
       if (add == true && newData != null) {
         List<Homework> oldHW = _offlineBox.get("homework").cast<Homework>();
 
-        List<Homework> combinedList = oldHW + newData;
+        List<Homework> combinedList = List();
+        combinedList.addAll(oldHW);
+        newData.forEach((newdataelement) {
+          if (!combinedList.any((clistelement) => clistelement.idDevoir == newdataelement.idDevoir)) {
+            combinedList.add(newdataelement);
+          }
+        });
         combinedList = combinedList.toSet().toList();
 
         await _offlineBox.put("homework", combinedList);
