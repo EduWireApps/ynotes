@@ -116,38 +116,42 @@ class _CloudPageState extends State<CloudPage> {
             width: screenSize.size.width,
             child: Opacity(
               opacity: path == "/" ? 0.4 : 1,
-                          child: Material(
+              child: Material(
                 borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                 color: Theme.of(context).primaryColor,
                 child: InkWell(
-                  onTap:  path == "/" ? null :(){
-                    if (path != "/") {
-                      var splits = path.split("/");
-                      print(splits.length);
-                      if (splits.length > 2) {
-                        var finalList = splits.sublist(1, splits.length - 2);
-                        var concatenate = StringBuffer();
+                  onTap: path == "/"
+                      ? null
+                      : () {
+                          if (path != "/") {
+                            var splits = path.split("/");
+                            print(splits.length);
+                            if (splits.length > 2) {
+                              var finalList = splits.sublist(1, splits.length - 2);
+                              var concatenate = StringBuffer();
 
-                        finalList.forEach((item) {
-                          concatenate.write(r'/' + item);
-                        });
-                        print(concatenate);
-                        setState(() {
-                          path = concatenate.toString() + '/';
-                        });
-                      } else {
-                        setState(() {
-                          path = "/";
-                        });
-                      }
-                      changeDirectory(null);
-                    }
-                  },
+                              finalList.forEach((item) {
+                                concatenate.write(r'/' + item);
+                              });
+                              print(concatenate);
+                              setState(() {
+                                path = concatenate.toString() + '/';
+                              });
+                            } else {
+                              setState(() {
+                                path = "/";
+                              });
+                            }
+                            changeDirectory(null);
+                          }
+                        },
                   child: Container(
                     height: screenSize.size.height / 10 * 0.5,
                     padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
                     child: FittedBox(
                       child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           Icon(
                             MdiIcons.arrowLeft,

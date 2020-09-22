@@ -281,8 +281,11 @@ class PollInfo {
   final String id;
   @HiveField(6)
   final List<Document> documents;
+  //Brut data
+  @HiveField(7)
+  final Map data;
 
-  PollInfo(this.auteur, this.datedebut, this.questions, this.read, this.title, this.id, this.documents);
+  PollInfo(this.auteur, this.datedebut, this.questions, this.read, this.title, this.id, this.documents, this.data);
 }
 
 class CloudItem {

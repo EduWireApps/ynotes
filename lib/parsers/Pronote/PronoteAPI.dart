@@ -143,10 +143,6 @@ class Client {
   }
 
   _login() async {
-    if (this.ent != null && this.ent) {
-      this.username = this.attributes['e'];
-      this.password = this.attributes['f'];
-    }
     try {
       final storage = new FlutterSecureStorage();
       await storage.write(key: "username", value: this.username);
@@ -156,7 +152,10 @@ class Client {
     } catch (e) {
       print("failed to write values");
     }
-
+    if (this.ent != null && this.ent) {
+      this.username = this.attributes['e'];
+      this.password = this.attributes['f'];
+    }
     Map ident_json = {
       "genreConnexion": 0,
       "genreEspace": int.parse(this.attributes['a']),
@@ -384,10 +383,11 @@ class Client {
         //PollInfo(this.auteur, this.datedebut, this.questions, this.read);
 
         List<String> questions = List();
+        List<Map> choices = List();
         element["listeQuestions"]["V"].forEach((question) {
-          questions.add(question["texte"]["V"]);
+          questions.add(jsonEncode(question));
         });
-        listInfosPolls.add(localapi.PollInfo(element["elmauteur"]["V"]["L"], DateFormat("dd/MM/yyyy").parse(element["dateDebut"]["V"]), questions, element["lue"], element["L"], element["N"], documents));
+        listInfosPolls.add(localapi.PollInfo(element["elmauteur"]["V"]["L"], DateFormat("dd/MM/yyyy").parse(element["dateDebut"]["V"]), questions, element["lue"], element["L"], element["N"], documents, element));
       } catch (e) {
         print("Failed to add an element to the polls list " + e.toString());
       }
@@ -396,17 +396,71 @@ class Client {
   }
 
   setPollRead(String meta) async {
+    var user = this.paramsUser['donneesSec']['donnees']['ressource'];
+    print(user);
     List metas = meta.split("/");
     Map data = {
       "_Signature_": {"onglet": 8},
       "donnees": {
         "listeActualites": [
-          {"N": metas[0], "L": metas[1], "validationDirecte": true, "lue": (metas[2] == "true")}
-        ]
+          {
+            "genrePublic": 4,
+            "L": metas[1],
+            "validationDirecte": true,
+            "saisieActualite": false,
+            "lue": (metas[2] == "true"),
+            "marqueLueSeulement": false,
+            "N": metas[0],
+            "public": {"G": user["G"], "L": user["L"], "N": user["N"]}
+          }
+        ],
+        "saisieActualite": false
       }
     };
+    print(data);
     var response = await this.communication.post('SaisieActualites', data: data);
     print(response);
+  }
+
+  setPollResponse(String meta) async {
+    try {
+      List metas = meta.split("/ynsplit");
+      var user = this.paramsUser['donneesSec']['donnees']['ressource'];
+      Map mapData = jsonDecode(metas[0]);
+      Map pollMapData = jsonDecode(metas[1]);
+      String answer = metas[2];
+
+      mapData["reponse"]["V"]["valeurReponse"]["V"] = "[$answer]";
+      mapData["reponse"]["V"]["_validationSaisie"] = true;
+      Map data = {
+        "_Signature_": {"onglet": 8},
+        "donnees": {
+          "listeActualites": [
+            {
+              "E":2,
+              "N": pollMapData["N"],
+              "L": pollMapData["L"],
+              "validationDirecte": true,
+              "saisieActualite": false,
+              "supprimee":false,
+              "lue": (pollMapData["lue"] == "true"),
+              "genrePublic": 4,
+              "public": {"G": user["G"], "L": user["L"], "N": user["N"]},
+              "listeQuestions": [
+                //adding data
+                mapData
+              ]
+            },
+          ],
+           "saisieActualite": false
+        }
+      };
+      print(data);
+      var response = await this.communication.post('SaisieActualites', data: data);
+      print(response);
+    } catch (e) {
+      print(e);
+    }
   }
 
   lessons(DateTime date_from, {DateTime date_to}) async {

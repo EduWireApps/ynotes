@@ -76,9 +76,9 @@ class EcoleDirecteMethod {
     );
 
     //Update colors;
+    refreshDisciplinesListColors(disciplinesList);
     await offline.updateDisciplines(disciplinesList);
     createStack();
-    refreshDisciplinesListColors(disciplinesList);
 
     return disciplinesList;
   }
@@ -101,7 +101,7 @@ class EcoleDirecteMethod {
         homeworkDates.add(element);
       }
     });
- 
+
     return homeworkDates;
   }
 

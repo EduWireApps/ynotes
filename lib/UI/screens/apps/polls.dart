@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flutter/cupertino.dart';
@@ -135,34 +137,20 @@ class _PollsAndInfosPageState extends State<PollsAndInfosPage> {
                                         children: [
                                           Column(
                                             children: [
-                                              Container(
-                                                height: screenSize.size.height / 10 * 4.2,
-                                                padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
-                                                child: ListView.builder(
-                                                    itemCount: snapshot.data[index].questions.length,
-                                                    itemBuilder: (BuildContext context, index2) {
-                                                      return Container(
-                                                        padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
-                                                        child: HtmlWidget(snapshot.data[index].questions[index2], bodyPadding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.1), textStyle: TextStyle(color: isDarkModeEnabled ? Colors.white : Colors.black, fontFamily: "Asap"),
-                                                            onTapUrl: (url) async {
-                                                          if (await canLaunch(url)) {
-                                                            await launch(url);
-                                                          } else {
-                                                            throw "Unable to launch url";
-                                                          }
-                                                        }),
-                                                      );
-                                                    }),
-                                              ),
+                                              _buildPollQuestion(snapshot.data[index], screenSize),
                                               FittedBox(
                                                 child: Row(
                                                   children: [
                                                     CircularCheckBox(
                                                       onChanged: (value) async {
+                                                        await refreshPolls(forced: true);
                                                         setState(() {
                                                           pollsList[index].read = value;
                                                         });
-                                                        await localApi.app("polls", action: "read", args: pollsList[index].id + "/" + pollsList[index].title + "/" + value.toString());
+
+                                                        String userID = pollsList[index].data["public"]["V"]["N"];
+                                                        //Pass args (that's messy but it works lel)
+                                                        await localApi.app("polls", action: "read", args: pollsList[index].id + "/" + pollsList[index].title + "/" + value.toString() + "/" + userID);
                                                       },
                                                       value: pollsList[index].read,
                                                     ),
@@ -192,5 +180,59 @@ class _PollsAndInfosPageState extends State<PollsAndInfosPage> {
         ],
       ),
     );
+  }
+
+  Widget _buildPollQuestion(var data, screenSize) {
+    List<Widget> list = new List<Widget>();
+    for (var i = 0; i < data.questions.length; i++) {
+      Map mapQuestions = jsonDecode(data.questions[i]);
+      list.add(Container(
+        padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
+        child: Column(
+          children: [
+            HtmlWidget(mapQuestions["texte"]["V"], bodyPadding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.1), textStyle: TextStyle(color: isDarkModeEnabled ? Colors.white : Colors.black, fontFamily: "Asap"), onTapUrl: (url) async {
+              if (await canLaunch(url)) {
+                await launch(url);
+              } else {
+                throw "Unable to launch url";
+              }
+            }),
+            _buildPollChoices(mapQuestions, screenSize, data)
+          ],
+        ),
+      ));
+    }
+    return new Column(children: list);
+  }
+
+  Widget _buildPollChoices(Map data, screenSize, PollInfo pollinfo) {
+    List choices = data["listeChoix"]["V"];
+    List response = List();
+    try {
+      if (data["reponse"] != null && data["reponse"]["V"] != null && data["reponse"]["V"]["valeurReponse"] != null && data["reponse"]["V"]["valeurReponse"]["V"] != null) {
+        response = jsonDecode(data["reponse"]["V"]["valeurReponse"]["V"]);
+      }
+    } catch (e) {
+      print(e);
+    }
+    //user info
+    List<Widget> list = new List<Widget>();
+    for (var i = 0; i < choices.length; i++) {
+      list.add(Container(
+          padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
+          child: Row(
+            children: [
+              CircularCheckBox(
+                value: response.contains(i + 1),
+               /* onChanged: (value) async {
+                  await refreshPolls(forced: true);
+                  await localApi.app("polls", action: "answer", args: jsonEncode(data) + "/ynsplit" + jsonEncode(pollinfo.data) + "/ynsplit" + (i + 1).toString());
+                },*/
+              ),
+              Text(choices[i]["L"])
+            ],
+          )));
+    }
+    return new Column(children: list);
   }
 }

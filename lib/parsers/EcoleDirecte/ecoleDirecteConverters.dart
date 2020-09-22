@@ -79,6 +79,7 @@ class EcoleDirecteConverter {
         }
       });
     });
+    
     return disciplinesList;
   }
 

@@ -271,7 +271,7 @@ class APIPronote extends API {
       loginReqNumber = 0;
       loginLock = true;
       try {
-        var cookies = await callCas(cas, username, password,  url??"");
+        var cookies = await callCas(cas, username, password, url ?? "");
         localClient = Client(url, username: username, password: password, cookies: cookies);
         await localClient.init();
         if (localClient.logged_in) {
@@ -365,6 +365,24 @@ class APIPronote extends API {
               if (!pollsRefreshRecursive) {
                 await refreshClient();
                 await localClient.setPollRead(args);
+              }
+            }
+          }
+          if (action == "answer") {
+            int req = 0;
+            while (pollsLock == true && req < 10) {
+              req++;
+              await Future.delayed(const Duration(seconds: 2), () => "1");
+            }
+            try {
+              pollsLock = true;
+              await localClient.setPollResponse(args);
+              pollsLock = false;
+            } catch (e) {
+              pollsLock = false;
+              if (!pollsRefreshRecursive) {
+                await refreshClient();
+                await localClient.setPollResponse(args);
               }
             }
           }

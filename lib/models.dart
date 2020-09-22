@@ -5,6 +5,7 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/parsers/EcoleDirecte.dart';
 import 'package:ynotes/parsers/Pronote.dart';
@@ -22,23 +23,34 @@ class DownloadModel extends ChangeNotifier {
 
   ///Check if file exists
   Future<bool> fileExists(filename) async {
-    final dir = await FolderAppUtil.getDirectory(download: true);
-    Directory downloadsDir = Directory("$dir/yNotesDownloads/");
-    List<FileSystemEntity> list = downloadsDir.listSync(recursive: true);
-    bool toReturn = false;
-    await Future.forEach(list, (element) async {
-      if (filename == await FileAppUtil.getFileNameWithExtension(element)) {
-        toReturn = true;
+    try {
+      if (await Permission.storage.request().isGranted) {
+        final dir = await FolderAppUtil.getDirectory(download: true);
+        FolderAppUtil.createDirectory("$dir/yNotesDownloads/");
+        Directory downloadsDir = Directory("$dir/yNotesDownloads/");
+        List<FileSystemEntity> list = downloadsDir.listSync();
+        bool toReturn = false;
+        await Future.forEach(list, (element) async {
+          if (filename == await FileAppUtil.getFileNameWithExtension(element)) {
+            print("ok");
+            toReturn = true;
+          }
+        });
+        return toReturn;
+      } else {
+        print("Not granted");
+        return false;
       }
-    });
-    return toReturn;
+    } catch (e) {
+      return false;
+    }
   }
 
 //Download a file in the app directory
   download(Document document) async {
     _isDownloading = true;
     _progress = null;
-  String filename = document.libelle;
+    String filename = document.libelle;
     notifyListeners();
     Request request = await localApi.downloadRequest(document);
     //Make a response client

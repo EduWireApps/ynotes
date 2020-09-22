@@ -1004,7 +1004,7 @@ class _GradesGroupState extends State<GradesGroup> {
     } else {
       if (widget.disciplinevar.color != null) {
         colorGroup = Color(widget.disciplinevar.color);
-        ;
+        
       }
     }
     MediaQueryData screenSize = MediaQuery.of(context);

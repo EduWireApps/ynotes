@@ -46,11 +46,11 @@ class FolderAppUtil {
 
     if (!await _appDocDirFolder.exists()) {
       print("creating $path");
-      //if folder already exists return path
+
       final Directory _appDocDirNewFolder = await _appDocDirFolder.create(recursive: true);
     } else {
-      print("$path");
-    } //if folder not exists create folder and then return its path
+ 
+    }
   }
 }
 

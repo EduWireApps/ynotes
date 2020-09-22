@@ -21,7 +21,7 @@ import 'package:dio/dio.dart' as dio2;
 
 //The basical function to change folder
 changeFolder(String path) async {
-  print(path);
+
 
   ///I've chosen to not use their weird "Loaded function", user doesn't care about a little loading
   List paths = path.split("/");

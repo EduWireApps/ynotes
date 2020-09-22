@@ -353,13 +353,14 @@ class PollInfoAdapter extends TypeAdapter<PollInfo> {
       fields[4] as String,
       fields[5] as String,
       (fields[6] as List)?.cast<Document>(),
+      (fields[7] as Map)?.cast<dynamic, dynamic>(),
     );
   }
 
   @override
   void write(BinaryWriter writer, PollInfo obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.auteur)
       ..writeByte(1)
@@ -373,7 +374,9 @@ class PollInfoAdapter extends TypeAdapter<PollInfo> {
       ..writeByte(5)
       ..write(obj.id)
       ..writeByte(6)
-      ..write(obj.documents);
+      ..write(obj.documents)
+      ..writeByte(7)
+      ..write(obj.data);
   }
 
   @override
