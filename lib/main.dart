@@ -66,7 +66,7 @@ void backgroundFetchHeadlessTask(String taskId) async {
   }
   if (await getSetting("agendaOnGoingNotification")) {
     print("Setting On going notification");
-    await LocalNotification.setOnGoingNotification();
+    await LocalNotification.setOnGoingNotification(dontShowActual: true);
   } else {
     print("On going notification disabled");
   }

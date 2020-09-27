@@ -15,6 +15,7 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
+import 'package:ynotes/UI/components/space/spaceOverlay.dart';
 import 'package:ynotes/UI/screens/gradesPage.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/UI/screens/tabBuilder.dart';
@@ -29,9 +30,9 @@ import 'package:html/parser.dart';
 
 ///First page to access quickly to last grades, homework and
 class SummaryPage extends StatefulWidget {
-  final TabController tabController;
+  final Function switchPage;
 
-  const SummaryPage({Key key, this.tabController}) : super(key: key);
+  const SummaryPage({Key key, this.switchPage}) : super(key: key);
   State<StatefulWidget> createState() {
     return _SummaryPageState();
   }
@@ -178,213 +179,213 @@ class _SummaryPageState extends State<SummaryPage> {
               child: ClipRRect(
                 borderRadius: BorderRadius.all(Radius.circular(12)),
                 child: PageView(
-                  controller: todoSettingsController,
-                  physics: NeverScrollableScrollPhysics(),
-                  children: <Widget>[
-                    Stack(
-                      children: <Widget>[
-                        Positioned(
-                          top: (screenSize.size.height / 10 * 8.8) / 95,
-                          left: 20,
-                          child: Container(
-                            width: screenSize.size.height / 10 * 0.5,
-                            height: screenSize.size.height / 10 * 0.5,
-                            child: RawMaterialButton(
-                              onPressed: () {
-                                todoSettingsController.animateToPage(1, duration: Duration(milliseconds: 300), curve: Curves.ease);
-                              },
-                              child: new Icon(
-                                Icons.settings,
-                                color: isDarkModeEnabled ? Colors.white : Colors.black,
-                                size: screenSize.size.height / 10 * 0.4,
-                              ),
-                              shape: new CircleBorder(),
-                              elevation: 1.0,
-                              fillColor: !isDarkModeEnabled ? Colors.white : Colors.black,
-                            ),
-                          ),
-                        ),
-                        Align(
-                            alignment: Alignment.topCenter,
+                    controller: todoSettingsController,
+                    physics: NeverScrollableScrollPhysics(),
+                    children: <Widget>[
+                      Stack(
+                        children: <Widget>[
+                          Positioned(
+                            top: (screenSize.size.height / 10 * 8.8) / 95,
+                            left: 20,
                             child: Container(
-                              margin: EdgeInsets.only(top: (screenSize.size.height / 10 * 8.8) / 10 * 0.1),
-                              child: Text(
-                                "A faire",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(fontFamily: "Asap", fontSize: 18, color: isDarkModeEnabled ? Colors.white : Colors.black),
-                              ),
-                            )),
-                        Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Container(
-                            margin: EdgeInsets.only(bottom: (screenSize.size.height / 10 * 8.8) / 10 * 0.2, top: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
-                            height: (screenSize.size.height / 10 * 8.8) / 10 * 3,
-                            child: RefreshIndicator(
-                              onRefresh: refreshLocalHomeworkList,
-                              child: CupertinoScrollbar(
-                                child: FutureBuilder<List<Homework>>(
-                                    future: homeworkListFuture,
-                                    builder: (context, snapshot) {
-                                      if (snapshot.hasData) {
-                                        if (snapshot.data.length != 0) {
-                                          return ListView.builder(
-                                              itemCount: snapshot.data.length,
-                                              padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-                                              itemBuilder: (context, index) {
-                                                return FutureBuilder(
-                                                  initialData: 0,
-                                                  future: getColor(snapshot.data[index].codeMatiere),
-                                                  builder: (context, color) => Column(
-                                                    children: <Widget>[
-                                                      if (index == 0 || snapshot.data[index - 1].date != snapshot.data[index].date)
-                                                        Row(children: <Widget>[
-                                                          Expanded(
-                                                            child: new Container(
-                                                                margin: const EdgeInsets.only(left: 10.0, right: 20.0),
-                                                                child: Divider(
-                                                                  color: isDarkModeEnabled ? Colors.white : Colors.black,
-                                                                  height: 36,
-                                                                )),
-                                                          ),
-                                                          Text(
-                                                            DateFormat("EEEE d MMMM", "fr_FR").format(snapshot.data[index].date).toString(),
-                                                            style: TextStyle(color: isDarkModeEnabled ? Colors.white : Colors.black, fontFamily: "Asap"),
-                                                          ),
-                                                          Expanded(
-                                                            child: Container(
-                                                                margin: const EdgeInsets.only(left: 20.0, right: 10.0),
-                                                                child: Divider(
-                                                                  color: isDarkModeEnabled ? Colors.white : Colors.black,
-                                                                  height: 36,
-                                                                )),
-                                                          ),
-                                                        ]),
-                                                      HomeworkTicket(snapshot.data[index], Color(color.data), widget.tabController, refreshCallback),
-                                                    ],
-                                                  ),
-                                                );
-                                              });
-                                        } else {
-                                          return FittedBox(
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: <Widget>[
-                                                Container(
-                                                  height: (screenSize.size.height / 10 * 8.8) / 10 * 1.5,
-                                                  child: Image(fit: BoxFit.fitWidth, image: AssetImage('assets/images/noHomework.png')),
-                                                ),
-                                                Text(
-                                                  "Pas de devoirs à l'horizon... \non se détend ?",
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
-                                                ),
-                                                FlatButton(
-                                                  onPressed: () {
-                                                    //Reload list
-                                                    refreshLocalHomeworkList();
-                                                  },
-                                                  child: snapshot.connectionState != ConnectionState.waiting
-                                                      ? Text("Recharger",
-                                                          style: TextStyle(
-                                                            fontFamily: "Asap",
-                                                            color: isDarkModeEnabled ? Colors.white : Colors.black,
-                                                          ))
-                                                      : FittedBox(child: SpinKitThreeBounce(color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4)),
-                                                  shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(18.0), side: BorderSide(color: Theme.of(context).primaryColorDark)),
-                                                ),
-                                              ],
-                                            ),
-                                          );
-                                        }
-                                      } else {
-                                        return SpinKitFadingFour(
-                                          color: Theme.of(context).primaryColorDark,
-                                          size: screenSize.size.width / 5 * 0.5,
-                                        );
-                                      }
-                                    }),
+                              width: screenSize.size.height / 10 * 0.5,
+                              height: screenSize.size.height / 10 * 0.5,
+                              child: RawMaterialButton(
+                                onPressed: () {
+                widget.switchPage(2);
+                                },
+                                child: new Icon(
+                Icons.settings,
+                color: isDarkModeEnabled ? Colors.white : Colors.black,
+                size: screenSize.size.height / 10 * 0.4,
+                                ),
+                                shape: new CircleBorder(),
+                                elevation: 1.0,
+                                fillColor: !isDarkModeEnabled ? Colors.white : Colors.black,
                               ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                    Stack(
-                      children: <Widget>[
-                        Align(
-                            alignment: Alignment.topCenter,
+                          Align(
+                              alignment: Alignment.topCenter,
+                              child: Container(
+                                margin: EdgeInsets.only(top: (screenSize.size.height / 10 * 8.8) / 10 * 0.1),
+                                child: Text(
+                "A faire",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontFamily: "Asap", fontSize: 18, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                ),
+                              )),
+                          Align(
+                            alignment: Alignment.bottomCenter,
                             child: Container(
-                              margin: EdgeInsets.only(top: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
-                              child: AutoSizeText(
-                                "Paramètres des devoirs rapides",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(fontFamily: "Asap", fontSize: 16, color: isDarkModeEnabled ? Colors.white : Colors.black),
-                              ),
-                            )),
-                        Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Container(
-                            margin: EdgeInsets.only(bottom: (screenSize.size.height / 10 * 8.8) / 10 * 0.2, top: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
-                            height: (screenSize.size.height / 10 * 8.8) / 10 * 3,
-                            child: FutureBuilder(
-                                future: getIntSetting("summaryQuickHomework"),
-                                initialData: 1,
-                                builder: (context, snapshot) {
-                                  _slider = (snapshot.data == 0) ? 1 : snapshot.data;
-                                  return ListView(
-                                    padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 10),
+                              margin: EdgeInsets.only(bottom: (screenSize.size.height / 10 * 8.8) / 10 * 0.2, top: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
+                              height: (screenSize.size.height / 10 * 8.8) / 10 * 3,
+                              child: RefreshIndicator(
+                                onRefresh: refreshLocalHomeworkList,
+                                child: CupertinoScrollbar(
+                child: FutureBuilder<List<Homework>>(
+                    future: homeworkListFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        if (snapshot.data.length != 0) {
+                          return ListView.builder(
+                              itemCount: snapshot.data.length,
+                              padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+                              itemBuilder: (context, index) {
+                                return FutureBuilder(
+                                  initialData: 0,
+                                  future: getColor(snapshot.data[index].codeMatiere),
+                                  builder: (context, color) => Column(
                                     children: <Widget>[
-                                      CupertinoSlider(
-                                          value: _slider.toDouble(),
-                                          min: 1.0,
-                                          max: 11.0,
-                                          divisions: 11,
-                                          onChanged: (double newValue) async {
-                                            await setIntSetting("summaryQuickHomework", newValue.round());
-                                            setState(() {
-                                              _slider = newValue.round();
-                                            });
-                                          }),
-                                      Container(
-                                        margin: EdgeInsets.only(top: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
-                                        child: AutoSizeText(
-                                          "Devoirs sur :\n" + (_slider.toString() == "11" ? "∞" : _slider.toString()) + " jour" + (_slider > 1 ? "s" : ""),
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(fontFamily: "Asap", fontSize: 15, color: isDarkModeEnabled ? Colors.white : Colors.black),
-                                        ),
-                                      )
+                                      if (index == 0 || snapshot.data[index - 1].date != snapshot.data[index].date)
+                                        Row(children: <Widget>[
+                                          Expanded(
+                                            child: new Container(
+                                                margin: const EdgeInsets.only(left: 10.0, right: 20.0),
+                                                child: Divider(
+                                                  color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                                  height: 36,
+                                                )),
+                                          ),
+                                          Text(
+                                            DateFormat("EEEE d MMMM", "fr_FR").format(snapshot.data[index].date).toString(),
+                                            style: TextStyle(color: isDarkModeEnabled ? Colors.white : Colors.black, fontFamily: "Asap"),
+                                          ),
+                                          Expanded(
+                                            child: Container(
+                                                margin: const EdgeInsets.only(left: 20.0, right: 10.0),
+                                                child: Divider(
+                                                  color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                                  height: 36,
+                                                )),
+                                          ),
+                                        ]),
+                                      HomeworkTicket(snapshot.data[index], Color(color.data), widget.switchPage, refreshCallback),
                                     ],
-                                  );
-                                }),
-                          ),
-                        ),
-                        Align(
-                          alignment: Alignment.bottomCenter,
-                          child: Container(
-                            margin: EdgeInsets.only(bottom: screenSize.size.width / 5 * 0.2),
-                            height: (screenSize.size.height / 10 * 8.8) / 10 * 0.75,
-                            width: screenSize.size.width / 5 * 2,
-                            child: RaisedButton(
-                              color: Theme.of(context).primaryColorDark,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: new BorderRadius.circular(18.0),
-                              ),
-                              onPressed: () {
-                                todoSettingsController.animateToPage(0, duration: Duration(milliseconds: 400), curve: Curves.ease);
-                                refreshCallback();
-                              },
-                              child: Text(
-                                "Retour",
-                                textAlign: TextAlign.center,
-                                style: TextStyle(fontSize: 18, fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                  ),
+                                );
+                              });
+                        } else {
+                          return FittedBox(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Container(
+                                  height: (screenSize.size.height / 10 * 8.8) / 10 * 1.5,
+                                  child: Image(fit: BoxFit.fitWidth, image: AssetImage('assets/images/noHomework.png')),
+                                ),
+                                Text(
+                                  "Pas de devoirs à l'horizon... \non se détend ?",
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
+                                ),
+                                FlatButton(
+                                  onPressed: () {
+                                    //Reload list
+                                    refreshLocalHomeworkList();
+                                  },
+                                  child: snapshot.connectionState != ConnectionState.waiting
+                                      ? Text("Recharger",
+                                          style: TextStyle(
+                                            fontFamily: "Asap",
+                                            color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                          ))
+                                      : FittedBox(child: SpinKitThreeBounce(color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4)),
+                                  shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(18.0), side: BorderSide(color: Theme.of(context).primaryColorDark)),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                      } else {
+                        return SpinKitFadingFour(
+                          color: Theme.of(context).primaryColorDark,
+                          size: screenSize.size.width / 5 * 0.5,
+                        );
+                      }
+                    }),
+                                ),
                               ),
                             ),
                           ),
-                        )
-                      ],
-                    ),
-                  ],
-                ),
+                        ],
+                      ),
+                      Stack(
+                        children: <Widget>[
+                          Align(
+                              alignment: Alignment.topCenter,
+                              child: Container(
+                                margin: EdgeInsets.only(top: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
+                                child: AutoSizeText(
+                "Paramètres des devoirs rapides",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontFamily: "Asap", fontSize: 16, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                ),
+                              )),
+                          Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Container(
+                              margin: EdgeInsets.only(bottom: (screenSize.size.height / 10 * 8.8) / 10 * 0.2, top: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
+                              height: (screenSize.size.height / 10 * 8.8) / 10 * 3,
+                              child: FutureBuilder(
+                future: getIntSetting("summaryQuickHomework"),
+                initialData: 1,
+                builder: (context, snapshot) {
+                  _slider = (snapshot.data == 0) ? 1 : snapshot.data;
+                  return ListView(
+                    padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 10),
+                    children: <Widget>[
+                      CupertinoSlider(
+                          value: _slider.toDouble(),
+                          min: 1.0,
+                          max: 11.0,
+                          divisions: 11,
+                          onChanged: (double newValue) async {
+                            await setIntSetting("summaryQuickHomework", newValue.round());
+                            setState(() {
+                              _slider = newValue.round();
+                            });
+                          }),
+                      Container(
+                        margin: EdgeInsets.only(top: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
+                        child: AutoSizeText(
+                          "Devoirs sur :\n" + (_slider.toString() == "11" ? "∞" : _slider.toString()) + " jour" + (_slider > 1 ? "s" : ""),
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontFamily: "Asap", fontSize: 15, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                        ),
+                      )
+                    ],
+                  );
+                }),
+                            ),
+                          ),
+                          Align(
+                            alignment: Alignment.bottomCenter,
+                            child: Container(
+                              margin: EdgeInsets.only(bottom: screenSize.size.width / 5 * 0.2),
+                              height: (screenSize.size.height / 10 * 8.8) / 10 * 0.75,
+                              width: screenSize.size.width / 5 * 2,
+                              child: RaisedButton(
+                                color: Theme.of(context).primaryColorDark,
+                                shape: RoundedRectangleBorder(
+                borderRadius: new BorderRadius.circular(18.0),
+                                ),
+                                onPressed: () {
+                todoSettingsController.animateToPage(0, duration: Duration(milliseconds: 400), curve: Curves.ease);
+                refreshCallback();
+                                },
+                                child: Text(
+                "Retour",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 18, fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ],
+                  ),
               ),
             ),
 
@@ -414,7 +415,7 @@ class _SummaryPageState extends State<SummaryPage> {
                                         color: Colors.transparent,
                                         child: InkWell(
                                           onTap: () {
-                                            widget.tabController.animateTo(2);
+                                            widget.switchPage(2);
                                           },
                                           child: Container(
                                             height: (screenSize.size.height / 10 * 8.8) / 10 * 1.8,
@@ -589,8 +590,8 @@ class HomeworkTicket extends StatefulWidget {
   final Color color;
   final Function refreshCallback;
 
-  final TabController tabController;
-  const HomeworkTicket(this._homework, this.color, this.tabController, this.refreshCallback);
+  final Function pageSwitcher;
+  const HomeworkTicket(this._homework, this.color, this.pageSwitcher, this.refreshCallback);
   State<StatefulWidget> createState() {
     return _HomeworkTicketState();
   }
@@ -608,7 +609,7 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
         child: InkWell(
           borderRadius: BorderRadius.circular(39),
           onTap: () {
-            widget.tabController.animateTo(3);
+            widget.pageSwitcher(3);
           },
           child: Container(
             width: screenSize.size.width / 5 * 4,
@@ -642,23 +643,22 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
                       }),
                 ),
                 FittedBox(
-                                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text(widget._homework.matiere, textScaleFactor: 1.0, textAlign: TextAlign.left, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 14, fontFamily: "Asap", fontWeight: FontWeight.bold)),
-                        Container(
-                          width: screenSize.size.width / 5 * 2.8,
-                          child: AutoSizeText(
-                            parse(widget._homework.contenu).documentElement.text,
-                            style: TextStyle(fontFamily: "Asap"),
-                    
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        )
-                      ],
-                    ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(widget._homework.matiere, textScaleFactor: 1.0, textAlign: TextAlign.left, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 14, fontFamily: "Asap", fontWeight: FontWeight.bold)),
+                      Container(
+                        width: screenSize.size.width / 5 * 2.8,
+                        child: AutoSizeText(
+                          parse(widget._homework.contenu).documentElement.text,
+                          style: TextStyle(fontFamily: "Asap"),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      )
+                    ],
+                  ),
                 )
               ],
             ),

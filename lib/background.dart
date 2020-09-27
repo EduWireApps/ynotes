@@ -93,7 +93,7 @@ class LocalNotification {
       '2007',
       'yNotes',
       'Rappel de cours constant',
-      importance: Importance.Max,
+      importance: Importance.Low,
       priority: Priority.Low,
       ongoing: true,
       autoCancel: false,
@@ -129,7 +129,7 @@ class LocalNotification {
   }
 
   ///Set an on going notification which is automatically refreshed (online or not) each hour
-  static Future<void> setOnGoingNotification() async {
+  static Future<void> setOnGoingNotification({bool dontShowActual = false}) async {
     //Logs for tests
     await logFile("Setting on going notification");
     print("Setting on going notification");
@@ -188,26 +188,30 @@ class LocalNotification {
         }
       }
     }
-
-    Lesson getActualLesson = getCurrentLesson(lessons);
-    await showOngoingNotification(getActualLesson);
-    int minutes = await getIntSetting("lessonReminderDelay");
-    await Future.forEach(lessons, (Lesson lesson) async {
-      if (lesson.start.isAfter(date)) {
-        try {
-          await AndroidAlarmManager.oneShotAt(lesson.start.subtract(Duration(minutes: minutes)), lesson.start.hashCode, callback, exact: true);
-
-          print("scheduled " + lesson.start.hashCode.toString() + " $minutes minutes before.");
-        } catch (e) {
-          print("failed " + e.toString());
-        }
+    if (await getSetting("agendaOnGoingNotification")) {
+      Lesson getActualLesson = getCurrentLesson(lessons);
+      if (!dontShowActual) {
+        await showOngoingNotification(getActualLesson);
       }
-    });
-    try {
-      await AndroidAlarmManager.oneShotAt(lessons.last.end.subtract(Duration(minutes: minutes)), lessons.last.end.hashCode, callback, exact: true);
-      print("Scheduled last lesson");
-    } catch (e) {}
-    print("Success !");
+
+      int minutes = await getIntSetting("lessonReminderDelay");
+      await Future.forEach(lessons, (Lesson lesson) async {
+        if (lesson.start.isAfter(date)) {
+          try {
+            await AndroidAlarmManager.oneShotAt(lesson.start.subtract(Duration(minutes: minutes)), lesson.start.hashCode, callback, alarmClock: true, allowWhileIdle: true);
+
+            print("scheduled " + lesson.start.hashCode.toString() + " $minutes minutes before.");
+          } catch (e) {
+            print("failed " + e.toString());
+          }
+        }
+      });
+      try {
+        await AndroidAlarmManager.oneShotAt(lessons.last.end.subtract(Duration(minutes: minutes)), lessons.last.end.hashCode, callback, alarmClock: true, allowWhileIdle: true);
+        print("Scheduled last lesson");
+      } catch (e) {}
+      print("Success !");
+    }
   }
 
   static Future<void> cancelOnGoingNotification() async {
@@ -278,12 +282,19 @@ class LocalNotification {
         }
       }
     }
-    Lesson getActualLesson = await getNextLesson(lessons);
+    Lesson currentLesson = getCurrentLesson(lessons);
+    Lesson nextLesson = getNextLesson(lessons);
+    Lesson lesson;
+    //Show next lesson if this one is after current datetime
+    if (nextLesson != null && nextLesson.start.isAfter(DateTime.now())) {
+      lesson = nextLesson;
+    } else {
+      lesson = currentLesson;
+    }
     //Logs for tests
-
-    await showOngoingNotification(getActualLesson);
-    if (getActualLesson != null) {
-      await logFile("Persistant login next lesson callback triggered for the lesson ${getActualLesson.codeMatiere} ${getActualLesson.room}");
+    await showOngoingNotification(lesson);
+    if (lesson != null) {
+      await logFile("Persistant login next lesson callback triggered for the lesson ${lesson.codeMatiere} ${lesson.room}");
     } else {
       await logFile("Persistant login next lesson callback triggered : you are in break.");
     }

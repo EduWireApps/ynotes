@@ -86,7 +86,8 @@ class APIEcoleDirecte extends API {
       if (req['code'] == 200) {
         try {
           //Put the value of the name in a variable
-          actualUser = req['data']['accounts'][0]['prenom'] ?? "Invité";;
+          actualUser = req['data']['accounts'][0]['prenom'] ?? "Invité";
+          ;
           CreateStorage("userFullName", actualUser ?? "");
           String userID = req['data']['accounts'][0]['id'].toString() ?? "";
           String classe;
@@ -401,10 +402,8 @@ Future getMails({bool checking}) async {
 Future readMail(String mailId, bool read) async {
   await EcoleDirecteMethod.testToken();
   String id = await storage.read(key: "userID");
-  var url = 'https://api.ecoledirecte.com/v3/eleves/$id/messages/${mailId}.awp?verbe=get';
-  if (read == false) {
-    url = url + "&mode=destinataire";
-  }
+  var url = 'https://api.ecoledirecte.com/v3/eleves/$id/messages/$mailId.awp?verbe=get&mode=destinataire';
+
   Map<String, String> headers = {"Content-type": "text/plain"};
   String data = 'data={"token": "$token"}';
   //encode Map to JSON
@@ -425,11 +424,12 @@ Future readMail(String mailId, bool read) async {
       }
       //Return an error
       else {
-        throw "Error.";
+        printWrapped(response.body);
+        throw "Error wrong internal status code ";
       }
     } else {
       print(response.statusCode);
-      throw "Error.";
+      throw "Error wrong status code";
     }
   } catch (e) {
     print("error during the mail reading $e");

@@ -260,10 +260,11 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
                                             Tab(
                                               child: GestureDetector(
                                                 onTap: () {
+                                                  _setCurrentIndex(1);
                                                   setState(() {
                                                     controller.index = 1;
                                                   });
-                                                  _setCurrentIndex(1);
+                                                  
                                                 },
                                                 child: AnimatedContainer(
                                                   margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.15),
@@ -416,7 +417,7 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
               children: <Widget>[
                 TabBarView(controller: controller, children: [
                   SpacePage(),
-                  SummaryPage(tabController: controller),
+                  SummaryPage(switchPage: _switchPage),
                   SingleChildScrollView(physics: NeverScrollableScrollPhysics(), child: GradesPage()),
                   SingleChildScrollView(physics: NeverScrollableScrollPhysics(), child: HomeworkPage()),
                   AnimatedContainer(
@@ -574,7 +575,7 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
       }
       if (await getSetting("agendaOnGoingNotification")) {
         print("Setting On going notification");
-        await LocalNotification.setOnGoingNotification();
+        await LocalNotification.setOnGoingNotification(dontShowActual: true);
       } else {
         print("On going notification disabled");
       }
@@ -592,9 +593,9 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
   _handleTabAnimation() {
     // gets the value of the animation. For example, if one is between the 1st and the 2nd tab, this value will be 0.5
     _aniValue = controller.animation.value;
-
     // if the button wasn't pressed, which means the user is swiping, and the amount swipped is less than 1 (this means that we're swiping through neighbor Tab Views)
-    if (!_buttonTap && ((_aniValue - _prevAniValue).abs() < 1)) {
+    if (!_buttonTap && ((_aniValue - _prevAniValue).abs() < 1) && (_aniValue - controller.index).abs() > 0.7) {
+      print("wow");
       // set the current tab index
       _setCurrentIndex(_aniValue.round());
     }
@@ -603,28 +604,26 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
     _prevAniValue = _aniValue;
   }
 
+  _switchPage(int index) {
+    _setCurrentIndex(index);
+    _scrollTo(index);
+  }
+
   // runs when the displayed tab changes
   _handleTabChange() {
     // if a button was tapped, change the current index
-    if (_buttonTap) _setCurrentIndex(controller.index);
+  _setCurrentIndex(controller.index);
 
-    // this resets the button tap
-    if ((controller.index == _prevControllerIndex) || (controller.index == _aniValue.round())) _buttonTap = false;
-
-    // save the previous controller index
-    _prevControllerIndex = controller.index;
   }
 
   _setCurrentIndex(int index) {
-    // if we're actually changing the index
-    if (index != _currentIndex) {
-      setState(() {
-        // change the index
-        _currentIndex = index;
-      });
-      // scroll the TabBar to the correct position (if we have a scrollable bar)
-      _scrollTo(index);
-    }
+    setState(() {
+      // change the index
+      _currentIndex = index;
+      //controller.index = index;
+    });
+    // scroll the TabBar to the correct position (if we have a scrollable bar)
+    //
   }
 
   _scrollTo(int index) {
