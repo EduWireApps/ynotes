@@ -285,7 +285,7 @@ class APIPronote extends API {
         }
       } catch (e) {
         loginLock = false;
-        await logFile(e.toString());
+
         print(e);
         String error = "Une erreur a eu lieu.";
         if (e.toString().contains("invalid url")) {
@@ -306,8 +306,7 @@ class APIPronote extends API {
         if (e.toString().contains("nombre d'erreurs d'authentification autorisées")) {
           error = "Vous avez dépassé le nombre d'erreurs d'authentification authorisées ! Réessayez dans quelques minutes.";
         }
-        return (error);
-
+        await logFile(error);
         return (error);
       }
     } else {
