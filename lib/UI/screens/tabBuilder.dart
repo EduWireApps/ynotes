@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart';
@@ -12,7 +13,7 @@ import 'package:provider/provider.dart';
 import 'package:shake/shake.dart';
 import 'package:stacked/stacked.dart';
 import 'package:wiredash/wiredash.dart';
-import 'package:ynotes/UI/components/dialogs.dart';
+import 'package:ynotes/UI/components/shifting_tabbar-master/shifting_tabbar.dart';
 import 'package:ynotes/UI/screens/homeworkPage.dart';
 import 'package:ynotes/UI/screens/gradesPage.dart';
 import 'package:ynotes/UI/screens/spacePage.dart';
@@ -81,12 +82,10 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    
     // this creates the controller with 6 tabs (in our case)
     controller = TabController(vsync: this, length: 5, initialIndex: 1);
-    // this will execute the function every time there's a swipe animation
-    controller.animation.addListener(_handleTabAnimation);
-    // this will execute the function every time the _controller.index value changes
-    controller.addListener(_handleTabChange);
+
     showTransparentLoginStatusController = AnimationController(vsync: this, duration: Duration(milliseconds: 450));
     showTransparentLoginStatus = new Tween(
       begin: 1.0,
@@ -148,9 +147,6 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     MediaQueryData screenSize;
     screenSize = MediaQuery.of(context);
-    ShakeDetector detector = ShakeDetector.autoStart(onPhoneShake: () {
-      callbackOnShake(context);
-    });
 
     double extrasize = 0;
     return WillPopScope(
@@ -159,374 +155,162 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
         return false;
       },
       //PAppbar
-      child: Scaffold(
-          resizeToAvoidBottomInset: false,
-          backgroundColor: Theme.of(context).backgroundColor,
-          bottomNavigationBar: Container(
-              color: isQuickMenuShown ? Colors.black.withOpacity(0.5) : null,
+      child: DefaultTabController(
+        length: 5,
+        child: Scaffold(
+            resizeToAvoidBottomInset: false,
+            backgroundColor: Theme.of(context).backgroundColor,
+            bottomNavigationBar: PreferredSize(
+              preferredSize: Size.fromHeight(screenSize.size.height / 10 * 0.9),
               child: Container(
-                  decoration: BoxDecoration(borderRadius: BorderRadius.only(topLeft: Radius.circular(30), topRight: Radius.circular(30))),
-                  width: screenSize.size.width,
-                  height: screenSize.size.height / 10 * 1,
-                  child: ClipRRect(
-                      child: Container(
-                          padding: EdgeInsets.only(left: screenSize.size.height / 10 * 0.025, right: screenSize.size.height / 10 * 0.025),
-                          decoration: BoxDecoration(borderRadius: BorderRadius.only(topLeft: Radius.circular(30), topRight: Radius.circular(30)), color: Theme.of(context).primaryColor),
-                          child: Container(
-                            child: Stack(
-                              children: [
-                                Align(
-                                  alignment: Alignment.center,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.all(
-                                      Radius.circular(60),
-                                    )),
-                                    child: Theme(
-                                      data: ThemeData(
-                                        splashColor: Colors.transparent,
-                                        highlightColor: Colors.transparent,
-                                      ),
-                                      child: TabBar(
-                                          onTap: (index) {
-                                            setState(() {
-                                              controller.index = index;
-                                            });
-                                            _setCurrentIndex(index);
-                                          },
-                                          controller: controller,
-                                          labelColor: Colors.white,
-                                          labelPadding: EdgeInsets.all(0),
-                                          unselectedLabelColor: Colors.white,
-                                          indicatorSize: TabBarIndicatorSize.label,
-                                          isScrollable: true,
-                                          indicatorPadding: EdgeInsets.only(bottom: 0),
-                                          indicator: BoxDecoration(
-                                              borderRadius: BorderRadius.all(
-                                                Radius.circular(30),
-                                              ),
-                                              color: Theme.of(context).indicatorColor),
-                                          tabs: [
-                                            //TODO : Start the space tab
-                                            ///Space tab
-                                            Tab(
-                                              child: GestureDetector(
-                                                onLongPressEnd: (_) {},
-                                                onTap: () {
-                                                  setState(() {
-                                                    controller.index = 0;
-                                                  });
-
-                                                  _setCurrentIndex(0);
-                                                  //removeQuickMenu();
-                                                },
-                                                onLongPress: () {},
-                                                child: Tab(
-                                                  child: AnimatedContainer(
-                                                    margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.15),
-                                                    duration: Duration(milliseconds: 170),
-                                                    width: (_currentIndex == 0 ? MediaQuery.of(context).size.width / 5 * 1.5 : MediaQuery.of(context).size.width / 5 * 0.5),
-                                                    child: Align(
-                                                      alignment: Alignment.center,
-                                                      child: Row(
-                                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                        children: <Widget>[
-                                                          AnimatedBuilder(
-                                                              animation: quickMenuButtonAnimation,
-                                                              builder: (context, snapshot) {
-                                                                return Transform.scale(
-                                                                  scale: quickMenuButtonAnimation.value,
-                                                                  child: Image(
-                                                                    image: AssetImage('assets/images/space/4.0x/space.png'),
-                                                                    width: MediaQuery.of(context).size.width / 10 * 0.7,
-                                                                  ),
-                                                                );
-                                                              }),
-                                                          if (_currentIndex == 0)
-                                                            Flexible(
-                                                              child: FittedBox(
-                                                                child: Text("Space", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black)),
-                                                              ),
-                                                            ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-
-                                            ///Summary page
-                                            Tab(
-                                              child: GestureDetector(
-                                                onTap: () {
-                                                  _setCurrentIndex(1);
-                                                  setState(() {
-                                                    controller.index = 1;
-                                                  });
-                                                  
-                                                },
-                                                child: AnimatedContainer(
-                                                  margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.15),
-                                                  duration: Duration(milliseconds: 170),
-                                                  width: (_currentIndex == 1 ? MediaQuery.of(context).size.width / 5 * 1.5 : MediaQuery.of(context).size.width / 5 * 0.5),
-                                                  child: Align(
-                                                    alignment: Alignment.center,
-                                                    child: Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                      children: <Widget>[
-                                                        Icon(
-                                                          Icons.info,
-                                                          color: isDarkModeEnabled ? Colors.white : Colors.black,
-                                                        ),
-                                                        if (_currentIndex == 1)
-                                                          Flexible(
-                                                            child: FittedBox(
-                                                              child: Text("Résumé", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black)),
-                                                            ),
-                                                          ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-
-                                            ///Grades page
-                                            Badge(
-                                              animationType: BadgeAnimationType.scale,
-                                              toAnimate: true,
-                                              showBadge: newGrades,
-                                              elevation: 0,
-                                              position: BadgePosition.topRight(right: MediaQuery.of(context).size.width / 10 * 0.001, top: MediaQuery.of(context).size.height / 15 * 0.11),
-                                              badgeColor: Colors.blue,
-                                              child: GestureDetector(
-                                                onTap: () {
-                                                  setState(() {
-                                                    controller.index = 2;
-                                                  });
-                                                  _setCurrentIndex(2);
-                                                },
-                                                child: Tab(
-                                                  child: AnimatedContainer(
-                                                    margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.15),
-                                                    duration: Duration(milliseconds: 170),
-                                                    width: (_currentIndex == 2 ? MediaQuery.of(context).size.width / 5 * 1.5 : MediaQuery.of(context).size.width / 5 * 0.5),
-                                                    child: Align(
-                                                      alignment: Alignment.center,
-                                                      child: Row(
-                                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                        children: <Widget>[
-                                                          Icon(
-                                                            Icons.format_list_numbered,
-                                                            color: isDarkModeEnabled ? Colors.white : Colors.black,
-                                                          ),
-                                                          if (_currentIndex == 2)
-                                                            Flexible(
-                                                              child: FittedBox(
-                                                                child: Text("Notes", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black)),
-                                                              ),
-                                                            ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-
-                                            ///Homework page
-                                            AnimatedContainer(
-                                              margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.15),
-                                              duration: Duration(milliseconds: 170),
-                                              width: (_currentIndex == 3 ? MediaQuery.of(context).size.width / 5 * 1.2 : MediaQuery.of(context).size.width / 5 * 0.45),
-                                              child: GestureDetector(
-                                                onTap: () {
-                                                  setState(() {
-                                                    controller.index = 3;
-                                                  });
-                                                  _setCurrentIndex(3);
-                                                },
-                                                child: Tab(
-                                                  child: Align(
-                                                    alignment: Alignment.center,
-                                                    child: Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                      children: <Widget>[
-                                                        Icon(
-                                                          MdiIcons.viewAgenda,
-                                                          color: isDarkModeEnabled ? Colors.white : Colors.black,
-                                                        ),
-                                                        if (_currentIndex == 3)
-                                                          Flexible(
-                                                            child: FittedBox(
-                                                              child: Text("Devoirs", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black)),
-                                                            ),
-                                                          ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-
-                                            ///Apps page
-                                            GestureDetector(
-                                              onTap: () {
-                                                setState(() {
-                                                  controller.index = 4;
-                                                });
-                                                _setCurrentIndex(4);
-                                              },
-                                              child: AnimatedContainer(
-                                                duration: Duration(milliseconds: 170),
-                                                margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.15),
-                                                width: (_currentIndex == 4 ? MediaQuery.of(context).size.width / 5 * 1.5 : MediaQuery.of(context).size.width / 5 * 0.5),
-                                                child: Tab(
-                                                  child: Align(
-                                                    alignment: Alignment.center,
-                                                    child: Row(
-                                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                      children: <Widget>[
-                                                        Icon(
-                                                          Icons.apps,
-                                                          color: isDarkModeEnabled ? Colors.white : Colors.black,
-                                                        ),
-                                                        if (_currentIndex == 4)
-                                                          Flexible(
-                                                            child: FittedBox(
-                                                              fit: BoxFit.fitWidth,
-                                                              child: Text("Applications", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black)),
-                                                            ),
-                                                          ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            )
-                                          ]),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ))))),
-          body: Container(
-            child: Stack(
-              children: <Widget>[
-                TabBarView(controller: controller, children: [
-                  SpacePage(),
-                  SummaryPage(switchPage: _switchPage),
-                  SingleChildScrollView(physics: NeverScrollableScrollPhysics(), child: GradesPage()),
-                  SingleChildScrollView(physics: NeverScrollableScrollPhysics(), child: HomeworkPage()),
-                  AnimatedContainer(
-                      duration: Duration(milliseconds: 200),
-                      margin: EdgeInsets.only(top: isOffline ? screenSize.size.height / 10 * 0.4 : 0),
-                      child: AppsPage(
-                        rootcontext: this.context,
-                      ))
-                ]),
-                if (isQuickMenuShown)
-                  Positioned(
-                    top: screenSize.size.height / 10 * 0.1,
-                    child: AnimatedContainer(
-                      duration: Duration(milliseconds: 800),
-                      color: isQuickMenuShown ? Colors.black.withOpacity(0.5) : Colors.black.withOpacity(0),
-                      height: MediaQuery.of(context).size.height,
-                      width: MediaQuery.of(context).size.width,
+                height: screenSize.size.height / 10 * 0.9,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(30), topRight: Radius.circular(30)),
+                  child: Container(
+                    color: Theme.of(context).primaryColor,
+                    child: ShiftingTabBar(
+                      // Specify a color to background or it will pick it from primaryColor of your app ThemeData
+                      color: Colors.transparent,
+                      controller: controller,
+                      labelStyle: TextStyle(color: isDarkModeEnabled ? Colors.white : Colors.black, fontFamily: "Asap"),
+                      // You can change brightness manually to change text color style to dark and light or
+                      // it will decide based on your background color
+                      // brightness: Brightness.dark,
+                      tabs: [
+                        // Also you should use ShiftingTab widget instead of Tab widget to get shifting animation
+                        ShiftingTab(
+                          icon: Icon(Icons.home, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                          text: "Space",
+                        ),
+                        ShiftingTab(
+                          icon: Icon(Icons.insert_chart, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                          text: "Résumé",
+                        ),
+                        ShiftingTab(icon: Icon(MdiIcons.formatListNumbered, color: isDarkModeEnabled ? Colors.white : Colors.black), text: "Notes"),
+                        ShiftingTab(icon: Icon(MdiIcons.viewAgenda, color: isDarkModeEnabled ? Colors.white : Colors.black), text: "Devoirs"),
+                        ShiftingTab(icon: Icon(MdiIcons.appsBox, color: isDarkModeEnabled ? Colors.white : Colors.black), text: "Apps"),
+                      ],
                     ),
                   ),
-                //Transparent login panel
-                ChangeNotifierProvider.value(
-                  value: tlogin,
-                  child: Consumer<TransparentLogin>(builder: (context, model, child) {
-                    if (model.actualState != loginStatus.loggedIn) {
-                      showTransparentLoginStatusController.forward();
-                    } else {
-                      showTransparentLoginStatusController.reverse();
-                    }
-                    return AnimatedBuilder(
-                        animation: showTransparentLoginStatus,
-                        builder: (context, snapshot) {
-                          return Transform.translate(
-                            offset: Offset(0, -screenSize.size.height / 10 * 1.2 * showTransparentLoginStatus.value),
-                            child: Opacity(
-                              opacity: 0.55,
-                              child: Container(
-                                margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.15, right: screenSize.size.width / 5 * 0.15),
-                                height: screenSize.size.height / 10 * 0.55,
-                                decoration: BoxDecoration(
-                                  color: case2(model.actualState, {
-                                    loginStatus.loggedIn: Colors.green,
-                                    loginStatus.loggedOff: Colors.grey,
-                                    loginStatus.error: Colors.red.shade500,
-                                    loginStatus.offline: Colors.orange,
-                                  }),
-                                  borderRadius: BorderRadius.all(Radius.circular(11)),
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    case2(
-                                      model.actualState,
-                                      {
-                                        loginStatus.loggedOff: SpinKitThreeBounce(
+                ),
+              ),
+            ),
+            body: Container(
+              child: Stack(
+                children: <Widget>[
+                  TabBarView(physics: BouncingScrollPhysics(), controller: controller, children: [
+                    SpacePage(),
+                    SummaryPage(switchPage: _switchPage),
+                    SingleChildScrollView(physics: NeverScrollableScrollPhysics(), child: GradesPage()),
+                    SingleChildScrollView(physics: NeverScrollableScrollPhysics(), child: HomeworkPage()),
+                    AnimatedContainer(
+                        duration: Duration(milliseconds: 200),
+                        margin: EdgeInsets.only(top: isOffline ? screenSize.size.height / 10 * 0.4 : 0),
+                        child: AppsPage(
+                          rootcontext: this.context,
+                        ))
+                  ]),
+                  if (isQuickMenuShown)
+                    Positioned(
+                      top: screenSize.size.height / 10 * 0.1,
+                      child: AnimatedContainer(
+                        duration: Duration(milliseconds: 800),
+                        color: isQuickMenuShown ? Colors.black.withOpacity(0.5) : Colors.black.withOpacity(0),
+                        height: MediaQuery.of(context).size.height,
+                        width: MediaQuery.of(context).size.width,
+                      ),
+                    ),
+                  //Transparent login panel
+                  ChangeNotifierProvider.value(
+                    value: tlogin,
+                    child: Consumer<TransparentLogin>(builder: (context, model, child) {
+                      if (model.actualState != loginStatus.loggedIn) {
+                        showTransparentLoginStatusController.forward();
+                      } else {
+                        showTransparentLoginStatusController.reverse();
+                      }
+                      return AnimatedBuilder(
+                          animation: showTransparentLoginStatus,
+                          builder: (context, snapshot) {
+                            return Transform.translate(
+                              offset: Offset(0, -screenSize.size.height / 10 * 1.2 * showTransparentLoginStatus.value),
+                              child: Opacity(
+                                opacity: 0.55,
+                                child: Container(
+                                  margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.15, right: screenSize.size.width / 5 * 0.15),
+                                  height: screenSize.size.height / 10 * 0.55,
+                                  decoration: BoxDecoration(
+                                    color: case2(model.actualState, {
+                                      loginStatus.loggedIn: Colors.green,
+                                      loginStatus.loggedOff: Colors.grey,
+                                      loginStatus.error: Colors.red.shade500,
+                                      loginStatus.offline: Colors.orange,
+                                    }),
+                                    borderRadius: BorderRadius.all(Radius.circular(11)),
+                                  ),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      case2(
+                                        model.actualState,
+                                        {
+                                          loginStatus.loggedOff: SpinKitThreeBounce(
+                                            size: screenSize.size.width / 5 * 0.4,
+                                            color: Theme.of(context).primaryColorDark,
+                                          ),
+                                          loginStatus.offline: Icon(
+                                            MdiIcons.networkStrengthOff,
+                                            color: Theme.of(context).primaryColorDark,
+                                          ),
+                                          loginStatus.error: Icon(
+                                            MdiIcons.exclamation,
+                                            color: Theme.of(context).primaryColorDark,
+                                          ),
+                                          loginStatus.loggedIn: Icon(
+                                            MdiIcons.check,
+                                            color: Theme.of(context).primaryColorDark,
+                                          )
+                                        },
+                                        SpinKitThreeBounce(
                                           size: screenSize.size.width / 5 * 0.4,
                                           color: Theme.of(context).primaryColorDark,
                                         ),
-                                        loginStatus.offline: Icon(
-                                          MdiIcons.networkStrengthOff,
-                                          color: Theme.of(context).primaryColorDark,
-                                        ),
-                                        loginStatus.error: Icon(
-                                          MdiIcons.exclamation,
-                                          color: Theme.of(context).primaryColorDark,
-                                        ),
-                                        loginStatus.loggedIn: Icon(
-                                          MdiIcons.check,
-                                          color: Theme.of(context).primaryColorDark,
-                                        )
-                                      },
-                                      SpinKitThreeBounce(
-                                        size: screenSize.size.width / 5 * 0.4,
-                                        color: Theme.of(context).primaryColorDark,
                                       ),
-                                    ),
-                                    FittedBox(
-                                      child: Row(
-                                        children: <Widget>[
-                                          Text(
-                                            model.details,
-                                            style: TextStyle(fontFamily: "Asap", color: Theme.of(context).primaryColorDark),
-                                          ),
-                                          SizedBox(
-                                            width: screenSize.size.width / 5 * 0.1,
-                                          ),
-                                          if (model.actualState == loginStatus.error)
-                                            GestureDetector(
-                                              onTap: () async {
-                                                await model.login();
-                                              },
-                                              child: Text(
-                                                "Réessayer",
-                                                style: TextStyle(fontFamily: "Asap", color: Colors.blue.shade50),
-                                              ),
+                                      FittedBox(
+                                        child: Row(
+                                          children: <Widget>[
+                                            Text(
+                                              model.details,
+                                              style: TextStyle(fontFamily: "Asap", color: Theme.of(context).primaryColorDark),
                                             ),
-                                        ],
-                                      ),
-                                    )
-                                  ],
+                                            SizedBox(
+                                              width: screenSize.size.width / 5 * 0.1,
+                                            ),
+                                            if (model.actualState == loginStatus.error)
+                                              GestureDetector(
+                                                onTap: () async {
+                                                  await model.login();
+                                                },
+                                                child: Text(
+                                                  "Réessayer",
+                                                  style: TextStyle(fontFamily: "Asap", color: Colors.blue.shade50),
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+                                      )
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          );
-                        });
-                  }),
-                ),
-              ],
-            ),
-          )),
+                            );
+                          });
+                    }),
+                  ),
+                ],
+              ),
+            )),
+      ),
     );
   }
 
@@ -589,41 +373,8 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
     if (!mounted) return;
   }
 
-  // runs during the switching tabs animation
-  _handleTabAnimation() {
-    // gets the value of the animation. For example, if one is between the 1st and the 2nd tab, this value will be 0.5
-    _aniValue = controller.animation.value;
-    // if the button wasn't pressed, which means the user is swiping, and the amount swipped is less than 1 (this means that we're swiping through neighbor Tab Views)
-    if (!_buttonTap && ((_aniValue - _prevAniValue).abs() < 1) && (_aniValue - controller.index).abs() > 0.7) {
-      print("wow");
-      // set the current tab index
-      _setCurrentIndex(_aniValue.round());
-    }
-
-    // save the previous Animation Value
-    _prevAniValue = _aniValue;
-  }
-
   _switchPage(int index) {
-    _setCurrentIndex(index);
     _scrollTo(index);
-  }
-
-  // runs when the displayed tab changes
-  _handleTabChange() {
-    // if a button was tapped, change the current index
-  _setCurrentIndex(controller.index);
-
-  }
-
-  _setCurrentIndex(int index) {
-    setState(() {
-      // change the index
-      _currentIndex = index;
-      //controller.index = index;
-    });
-    // scroll the TabBar to the correct position (if we have a scrollable bar)
-    //
   }
 
   _scrollTo(int index) {

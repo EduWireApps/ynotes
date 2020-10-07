@@ -37,10 +37,7 @@ int initialIndexGradesOffset = 0;
 List specialties;
 List<Period> periods;
 
-class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
-  AnimationController circleAnimation;
-  Animation<double> movingCircle;
-  Animation<double> animateWidth;
+class _GradesPageState extends State<GradesPage> {
   ItemScrollController gradesItemScrollController = ItemScrollController();
   void initState() {
     super.initState();
@@ -52,7 +49,6 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
     //Get the actual periode (based on grades)
     getActualPeriode();
     getListSpecialties();
-    circleAnimation = AnimationController(duration: Duration(milliseconds: 450), vsync: this);
   }
 
   getListSpecialties() async {
@@ -266,12 +262,10 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
     average = 0;
     double counter = 0;
     disciplineList.where((i) => i.periode == periodeToUse).forEach((f) {
-      f.gradesList.forEach((z) {
-        if (z.letters == false && z.nonSignificatif == false && z.nomPeriode == periodeToUse) {
-          average += double.tryParse(z.valeur.replaceAll(',', '.')) * 20 / double.tryParse(z.noteSur.replaceAll(',', '.')) * double.tryParse(z.coef.replaceAll(',', '.'));
-          counter += double.tryParse(z.coef.replaceAll(',', '.'));
-        }
-      });
+      try {
+        average += double.tryParse(f.moyenneGenerale.replaceAll(',', '.')) * 20 / 20;
+      } catch (e) {}
+      counter += 1;
     });
     average = average / counter;
   }
@@ -505,7 +499,6 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
                     future: disciplinesListFuture,
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
                       if (snapshot.hasData) {
-                     
                         if (getDisciplinesForPeriod(snapshot.data, periodeToUse, filter).any((element) {
                           return (element.gradesList.length > 0);
                         })) {
@@ -574,7 +567,7 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
                         );
                       } else {
                         //Loading group
-                        return ScrollablePositionedList.builder(
+                        return ListView.builder(
                             itemCount: 5,
                             padding: EdgeInsets.all(screenSize.size.width / 5 * 0.3),
                             itemBuilder: (BuildContext context, int index) {
@@ -604,20 +597,6 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
                           getLastDiscipline = snapshot.data.lastWhere((disciplinesList) => disciplinesList.periode == periodeToUse);
                         } catch (exception) {}
 
-                        ///Animations for the averages section
-                        movingCircle = Tween<double>(begin: screenSize.size.width / 4, end: screenSize.size.width / 6 * 0.015).animate(CurvedAnimation(parent: circleAnimation, curve: Interval(0.7, 1.0, curve: Curves.fastOutSlowIn)))
-                          ..addListener(() {
-                            // Empty setState because the updated value is already in the animation field
-                            setState(() {});
-                          });
-
-                        animateWidth = Tween<double>(begin: 0, end: screenSize.size.width / 5 * 4).animate(CurvedAnimation(parent: circleAnimation, curve: Interval(0.7, 1.0, curve: Curves.fastOutSlowIn)))
-                          ..addListener(() {
-                            /// Empty setState because the updated value is already in the animation field
-                            setState(() {});
-                          });
-
-                        circleAnimation.forward();
                         //If everything is ok, show stuff
                         return Stack(
                           children: <Widget>[
@@ -625,7 +604,7 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
                               alignment: Alignment.center,
                               child: Container(
                                 height: (screenSize.size.height / 10 * 8.8) / 10 * 1.15,
-                                width: animateWidth.value,
+                                width: screenSize.size.width / 5 * 4,
                                 decoration: BoxDecoration(
                                   boxShadow: <BoxShadow>[
                                     BoxShadow(
@@ -706,7 +685,7 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
 
                             //Circle with the moyenneGenerale
                             Positioned(
-                              left: movingCircle.value,
+                              left: screenSize.size.width / 6 * 0.015,
                               top: (screenSize.size.height / 10 * 8.8) / 10 * 0.2,
                               child: Tooltip(
                                 message: "Moyenne calculée par yNotes en temps réel avec les données actuelles.",
@@ -773,8 +752,6 @@ class _GradesPageState extends State<GradesPage> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    circleAnimation.dispose();
-
     super.dispose();
   }
 }
@@ -1004,7 +981,6 @@ class _GradesGroupState extends State<GradesGroup> {
     } else {
       if (widget.disciplinevar.color != null) {
         colorGroup = Color(widget.disciplinevar.color);
-        
       }
     }
     MediaQueryData screenSize = MediaQuery.of(context);
@@ -1021,7 +997,9 @@ class _GradesGroupState extends State<GradesGroup> {
               String formattedDate = DateFormat('yyyy-MM-dd').format(now);
               if (localList != null && localList.length != null) {
                 try {
-                  marksColumnController.animateTo(localList.length * screenSize.size.width / 5 * 1.2, duration: new Duration(microseconds: 5), curve: Curves.ease);
+                  if (marksColumnController != null && marksColumnController.hasClients) {
+                    marksColumnController.animateTo(localList.length * screenSize.size.width / 5 * 1.2, duration: new Duration(microseconds: 5), curve: Curves.ease);
+                  }
                 } catch (e) {}
                 if (localList[index].dateSaisie == formattedDate) {
                   newGrades = true;

@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -8,7 +7,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:ynotes/UI/animations/FadeAnimation.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:flutter/src/scheduler/binding.dart';
 import 'package:ynotes/UI/components/modalsBottomSheets.dart';
@@ -23,18 +21,15 @@ import 'dart:async';
 import 'package:ynotes/UI/components/expandable_bottom_sheet-master/src/raw_expandable_bottom_sheet.dart';
 import 'dart:io';
 
-class Agenda extends StatefulWidget {
+class SpaceAgenda extends StatefulWidget {
   @override
-  _AgendaState createState() => _AgendaState();
+  _SpaceAgendaState createState() => _SpaceAgendaState();
 }
 
 enum explorerSortValue { date, reversed_date, name }
 Future agendaFuture;
 
-bool extended = false;
-
-class _AgendaState extends State<Agenda> {
-  GlobalKey<ExpandableBottomSheetState> expandableKey = new GlobalKey();
+class _SpaceAgendaState extends State<SpaceAgenda> {
   DateTime date = DateTime.now();
   @override
   List<FileInfo> listFiles;
@@ -314,174 +309,96 @@ class _AgendaState extends State<Agenda> {
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
     return Container(
-        height: screenSize.size.height / 10 * 6.5,
-        margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-          color: Theme.of(context).primaryColor,
-        ),
-        width: screenSize.size.width / 5 * 4.5,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-          child: Container(
+    height: screenSize.size.height / 10 * 6.5,
+    margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+      color: Theme.of(context).primaryColor,
+    ),
+    width: screenSize.size.width / 5 * 4.5,
+    child: ClipRRect(
+      borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+      child: Container(
+        width: screenSize.size.width,
+        height: screenSize.size.height,
+        child:  Container(
             width: screenSize.size.width,
             height: screenSize.size.height,
-            child: ExpandableBottomSheet(
-              animationCurveExpand: Curves.easeOutQuint,
-              onIsExtendedCallback: () {
-                setState(() {
-                  extended = true;
-                });
-              },
-              onIsContractedCallback: () {
-                setState(() {
-                  print("z");
-                  extended = false;
-                });
-              },
-              key: expandableKey,
-              background: Container(
-                width: screenSize.size.width,
-                height: screenSize.size.height,
-                padding: EdgeInsets.all(screenSize.size.width / 5 * 0.05),
-                child: SingleChildScrollView(
-                  physics: NeverScrollableScrollPhysics(),
-                  child: Column(
-                    children: <Widget>[
-                      _buildAgendaButtons(context),
-                      Container(
-                        height: screenSize.size.height / 10 * 5.8,
-                        padding: EdgeInsets.all(screenSize.size.height / 10 * 0.1),
-                        child: Stack(
-                          children: [
-                            FutureBuilder(
-                                future: agendaFuture,
-                                builder: (context, snapshot) {
-                                  if (snapshot.hasData && snapshot.data != null && snapshot.data.length != 0) {
-                                    return ClipRRect(
-                                      borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-                                      child: RefreshIndicator(
-                                        onRefresh: refreshAgendaFuture,
-                                        child: ListView.builder(
-                                            itemCount: snapshot.data.length,
-                                            itemBuilder: (BuildContext context, int index) {
-                                              return _buildAgendaElement(context, snapshot.data[index]);
-                                            }),
-                                      ),
-                                    );
-                                  }
-                                  if (snapshot.data != null && snapshot.data.length == 0) {
-                                    return Center(
-                                      child: FittedBox(
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            Container(
-                                              margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.5),
-                                              height: screenSize.size.height / 10 * 1.9,
-                                              child: Image(fit: BoxFit.fitWidth, image: AssetImage('assets/images/relax.png')),
-                                            ),
-                                            Text(
-                                              "Journée détente ?",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
-                                            ),
-                                            FlatButton(
-                                              onPressed: () {
-                                                //Reload list
-                                                getLessons(date);
-                                              },
-                                              child: snapshot.connectionState != ConnectionState.waiting
-                                                  ? Text("Recharger", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2))
-                                                  : FittedBox(child: SpinKitThreeBounce(color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4)),
-                                              shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(18.0), side: BorderSide(color: Theme.of(context).primaryColorDark)),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  } else {
-                                    return SpinKitFadingFour(
-                                      color: Theme.of(context).primaryColorDark,
-                                      size: screenSize.size.width / 5 * 1,
-                                    );
-                                  }
-                                }),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              persistentHeader: Container(
-                height: screenSize.size.width / 5 * 0.6,
-                width: screenSize.size.width,
-                child: GestureDetector(
-                  onTap: () {
-                    if (extended) {
-                      setState(() {
-                        extended = false;
-                      });
-                      expandableKey.currentState.contract();
-                    } 
-                  },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: screenSize.size.width / 5 * 0.05),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Color(0xff100A30), width: 0.000000000),
-                      borderRadius: BorderRadius.only(topLeft: Radius.circular(11), topRight: Radius.circular(11)),
-                      color: Color(0xff100A30),
-                    ),
-                    child: FittedBox(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [Transform.rotate(angle: extended ? 5 * pi : 0, child: Icon(Icons.arrow_drop_up, color: Colors.white)), Text("Après les cours", style: TextStyle(fontFamily: "Asap", color: Colors.white, fontSize: 11))],
-                      ),
-                    ),
-                    height: screenSize.size.width / 5 * 0.3,
-                    width: screenSize.size.width,
-                  ),
-                ),
-              ),
-              expandableContent: Container(
-           
-                  child: Container(
-                    height: screenSize.size.height / 10 * 5.1,
-                    width: screenSize.size.width,
-                    decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, stops: [0.01, 0.7], end: Alignment.bottomCenter, colors: [Color(0xff100A30), Colors.white])),
+            padding: EdgeInsets.all(screenSize.size.width / 5 * 0.05),
+            child: SingleChildScrollView(
+              physics: NeverScrollableScrollPhysics(),
+              child: Column(
+                children: <Widget>[
+                  _buildAgendaButtons(context),
+                  Container(
+                    height: screenSize.size.height / 10 * 5.8,
+                    padding: EdgeInsets.all(screenSize.size.height / 10 * 0.1),
                     child: Stack(
                       children: [
-                        if (extended)
-                          Align(
-                            alignment: Alignment.bottomCenter,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                FadeAnimation(
-                                  0.1,
-                                  Image(
-                                    image: AssetImage('assets/images/sportbag.png'),
-                                    width: screenSize.size.width / 5 * 3.5,
+                        FutureBuilder(
+                            future: agendaFuture,
+                            builder: (context, snapshot) {
+                              if (snapshot.hasData && snapshot.data != null && snapshot.data.length != 0) {
+                                return ClipRRect(
+                                  borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                                  child: RefreshIndicator(
+                                    onRefresh: refreshAgendaFuture,
+                                    child: ListView.builder(
+                                        itemCount: snapshot.data.length,
+                                        itemBuilder: (BuildContext context, int index) {
+                                          return _buildAgendaElement(context, snapshot.data[index]);
+                                        }),
                                   ),
-                                ),
-                                FadeAnimation(
-                                  0.2,
-                                  Text(
-                                    "yNotes vous rappellera bientôt vos cours de badminton (entre autres).",
-                                    style: TextStyle(fontFamily: "Asap", color: Colors.black),
-                                    textAlign: TextAlign.center,
+                                );
+                              }
+                              if (snapshot.data != null && snapshot.data.length == 0) {
+                                return Center(
+                                  child: FittedBox(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Container(
+                                          margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.5),
+                                          height: screenSize.size.height / 10 * 1.9,
+                                          child: Image(fit: BoxFit.fitWidth, image: AssetImage('assets/images/relax.png')),
+                                        ),
+                                        Text(
+                                          "Journée détente ?",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
+                                        ),
+                                        FlatButton(
+                                          onPressed: () {
+                                            //Reload list
+                                            getLessons(date);
+                                          },
+                                          child: snapshot.connectionState != ConnectionState.waiting
+                                              ? Text("Recharger", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2))
+                                              : FittedBox(child: SpinKitThreeBounce(color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4)),
+                                          shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(18.0), side: BorderSide(color: Theme.of(context).primaryColorDark)),
+                                        )
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          ),
+                                );
+                              } else {
+                                return SpinKitFadingFour(
+                                  color: Theme.of(context).primaryColorDark,
+                                  size: screenSize.size.width / 5 * 1,
+                                );
+                              }
+                            }),
                       ],
                     ),
-                  )),
+                  )
+                ],
+              ),
             ),
           ),
-        ));
+         
+        ),
+     
+    ));
   }
 }
 
@@ -697,39 +614,4 @@ class _AgendaElementState extends State<AgendaElement> {
   }
 }
 
-Lesson getCurrentLesson(List<Lesson> lessons, {DateTime now}) {
-  List<Lesson> dailyLessons = List();
-  Lesson lesson;
-  dailyLessons = lessons.where((lesson) => DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) == DateTime.parse(DateFormat("yyyy-MM-dd").format(now ?? DateTime.now()))).toList();
-  if (dailyLessons != null && dailyLessons.length != 0) {
-    //Get current lesson
-    try {
-      lesson = dailyLessons.firstWhere((lesson) => (now ?? DateTime.now()).isBefore(lesson.end) && (now ?? DateTime.now()).isAfter(lesson.start));
-    } catch (e) {
-      print(lessons);
-    }
 
-    return lesson;
-  } else {
-    return null;
-  }
-}
-
-getNextLesson(List<Lesson> lessons) {
-  List<Lesson> dailyLessons = List();
-  Lesson lesson;
-  dailyLessons = lessons.where((lesson) => DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) == DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now()))).toList();
-  if (dailyLessons != null && dailyLessons.length != 0) {
-    //Get current lesson
-    try {
-      dailyLessons.sort((a, b) => a.start.compareTo(b.start));
-      lesson = dailyLessons.firstWhere((lesson) => DateTime.now().isBefore(lesson.start));
-    } catch (e) {
-      print(e.toString());
-    }
-
-    return lesson;
-  } else {
-    return null;
-  }
-}

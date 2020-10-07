@@ -219,16 +219,15 @@ List<Grade> allGradesOld;
 //Get only grades as a list
 List<Grade> getAllGrades(List<Discipline> list, {bool overrideLimit = false}) {
   List<Grade> listToReturn = List();
-  if (localApi.gradesList != null && localApi.gradesList.length > 0) {
-    return localApi.gradesList;
-  } else {
-    list.forEach((element) {
-      element.gradesList.forEach((grade) {
-        if (!listToReturn.contains(grade)) {
-          listToReturn.add(grade);
-        }
-      });
+  list.forEach((element) {
+    element.gradesList.forEach((grade) {
+      if (!listToReturn.contains(grade)) {
+        listToReturn.add(grade);
+      }
     });
+  });
+  if (localApi.gradesList != null && localApi.gradesList.length > 0 && listToReturn.length == localApi.gradesList.length) {
+    return localApi.gradesList;
   }
   listToReturn = listToReturn.toSet().toList();
   //print("Refreshing all grades");
@@ -248,6 +247,7 @@ List<Grade> getAllGrades(List<Discipline> list, {bool overrideLimit = false}) {
   if (localApi.gradesList == null) {
     localApi.gradesList = List<Grade>();
   }
+  localApi.gradesList.clear();
   localApi.gradesList.addAll(listToReturn);
 
   if (overrideLimit == false && listToReturn != null) {

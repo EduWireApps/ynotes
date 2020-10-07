@@ -281,10 +281,21 @@ class Offline {
   Future<List<Lesson>> lessons(int week) async {
     try {
       if (lessonsData != null && lessonsData[week] != null) {
-        return lessonsData[week].cast<Lesson>();
+       
+        List<Lesson> lessons = List();
+        lessons.addAll(lessonsData[week].cast<Lesson>());
+        return lessons;
       } else {
         await refreshData();
-        return lessonsData[week].cast<Lesson>();
+        if (lessonsData[week] != null) {
+          print("WAZA678");
+          List<Lesson> lessons = List();
+          lessons.addAll(lessonsData[week].cast<Lesson>());
+          return lessons;
+        } else {
+          print("WAZA");
+          return null;
+        }
       }
     } catch (e) {
       print("Error while returning lessons " + e.toString());

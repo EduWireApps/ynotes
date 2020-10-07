@@ -219,6 +219,7 @@ class APIPronote extends API {
         DateTime now = DateTime.now();
         List<Homework> listHW = List<Homework>();
         List<Homework> hws = await localClient.homework(now);
+        hws.removeWhere((element) => element.date.isBefore(now));
         listHW.addAll(hws);
         List<DateTime> pinnedDates = await offline.getPinnedHomeworkDates();
         //Add pinned content
@@ -440,18 +441,17 @@ class APIPronote extends API {
     if (lessonsLock == false) {
       lessonsLock = true;
       try {
-        toReturn = List();
-
         //get lessons from offline storage
         var offlineLesson = await offline.lessons(await get_week(dateToUse));
         if (offlineLesson != null) {
+          toReturn = List();
           toReturn.addAll(offlineLesson);
 
           //filter lessons
           toReturn.removeWhere((lesson) => DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) != DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)));
         }
         //Check if needed to force refresh if not offline
-        if (forceReload == true || toReturn == null || toReturn.length == 0 && connectivityResult != ConnectivityResult.none) {
+        if ((forceReload == true || toReturn == null) && connectivityResult != ConnectivityResult.none) {
           try {
             List<Lesson> onlineLessons = await localClient.lessons(dateToUse);
 

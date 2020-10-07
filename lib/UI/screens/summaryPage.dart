@@ -408,6 +408,7 @@ class _SummaryPageState extends State<SummaryPage> {
                             children: <Widget>[
                               Center(
                                 child: PageView.builder(
+                                  physics: BouncingScrollPhysics(),
                                     controller: _pageControllerSummaryPage,
                                     itemCount: getAllGrades(snapshot.data).length,
                                     itemBuilder: (context, position) {

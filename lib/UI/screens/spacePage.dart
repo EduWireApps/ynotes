@@ -151,25 +151,27 @@ class _SpacePageState extends State<SpacePage> with TickerProviderStateMixin {
                                 Container(
                                   height: screenSize.size.height / 10 * 6.8,
                                   child: SingleChildScrollView(
+                                    physics: segmentedControlGroupValue == 1 ? NeverScrollableScrollPhysics() : BouncingScrollPhysics(),
                                     padding: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.3),
                                     scrollDirection: Axis.vertical,
                                     child: Column(
                                       children: <Widget>[
                                         AnimatedSwitcher(
-                                            duration: const Duration(milliseconds: 400),
-                                            transitionBuilder: (Widget child, Animation<double> animation) {
-                                              return FadeTransition(child: child, opacity: animation);
-                                            },
-                                            child: segmentedControlGroupValue == 0
-                                                ? Column(
-                                                    key: ValueKey<int>(segmentedControlGroupValue),
-                                                    children: [
-                                                      DownloadsExplorer(),
-                                                      //News
-                                                      News(),
-                                                    ],
-                                                  )
-                                                : Agenda()),
+                                          duration: const Duration(milliseconds: 400),
+                                          transitionBuilder: (Widget child, Animation<double> animation) {
+                                            return FadeTransition(child: child, opacity: animation);
+                                          },
+                                          child: segmentedControlGroupValue == 0
+                                              ? Column(
+                                                  key: ValueKey<int>(segmentedControlGroupValue),
+                                                  children: [
+                                                    DownloadsExplorer(),
+                                                    //News
+                                                    News(),
+                                                  ],
+                                                )
+                                              : Agenda(),
+                                        )
 
                                         //News
                                       ],

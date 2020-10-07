@@ -93,19 +93,13 @@ class _SpaceOverlayState extends State<SpaceOverlay> with TickerProviderStateMix
       color: Colors.black.withOpacity(0.2),
       child: Stack(
         children: [
-          GestureDetector(
-            onHorizontalDragUpdate: (e) {
-              setState(() {
-                i = e.delta;
-              });
-            },
-            child: Transform.translate(
-              offset: i,
-              child: Container(
-                width: getWidgetHeight() / 5 * 0.8,
-                height: getWidgetHeight() / 5 * 0.8,
-                child: buildExpandingCircle(),
-              ),
+          Positioned(
+            left: 0,
+            bottom: 0,
+            child: Container(
+              width: getWidgetHeight() / 5 * 0.8,
+              height: getWidgetHeight() / 5 * 0.8,
+              child: buildExpandingCircle(),
             ),
           )
         ],
@@ -115,17 +109,17 @@ class _SpaceOverlayState extends State<SpaceOverlay> with TickerProviderStateMix
 
   buildExpandingCircle() {
     return Material(
-      borderRadius: BorderRadius.circular(15),
+      borderRadius: BorderRadius.only(topRight: Radius.circular(1000)),
       color: Colors.blue,
       child: InkWell(
         onTap: () {
           showAnimationController.forward();
         },
-        borderRadius: BorderRadius.circular(15),
+        borderRadius: BorderRadius.only(topRight: Radius.circular(1000)),
         child: Container(
           decoration: BoxDecoration(
             color: Colors.blue,
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.only(topRight: Radius.circular(1000)),
           ),
         ),
       ),

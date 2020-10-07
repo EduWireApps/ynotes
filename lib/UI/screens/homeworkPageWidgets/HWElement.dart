@@ -110,19 +110,22 @@ class _HomeworkElementState extends State<HomeworkElement> {
                           children: <Widget>[
                             if (this.widget.homeworkForThisDay.interrogation == true && isExpanded)
                               Container(
+                                margin: EdgeInsets.only(top: screenSize.size.width / 10 * 0.15),
+                                padding: EdgeInsets.all(screenSize.size.width / 10 * 0.01),
                                 width: screenSize.size.width / 5 * 4.4,
                                 height: screenSize.size.width / 10 * 0.5,
                                 decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.only(topRight: Radius.circular(15)),
                                     color: Colors.orangeAccent,
                                     border: Border.all(
                                       width: 0,
                                       color: Colors.transparent,
                                     )),
-                                child: Text(
-                                  "Interrogation",
-                                  style: TextStyle(fontFamily: "Asap", color: Colors.white),
-                                  textAlign: TextAlign.center,
+                                child: FittedBox(
+                                  child: Text(
+                                    "Interrogation",
+                                    style: TextStyle(fontFamily: "Asap", color: Colors.white),
+                                    textAlign: TextAlign.center,
+                                  ),
                                 ),
                               ),
                             Container(

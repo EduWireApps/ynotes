@@ -217,18 +217,22 @@ class APIEcoleDirecte extends API {
   Future getNextLessons(DateTime dateToUse, {bool forceReload = false}) async {
     try {
       int week = await get_week(dateToUse);
-      List<Lesson> toReturn = List();
+      List<Lesson> toReturn;
       var connectivityResult = await (Connectivity().checkConnectivity());
       //get lessons from offline storage
       var offlineLesson = await offline.lessons(week);
       if (offlineLesson != null) {
+        //Important init to return
+        toReturn = List();
         toReturn.addAll(offlineLesson);
-
+        print(toReturn.last.matiere);
         //filter lessons
         toReturn.removeWhere((lesson) => DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) != DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)));
+      } else {
+        toReturn = null;
       }
       //Check if needed to force refresh if not offline
-      if (forceReload == true || toReturn == null || toReturn.length == 0 && connectivityResult != ConnectivityResult.none) {
+      if ((forceReload == true || toReturn == null) && connectivityResult != ConnectivityResult.none) {
         try {
           List<Lesson> onlineLessons = await EcoleDirecteMethod.lessons(dateToUse, week);
 
