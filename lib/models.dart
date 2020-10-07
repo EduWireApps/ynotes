@@ -32,7 +32,6 @@ class DownloadModel extends ChangeNotifier {
         bool toReturn = false;
         await Future.forEach(list, (element) async {
           if (filename == await FileAppUtil.getFileNameWithExtension(element)) {
-            print("ok");
             toReturn = true;
           }
         });

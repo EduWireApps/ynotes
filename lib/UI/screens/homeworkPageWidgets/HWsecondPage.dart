@@ -8,7 +8,7 @@ import 'package:ynotes/offline.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/main.dart';
 
-import 'HWElement.dart';
+import 'HWelement.dart';
 
 class HomeworkSecondPage extends StatefulWidget {
   final Function animateToPage;

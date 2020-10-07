@@ -260,13 +260,17 @@ class _GradesPageState extends State<GradesPage> {
   ///Calculate the user average
   void setAverage(List<Discipline> disciplineList) {
     average = 0;
-    double counter = 0;
+    double counter = 0.0;
     disciplineList.where((i) => i.periode == periodeToUse).forEach((f) {
       try {
-        average += double.tryParse(f.moyenneGenerale.replaceAll(',', '.')) * 20 / 20;
+        var doubleAverage = double.tryParse(f.moyenne.replaceAll(',', '.'));
+        if (doubleAverage != null) {
+          average += doubleAverage;
+          counter += 1;
+        }
       } catch (e) {}
-      counter += 1;
     });
+
     average = average / counter;
   }
 
@@ -687,32 +691,26 @@ class _GradesPageState extends State<GradesPage> {
                             Positioned(
                               left: screenSize.size.width / 6 * 0.015,
                               top: (screenSize.size.height / 10 * 8.8) / 10 * 0.2,
-                              child: Tooltip(
-                                message: "Moyenne calculée par yNotes en temps réel avec les données actuelles.",
-                                preferBelow: false,
-                                verticalOffset: -(screenSize.size.height / 10 * 1.1),
-                                decoration: BoxDecoration(color: Colors.black),
-                                child: Container(
-                                  padding: EdgeInsets.all(screenSize.size.height / 10 * 0.3),
-                                  width: screenSize.size.width / 5 * 1.5,
-                                  height: (screenSize.size.height / 10 * 8.8) / 10 * 1.4,
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      boxShadow: <BoxShadow>[
-                                        BoxShadow(
-                                          blurRadius: 2.67,
-                                          color: Colors.black.withOpacity(0.2),
-                                          offset: Offset(0, 2.67),
-                                        ),
-                                      ],
-                                      color: (filter == "all" ? Colors.white : Colors.green)),
-                                  child: Center(
-                                    child: FittedBox(
-                                      child: Text(
-                                        (average.toString() != null && !average.isNaN ? average.toStringAsFixed(2) : "-"),
-                                        style: TextStyle(color: Colors.black, fontFamily: "Asap", fontSize: (screenSize.size.width / 5) * 0.35),
-                                        textAlign: TextAlign.center,
+                              child: Container(
+                                padding: EdgeInsets.all(screenSize.size.height / 10 * 0.3),
+                                width: screenSize.size.width / 5 * 1.5,
+                                height: (screenSize.size.height / 10 * 8.8) / 10 * 1.4,
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    boxShadow: <BoxShadow>[
+                                      BoxShadow(
+                                        blurRadius: 2.67,
+                                        color: Colors.black.withOpacity(0.2),
+                                        offset: Offset(0, 2.67),
                                       ),
+                                    ],
+                                    color: (filter == "all" ? Colors.white : Colors.green)),
+                                child: Center(
+                                  child: FittedBox(
+                                    child: Text(
+                                      (average.toString() != null && !average.isNaN ? average.toStringAsFixed(2) : "-"),
+                                      style: TextStyle(color: Colors.black, fontFamily: "Asap", fontSize: (screenSize.size.width / 5) * 0.35),
+                                      textAlign: TextAlign.center,
                                     ),
                                   ),
                                 ),

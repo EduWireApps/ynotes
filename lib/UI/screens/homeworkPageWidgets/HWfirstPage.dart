@@ -5,7 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/UI/screens/homeworkPage.dart';
-import 'package:ynotes/UI/screens/homeworkPageWidgets/HWElement.dart';
+import 'package:ynotes/UI/screens/homeworkPageWidgets/HWelement.dart';
 import 'package:ynotes/offline.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/main.dart';

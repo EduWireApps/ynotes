@@ -113,7 +113,7 @@ class _HomeworkElementState extends State<HomeworkElement> {
                                 margin: EdgeInsets.only(top: screenSize.size.width / 10 * 0.15),
                                 padding: EdgeInsets.all(screenSize.size.width / 10 * 0.01),
                                 width: screenSize.size.width / 5 * 4.4,
-                                height: screenSize.size.width / 10 * 0.5,
+                                height: screenSize.size.width / 10 * 0.6,
                                 decoration: BoxDecoration(
                                     color: Colors.orangeAccent,
                                     border: Border.all(
@@ -441,14 +441,14 @@ class _HomeworkElementState extends State<HomeworkElement> {
                                           margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.15),
                                           width: screenSize.size.width / 5 * 0.15,
                                           height: screenSize.size.width / 5 * 0.15,
-                                          decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.redAccent),
+                                          decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.orangeAccent),
                                         ),
                                       if (widget.homeworkForThisDay.rendreEnLigne == true)
                                         Container(
                                           margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.15),
                                           width: screenSize.size.width / 5 * 0.15,
                                           height: screenSize.size.width / 5 * 0.15,
-                                          decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.orangeAccent),
+                                          decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.green),
                                         ),
                                       Container(
                                         width: screenSize.size.width / 5 * 0.5,
