@@ -274,6 +274,7 @@ class APIPronote extends API {
       try {
         var cookies = await callCas(cas, username, password, url ?? "");
         localClient = Client(url, username: username, password: password, cookies: cookies);
+       
         await localClient.init();
         if (localClient.logged_in) {
           this.loggedIn = true;
@@ -287,7 +288,7 @@ class APIPronote extends API {
         loginLock = false;
 
         print(e);
-        String error = "Une erreur a eu lieu.";
+        String error = "Une erreur a eu lieu. " + e.toString();
         if (e.toString().contains("invalid url")) {
           error = "L'URL entrée est invalide";
         }

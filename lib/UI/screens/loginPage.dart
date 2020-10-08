@@ -585,6 +585,7 @@ class _LoginPageState extends State<LoginPage> {
                                                                   //LOGIN AS pronote DEMO
                                                                   onLongPress: () {
                                                                     if (chosenParser == 1 && _url.text.length == 0 && _password.text.length == 0 && _username.text.length == 0) {
+                                                                      
                                                                       connectionData = localApi.login("demonstration", "pronotevs", url: "https://demo.index-education.net/pronote/eleve.html", cas: "Aucun");
 
                                                                       openLoadingDialog();

@@ -110,7 +110,7 @@ class Client {
     this.attributes = attributesandfunctions[0];
     this.func_options = attributesandfunctions[1];
 
-    if (this.attributes.toString().contains("e") && this.attributes.toString().contains("f")) {
+    if (this.attributes["e"] != null && this.attributes["f"] != null) {
       print("LOGIN AS ENT");
       this.ent = true;
     } else {
@@ -178,7 +178,6 @@ class Client {
 
     if (this.ent != null && this.ent == true) {
       List<int> encoded = utf8.encode(this.password);
-
       motdepasse = sha256.convert(encoded).bytes;
       motdepasse = hex.encode(motdepasse);
       motdepasse = motdepasse.toString().toUpperCase();
@@ -260,10 +259,10 @@ class Client {
   }
 
   downloadUrl(localapi.Document document) {
-    var data = {"N": document.id};
+    var data = {"N": document.id, "G": document.type};
     //Used by pronote to encrypt the data (I don't know why)
 
-    var magic_stuff = this.encryption.aes_encryptFromString('"' + jsonEncode((data)) + '"');
+    var magic_stuff = this.encryption.aes_encryptFromString(jsonEncode(data));
 
     String libelle = Uri.encodeComponent(Uri.encodeComponent(document.libelle));
     String url = this.communication.root_site + '/FichiersExternes/' + magic_stuff + '/' + libelle + '?Session=' + this.attributes['h'].toString();
@@ -311,7 +310,7 @@ class Client {
             try {
               //listDocs.add(localapi.Document(pj["L"], pj["N"], pj["G"].toString(), 0));
               if (pj["L"] == "The Tales of Mother Goose - Blue Beard.pdf") {
-                downloadUrl(localapi.Document(pj["L"], h["N"], pj["G"].toString(), 0));
+                downloadUrl(localapi.Document(pj["L"], pj["N"], pj["G"].toString(), 0));
                 print(pj.toString());
               }
             } catch (e) {}
@@ -437,12 +436,12 @@ class Client {
         "donnees": {
           "listeActualites": [
             {
-              "E":2,
+              "E": 2,
               "N": pollMapData["N"],
               "L": pollMapData["L"],
               "validationDirecte": true,
               "saisieActualite": false,
-              "supprimee":false,
+              "supprimee": false,
               "lue": (pollMapData["lue"] == "true"),
               "genrePublic": 4,
               "public": {"G": user["G"], "L": user["L"], "N": user["N"]},
@@ -452,7 +451,7 @@ class Client {
               ]
             },
           ],
-           "saisieActualite": false
+          "saisieActualite": false
         }
       };
       print(data);
@@ -593,16 +592,16 @@ class _Communication {
     // get rsa keys and session id
     String hostName = Requests.getHostname(this.root_site + "/" + this.html_page);
 
-    Requests.setStoredCookies(hostName, this.cookies);
     //set the cookies for ENT
     if (cookies != null) {
       print("Cookies set");
       Requests.setStoredCookies(hostName, this.cookies);
     }
-    print(this.root_site + "/" + this.html_page);
-    var headers = {'User-Agent': ' Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:80.0) Gecko/20100101 Firefox/80.0'};
 
-    var get_response = await Requests.get(this.root_site + "/" + this.html_page + "?fd=1", headers: headers).catchError((e) {
+    print(this.root_site + "/" + this.html_page);
+    var headers = {'connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/74.0'};
+
+    var get_response = await Requests.get(this.root_site + "/" + this.html_page + (this.cookies != null ? "?fd=1" : ''), headers: headers).catchError((e) {
       throw ("Impossible de se connecter");
     });
 
