@@ -9,7 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:flutter/src/scheduler/binding.dart';
-import 'package:ynotes/UI/components/modalsBottomSheets.dart';
+import 'package:ynotes/UI/components/modalBottomSheets/utils.dart';
 import 'package:ynotes/parsers/EcoleDirecte.dart';
 import 'package:ynotes/UI/utils/fileUtils.dart';
 import 'package:ynotes/main.dart';

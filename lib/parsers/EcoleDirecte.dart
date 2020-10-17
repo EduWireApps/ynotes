@@ -216,14 +216,26 @@ class APIEcoleDirecte extends API {
   @override
   Future getNextLessons(DateTime dateToUse, {bool forceReload = false}) async {
     try {
+      print("Getting next lessons");
       int week = await get_week(dateToUse);
       List<Lesson> toReturn;
+
       var connectivityResult = await (Connectivity().checkConnectivity());
       //get lessons from offline storage
       var offlineLesson = await offline.lessons(week);
       if (offlineLesson != null) {
         //Important init to return
         toReturn = List();
+
+        toReturn.add(Lesson(matiere: "zebi", id: "dsfdhsdhf", start: DateTime.parse("2020-10-12 06:43"), end: DateTime.parse("2020-10-12 08:32:00")));
+        toReturn.add(Lesson(matiere: "zebi", id: "dsfdghghjhsdhf", start: DateTime.parse("2020-10-12 06:43"), end: DateTime.parse("2020-10-12 08:32:00")));
+        toReturn.add(Lesson(matiere: "zebi", id: "dsfdhsdhf", start: DateTime.parse("2020-10-12 06:43"), end: DateTime.parse("2020-10-12 08:32:00")));
+        toReturn.add(Lesson(matiere: "zebi", id: "fdsfsdf", start: DateTime.parse("2020-10-12 08:33:12"), end: DateTime.parse("2020-10-12 09:20:08")));
+toReturn.add(Lesson(matiere: "zebi", id: "dsfdhsdhf", start: DateTime.parse("2020-10-12 09:43"), end: DateTime.parse("2020-10-12 10:32:00")));
+        toReturn.add(Lesson(matiere: "zebi", id: "dsgdsf", start: DateTime.parse("2020-10-12 08:33:12"), end: DateTime.parse("2020-10-12 09:20:08")));
+
+        toReturn.add(Lesson(matiere: "zebi", id: "fdsgsdgfsdf", start: DateTime.parse("2020-10-12 08:33:12"), end: DateTime.parse("2020-10-12 09:20:08")));
+
         toReturn.addAll(offlineLesson);
         print(toReturn.last.matiere);
         //filter lessons
@@ -231,6 +243,7 @@ class APIEcoleDirecte extends API {
       } else {
         toReturn = null;
       }
+
       //Check if needed to force refresh if not offline
       if ((forceReload == true || toReturn == null) && connectivityResult != ConnectivityResult.none) {
         try {

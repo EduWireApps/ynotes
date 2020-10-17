@@ -316,24 +316,11 @@ specialtiesSelectionAvailable() async {
     }
   } else {
     return [false];
-    /*SharedPreferences preferences = await SharedPreferences.getInstance();
-    String classe = await storage.read(key: "classe");
-    if (classe != null) {
-      if (classe.toLowerCase().contains("1e") || classe.toLowerCase().contains("terminale")) {
-        if (classe.toLowerCase().contains("1e")) {
-          classe = "Premiere";
-        }
-        if (classe.toLowerCase().contains("terminale")) {
-          classe = "Terminale";
-        }
-        return [true, classe];
-      } else {
-        return [false];
-      }
-    } else {
-      return [false];
-    }*/
   }
+}
+
+getEventColor(String eventID) {
+  return Colors.blue;
 }
 
 ReadStorage(_key) async {

@@ -11,11 +11,13 @@ import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:ynotes/UI/components/modalBottomSheets/disciplinesModalBottomSheet.dart';
+import 'package:ynotes/UI/components/modalBottomSheets/gradesModalBottomSheet.dart';
 import '../../apiManager.dart';
 import '../../usefulMethods.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:ynotes/main.dart';
-import 'package:ynotes/UI/components/modalsBottomSheets.dart';
+import 'package:ynotes/UI/components/modalBottomSheets/utils.dart';
 
 class GradesPage extends StatefulWidget {
   State<StatefulWidget> createState() {
@@ -1239,33 +1241,21 @@ class _GradesGroupState extends State<GradesGroup> {
         pageBuilder: (context, animation1, animation2) {});
   }
 
-  colorPicker(context, Discipline discipline, Function callback) async {
-    Color pickerColor = Color(widget.disciplinevar.color);
+  Color colorPicker(context, Color defaultColor) {
+    Color pickerColor = defaultColor;
 
     void changeColor(Color color) {
       setState(() {
         pickerColor = color;
       });
-      callback();
     }
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
     MediaQueryData screenSize = MediaQuery.of(context);
     showDialog(
       context: context,
       child: AlertDialog(
         backgroundColor: Theme.of(context).primaryColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0))),
-        title: Container(
-          width: screenSize.size.width / 20,
-          padding: EdgeInsets.all(5),
-          decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(25)), color: pickerColor),
-          child: Text(
-            discipline.nomDiscipline,
-            style: TextStyle(fontFamily: "Asap", fontSize: 17, fontWeight: FontWeight.w700),
-            textAlign: TextAlign.center,
-          ),
-        ),
         content: Container(
           //padding: EdgeInsets.all(screenSize.size.height/100),
 
@@ -1320,14 +1310,6 @@ class _GradesGroupState extends State<GradesGroup> {
               style: TextStyle(fontFamily: "Asap"),
             ),
             onPressed: () {
-              setState(() {
-                String test = pickerColor.toString();
-                String finalColor = "#" + test.toString().substring(10, test.length - 1);
-
-                prefs.setString(discipline.codeMatiere, finalColor);
-                discipline.setcolor = pickerColor;
-              });
-
               Navigator.of(context).pop();
             },
           ),
@@ -1337,17 +1319,7 @@ class _GradesGroupState extends State<GradesGroup> {
               style: TextStyle(color: Colors.green, fontFamily: "Asap"),
             ),
             onPressed: () {
-              setState(() {
-                String test = pickerColor.toString();
-                String finalColor = "#" + test.toString().substring(10, test.length - 1);
-
-                prefs.setString(discipline.codeMatiere, finalColor);
-                discipline.setcolor = pickerColor;
-
-                disciplinesListFuture = localApi.getGrades();
-              });
-
-              Navigator.of(context).pop();
+              Navigator.of(context).pop(pickerColor);
             },
           )
         ],

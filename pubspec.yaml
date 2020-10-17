@@ -12,7 +12,7 @@ description: yNotes application de gestion de vie scolaire
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.
 
-version: 0.8.14+7
+version: 0.8.14+8
 
 environment:
   sdk: ">=2.2.2 <3.0.0"
@@ -56,7 +56,7 @@ dependencies:
   hive_flutter: ^0.3.1
   flutter_local_notifications: ^1.4.3
   connectivity: ^0.4.8+6
-  background_fetch: "^0.5.1"
+  background_fetch: ^0.6.0
   scrollable_positioned_list: ^0.1.6
   package_info: ^0.4.0+16
   share: ^0.6.4+3
@@ -85,6 +85,8 @@ dependencies:
   visibility_detector: ^0.1.5
   shake: ^0.1.0
   shifting_tabbar: ^0.3.1
+  dotted_line: ^2.0.1
+  flutter_slidable: ^0.5.7
   wiredash:
     git:
       url: https://github.com/wiredashio/wiredash-sdk

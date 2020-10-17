@@ -11,8 +11,11 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:ynotes/UI/animations/FadeAnimation.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:flutter/src/scheduler/binding.dart';
-import 'package:ynotes/UI/components/modalsBottomSheets.dart';
+import 'package:ynotes/UI/components/modalBottomSheets/agendaEventBottomSheet.dart';
+import 'package:ynotes/UI/components/modalBottomSheets/utils.dart';
 import 'package:ynotes/UI/components/space/spaceOverlay.dart';
+import 'package:ynotes/UI/screens/spacePageWidgets/agendaElement.dart';
+import 'package:ynotes/UI/screens/spacePageWidgets/agendaGrid.dart';
 import 'package:ynotes/parsers/EcoleDirecte.dart';
 import '../../../background.dart';
 import '../../../usefulMethods.dart';
@@ -60,13 +63,15 @@ class _AgendaState extends State<Agenda> {
   }
 
   _buildFloatingButton(BuildContext context) {
+    var screenSize = MediaQuery.of(context);
     return FloatingActionButton(
+      backgroundColor: Colors.transparent,
       child: Container(
-        width: 60,
-        height: 60,
+        width: screenSize.size.width / 5 * 0.8,
+        height: screenSize.size.width / 5 * 0.8,
         child: Icon(
           Icons.add,
-          size: 40,
+          size: screenSize.size.width / 5 * 0.5,
         ),
         decoration: BoxDecoration(
             shape: BoxShape.circle,
@@ -77,7 +82,7 @@ class _AgendaState extends State<Agenda> {
             )),
       ),
       onPressed: () async {
-        //agendaEventBottomSheet(context);
+        agendaEventBottomSheet(context);
       },
     );
   }
@@ -305,11 +310,6 @@ class _AgendaState extends State<Agenda> {
     );
   }
 
-  _buildAgendaElement(BuildContext context, Lesson lesson) {
-    MediaQueryData screenSize = MediaQuery.of(context);
-    return AgendaElement(lesson);
-  }
-
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
@@ -321,132 +321,121 @@ class _AgendaState extends State<Agenda> {
           color: Theme.of(context).primaryColor,
         ),
         width: screenSize.size.width / 5 * 4.5,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-          child: Container(
-            width: screenSize.size.width,
-            height: screenSize.size.height,
-            child: ExpandableBottomSheet(
-              animationCurveExpand: Curves.easeOutQuint,
-              onIsExtendedCallback: () {
-                setState(() {
-                  extended = true;
-                });
-              },
-              onIsContractedCallback: () {
-                setState(() {
-                  print("z");
-                  extended = false;
-                });
-              },
-              key: expandableKey,
-              background: Container(
+        child: Stack(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+              child: Container(
                 width: screenSize.size.width,
                 height: screenSize.size.height,
-                padding: EdgeInsets.all(screenSize.size.width / 5 * 0.05),
-                child: SingleChildScrollView(
-                  physics: NeverScrollableScrollPhysics(),
-                  child: Column(
-                    children: <Widget>[
-                      _buildAgendaButtons(context),
-                      Container(
-                        height: screenSize.size.height / 10 * 5.8,
-                        padding: EdgeInsets.all(screenSize.size.height / 10 * 0.1),
-                        child: Stack(
-                          children: [
-                            FutureBuilder(
-                                future: agendaFuture,
-                                builder: (context, snapshot) {
-                                  if (snapshot.hasData && snapshot.data != null && snapshot.data.length != 0) {
-                                    return ClipRRect(
-                                      borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-                                      child: RefreshIndicator(
-                                        onRefresh: refreshAgendaFuture,
-                                        child: ListView.builder(
-                                            itemCount: snapshot.data.length,
-                                            itemBuilder: (BuildContext context, int index) {
-                                              return _buildAgendaElement(context, snapshot.data[index]);
-                                            }),
-                                      ),
-                                    );
-                                  }
-                                  if (snapshot.data != null && snapshot.data.length == 0) {
-                                    return Center(
-                                      child: FittedBox(
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: <Widget>[
-                                            Container(
-                                              margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.5),
-                                              height: screenSize.size.height / 10 * 1.9,
-                                              child: Image(fit: BoxFit.fitWidth, image: AssetImage('assets/images/relax.png')),
-                                            ),
-                                            Text(
-                                              "Journée détente ?",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
-                                            ),
-                                            FlatButton(
-                                              onPressed: () {
-                                                //Reload list
-                                                getLessons(date);
-                                              },
-                                              child: snapshot.connectionState != ConnectionState.waiting
-                                                  ? Text("Recharger", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2))
-                                                  : FittedBox(child: SpinKitThreeBounce(color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4)),
-                                              shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(18.0), side: BorderSide(color: Theme.of(context).primaryColorDark)),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    );
-                                  } else {
-                                    return SpinKitFadingFour(
-                                      color: Theme.of(context).primaryColorDark,
-                                      size: screenSize.size.width / 5 * 1,
-                                    );
-                                  }
-                                }),
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              persistentHeader: Container(
-                height: screenSize.size.width / 5 * 0.6,
-                width: screenSize.size.width,
-                child: GestureDetector(
-                  onTap: () {
-                    if (extended) {
-                      setState(() {
-                        extended = false;
-                      });
-                      expandableKey.currentState.contract();
-                    } 
+                child: ExpandableBottomSheet(
+                  animationCurveExpand: Curves.easeOutQuint,
+                  onIsExtendedCallback: () {
+                    setState(() {
+                      extended = true;
+                    });
                   },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(vertical: screenSize.size.width / 5 * 0.05),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Color(0xff100A30), width: 0.000000000),
-                      borderRadius: BorderRadius.only(topLeft: Radius.circular(11), topRight: Radius.circular(11)),
-                      color: Color(0xff100A30),
-                    ),
-                    child: FittedBox(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [Transform.rotate(angle: extended ? 5 * pi : 0, child: Icon(Icons.arrow_drop_up, color: Colors.white)), Text("Après les cours", style: TextStyle(fontFamily: "Asap", color: Colors.white, fontSize: 11))],
+                  onIsContractedCallback: () {
+                    setState(() {
+                      extended = false;
+                    });
+                  },
+                  key: expandableKey,
+                  background: Container(
+                    width: screenSize.size.width,
+                    height: screenSize.size.height,
+                    padding: EdgeInsets.all(screenSize.size.width / 5 * 0.05),
+                    child: SingleChildScrollView(
+                      physics: NeverScrollableScrollPhysics(),
+                      child: Column(
+                        children: <Widget>[
+                          _buildAgendaButtons(context),
+                          Container(
+                            height: screenSize.size.height / 10 * 5.8,
+                            child: Stack(
+                              children: [
+                                FutureBuilder(
+                                    future: agendaFuture,
+                                    builder: (context, snapshot) {
+                                      if (snapshot.hasData && snapshot.data != null && snapshot.data.length != 0) {
+                                        return RefreshIndicator(onRefresh: refreshAgendaFuture, child: AgendaGrid(snapshot.data));
+                                      }
+                                      if (snapshot.data != null && snapshot.data.length == 0) {
+                                        return Center(
+                                          child: FittedBox(
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: <Widget>[
+                                                Container(
+                                                  margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.5),
+                                                  height: screenSize.size.height / 10 * 1.9,
+                                                  child: Image(fit: BoxFit.fitWidth, image: AssetImage('assets/images/relax.png')),
+                                                ),
+                                                Text(
+                                                  "Journée détente ?",
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
+                                                ),
+                                                FlatButton(
+                                                  onPressed: () {
+                                                    //Reload list
+                                                    refreshAgendaFuture();
+                                                  },
+                                                  child: snapshot.connectionState != ConnectionState.waiting
+                                                      ? Text("Recharger", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2))
+                                                      : FittedBox(child: SpinKitThreeBounce(color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4)),
+                                                  shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(18.0), side: BorderSide(color: Theme.of(context).primaryColorDark)),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      } else {
+                                        return SpinKitFadingFour(
+                                          color: Theme.of(context).primaryColorDark,
+                                          size: screenSize.size.width / 5 * 1,
+                                        );
+                                      }
+                                    }),
+                              ],
+                            ),
+                          )
+                        ],
                       ),
                     ),
-                    height: screenSize.size.width / 5 * 0.3,
-                    width: screenSize.size.width,
                   ),
-                ),
-              ),
-              expandableContent: Container(
-           
-                  child: Container(
+                  persistentHeader: Container(
+                    height: screenSize.size.width / 5 * 0.6,
+                    width: screenSize.size.width,
+                    child: GestureDetector(
+                      onTap: () {
+                        if (extended) {
+                          setState(() {
+                            extended = false;
+                          });
+                          expandableKey.currentState.contract();
+                        }
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: screenSize.size.width / 5 * 0.05),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Color(0xff100A30), width: 0.000000000),
+                          borderRadius: BorderRadius.only(topLeft: Radius.circular(11), topRight: Radius.circular(11)),
+                          color: Color(0xff100A30),
+                        ),
+                        child: FittedBox(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [Transform.rotate(angle: extended ? 5 * pi : 0, child: Icon(Icons.arrow_drop_up, color: Colors.white)), Text("Après les cours", style: TextStyle(fontFamily: "Asap", color: Colors.white, fontSize: 11))],
+                          ),
+                        ),
+                        height: screenSize.size.width / 5 * 0.3,
+                        width: screenSize.size.width,
+                      ),
+                    ),
+                  ),
+                  expandableContent: Container(
+                      child: Container(
                     height: screenSize.size.height / 10 * 5.1,
                     width: screenSize.size.width,
                     decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, stops: [0.01, 0.7], end: Alignment.bottomCenter, colors: [Color(0xff100A30), Colors.white])),
@@ -479,221 +468,15 @@ class _AgendaState extends State<Agenda> {
                       ],
                     ),
                   )),
-            ),
-          ),
-        ));
-  }
-}
-
-class AgendaElement extends StatefulWidget {
-  final Lesson lesson;
-
-  const AgendaElement(this.lesson);
-
-  @override
-  _AgendaElementState createState() => _AgendaElementState();
-}
-
-class _AgendaElementState extends State<AgendaElement> {
-  bool buttons = false;
-  bool isAlarmSet = false;
-  @override
-  Widget build(BuildContext context) {
-    MediaQueryData screenSize = MediaQuery.of(context);
-    return FutureBuilder(
-        future: getColor(widget.lesson.codeMatiere),
-        initialData: 0,
-        builder: (context, snapshot) {
-          Color color = Color(snapshot.data);
-          return Container(
-            margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.1),
-            child: Material(
-              color: color,
-              borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-              child: InkWell(
-                borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-                onLongPress: () {
-                  setState(() {
-                    buttons = !buttons;
-                  });
-                },
-                onTap: () {
-                  lessonDetails(context, widget.lesson, color);
-                },
-                child: AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 200),
-                  transitionBuilder: (Widget child, Animation<double> animation) {
-                    return ScaleTransition(child: child, scale: animation);
-                  },
-                  child: buttons
-                      ? Container(
-                          width: screenSize.size.width / 5 * 4.2,
-                          height: screenSize.size.height / 10 * 1.2,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              //Pin button
-                              FutureBuilder(
-                                  future: getSetting(widget.lesson.start.hashCode.toString()),
-                                  initialData: false,
-                                  builder: (context, snapshot) {
-                                    return RaisedButton(
-                                      color: Color(0xff3b3b3b),
-                                      onPressed: () async {
-                                        if (snapshot.data == false) {
-                                          try {
-                                            await setSetting(widget.lesson.start.hashCode.toString(), true);
-                                            setState(() {});
-                                            await LocalNotification.scheduleNotification(widget.lesson);
-                                            //Get the delay between lesson and reminder
-                                            int minutes = await getIntSetting("lessonReminderDelay");
-                                            CustomDialogs.showAnyDialog(context, "yNotes vous rappelera ce cours $minutes minutes avant son commencement.");
-                                            print("Registered " + widget.lesson.start.hashCode.toString());
-                                          } catch (e) {
-                                            print("Error while scheduling " + e.toString());
-                                          }
-                                        } else {
-                                          print("Canceled " + widget.lesson.start.hashCode.toString());
-                                          await setSetting(widget.lesson.start.hashCode.toString(), false);
-                                          setState(() {});
-                                          await LocalNotification.cancelNotification(widget.lesson.start.hashCode);
-                                        }
-                                      },
-                                      shape: CircleBorder(),
-                                      child: Container(
-                                          width: screenSize.size.width / 5 * 0.7,
-                                          height: screenSize.size.width / 5 * 0.7,
-                                          padding: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.05),
-                                          child: Icon(
-                                            MdiIcons.alarm,
-                                            color: snapshot.data ? Colors.green : Colors.white,
-                                            size: screenSize.size.width / 5 * 0.5,
-                                          )),
-                                    );
-                                  }),
-                            ],
-                          ),
-                        )
-                      : Container(
-                          key: ValueKey<bool>(buttons),
-                          decoration: BoxDecoration(border: Border.all(width: 5, color: widget.lesson.canceled ? Colors.red.shade600 : Colors.transparent), borderRadius: BorderRadius.circular(11)),
-                          width: screenSize.size.width / 5 * 4.2,
-                          height: screenSize.size.height / 10 * 1.2,
-                          child: Stack(children: [
-                            Align(
-                              alignment: Alignment.topLeft,
-                              child: Column(
-                                children: [
-                                  Transform.translate(
-                                    offset: Offset(0, -screenSize.size.height / 10 * 0.03),
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(5),
-                                        color: Theme.of(context).primaryColorDark,
-                                      ),
-                                      width: screenSize.size.width / 5 * 1.1,
-                                      height: screenSize.size.height / 10 * 0.4,
-                                      padding: EdgeInsets.all(screenSize.size.width / 5 * 0.05),
-                                      child: FittedBox(
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              DateFormat.Hm().format(widget.lesson.start),
-                                              style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: isDarkModeEnabled ? Colors.white : Colors.black),
-                                            ),
-                                            Icon(MdiIcons.arrowRight, color: isDarkModeEnabled ? Colors.white : Colors.black),
-                                            Text(
-                                              DateFormat.Hm().format(widget.lesson.end),
-                                              style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: isDarkModeEnabled ? Colors.white : Colors.black),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Align(
-                              alignment: Alignment.centerLeft,
-                              child: Container(
-                                margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1, top: screenSize.size.height / 10 * 0.2),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: screenSize.size.width / 5 * 1.8,
-                                      height: screenSize.size.height / 10 * 0.9,
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          FittedBox(
-                                            child: AutoSizeText(
-                                              widget.lesson.matiere,
-                                              style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
-                                              minFontSize: 18,
-                                              textAlign: TextAlign.left,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ),
-                                          if (widget.lesson.teachers != null && widget.lesson.teachers.length > 0 && widget.lesson.teachers[0] != "")
-                                            FittedBox(
-                                              child: AutoSizeText(
-                                                widget.lesson.teachers[0],
-                                                style: TextStyle(fontFamily: "Asap"),
-                                                textAlign: TextAlign.left,
-                                                maxFontSize: 12,
-                                              ),
-                                            ),
-                                        ],
-                                      ),
-                                    ),
-                                    if (widget.lesson.canceled)
-                                      Container(
-                                        margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
-                                        width: screenSize.size.width / 5 * 1.5,
-                                        height: screenSize.size.height / 10 * 0.5,
-                                        padding: EdgeInsets.all(screenSize.size.width / 5 * 0.05),
-                                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(15), border: Border.all(color: Colors.black, width: 2)),
-                                        child: Center(
-                                          child: AutoSizeText(
-                                            widget.lesson.status,
-                                            style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, fontSize: 32),
-                                          ),
-                                        ),
-                                      )
-                                  ],
-                                ),
-                              ),
-                            ),
-                            Align(
-                              alignment: Alignment.topRight,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    width: screenSize.size.width / 5 * 1.2,
-                                    height: screenSize.size.height / 10 * 0.8,
-                                    padding: EdgeInsets.all(screenSize.size.width / 5 * 0.08),
-                                    child: AutoSizeText(
-                                      widget.lesson.room ?? "",
-                                      style: TextStyle(fontSize: 30, fontFamily: "Asap", fontWeight: FontWeight.bold),
-                                      minFontSize: 10,
-                                      stepGranularity: 5,
-                                      maxLines: 4,
-                                      textAlign: TextAlign.end,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            )
-                          ])),
                 ),
               ),
             ),
-          );
-        });
+            Align(
+              alignment: Alignment.bottomRight,
+              child: _buildFloatingButton(context),
+            ),
+          ],
+        ));
   }
 }
 

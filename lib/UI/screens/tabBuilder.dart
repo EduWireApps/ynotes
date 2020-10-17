@@ -82,7 +82,7 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    
+
     // this creates the controller with 6 tabs (in our case)
     controller = TabController(vsync: this, length: 5, initialIndex: 1);
 
@@ -158,6 +158,7 @@ class _TabBuilderState extends State<TabBuilder> with TickerProviderStateMixin {
       child: DefaultTabController(
         length: 5,
         child: Scaffold(
+            resizeToAvoidBottomPadding: false,
             resizeToAvoidBottomInset: false,
             backgroundColor: Theme.of(context).backgroundColor,
             bottomNavigationBar: PreferredSize(

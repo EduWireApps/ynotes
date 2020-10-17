@@ -32,7 +32,7 @@ class EcoleDirecteMethod {
     String dateDebut = DateFormat("yyyy/MM/dd").format(getMonday(dateToUse));
 
     String dateFin = DateFormat("yyyy/MM/dd").format(getNextSunday(dateToUse));
-    String data = 'data={"dateDebut":"$dateDebut","dateFin":"$dateFin","avecTrous":false,"token": "$token"}';
+    String data = 'data={"dateDebut":"$dateDebut","dateFin":"$dateFin", "avecTrous":false, "token": "$token"}';
     String rootUrl = "https://api.ecoledirecte.com/v3/E/";
     String method = "emploidutemps.awp?verbe=get&";
     List<Lesson> lessonsList = await request(data, rootUrl, method, EcoleDirecteConverter.lessons, "Lessons request returned an error:");

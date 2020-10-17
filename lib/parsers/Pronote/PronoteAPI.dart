@@ -259,12 +259,12 @@ class Client {
   }
 
   downloadUrl(localapi.Document document) {
-    var data = {"N": document.id, "G": document.type};
+    var data = {"N": document.id, "G": 1};
     //Used by pronote to encrypt the data (I don't know why)
 
     var magic_stuff = this.encryption.aes_encryptFromString(jsonEncode(data));
 
-    String libelle = Uri.encodeComponent(Uri.encodeComponent(document.libelle));
+    String libelle = Uri.encodeComponent(document.libelle);
     String url = this.communication.root_site + '/FichiersExternes/' + magic_stuff + '/' + libelle + '?Session=' + this.attributes['h'].toString();
     print(this.attributes.toString());
     print(url);
@@ -311,7 +311,6 @@ class Client {
               //listDocs.add(localapi.Document(pj["L"], pj["N"], pj["G"].toString(), 0));
               if (pj["L"] == "The Tales of Mother Goose - Blue Beard.pdf") {
                 downloadUrl(localapi.Document(pj["L"], pj["N"], pj["G"].toString(), 0));
-                print(pj.toString());
               }
             } catch (e) {}
           });
@@ -832,9 +831,9 @@ class _Encryption {
     return (encrypted);
   }
 
-  aes_encryptFromString(String data, {padding = true}) {
+  aes_encryptFromString(String data) {
     var key = Key.fromBase16(this.aes_key.toString());
-    final encrypter = Encrypter(AES(key, mode: AESMode.cbc, padding: padding ? "PKCS7" : null));
+    final encrypter = Encrypter(AES(key, mode: AESMode.cbc, padding: "PKCS7"));
 
     final encrypted = encrypter.encrypt(data, iv: this.aes_iv).base16;
 
@@ -843,7 +842,6 @@ class _Encryption {
 
   aes_decrypt(var data) {
     var key = Key.fromBase16(this.aes_key.toString());
-    print(this.aes_key.toString());
     final aesEncrypter = Encrypter(AES(key, mode: AESMode.cbc, padding: "PKCS7"));
     //generate AES CBC block encrypter with key and PKCS7 padding
 
