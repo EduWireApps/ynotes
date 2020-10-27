@@ -1,22 +1,13 @@
-import 'dart:ffi';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/UI/screens/settingsPage.dart';
-import 'package:ynotes/UI/screens/drawerBuilder.dart';
-import 'package:flushbar/flushbar.dart';
-import 'package:ynotes/classes.dart';
-import 'package:ynotes/background.dart';
-import 'package:ynotes/parsers/Pronote.dart';
-import 'package:ynotes/parsers/Pronote/PronoteAPI.dart';
-import '../../main.dart';
+import 'package:ynotes/UI/utils/fileUtils.dart';
+
 import '../../usefulMethods.dart';
 import 'dialogs.dart';
-import 'package:ynotes/UI/utils/fileUtils.dart';
 class QuickMenu extends StatefulWidget {
   final Function close;
 

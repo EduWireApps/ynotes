@@ -2,16 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:ynotes/main.dart';
 import 'package:stacked/stacked.dart';
+import 'package:ynotes/UI/utils/fileUtils.dart';
+import 'package:ynotes/main.dart';
 
 import '../../../classes.dart';
 import '../../../models.dart';
 import '../../../usefulMethods.dart';
 import '../appsPage.dart';
-import '../gradesPage.dart';
-import 'mail.dart';
-import 'package:ynotes/UI/utils/fileUtils.dart';
 
 String cloudUsedFolder = "";
 

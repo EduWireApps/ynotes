@@ -1,32 +1,11 @@
-import 'dart:convert';
 import 'dart:math';
-import 'dart:typed_data';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:ynotes/UI/animations/FadeAnimation.dart';
-import 'package:ynotes/UI/components/dialogs.dart';
-import 'package:flutter/src/scheduler/binding.dart';
 import 'package:ynotes/UI/components/expandables.dart';
-import 'package:ynotes/UI/components/modalBottomSheets/agendaEventBottomSheet.dart';
-import 'package:ynotes/UI/components/modalBottomSheets/utils.dart';
-import 'package:ynotes/UI/components/space/spaceOverlay.dart';
+import 'package:ynotes/UI/screens/agendaPageWidgets/spaceAgenda.dart';
 import 'package:ynotes/UI/screens/spacePageWidgets/agenda.dart';
-import 'package:ynotes/UI/screens/spacePageWidgets/agendaElement.dart';
-import 'package:ynotes/UI/screens/spacePageWidgets/agendaGrid.dart';
-import 'package:ynotes/UI/screens/spacePageWidgets/spaceAgenda.dart';
-import 'package:ynotes/parsers/EcoleDirecte.dart';
-import 'package:ynotes/UI/utils/fileUtils.dart';
-import 'package:ynotes/main.dart';
-import 'package:ynotes/classes.dart';
-import 'dart:async';
-import 'package:ynotes/UI/components/expandable_bottom_sheet-master/src/raw_expandable_bottom_sheet.dart';
-import 'dart:io';
-
 import 'package:ynotes/usefulMethods.dart';
 
 class AgendaPage extends StatefulWidget {
@@ -154,7 +133,7 @@ class _AgendaPageState extends State<AgendaPage> {
               ),
             ),
           ),
-           Positioned(
+          Positioned(
             top: (topPercents / 100) * screenSize.size.height / 10 * 0.7,
             child: SpaceAgenda(),
           )

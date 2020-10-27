@@ -1,22 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:marquee/marquee.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:shimmer/shimmer.dart';
-import 'package:intl/intl.dart';
-import 'package:intl/date_symbol_data_local.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
-import 'package:ynotes/UI/utils/themeUtils.dart';
-import '../../../classes.dart';
-import '../../../usefulMethods.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-import 'package:ynotes/main.dart';
 
-import '../gradesChart.dart';
+import '../../../usefulMethods.dart';
 
 ///Bottom windows with some infos on the discipline and the possibility to change the discipline color
 void agendaEventBottomSheet(context) {
@@ -87,7 +74,7 @@ _buildEventChoiceButton(BuildContext context, String content, Color color, IconD
                 ),
               ),
               width: screenSize.size.width / 5 * 4,
-              height: screenSize.size.height / 10 * 1,
+              height: screenSize.size.height / 10 * 0.7,
               padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.25),
               child: Stack(
                 children: [

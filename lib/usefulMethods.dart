@@ -1,28 +1,17 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
+
 import 'package:connectivity/connectivity.dart';
-import 'package:dio/dio.dart' as dio;
-import 'package:permission_handler/permission_handler.dart';
-import 'package:flushbar/flushbar.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
-import 'package:open_file/open_file.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:path/path.dart' as path;
 import 'package:tinycolor/tinycolor.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:http/http.dart';
+import 'package:ynotes/classes.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/parsers/EcoleDirecte.dart';
-import 'dart:io';
-import 'package:ynotes/UI/utils/fileUtils.dart';
-import 'package:ynotes/classes.dart';
-import 'package:dio/src/response.dart' as dioResponse;
 
 import 'UI/screens/summaryPage.dart';
 

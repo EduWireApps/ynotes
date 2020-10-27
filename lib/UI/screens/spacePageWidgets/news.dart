@@ -1,14 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dio/dio.dart' as dio;
+import 'package:dio/src/response.dart' as dioResponse;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:dio/src/response.dart' as dioResponse;
 import 'package:ynotes/UI/utils/fileUtils.dart';
+
 import '../../../usefulMethods.dart';
-import '../spacePage.dart';
-import 'package:dio/dio.dart' as dio;
 
 class News extends StatefulWidget {
   @override

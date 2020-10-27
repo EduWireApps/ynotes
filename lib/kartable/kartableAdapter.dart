@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:io';
+
 import 'package:flutter/services.dart' show rootBundle;
 
 //Getting the related lessons in the dictionnary from the string content

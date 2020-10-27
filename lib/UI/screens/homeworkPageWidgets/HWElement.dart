@@ -1,40 +1,21 @@
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:intl/intl.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:ynotes/UI/components/dialogs.dart';
-import 'package:ynotes/UI/screens/homeworkPage.dart';
-import 'package:ynotes/UI/utils/fileUtils.dart';
-import 'package:ynotes/offline.dart';
-import 'package:ynotes/parsers/EcoleDirecte.dart';
-import 'package:ynotes/usefulMethods.dart';
-import 'package:ynotes/main.dart';
-import '../../../classes.dart';
-import 'dart:io';
 
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
-import 'package:intl/intl.dart';
 import 'package:marquee/marquee.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:share/share.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:stacked/stacked.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
-import 'package:ynotes/UI/screens/homeworkPageWidgets/HWsecondPage.dart';
-import 'package:ynotes/UI/animations/FadeAnimation.dart';
+import 'package:ynotes/UI/screens/homeworkPage.dart';
 import 'package:ynotes/UI/screens/summaryPage.dart';
-import 'package:ynotes/kartable/kartableAdapter.dart';
+import 'package:ynotes/UI/utils/fileUtils.dart';
+import 'package:ynotes/main.dart';
 import 'package:ynotes/parsers/EcoleDirecte.dart';
+import 'package:ynotes/usefulMethods.dart';
 
+import '../../../classes.dart';
 import '../../../models.dart';
 
 //Represents the element containing details about homework

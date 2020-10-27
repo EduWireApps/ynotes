@@ -1,10 +1,9 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:html/parser.dart';
 import 'package:http/http.dart' as http;
 import 'package:requests/requests.dart';
-import 'package:html/parser.dart';
 
 ///Redirect to the good CAS
 ///Return type : cookies as Map

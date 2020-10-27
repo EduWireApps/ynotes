@@ -1,27 +1,19 @@
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:package_info/package_info.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:provider/provider.dart';
+import 'package:settings_ui/settings_ui.dart';
 import 'package:wiredash/wiredash.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/UI/screens/exportPage.dart';
 import 'package:ynotes/UI/screens/logsPage.dart';
-import 'package:ynotes/classes.dart';
 import 'package:ynotes/main.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:flutter_multiselect/flutter_multiselect.dart';
-import 'package:ynotes/parsers/Pronote.dart';
+
 import '../../tests.dart';
 import '../../usefulMethods.dart';
-import 'package:dio/src/response.dart' as dioResponse;
-import 'package:settings_ui/settings_ui.dart';
 
 class SettingsPage extends StatefulWidget {
   @override

@@ -1,28 +1,13 @@
 import 'dart:convert';
-import 'dart:io';
+
 import 'package:connectivity/connectivity.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
-import 'package:alice/alice.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:quiver/collection.dart';
-import 'package:flutter/material.dart';
-import 'package:stack/stack.dart' as sta;
-import 'package:ynotes/UI/screens/logsPage.dart';
+import 'package:ynotes/classes.dart';
 import 'package:ynotes/main.dart';
-import 'package:ynotes/parsers/EcoleDirecte/EcoleDirecteCloud.dart';
 import 'package:ynotes/parsers/EcoleDirecte/ecoleDirecteConverters.dart';
-import 'package:ynotes/parsers/Pronote/PronoteAPI.dart';
 import 'package:ynotes/parsers/Pronote/PronoteCas.dart';
 import 'package:ynotes/usefulMethods.dart';
-import 'package:ynotes/offline.dart';
-import 'package:ynotes/classes.dart';
-import 'package:dio/dio.dart' as dio;
 
 import '../EcoleDirecte.dart';
 

@@ -1,6 +1,6 @@
 import 'dart:async';
+
 import 'package:android_alarm_manager/android_alarm_manager.dart';
-import 'package:background_fetch/background_fetch.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive/hive.dart';
@@ -13,7 +13,6 @@ import 'package:ynotes/usefulMethods.dart';
 import 'UI/screens/logsPage.dart';
 import 'UI/screens/spacePageWidgets/agenda.dart';
 import 'UI/utils/fileUtils.dart';
-import 'offline.dart';
 
 //The main class for everything done in background
 class BackgroundService {

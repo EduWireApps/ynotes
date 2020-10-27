@@ -1,21 +1,18 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:ynotes/UI/screens/schoolAPIChoicePage.dart';
-import 'package:ynotes/UI/animations/FadeAnimation.dart';
-import 'package:ynotes/main.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ynotes/UI/screens/gradesPage.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:ynotes/UI/animations/FadeAnimation.dart';
+import 'package:ynotes/UI/screens/schoolAPIChoicePage.dart';
+import 'package:ynotes/UI/utils/fileUtils.dart';
+import 'package:ynotes/main.dart';
 import 'package:ynotes/parsers/EcoleDirecte.dart';
 import 'package:ynotes/usefulMethods.dart';
-import 'package:connectivity/connectivity.dart';
+
 import '../../classes.dart';
-import 'package:ynotes/UI/utils/fileUtils.dart';
 
 Color textButtonColor = Color(0xff252B62);
 
@@ -585,7 +582,6 @@ class _LoginPageState extends State<LoginPage> {
                                                                   //LOGIN AS pronote DEMO
                                                                   onLongPress: () {
                                                                     if (chosenParser == 1 && _url.text.length == 0 && _password.text.length == 0 && _username.text.length == 0) {
-                                                                      
                                                                       connectionData = localApi.login("demonstration", "pronotevs", url: "https://demo.index-education.net/pronote/eleve.html", cas: "Aucun");
 
                                                                       openLoadingDialog();

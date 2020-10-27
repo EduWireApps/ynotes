@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:ynotes/UI/utils/themeUtils.dart';
 
 import '../../main.dart';
 import '../../usefulMethods.dart';
 import 'apps/cloud.dart';
 import 'apps/mail.dart';
-import 'package:ynotes/UI/utils/themeUtils.dart';
-
 import 'apps/polls.dart';
 
 

@@ -1,23 +1,9 @@
 import 'dart:convert';
-import 'dart:io';
-import 'package:connectivity/connectivity.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter/services.dart';
 
 import 'package:http/http.dart' as http;
-import 'package:intl/date_symbol_data_local.dart';
-import 'package:intl/intl.dart';
-import 'package:alice/alice.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:quiver/collection.dart';
-import 'package:flutter/material.dart';
-import 'package:stack/stack.dart' as sta;
 import 'package:ynotes/UI/screens/apps/cloud.dart';
-import 'package:ynotes/parsers/EcoleDirecte.dart';
-import 'package:ynotes/usefulMethods.dart';
-import 'package:ynotes/offline.dart';
 import 'package:ynotes/classes.dart';
-import 'package:dio/dio.dart' as dio2;
+import 'package:ynotes/parsers/EcoleDirecte.dart';
 
 //The basical function to change folder
 changeFolder(String path) async {

@@ -1,15 +1,12 @@
+import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter/material.dart';
-import 'package:stack/stack.dart' as sta;
 import 'package:ynotes/parsers/EcoleDirecte.dart';
 import 'package:ynotes/parsers/Pronote.dart';
 import 'package:ynotes/usefulMethods.dart';
 
-import 'UI/screens/spacePageWidgets/agendaGrid.dart';
 part 'classes.g.dart';
 
 //Class of a piece homework

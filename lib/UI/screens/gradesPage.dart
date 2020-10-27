@@ -2,22 +2,20 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/intl.dart';
 import 'package:marquee/marquee.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:shimmer/shimmer.dart';
-import 'package:intl/intl.dart';
-import 'package:intl/date_symbol_data_local.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:ynotes/UI/components/modalBottomSheets/disciplinesModalBottomSheet.dart';
 import 'package:ynotes/UI/components/modalBottomSheets/gradesModalBottomSheet.dart';
+import 'package:ynotes/main.dart';
+
 import '../../classes.dart';
 import '../../usefulMethods.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-import 'package:ynotes/main.dart';
-import 'package:ynotes/UI/components/modalBottomSheets/utils.dart';
 
 class GradesPage extends StatefulWidget {
   State<StatefulWidget> createState() {

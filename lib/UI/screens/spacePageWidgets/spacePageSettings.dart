@@ -1,15 +1,12 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
-import 'package:flutter/src/scheduler/binding.dart';
 import 'package:ynotes/background.dart';
-import '../../../usefulMethods.dart';
-import 'package:ynotes/UI/utils/fileUtils.dart';
-import 'dart:async';
 
-import 'dart:io';
+import '../../../usefulMethods.dart';
 
 class SpacePageGlobalSettings extends StatefulWidget {
   @override

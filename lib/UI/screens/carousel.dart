@@ -1,19 +1,15 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
-import 'package:ynotes/UI/screens/loginPage.dart';
-import 'package:flutter/material.dart';
-import 'package:ynotes/classes.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/parsers/EcoleDirecte.dart';
 import 'package:ynotes/usefulMethods.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 class SlidingCarousel extends StatefulWidget {
   SlidingCarousel({Key key}) : super(key: key);

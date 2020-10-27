@@ -1,11 +1,9 @@
-import 'dart:ffi';
 import 'dart:io';
 
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart' show rootBundle;
 import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/UI/utils/fileUtils.dart';
+
 import '../../usefulMethods.dart';
 
 class LogsPage extends StatefulWidget {

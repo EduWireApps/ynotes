@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/usefulMethods.dart';
-import 'package:ynotes/UI/screens/homeworkPage.dart';
 
 class HomeworkSettingPage extends StatefulWidget {
   final Function animateToPage;

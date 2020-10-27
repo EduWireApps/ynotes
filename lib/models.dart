@@ -1,18 +1,16 @@
 import 'dart:async';
-
 import 'dart:io';
-import 'package:connectivity/connectivity.dart';
-import 'package:flutter/material.dart';
 
+import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:ynotes/UI/utils/fileUtils.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/parsers/EcoleDirecte.dart';
 import 'package:ynotes/parsers/Pronote.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 import 'classes.dart';
-import 'package:ynotes/UI/utils/fileUtils.dart';
 
 ///Class download to notify view when download is ended
 class DownloadModel extends ChangeNotifier {

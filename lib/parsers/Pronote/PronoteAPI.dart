@@ -2,29 +2,25 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
+
+import 'package:convert/convert.dart';
 import 'package:crypto/crypto.dart';
+import 'package:encrypt/encrypt.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:http/http.dart';
+import 'package:html/parser.dart' show parse;
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
-import 'package:pointycastle/asymmetric/pkcs1.dart';
-import 'package:requests/requests.dart';
-import 'package:convert/convert.dart';
-import 'package:crypto/crypto.dart' as crypto;
-import 'package:encrypt/encrypt.dart';
-import 'package:html/parser.dart' show parse;
-import 'package:html/dom.dart';
 import 'package:pointycastle/api.dart';
 import 'package:pointycastle/asymmetric/api.dart';
+import 'package:pointycastle/asymmetric/pkcs1.dart';
 import 'package:pointycastle/asymmetric/rsa.dart';
-import 'package:steel_crypt/steel_crypt.dart';
+import 'package:requests/requests.dart';
 import 'package:ynotes/classes.dart' as localapi;
 import 'package:ynotes/main.dart';
 import 'package:ynotes/models.dart';
 import 'package:ynotes/parsers/Pronote/PronoteCas.dart';
 import 'package:ynotes/usefulMethods.dart';
-import 'package:http/http.dart';
-import '../../classes.dart';
+
 import '../../classes.dart';
 import '../EcoleDirecte.dart';
 

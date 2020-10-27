@@ -1,23 +1,11 @@
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:marquee/marquee.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:shimmer/shimmer.dart';
-import 'package:intl/intl.dart';
-import 'package:intl/date_symbol_data_local.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
-import 'package:ynotes/UI/utils/themeUtils.dart';
-import 'package:ynotes/parsers/EcoleDirecte.dart';
+import 'package:ynotes/UI/screens/agendaPageWidgets/agendaGrid.dart';
+
 import '../../../classes.dart';
 import '../../../usefulMethods.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-import 'package:ynotes/main.dart';
-import 'package:ynotes/UI/screens/spacePageWidgets/agendaGrid.dart';
 
 ///Agenda event editor, has to be called with a `buildContext`, and the boolean `isLesson` is not optionnal to avoid any confusions.
 ///`customEvent` and `reminder` are optionals (for editing existing events), but can't both be set.
@@ -35,7 +23,7 @@ Future agendaEventEdit(context, isCustomEvent, {AgendaEvent customEvent, AgendaR
       context: context,
       builder: (BuildContext bc) {
         //Assert for avoiding setting a new reminder without it's lesson ID
-        assert(!isCustomEvent && lessonID != null, "Setting a reminder require a lessonID");
+        assert(!isCustomEvent ? lessonID != null : true, "Setting a reminder require a lessonID");
         return agendaEventEditLayout(
           isCustomEvent,
           customEvent: customEvent,

@@ -1,31 +1,11 @@
-import 'dart:convert';
-import 'dart:math';
-import 'dart:typed_data';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-import 'package:ynotes/UI/animations/FadeAnimation.dart';
-import 'package:ynotes/UI/components/dialogs.dart';
-import 'package:flutter/src/scheduler/binding.dart';
-import 'package:ynotes/UI/components/modalBottomSheets/utils.dart';
-import 'package:ynotes/UI/components/space/spaceOverlay.dart';
-import 'package:ynotes/UI/screens/spacePageWidgets/agendaElement.dart';
-import 'package:ynotes/parsers/EcoleDirecte.dart';
-import '../../../background.dart';
-import '../../../usefulMethods.dart';
-import 'package:ynotes/UI/utils/fileUtils.dart';
-import 'package:ynotes/main.dart';
+import 'package:ynotes/UI/screens/agendaPageWidgets/agendaElement.dart';
 import 'package:ynotes/classes.dart';
-import 'dart:async';
-import 'package:ynotes/UI/components/expandable_bottom_sheet-master/src/raw_expandable_bottom_sheet.dart';
-import 'dart:io';
 
 class AgendaGrid extends StatefulWidget {
   final List<Lesson> lessons;
@@ -35,7 +15,7 @@ class AgendaGrid extends StatefulWidget {
   _AgendaGridState createState() => _AgendaGridState();
 }
 
-final actualHourBar = new GlobalKey();
+//final actualHourBar = new GlobalKey();
 
 class _AgendaGridState extends State<AgendaGrid> {
   ScrollController scontroller = ScrollController();
@@ -155,9 +135,7 @@ class _AgendaGridState extends State<AgendaGrid> {
     final f2 = new DateFormat.H();
 
     double diff = f.parse(f.format(DateTime.now())).difference(f2.parse(f2.format(start))).inMinutes / 60;
-    if (actualHourBar.currentContext != null) {
-      //scontroller.position.ensureVisible(actualHourBar.currentContext.findRenderObject(), duration: Duration(milliseconds: 500), alignment: 0.5);
-    }
+    
     return (MediaQuery.of(context).size.height / 10 * defaultGridHeight * _scaleFactor) * diff;
   }
 
@@ -269,7 +247,6 @@ class _AgendaGridState extends State<AgendaGrid> {
                         decoration: BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.circular(1000)),
                       ),
                       Container(
-                          key: actualHourBar,
                           width: screenSize.size.width / 5 * 4.8,
                           child: Divider(
                             color: Colors.blue,

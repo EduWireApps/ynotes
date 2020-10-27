@@ -2,32 +2,26 @@ import 'dart:ui';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:badges/badges.dart';
+import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
-import 'dart:math';
-import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:html/parser.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:visibility_detector/visibility_detector.dart';
-import 'package:ynotes/UI/components/dialogs.dart';
-import 'package:ynotes/UI/components/space/spaceOverlay.dart';
-import 'package:ynotes/UI/screens/gradesPage.dart';
-import 'package:ynotes/main.dart';
-import 'package:ynotes/UI/screens/drawerBuilder.dart';
 import 'package:ynotes/UI/animations/FadeAnimation.dart';
-import 'package:ynotes/parsers/EcoleDirecte.dart';
+import 'package:ynotes/UI/components/dialogs.dart';
+import 'package:ynotes/UI/screens/gradesPage.dart';
+import 'package:ynotes/UI/screens/homeworkPage.dart';
+import 'package:ynotes/main.dart';
 import 'package:ynotes/parsers/EcoleDirecte.dart';
 import 'package:ynotes/usefulMethods.dart';
-import 'package:ynotes/UI/screens/homeworkPage.dart';
-import '../../classes.dart';
-import '../../offline.dart';
-import 'package:html/parser.dart';
 
+import '../../classes.dart';
 import 'drawerBuilderWidgets/drawer.dart';
 
 ///First page to access quickly to last grades, homework and
@@ -134,37 +128,44 @@ class _SummaryPageState extends State<SummaryPage> {
         height: screenSize.size.height,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
+            //Quick shortcuts
             Container(
-              width: screenSize.size.width,
+              width: screenSize.size.width / 5 * 4.5,
               height: screenSize.size.height / 10 * 0.5,
-              child: ListView.builder(
-                  padding: EdgeInsets.only(left: screenSize.size.width / 5 * 0.3),
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 5,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      margin: EdgeInsets.only(right: screenSize.size.width / 5 * 0.2),
-                      child: Material(
-                        color: Colors.transparent,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50), side: BorderSide(width: screenSize.size.width / 5 * 0.008, color: isDarkModeEnabled ? Colors.white : Colors.black)),
-                        child: InkWell(
-                          onTap: (){},
-                          borderRadius: BorderRadius.circular(50),
-                          child: Container(
-                            width: screenSize.size.width / 5 * 1.3,
-                            height: screenSize.size.height / 10 * 0.5,
-                            child: Center(
-                              child: Text(
-                                entries[index]["menuName"],
-                                style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 4),
+                child: ListView.builder(
+                    padding: EdgeInsets.only(left: screenSize.size.width / 5 * 0.3),
+                    scrollDirection: Axis.horizontal,
+                    itemCount: entries.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        margin: EdgeInsets.only(right: screenSize.size.width / 5 * 0.2),
+                        child: Material(
+                          color: Colors.transparent,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50), side: BorderSide(width: screenSize.size.width / 5 * 0.008, color: isDarkModeEnabled ? Colors.white : Colors.black)),
+                          child: InkWell(
+                            onTap: () {
+                              widget.switchPage(index);
+                            },
+                            borderRadius: BorderRadius.circular(50),
+                            child: Container(
+                              width: screenSize.size.width / 5 * 1.3,
+                              height: screenSize.size.height / 10 * 0.5,
+                              child: Center(
+                                child: Text(
+                                  entries[index]["menuName"],
+                                  style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    );
-                  }),
+                      );
+                    }),
+              ),
             ),
 
             //First division (gauge)

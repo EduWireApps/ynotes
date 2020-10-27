@@ -1,13 +1,11 @@
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
 import 'dart:async';
+
+import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
-import 'package:ynotes/UI/utils/hiveExportImportUtils.dart';
+import 'package:ynotes/UI/utils/fileUtils.dart';
 import 'package:ynotes/parsers/Pronote/PronoteAPI.dart';
 import 'package:ynotes/usefulMethods.dart';
-import 'UI/screens/spacePageWidgets/agendaGrid.dart';
 import 'classes.dart';
-import 'package:ynotes/UI/utils/fileUtils.dart';
 
 class Offline {
   //Return disciplines + grades

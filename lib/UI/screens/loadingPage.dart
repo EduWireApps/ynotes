@@ -1,9 +1,5 @@
-import 'package:connectivity/connectivity.dart';
-import 'package:flare_flutter/flare_actor.dart';
-import 'package:flare_loading/flare_loading.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:ynotes/UI/screens/loginPage.dart';
 import 'package:ynotes/UI/animations/FadeAnimation.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/parsers/EcoleDirecte.dart';

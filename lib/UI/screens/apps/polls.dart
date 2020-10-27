@@ -8,17 +8,13 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:intl/intl.dart';
-import 'package:marquee/marquee.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:stacked/stacked.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/classes.dart';
-import 'package:ynotes/parsers/EcoleDirecte.dart';
 import 'package:ynotes/main.dart';
-import '../../../models.dart';
+
 import '../../../usefulMethods.dart';
 import '../appsPage.dart';
-import 'package:ynotes/UI/utils/fileUtils.dart';
 
 class PollsAndInfosPage extends StatefulWidget {
   @override

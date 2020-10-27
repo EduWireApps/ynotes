@@ -1,25 +1,12 @@
-import 'dart:async';
-import 'package:background_fetch/background_fetch.dart';
+
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:ynotes/UI/components/day_night_switch-master/lib/day_night_switch.dart';
 import 'package:ynotes/UI/screens/drawerBuilder.dart';
-import 'package:ynotes/UI/screens/homeworkPage.dart';
-import 'package:ynotes/UI/screens/gradesPage.dart';
 import 'package:ynotes/UI/screens/settingsPage.dart';
-import 'package:ynotes/UI/screens/spacePage.dart';
-import 'package:ynotes/UI/screens/summaryPage.dart';
-import 'package:ynotes/UI/components/quickMenu.dart';
-import 'package:ynotes/classes.dart';
-import 'package:ynotes/background.dart';
-import 'package:ynotes/main.dart';
-import 'package:ynotes/parsers/EcoleDirecte.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import '../../../usefulMethods.dart';
 
