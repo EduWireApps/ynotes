@@ -1,19 +1,19 @@
 # yNotes
 <img src="https://github.com/ModernChocolate/ynotes/blob/master/screenshots/brandLarge.png" width="800">
 
-yNotes est un gestionnaire de notes, d'emploi du temps et de devoirs qui vous permet d'accéder à toutes ces informations scolaires dans une interface moderne et intuitive. L'application actuelle est basée sur les APIs des site **EcoleDirecte** et **Pronote**. Je travaille actuellement dur pour adapter l'application à d'autres "applications scolaires". 
+yNotes est un gestionnaire de notes, d'emploi du temps et de devoirs qui vous permet d'accéder à toutes vos informations scolaires dans une interface moderne et intuitive. L'application actuelle est basée sur les APIs des sites **École Directe** et **Pronote**. Je travaille actuellement dur pour adapter l'application à d'autres "applications scolaires". 
 
 Téléchargez dès maintenant yNotes sur le [Google Play Store](https://play.google.com/store/apps/details?id=fr.ynotes) !
 
 yNotes est un projet ouvert et collaboratif ! N'hésitez pas à soumettre une pull request ou me contacter directement pour aider au projet **(discord : JsonLines
 #0721)**.
 
-__yNotes n'est **pas un client officiel** et utilise directement les APIs d'applications scolaires. Vos identifiants sont chiffrés et stockés sur votre appareil, mais nous ne nous portons pas responsable en cas de sanction de l'application scolaire. De plus, les fonctionnalités proposées par yNotes peuvent varier à tout moment, par décision externe ou interne.__
+__yNotes n'est **pas un client officiel** et utilise directement les APIs d'applications scolaires. Vos identifiants sont chiffrés et stockés sur votre appareil, mais nous ne nous portons pas responsables en cas de sanction de l'application scolaire. De plus, les fonctionnalités proposées par yNotes peuvent varier à tout moment, par décision externe ou interne.__
 
-J'ai décidé de créer yNotes en constatant que les demandes des utilisateurs des applications scolaires n'étaient pas écoutées, et que les applications mobile de vie scolaire étaient basiques, à l'interface peu élaborée. Bien que la propriété intellectuelle m'empêche de diffuser yNotes à grande ampleur, j'espère que les éditeurs des applications scolaires entendront un jour nos réclamations !
+J'ai décidé de créer yNotes en constatant que les demandes des utilisateurs des applications scolaires n'étaient pas écoutées, et que les applications mobiles de vie scolaire étaient basiques, à l'interface peu élaborée. Bien que la propriété intellectuelle m'empêche de diffuser yNotes à grande ampleur, j'espère que les éditeurs des applications scolaires entendront un jour nos réclamations !
 
 ## Fonctionnalités 
-Les fonctionnalités de yNotes s'étendent chaque jour pour permettre d'être le plus efficace dans son travail, et l'interface est régulièrement revue pour être la plus intuitive possible
+Les fonctionnalités de yNotes s'étendent chaque jour pour permettre d'être le plus efficace dans son travail, et l'interface est régulièrement revue pour être la plus intuitive possible.
 #### Fonctionnalités mises en place
 
 
@@ -21,13 +21,13 @@ Les fonctionnalités de yNotes s'étendent chaque jour pour permettre d'être le
 - Accès aux devoirs : Accès aux prochains devoirs, affichage des pièces jointes liées (en cours)
 - Coloration des matières personnalisable
 - Mode nuit
-- Application hors ligne, nulle besoin d'Internet pour accéder à ses notes 
-- Accès aux applications supplémentaires : mail et cloud (disponible sur Ecole Directe)
+- Application hors ligne, nul besoin d'Internet pour accéder à ses notes 
+- Accès aux applications supplémentaires : mail et cloud (disponible sur École Directe)
 - Ajout aux favoris de devoirs. (fonctionnalité d'épinglage)
 - ~~Mise en place d'un "Quick menu" (menu rapide) pour accéder rapidement aux documents téléchargés~~ (supprimé car non intuitif)
 #### Fonctionnalités à venir
 
-- Fonctionnalités supplémentaires dans l'affichage des devoirs, partage et recherche rapide par mot clé (partenariat avec applications scolaires ?)
+- Fonctionnalités supplémentaires dans l'affichage des devoirs, partage et recherche rapide par mot-clé (partenariat avec applications scolaires ?)
 - Visualisation de l'emploi du temps et organisation de la vie d'étudiant
 - yNotes web
 - ~~Ajout de la foncionnalité envoyer des mails au Quick menu,~~ ~~devoirs favoris~~
@@ -46,7 +46,7 @@ Soyons clair, Space n'est absolument pas implémenté, mais compte l'être le pl
 
 #### Mode de fonctionnement
 
-Space se baserait sur l'emploi du temps de l'utilisateur, importé grâce aux APIs des applications scolaires. Puis ce dernier pourra ajouter manuellement les évènements, cours extrascolaires, activités auquel il assiste régulièrement ou non. yNotes suggérera des idées d'organisation de rendez-vous, le risque d'un rendez-vous non obligatoire si ce dernier se situe avant un contrôle important.
+Space se baserait sur l'emploi du temps de l'utilisateur, importé grâce aux APIs des applications scolaires. Puis ce dernier pourra ajouter manuellement les évènements, cours extrascolaires, activités auxquelles l'utilisateur participe régulièrement ou non. yNotes suggérera des idées d'organisation de rendez-vous, et évaluera le risque d'un rendez-vous non obligatoire si ce dernier se situe avant un contrôle important.
 #### Les contraintes
 
 Sans devenir un laboratoire, Space devra se baser sur un algorithme intelligent, sans se montrer trop intrusif, ni collecter de données. En effet ces dernières ne doivent êtres stockées que localement, et ne peuvent être sujettes à des traitements extérieurs a l'application.
@@ -62,7 +62,7 @@ Si vous êtes utilisateur et souhaitez télécharger l'application sur votre sma
 - Tester la dernière bêta pour tester les fonctionnalités en avant première ici
 - Compiler vous même votre application
 #### IOS :
-- Étant donné que les frais d'inscriptions obligatoires pour devenir Apple Developer sont hors budgets, vous ne pourrez pas trouver l'application sur un marché alternatif. Vous pouvez donc compiler l'application à l'étape suivante si vous possédez un Mac.
+- Étant donné que les frais d'inscriptions obligatoires pour devenir Apple Developer sont hors budgets, vous ne pourrez pas trouver l'application sur l'App Store. Vous pouvez donc compiler l'application à l'étape suivante si vous possédez un Mac.
 
 
 ### Compilation 
@@ -74,8 +74,6 @@ Il est conseillé de procéder à l'installation guidée indiquée par [la docum
 Notez que pour compiler l'application pour iOS, il vous faut absolument un ordinateur Mac.
 
 Téléchargez une version officielle du code source de l'application depuis cette page, si vous êtes utilisateur, préférez la branche stable, sinon vous pouvez essayer de compiler une version bêta de yNotes. 
-
-- La dernière version stable
 
 Ouvrez le dossier du code source dans votre éditeur favori (VSCode, Android Studio, XCode). 
 
@@ -105,4 +103,4 @@ On y distingue les animations, (utilisant le moteur de rendu *Flare*, qui diffè
 
 ### Mentions spéciales
 * Merci aux développeurs et bêta testeurs qui ont aidé à participer au projet en me suggérant des fonctionnalités et en montrant des bugs que je n'aurai sûrement jamais remarqués
-* L'API Pronote est une recopie de [pronotepy](https://github.com/bain3/pronotepy), développée par [bain](https://github.com/bain3) que je remercie énormément pour ses explications et sa disponibilité :)
+* L'API Pronote est un portage de [pronotepy](https://github.com/bain3/pronotepy), développée par [bain](https://github.com/bain3) que je remercie énormément pour ses explications et sa disponibilité :)
