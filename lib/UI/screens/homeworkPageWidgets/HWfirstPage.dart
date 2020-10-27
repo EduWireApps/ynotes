@@ -9,7 +9,7 @@ import 'package:ynotes/UI/screens/homeworkPageWidgets/HWelement.dart';
 import 'package:ynotes/offline.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/main.dart';
-import '../../../apiManager.dart';
+import '../../../classes.dart';
 
 class HomeworkFirstPage extends StatefulWidget {
   State<StatefulWidget> createState() {

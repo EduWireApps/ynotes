@@ -1,19 +1,17 @@
-import 'dart:io';
-
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ynotes/UI/components/dialogs/colorPicker.dart';
 import 'package:ynotes/UI/components/giffy_dialog/src/asset.dart';
 import 'package:ynotes/UI/screens/settingsPage.dart';
-import '../../main.dart';
 import '../../usefulMethods.dart';
 import 'package:ynotes/UI/utils/fileUtils.dart';
+import 'dialogs/folderChoiceDialog.dart';
+import 'dialogs/multipleChoicesDialog.dart';
+import 'dialogs/numberChoiceDialog.dart';
+import 'dialogs/specialtiesDialog.dart';
+import 'dialogs/textFieldChoiceDialog.dart';
 
 class CustomDialogs {
   static void showGiffyDialog(BuildContext context, HelpDialog hd) {
@@ -55,7 +53,7 @@ class CustomDialogs {
             ));
   }
 
-  static Future<bool> showConfirmationDialog(BuildContext context, Function show) {
+  static Future<bool> showConfirmationDialog(BuildContext context, Function show, {String alternativeText = "Voulez vous vraiment supprimer cet élément (irréversible) ?", String alternativeButtonConfirmText ="SUPPRIMER"}) {
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
       elevation: 50,
@@ -66,7 +64,7 @@ class CustomDialogs {
         style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
       ),
       content: Text(
-        "Voulez vous vraiment supprimer cet élément (irréversible) ?",
+        alternativeText,
         style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
       ),
       actions: [
@@ -81,8 +79,8 @@ class CustomDialogs {
           },
         ),
         FlatButton(
-          child: const Text(
-            'SUPPRIMER',
+          child:  Text(
+            alternativeButtonConfirmText.toUpperCase(),
             style: TextStyle(color: Colors.red),
             textScaleFactor: 1.0,
           ),
@@ -112,7 +110,18 @@ class CustomDialogs {
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return NumberChoice(text);
+        return NumberChoiceDialog(text);
+      },
+    );
+  }
+
+  static Future<Color> showColorPicker(BuildContext context, Color defaultColor) {
+    // show the dialog
+    return showDialog<Color>(
+      barrierDismissible: false,
+      context: context,
+      builder: (BuildContext context) {
+        return CustomColorPicker(defaultColor: defaultColor);
       },
     );
   }
@@ -123,7 +132,7 @@ class CustomDialogs {
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return TextChoice(text, defaultText);
+        return TextFieldChoiceDialog(text, defaultText);
       },
     );
   }
@@ -134,7 +143,18 @@ class CustomDialogs {
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return FolderChoiceWidget(context, path, files, selectionMode, callback);
+        return FolderChoiceDialog(context, path, files, selectionMode, callback);
+      },
+    );
+  }
+
+  static Future showMultipleChoicesDialog(BuildContext context, List choices, List<int> initialSelection) {
+    // show the dialog
+    return showDialog(
+      barrierDismissible: true,
+      context: context,
+      builder: (BuildContext context) {
+        return MultipleChoicesDialog(choices, initialSelection);
       },
     );
   }
@@ -191,134 +211,7 @@ class CustomDialogs {
   }
 }
 
-class DialogSpecialties extends StatefulWidget {
-  State<StatefulWidget> createState() {
-    return _DialogSpecialtiesState();
-  }
-}
 
-class _DialogSpecialtiesState extends State<DialogSpecialties> {
-  List<String> chosenSpecialties = List();
-  var classe;
-  Future disciplinesFuture;
-
-  getChosenSpecialties() async {
-    var other = await specialtiesSelectionAvailable();
-    final prefs = await SharedPreferences.getInstance();
-    if (prefs.getStringList("listSpecialties") != null) {
-      setState(() {
-        chosenSpecialties = prefs.getStringList("listSpecialties");
-        classe = other;
-      });
-    }
-  }
-
-  setChosenSpecialties() async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setStringList("listSpecialties", chosenSpecialties);
-    print(prefs.getStringList("listSpecialties"));
-  }
-
-  initState() {
-    super.initState();
-    getChosenSpecialties();
-    setState(() {
-      disciplinesFuture = localApi.getGrades(forceReload: true);
-    });
-  }
-
-  Widget build(BuildContext context) {
-    List disciplines = List();
-
-    MediaQueryData screenSize;
-    screenSize = MediaQuery.of(context);
-    return Container(
-      height: screenSize.size.height / 10 * 4,
-      child: FutureBuilder(
-          future: disciplinesFuture,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              snapshot.data.forEach((element) {
-                if (!disciplines.contains(element.nomDiscipline)) {
-                  disciplines.add(element.nomDiscipline);
-                }
-              });
-
-              return AlertDialog(
-                  backgroundColor: Theme.of(context).primaryColor,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0))),
-                  contentPadding: EdgeInsets.only(top: 10.0),
-                  content: Container(
-                      height: screenSize.size.height / 10 * 4,
-                      width: screenSize.size.width / 5 * 4,
-                      child: Center(
-                          child: (disciplines.length > 0)
-                              ? ListView.builder(
-                                  itemCount: disciplines.length,
-                                  itemBuilder: (BuildContext context, int index) {
-                                    return Container(
-                                      width: screenSize.size.width / 5 * 4,
-                                      padding: EdgeInsets.symmetric(
-                                        vertical: screenSize.size.height / 10 * 0.2,
-                                      ),
-                                      child: Row(
-                                        children: <Widget>[
-                                          CircularCheckBox(
-                                            inactiveColor: isDarkModeEnabled ? Colors.white : Colors.black,
-                                            onChanged: (value) {
-                                              if (chosenSpecialties.contains(disciplines[index])) {
-                                                setState(() {
-                                                  chosenSpecialties.removeWhere((element) => element == disciplines[index]);
-                                                });
-                                                print(chosenSpecialties);
-                                                setChosenSpecialties();
-                                              } else {
-                                                if (chosenSpecialties.length < 6) {
-                                                  setState(() {
-                                                    chosenSpecialties.add(disciplines[index]);
-                                                  });
-                                                  setChosenSpecialties();
-                                                }
-                                              }
-                                            },
-                                            value: chosenSpecialties.contains(disciplines[index]),
-                                          ),
-                                          Container(
-                                            width: screenSize.size.width / 5 * 3,
-                                            child: AutoSizeText(
-                                              disciplines[index],
-                                              style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                )
-                              : Container(
-                                  padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.5),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(MdiIcons.information, color: isDarkModeEnabled ? Colors.white : Colors.black),
-                                      AutoSizeText(
-                                        "Pas assez de données pour générer votre liste de spécialités.",
-                                        style: TextStyle(fontFamily: "Asap"),
-                                        textAlign: TextAlign.center,
-                                      )
-                                    ],
-                                  ),
-                                ))));
-            } else {
-              return SpinKitFadingFour(
-                color: Theme.of(context).primaryColorDark,
-                size: screenSize.size.width / 5 * 1,
-              );
-            }
-          }),
-    );
-  }
-}
 
 //The help dialog class
 class HelpDialog {
@@ -330,7 +223,7 @@ class HelpDialog {
   showDialog(BuildContext context) async {
     var z = await storage.read(key: "agreedTermsAndConfiguredApp");
     //If the dialog has never been viewed
-    if (!await checkAlreadyViewed()&&z!=null) {
+    if (!await checkAlreadyViewed() && z != null) {
       CustomDialogs.showGiffyDialog(context, this);
       //Set the dialog as viewed
       await this.setAlreadyViewed();
@@ -391,349 +284,5 @@ List<HelpDialog> helpDialogs = [
       3)
 ];
 
-class FolderChoiceWidget extends StatefulWidget {
-  BuildContext context;
-  String path;
-  List<FileInfo> files = List();
-  bool selectionMode;
-  Function callback;
-  FolderChoiceWidget(this.context, this.path, this.files, this.selectionMode, this.callback);
 
-  @override
-  _FolderChoiceWidgetState createState() => _FolderChoiceWidgetState();
-}
 
-class _FolderChoiceWidgetState extends State<FolderChoiceWidget> {
-  TextEditingController textController = TextEditingController(text: "");
-
-  String value = "";
-  String dropDownValue = "Aucun";
-  List<String> folderNames = List();
-  List<FileInfo> filesToMove = List();
-  @override
-  void initState() {
-    // TODO: implement initState
-    List<FileInfo> folderList = List();
-    if (widget.files != null) {
-      folderList = widget.files.where((element) => element.element is Directory).toList();
-
-      filesToMove = widget.files.where((element) => element.selected).toList();
-    }
-
-    folderNames.add("Aucun");
-
-    folderList.forEach((element) {
-      folderNames.add(element.fileName);
-    });
-    // set up the AlertDialog
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    var screenSize = MediaQuery.of(context);
-    return AlertDialog(
-      elevation: 50,
-      backgroundColor: Theme.of(context).primaryColor,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-      title: Text(
-        "Création de dossier",
-        style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
-      ),
-      content: Container(
-        height: widget.selectionMode ? screenSize.size.height / 10 * 2.5 : screenSize.size.height / 10 * 1.2,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              child: Text(
-                "Donnez un nom à ce dossier",
-                style: TextStyle(fontFamily: 'Asap', color: isDarkModeEnabled ? Colors.white : Colors.black),
-                textAlign: TextAlign.left,
-              ),
-            ),
-            Container(
-              width: screenSize.size.width / 5 * 4.3,
-              height: screenSize.size.height / 10 * 0.8,
-              child: TextFormField(
-                controller: textController,
-                onChanged: (newValue) {
-                  setState(() {
-                    value = newValue;
-                    if (folderNames.contains(newValue)) {
-                      dropDownValue = newValue;
-                    }
-                  });
-                },
-                decoration: InputDecoration(
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: isDarkModeEnabled ? Colors.white : Colors.black),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: isDarkModeEnabled ? Colors.white : Colors.black),
-                  ),
-                ),
-                style: TextStyle(
-                  fontFamily: 'Asap',
-                  color: isDarkModeEnabled ? Colors.white : Colors.black,
-                ),
-              ),
-            ),
-            if (widget.selectionMode)
-              Container(
-                child: Text(
-                  "Utiliser un dossier existant",
-                  style: TextStyle(fontFamily: 'Asap', color: isDarkModeEnabled ? Colors.white : Colors.black),
-                  textAlign: TextAlign.left,
-                ),
-              ),
-            if (widget.selectionMode)
-              Container(
-                width: screenSize.size.width / 5 * 4.3,
-                child: DropdownButton<String>(
-                  value: dropDownValue,
-                  dropdownColor: Theme.of(context).primaryColor,
-                  style: TextStyle(color: isDarkModeEnabled ? Colors.white : Colors.black),
-                  icon: null,
-                  iconSize: 0,
-                  underline: Container(
-                    height: screenSize.size.height / 10 * 0.02,
-                    color: isDarkModeEnabled ? Colors.white : Colors.black,
-                  ),
-                  onChanged: (String newValue) {
-                    setState(() {
-                      dropDownValue = newValue;
-                      if (newValue != "Aucun") {
-                        value = newValue;
-                        textController.text = newValue;
-                      }
-                    });
-                  },
-                  items: folderNames.map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value ?? "",
-                      child: Text(
-                        value ?? "",
-                        style: TextStyle(fontFamily: 'Asap', color: isDarkModeEnabled ? Colors.white : Colors.black),
-                      ),
-                    );
-                  }).toList(),
-                ),
-              )
-          ],
-        ),
-      ),
-      actions: [
-        FlatButton(
-          child: const Text('ANNULER', style: TextStyle(color: Colors.red), textScaleFactor: 1.0),
-          onPressed: () {
-            Navigator.pop(context, false);
-          },
-        ),
-        FlatButton(
-          child: Text(
-            dropDownValue != "Aucun" ? "DÉPLACER" : "CRÉER",
-            style: TextStyle(color: Colors.green),
-            textScaleFactor: 1.0,
-          ),
-          onPressed: () async {
-            if (widget.selectionMode) {
-              await Future.forEach(filesToMove, (element) async {
-                try {
-                  await element.element.copy(widget.path + "/" + value + '/' + element.fileName + ((element.element is Directory) ? "/" : ""));
-                  await element.element.delete(recursive: true);
-                } catch (e) {
-                  if (Platform.isAndroid) {
-                    print("Trying with commandlines");
-                    await Process.run('cp', ['-r', element.element.path, widget.path + "/" + value]);
-                    await element.element.delete(recursive: true);
-                  }
-                }
-              });
-            } else {
-              await FolderAppUtil.createDirectory(widget.path + "/" + value + "/");
-            }
-            await widget.callback();
-            Navigator.pop(context, true);
-          },
-        )
-      ],
-    );
-    ;
-  }
-}
-
-class NumberChoice extends StatefulWidget {
-  final String unit;
-
-  const NumberChoice(this.unit);
-  @override
-  _NumberChoiceState createState() => _NumberChoiceState();
-}
-
-class _NumberChoiceState extends State<NumberChoice> {
-  TextEditingController textController = TextEditingController(text: "");
-  int value;
-  @override
-  Widget build(BuildContext context) {
-    var screenSize = MediaQuery.of(context);
-    return AlertDialog(
-      elevation: 50,
-      backgroundColor: Theme.of(context).primaryColor,
-      content: Container(
-        height: screenSize.size.height / 10 * 1.2,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              child: Text(
-                "Choisir ${widget.unit}",
-                style: TextStyle(fontFamily: 'Asap', color: isDarkModeEnabled ? Colors.white : Colors.black),
-                textAlign: TextAlign.left,
-              ),
-            ),
-            Container(
-              width: screenSize.size.width / 5 * 4.3,
-              height: screenSize.size.height / 10 * 0.8,
-              child: TextFormField(
-                controller: textController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: isDarkModeEnabled ? Colors.white : Colors.black),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: isDarkModeEnabled ? Colors.white : Colors.black),
-                  ),
-                ),
-                onChanged: (newValue) {
-                  setState(() {
-                    value = int.parse(newValue);
-                  });
-                },
-                style: TextStyle(
-                  fontFamily: 'Asap',
-                  color: isDarkModeEnabled ? Colors.white : Colors.black,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-      actions: [
-        FlatButton(
-          child: const Text('ANNULER', style: TextStyle(color: Colors.red), textScaleFactor: 1.0),
-          onPressed: () {
-            Navigator.pop(context, null);
-          },
-        ),
-        FlatButton(
-          child: Text(
-            "VALIDER",
-            style: TextStyle(color: Colors.green),
-            textScaleFactor: 1.0,
-          ),
-          onPressed: () async {
-            Navigator.pop(context, value);
-          },
-        )
-      ],
-    );
-  }
-}
-
-class TextChoice extends StatefulWidget {
-  final String unit;
-  final String defaultText;
-
-  const TextChoice(this.unit, this.defaultText);
-  @override
-  _TextChoiceState createState() => _TextChoiceState();
-}
-
-class _TextChoiceState extends State<TextChoice> {
-  TextEditingController textController = TextEditingController(text: "");
-  String value;
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {
-          var splits = widget.defaultText.split(".");
-          textController.text = widget.defaultText;
-          if (splits.length > 1) {
-            var withoutextension = splits.sublist(0, splits.length - 1).join("");
-            String justExtension = "." + splits.last;
-            textController.text = widget.defaultText;
-            textController.selection = TextSelection(baseOffset: 0, extentOffset: withoutextension.length);
-          }
-        }));
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    var screenSize = MediaQuery.of(context);
-
-    return AlertDialog(
-      elevation: 50,
-      backgroundColor: Theme.of(context).primaryColor,
-      content: Container(
-        height: screenSize.size.height / 10 * 1.2,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              child: Text(
-                "Choisir ${widget.unit}",
-                style: TextStyle(fontFamily: 'Asap', color: isDarkModeEnabled ? Colors.white : Colors.black),
-                textAlign: TextAlign.left,
-              ),
-            ),
-            Container(
-              width: screenSize.size.width / 5 * 4.3,
-              height: screenSize.size.height / 10 * 0.8,
-              child: TextFormField(
-                controller: textController,
-                autofocus: true,
-                decoration: InputDecoration(
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: isDarkModeEnabled ? Colors.white : Colors.black),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: isDarkModeEnabled ? Colors.white : Colors.black),
-                  ),
-                ),
-                onChanged: (newValue) {
-                  setState(() {
-                    value = newValue.trim();
-                  });
-                },
-                style: TextStyle(
-                  fontFamily: 'Asap',
-                  color: isDarkModeEnabled ? Colors.white : Colors.black,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-      actions: [
-        FlatButton(
-          child: const Text('ANNULER', style: TextStyle(color: Colors.red), textScaleFactor: 1.0),
-          onPressed: () {
-            Navigator.pop(context, null);
-          },
-        ),
-        FlatButton(
-          child: Text(
-            "VALIDER",
-            style: TextStyle(color: Colors.green),
-            textScaleFactor: 1.0,
-          ),
-          onPressed: () async {
-            Navigator.pop(context, value);
-          },
-        )
-      ],
-    );
-  }
-}

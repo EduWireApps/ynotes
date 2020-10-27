@@ -18,14 +18,14 @@ import 'package:pointycastle/api.dart';
 import 'package:pointycastle/asymmetric/api.dart';
 import 'package:pointycastle/asymmetric/rsa.dart';
 import 'package:steel_crypt/steel_crypt.dart';
-import 'package:ynotes/apiManager.dart' as localapi;
+import 'package:ynotes/classes.dart' as localapi;
 import 'package:ynotes/main.dart';
 import 'package:ynotes/models.dart';
 import 'package:ynotes/parsers/Pronote/PronoteCas.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:http/http.dart';
-import '../../apiManager.dart';
-import '../../apiManager.dart';
+import '../../classes.dart';
+import '../../classes.dart';
 import '../EcoleDirecte.dart';
 
 Map error_messages = {22: '[ERROR 22] The object was from a previous session. Please read the "Long Term Usage" section in README on github.', 10: '[ERROR 10] Session has expired and pronotepy was not able to reinitialise the connection.'};

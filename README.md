@@ -93,7 +93,7 @@ Le fichier principal (exécuté en premier) est `/lib/main.dart`
 
 ### Front-end
 Tout le code peut être organisé dans des fichiers .dart, l'UI comme le backend, mais les layouts sont situés dans `/lib/UI`
-décomposés par "pages".
+décomposés par écrans (screens) et par composants (components).
 
 ### Back-end
 Le traitement des données est maintenant effectué dans des parsers distincts situés dans `/lib/parsers`

@@ -13,14 +13,14 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:ynotes/UI/components/modalBottomSheets/disciplinesModalBottomSheet.dart';
 import 'package:ynotes/UI/components/modalBottomSheets/utils.dart';
 import 'package:ynotes/UI/utils/themeUtils.dart';
-import '../../../apiManager.dart';
+import '../../../classes.dart';
 import '../../../usefulMethods.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:ynotes/main.dart';
 
 import '../gradesChart.dart';
 
-void gradesModalBottomSheet(context, Grade grade, Discipline discipline, Function callback, var widget, Function colorPicker) {
+void gradesModalBottomSheet(context, Grade grade, Discipline discipline, Function callback, var widget) {
   MediaQueryData screenSize = MediaQuery.of(context);
   Color colorGroup;
   if (widget.disciplinevar == null) {
@@ -99,7 +99,7 @@ void gradesModalBottomSheet(context, Grade grade, Discipline discipline, Functio
                               radius: 45,
                               onTap: () {
                                 Navigator.pop(context);
-                                disciplineModalBottomSheet(context, discipline, callback, widget, colorPicker);
+                                disciplineModalBottomSheet(context, discipline, callback, widget);
                               },
                               borderRadius: BorderRadius.circular(15),
                               child: Container(

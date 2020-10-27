@@ -41,6 +41,11 @@ class FolderAppUtil {
     }
   }
 
+  static getTempDirectory() async {
+    final dir = await getTemporaryDirectory();
+    return dir;
+  }
+
   static createDirectory(String path) async {
     final Directory _appDocDirFolder = Directory(path);
 
@@ -48,9 +53,7 @@ class FolderAppUtil {
       print("creating $path");
 
       final Directory _appDocDirNewFolder = await _appDocDirFolder.create(recursive: true);
-    } else {
- 
-    }
+    } else {}
   }
 }
 

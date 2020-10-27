@@ -11,12 +11,14 @@ import 'package:package_info/package_info.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wiredash/wiredash.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
+import 'package:ynotes/UI/screens/exportPage.dart';
 import 'package:ynotes/UI/screens/logsPage.dart';
-import 'package:ynotes/apiManager.dart';
+import 'package:ynotes/classes.dart';
 import 'package:ynotes/main.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_multiselect/flutter_multiselect.dart';
 import 'package:ynotes/parsers/Pronote.dart';
+import '../../tests.dart';
 import '../../usefulMethods.dart';
 import 'package:dio/src/response.dart' as dioResponse;
 import 'package:settings_ui/settings_ui.dart';
@@ -253,9 +255,21 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
               title: 'Autres paramètres',
               tiles: [
                 SettingsTile(
+                  title: 'Gestionnaire de sauvegarde',
+                  leading: Icon(MdiIcons.contentSave, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                  onTap: () async {
+                   Navigator.of(context).push(router(ExportPage()));
+                  },
+                  titleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                  subtitleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
+                ),
+                SettingsTile(
                   title: 'Réinitialiser le tutoriel',
                   leading: Icon(MdiIcons.restore, color: isDarkModeEnabled ? Colors.white : Colors.black),
-                  onTap: () {
+                  onTap: () async {
+                    if (await CustomDialogs.showConfirmationDialog(context, null, alternativeText: "Etes-vous sûr de vouloir réinitialiser le tutoriel ?", alternativeButtonConfirmText: "confirmer")) {
+                      await HelpDialog.resetEveryHelpDialog();
+                    }
                     HelpDialog.resetEveryHelpDialog();
                   },
                   titleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
@@ -265,7 +279,9 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                   title: 'Supprimer les données hors ligne',
                   leading: Icon(MdiIcons.deleteAlert, color: isDarkModeEnabled ? Colors.white : Colors.black),
                   onTap: () async {
-                    await offline.clearAll();
+                    if (await CustomDialogs.showConfirmationDialog(context, null, alternativeText: "Etes-vous sûr de vouloir supprimer les données hors ligne ? (irréversible)")) {
+                      await offline.clearAll();
+                    }
                   },
                   titleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
                   subtitleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
@@ -283,7 +299,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                           width: screenSize.size.width / 5 * 0.7,
                         ),
                         applicationName: "yNotes",
-                        applicationVersion: packageInfo.version + "+" + packageInfo.buildNumber,
+                        applicationVersion: packageInfo.version + "+" + packageInfo.buildNumber + " T" +Tests.testVersion??"",
                         applicationLegalese: "Developpé avec amour en France.\nAPI Pronote adaptée à l'aide de l'API pronotepy développée par Bain sous licence MIT.\nJe remercie la participation des bêta testeurs et des développeurs ayant participé au développement de l'application.");
                   },
                   titleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
@@ -294,7 +310,8 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     title: 'Bouton magique',
                     leading: Icon(MdiIcons.testTube, color: isDarkModeEnabled ? Colors.white : Colors.black),
                     onTap: () async {
-                      
+                      Navigator.of(context).push(router(ExportPage()));
+                      //await mainTestNewGrades();
                     },
                     titleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
                     subtitleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),

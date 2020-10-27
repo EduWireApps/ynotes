@@ -1,29 +1,16 @@
-import 'dart:collection';
-import 'dart:io';
-import 'dart:math';
-import 'dart:ui';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/src/request.dart';
 import 'package:intl/intl.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:requests/requests.dart';
 import 'package:ynotes/UI/screens/logsPage.dart';
 import 'package:ynotes/models.dart';
 import 'package:ynotes/parsers/Pronote/PronoteAPI.dart';
-import 'package:ynotes/parsers/Pronote/PronoteAPI.dart' as papi;
 import 'package:ynotes/parsers/Pronote/PronoteCas.dart';
-import 'package:rxdart/rxdart.dart';
-import '../apiManager.dart';
-import 'package:flutter/services.dart';
-
+import '../classes.dart';
 import '../main.dart';
-import '../offline.dart';
 import '../usefulMethods.dart';
-import 'EcoleDirecte.dart';
 
 Client localClient;
 //Locks are use to prohibit the app to send too much requests while collecting data and ensure there are made one by one
@@ -53,7 +40,7 @@ class APIPronote extends API {
       print("Loading grades from offline storage.");
 
       var toReturn = await offline.disciplines();
-      await refreshDisciplinesListColors(toReturn);
+      toReturn = await refreshDisciplinesListColors(toReturn);
       return toReturn;
     } else {
       print("Loading grades inline.");
@@ -61,7 +48,7 @@ class APIPronote extends API {
       if (toReturn == null) {
         toReturn = await offline.disciplines();
       }
-      await refreshDisciplinesListColors(toReturn);
+      toReturn = await refreshDisciplinesListColors(toReturn);
       return toReturn;
     }
   }
@@ -115,7 +102,7 @@ class APIPronote extends API {
           element.gradesList.addAll(grades.where((grade) => grade.libelleMatiere == element.nomDiscipline));
         });
         int index = 0;
-        refreshDisciplinesListColors(listDisciplines);
+        listDisciplines = await refreshDisciplinesListColors(listDisciplines);
         gradeLock = false;
         gradeRefreshRecursive = false;
         offline.updateDisciplines(listDisciplines);
@@ -227,7 +214,7 @@ class APIPronote extends API {
           List<Homework> pinnedHomework = await localClient.homework(element, date_to: element);
           pinnedHomework.removeWhere((pinnedHWElement) => element.day != pinnedHWElement.date.day);
           pinnedHomework.forEach((pinned) {
-            if (!listHW.any((hw) => hw.idDevoir == pinned.idDevoir)) {
+            if (!listHW.any((hw) => hw.id == pinned.id)) {
               listHW.add(pinned);
             }
           });
@@ -274,7 +261,7 @@ class APIPronote extends API {
       try {
         var cookies = await callCas(cas, username, password, url ?? "");
         localClient = Client(url, username: username, password: password, cookies: cookies);
-       
+
         await localClient.init();
         if (localClient.logged_in) {
           this.loggedIn = true;
@@ -586,7 +573,7 @@ class APIPronote extends API {
           element.gradesList.addAll(grades.where((grade) => grade.libelleMatiere == element.nomDiscipline));
         });
         int index = 0;
-        refreshDisciplinesListColors(listDisciplines);
+        listDisciplines = await refreshDisciplinesListColors(listDisciplines);
         gradeLock = false;
         gradeRefreshRecursive = false;
         offline.updateDisciplines(listDisciplines);

@@ -2,9 +2,11 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
+import 'package:ynotes/UI/utils/hiveExportImportUtils.dart';
 import 'package:ynotes/parsers/Pronote/PronoteAPI.dart';
 import 'package:ynotes/usefulMethods.dart';
-import 'apiManager.dart';
+import 'UI/screens/spacePageWidgets/agendaGrid.dart';
+import 'classes.dart';
 import 'package:ynotes/UI/utils/fileUtils.dart';
 
 class Offline {
@@ -16,12 +18,12 @@ class Offline {
   Map<dynamic, dynamic> lessonsData;
   //Return polls
   List<PollInfo> pollsData;
-  Box _offlineBox;
-  Box _homeworkDoneBox;
-  Box _pinnedHomeworkBox;
+  //Return agenda reminder
+  List<AgendaReminder> remindersData;
+  Box offlineBox;
+  Box homeworkDoneBox;
+  Box pinnedHomeworkBox;
   init() async {
-    final dir = await FolderAppUtil.getDirectory();
-    Hive.init("${dir.path}/offline");
     //Register adapters once
     try {
       Hive.registerAdapter(GradeAdapter());
@@ -30,38 +32,46 @@ class Offline {
       Hive.registerAdapter(HomeworkAdapter());
       Hive.registerAdapter(LessonAdapter());
       Hive.registerAdapter(PollInfoAdapter());
+      Hive.registerAdapter(AgendaReminderAdapter());
+      Hive.registerAdapter(alarmTypeAdapter());
     } catch (e) {
       print("Error " + e.toString());
     }
-    _offlineBox = await Hive.openBox("offlineData");
-    _homeworkDoneBox = await Hive.openBox('doneHomework');
-    _pinnedHomeworkBox = await Hive.openBox('pinnedHomework');
+    final dir = await FolderAppUtil.getDirectory();
+    Hive.init("${dir.path}/offline");
+    offlineBox = await Hive.openBox("offlineData");
+    homeworkDoneBox = await Hive.openBox('doneHomework');
+    pinnedHomeworkBox = await Hive.openBox('pinnedHomework');
   }
 
   //Refresh lists when needed
   refreshData() async {
     print("Refreshing offline");
     try {
-      if (!_offlineBox.isOpen) {
-        _offlineBox = await Hive.openBox("offlineData");
+      if (!offlineBox.isOpen) {
+        offlineBox = await Hive.openBox("offlineData");
       }
       //Get data and cast it
-      var offlineLessons = await _offlineBox.get("lessons");
-      var offlineDisciplines = await _offlineBox.get("disciplines");
-      var offlinehomeworkData = await _offlineBox.get("homework");
-      var offlinePollsData = await _offlineBox.get("polls");
+      var offlineLessonsData = await offlineBox.get("lessons");
+      var offlineDisciplinesData = await offlineBox.get("disciplines");
+      var offlinehomeworkData = await offlineBox.get("homework");
+      var offlinePollsData = await offlineBox.get("polls");
+      var offlineRemindersData = await offlineBox.get("reminders");
 
-      if (offlineLessons != null) {
-        this.lessonsData = Map<dynamic, dynamic>.from(offlineLessons);
+      if (offlineLessonsData != null) {
+        this.lessonsData = Map<dynamic, dynamic>.from(offlineLessonsData);
       }
-      if (offlineDisciplines != null) {
-        this.disciplinesData = offlineDisciplines.cast<Discipline>();
+      if (offlineDisciplinesData != null) {
+        this.disciplinesData = offlineDisciplinesData.cast<Discipline>();
       }
       if (offlinehomeworkData != null) {
         this.homeworkData = offlinehomeworkData.cast<Homework>();
       }
       if (offlinePollsData != null) {
         this.pollsData = offlinePollsData.cast<PollInfo>();
+      }
+      if (offlineRemindersData != null) {
+        this.remindersData = offlineRemindersData.cast<AgendaReminder>();
       }
     } catch (e) {
       print("Error while refreshing " + e.toString());
@@ -71,22 +81,39 @@ class Offline {
   //Clear all databases
   clearAll() async {
     try {
-      if (!_offlineBox.isOpen) {
-        _offlineBox = await Hive.openBox("offlineData");
+      if (!offlineBox.isOpen) {
+        offlineBox = await Hive.openBox("offlineData");
       }
-      if (!_homeworkDoneBox.isOpen) {
-        _homeworkDoneBox = await Hive.openBox("doneHomework");
+      if (!homeworkDoneBox.isOpen) {
+        homeworkDoneBox = await Hive.openBox("doneHomework");
       }
-      if (!_pinnedHomeworkBox.isOpen) {
-        _pinnedHomeworkBox = await Hive.openBox('pinnedHomework');
+      if (!pinnedHomeworkBox.isOpen) {
+        pinnedHomeworkBox = await Hive.openBox('pinnedHomework');
       }
-      await _offlineBox.clear();
-      await _homeworkDoneBox.clear();
-      await _pinnedHomeworkBox.clear();
-      disciplinesData.clear();
-      homeworkData.clear();
-      lessonsData.clear();
-      pollsData.clear();
+      try {
+        await offlineBox.clear();
+      } catch (e) {}
+      try {
+        await homeworkDoneBox.clear();
+      } catch (e) {}
+      try {
+        await pinnedHomeworkBox.clear();
+      } catch (e) {}
+      try {
+        disciplinesData.clear();
+      } catch (e) {}
+      try {
+        remindersData.clear();
+      } catch (e) {}
+      try {
+        homeworkData.clear();
+      } catch (e) {}
+      try {
+        lessonsData.clear();
+      } catch (e) {}
+      try {
+        pollsData.clear();
+      } catch (e) {}
     } catch (e) {
       print("Failed to clear all db " + e.toString());
     }
@@ -94,12 +121,12 @@ class Offline {
 
   updateDisciplines(List<Discipline> newData) async {
     try {
-      if (!_offlineBox.isOpen) {
-        _offlineBox = await Hive.openBox("offlineData");
+      if (!offlineBox.isOpen) {
+        offlineBox = await Hive.openBox("offlineData");
       }
       print("Updating disciplines");
-      await _offlineBox.delete("disciplines");
-      await _offlineBox.put("disciplines", newData);
+      await offlineBox.delete("disciplines");
+      await offlineBox.put("disciplines", newData);
       await refreshData();
     } catch (e) {
       print("Error while updating disciplines " + e);
@@ -109,24 +136,24 @@ class Offline {
   updateHomework(List<Homework> newData, {bool add = false}) async {
     print("Update offline homework");
     try {
-      if (!_offlineBox.isOpen) {
-        _offlineBox = await Hive.openBox("offlineData");
+      if (!offlineBox.isOpen) {
+        offlineBox = await Hive.openBox("offlineData");
       }
       if (add == true && newData != null) {
-        List<Homework> oldHW = _offlineBox.get("homework").cast<Homework>();
+        List<Homework> oldHW = offlineBox.get("homework").cast<Homework>();
 
         List<Homework> combinedList = List();
         combinedList.addAll(oldHW);
         newData.forEach((newdataelement) {
-          if (!combinedList.any((clistelement) => clistelement.idDevoir == newdataelement.idDevoir)) {
+          if (!combinedList.any((clistelement) => clistelement.id == newdataelement.id)) {
             combinedList.add(newdataelement);
           }
         });
         combinedList = combinedList.toSet().toList();
 
-        await _offlineBox.put("homework", combinedList);
+        await offlineBox.put("homework", combinedList);
       } else {
-        await _offlineBox.put("homework", newData);
+        await offlineBox.put("homework", newData);
       }
       await refreshData();
     } catch (e) {
@@ -136,15 +163,15 @@ class Offline {
 
   updateLessons(List<Lesson> newData, int week) async {
     try {
-      if (!_offlineBox.isOpen) {
-        _offlineBox = await Hive.openBox("offlineData");
+      if (!offlineBox.isOpen) {
+        offlineBox = await Hive.openBox("offlineData");
       }
       if (newData != null) {
         print("Update offline lessons (week : $week, length : ${newData.length})");
         Map<dynamic, dynamic> timeTable = Map();
-        var offline = await _offlineBox.get("lessons");
+        var offline = await offlineBox.get("lessons");
         if (offline != null) {
-          timeTable = Map<dynamic, dynamic>.from(await _offlineBox.get("lessons"));
+          timeTable = Map<dynamic, dynamic>.from(await offlineBox.get("lessons"));
         }
 
         if (timeTable == null) {
@@ -164,7 +191,7 @@ class Offline {
         }
         //Update the timetable
         timeTable.update(week, (value) => newData, ifAbsent: () {});
-        await _offlineBox.put("lessons", timeTable);
+        await offlineBox.put("lessons", timeTable);
         await refreshData();
       }
 
@@ -177,20 +204,43 @@ class Offline {
   updatePolls(List<PollInfo> newData) async {
     print("Update offline polls (length : ${newData.length})");
     try {
-      if (!_offlineBox.isOpen) {
-        _offlineBox = await Hive.openBox("offlineData");
+      if (!offlineBox.isOpen) {
+        offlineBox = await Hive.openBox("offlineData");
       }
-      await _offlineBox.delete("polls");
-      await _offlineBox.put("polls", newData);
+      await offlineBox.delete("polls");
+      await offlineBox.put("polls", newData);
       await refreshData();
     } catch (e) {
       print("Error while updating polls " + e.toString());
     }
   }
 
+  updateReminder(AgendaReminder newData) async {
+    print("Update reminders");
+    try {
+      if (!offlineBox.isOpen) {
+        offlineBox = await Hive.openBox("offlineData");
+      }
+      var old = await offlineBox.get("reminders");
+      List<AgendaReminder> offline = List();
+      if (old != null) {
+        offline = old.cast<AgendaReminder>();
+      }
+      if (offline != null) {
+        offline.removeWhere((a) => a.id == newData.id);
+      }
+      offline.add(newData);
+      print(offline);
+      await offlineBox.put("reminders", offline);
+      await refreshData();
+    } catch (e) {
+      print("Error while updating reminder " + e.toString());
+    }
+  }
+
   setPinnedHomeworkDate(String date, bool value) async {
     try {
-      _pinnedHomeworkBox.put(date, value);
+      pinnedHomeworkBox.put(date, value);
     } catch (e) {
       print("Error during the setPinnedHomeworkDateProcess $e");
     }
@@ -198,7 +248,7 @@ class Offline {
 
   getPinnedHomeworkDates() async {
     try {
-      Map notParsedList = _pinnedHomeworkBox.toMap();
+      Map notParsedList = pinnedHomeworkBox.toMap();
       List<DateTime> parsedList = List<DateTime>();
       notParsedList.removeWhere((key, value) => value == false);
       notParsedList.keys.forEach((element) {
@@ -212,7 +262,7 @@ class Offline {
 
   Future<bool> getPinnedHomeworkSingleDate(String date) async {
     try {
-      bool toReturn = _pinnedHomeworkBox.get(date);
+      bool toReturn = pinnedHomeworkBox.get(date);
 
       //If to return is null return false
       return (toReturn != null) ? toReturn : false;
@@ -281,19 +331,16 @@ class Offline {
   Future<List<Lesson>> lessons(int week) async {
     try {
       if (lessonsData != null && lessonsData[week] != null) {
-       
         List<Lesson> lessons = List();
         lessons.addAll(lessonsData[week].cast<Lesson>());
         return lessons;
       } else {
         await refreshData();
         if (lessonsData[week] != null) {
-          print("WAZA678");
           List<Lesson> lessons = List();
           lessons.addAll(lessonsData[week].cast<Lesson>());
           return lessons;
         } else {
-          print("WAZA");
           return null;
         }
       }
@@ -317,19 +364,37 @@ class Offline {
     }
   }
 
+  Future<List<AgendaReminder>> reminders(String idLesson) async {
+    try {
+      if (remindersData != null) {
+        return remindersData.where((element) => element.lessonID == idLesson).toList();
+      } else {
+        await refreshData();
+        var toCollect = remindersData;
+        if (toCollect != null) {
+          toCollect = toCollect.where((element) => element.lessonID == idLesson).toList();
+        }
+        return toCollect;
+      }
+    } catch (e) {
+      print("Error while returning agenda reminders " + e.toString());
+      return null;
+    }
+  }
+
   Future<bool> getHWCompletion(String id) async {
     try {
       final dir = await FolderAppUtil.getDirectory();
       Hive.init("${dir.path}/offline");
 
-      bool toReturn = _homeworkDoneBox.get(id.toString());
+      bool toReturn = homeworkDoneBox.get(id.toString());
 
       //If to return is null return false
       return (toReturn != null) ? toReturn : false;
     } catch (e) {
       print("Error during the getHomeworkDoneProcess $e");
 
-      return null;
+      return false;
     }
   }
 
@@ -338,7 +403,7 @@ class Offline {
       final dir = await FolderAppUtil.getDirectory();
       Hive.init("${dir.path}/offline");
 
-      _homeworkDoneBox.put(id.toString(), state);
+      homeworkDoneBox.put(id.toString(), state);
     } catch (e) {
       print("Error during the setHomeworkDoneProcess $e");
     }

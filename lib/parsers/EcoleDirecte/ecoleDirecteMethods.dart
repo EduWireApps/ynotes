@@ -21,7 +21,7 @@ import 'package:ynotes/parsers/Pronote/PronoteAPI.dart';
 import 'package:ynotes/parsers/Pronote/PronoteCas.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/offline.dart';
-import 'package:ynotes/apiManager.dart';
+import 'package:ynotes/classes.dart';
 import 'package:dio/dio.dart' as dio;
 
 import '../EcoleDirecte.dart';
@@ -59,7 +59,7 @@ class EcoleDirecteMethod {
     return periodsList;
   }
 
-  static grades() async {
+  static Future<List<Discipline>> grades() async {
     await EcoleDirecteMethod.testToken();
     String rootUrl = "https://api.ecoledirecte.com/v3/Eleves/";
     /*if (kDebugMode) {
@@ -75,8 +75,10 @@ class EcoleDirecteMethod {
       "Grades request returned an error:", /*ignoreMethodAndId: true*/
     );
 
+    
     //Update colors;
-    refreshDisciplinesListColors(disciplinesList);
+    disciplinesList = await refreshDisciplinesListColors(disciplinesList);
+ 
     await offline.updateDisciplines(disciplinesList);
     createStack();
 

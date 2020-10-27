@@ -5,7 +5,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:ynotes/main.dart';
 import 'package:stacked/stacked.dart';
 
-import '../../../apiManager.dart';
+import '../../../classes.dart';
 import '../../../models.dart';
 import '../../../usefulMethods.dart';
 import '../appsPage.dart';

@@ -1,15 +1,19 @@
 import 'package:hive/hive.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:stack/stack.dart' as sta;
 import 'package:ynotes/parsers/EcoleDirecte.dart';
 import 'package:ynotes/parsers/Pronote.dart';
 import 'package:ynotes/usefulMethods.dart';
-part 'apiManager.g.dart';
-//Class of a piece homework
 
+import 'UI/screens/spacePageWidgets/agendaGrid.dart';
+part 'classes.g.dart';
+
+//Class of a piece homework
+@JsonSerializable(nullable: false)
 @HiveType(typeId: 0)
 class Homework extends HiveObject {
   @HiveField(0)
@@ -17,7 +21,7 @@ class Homework extends HiveObject {
   @HiveField(1)
   final String codeMatiere;
   @HiveField(2)
-  final String idDevoir;
+  final String id;
   @HiveField(3)
   final String contenu;
   @HiveField(4)
@@ -38,10 +42,13 @@ class Homework extends HiveObject {
   final List<Document> documentsContenuDeSeance;
   @HiveField(12)
   final String nomProf;
-  Homework(this.matiere, this.codeMatiere, this.idDevoir, this.contenu, this.contenuDeSeance, this.date, this.datePost, this.done, this.rendreEnLigne, this.interrogation, this.documents, this.documentsContenuDeSeance, this.nomProf);
+  Homework(this.matiere, this.codeMatiere, this.id, this.contenu, this.contenuDeSeance, this.date, this.datePost, this.done, this.rendreEnLigne, this.interrogation, this.documents, this.documentsContenuDeSeance, this.nomProf);
+  factory Homework.fromJson(Map<String, dynamic> json) => _$HomeworkFromJson(json);
+  Map<String, dynamic> toJson() => _$HomeworkToJson(this);
 }
 
 //Class of a downloadable document
+@JsonSerializable(nullable: false)
 @HiveType(typeId: 1)
 class Document {
   @HiveField(0)
@@ -53,6 +60,8 @@ class Document {
   @HiveField(3)
   final int length;
   Document(this.libelle, this.id, this.type, this.length);
+  factory Document.fromJson(Map<String, dynamic> json) => _$DocumentFromJson(json);
+  Map<String, dynamic> toJson() => _$DocumentToJson(this);
 }
 
 //Marks class
@@ -288,6 +297,50 @@ class PollInfo {
   PollInfo(this.auteur, this.datedebut, this.questions, this.read, this.title, this.id, this.documents, this.data);
 }
 
+@JsonSerializable(nullable: false)
+@HiveType(typeId: 6)
+//Associated with a lesson
+class AgendaReminder {
+  @HiveField(0)
+  String lessonID;
+  @HiveField(1)
+  String name;
+  @HiveField(2)
+  String description;
+  @HiveField(3)
+  alarmType alarm;
+  @HiveField(4)
+  int tagColor;
+  @HiveField(5)
+  String id;
+  Color get realTagColor {
+    return Color(tagColor);
+  }
+
+  AgendaReminder(this.lessonID, this.name, this.alarm, this.id, {this.description, this.tagColor});
+  factory AgendaReminder.fromJson(Map<String, dynamic> json) => _$AgendaReminderFromJson(json);
+  Map<String, dynamic> toJson() => _$AgendaReminderToJson(this);
+}
+
+///Delay before the event for the alarm to be triggered
+///`exactly` will trigger the alarm at the exact event start, `oneDay` will trigger the alarm
+///at 7:00 pm the day before
+@HiveType(typeId: 7)
+enum alarmType {
+  @HiveField(0)
+  none,
+  @HiveField(1)
+  exactly,
+  @HiveField(2)
+  fiveMinutes,
+  @HiveField(3)
+  fifteenMinutes,
+  @HiveField(4)
+  thirtyMinutes,
+  @HiveField(5)
+  oneDay,
+}
+
 class CloudItem {
   //E.G "test.txt"
   final String title;
@@ -351,7 +404,12 @@ abstract class API {
 
   ///Apps
   Future app(String appname, {String args, String action, CloudItem folder});
-
+ 
+  ///Space events
+  Future getSpaceEvents() async
+  {
+   
+  }
   List<App> listApp;
   List<Grade> gradesList;
 }
@@ -377,4 +435,13 @@ getChosenParser() async {
 setChosenParser(int chosen) async {
   final prefs = await SharedPreferences.getInstance();
   prefs.setInt('chosenParser', chosen);
+}
+
+//Used in the app page
+class App {
+  final String name;
+  final IconData icon;
+  final String route;
+
+  App(this.name, this.icon, {this.route});
 }

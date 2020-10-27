@@ -10,14 +10,14 @@ import 'package:provider/provider.dart';
 import 'package:shake/shake.dart';
 import 'package:ynotes/UI/screens/carousel.dart';
 import 'package:ynotes/UI/screens/loadingPage.dart';
-import 'package:ynotes/UI/screens/tabBuilder.dart';
+import 'package:ynotes/UI/screens/drawerBuilder.dart';
 import 'package:sentry/sentry.dart';
 import 'package:ynotes/models.dart';
 import 'package:ynotes/offline.dart';
 import 'package:ynotes/parsers/EcoleDirecte/ecoleDirecteMethods.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:ynotes/apiManager.dart';
+import 'package:ynotes/classes.dart';
 import 'package:ynotes/parsers/EcoleDirecte.dart';
 import 'package:ynotes/parsers/Pronote.dart';
 import 'package:ynotes/background.dart';
@@ -48,6 +48,7 @@ void backgroundFetchHeadlessTask(String taskId) async {
   flutterLocalNotificationsPlugin.initialize(initializationSettings, onSelectNotification: BackgroundService.onSelectNotification);
 //Ensure that grades notification are enabled and battery saver disabled
   if (await getSetting("notificationNewGrade") && !await getSetting("batterySaver")) {
+    logFile("New grade test triggered");
     if (await mainTestNewGrades()) {
       BackgroundService.showNotificationNewGrade();
     } else {
@@ -77,7 +78,9 @@ void backgroundFetchHeadlessTask(String taskId) async {
 mainTestNewGrades() async {
   try {
     //Getting the offline count of grades
+
     List<Grade> listOfflineGrades = getAllGrades(await offline.disciplines(), overrideLimit: true);
+
     print("Offline length is ${listOfflineGrades.length}");
     //Getting the online count of grades
     await getChosenParser();
@@ -85,6 +88,7 @@ mainTestNewGrades() async {
     if (chosenParser == 0) {
       listOnlineGrades = getAllGrades(await EcoleDirecteMethod.grades(), overrideLimit: true);
     }
+
     if (chosenParser == 1) {
       print("Getting grades from Pronote");
       API api = APIPronote();
@@ -177,10 +181,9 @@ class HomeApp extends StatelessWidget {
           secret: "y9zengsvskpriizwniqxr6vxa1ka1n6u",
           navigatorKey: _navigatorKey,
           options: WiredashOptionsData(
-
-              /// You can set your own locale to override device default (`window.locale` by default)
-              locale: const Locale.fromSubtags(languageCode: 'fr'),
-              showDebugFloatingEntryPoint: false),
+            /// You can set your own locale to override device default (`window.locale` by default)
+            locale: const Locale.fromSubtags(languageCode: 'fr'),
+          ),
           child: MaterialApp(
             localizationsDelegates: [
               // ... app-specific localization delegate[s] here
@@ -252,7 +255,7 @@ class homePage extends StatelessWidget {
     return Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
         body: SafeArea(
-          child: TabBuilder(),
+          child: DrawerBuilder(),
         ));
   }
 }

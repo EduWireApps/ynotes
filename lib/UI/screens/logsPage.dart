@@ -1,8 +1,10 @@
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
+import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/UI/utils/fileUtils.dart';
 import '../../usefulMethods.dart';
 
@@ -20,6 +22,18 @@ class _LogsPageState extends State<LogsPage> {
         appBar: new AppBar(
           backgroundColor: Theme.of(context).primaryColor,
           title: new Text("Logs"),
+          actions: [
+            IconButton(
+              icon: new Icon(Icons.delete),
+              onPressed: () async {
+                if (await CustomDialogs.showConfirmationDialog(context, null, alternativeText: "Voulez vous vraiment supprimer l'intégralité des logs (irréversible) ?")) {
+                  await removeLogFile();
+                  setState(() {});
+                }
+                
+              },
+            ),
+          ],
           leading: IconButton(
             icon: new Icon(Icons.arrow_back),
             onPressed: () {
@@ -71,4 +85,11 @@ logFile(String error) async {
   final directory = await FolderAppUtil.getDirectory();
   final File file = File('${directory.path}/logs.txt');
   await file.writeAsString("\n\n" + DateTime.now().toString() + "\n" + error, mode: FileMode.append);
+}
+
+removeLogFile() async {
+  print("Delete logs");
+  final directory = await FolderAppUtil.getDirectory();
+  final File file = File('${directory.path}/logs.txt');
+  await file.writeAsString("");
 }

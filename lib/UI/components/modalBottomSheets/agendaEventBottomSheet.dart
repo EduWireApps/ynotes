@@ -11,7 +11,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:ynotes/UI/utils/themeUtils.dart';
-import '../../../apiManager.dart';
+import '../../../classes.dart';
 import '../../../usefulMethods.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:ynotes/main.dart';
@@ -24,7 +24,6 @@ void agendaEventBottomSheet(context) {
 
   MediaQueryData screenSize = MediaQuery.of(context);
   showModalBottomSheet(
-    
       isScrollControlled: true,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),

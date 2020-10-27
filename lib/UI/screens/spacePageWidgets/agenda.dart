@@ -21,7 +21,7 @@ import '../../../background.dart';
 import '../../../usefulMethods.dart';
 import 'package:ynotes/UI/utils/fileUtils.dart';
 import 'package:ynotes/main.dart';
-import 'package:ynotes/apiManager.dart';
+import 'package:ynotes/classes.dart';
 import 'dart:async';
 import 'package:ynotes/UI/components/expandable_bottom_sheet-master/src/raw_expandable_bottom_sheet.dart';
 import 'dart:io';
@@ -314,13 +314,13 @@ class _AgendaState extends State<Agenda> {
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
     return Container(
-        height: screenSize.size.height / 10 * 6.5,
+        height: screenSize.size.height / 10 * 7,
         margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
           color: Theme.of(context).primaryColor,
         ),
-        width: screenSize.size.width / 5 * 4.5,
+        width: screenSize.size.width / 5 * 4.7,
         child: Stack(
           children: [
             ClipRRect(
@@ -328,152 +328,76 @@ class _AgendaState extends State<Agenda> {
               child: Container(
                 width: screenSize.size.width,
                 height: screenSize.size.height,
-                child: ExpandableBottomSheet(
-                  animationCurveExpand: Curves.easeOutQuint,
-                  onIsExtendedCallback: () {
-                    setState(() {
-                      extended = true;
-                    });
-                  },
-                  onIsContractedCallback: () {
-                    setState(() {
-                      extended = false;
-                    });
-                  },
-                  key: expandableKey,
-                  background: Container(
-                    width: screenSize.size.width,
-                    height: screenSize.size.height,
-                    padding: EdgeInsets.all(screenSize.size.width / 5 * 0.05),
-                    child: SingleChildScrollView(
-                      physics: NeverScrollableScrollPhysics(),
-                      child: Column(
-                        children: <Widget>[
-                          _buildAgendaButtons(context),
-                          Container(
-                            height: screenSize.size.height / 10 * 5.8,
-                            child: Stack(
-                              children: [
-                                FutureBuilder(
-                                    future: agendaFuture,
-                                    builder: (context, snapshot) {
-                                      if (snapshot.hasData && snapshot.data != null && snapshot.data.length != 0) {
-                                        return RefreshIndicator(onRefresh: refreshAgendaFuture, child: AgendaGrid(snapshot.data));
-                                      }
-                                      if (snapshot.data != null && snapshot.data.length == 0) {
-                                        return Center(
-                                          child: FittedBox(
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              children: <Widget>[
-                                                Container(
-                                                  margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.5),
-                                                  height: screenSize.size.height / 10 * 1.9,
-                                                  child: Image(fit: BoxFit.fitWidth, image: AssetImage('assets/images/relax.png')),
-                                                ),
-                                                Text(
-                                                  "Journée détente ?",
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
-                                                ),
-                                                FlatButton(
-                                                  onPressed: () {
-                                                    //Reload list
-                                                    refreshAgendaFuture();
-                                                  },
-                                                  child: snapshot.connectionState != ConnectionState.waiting
-                                                      ? Text("Recharger", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2))
-                                                      : FittedBox(child: SpinKitThreeBounce(color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4)),
-                                                  shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(18.0), side: BorderSide(color: Theme.of(context).primaryColorDark)),
-                                                )
-                                              ],
-                                            ),
+                child: Container(
+                  width: screenSize.size.width,
+                  height: screenSize.size.height,
+                  padding: EdgeInsets.all(screenSize.size.width / 5 * 0.05),
+                  child: SingleChildScrollView(
+                    physics: NeverScrollableScrollPhysics(),
+                    child: Column(
+                      children: <Widget>[
+                        _buildAgendaButtons(context),
+                        Container(
+                          height: screenSize.size.height / 10 * 7.2,
+                          child: Stack(
+                            children: [
+                              FutureBuilder(
+                                  future: agendaFuture,
+                                  builder: (context, snapshot) {
+                                    if (snapshot.hasData && snapshot.data != null && snapshot.data.length != 0) {
+                                      return RefreshIndicator(onRefresh: refreshAgendaFuture, child: AgendaGrid(snapshot.data));
+                                    }
+                                    if (snapshot.data != null && snapshot.data.length == 0) {
+                                      return Center(
+                                        child: FittedBox(
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              Container(
+                                                margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.5),
+                                                height: screenSize.size.height / 10 * 1.9,
+                                                child: Image(fit: BoxFit.fitWidth, image: AssetImage('assets/images/relax.png')),
+                                              ),
+                                              Text(
+                                                "Journée détente ?",
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
+                                              ),
+                                              FlatButton(
+                                                onPressed: () {
+                                                  //Reload list
+                                                  refreshAgendaFuture();
+                                                },
+                                                child: snapshot.connectionState != ConnectionState.waiting
+                                                    ? Text("Recharger", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2))
+                                                    : FittedBox(child: SpinKitThreeBounce(color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4)),
+                                                shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(18.0), side: BorderSide(color: Theme.of(context).primaryColorDark)),
+                                              )
+                                            ],
                                           ),
-                                        );
-                                      } else {
-                                        return SpinKitFadingFour(
-                                          color: Theme.of(context).primaryColorDark,
-                                          size: screenSize.size.width / 5 * 1,
-                                        );
-                                      }
-                                    }),
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                  persistentHeader: Container(
-                    height: screenSize.size.width / 5 * 0.6,
-                    width: screenSize.size.width,
-                    child: GestureDetector(
-                      onTap: () {
-                        if (extended) {
-                          setState(() {
-                            extended = false;
-                          });
-                          expandableKey.currentState.contract();
-                        }
-                      },
-                      child: Container(
-                        padding: EdgeInsets.symmetric(vertical: screenSize.size.width / 5 * 0.05),
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Color(0xff100A30), width: 0.000000000),
-                          borderRadius: BorderRadius.only(topLeft: Radius.circular(11), topRight: Radius.circular(11)),
-                          color: Color(0xff100A30),
-                        ),
-                        child: FittedBox(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [Transform.rotate(angle: extended ? 5 * pi : 0, child: Icon(Icons.arrow_drop_up, color: Colors.white)), Text("Après les cours", style: TextStyle(fontFamily: "Asap", color: Colors.white, fontSize: 11))],
+                                        ),
+                                      );
+                                    } else {
+                                      return SpinKitFadingFour(
+                                        color: Theme.of(context).primaryColorDark,
+                                        size: screenSize.size.width / 5 * 1,
+                                      );
+                                    }
+                                  }),
+                            ],
                           ),
-                        ),
-                        height: screenSize.size.width / 5 * 0.3,
-                        width: screenSize.size.width,
-                      ),
-                    ),
-                  ),
-                  expandableContent: Container(
-                      child: Container(
-                    height: screenSize.size.height / 10 * 5.1,
-                    width: screenSize.size.width,
-                    decoration: BoxDecoration(gradient: LinearGradient(begin: Alignment.topCenter, stops: [0.01, 0.7], end: Alignment.bottomCenter, colors: [Color(0xff100A30), Colors.white])),
-                    child: Stack(
-                      children: [
-                        if (extended)
-                          Align(
-                            alignment: Alignment.bottomCenter,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                FadeAnimation(
-                                  0.1,
-                                  Image(
-                                    image: AssetImage('assets/images/sportbag.png'),
-                                    width: screenSize.size.width / 5 * 3.5,
-                                  ),
-                                ),
-                                FadeAnimation(
-                                  0.2,
-                                  Text(
-                                    "yNotes vous rappellera bientôt vos cours de badminton (entre autres).",
-                                    style: TextStyle(fontFamily: "Asap", color: Colors.black),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                        )
                       ],
                     ),
-                  )),
+                  ),
                 ),
               ),
             ),
             Align(
               alignment: Alignment.bottomRight,
-              child: _buildFloatingButton(context),
+              child:Container(
+                margin: EdgeInsets.only(right: screenSize.size.width / 5 * 0.1, bottom: screenSize.size.height / 10 * 0.1),
+                child:  _buildFloatingButton(context),),
             ),
           ],
         ));

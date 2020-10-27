@@ -11,7 +11,7 @@ import 'package:ynotes/parsers/EcoleDirecte.dart';
 import 'package:ynotes/parsers/Pronote.dart';
 import 'package:ynotes/usefulMethods.dart';
 
-import 'apiManager.dart';
+import 'classes.dart';
 import 'package:ynotes/UI/utils/fileUtils.dart';
 
 ///Class download to notify view when download is ended

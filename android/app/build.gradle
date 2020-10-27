@@ -43,7 +43,7 @@ android {
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "fr.ynotes"
-        minSdkVersion 18
+        minSdkVersion 19
         targetSdkVersion 29
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
@@ -64,6 +64,14 @@ android {
             signingConfig signingConfigs.release
         }
     }
+    flavorDimensions "app"
+    productFlavors {
+        dev {
+            
+            dimension "app"
+            applicationId "fr.ynotes.dev"
+        }
+    }
 }
 
 flutter {
@@ -72,6 +80,7 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.1'

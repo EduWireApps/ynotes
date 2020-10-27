@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ynotes/parsers/Pronote/PronoteCas.dart';
 
-import '../../apiManager.dart';
+import '../../classes.dart';
 
 class EcoleDirecteConverter {
   static Mail mail(Map<String, dynamic> mailData) {

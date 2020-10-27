@@ -10,7 +10,10 @@
             "name": "Flutter",
             "request": "launch",
             "type": "dart",
-      
+            "args": [
+                "--flavor",
+                "dev"
+            ]
         }
     ]
 }

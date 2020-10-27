@@ -13,7 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:ynotes/UI/components/modalBottomSheets/disciplinesModalBottomSheet.dart';
 import 'package:ynotes/UI/components/modalBottomSheets/gradesModalBottomSheet.dart';
-import '../../apiManager.dart';
+import '../../classes.dart';
 import '../../usefulMethods.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:ynotes/main.dart';
@@ -374,331 +374,255 @@ class _GradesPageState extends State<GradesPage> {
 
     ///Button container
     return Container(
-      height: screenSize.size.height / 10 * 8.8,
-      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-        Container(
-          padding: EdgeInsets.only(top: (screenSize.size.height / 10 * 8.8) / 10 * 1 / 6),
-          height: screenSize.size.height / 10 * 0.7,
-          width: screenSize.size.width / 5 * 4.7,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
-            border: Border.all(width: 0.00000, color: Colors.transparent),
-            color: Theme.of(context).primaryColor,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
+      height: screenSize.size.height,
+      child: Column(mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
+        Card(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.3),
+          color: Theme.of(context).primaryColor,
+          child: Column(
+            children: [
               Container(
-                height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
-                width: (screenSize.size.width / 5) * 2.2,
-                padding: EdgeInsets.symmetric(horizontal: (screenSize.size.width / 5) * 0.4),
+                padding: EdgeInsets.only(top: (screenSize.size.height / 10 * 8.8) / 10 * 1 / 6),
+                height: screenSize.size.height / 10 * 0.7,
+                width: screenSize.size.width / 5 * 4.7,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-                  color: Theme.of(context).primaryColorDark,
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
+                  border: Border.all(width: 0.00000, color: Colors.transparent),
                 ),
-                child: FittedBox(
-                  fit: BoxFit.fitWidth,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Theme(
-                        data: Theme.of(context).copyWith(
-                          canvasColor: Theme.of(context).primaryColorDark,
-                        ),
-                        child: FutureBuilder<List<Period>>(
-                            future: localApi.getPeriods(),
-                            builder: (context, snapshot) {
-                              return (snapshot.data == null || !snapshot.hasData || periodeToUse == "" || snapshot.data.length == 0)
-                                  ? Container(
-                                      child: Text(
-                                        "Pas de periode",
-                                        style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
-                                      ),
-                                    )
-                                  : DropdownButtonHideUnderline(
-                                      child: DropdownButton<String>(
-                                        value: periodeToUse,
-                                        iconSize: 0.0,
-                                        style: TextStyle(fontSize: 18, fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
-                                        onChanged: (String newValue) {
-                                          setState(() {
-                                            periodeToUse = newValue;
-                                          });
-                                        },
-                                        focusColor: Theme.of(context).primaryColor,
-                                        items: snapshot.data.toSet().map<DropdownMenuItem<String>>((Period period) {
-                                          return DropdownMenuItem<String>(
-                                            value: period != null ? period.name : "-",
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
+                      width: (screenSize.size.width / 5) * 2.2,
+                      padding: EdgeInsets.symmetric(horizontal: (screenSize.size.width / 5) * 0.4),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                        color: Theme.of(context).primaryColorDark,
+                      ),
+                      child: FittedBox(
+                        fit: BoxFit.fitWidth,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Theme(
+                              data: Theme.of(context).copyWith(
+                                canvasColor: Theme.of(context).primaryColorDark,
+                              ),
+                              child: FutureBuilder<List<Period>>(
+                                  future: localApi.getPeriods(),
+                                  builder: (context, snapshot) {
+                                    return (snapshot.data == null || !snapshot.hasData || periodeToUse == "" || snapshot.data.length == 0)
+                                        ? Container(
                                             child: Text(
-                                              period != null ? period.name : "-",
-                                              textAlign: TextAlign.center,
+                                              "Pas de periode",
+                                              style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                            ),
+                                          )
+                                        : DropdownButtonHideUnderline(
+                                            child: DropdownButton<String>(
+                                              value: periodeToUse,
+                                              iconSize: 0.0,
                                               style: TextStyle(fontSize: 18, fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                              onChanged: (String newValue) {
+                                                setState(() {
+                                                  periodeToUse = newValue;
+                                                });
+                                              },
+                                              focusColor: Theme.of(context).primaryColor,
+                                              items: snapshot.data.toSet().map<DropdownMenuItem<String>>((Period period) {
+                                                return DropdownMenuItem<String>(
+                                                  value: period != null ? period.name : "-",
+                                                  child: Text(
+                                                    period != null ? period.name : "-",
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(fontSize: 18, fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                                  ),
+                                                );
+                                              }).toList(),
                                             ),
                                           );
-                                        }).toList(),
+                                  }),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    Container(
+                      margin: EdgeInsets.only(left: (screenSize.size.height / 10 * 8.8) / 10 * 0.1),
+                      child: Material(
+                        color: Theme.of(context).primaryColorDark,
+                        borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                          onTap: () {
+                            openSortBox();
+                          },
+                          child: Container(
+                              height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
+                              padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
+                              child: FittedBox(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Icon(
+                                      Icons.settings,
+                                      color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                    ),
+                                    Text(
+                                      "Trier",
+                                      style: TextStyle(
+                                        fontFamily: "Asap",
+                                        color: isDarkModeEnabled ? Colors.white : Colors.black,
                                       ),
-                                    );
-                            }),
-                      )
-                    ],
-                  ),
+                                    ),
+                                  ],
+                                ),
+                              )),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              Container(
-                margin: EdgeInsets.only(left: (screenSize.size.height / 10 * 8.8) / 10 * 0.1),
-                child: Material(
-                  color: Theme.of(context).primaryColorDark,
-                  borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-                    onTap: () {
-                      openSortBox();
-                    },
-                    child: Container(
-                        height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
-                        padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
-                        child: FittedBox(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Icon(
-                                Icons.settings,
-                                color: isDarkModeEnabled ? Colors.white : Colors.black,
-                              ),
-                              Text(
-                                "Trier",
-                                style: TextStyle(
-                                  fontFamily: "Asap",
-                                  color: isDarkModeEnabled ? Colors.white : Colors.black,
-                                ),
-                              ),
-                            ],
-                          ),
-                        )),
-                  ),
+
+              ///Grades container
+
+              RefreshIndicator(
+                onRefresh: refreshLocalGradeList,
+                child: Container(
+                  width: screenSize.size.width / 5 * 4.7,
+                  padding: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
+                  height: screenSize.size.height / 10 * 5.8,
+                  margin: EdgeInsets.only(top: 0),
+                  decoration: BoxDecoration(
+                      border: Border.all(width: 0.000000, color: Colors.transparent),
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(15),
+                        bottomRight: Radius.circular(15),
+                      ),
+                      color: Theme.of(context).primaryColor),
+                  child: ClipRRect(
+                      borderRadius: BorderRadius.circular(15),
+                      child: FutureBuilder<void>(
+                          future: disciplinesListFuture,
+                          builder: (BuildContext context, AsyncSnapshot snapshot) {
+                            if (snapshot.hasData) {
+                              if (getDisciplinesForPeriod(snapshot.data, periodeToUse, filter).any((element) {
+                                return (element.gradesList.length > 0);
+                              })) {
+                                return ListView.builder(
+                                    physics: AlwaysScrollableScrollPhysics(),
+                                    itemCount: getDisciplinesForPeriod(snapshot.data, periodeToUse, filter).length,
+                                    padding: EdgeInsets.symmetric(vertical: screenSize.size.width / 5 * 0.1, horizontal: screenSize.size.width / 5 * 0.125),
+                                    itemBuilder: (BuildContext context, int index) {
+                                      return GradesGroup(disciplinevar: getDisciplinesForPeriod(snapshot.data, periodeToUse, filter)[index]);
+                                    });
+                              } else {
+                                return Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Image(image: AssetImage('assets/images/book.png'), width: screenSize.size.width / 5 * 4),
+                                    Container(
+                                      margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.5),
+                                      child: AutoSizeText("Pas de notes pour cette periode.", textAlign: TextAlign.center, style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black)),
+                                    ),
+                                    FlatButton(
+                                      onPressed: () {
+                                        //Reload list
+                                        refreshLocalGradeList();
+                                      },
+                                      child: snapshot.connectionState != ConnectionState.waiting
+                                          ? Text("Recharger", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2))
+                                          : FittedBox(child: SpinKitThreeBounce(color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4)),
+                                      shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(18.0), side: BorderSide(color: Theme.of(context).primaryColorDark)),
+                                    )
+                                  ],
+                                );
+                              }
+                            }
+                            if (snapshot.hasError) {
+                              return Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Image(
+                                    image: AssetImage('assets/images/totor.png'),
+                                    width: screenSize.size.width / 5 * 3.5,
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.5),
+                                    child: AutoSizeText("Hum... on dirait que tout ne s'est pas passé comme prévu.",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontFamily: "Asap",
+                                          color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                        )),
+                                  ),
+                                  FlatButton(
+                                    onPressed: () {
+                                      //Reload list
+                                      refreshLocalGradeList();
+                                    },
+                                    child: snapshot.connectionState != ConnectionState.waiting
+                                        ? Text("Recharger",
+                                            style: TextStyle(
+                                              fontFamily: "Asap",
+                                              color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                            ))
+                                        : FittedBox(child: SpinKitThreeBounce(color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4)),
+                                    shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(18.0), side: BorderSide(color: Theme.of(context).primaryColorDark)),
+                                  )
+                                ],
+                              );
+                            } else {
+                              //Loading group
+                              return ListView.builder(
+                                  itemCount: 5,
+                                  padding: EdgeInsets.all(screenSize.size.width / 5 * 0.3),
+                                  itemBuilder: (BuildContext context, int index) {
+                                    return GradesGroup();
+                                  });
+                            }
+                          })),
                 ),
               ),
             ],
           ),
         ),
 
-        ///Grades container
-
-        RefreshIndicator(
-          onRefresh: refreshLocalGradeList,
+        //Average section
+        Card(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.3),
+          color: Theme.of(context).primaryColor,
           child: Container(
             width: screenSize.size.width / 5 * 4.7,
-            padding: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
-            height: screenSize.size.height / 10 * 5.4,
-            margin: EdgeInsets.only(top: 0),
-            decoration: BoxDecoration(
-                border: Border.all(width: 0.000000, color: Colors.transparent),
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(15),
-                  bottomRight: Radius.circular(15),
-                ),
-                color: Theme.of(context).primaryColor),
+            height: (screenSize.size.height / 10 * 8.8) / 10 * 1.8,
+         
             child: ClipRRect(
                 borderRadius: BorderRadius.circular(15),
                 child: FutureBuilder<void>(
                     future: disciplinesListFuture,
                     builder: (BuildContext context, AsyncSnapshot snapshot) {
+                      List<Discipline> disciplineList;
+                      Discipline getLastDiscipline;
                       if (snapshot.hasData) {
-                        if (getDisciplinesForPeriod(snapshot.data, periodeToUse, filter).any((element) {
-                          return (element.gradesList.length > 0);
-                        })) {
-                          return ListView.builder(
-                              physics: AlwaysScrollableScrollPhysics(),
-                              itemCount: getDisciplinesForPeriod(snapshot.data, periodeToUse, filter).length,
-                              padding: EdgeInsets.symmetric(vertical: screenSize.size.width / 5 * 0.1, horizontal: screenSize.size.width / 5 * 0.125),
-                              itemBuilder: (BuildContext context, int index) {
-                                return GradesGroup(disciplinevar: getDisciplinesForPeriod(snapshot.data, periodeToUse, filter)[index]);
-                              });
-                        } else {
-                          return Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
+                        if (snapshot.data != null) {
+                          try {
+                            getLastDiscipline = snapshot.data.lastWhere((disciplinesList) => disciplinesList.periode == periodeToUse);
+                          } catch (exception) {}
+
+                          //If everything is ok, show stuff
+                          return Stack(
                             children: <Widget>[
-                              Image(image: AssetImage('assets/images/book.png'), width: screenSize.size.width / 5 * 4),
-                              Container(
-                                margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.5),
-                                child: AutoSizeText("Pas de notes pour cette periode.", textAlign: TextAlign.center, style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black)),
-                              ),
-                              FlatButton(
-                                onPressed: () {
-                                  //Reload list
-                                  refreshLocalGradeList();
-                                },
-                                child: snapshot.connectionState != ConnectionState.waiting
-                                    ? Text("Recharger", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2))
-                                    : FittedBox(child: SpinKitThreeBounce(color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4)),
-                                shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(18.0), side: BorderSide(color: Theme.of(context).primaryColorDark)),
-                              )
-                            ],
-                          );
-                        }
-                      }
-                      if (snapshot.hasError) {
-                        return Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Image(
-                              image: AssetImage('assets/images/totor.png'),
-                              width: screenSize.size.width / 5 * 3.5,
-                            ),
-                            Container(
-                              margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.5),
-                              child: AutoSizeText("Hum... on dirait que tout ne s'est pas passé comme prévu.",
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontFamily: "Asap",
-                                    color: isDarkModeEnabled ? Colors.white : Colors.black,
-                                  )),
-                            ),
-                            FlatButton(
-                              onPressed: () {
-                                //Reload list
-                                refreshLocalGradeList();
-                              },
-                              child: snapshot.connectionState != ConnectionState.waiting
-                                  ? Text("Recharger",
-                                      style: TextStyle(
-                                        fontFamily: "Asap",
-                                        color: isDarkModeEnabled ? Colors.white : Colors.black,
-                                      ))
-                                  : FittedBox(child: SpinKitThreeBounce(color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4)),
-                              shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(18.0), side: BorderSide(color: Theme.of(context).primaryColorDark)),
-                            )
-                          ],
-                        );
-                      } else {
-                        //Loading group
-                        return ListView.builder(
-                            itemCount: 5,
-                            padding: EdgeInsets.all(screenSize.size.width / 5 * 0.3),
-                            itemBuilder: (BuildContext context, int index) {
-                              return GradesGroup();
-                            });
-                      }
-                    })),
-          ),
-        ),
-
-//Average section
-        Container(
-          width: screenSize.size.width / 5 * 4.7,
-          height: (screenSize.size.height / 10 * 8.8) / 10 * 1.8,
-          margin: EdgeInsets.only(top: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15), color: Theme.of(context).primaryColor),
-          child: ClipRRect(
-              borderRadius: BorderRadius.circular(15),
-              child: FutureBuilder<void>(
-                  future: disciplinesListFuture,
-                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    List<Discipline> disciplineList;
-                    Discipline getLastDiscipline;
-                    if (snapshot.hasData) {
-                      if (snapshot.data != null) {
-                        try {
-                          getLastDiscipline = snapshot.data.lastWhere((disciplinesList) => disciplinesList.periode == periodeToUse);
-                        } catch (exception) {}
-
-                        //If everything is ok, show stuff
-                        return Stack(
-                          children: <Widget>[
-                            Align(
-                              alignment: Alignment.center,
-                              child: Container(
-                                height: (screenSize.size.height / 10 * 8.8) / 10 * 1.15,
-                                width: screenSize.size.width / 5 * 4,
-                                decoration: BoxDecoration(
-                                  boxShadow: <BoxShadow>[
-                                    BoxShadow(
-                                      blurRadius: 2.67,
-                                      color: Colors.black.withOpacity(0.2),
-                                      offset: Offset(0, 2.67),
-                                    ),
-                                  ],
-                                  color: Theme.of(context).primaryColorDark,
-                                  borderRadius: BorderRadius.circular(15),
-                                ),
-                                child: FittedBox(
-                                  child: Container(
-                                    height: (screenSize.size.height / 10 * 8.8) / 10 * 1.15,
-                                    width: screenSize.size.width / 5 * 3.3,
-                                    child: FittedBox(
-                                      child: Stack(
-                                        children: <Widget>[
-                                          Container(
-                                            margin: EdgeInsets.only(left: (screenSize.size.width / 5) * 0.9),
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                              crossAxisAlignment: CrossAxisAlignment.end,
-                                              children: <Widget>[
-                                                if (filter == "all")
-                                                  Row(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                                    children: <Widget>[
-                                                      Text("Moyenne de la classe :", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: (screenSize.size.width / 5) * 0.18)),
-                                                      Container(
-                                                        margin: EdgeInsets.only(left: (screenSize.size.width / 5) * 0.1),
-                                                        decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Color(0xff2C2C2C)),
-                                                        padding: EdgeInsets.symmetric(horizontal: (screenSize.size.width / 5) * 0.1, vertical: (screenSize.size.width / 5) * 0.08),
-                                                        child: Text(
-                                                          (getLastDiscipline != null && getLastDiscipline.moyenneGeneraleClasse != null ? getLastDiscipline.moyenneGeneraleClasse : "-"),
-                                                          style: TextStyle(fontFamily: "Asap", color: Colors.white, fontSize: (screenSize.size.width / 5) * 0.18),
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                if (filter == "all")
-                                                  Row(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                                    children: <Widget>[
-                                                      Text("Meilleure moyenne:", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: (screenSize.size.width / 5) * 0.18)),
-                                                      Container(
-                                                        margin: EdgeInsets.only(left: (screenSize.size.width / 5) * 0.1),
-                                                        decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Color(0xff2C2C2C)),
-                                                        padding: EdgeInsets.symmetric(horizontal: (screenSize.size.width / 5) * 0.1, vertical: (screenSize.size.width / 5) * 0.08),
-                                                        child: Text(
-                                                          (getLastDiscipline != null && getLastDiscipline.moyenneGeneralClasseMax != null ? getLastDiscipline.moyenneGeneralClasseMax : "-"),
-                                                          style: TextStyle(fontFamily: "Asap", color: Colors.white, fontSize: (screenSize.size.width / 5) * 0.18),
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                if (filter != "all")
-                                                  Row(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                                    children: <Widget>[
-                                                      Text("Moyenne du filtre ", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: (screenSize.size.width / 5) * 0.2)),
-                                                      Text(filter, style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: (screenSize.size.width / 5) * 0.2)),
-                                                    ],
-                                                  )
-                                              ],
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-
-                            //Circle with the moyenneGenerale
-                            Positioned(
-                              left: screenSize.size.width / 6 * 0.015,
-                              top: (screenSize.size.height / 10 * 8.8) / 10 * 0.2,
-                              child: Container(
-                                padding: EdgeInsets.all(screenSize.size.height / 10 * 0.3),
-                                width: screenSize.size.width / 5 * 1.5,
-                                height: (screenSize.size.height / 10 * 8.8) / 10 * 1.4,
-                                decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
+                              Align(
+                                alignment: Alignment.center,
+                                child: Container(
+                                  height: (screenSize.size.height / 10 * 8.8) / 10 * 1.15,
+                                  width: screenSize.size.width / 5 * 4,
+                                  decoration: BoxDecoration(
                                     boxShadow: <BoxShadow>[
                                       BoxShadow(
                                         blurRadius: 2.67,
@@ -706,45 +630,133 @@ class _GradesPageState extends State<GradesPage> {
                                         offset: Offset(0, 2.67),
                                       ),
                                     ],
-                                    color: (filter == "all" ? Colors.white : Colors.green)),
-                                child: Center(
+                                    color: Theme.of(context).primaryColorDark,
+                                    borderRadius: BorderRadius.circular(15),
+                                  ),
                                   child: FittedBox(
-                                    child: Text(
-                                      (average.toString() != null && !average.isNaN ? average.toStringAsFixed(2) : "-"),
-                                      style: TextStyle(color: Colors.black, fontFamily: "Asap", fontSize: (screenSize.size.width / 5) * 0.35),
-                                      textAlign: TextAlign.center,
+                                    child: Container(
+                                      height: (screenSize.size.height / 10 * 8.8) / 10 * 1.15,
+                                      width: screenSize.size.width / 5 * 3.3,
+                                      child: FittedBox(
+                                        child: Stack(
+                                          children: <Widget>[
+                                            Container(
+                                              margin: EdgeInsets.only(left: (screenSize.size.width / 5) * 0.9),
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                crossAxisAlignment: CrossAxisAlignment.end,
+                                                children: <Widget>[
+                                                  if (filter == "all")
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      children: <Widget>[
+                                                        Text("Moyenne de la classe :", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: (screenSize.size.width / 5) * 0.18)),
+                                                        Container(
+                                                          margin: EdgeInsets.only(left: (screenSize.size.width / 5) * 0.1),
+                                                          decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Color(0xff2C2C2C)),
+                                                          padding: EdgeInsets.symmetric(horizontal: (screenSize.size.width / 5) * 0.1, vertical: (screenSize.size.width / 5) * 0.08),
+                                                          child: Text(
+                                                            (getLastDiscipline != null && getLastDiscipline.moyenneGeneraleClasse != null ? getLastDiscipline.moyenneGeneraleClasse : "-"),
+                                                            style: TextStyle(fontFamily: "Asap", color: Colors.white, fontSize: (screenSize.size.width / 5) * 0.18),
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  if (filter == "all")
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      children: <Widget>[
+                                                        Text("Meilleure moyenne:", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: (screenSize.size.width / 5) * 0.18)),
+                                                        Container(
+                                                          margin: EdgeInsets.only(left: (screenSize.size.width / 5) * 0.1),
+                                                          decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Color(0xff2C2C2C)),
+                                                          padding: EdgeInsets.symmetric(horizontal: (screenSize.size.width / 5) * 0.1, vertical: (screenSize.size.width / 5) * 0.08),
+                                                          child: Text(
+                                                            (getLastDiscipline != null && getLastDiscipline.moyenneGeneralClasseMax != null ? getLastDiscipline.moyenneGeneralClasseMax : "-"),
+                                                            style: TextStyle(fontFamily: "Asap", color: Colors.white, fontSize: (screenSize.size.width / 5) * 0.18),
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  if (filter != "all")
+                                                    Row(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      children: <Widget>[
+                                                        Text("Moyenne du filtre ", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: (screenSize.size.width / 5) * 0.2)),
+                                                        Text(filter, style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: (screenSize.size.width / 5) * 0.2)),
+                                                      ],
+                                                    )
+                                                ],
+                                              ),
+                                            )
+                                          ],
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
+
+                              //Circle with the moyenneGenerale
+                              Positioned(
+                                left: screenSize.size.width / 6 * 0.015,
+                                top: (screenSize.size.height / 10 * 8.8) / 10 * 0.2,
+                                child: Container(
+                                  padding: EdgeInsets.all(screenSize.size.height / 10 * 0.3),
+                                  width: screenSize.size.width / 5 * 1.5,
+                                  height: (screenSize.size.height / 10 * 8.8) / 10 * 1.4,
+                                  decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      boxShadow: <BoxShadow>[
+                                        BoxShadow(
+                                          blurRadius: 2.67,
+                                          color: Colors.black.withOpacity(0.2),
+                                          offset: Offset(0, 2.67),
+                                        ),
+                                      ],
+                                      color: (filter == "all" ? Colors.white : Colors.green)),
+                                  child: Center(
+                                    child: FittedBox(
+                                      child: Text(
+                                        (average.toString() != null && !average.isNaN ? average.toStringAsFixed(2) : "-"),
+                                        style: TextStyle(color: Colors.black, fontFamily: "Asap", fontSize: (screenSize.size.width / 5) * 0.35),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        }
+
+                        return Container();
+                      }
+
+                      //To do if it can't get the data
+                      if (snapshot.hasError) {
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Icon(
+                              Icons.error,
+                              color: isDarkModeEnabled ? Colors.white : Colors.black,
+                              size: screenSize.size.width / 8,
                             ),
                           ],
                         );
+                      } else {
+                        return SpinKitFadingFour(
+                          color: Theme.of(context).primaryColorDark,
+                          size: screenSize.size.width / 5 * 0.7,
+                        );
                       }
-
-                      return Container();
-                    }
-
-                    //To do if it can't get the data
-                    if (snapshot.hasError) {
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          Icon(
-                            Icons.error,
-                            color: isDarkModeEnabled ? Colors.white : Colors.black,
-                            size: screenSize.size.width / 8,
-                          ),
-                        ],
-                      );
-                    } else {
-                      return SpinKitFadingFour(
-                        color: Theme.of(context).primaryColorDark,
-                        size: screenSize.size.width / 5 * 0.7,
-                      );
-                    }
-                  })),
+                    })),
+          ),
         ),
       ]),
     );
@@ -816,7 +828,7 @@ class _GradesGroupState extends State<GradesGroup> {
                   borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
                   onTap: () {
                     if (widget.disciplinevar != null) {
-                      disciplineModalBottomSheet(context, widget.disciplinevar, callback, this.widget, colorPicker);
+                      disciplineModalBottomSheet(context, widget.disciplinevar, callback, this.widget);
                     }
                   },
                   child: Container(
@@ -1018,7 +1030,7 @@ class _GradesGroupState extends State<GradesGroup> {
                         borderRadius: BorderRadius.all(Radius.circular(11)),
                         splashColor: colorGroup,
                         onTap: () {
-                          gradesModalBottomSheet(context, localList[index], widget.disciplinevar, callback, this.widget, colorPicker);
+                          gradesModalBottomSheet(context, localList[index], widget.disciplinevar, callback, this.widget);
                         },
                         /*
                         onLongPress: () {
@@ -1096,7 +1108,7 @@ class _GradesGroupState extends State<GradesGroup> {
                           animationType: BadgeAnimationType.scale,
                           toAnimate: true,
                           elevation: 0,
-                          position: BadgePosition.topRight(),
+                          position: BadgePosition.topEnd(),
                           badgeColor: Colors.blue,
                         ),
                       ),
@@ -1239,91 +1251,5 @@ class _GradesGroupState extends State<GradesGroup> {
         barrierDismissible: true,
         barrierLabel: '',
         pageBuilder: (context, animation1, animation2) {});
-  }
-
-  Color colorPicker(context, Color defaultColor) {
-    Color pickerColor = defaultColor;
-
-    void changeColor(Color color) {
-      setState(() {
-        pickerColor = color;
-      });
-    }
-
-    MediaQueryData screenSize = MediaQuery.of(context);
-    showDialog(
-      context: context,
-      child: AlertDialog(
-        backgroundColor: Theme.of(context).primaryColor,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0))),
-        content: Container(
-          //padding: EdgeInsets.all(screenSize.size.height/100),
-
-          child: SingleChildScrollView(
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: BlockPicker(
-                pickerColor: pickerColor,
-                onColorChanged: changeColor,
-                availableColors: [
-                  //TODO : add the default colors
-                  Colors.white,
-                  Color(0xfffb6b1d),
-                  Color(0xffe83b3b),
-                  Color(0xffc32454),
-                  Color(0xfff04f78),
-                  Color(0xfff68181),
-                  Color(0xfffca790),
-                  Color(0xffe3c896),
-                  Color(0xffab947a),
-                  Color(0xff966c6c),
-                  Color(0xff625565),
-                  Color(0xff1295a1),
-                  Color(0xff0b8a8f),
-                  Color(0xff1ebc73),
-                  Color(0xff91db69),
-                  Color(0xfffbff86),
-                  Color(0xfffbb954),
-                  Color(0xffcd683d),
-                  Color(0xff9e4539),
-                  Color(0xff933953),
-                  Color(0xff6b3e75),
-                  Color(0xff905ea9),
-                  Color(0xffa884f3),
-                  Color(0xffeaaded),
-                  Color(0xff8fd3ff),
-                  Color(0xff4d9be6),
-                  Color(0xff4d65b4),
-                  Color(0xff4d4f80),
-                  Color(0xff30e1b9),
-                  Color(0xff8ff8e2),
-                  Color(0xff8ac6d1),
-                ],
-              ),
-            ),
-          ),
-        ),
-        actions: <Widget>[
-          FlatButton(
-            child: const Text(
-              "Annuler",
-              style: TextStyle(fontFamily: "Asap"),
-            ),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          FlatButton(
-            child: Text(
-              "J'ai choisi",
-              style: TextStyle(color: Colors.green, fontFamily: "Asap"),
-            ),
-            onPressed: () {
-              Navigator.of(context).pop(pickerColor);
-            },
-          )
-        ],
-      ),
-    );
   }
 }

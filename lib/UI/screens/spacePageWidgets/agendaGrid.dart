@@ -22,7 +22,7 @@ import '../../../background.dart';
 import '../../../usefulMethods.dart';
 import 'package:ynotes/UI/utils/fileUtils.dart';
 import 'package:ynotes/main.dart';
-import 'package:ynotes/apiManager.dart';
+import 'package:ynotes/classes.dart';
 import 'dart:async';
 import 'package:ynotes/UI/components/expandable_bottom_sheet-master/src/raw_expandable_bottom_sheet.dart';
 import 'dart:io';
@@ -177,11 +177,12 @@ class _AgendaGridState extends State<AgendaGrid> {
       },
       child: Container(
         padding: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
-        height: screenSize.size.height / 10 * 6,
+        height: screenSize.size.height / 10 * 6.5,
         width: screenSize.size.width / 5 * 4.8,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(11),
           child: SingleChildScrollView(
+            physics: AlwaysScrollableScrollPhysics(),
             controller: scontroller,
             child: Stack(
               children: [
@@ -249,7 +250,7 @@ class _AgendaGridState extends State<AgendaGrid> {
                 for (AgendaEvent i in events)
                   AnimatedPositioned(
                     duration: Duration(milliseconds: 250),
-                    left: screenSize.size.width / 5 * 0.05,
+                    left: screenSize.size.width / 5 * 0.15,
                     top: _getPosition(_getStartHour(this.widget.lessons), i),
                     child: AgendaElement(
                       i,
@@ -307,28 +308,27 @@ class AgendaEvent {
   final List<AgendaReminder> reminders;
   final bool isLesson;
   final Lesson lesson;
+  final String description;
+  final alarmType alarm;
 
   bool collidesWith(AgendaEvent other) {
     return end.isAfter(other.start) && start.isBefore(other.end);
   }
 
-  AgendaEvent(this.start, this.end, this.name, this.location, this.left, this.height, this.canceled, this.id, this.width, {this.isLesson = false, this.lesson, this.reminders});
-}
-
-class AgendaReminder {
-  bool wholeDay;
-  DateTime start;
-  DateTime end;
-  String name;
-  String description;
-  Color tagColor;
-
-  AgendaReminder(
-    this.wholeDay,
-    this.name, {
-    this.description,
+  AgendaEvent(
     this.start,
     this.end,
-    this.tagColor
+    this.name,
+    this.location,
+    this.left,
+    this.height,
+    this.canceled,
+    this.id,
+    this.width, {
+    this.isLesson = false,
+    this.lesson,
+    this.reminders,
+    this.description,
+    this.alarm,
   });
 }

@@ -9,7 +9,7 @@ import 'package:ynotes/main.dart';
 import 'package:ynotes/parsers/EcoleDirecte.dart';
 import 'package:ynotes/usefulMethods.dart';
 
-import '../../apiManager.dart';
+import '../../classes.dart';
 
 class LoadingPage extends StatefulWidget {
   const LoadingPage({Key key}) : super(key: key);

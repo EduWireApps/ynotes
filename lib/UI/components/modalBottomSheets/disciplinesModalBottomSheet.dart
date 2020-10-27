@@ -10,9 +10,12 @@ import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/UI/components/modalBottomSheets/utils.dart';
+import 'package:ynotes/UI/components/dialogs/colorPicker.dart';
+import 'package:ynotes/UI/screens/gradesPage.dart';
 import 'package:ynotes/UI/utils/themeUtils.dart';
-import '../../../apiManager.dart';
+import '../../../classes.dart';
 import '../../../usefulMethods.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:ynotes/main.dart';
@@ -20,7 +23,7 @@ import 'package:ynotes/main.dart';
 import '../gradesChart.dart';
 
 ///Bottom windows with some infos on the discipline and the possibility to change the discipline color
-void disciplineModalBottomSheet(context, Discipline discipline, Function callback, var widget, Function colorPicker) {
+void disciplineModalBottomSheet(context, Discipline discipline, Function callback, var widget) {
   Color colorGroup;
   if (widget.disciplinevar == null) {
     colorGroup = Colors.blueAccent;
@@ -73,14 +76,16 @@ void disciplineModalBottomSheet(context, Discipline discipline, Function callbac
                                   radius: 25,
                                   onTap: () async {
                                     Navigator.pop(context);
-                                    Color color = colorPicker(context, Color(discipline.color));
+                                    Color color = await CustomDialogs.showColorPicker(context, Color(discipline.color));
 
                                     if (color != null) {
                                       String test = color.toString();
                                       String finalColor = "#" + test.toString().substring(10, test.length - 1);
                                       final prefs = await SharedPreferences.getInstance();
-                                      prefs.setString(discipline.codeMatiere, finalColor);
+                                      await prefs.setString(discipline.codeMatiere, finalColor);
                                       discipline.setcolor = color;
+                                      //Call set state
+                                      callback();
                                     }
                                   },
                                   splashColor: Colors.grey,

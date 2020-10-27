@@ -136,7 +136,7 @@ class AppNews {
   static Future<List> checkAppNews() async {
     try {
       dioResponse.Response response = await dio.Dio().get(
-          "https://raw.githubusercontent.com/ModernChocolate/ynotes-website/master/src/app-src/news.json",
+          "https://raw.githubusercontent.com/ModernChocolate/ynotes-website/master/dist/src/app-src/news.json",
           options: dio.Options(responseType: dio.ResponseType.plain));
       var dir = await FolderAppUtil.getDirectory();
       File jsonfile = File(dir.path + "/news.json");

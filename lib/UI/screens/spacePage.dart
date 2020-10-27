@@ -7,7 +7,7 @@ import 'package:ynotes/UI/screens/spacePageWidgets/agenda.dart';
 import 'package:ynotes/UI/screens/spacePageWidgets/downloadsExplorer.dart';
 import 'package:ynotes/UI/screens/spacePageWidgets/news.dart';
 import 'package:ynotes/UI/screens/spacePageWidgets/spacePageSettings.dart';
-import 'package:ynotes/UI/screens/tabBuilder.dart';
+import 'package:ynotes/UI/screens/drawerBuilder.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:dio/src/response.dart' as dioResponse;
 import 'package:ynotes/UI/components/dialogs.dart';

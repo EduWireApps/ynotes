@@ -1,10 +1,69 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'apiManager.dart';
+part of 'classes.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
+
+class alarmTypeAdapter extends TypeAdapter<alarmType> {
+  @override
+  final int typeId = 7;
+
+  @override
+  alarmType read(BinaryReader reader) {
+    switch (reader.readByte()) {
+      case 0:
+        return alarmType.none;
+      case 1:
+        return alarmType.exactly;
+      case 2:
+        return alarmType.fiveMinutes;
+      case 3:
+        return alarmType.fifteenMinutes;
+      case 4:
+        return alarmType.thirtyMinutes;
+      case 5:
+        return alarmType.oneDay;
+      default:
+        return null;
+    }
+  }
+
+  @override
+  void write(BinaryWriter writer, alarmType obj) {
+    switch (obj) {
+      case alarmType.none:
+        writer.writeByte(0);
+        break;
+      case alarmType.exactly:
+        writer.writeByte(1);
+        break;
+      case alarmType.fiveMinutes:
+        writer.writeByte(2);
+        break;
+      case alarmType.fifteenMinutes:
+        writer.writeByte(3);
+        break;
+      case alarmType.thirtyMinutes:
+        writer.writeByte(4);
+        break;
+      case alarmType.oneDay:
+        writer.writeByte(5);
+        break;
+    }
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is alarmTypeAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
 
 class HomeworkAdapter extends TypeAdapter<Homework> {
   @override
@@ -42,7 +101,7 @@ class HomeworkAdapter extends TypeAdapter<Homework> {
       ..writeByte(1)
       ..write(obj.codeMatiere)
       ..writeByte(2)
-      ..write(obj.idDevoir)
+      ..write(obj.id)
       ..writeByte(3)
       ..write(obj.contenu)
       ..writeByte(4)
@@ -389,3 +448,161 @@ class PollInfoAdapter extends TypeAdapter<PollInfo> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+class AgendaReminderAdapter extends TypeAdapter<AgendaReminder> {
+  @override
+  final int typeId = 6;
+
+  @override
+  AgendaReminder read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return AgendaReminder(
+      fields[0] as String,
+      fields[1] as String,
+      fields[3] as alarmType,
+      fields[5] as String,
+      description: fields[2] as String,
+      tagColor: fields[4] as int,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, AgendaReminder obj) {
+    writer
+      ..writeByte(6)
+      ..writeByte(0)
+      ..write(obj.lessonID)
+      ..writeByte(1)
+      ..write(obj.name)
+      ..writeByte(2)
+      ..write(obj.description)
+      ..writeByte(3)
+      ..write(obj.alarm)
+      ..writeByte(4)
+      ..write(obj.tagColor)
+      ..writeByte(5)
+      ..write(obj.id);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AgendaReminderAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+Homework _$HomeworkFromJson(Map<String, dynamic> json) {
+  return Homework(
+    json['matiere'] as String,
+    json['codeMatiere'] as String,
+    json['id'] as String,
+    json['contenu'] as String,
+    json['contenuDeSeance'] as String,
+    DateTime.parse(json['date'] as String),
+    DateTime.parse(json['datePost'] as String),
+    json['done'] as bool,
+    json['rendreEnLigne'] as bool,
+    json['interrogation'] as bool,
+    (json['documents'] as List)
+        .map((e) => Document.fromJson(e as Map<String, dynamic>))
+        .toList(),
+    (json['documentsContenuDeSeance'] as List)
+        .map((e) => Document.fromJson(e as Map<String, dynamic>))
+        .toList(),
+    json['nomProf'] as String,
+  );
+}
+
+Map<String, dynamic> _$HomeworkToJson(Homework instance) => <String, dynamic>{
+      'matiere': instance.matiere,
+      'codeMatiere': instance.codeMatiere,
+      'id': instance.id,
+      'contenu': instance.contenu,
+      'contenuDeSeance': instance.contenuDeSeance,
+      'date': instance.date.toIso8601String(),
+      'datePost': instance.datePost.toIso8601String(),
+      'done': instance.done,
+      'rendreEnLigne': instance.rendreEnLigne,
+      'interrogation': instance.interrogation,
+      'documents': instance.documents,
+      'documentsContenuDeSeance': instance.documentsContenuDeSeance,
+      'nomProf': instance.nomProf,
+    };
+
+Document _$DocumentFromJson(Map<String, dynamic> json) {
+  return Document(
+    json['libelle'] as String,
+    json['id'] as String,
+    json['type'] as String,
+    json['length'] as int,
+  );
+}
+
+Map<String, dynamic> _$DocumentToJson(Document instance) => <String, dynamic>{
+      'libelle': instance.libelle,
+      'id': instance.id,
+      'type': instance.type,
+      'length': instance.length,
+    };
+
+AgendaReminder _$AgendaReminderFromJson(Map<String, dynamic> json) {
+  return AgendaReminder(
+    json['lessonID'] as String,
+    json['name'] as String,
+    _$enumDecode(_$alarmTypeEnumMap, json['alarm']),
+    json['id'] as String,
+    description: json['description'] as String,
+    tagColor: json['tagColor'] as int,
+  );
+}
+
+Map<String, dynamic> _$AgendaReminderToJson(AgendaReminder instance) =>
+    <String, dynamic>{
+      'lessonID': instance.lessonID,
+      'name': instance.name,
+      'description': instance.description,
+      'alarm': _$alarmTypeEnumMap[instance.alarm],
+      'tagColor': instance.tagColor,
+      'id': instance.id,
+    };
+
+T _$enumDecode<T>(
+  Map<T, dynamic> enumValues,
+  dynamic source, {
+  T unknownValue,
+}) {
+  if (source == null) {
+    throw ArgumentError('A value must be provided. Supported values: '
+        '${enumValues.values.join(', ')}');
+  }
+
+  final value = enumValues.entries
+      .singleWhere((e) => e.value == source, orElse: () => null)
+      ?.key;
+
+  if (value == null && unknownValue == null) {
+    throw ArgumentError('`$source` is not one of the supported values: '
+        '${enumValues.values.join(', ')}');
+  }
+  return value ?? unknownValue;
+}
+
+const _$alarmTypeEnumMap = {
+  alarmType.none: 'none',
+  alarmType.exactly: 'exactly',
+  alarmType.fiveMinutes: 'fiveMinutes',
+  alarmType.fifteenMinutes: 'fifteenMinutes',
+  alarmType.thirtyMinutes: 'thirtyMinutes',
+  alarmType.oneDay: 'oneDay',
+};

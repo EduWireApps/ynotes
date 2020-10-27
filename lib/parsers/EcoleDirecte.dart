@@ -1,16 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:connectivity/connectivity.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:alice/alice.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:quiver/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:stack/stack.dart' as sta;
 import 'package:ynotes/UI/screens/logsPage.dart';
@@ -20,9 +16,7 @@ import 'package:ynotes/parsers/EcoleDirecte/ecoleDirecteConverters.dart';
 import 'package:ynotes/parsers/Pronote/PronoteAPI.dart';
 import 'package:ynotes/parsers/Pronote/PronoteCas.dart';
 import 'package:ynotes/usefulMethods.dart';
-import 'package:ynotes/offline.dart';
-import 'package:ynotes/apiManager.dart';
-import 'package:dio/dio.dart' as dio;
+import 'package:ynotes/classes.dart';
 
 import 'EcoleDirecte/ecoleDirecteMethods.dart';
 
@@ -231,7 +225,7 @@ class APIEcoleDirecte extends API {
         toReturn.add(Lesson(matiere: "zebi", id: "dsfdghghjhsdhf", start: DateTime.parse("2020-10-12 06:43"), end: DateTime.parse("2020-10-12 08:32:00")));
         toReturn.add(Lesson(matiere: "zebi", id: "dsfdhsdhf", start: DateTime.parse("2020-10-12 06:43"), end: DateTime.parse("2020-10-12 08:32:00")));
         toReturn.add(Lesson(matiere: "zebi", id: "fdsfsdf", start: DateTime.parse("2020-10-12 08:33:12"), end: DateTime.parse("2020-10-12 09:20:08")));
-toReturn.add(Lesson(matiere: "zebi", id: "dsfdhsdhf", start: DateTime.parse("2020-10-12 09:43"), end: DateTime.parse("2020-10-12 10:32:00")));
+        toReturn.add(Lesson(matiere: "zebi", id: "dsfdhsdhf", start: DateTime.parse("2020-10-12 09:43"), end: DateTime.parse("2020-10-12 10:32:00")));
         toReturn.add(Lesson(matiere: "zebi", id: "dsgdsf", start: DateTime.parse("2020-10-12 08:33:12"), end: DateTime.parse("2020-10-12 09:20:08")));
 
         toReturn.add(Lesson(matiere: "zebi", id: "fdsgsdgfsdf", start: DateTime.parse("2020-10-12 08:33:12"), end: DateTime.parse("2020-10-12 09:20:08")));
@@ -461,7 +455,6 @@ Future<int> getColor(String disciplineName) async {
 
   if (prefs.containsKey(disciplineName)) {
     String color = prefs.getString(disciplineName);
-
     return HexColor(color).value;
   } else {
     if (Colorstack.isEmpty) {

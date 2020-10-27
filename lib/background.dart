@@ -4,7 +4,7 @@ import 'package:background_fetch/background_fetch.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive/hive.dart';
-import 'package:ynotes/apiManager.dart';
+import 'package:ynotes/classes.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/parsers/Pronote.dart';
 import 'package:ynotes/parsers/Pronote/PronoteAPI.dart';
@@ -294,9 +294,9 @@ class LocalNotification {
     //Logs for tests
     await showOngoingNotification(lesson);
     if (lesson != null) {
-      await logFile("Persistant login next lesson callback triggered for the lesson ${lesson.codeMatiere} ${lesson.room}");
+      await logFile("Persistant notification next lesson callback triggered for the lesson ${lesson.codeMatiere} ${lesson.room}");
     } else {
-      await logFile("Persistant login next lesson callback triggered : you are in break.");
+      await logFile("Persistant notification next lesson callback triggered : you are in break.");
     }
   }
 }

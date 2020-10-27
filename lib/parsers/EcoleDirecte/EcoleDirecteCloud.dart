@@ -16,7 +16,7 @@ import 'package:ynotes/UI/screens/apps/cloud.dart';
 import 'package:ynotes/parsers/EcoleDirecte.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/offline.dart';
-import 'package:ynotes/apiManager.dart';
+import 'package:ynotes/classes.dart';
 import 'package:dio/dio.dart' as dio2;
 
 //The basical function to change folder

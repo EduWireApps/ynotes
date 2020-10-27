@@ -13,7 +13,7 @@ import 'package:ynotes/UI/screens/gradesPage.dart';
 import 'package:ynotes/parsers/EcoleDirecte.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:connectivity/connectivity.dart';
-import '../../apiManager.dart';
+import '../../classes.dart';
 
 Animation<double> chosenAnimation1;
 Animation<double> chosenAnimation2;

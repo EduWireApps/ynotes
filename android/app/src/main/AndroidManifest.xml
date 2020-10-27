@@ -16,7 +16,7 @@ xmlns:tools="http://schemas.android.com/tools"
     <application
         tools:replace="android:label"
         android:name="io.flutter.app.FlutterApplication"
-        android:label="yNotes"
+        android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
         android:icon="@mipmap/ic_launcher">
         <activity

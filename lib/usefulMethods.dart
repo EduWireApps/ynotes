@@ -21,7 +21,7 @@ import 'package:ynotes/main.dart';
 import 'package:ynotes/parsers/EcoleDirecte.dart';
 import 'dart:io';
 import 'package:ynotes/UI/utils/fileUtils.dart';
-import 'package:ynotes/apiManager.dart';
+import 'package:ynotes/classes.dart';
 import 'package:dio/src/response.dart' as dioResponse;
 
 import 'UI/screens/summaryPage.dart';
@@ -142,14 +142,7 @@ Color darken(Color color, {double forceAmount}) {
   return hslDark.toColor();
 }
 
-//Used in the app page
-class App {
-  final String name;
-  final IconData icon;
-  final String route;
 
-  App(this.name, this.icon, {this.route});
-}
 
 //Connectivity  classs
 
@@ -272,10 +265,13 @@ TValue case2<TOptionType, TValue>(
 
 List<Discipline> specialities = List<Discipline>();
 //Refresh colors
-refreshDisciplinesListColors(List<Discipline> list) async {
+Future<List<Discipline>> refreshDisciplinesListColors(List<Discipline> list) async {
+  List<Discipline> newList = List<Discipline>();
   list.forEach((f) async {
     f.color = await getColor(f.codeMatiere);
+    newList.add(f);
   });
+  return newList;
 }
 
 //Leave app
