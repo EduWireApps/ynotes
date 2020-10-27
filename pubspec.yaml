@@ -22,7 +22,6 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  flutter_svg: ^0.18.0
   flutter_secure_storage: ^3.3.3
   auto_size_text: ^2.1.0
   http: ^0.12.0+4
@@ -32,18 +31,14 @@ dependencies:
   shimmer: ^1.0.1
   badges: ^1.1.0
   intl: ^0.16.0
-  random_color: ^1.0.3
-  sentry: ^3.0.1
   stack: ^0.0.1
   flutter_colorpicker: ^0.3.2
   flutter_material_color_picker: ^1.0.5
   tinycolor: ^1.0.2
   flutter_spinkit: ^4.1.2
   material_design_icons_flutter: ^3.4.5045
-  logger: ^0.6.0
   simple_animations: ^1.3.11
   provider: ^4.0.4
-  flare_loading: ^2.1.1
   flutter_widget_from_html_core: ^0.3.3
   path_provider: ^1.6.11
   marquee: ^1.3.1
@@ -60,17 +55,11 @@ dependencies:
   scrollable_positioned_list: ^0.1.6
   package_info: ^0.4.0+16
   share: ^0.6.4+3
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^0.1.2
-  flutter_multiselect: ^0.5.0
   requests: ^3.3.0
   encrypt: ^4.0.2
   pointycastle: ^1.0.2
-  file_picker: ^1.4.3+1
   dio: ^3.0.9
   uuid: ^2.1.0
-  steel_crypt: ^2.0.0
   highlight_text: ^0.7.2
   device_apps: ^1.0.10
   rxdart: ^0.24.1
@@ -81,10 +70,7 @@ dependencies:
   build_resolvers: ^1.4.1
   settings_ui: ^0.4.0
   android_alarm_manager: ^0.4.5+11
-  workmanager: ^0.2.0
   visibility_detector: ^0.1.5
-  shake: ^0.1.0
-  shifting_tabbar: ^0.3.1
   dotted_line: ^2.0.1
   flutter_slidable: ^0.5.7
   json_annotation: ^3.0.0
@@ -103,7 +89,8 @@ dev_dependencies:
   hive_generator: ^0.8.1
   build_runner: ^1.10.3
   json_serializable: ^3.2.0
-
+  #report unused package
+  dependency_validator: ^1.0.0
 flutter_icons:
   ios: true
   android: true
