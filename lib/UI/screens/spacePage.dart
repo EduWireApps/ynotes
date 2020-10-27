@@ -3,11 +3,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/UI/screens/settingsPage.dart';
-import 'package:ynotes/UI/screens/spacePageWidgets/agenda.dart';
 import 'package:ynotes/UI/screens/spacePageWidgets/downloadsExplorer.dart';
 import 'package:ynotes/UI/screens/spacePageWidgets/news.dart';
 import 'package:ynotes/UI/screens/spacePageWidgets/spacePageSettings.dart';
 import 'package:ynotes/usefulMethods.dart';
+
+import 'agendaPageWidgets/agenda.dart';
 
 class SpacePage extends StatefulWidget {
   State<StatefulWidget> createState() {

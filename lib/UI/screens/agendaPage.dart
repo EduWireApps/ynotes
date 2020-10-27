@@ -4,8 +4,8 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/UI/components/expandables.dart';
+import 'package:ynotes/UI/screens/agendaPageWidgets/agenda.dart';
 import 'package:ynotes/UI/screens/agendaPageWidgets/spaceAgenda.dart';
-import 'package:ynotes/UI/screens/spacePageWidgets/agenda.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 class AgendaPage extends StatefulWidget {

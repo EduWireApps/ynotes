@@ -18,7 +18,6 @@ class Agenda extends StatefulWidget {
   _AgendaState createState() => _AgendaState();
 }
 
-enum explorerSortValue { date, reversed_date, name }
 Future agendaFuture;
 
 bool extended = false;

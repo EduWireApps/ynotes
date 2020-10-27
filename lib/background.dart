@@ -10,8 +10,8 @@ import 'package:ynotes/parsers/Pronote.dart';
 import 'package:ynotes/parsers/Pronote/PronoteAPI.dart';
 import 'package:ynotes/usefulMethods.dart';
 
+import 'UI/screens/agendaPageWidgets/agenda.dart';
 import 'UI/screens/logsPage.dart';
-import 'UI/screens/spacePageWidgets/agenda.dart';
 import 'UI/utils/fileUtils.dart';
 
 //The main class for everything done in background

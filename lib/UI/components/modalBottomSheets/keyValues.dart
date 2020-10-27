@@ -3,9 +3,6 @@ import 'package:flutter/material.dart';
 
 import '../../../usefulMethods.dart';
 
-
-
-
 buildKeyValuesInfo(BuildContext context, String key, List<String> values) {
   if (values != null) {
     MediaQueryData screenSize = MediaQuery.of(context);

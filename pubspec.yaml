@@ -74,6 +74,7 @@ dependencies:
   dotted_line: ^2.0.1
   flutter_slidable: ^0.5.7
   json_annotation: ^3.0.0
+  flare_flutter: ^2.0.6
   wiredash:
     git:
       url: https://github.com/wiredashio/wiredash-sdk
