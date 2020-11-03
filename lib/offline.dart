@@ -7,6 +7,8 @@ import 'package:ynotes/parsers/Pronote/PronoteAPI.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'classes.dart';
 
+///An offline class to deal with the `hivedb` package
+///used to store offline data and stored values such as agenda events
 class Offline {
   //Return disciplines + grades
   List<Discipline> disciplinesData;
@@ -20,9 +22,13 @@ class Offline {
   List<AgendaReminder> remindersData;
   //Return agenda event
   Map<dynamic, dynamic> agendaEventsData;
+
+//Boxes containing offline data
   Box offlineBox;
   Box homeworkDoneBox;
   Box pinnedHomeworkBox;
+
+  //Called when instanciated
   init() async {
     //Register adapters once
     try {
@@ -59,6 +65,8 @@ class Offline {
       var offlinePollsData = await offlineBox.get("polls");
       var offlineRemindersData = await offlineBox.get("reminders");
       var offlineAgendaEventsData = await offlineBox.get("agendaEvents");
+
+      //ensure that fetched data isn't null and if not, add it to the final value
       if (offlineLessonsData != null) {
         this.lessonsData = Map<dynamic, dynamic>.from(offlineLessonsData);
       }
@@ -126,6 +134,7 @@ class Offline {
     }
   }
 
+  ///Update existing disciplines (clear old data) with passed data
   updateDisciplines(List<Discipline> newData) async {
     try {
       if (!offlineBox.isOpen) {
@@ -140,6 +149,8 @@ class Offline {
     }
   }
 
+  ///Update existing offline homework with passed data
+  ///if `add` boolean is set to true passed data is combined with old data
   updateHomework(List<Homework> newData, {bool add = false}) async {
     print("Update offline homework");
     try {
@@ -168,6 +179,8 @@ class Offline {
     }
   }
 
+  ///Update existing offline lessons with passed data, `week` is used to
+  ///shorten fetching delays, it should ALWAYS be from a same starting point
   updateLessons(List<Lesson> newData, int week) async {
     try {
       if (!offlineBox.isOpen) {
@@ -208,6 +221,7 @@ class Offline {
     }
   }
 
+  ///Remove an agenda event with a given `id` and at a given `week`
   removeAgendaEvent(String id, int week) async {
     try {
       if (!offlineBox.isOpen) {
@@ -240,6 +254,7 @@ class Offline {
     }
   }
 
+  ///Update existing agenda events with passed data
   addAgendaEvent(AgendaEvent newData, int week) async {
     try {
       if (!offlineBox.isOpen) {
@@ -275,6 +290,7 @@ class Offline {
     }
   }
 
+  ///Update existing polls (clear old data) with passed data
   updatePolls(List<PollInfo> newData) async {
     print("Update offline polls (length : ${newData.length})");
     try {
@@ -289,7 +305,8 @@ class Offline {
     }
   }
 
-  updateReminder(AgendaReminder newData) async {
+  ///Update existing reminders (clear old data) with passed data
+  void updateReminder(AgendaReminder newData) async {
     print("Update reminders");
     try {
       if (!offlineBox.isOpen) {
@@ -312,7 +329,8 @@ class Offline {
     }
   }
 
-  removeReminder(String id) async {
+  ///Remove a reminder with its `id`
+  void removeReminder(String id) async {
     try {
       if (!offlineBox.isOpen) {
         offlineBox = await Hive.openBox("offlineData");
@@ -332,7 +350,8 @@ class Offline {
     }
   }
 
-  setPinnedHomeworkDate(String date, bool value) async {
+  ///Set a homework date as pinned (or not)
+  void setPinnedHomeworkDate(String date, bool value) async {
     try {
       pinnedHomeworkBox.put(date, value);
     } catch (e) {
@@ -340,6 +359,7 @@ class Offline {
     }
   }
 
+  ///Get pinned homework dates
   getPinnedHomeworkDates() async {
     try {
       Map notParsedList = pinnedHomeworkBox.toMap();
@@ -354,6 +374,7 @@ class Offline {
     }
   }
 
+  ///Get homework pinned status for a given `date`
   Future<bool> getPinnedHomeworkSingleDate(String date) async {
     try {
       bool toReturn = pinnedHomeworkBox.get(date);
@@ -382,6 +403,7 @@ class Offline {
     }
   }
 
+  ///Get periods from DB (a little bit messy but totally functional)
   periods() async {
     try {
       List<Period> listPeriods = List();
