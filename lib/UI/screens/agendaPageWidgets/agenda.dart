@@ -1,15 +1,20 @@
 import 'dart:async';
 
+import 'package:calendar_time/calendar_time.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/UI/components/modalBottomSheets/agendaEventBottomSheet.dart';
+import 'package:ynotes/UI/components/modalBottomSheets/agendaEventEditBottomSheet.dart';
+import 'package:ynotes/UI/screens/agendaPage.dart';
 import 'package:ynotes/UI/screens/agendaPageWidgets/agendaGrid.dart';
+import 'package:ynotes/UI/screens/agendaPageWidgets/spaceAgenda.dart';
 import 'package:ynotes/UI/utils/fileUtils.dart';
 import 'package:ynotes/classes.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/parsers/EcoleDirecte.dart';
+import 'package:ynotes/parsers/Pronote/PronoteAPI.dart';
 
 import '../../../usefulMethods.dart';
 
@@ -23,33 +28,40 @@ Future agendaFuture;
 bool extended = false;
 
 class _AgendaState extends State<Agenda> {
-  DateTime date = DateTime.now();
   @override
   List<FileInfo> listFiles;
   // ignore: must_call_super
   void initState() {
     // TODO: implement initState
-    getLessons(date);
+    if (agendaDate == null) {
+      setState(() {
+        agendaDate = CalendarTime().startOfToday;
+      });
+    }
+    getLessons(agendaDate);
   }
 
   //Force get date
   getLessons(DateTime date) async {
-    await refreshAgendaFuture(force: false);
+    await refreshAgendaFutures(force: false);
   }
-
-  Future<void> refreshAgendaFuture({bool force = true}) async {
+  
+Future<void> refreshAgendaFutures({bool force = true}) async {
+   
     if (mounted) {
       setState(() {
-        agendaFuture = localApi.getNextLessons(date, forceReload: force);
+        spaceAgendaFuture = localApi.getEvents(agendaDate, true, forceReload: force);
+        agendaFuture = localApi.getEvents(agendaDate, false, forceReload: force);
       });
     }
-
-    var realLF = await agendaFuture;
+    var realAF = await spaceAgendaFuture;
+    var realSAF = await agendaFuture;
   }
 
   _buildFloatingButton(BuildContext context) {
     var screenSize = MediaQuery.of(context);
     return FloatingActionButton(
+      heroTag: "btn1",
       backgroundColor: Colors.transparent,
       child: Container(
         width: screenSize.size.width / 5 * 0.8,
@@ -67,7 +79,12 @@ class _AgendaState extends State<Agenda> {
             )),
       ),
       onPressed: () async {
-        agendaEventBottomSheet(context);
+        AgendaEvent temp = await agendaEventEdit(context, true, defaultDate: agendaDate);
+        if (temp != null) {
+          await offline.addAgendaEvent(temp, await get_week(temp.start));
+          await refreshAgendaFutures(force: false);
+        }
+        setState(() {});
       },
     );
   }
@@ -174,11 +191,11 @@ class _AgendaState extends State<Agenda> {
                 borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-                  onTap: () {
+                  onTap: () async {
                     setState(() {
-                      date = date.subtract(Duration(days: 1));
+                      agendaDate = CalendarTime(agendaDate).startOfDay.subtract(Duration(hours: 24));
                     });
-                    getLessons(date);
+                    await getLessons(agendaDate);
                   },
                   child: Container(
                       height: screenSize.size.height / 10 * 0.45,
@@ -231,9 +248,9 @@ class _AgendaState extends State<Agenda> {
                     );
                     if (someDate != null) {
                       setState(() {
-                        date = someDate;
+                        agendaDate = someDate;
                       });
-                      getLessons(date);
+                      getLessons(agendaDate);
                     }
                   },
                   child: Container(
@@ -245,7 +262,7 @@ class _AgendaState extends State<Agenda> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             Text(
-                              DateFormat("EEEE dd MMMM", "fr_FR").format(date),
+                              DateFormat("EEEE dd MMMM", "fr_FR").format(agendaDate),
                               style: TextStyle(
                                 fontFamily: "Asap",
                                 color: isDarkModeEnabled ? Colors.white : Colors.black,
@@ -265,11 +282,11 @@ class _AgendaState extends State<Agenda> {
                 borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-                  onTap: () {
+                  onTap: () async {
                     setState(() {
-                      date = date.add(Duration(days: 1));
+                      agendaDate = CalendarTime(agendaDate).startOfDay.add(Duration(hours: 25));
                     });
-                    getLessons(date);
+                    await getLessons(agendaDate);
                   },
                   child: Container(
                       height: screenSize.size.height / 10 * 0.45,
@@ -330,7 +347,7 @@ class _AgendaState extends State<Agenda> {
                                   future: agendaFuture,
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData && snapshot.data != null && snapshot.data.length != 0) {
-                                      return RefreshIndicator(onRefresh: refreshAgendaFuture, child: AgendaGrid(snapshot.data));
+                                      return RefreshIndicator(onRefresh: refreshAgendaFutures, child: AgendaGrid(snapshot.data, initState));
                                     }
                                     if (snapshot.data != null && snapshot.data.length == 0) {
                                       return Center(
@@ -349,9 +366,9 @@ class _AgendaState extends State<Agenda> {
                                                 style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
                                               ),
                                               FlatButton(
-                                                onPressed: () {
+                                                onPressed: () async {
                                                   //Reload list
-                                                  refreshAgendaFuture();
+                                                  await refreshAgendaFutures();
                                                 },
                                                 child: snapshot.connectionState != ConnectionState.waiting
                                                     ? Text("Recharger", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2))
@@ -380,9 +397,10 @@ class _AgendaState extends State<Agenda> {
             ),
             Align(
               alignment: Alignment.bottomRight,
-              child:Container(
+              child: Container(
                 margin: EdgeInsets.only(right: screenSize.size.width / 5 * 0.1, bottom: screenSize.size.height / 10 * 0.1),
-                child:  _buildFloatingButton(context),),
+                child: _buildFloatingButton(context),
+              ),
             ),
           ],
         ));

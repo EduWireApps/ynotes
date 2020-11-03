@@ -1,11 +1,17 @@
+import 'package:calendar_time/calendar_time.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart';
+import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ynotes/main.dart';
 import 'package:ynotes/parsers/EcoleDirecte.dart';
 import 'package:ynotes/parsers/Pronote.dart';
+import 'package:ynotes/parsers/Pronote/PronoteAPI.dart';
 import 'package:ynotes/usefulMethods.dart';
+
+import 'UI/screens/agendaPageWidgets/agendaGrid.dart';
 
 part 'classes.g.dart';
 
@@ -210,6 +216,7 @@ class Mail {
   Mail(this.id, this.mtype, this.read, this.idClasseur, this.from, this.subject, this.date, {this.content, this.to, this.files});
 }
 
+@JsonSerializable(nullable: false)
 @HiveType(typeId: 4)
 class Lesson {
   //E.G : Salle 215
@@ -259,6 +266,8 @@ class Lesson {
     this.end,
     this.id,
   });
+  factory Lesson.fromJson(Map<String, dynamic> json) => _$LessonFromJson(json);
+  Map<String, dynamic> toJson() => _$LessonToJson(this);
 }
 
 class Classeur {
@@ -338,6 +347,69 @@ enum alarmType {
   oneDay,
 }
 
+///The agenda event, ALL events (lessons, custom events) should be converted in this class
+@HiveType(typeId: 8)
+@JsonSerializable(nullable: false)
+class AgendaEvent {
+  @HiveField(0)
+  final DateTime start;
+  @HiveField(1)
+  final DateTime end;
+  @HiveField(2)
+  final String name;
+  //Place or room
+  @HiveField(3)
+  final String location;
+  @HiveField(4)
+  double left;
+  @HiveField(5)
+  final double height;
+  @HiveField(6)
+  double width;
+  @HiveField(7)
+  final bool canceled;
+  @HiveField(8)
+  final String id;
+  @HiveField(9)
+  final List<AgendaReminder> reminders;
+  @HiveField(10)
+  final bool isLesson;
+  @HiveField(11)
+  final Lesson lesson;
+  @HiveField(12)
+  final String description;
+  @HiveField(13)
+  final alarmType alarm;
+  @HiveField(14)
+  final bool wholeDay;
+  @HiveField(15)
+  int color;
+
+  bool collidesWith(AgendaEvent other) {
+    return end.isAfter(other.start) && start.isBefore(other.end);
+  }
+
+  static eventsFromLessons(List<Lesson> data) {
+    List<AgendaEvent> events = List();
+    for (Lesson lesson in data) {
+      bool wholeDay = false;
+      if (lesson.start.hour == 0 && lesson.end.hour == 0) {
+        wholeDay = true;
+      }
+      events.add(AgendaEvent(lesson.start, lesson.end, lesson.matiere, lesson.room, null, null, lesson.canceled, lesson.id, null, isLesson: true, lesson: lesson, wholeDay: wholeDay));
+    }
+    return events;
+  }
+
+  Color get realColor {
+    return Color(color);
+  }
+
+  AgendaEvent(this.start, this.end, this.name, this.location, this.left, this.height, this.canceled, this.id, this.width, {this.wholeDay = true, this.isLesson = false, this.lesson, this.reminders, this.description, this.alarm, this.color});
+  factory AgendaEvent.fromJson(Map<String, dynamic> json) => _$AgendaEventFromJson(json);
+  Map<String, dynamic> toJson() => _$AgendaEventToJson(this);
+}
+
 class CloudItem {
   //E.G "test.txt"
   final String title;
@@ -401,12 +473,66 @@ abstract class API {
 
   ///Apps
   Future app(String appname, {String args, String action, CloudItem folder});
- 
-  ///Space events
-  Future getSpaceEvents() async
-  {
-   
+
+  ///All events
+  Future getEvents(DateTime date, bool afterSchool, {bool forceReload = false}) async {
+    List<AgendaEvent> events = List<AgendaEvent>();
+    List<AgendaEvent> extracurricularEvents = List<AgendaEvent>();
+    List<Lesson> lessons = await localApi.getNextLessons(date, forceReload: forceReload);
+    //Add lessons for this day
+    if (lessons != null) {
+      if (!afterSchool) events.addAll(AgendaEvent.eventsFromLessons(lessons));
+      //Add extracurricular events
+      lessons.sort((a, b) => a.end.compareTo(b.end));
+    }
+    if (!afterSchool) {
+      extracurricularEvents = await offline.agendaEvents(await get_week(date));
+      if (extracurricularEvents != null) {
+        if (lessons != null && lessons.length > 0) {
+          //Last date
+          DateTime lastLessonEnd = lessons.last.end;
+          //delete the last one
+
+          extracurricularEvents.removeWhere((event) => DateTime.parse(DateFormat("yyyy-MM-dd").format(event.start)) != DateTime.parse(DateFormat("yyyy-MM-dd").format(date)));
+          /*if (lessons.last.end != null) {
+            extracurricularEvents.removeWhere((element) => element.start.isAfter(lastLessonEnd));
+          }*/
+        }
+        //merge
+        for (AgendaEvent extracurricularEvent in extracurricularEvents) {
+          events.removeWhere((element) => element.id == extracurricularEvent.id);
+        }
+      } else {
+        print("IS NULL1");
+      }
+    } else {
+      extracurricularEvents = await offline.agendaEvents(await get_week(date));
+
+      if (extracurricularEvents != null) {
+        extracurricularEvents.removeWhere((element) => element.isLesson);
+        if (lessons != null && lessons.length > 0) {
+          print("is not nll");
+          //Last date
+          DateTime lastLessonEnd = lessons.last.end;
+          //delete the last one
+          extracurricularEvents.removeWhere((event) => DateTime.parse(DateFormat("yyyy-MM-dd").format(event.start)) != DateTime.parse(DateFormat("yyyy-MM-dd").format(date)));
+          //extracurricularEvents.removeWhere((event) => event.start.isBefore(lastLessonEnd));
+        }
+        //merge
+        for (AgendaEvent extracurricularEvent in extracurricularEvents) {
+          events.removeWhere((element) => element.id == extracurricularEvent.id);
+        }
+      } else {
+        print("IS NULL");
+      }
+    }
+    if (extracurricularEvents != null) {
+      events.addAll(extracurricularEvents);
+    }
+    print(events.length);
+    return events;
   }
+
   List<App> listApp;
   List<Grade> gradesList;
 }

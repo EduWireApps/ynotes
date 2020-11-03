@@ -498,6 +498,85 @@ class AgendaReminderAdapter extends TypeAdapter<AgendaReminder> {
           typeId == other.typeId;
 }
 
+class AgendaEventAdapter extends TypeAdapter<AgendaEvent> {
+  @override
+  final int typeId = 8;
+
+  @override
+  AgendaEvent read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return AgendaEvent(
+      fields[0] as DateTime,
+      fields[1] as DateTime,
+      fields[2] as String,
+      fields[3] as String,
+      fields[4] as double,
+      fields[5] as double,
+      fields[7] as bool,
+      fields[8] as String,
+      fields[6] as double,
+      wholeDay: fields[14] as bool,
+      isLesson: fields[10] as bool,
+      lesson: fields[11] as Lesson,
+      reminders: (fields[9] as List)?.cast<AgendaReminder>(),
+      description: fields[12] as String,
+      alarm: fields[13] as alarmType,
+      color: fields[15] as int,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, AgendaEvent obj) {
+    writer
+      ..writeByte(16)
+      ..writeByte(0)
+      ..write(obj.start)
+      ..writeByte(1)
+      ..write(obj.end)
+      ..writeByte(2)
+      ..write(obj.name)
+      ..writeByte(3)
+      ..write(obj.location)
+      ..writeByte(4)
+      ..write(obj.left)
+      ..writeByte(5)
+      ..write(obj.height)
+      ..writeByte(6)
+      ..write(obj.width)
+      ..writeByte(7)
+      ..write(obj.canceled)
+      ..writeByte(8)
+      ..write(obj.id)
+      ..writeByte(9)
+      ..write(obj.reminders)
+      ..writeByte(10)
+      ..write(obj.isLesson)
+      ..writeByte(11)
+      ..write(obj.lesson)
+      ..writeByte(12)
+      ..write(obj.description)
+      ..writeByte(13)
+      ..write(obj.alarm)
+      ..writeByte(14)
+      ..write(obj.wholeDay)
+      ..writeByte(15)
+      ..write(obj.color);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AgendaEventAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
@@ -556,6 +635,38 @@ Map<String, dynamic> _$DocumentToJson(Document instance) => <String, dynamic>{
       'length': instance.length,
     };
 
+Lesson _$LessonFromJson(Map<String, dynamic> json) {
+  return Lesson(
+    room: json['room'] as String,
+    teachers: (json['teachers'] as List).map((e) => e as String).toList(),
+    start: DateTime.parse(json['start'] as String),
+    duration: json['duration'] as int,
+    canceled: json['canceled'] as bool,
+    status: json['status'] as String,
+    groups: (json['groups'] as List).map((e) => e as String).toList(),
+    content: json['content'] as String,
+    matiere: json['matiere'] as String,
+    codeMatiere: json['codeMatiere'] as String,
+    end: DateTime.parse(json['end'] as String),
+    id: json['id'] as String,
+  );
+}
+
+Map<String, dynamic> _$LessonToJson(Lesson instance) => <String, dynamic>{
+      'room': instance.room,
+      'teachers': instance.teachers,
+      'start': instance.start.toIso8601String(),
+      'end': instance.end.toIso8601String(),
+      'duration': instance.duration,
+      'canceled': instance.canceled,
+      'status': instance.status,
+      'groups': instance.groups,
+      'content': instance.content,
+      'matiere': instance.matiere,
+      'codeMatiere': instance.codeMatiere,
+      'id': instance.id,
+    };
+
 AgendaReminder _$AgendaReminderFromJson(Map<String, dynamic> json) {
   return AgendaReminder(
     json['lessonID'] as String,
@@ -606,3 +717,46 @@ const _$alarmTypeEnumMap = {
   alarmType.thirtyMinutes: 'thirtyMinutes',
   alarmType.oneDay: 'oneDay',
 };
+
+AgendaEvent _$AgendaEventFromJson(Map<String, dynamic> json) {
+  return AgendaEvent(
+    DateTime.parse(json['start'] as String),
+    DateTime.parse(json['end'] as String),
+    json['name'] as String,
+    json['location'] as String,
+    (json['left'] as num).toDouble(),
+    (json['height'] as num).toDouble(),
+    json['canceled'] as bool,
+    json['id'] as String,
+    (json['width'] as num).toDouble(),
+    wholeDay: json['wholeDay'] as bool,
+    isLesson: json['isLesson'] as bool,
+    lesson: Lesson.fromJson(json['lesson'] as Map<String, dynamic>),
+    reminders: (json['reminders'] as List)
+        .map((e) => AgendaReminder.fromJson(e as Map<String, dynamic>))
+        .toList(),
+    description: json['description'] as String,
+    alarm: _$enumDecode(_$alarmTypeEnumMap, json['alarm']),
+    color: json['color'] as int,
+  );
+}
+
+Map<String, dynamic> _$AgendaEventToJson(AgendaEvent instance) =>
+    <String, dynamic>{
+      'start': instance.start.toIso8601String(),
+      'end': instance.end.toIso8601String(),
+      'name': instance.name,
+      'location': instance.location,
+      'left': instance.left,
+      'height': instance.height,
+      'width': instance.width,
+      'canceled': instance.canceled,
+      'id': instance.id,
+      'reminders': instance.reminders,
+      'isLesson': instance.isLesson,
+      'lesson': instance.lesson,
+      'description': instance.description,
+      'alarm': _$alarmTypeEnumMap[instance.alarm],
+      'wholeDay': instance.wholeDay,
+      'color': instance.color,
+    };

@@ -213,22 +213,12 @@ class APIEcoleDirecte extends API {
       print("Getting next lessons");
       int week = await get_week(dateToUse);
       List<Lesson> toReturn;
-
       var connectivityResult = await (Connectivity().checkConnectivity());
       //get lessons from offline storage
       var offlineLesson = await offline.lessons(week);
       if (offlineLesson != null) {
         //Important init to return
         toReturn = List();
-
-        toReturn.add(Lesson(matiere: "zebi", id: "dsfdhsdhf", start: DateTime.parse("2020-10-12 06:43"), end: DateTime.parse("2020-10-12 08:32:00")));
-        toReturn.add(Lesson(matiere: "zebi", id: "dsfdghghjhsdhf", start: DateTime.parse("2020-10-12 06:43"), end: DateTime.parse("2020-10-12 08:32:00")));
-        toReturn.add(Lesson(matiere: "zebi", id: "dsfdhsdhf", start: DateTime.parse("2020-10-12 06:43"), end: DateTime.parse("2020-10-12 08:32:00")));
-        toReturn.add(Lesson(matiere: "zebi", id: "fdsfsdf", start: DateTime.parse("2020-10-12 08:33:12"), end: DateTime.parse("2020-10-12 09:20:08")));
-        toReturn.add(Lesson(matiere: "zebi", id: "dsfdhsdhf", start: DateTime.parse("2020-10-12 09:43"), end: DateTime.parse("2020-10-12 10:32:00")));
-        toReturn.add(Lesson(matiere: "zebi", id: "dsgdsf", start: DateTime.parse("2020-10-12 08:33:12"), end: DateTime.parse("2020-10-12 09:20:08")));
-
-        toReturn.add(Lesson(matiere: "zebi", id: "fdsgsdgfsdf", start: DateTime.parse("2020-10-12 08:33:12"), end: DateTime.parse("2020-10-12 09:20:08")));
 
         toReturn.addAll(offlineLesson);
         print(toReturn.last.matiere);
@@ -237,10 +227,10 @@ class APIEcoleDirecte extends API {
       } else {
         toReturn = null;
       }
-
       //Check if needed to force refresh if not offline
       if ((forceReload == true || toReturn == null) && connectivityResult != ConnectivityResult.none) {
         try {
+          print("Getting next lessons from online");
           List<Lesson> onlineLessons = await EcoleDirecteMethod.lessons(dateToUse, week);
 
           await offline.updateLessons(onlineLessons, week);
@@ -250,6 +240,7 @@ class APIEcoleDirecte extends API {
           print(e.toString());
         }
       }
+     
 
       toReturn.sort((a, b) => a.start.compareTo(b.start));
       return toReturn.where((lesson) => DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) == DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse))).toList();

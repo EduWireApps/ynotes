@@ -131,8 +131,6 @@ Color darken(Color color, {double forceAmount}) {
   return hslDark.toColor();
 }
 
-
-
 //Connectivity  classs
 
 class ConnectionStatusSingleton {
@@ -304,8 +302,9 @@ specialtiesSelectionAvailable() async {
   }
 }
 
-getEventColor(String eventID) {
-  return Colors.blue;
+//lol
+Future<int> getEventColor(AgendaEvent event) async {
+  return event.color;
 }
 
 ReadStorage(_key) async {

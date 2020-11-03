@@ -1,16 +1,18 @@
-
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:calendar_time/calendar_time.dart';
 import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:ynotes/UI/screens/agendaPageWidgets/agendaElement.dart';
+import 'package:ynotes/UI/screens/agendaPageWidgets/spaceAgenda.dart';
 import 'package:ynotes/classes.dart';
 
 class AgendaGrid extends StatefulWidget {
-  final List<Lesson> lessons;
-
-  const AgendaGrid(this.lessons);
+  List<AgendaEvent> events;
+  final bool afterSchool;
+  Function setStateCallback;
+  AgendaGrid(this.events, this.setStateCallback, {this.afterSchool = false});
   @override
   _AgendaGridState createState() => _AgendaGridState();
 }
@@ -24,32 +26,28 @@ class _AgendaGridState extends State<AgendaGrid> {
     // TODO: implement initState
 
     super.initState();
-    setEvents();
+    layoutEvents();
   }
 
   DateTime lastEventEnding;
   double _scaleFactor = 1.0;
   double _baseScaleFactor = 1.0;
   var defaultGridHeight = 1.5;
-  List<AgendaEvent> events = List();
-
-  void setEvents() {
-    events.clear();
-    //Add lessons
-    for (Lesson lesson in this.widget.lessons) {
-      events.add(AgendaEvent(lesson.start, lesson.end, lesson.matiere, lesson.room, null, null, lesson.canceled, lesson.id, null, isLesson: true, lesson: lesson));
-    }
-
-    layoutEvents();
-  }
-
+  List<AgendaEvent> _events = List();
+  //The default school day length
+  var minSchoolDayLength = [8, 18];
+  //The default after school day length
+  var minAfterSchoolDayLength = [18, 24];
   void layoutEvents() {
     var columns = List<List<AgendaEvent>>();
-    DateTime lastEventEnding = null;
-
+    _events.clear();
+    _events.addAll(widget.events);
+    // _events.removeWhere((element) => element.start.hour < _getStartHour(_events).hour || element.start.hour > _getEndHour(_events).hour);
+    _events.removeWhere((element) => element.wholeDay);
     //sort events by date
-    events.sort((a, b) => a.start.compareTo(b.start));
-    for (AgendaEvent ev in events) {
+    _events.sort((a, b) => a.end.compareTo(b.end));
+
+    for (AgendaEvent ev in _events) {
       if (lastEventEnding != null && (ev.start.isAfter(lastEventEnding) || ev.start.isAtSameMomentAs(lastEventEnding))) {
         packEvents(columns);
         columns.clear();
@@ -82,7 +80,6 @@ class _AgendaGridState extends State<AgendaGrid> {
       for (var ev in col) {
         int colSpan = expandEvent(ev, iColumn, columns);
         ev.left = (iColumn / columns.length) * 4.3;
-        print(colSpan / (columns.length));
         ev.width = ((colSpan) / (columns.length)) * 4.3;
       }
       iColumn++;
@@ -103,39 +100,70 @@ class _AgendaGridState extends State<AgendaGrid> {
   }
 
 //Calculate the top position
-  _getPosition(DateTime start, AgendaEvent event) {
-    final f = new DateFormat.Hm();
-    final f2 = new DateFormat.H();
+  _getPosition(TimeOfDay start, AgendaEvent event) {
+    final dt = TimeOfDay(hour: event.start.hour, minute: event.start.minute);
 
     //print(f.parse(f.format(lesson.start)).difference(f2.parse(f2.format(start))).inMinutes / 60);
-    double diff = f.parse(f.format(event.start)).difference(f2.parse(f2.format(start))).inMinutes / 60;
+    double diff = ((dt.hour * 60 + dt.minute) - (start.hour * 60 + start.minute)) / 60;
 
     return (MediaQuery.of(context).size.height / 10 * defaultGridHeight * _scaleFactor) * diff;
   }
 
   //Calculate the start hour
-  DateTime _getStartHour(List lessons) {
-    List lessonsIList = List();
-    lessonsIList.addAll(lessons);
-    lessonsIList.sort((a, b) => a.start.compareTo(b.start));
-    return lessonsIList.first.start;
+  TimeOfDay _getStartHour(List lessons) {
+    if (lessons != null && lessons.length != 0) {
+      List lessonsIList = List();
+      lessonsIList.addAll(lessons);
+      lessonsIList.removeWhere((element) => element.lesson == null);
+      print(lessonsIList.length);
+      if (lessonsIList.length == 0) {
+        if (widget.afterSchool) {
+          return TimeOfDay(hour: minAfterSchoolDayLength[0], minute: 0);
+        } else {
+          return TimeOfDay(hour: minSchoolDayLength[0], minute: 0);
+        }
+      } else {
+        lessonsIList.sort((a, b) => a.start.compareTo(b.start));
+        return TimeOfDay(hour: lessonsIList.first.start.hour, minute: 0);
+      }
+    } else if (widget.afterSchool) {
+      return TimeOfDay(hour: minAfterSchoolDayLength[0], minute: 0);
+    } else {
+      return TimeOfDay(hour: minSchoolDayLength[0], minute: 0);
+    }
   }
 
   //Calculate the end hour (end the start hour of the after school grid)
-  DateTime _getEndHour(List lessons) {
-    List lessonsIList = List();
-    lessonsIList.addAll(lessons);
-    lessonsIList.sort((a, b) => a.start.compareTo(b.start));
-    return lessonsIList.last.end;
+  TimeOfDay _getEndHour(List lessons) {
+    if (lessons != null && lessons.length != 0) {
+      List lessonsIList = List();
+      lessonsIList.addAll(lessons);
+
+      lessonsIList.removeWhere((element) => element.lesson == null);
+      if (lessonsIList.length == 0) {
+        if (widget.afterSchool) {
+          return TimeOfDay(hour: minAfterSchoolDayLength[1], minute: 0);
+        } else {
+          return TimeOfDay(hour: minSchoolDayLength[1], minute: 0);
+        }
+      } else {
+        lessonsIList.sort((a, b) => a.start.compareTo(b.start));
+
+        return TimeOfDay(hour: lessonsIList.last.end.hour + 1, minute: 0);
+      }
+    } else if (widget.afterSchool) {
+      return TimeOfDay(hour: minAfterSchoolDayLength[1], minute: 0);
+    } else {
+      return TimeOfDay(hour: minSchoolDayLength[1], minute: 0);
+    }
   }
 
   ///Get actual hour position
-  _getBarPosition(DateTime start) {
-    final f = new DateFormat.Hm();
-    final f2 = new DateFormat.H();
+  _getBarPosition(TimeOfDay start) {
+    final dt = TimeOfDay.fromDateTime(DateTime.now());
 
-    double diff = f.parse(f.format(DateTime.now())).difference(f2.parse(f2.format(start))).inMinutes / 60;
-    
+    double diff = ((dt.hour * 60 + dt.minute) - (start.hour * 60 + start.minute)) / 60;
+
     return (MediaQuery.of(context).size.height / 10 * defaultGridHeight * _scaleFactor) * diff;
   }
 
@@ -165,9 +193,8 @@ class _AgendaGridState extends State<AgendaGrid> {
             child: Stack(
               children: [
                 Column(
-                  children: List.generate(
-                    _getEndHour(this.widget.lessons).hour - _getStartHour(this.widget.lessons).hour + 1,
-                    (int index) {
+                  children: List.generate(_getEndHour(_events).hour - _getStartHour(_events).hour, (int index) {
+                    if (index != 0) {
                       return GestureDetector(
                         onTapUp: (_) {
                           if (slidableController.activeState != null) {
@@ -190,7 +217,7 @@ class _AgendaGridState extends State<AgendaGrid> {
                                       padding: EdgeInsets.all(screenSize.size.width / 5 * 0.05),
                                       decoration: BoxDecoration(borderRadius: BorderRadius.circular(11), color: Theme.of(context).primaryColorDark),
                                       child: AutoSizeText(
-                                        (_getStartHour(this.widget.lessons).hour + index).toString() + ":00",
+                                        ((_getStartHour(_events).hour + index).toString() + ":00"),
                                         style: TextStyle(),
                                         maxLines: 1,
                                       ),
@@ -222,40 +249,46 @@ class _AgendaGridState extends State<AgendaGrid> {
                           ),
                         ),
                       );
-                    },
-                  ),
+                    } else {
+                      return Container(
+                        height: screenSize.size.height / 10 * defaultGridHeight * _scaleFactor,
+                      );
+                    }
+                  }),
                 ),
-                for (AgendaEvent i in events)
+                for (AgendaEvent i in _events)
                   AnimatedPositioned(
                     duration: Duration(milliseconds: 250),
                     left: screenSize.size.width / 5 * 0.15,
-                    top: _getPosition(_getStartHour(this.widget.lessons), i),
+                    top: _getPosition(_getStartHour(_events), i),
                     child: AgendaElement(
                       i,
                       defaultGridHeight * _scaleFactor * i.end.difference(i.start).inMinutes / 60,
+                      widget.setStateCallback,
                       width: i.width,
                       position: i.left,
                     ),
                   ),
-                Positioned(
-                  top: _getBarPosition(_getStartHour(this.widget.lessons)),
-                  child: Row(
-                    children: [
-                      Container(
-                        width: screenSize.size.width / 5 * 0.2,
-                        height: screenSize.size.width / 5 * 0.2,
-                        decoration: BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.circular(1000)),
-                      ),
-                      Container(
-                          width: screenSize.size.width / 5 * 4.8,
-                          child: Divider(
-                            color: Colors.blue,
-                            thickness: screenSize.size.height / 10 * 0.018,
-                            height: screenSize.size.height / 10 * 0.018,
-                          )),
-                    ],
+                if (_getStartHour(_events) != null)
+                  Positioned(
+                    top: _getBarPosition(_getStartHour(_events)),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: screenSize.size.width / 5 * 0.2,
+                          height: screenSize.size.width / 5 * 0.2,
+                          decoration: BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.circular(1000)),
+                        ),
+                        Container(
+                            width: screenSize.size.width / 5 * 4.8,
+                            child: Divider(
+                              color: Colors.blue,
+                              thickness: screenSize.size.height / 10 * 0.018,
+                              height: screenSize.size.height / 10 * 0.018,
+                            )),
+                      ],
+                    ),
                   ),
-                ),
               ],
             ),
           ),
@@ -266,46 +299,7 @@ class _AgendaGridState extends State<AgendaGrid> {
 
   @override
   Widget build(BuildContext context) {
-    setEvents();
+    layoutEvents();
     return _buildGridDateTime();
   }
-}
-
-class AgendaEvent {
-  final DateTime start;
-  final DateTime end;
-  final String name;
-  //Place or room
-  final String location;
-  double left;
-  final double height;
-  double width;
-  final bool canceled;
-  final String id;
-  final List<AgendaReminder> reminders;
-  final bool isLesson;
-  final Lesson lesson;
-  final String description;
-  final alarmType alarm;
-
-  bool collidesWith(AgendaEvent other) {
-    return end.isAfter(other.start) && start.isBefore(other.end);
-  }
-
-  AgendaEvent(
-    this.start,
-    this.end,
-    this.name,
-    this.location,
-    this.left,
-    this.height,
-    this.canceled,
-    this.id,
-    this.width, {
-    this.isLesson = false,
-    this.lesson,
-    this.reminders,
-    this.description,
-    this.alarm,
-  });
 }

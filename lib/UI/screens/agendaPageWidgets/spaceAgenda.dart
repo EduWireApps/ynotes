@@ -1,15 +1,20 @@
 import 'dart:async';
 
+import 'package:calendar_time/calendar_time.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/UI/components/modalBottomSheets/agendaEventEditBottomSheet.dart';
+import 'package:ynotes/UI/screens/agendaPageWidgets/agenda.dart';
 import 'package:ynotes/UI/screens/agendaPageWidgets/agendaGrid.dart';
 import 'package:ynotes/UI/utils/fileUtils.dart';
+import 'package:ynotes/classes.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/parsers/Pronote/PronoteAPI.dart';
 
 import '../../../usefulMethods.dart';
+import '../agendaPage.dart';
 
 class SpaceAgenda extends StatefulWidget {
   @override
@@ -21,33 +26,40 @@ Future spaceAgendaFuture;
 bool extended = false;
 
 class _SpaceAgendaState extends State<SpaceAgenda> {
-  DateTime date = DateTime.now();
   @override
   List<FileInfo> listFiles;
   // ignore: must_call_super
   void initState() {
     // TODO: implement initState
-    getLessons(date);
+    if (agendaDate == null) {
+      setState(() {
+        agendaDate = CalendarTime().startOfToday;
+      });
+    }
+    getLessons(agendaDate);
   }
 
   //Force get date
   getLessons(DateTime date) async {
-    await refreshAgendaFuture(force: false);
+    await refreshAgendaFutures(force: false);
   }
 
-  Future<void> refreshAgendaFuture({bool force = true}) async {
+  Future<void> refreshAgendaFutures({bool force = true}) async {
+   
     if (mounted) {
       setState(() {
-        spaceAgendaFuture = localApi.getNextLessons(date, forceReload: force);
+        spaceAgendaFuture = localApi.getEvents(agendaDate, true, forceReload: force);
+        agendaFuture = localApi.getEvents(agendaDate, false, forceReload: force);
       });
     }
-
-    var realLF = await spaceAgendaFuture;
+    var realAF = await spaceAgendaFuture;
+    var realSAF = await agendaFuture;
   }
 
   _buildFloatingButton(BuildContext context) {
     var screenSize = MediaQuery.of(context);
     return FloatingActionButton(
+      heroTag: "btn2",
       backgroundColor: Colors.transparent,
       child: Container(
         width: screenSize.size.width / 5 * 0.8,
@@ -65,7 +77,12 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
             )),
       ),
       onPressed: () async {
-        agendaEventEdit(context, true);
+        AgendaEvent temp = await agendaEventEdit(context, true, defaultDate: agendaDate);
+        if (temp != null) {
+          await offline.addAgendaEvent(temp, await get_week(temp.start));
+          await refreshAgendaFutures(force: false);
+        }
+        setState(() {});
       },
     );
   }
@@ -90,9 +107,11 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
                   borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                   onTap: () {
                     setState(() {
-                      date = date.subtract(Duration(days: 1));
+                      agendaDate = CalendarTime(agendaDate).startOfDay.subtract(Duration(hours: 24));
                     });
-                    getLessons(date);
+                    getLessons(agendaDate);
+
+                    getLessons(agendaDate);
                   },
                   child: Container(
                       height: screenSize.size.height / 10 * 0.45,
@@ -145,9 +164,9 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
                     );
                     if (someDate != null) {
                       setState(() {
-                        date = someDate;
+                        agendaDate = someDate;
                       });
-                      getLessons(date);
+                      getLessons(agendaDate);
                     }
                   },
                   child: Container(
@@ -159,7 +178,7 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             Text(
-                              DateFormat("EEEE dd MMMM", "fr_FR").format(date),
+                              DateFormat("EEEE dd MMMM", "fr_FR").format(agendaDate),
                               style: TextStyle(
                                 fontFamily: "Asap",
                                 color: isDarkModeEnabled ? Colors.white : Colors.black,
@@ -181,9 +200,10 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
                   borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                   onTap: () {
                     setState(() {
-                      date = date.add(Duration(days: 1));
+                      agendaDate = CalendarTime(agendaDate).startOfDay.add(Duration(hours: 25));
                     });
-                    getLessons(date);
+
+                    getLessons(agendaDate);
                   },
                   child: Container(
                       height: screenSize.size.height / 10 * 0.45,
@@ -215,10 +235,7 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
     return Container(
         height: screenSize.size.height / 10 * 7,
         margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-          color: Color(0xff282246)
-        ),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15), color: Color(0xff282246)),
         width: screenSize.size.width / 5 * 4.7,
         child: Stack(
           children: [
@@ -243,10 +260,20 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
                               FutureBuilder(
                                   future: spaceAgendaFuture,
                                   builder: (context, snapshot) {
-                                    if (snapshot.hasData && snapshot.data != null && snapshot.data.length != 0) {
-                                      return RefreshIndicator(onRefresh: refreshAgendaFuture, child: AgendaGrid(snapshot.data));
+                                    List<AgendaEvent> lst = snapshot.data;
+                                    if (lst != null) {
+                                      lst.removeWhere((element) => element.start.isAfter(element.end));
                                     }
-                                    if (snapshot.data != null && snapshot.data.length == 0) {
+                                    if (snapshot.hasData && snapshot.data != null && lst.length != 0) {
+                                      return RefreshIndicator(
+                                          onRefresh: refreshAgendaFutures,
+                                          child: AgendaGrid(
+                                            snapshot.data,
+                                            initState,
+                                            afterSchool: true,
+                                          ));
+                                    }
+                                    if (snapshot.data != null && lst.length == 0) {
                                       return Center(
                                         child: FittedBox(
                                           child: Column(
@@ -260,15 +287,15 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
                                               Text(
                                                 "Journée détente ?",
                                                 textAlign: TextAlign.center,
-                                                style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
+                                                style: TextStyle(fontFamily: "Asap", color: Colors.white, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
                                               ),
                                               FlatButton(
                                                 onPressed: () {
                                                   //Reload list
-                                                  refreshAgendaFuture();
+                                                  refreshAgendaFutures();
                                                 },
                                                 child: snapshot.connectionState != ConnectionState.waiting
-                                                    ? Text("Recharger", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2))
+                                                    ? Text("Recharger", style: TextStyle(fontFamily: "Asap", color: Colors.white, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2))
                                                     : FittedBox(child: SpinKitThreeBounce(color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4)),
                                                 shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(18.0), side: BorderSide(color: Theme.of(context).primaryColorDark)),
                                               )
@@ -294,12 +321,12 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
             ),
             Align(
               alignment: Alignment.bottomRight,
-              child:Container(
+              child: Container(
                 margin: EdgeInsets.only(right: screenSize.size.width / 5 * 0.1, bottom: screenSize.size.height / 10 * 0.1),
-                child:  _buildFloatingButton(context),),
+                child: _buildFloatingButton(context),
+              ),
             ),
           ],
         ));
   }
 }
-

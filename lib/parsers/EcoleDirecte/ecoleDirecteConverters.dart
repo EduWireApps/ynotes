@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:calendar_time/calendar_time.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ynotes/parsers/Pronote/PronoteCas.dart';
@@ -79,7 +80,7 @@ class EcoleDirecteConverter {
         }
       });
     });
-    
+
     return disciplinesList;
   }
 
@@ -156,7 +157,6 @@ class EcoleDirecteConverter {
     });
     return homeworkList;
   }
-
 
   static List<Lesson> lessons(Map<String, dynamic> lessonData) {
     List<Lesson> lessons = List();

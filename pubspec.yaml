@@ -75,6 +75,9 @@ dependencies:
   flutter_slidable: ^0.5.7
   json_annotation: ^3.0.0
   flare_flutter: ^2.0.6
+  calendar_time: ^1.0.1
+  flutter_phoenix: ^0.1.0
+  showcaseview: ^0.1.6
   wiredash:
     git:
       url: https://github.com/wiredashio/wiredash-sdk
@@ -90,7 +93,6 @@ dev_dependencies:
   hive_generator: ^0.8.1
   build_runner: ^1.10.3
   json_serializable: ^3.2.0
-  #report unused package
   dependency_validator: ^1.0.0
 flutter_icons:
   ios: true

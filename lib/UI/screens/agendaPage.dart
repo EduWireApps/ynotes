@@ -13,6 +13,8 @@ class AgendaPage extends StatefulWidget {
   _AgendaPageState createState() => _AgendaPageState();
 }
 
+DateTime agendaDate;
+
 class _AgendaPageState extends State<AgendaPage> {
   double btPercents = 0;
   double topPercents = 100;
@@ -21,25 +23,28 @@ class _AgendaPageState extends State<AgendaPage> {
     var screenSize = MediaQuery.of(context);
     return Container(
       height: screenSize.size.height,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          Container(
-            margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.3),
-            child: Expandables(
-              buildTopChild(),
-              buildBottomChild(),
-              minHeight: screenSize.size.height / 10 * 0.7,
-              maxHeight: screenSize.size.height / 10 * 7.2,
-              spaceBetween: screenSize.size.height / 10 * 0.2,
-              width: screenSize.size.width / 5 * 4.7,
-              bottomExpandableColor: Color(0xff282246),
-              onDragUpdate: handleDragUpdate,
-              animationDuration: 200,
-              topExpandableBorderRadius: 11,
+      child: SingleChildScrollView(
+        physics: NeverScrollableScrollPhysics(),
+              child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Container(
+              margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.3),
+              child: Expandables(
+                buildTopChild(),
+                buildBottomChild(),
+                minHeight: screenSize.size.height / 10 * 0.7,
+                maxHeight: screenSize.size.height / 10 * 7.2,
+                spaceBetween: screenSize.size.height / 10 * 0.2,
+                width: screenSize.size.width / 5 * 4.7,
+                bottomExpandableColor: Color(0xff282246),
+                onDragUpdate: handleDragUpdate,
+                animationDuration: 200,
+                topExpandableBorderRadius: 11,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

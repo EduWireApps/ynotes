@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:wiredash/wiredash.dart';
@@ -154,11 +155,13 @@ Future main() async {
   connectionStatus.initialize();
   runZoned<Future<Null>>(() async {
     runApp(
-      ChangeNotifierProvider<AppStateNotifier>(
-        child: HomeApp(),
-        create: (BuildContext context) {
-          return AppStateNotifier();
-        },
+      Phoenix(
+        child: ChangeNotifierProvider<AppStateNotifier>(
+          child: HomeApp(),
+          create: (BuildContext context) {
+            return AppStateNotifier();
+          },
+        ),
       ),
     );
   });

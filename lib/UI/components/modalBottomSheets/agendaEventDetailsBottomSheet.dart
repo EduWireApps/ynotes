@@ -5,26 +5,27 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:ynotes/UI/components/modalBottomSheets/agendaEventEditBottomSheet.dart';
 import 'package:ynotes/UI/components/modalBottomSheets/keyValues.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/parsers/EcoleDirecte.dart';
+import 'package:ynotes/parsers/Pronote/PronoteAPI.dart';
 
 import '../../../classes.dart';
 import '../../../usefulMethods.dart';
 
-void lessonDetails(context, Lesson lesson, Color color) {
-  showModalBottomSheet(
+Future<void> lessonDetails(context, AgendaEvent event) async {
+  return showModalBottomSheet(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
       ),
       backgroundColor: Theme.of(context).primaryColor,
       context: context,
       builder: (BuildContext bc) {
-        return LessonDetailsDialog(lesson, color);
+        return LessonDetailsDialog(event);
       });
 }
 
 class LessonDetailsDialog extends StatefulWidget {
-  Lesson lesson;
-  Color color;
-  LessonDetailsDialog(this.lesson, this.color);
+  AgendaEvent event;
+  LessonDetailsDialog(this.event);
 
   @override
   _LessonDetailsDialogState createState() => _LessonDetailsDialogState();
@@ -40,7 +41,7 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
   }
 
   void getAssociatedReminders() async {
-    List<AgendaReminder> remindersOnline = await offline.reminders(widget.lesson.id);
+    List<AgendaReminder> remindersOnline = await offline.reminders(widget.event.id);
     setState(() {
       if (remindersOnline != null) {
         reminders = remindersOnline;
@@ -55,30 +56,32 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
         height: screenSize.size.height / 10 * 5.0,
         padding: EdgeInsets.all(0),
         child: new Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: screenSize.size.width * 0.8),
-              child: FittedBox(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Container(
-                      margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.05),
-                      decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(25)), color: widget.color),
-                      padding: EdgeInsets.all(5),
-                      child: FittedBox(
-                        child: Text(
-                          widget.lesson.matiere ?? "",
-                          style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w700),
-                          textAlign: TextAlign.center,
+            if (widget.event.name != null)
+              ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: screenSize.size.width * 0.8),
+                child: FittedBox(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Container(
+                        margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.05),
+                        decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(25)), color: widget.event.realColor),
+                        padding: EdgeInsets.all(5),
+                        child: FittedBox(
+                          child: Text(
+                            widget.event.name != "" && widget.event.name != null ? widget.event.name : "(sans nom)",
+                            style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w700),
+                            textAlign: TextAlign.center,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
             SizedBox(
               height: screenSize.size.height / 10 * 0.1,
             ),
@@ -87,41 +90,79 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
               child: Container(
                 width: screenSize.size.width / 5 * 4.5,
-                child: Column(
+                child: Stack(
                   children: [
-                    Container(padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1), child: Text("Infos de l'évènement", style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: isDarkModeEnabled ? Colors.white : Colors.black))),
-                    Container(
-                      padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
-                      height: screenSize.size.height / 10 * 2,
-                      margin: EdgeInsets.only(top: (screenSize.size.height / 10 * 0.2)),
-                      child: FittedBox(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            buildKeyValuesInfo(context, "Horaires", ["${DateFormat.Hm().format(widget.lesson.start)} - ${DateFormat.Hm().format(widget.lesson.end)}"]),
-                            if (widget.lesson.room != null)
-                              SizedBox(
-                                height: (screenSize.size.height / 3) / 25,
-                              ),
-                            if (widget.lesson.room != null) buildKeyValuesInfo(context, "Salle", [widget.lesson.room]),
-                            if (widget.lesson.teachers != null)
-                              SizedBox(
-                                height: (screenSize.size.height / 3) / 25,
-                              ),
-                            if (widget.lesson.teachers != null) buildKeyValuesInfo(context, "Professeur${widget.lesson.teachers.length > 1 ? "s" : ""}", widget.lesson.teachers),
-                            if (widget.lesson.groups != null)
-                              SizedBox(
-                                height: (screenSize.size.height / 3) / 25,
-                              ),
-                            if (widget.lesson.groups != null) buildKeyValuesInfo(context, "Groupes", widget.lesson.groups),
-                            SizedBox(
-                              height: (screenSize.size.height / 3) / 25,
+                    Align(
+                      alignment: Alignment.topLeft,
+                      child: Container(
+                        padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
+                        child: Container(
+                          width: screenSize.size.height / 10 * 0.5,
+                          height: screenSize.size.height / 10 * 0.5,
+                          child: RawMaterialButton(
+                            onPressed: () async {
+                              var temp = await agendaEventEdit(context, true, defaultDate: this.widget.event.start, customEvent: this.widget.event);
+                              if (temp != null) {
+                                if (temp.runtimeType.toString().contains("String")) {
+                                  if (temp == "removed") {
+                                    Navigator.pop(context);
+                                  }
+                                }
+                                await offline.addAgendaEvent(temp, await get_week(temp.start));
+                                setState(() {
+                                  this.widget.event = temp;
+                                });
+                              }
+                            },
+                            child: new Icon(
+                              Icons.edit,
+                              color: isDarkModeEnabled ? Colors.white : Colors.black,
+                              size: screenSize.size.height / 10 * 0.4,
                             ),
-                            buildKeyValuesInfo(context, "Statut", [widget.lesson.status ?? "Maintenu"]),
-                          ],
+                            shape: new CircleBorder(),
+                            elevation: 1.0,
+                            fillColor: !isDarkModeEnabled ? Colors.white : Colors.black,
+                          ),
                         ),
                       ),
+                    ),
+                    Column(
+                      children: [
+                        Container(padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1), child: Text("Infos de l'évènement", style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: isDarkModeEnabled ? Colors.white : Colors.black))),
+                        Container(
+                          padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
+                          margin: EdgeInsets.only(top: (screenSize.size.height / 10 * 0.2)),
+                          child: FittedBox(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: <Widget>[
+                                buildKeyValuesInfo(context, "Horaires", ["${DateFormat.Hm().format(widget.event.start)} - ${DateFormat.Hm().format(widget.event.end)}"]),
+                                if (widget.event.location != null)
+                                  SizedBox(
+                                    height: (screenSize.size.height / 3) / 25,
+                                  ),
+                                if (widget.event.location != null) buildKeyValuesInfo(context, widget.event.lesson != null ? "Salle" : "Emplacement", [widget.event.location]),
+                                if (widget.event.lesson != null && widget.event.lesson.teachers != null)
+                                  SizedBox(
+                                    height: (screenSize.size.height / 3) / 25,
+                                  ),
+                                if (widget.event.lesson != null && widget.event.lesson.teachers != null) buildKeyValuesInfo(context, "Professeur${widget.event.lesson.teachers.length > 1 ? "s" : ""}", widget.event.lesson.teachers),
+                                if (widget.event.lesson != null && widget.event.lesson.groups != null)
+                                  SizedBox(
+                                    height: (screenSize.size.height / 3) / 25,
+                                  ),
+                                if (widget.event.lesson != null && widget.event.lesson.groups != null) buildKeyValuesInfo(context, "Groupes", widget.event.lesson.groups),
+                                SizedBox(
+                                  height: (screenSize.size.height / 3) / 25,
+                                ),
+                                if (widget.event.lesson != null && widget.event.lesson.status != null) buildKeyValuesInfo(context, "Statut", [widget.event.lesson.status ?? "Maintenu"]),
+                                if (widget.event.description != null && widget.event.description != "") buildKeyValuesInfo(context, "Description", [widget.event.description]),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
@@ -140,7 +181,7 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                     if (index == reminders.length) {
                       return GestureDetector(
                         onTap: () async {
-                          AgendaReminder reminder = await agendaEventEdit(context, false, lessonID: widget.lesson.id);
+                          AgendaReminder reminder = await agendaEventEdit(context, false, lessonID: widget.event.id);
                           if (reminder != null) {
                             setState(() {
                               reminders.add(reminder);
@@ -169,7 +210,7 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                                       height: screenSize.size.width / 5 * 0.4,
                                       child: RawMaterialButton(
                                         onPressed: () async {
-                                          AgendaReminder reminder = await agendaEventEdit(context, false, lessonID: widget.lesson.id);
+                                          AgendaReminder reminder = await agendaEventEdit(context, false, lessonID: widget.event.id);
                                           if (reminder != null) {
                                             setState(() {
                                               reminders.add(reminder);
@@ -225,7 +266,7 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                     } else {
                       return GestureDetector(
                         onTap: () async {
-                          AgendaReminder reminder = await agendaEventEdit(context, false, reminder: reminders[index], lessonID: widget.lesson.id);
+                          AgendaReminder reminder = await agendaEventEdit(context, false, reminder: reminders[index], lessonID: widget.event.id);
                           if (reminder != null) {
                             setState(() {
                               reminders[index] = reminder;
@@ -248,46 +289,46 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                                   crossAxisAlignment: WrapCrossAlignment.center,
                                   children: [
                                     //Plus button
-                                if(reminders[index].alarm!=alarmType.none)
-                                    Container(
-                                      width: screenSize.size.width / 5 * 0.4,
-                                      height: screenSize.size.width / 5 * 0.4,
-                                      child: RawMaterialButton(
-                                        onPressed: () async {
-                                          AgendaReminder reminder = await agendaEventEdit(context, false, reminder: reminders[index], lessonID: widget.lesson.id);
-                                          if (reminder != null) {
-                                            setState(() {
-                                              reminders[index] = reminder;
-                                            });
-                                            offline.updateReminder(reminder);
-                                          }
-                                        },
-                                        child: FittedBox(
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            children: [
-                                              Container(
-                                                width: screenSize.size.width / 5 * 0.3,
-                                                height: screenSize.size.width / 5 * 0.3,
-                                                padding: EdgeInsets.all(
-                                                  screenSize.size.width / 5 * 0.05,
-                                                ),
-                                                child: FittedBox(
-                                                  child: new Icon(
-                                                    MdiIcons.bellRing,
-                                                    color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                    if (reminders[index].alarm != alarmType.none)
+                                      Container(
+                                        width: screenSize.size.width / 5 * 0.4,
+                                        height: screenSize.size.width / 5 * 0.4,
+                                        child: RawMaterialButton(
+                                          onPressed: () async {
+                                            AgendaReminder reminder = await agendaEventEdit(context, false, reminder: reminders[index], lessonID: widget.event.id);
+                                            if (reminder != null) {
+                                              setState(() {
+                                                reminders[index] = reminder;
+                                              });
+                                              offline.updateReminder(reminder);
+                                            }
+                                          },
+                                          child: FittedBox(
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              children: [
+                                                Container(
+                                                  width: screenSize.size.width / 5 * 0.3,
+                                                  height: screenSize.size.width / 5 * 0.3,
+                                                  padding: EdgeInsets.all(
+                                                    screenSize.size.width / 5 * 0.05,
+                                                  ),
+                                                  child: FittedBox(
+                                                    child: new Icon(
+                                                      MdiIcons.bellRing,
+                                                      color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
+                                          shape: new CircleBorder(),
+                                          elevation: 1.0,
+                                          fillColor: Theme.of(context).primaryColor,
                                         ),
-                                        shape: new CircleBorder(),
-                                        elevation: 1.0,
-                                        fillColor: Theme.of(context).primaryColor,
                                       ),
-                                    ),
                                     SizedBox(width: screenSize.size.width / 5 * 0.1),
                                     if (reminders[index].name != null && reminders[index].name.length > 0)
                                       Container(

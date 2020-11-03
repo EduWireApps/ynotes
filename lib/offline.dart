@@ -18,6 +18,8 @@ class Offline {
   List<PollInfo> pollsData;
   //Return agenda reminder
   List<AgendaReminder> remindersData;
+  //Return agenda event
+  Map<dynamic, dynamic> agendaEventsData;
   Box offlineBox;
   Box homeworkDoneBox;
   Box pinnedHomeworkBox;
@@ -31,6 +33,7 @@ class Offline {
       Hive.registerAdapter(LessonAdapter());
       Hive.registerAdapter(PollInfoAdapter());
       Hive.registerAdapter(AgendaReminderAdapter());
+      Hive.registerAdapter(AgendaEventAdapter());
       Hive.registerAdapter(alarmTypeAdapter());
     } catch (e) {
       print("Error " + e.toString());
@@ -55,7 +58,7 @@ class Offline {
       var offlinehomeworkData = await offlineBox.get("homework");
       var offlinePollsData = await offlineBox.get("polls");
       var offlineRemindersData = await offlineBox.get("reminders");
-
+      var offlineAgendaEventsData = await offlineBox.get("agendaEvents");
       if (offlineLessonsData != null) {
         this.lessonsData = Map<dynamic, dynamic>.from(offlineLessonsData);
       }
@@ -70,6 +73,9 @@ class Offline {
       }
       if (offlineRemindersData != null) {
         this.remindersData = offlineRemindersData.cast<AgendaReminder>();
+      }
+      if (offlineAgendaEventsData != null) {
+        this.agendaEventsData = Map<dynamic, dynamic>.from(offlineAgendaEventsData);
       }
     } catch (e) {
       print("Error while refreshing " + e.toString());
@@ -111,6 +117,9 @@ class Offline {
       } catch (e) {}
       try {
         pollsData.clear();
+      } catch (e) {}
+      try {
+        agendaEventsData.clear();
       } catch (e) {}
     } catch (e) {
       print("Failed to clear all db " + e.toString());
@@ -188,7 +197,7 @@ class Offline {
           });
         }
         //Update the timetable
-        timeTable.update(week, (value) => newData, ifAbsent: () {});
+        timeTable.update(week, (value) => newData, ifAbsent: () => newData);
         await offlineBox.put("lessons", timeTable);
         await refreshData();
       }
@@ -196,6 +205,73 @@ class Offline {
       return true;
     } catch (e) {
       print("Error while updating offline lessons " + e.toString());
+    }
+  }
+
+  removeAgendaEvent(String id, int week) async {
+    try {
+      if (!offlineBox.isOpen) {
+        offlineBox = await Hive.openBox("offlineData");
+      }
+
+      Map<dynamic, dynamic> timeTable = Map();
+      var offline = await offlineBox.get("agendaEvents");
+      List<AgendaEvent> events = List();
+      if (offline != null) {
+        timeTable = Map<dynamic, dynamic>.from(await offlineBox.get("agendaEvents"));
+      }
+      if (timeTable == null) {
+        timeTable = Map();
+      } else {
+        if (timeTable[week] != null) {
+          events.addAll(timeTable[week].cast<AgendaEvent>());
+          events.removeWhere((element) => element.id == id);
+        }
+      }
+      //Update the timetable
+      timeTable.update(week, (value) => events, ifAbsent: () => events);
+      print(timeTable);
+      await offlineBox.put("agendaEvents", timeTable);
+      await refreshData();
+
+      print("Removed offline agenda event (week : $week, id: $id)");
+    } catch (e) {
+      print("Error while removing offline agenda events " + e.toString());
+    }
+  }
+
+  addAgendaEvent(AgendaEvent newData, int week) async {
+    try {
+      if (!offlineBox.isOpen) {
+        offlineBox = await Hive.openBox("offlineData");
+      }
+      if (newData != null) {
+        print(newData);
+        Map<dynamic, dynamic> timeTable = Map();
+        var offline = await offlineBox.get("agendaEvents");
+        List<AgendaEvent> events = List();
+        if (offline != null) {
+          timeTable = Map<dynamic, dynamic>.from(await offlineBox.get("agendaEvents"));
+        }
+        if (timeTable == null) {
+          timeTable = Map();
+        } else {
+          if (timeTable[week] != null) {
+            events.addAll(timeTable[week].cast<AgendaEvent>());
+            events.removeWhere((element) => element.id == newData.id);
+          }
+        }
+        events.add(newData);
+        //Update the timetable
+        timeTable.update(week, (value) => events, ifAbsent: () => events);
+        print(events);
+        print(timeTable);
+        await offlineBox.put("agendaEvents", timeTable);
+        await refreshData();
+      }
+      print("Update offline agenda events (week : $week)");
+    } catch (e) {
+      print("Error while updating offline agenda events " + e.toString());
     }
   }
 
@@ -233,6 +309,26 @@ class Offline {
       await refreshData();
     } catch (e) {
       print("Error while updating reminder " + e.toString());
+    }
+  }
+
+  removeReminder(String id) async {
+    try {
+      if (!offlineBox.isOpen) {
+        offlineBox = await Hive.openBox("offlineData");
+      }
+      var old = await offlineBox.get("reminders");
+      List<AgendaReminder> offline = List();
+      if (old != null) {
+        offline = old.cast<AgendaReminder>();
+      }
+      if (offline != null) {
+        offline.removeWhere((a) => a.id == id);
+      }
+      await offlineBox.put("reminders", offline);
+      await refreshData();
+    } catch (e) {
+      print("Error while removing reminder " + e.toString());
     }
   }
 
@@ -376,6 +472,28 @@ class Offline {
       }
     } catch (e) {
       print("Error while returning agenda reminders " + e.toString());
+      return null;
+    }
+  }
+
+  Future<List<AgendaEvent>> agendaEvents(int week) async {
+    try {
+      if (agendaEventsData != null && agendaEventsData[week] != null) {
+        List<AgendaEvent> agendaEvents = List();
+        agendaEvents.addAll(agendaEventsData[week].cast<AgendaEvent>());
+        return agendaEvents;
+      } else {
+        await refreshData();
+        if (agendaEventsData[week] != null) {
+          List<AgendaEvent> agendaEvents = List();
+          agendaEvents.addAll(agendaEventsData[week].cast<AgendaEvent>());
+          return agendaEvents;
+        } else {
+          return null;
+        }
+      }
+    } catch (e) {
+      print("Error while returning agenda events for week $week " + e.toString());
       return null;
     }
   }

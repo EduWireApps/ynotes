@@ -210,7 +210,6 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                                           color: Colors.transparent,
                                           child: Icon(MdiIcons.menu, color: isDarkModeEnabled ? Colors.white : Colors.black),
                                           onPressed: () {
-                                            print(screenSize.size.height);
                                             if (!isDrawerCollapsed) {
                                               bodyController.reverse();
                                             } else {
