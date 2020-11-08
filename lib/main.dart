@@ -18,9 +18,9 @@ import 'package:ynotes/background.dart';
 import 'package:ynotes/classes.dart';
 import 'package:ynotes/models.dart';
 import 'package:ynotes/offline.dart';
-import 'package:ynotes/parsers/EcoleDirecte.dart';
-import 'package:ynotes/parsers/EcoleDirecte/ecoleDirecteMethods.dart';
-import 'package:ynotes/parsers/Pronote.dart';
+import 'package:ynotes/apis/EcoleDirecte.dart';
+import 'package:ynotes/apis/EcoleDirecte/ecoleDirecteMethods.dart';
+import 'package:ynotes/apis/Pronote.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 import 'UI/screens/logsPage.dart';

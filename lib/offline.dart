@@ -3,8 +3,9 @@ import 'dart:async';
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:ynotes/UI/utils/fileUtils.dart';
-import 'package:ynotes/parsers/Pronote/PronoteAPI.dart';
+import 'package:ynotes/apis/Pronote/PronoteAPI.dart';
 import 'package:ynotes/usefulMethods.dart';
+import 'apis/utils.dart';
 import 'classes.dart';
 
 ///An offline class to deal with the `hivedb` package
@@ -222,7 +223,7 @@ class Offline {
   }
 
   ///Remove an agenda event with a given `id` and at a given `week`
-  removeAgendaEvent(String id, int week) async {
+  removeAgendaEvent(String id, var fetchID) async {
     try {
       if (!offlineBox.isOpen) {
         offlineBox = await Hive.openBox("offlineData");
@@ -237,25 +238,24 @@ class Offline {
       if (timeTable == null) {
         timeTable = Map();
       } else {
-        if (timeTable[week] != null) {
-          events.addAll(timeTable[week].cast<AgendaEvent>());
+        if (timeTable[fetchID] != null) {
+          events.addAll(timeTable[fetchID].cast<AgendaEvent>());
           events.removeWhere((element) => element.id == id);
+          print("Removed offline agenda event (fetchID : $fetchID, id: $id)");
         }
       }
       //Update the timetable
-      timeTable.update(week, (value) => events, ifAbsent: () => events);
+      timeTable.update(fetchID, (value) => events, ifAbsent: () => events);
       print(timeTable);
       await offlineBox.put("agendaEvents", timeTable);
       await refreshData();
-
-      print("Removed offline agenda event (week : $week, id: $id)");
     } catch (e) {
       print("Error while removing offline agenda events " + e.toString());
     }
   }
 
   ///Update existing agenda events with passed data
-  addAgendaEvent(AgendaEvent newData, int week) async {
+  addAgendaEvent(AgendaEvent newData, var id) async {
     try {
       if (!offlineBox.isOpen) {
         offlineBox = await Hive.openBox("offlineData");
@@ -271,20 +271,20 @@ class Offline {
         if (timeTable == null) {
           timeTable = Map();
         } else {
-          if (timeTable[week] != null) {
-            events.addAll(timeTable[week].cast<AgendaEvent>());
+          if (timeTable[id] != null) {
+            events.addAll(timeTable[id].cast<AgendaEvent>());
             events.removeWhere((element) => element.id == newData.id);
           }
         }
         events.add(newData);
         //Update the timetable
-        timeTable.update(week, (value) => events, ifAbsent: () => events);
+        timeTable.update(id, (value) => events, ifAbsent: () => events);
         print(events);
         print(timeTable);
         await offlineBox.put("agendaEvents", timeTable);
         await refreshData();
       }
-      print("Update offline agenda events (week : $week)");
+      print("Update offline agenda events (id : $id)");
     } catch (e) {
       print("Error while updating offline agenda events " + e.toString());
     }
@@ -498,20 +498,55 @@ class Offline {
     }
   }
 
-  Future<List<AgendaEvent>> agendaEvents(int week) async {
+  Future<List<AgendaEvent>> agendaEvents(int week, {var selector}) async {
     try {
-      if (agendaEventsData != null && agendaEventsData[week] != null) {
-        List<AgendaEvent> agendaEvents = List();
-        agendaEvents.addAll(agendaEventsData[week].cast<AgendaEvent>());
-        return agendaEvents;
-      } else {
-        await refreshData();
-        if (agendaEventsData[week] != null) {
+      if (selector == null) {
+        if (agendaEventsData != null && agendaEventsData[week] != null) {
           List<AgendaEvent> agendaEvents = List();
           agendaEvents.addAll(agendaEventsData[week].cast<AgendaEvent>());
           return agendaEvents;
         } else {
-          return null;
+          await refreshData();
+          if (agendaEventsData[week] != null) {
+            List<AgendaEvent> agendaEvents = List();
+            agendaEvents.addAll(agendaEventsData[week].cast<AgendaEvent>());
+            return agendaEvents;
+          } else {
+            return null;
+          }
+        }
+      } else {
+        if (agendaEventsData != null) {
+          var values = agendaEventsData.keys;
+          var selectedValues = values.where(await selector);
+
+          if (selectedValues != null) {
+            List<AgendaEvent> agendaEvents = List();
+
+            selectedValues.forEach((element) {
+              agendaEvents.addAll(agendaEventsData[element].cast<AgendaEvent>());
+              print(agendaEvents);
+            });
+            return agendaEvents;
+          } else {
+            return null;
+          }
+        } else {
+          await refreshData();
+          if (agendaEventsData != null) {
+            var values = agendaEventsData.keys;
+            var selectedValues = values.where(await selector);
+            if (selectedValues != null) {
+              List<AgendaEvent> agendaEvents = List();
+
+              selectedValues.forEach((element) {
+                agendaEvents.addAll(agendaEventsData[element].cast<AgendaEvent>());
+              });
+              return agendaEvents;
+            }
+          } else {
+            return null;
+          }
         }
       }
     } catch (e) {

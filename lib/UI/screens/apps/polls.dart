@@ -121,7 +121,7 @@ class _PollsAndInfosPageState extends State<PollsAndInfosPage> {
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             AutoSizeText(
-                                              snapshot.data[index].title + " - " + DateFormat("dd/MM/yyyy").format(snapshot.data[index].datedebut),
+                                              (snapshot.data[index].title != null ? snapshot.data[index].title + " - " : "") + DateFormat("dd/MM/yyyy").format(snapshot.data[index].datedebut),
                                               style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: isDarkModeEnabled ? Colors.white : Colors.black),
                                             ),
                                             AutoSizeText(
@@ -220,7 +220,7 @@ class _PollsAndInfosPageState extends State<PollsAndInfosPage> {
             children: [
               CircularCheckBox(
                 value: response.contains(i + 1),
-               /* onChanged: (value) async {
+                /* onChanged: (value) async {
                   await refreshPolls(forced: true);
                   await localApi.app("polls", action: "answer", args: jsonEncode(data) + "/ynsplit" + jsonEncode(pollinfo.data) + "/ynsplit" + (i + 1).toString());
                 },*/

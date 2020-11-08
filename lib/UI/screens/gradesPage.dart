@@ -1100,7 +1100,7 @@ class _GradesGroupState extends State<GradesGroup> {
                   if (localList != null)
                     if (localList[index].dateSaisie == formattedDate)
                       Positioned(
-                        left: screenSize.size.width / 5 * 1.3,
+                        right: screenSize.size.width / 5 * 0.06,
                         top: screenSize.size.height / 15 * 0.01,
                         child: Badge(
                           animationType: BadgeAnimationType.scale,

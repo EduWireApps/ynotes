@@ -3,7 +3,8 @@ import 'dart:convert';
 import 'package:calendar_time/calendar_time.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:ynotes/parsers/Pronote/PronoteCas.dart';
+import 'package:ynotes/apis/Pronote/PronoteCas.dart';
+import 'package:ynotes/apis/utils.dart';
 
 import '../../classes.dart';
 
@@ -37,7 +38,7 @@ class EcoleDirecteConverter {
       //Make a list of grades
 
       List disciplines = periodeElement["ensembleMatieres"]["disciplines"];
-      disciplines.forEach((rawData) async {
+      disciplines.forEach((rawData) {
         List profs = rawData['professeurs'];
         final List<String> teachersNames = List<String>();
 
@@ -158,19 +159,17 @@ class EcoleDirecteConverter {
     return homeworkList;
   }
 
-  static List<Lesson> lessons(Map<String, dynamic> lessonData) {
+  static Future<List<Lesson>> lessons(Map<String, dynamic> lessonData) async {
     List<Lesson> lessons = List();
-    lessonData["data"].forEach((lesson) {
+    await Future.forEach(lessonData["data"], (lesson) async {
       String room = lesson["salle"].toString();
       List<String> teachers = [lesson["prof"]];
       DateTime start = DateFormat("yyyy-MM-dd HH:mm").parse(lesson["start_date"]);
       DateTime end = DateFormat("yyyy-MM-dd HH:mm").parse(lesson["end_date"]);
       bool canceled = lesson["isAnnule"] == true;
       String matiere = lesson["matiere"];
-
       String codeMatiere = lesson["codeMatiere"].toString();
-      String id = lesson["id"].toString();
-      Lesson parsedLesson = Lesson(room: room, teachers: teachers, start: start, end: end, canceled: canceled, matiere: matiere, codeMatiere: codeMatiere, id: id);
+      Lesson parsedLesson = Lesson(room: room, teachers: teachers, start: start, end: end, canceled: canceled, matiere: matiere, codeMatiere: codeMatiere, id: (await getLessonID(start, end, matiere)).toString());
       lessons.add(parsedLesson);
     });
 
@@ -189,5 +188,32 @@ class EcoleDirecteConverter {
       documents.add(Document(libelle, id, type, length));
     });
     return documents;
+  }
+
+  static List<CloudItem> cloudFolders(var cloudFoldersData) {
+    List<CloudItem> cloudFolders = List();
+    cloudFoldersData["data"].forEach((folderData) {
+      String date = folderData["creeLe"];
+      try {
+        var split = date.split(" ");
+        date = split[0];
+      } catch (e) {}
+      String title = folderData["titre"];
+      String elementType = "FOLDER";
+      String author = folderData["creePar"];
+      bool isRootDir = true;
+      bool isMemberOf = folderData["estMembre"];
+      String id = folderData["id"].toString();
+      cloudFolders.add(CloudItem(
+        title,
+        elementType,
+        author,
+        isRootDir,
+        date,
+        isMemberOf: isMemberOf,
+        id: id,
+      ));
+    });
+    return cloudFolders;
   }
 }

@@ -5,8 +5,8 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:ynotes/classes.dart';
 import 'package:ynotes/main.dart';
-import 'package:ynotes/parsers/EcoleDirecte/ecoleDirecteConverters.dart';
-import 'package:ynotes/parsers/Pronote/PronoteCas.dart';
+import 'package:ynotes/apis/EcoleDirecte/ecoleDirecteConverters.dart';
+import 'package:ynotes/apis/Pronote/PronoteCas.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 import '../EcoleDirecte.dart';
@@ -60,10 +60,9 @@ class EcoleDirecteMethod {
       "Grades request returned an error:", /*ignoreMethodAndId: true*/
     );
 
-    
     //Update colors;
     disciplinesList = await refreshDisciplinesListColors(disciplinesList);
- 
+
     await offline.updateDisciplines(disciplinesList);
     createStack();
 
@@ -120,6 +119,15 @@ class EcoleDirecteMethod {
     return homework;
   }
 
+  static Future<List<CloudItem>> cloudFolders() async {
+    await EcoleDirecteMethod.testToken();
+    String rootUrl = 'https://api.ecoledirecte.com/v3/E/';
+    String method = "espacestravail.awp?verbe=get&";
+    String data = 'data={"token": "$token"}';
+    List<CloudItem> cloudFolders = await request(data, rootUrl, method, EcoleDirecteConverter.cloudFolders, "Cloud folders request returned an error:");
+    return cloudFolders;
+  }
+
 //Bool value and Token validity tester
   static testToken() async {
     if (token == "" || token == null) {
@@ -166,7 +174,7 @@ class EcoleDirecteMethod {
       printWrapped(finalUrl);
       Map<String, dynamic> responseData = json.decode(utf8.decode(response.bodyBytes));
       if (response.statusCode == 200 && responseData != null && responseData['code'] != null && responseData['code'] == 200) {
-        var parsedData = converter(responseData);
+        var parsedData = await converter(responseData);
         return parsedData;
       } else {
         throw (onErrorBody + "  Server returned wrong statuscode.");

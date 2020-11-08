@@ -4,15 +4,15 @@ import 'package:android_alarm_manager/android_alarm_manager.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive/hive.dart';
+import 'package:ynotes/apis/Pronote.dart';
 import 'package:ynotes/classes.dart';
 import 'package:ynotes/main.dart';
-import 'package:ynotes/parsers/Pronote.dart';
-import 'package:ynotes/parsers/Pronote/PronoteAPI.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 import 'UI/screens/agendaPageWidgets/agenda.dart';
 import 'UI/screens/logsPage.dart';
 import 'UI/utils/fileUtils.dart';
+import 'apis/utils.dart';
 
 //The main class for everything done in background
 class BackgroundService {

@@ -11,7 +11,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/UI/utils/fileUtils.dart';
 import 'package:ynotes/classes.dart';
 import 'package:ynotes/main.dart';
-import 'package:ynotes/parsers/EcoleDirecte.dart';
+import 'package:ynotes/apis/EcoleDirecte.dart';
 
 import '../../../models.dart';
 import '../../../usefulMethods.dart';

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 class Expandables extends StatefulWidget {
@@ -213,11 +212,13 @@ class _ExpandablesState extends State<Expandables> with TickerProviderStateMixin
                   animateBottomWidgetToMin();
                 },
                 child: Card(
+                    margin: EdgeInsets.zero,
                     shadowColor: widget.expandablesShadowColor,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(widget.topExpandableBorderRadius)),
                     color: widget.topExpandableColor ?? Theme.of(context).primaryColor,
                     child: Container(
-                      width: (screenSize.size.width / 5) * 4.7,
+                      padding: EdgeInsets.zero,
+                      width: widget.width,
                       height: widget.minHeight + (widget.maxHeight - widget.minHeight) * topWidgetPercentExpansion / 100,
                       child: widget.topChild,
                     )),
@@ -234,7 +235,7 @@ class _ExpandablesState extends State<Expandables> with TickerProviderStateMixin
                     margin: EdgeInsets.only(top: widget.spaceBetween),
                     color: widget.bottomExpandableColor ?? Theme.of(context).primaryColor,
                     child: Container(
-                      width: (screenSize.size.width / 5) * 4.7,
+                      width: widget.width,
                       height: widget.minHeight + (widget.maxHeight - widget.minHeight) * bottomWidgetPercentExpansion / 100,
                       child: widget.bottomChild,
                     )),

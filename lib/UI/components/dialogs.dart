@@ -10,6 +10,7 @@ import 'package:ynotes/UI/utils/fileUtils.dart';
 import 'dialogs/folderChoiceDialog.dart';
 import 'dialogs/multipleChoicesDialog.dart';
 import 'dialogs/numberChoiceDialog.dart';
+import 'dialogs/recurringEventsDialog.dart';
 import 'dialogs/specialtiesDialog.dart';
 import 'dialogs/textFieldChoiceDialog.dart';
 
@@ -53,7 +54,7 @@ class CustomDialogs {
             ));
   }
 
-  static Future<bool> showConfirmationDialog(BuildContext context, Function show, {String alternativeText = "Voulez vous vraiment supprimer cet élément (irréversible) ?", String alternativeButtonConfirmText ="SUPPRIMER"}) {
+  static Future<bool> showConfirmationDialog(BuildContext context, Function show, {String alternativeText = "Voulez vous vraiment supprimer cet élément (irréversible) ?", String alternativeButtonConfirmText = "SUPPRIMER"}) {
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
       elevation: 50,
@@ -79,7 +80,7 @@ class CustomDialogs {
           },
         ),
         FlatButton(
-          child:  Text(
+          child: Text(
             alternativeButtonConfirmText.toUpperCase(),
             style: TextStyle(color: Colors.red),
             textScaleFactor: 1.0,
@@ -159,6 +160,17 @@ class CustomDialogs {
     );
   }
 
+  static Future showRecurringEventDialog(BuildContext context, String scheme) {
+    // show the dialog
+    return showDialog(
+      barrierDismissible: true,
+      context: context,
+      builder: (BuildContext context) {
+        return RecurringEventsDialog(scheme);
+      },
+    );
+  }
+
 //Bêta purposes : show when a function is not available yet
   static showUnimplementedSnackBar(BuildContext context) {
     Flushbar(
@@ -210,8 +222,6 @@ class CustomDialogs {
         });
   }
 }
-
-
 
 //The help dialog class
 class HelpDialog {
@@ -283,6 +293,3 @@ List<HelpDialog> helpDialogs = [
       "assets/gifs/FileExplorer720.gif",
       3)
 ];
-
-
-

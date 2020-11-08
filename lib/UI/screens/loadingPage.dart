@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ynotes/UI/animations/FadeAnimation.dart';
 import 'package:ynotes/main.dart';
-import 'package:ynotes/parsers/EcoleDirecte.dart';
+import 'package:ynotes/apis/EcoleDirecte.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 import '../../classes.dart';
@@ -33,7 +33,7 @@ class _LoadingPageState extends State<LoadingPage> {
     String url = await ReadStorage("pronoteurl");
     String cas = await ReadStorage("pronotecas");
     z = await storage.read(key: "agreedTermsAndConfiguredApp");
-    if (u != null && p != null && z != null&& chosenParser!=null)  {
+    if (u != null && p != null && z != null && chosenParser != null) {
       Navigator.of(context).pushReplacement(router(homePage()));
     } else {
       Navigator.of(context).pushReplacement(router(login()));
@@ -51,15 +51,14 @@ class _LoadingPageState extends State<LoadingPage> {
 
     return Scaffold(
       backgroundColor: Color(0xff252B62),
-      body: 
-        FadeAnimation(
-                0.2,Center(
-              child: Image(
-            image: AssetImage('assets/images/LogoYNotes.png'),
-            width: screenSize.size.width / 5 * 1,
-          )),
-        ),
-      
+      body: FadeAnimation(
+        0.2,
+        Center(
+            child: Image(
+          image: AssetImage('assets/images/LogoYNotes.png'),
+          width: screenSize.size.width / 5 * 1,
+        )),
+      ),
     );
   }
 }

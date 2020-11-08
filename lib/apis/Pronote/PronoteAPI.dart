@@ -5,6 +5,7 @@ import 'dart:typed_data';
 
 import 'package:convert/convert.dart';
 import 'package:crypto/crypto.dart';
+import 'package:dio/dio.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:html/parser.dart' show parse;
@@ -18,17 +19,15 @@ import 'package:requests/requests.dart';
 import 'package:ynotes/classes.dart' as localapi;
 import 'package:ynotes/main.dart';
 import 'package:ynotes/models.dart';
-import 'package:ynotes/parsers/Pronote/PronoteCas.dart';
+import 'package:ynotes/apis/Pronote/PronoteCas.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 import '../../classes.dart';
 import '../EcoleDirecte.dart';
+import '../utils.dart';
 
 Map error_messages = {22: '[ERROR 22] The object was from a previous session. Please read the "Long Term Usage" section in README on github.', 10: '[ERROR 10] Session has expired and pronotepy was not able to reinitialise the connection.'};
 bool isOldAPIUsed = false;
-get_week(DateTime date) async {
-  return (1 + (date.difference(DateTime.parse(await storage.read(key: "startday"))).inDays / 7).floor()).round();
-}
 
 class Client {
   var username;
@@ -363,7 +362,9 @@ class Client {
     Map data = {
       "_Signature_": {"onglet": 8},
     };
-    var response = await this.communication.post('PageActualites', data: data);
+    //var response = await this.communication.post('PageActualites', data: data);
+    var test = await Dio().get("http://demo2235921.mockable.io/");
+    var response = test.data;
     var listActus = response['donneesSec']['donnees']['listeActualites']["V"];
     List<PollInfo> listInfosPolls = List();
     listActus.forEach((element) {

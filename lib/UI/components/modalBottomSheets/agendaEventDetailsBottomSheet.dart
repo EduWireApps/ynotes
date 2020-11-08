@@ -4,9 +4,10 @@ import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/UI/components/modalBottomSheets/agendaEventEditBottomSheet.dart';
 import 'package:ynotes/UI/components/modalBottomSheets/keyValues.dart';
+import 'package:ynotes/apis/utils.dart';
 import 'package:ynotes/main.dart';
-import 'package:ynotes/parsers/EcoleDirecte.dart';
-import 'package:ynotes/parsers/Pronote/PronoteAPI.dart';
+import 'package:ynotes/apis/EcoleDirecte.dart';
+import 'package:ynotes/apis/Pronote/PronoteAPI.dart';
 
 import '../../../classes.dart';
 import '../../../usefulMethods.dart';
@@ -107,11 +108,12 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                                   if (temp == "removed") {
                                     Navigator.pop(context);
                                   }
+                                } else {
+                                  await offline.addAgendaEvent(temp, await get_week(temp.start));
+                                  setState(() {
+                                    this.widget.event = temp;
+                                  });
                                 }
-                                await offline.addAgendaEvent(temp, await get_week(temp.start));
-                                setState(() {
-                                  this.widget.event = temp;
-                                });
                               }
                             },
                             child: new Icon(
@@ -156,7 +158,7 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                                 SizedBox(
                                   height: (screenSize.size.height / 3) / 25,
                                 ),
-                                if (widget.event.lesson != null && widget.event.lesson.status != null) buildKeyValuesInfo(context, "Statut", [widget.event.lesson.status ?? "Maintenu"]),
+                                if (widget.event.canceled || (widget.event.lesson != null && widget.event.lesson.status != null)) buildKeyValuesInfo(context, "Statut", [widget.event.canceled ? "Annulé" : widget.event.lesson.status]),
                                 if (widget.event.description != null && widget.event.description != "") buildKeyValuesInfo(context, "Description", [widget.event.description]),
                               ],
                             ),

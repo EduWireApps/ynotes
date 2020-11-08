@@ -1,12 +1,12 @@
-
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:http/src/request.dart';
 import 'package:intl/intl.dart';
 import 'package:ynotes/UI/screens/logsPage.dart';
+import 'package:ynotes/apis/utils.dart';
 import 'package:ynotes/models.dart';
-import 'package:ynotes/parsers/Pronote/PronoteAPI.dart';
-import 'package:ynotes/parsers/Pronote/PronoteCas.dart';
+import 'package:ynotes/apis/Pronote/PronoteAPI.dart';
+import 'package:ynotes/apis/Pronote/PronoteCas.dart';
 
 import '../classes.dart';
 import '../main.dart';

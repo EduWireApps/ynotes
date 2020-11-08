@@ -525,13 +525,13 @@ class AgendaEventAdapter extends TypeAdapter<AgendaEvent> {
       description: fields[12] as String,
       alarm: fields[13] as alarmType,
       color: fields[15] as int,
-    );
+    )..recurrenceScheme = fields[16] as String;
   }
 
   @override
   void write(BinaryWriter writer, AgendaEvent obj) {
     writer
-      ..writeByte(16)
+      ..writeByte(17)
       ..writeByte(0)
       ..write(obj.start)
       ..writeByte(1)
@@ -563,7 +563,9 @@ class AgendaEventAdapter extends TypeAdapter<AgendaEvent> {
       ..writeByte(14)
       ..write(obj.wholeDay)
       ..writeByte(15)
-      ..write(obj.color);
+      ..write(obj.color)
+      ..writeByte(16)
+      ..write(obj.recurrenceScheme);
   }
 
   @override
@@ -738,7 +740,7 @@ AgendaEvent _$AgendaEventFromJson(Map<String, dynamic> json) {
     description: json['description'] as String,
     alarm: _$enumDecode(_$alarmTypeEnumMap, json['alarm']),
     color: json['color'] as int,
-  );
+  )..recurrenceScheme = json['recurrenceScheme'] as String;
 }
 
 Map<String, dynamic> _$AgendaEventToJson(AgendaEvent instance) =>
@@ -759,4 +761,5 @@ Map<String, dynamic> _$AgendaEventToJson(AgendaEvent instance) =>
       'alarm': _$alarmTypeEnumMap[instance.alarm],
       'wholeDay': instance.wholeDay,
       'color': instance.color,
+      'recurrenceScheme': instance.recurrenceScheme,
     };

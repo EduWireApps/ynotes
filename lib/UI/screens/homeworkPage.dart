@@ -1,4 +1,3 @@
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,7 +11,7 @@ import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/UI/screens/homeworkPageWidgets/HWsecondPage.dart';
 import 'package:ynotes/UI/screens/summaryPage.dart';
 import 'package:ynotes/main.dart';
-import 'package:ynotes/parsers/EcoleDirecte.dart';
+import 'package:ynotes/apis/EcoleDirecte.dart';
 
 import '../../classes.dart';
 import '../../usefulMethods.dart';

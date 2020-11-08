@@ -9,9 +9,9 @@ import 'package:ynotes/UI/components/modalBottomSheets/agendaEventEditBottomShee
 import 'package:ynotes/UI/screens/agendaPageWidgets/agenda.dart';
 import 'package:ynotes/UI/screens/agendaPageWidgets/agendaGrid.dart';
 import 'package:ynotes/UI/utils/fileUtils.dart';
+import 'package:ynotes/apis/utils.dart';
 import 'package:ynotes/classes.dart';
 import 'package:ynotes/main.dart';
-import 'package:ynotes/parsers/Pronote/PronoteAPI.dart';
 
 import '../../../usefulMethods.dart';
 import '../agendaPage.dart';
@@ -45,10 +45,9 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
   }
 
   Future<void> refreshAgendaFutures({bool force = true}) async {
-   
     if (mounted) {
       setState(() {
-        spaceAgendaFuture = localApi.getEvents(agendaDate, true, forceReload: force);
+        spaceAgendaFuture = localApi.getEvents(agendaDate, true, forceReload: false);
         agendaFuture = localApi.getEvents(agendaDate, false, forceReload: force);
       });
     }
@@ -68,19 +67,18 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
           Icons.add,
           size: screenSize.size.width / 5 * 0.5,
         ),
-        decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment(0.8, 0.0), // 10% of the width, so there are ten blinds.
-              colors: [const Color(0xFFFFFFEE), const Color(0xFFB4ACDC)],
-            )),
+        decoration: BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
       ),
       onPressed: () async {
         AgendaEvent temp = await agendaEventEdit(context, true, defaultDate: agendaDate);
         if (temp != null) {
-          await offline.addAgendaEvent(temp, await get_week(temp.start));
-          await refreshAgendaFutures(force: false);
+          if (temp.recurrenceScheme != null && temp.recurrenceScheme != "0") {
+            await offline.addAgendaEvent(temp, temp.recurrenceScheme);
+            await refreshAgendaFutures(force: false);
+          } else {
+            await offline.addAgendaEvent(temp, await get_week(temp.start));
+            await refreshAgendaFutures(force: false);
+          }
         }
         setState(() {});
       },
@@ -233,10 +231,10 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
     return Container(
-        height: screenSize.size.height / 10 * 7,
+        height: screenSize.size.height / 10 * 8,
         margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15), color: Color(0xff282246)),
-        width: screenSize.size.width / 5 * 4.7,
+        width: screenSize.size.width,
         child: Stack(
           children: [
             ClipRRect(
@@ -254,7 +252,7 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
                       children: <Widget>[
                         _buildAgendaButtons(context),
                         Container(
-                          height: screenSize.size.height / 10 * 7.2,
+                          height: screenSize.size.height / 10 * 8,
                           child: Stack(
                             children: [
                               FutureBuilder(
@@ -264,7 +262,7 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
                                     if (lst != null) {
                                       lst.removeWhere((element) => element.start.isAfter(element.end));
                                     }
-                                    if (snapshot.hasData && snapshot.data != null && lst.length != 0) {
+                                    if (snapshot.hasData && snapshot.data != null && lst.length != 0 && lst.where((element) => !element.isLesson).toList().length != 0) {
                                       return RefreshIndicator(
                                           onRefresh: refreshAgendaFutures,
                                           child: AgendaGrid(
@@ -273,7 +271,7 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
                                             afterSchool: true,
                                           ));
                                     }
-                                    if (snapshot.data != null && lst.length == 0) {
+                                    if (snapshot.data != null && (lst.length == 0 || lst.where((element) => !element.isLesson).toList().length == 0)) {
                                       return Center(
                                         child: FittedBox(
                                           child: Column(
@@ -322,7 +320,7 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
             Align(
               alignment: Alignment.bottomRight,
               child: Container(
-                margin: EdgeInsets.only(right: screenSize.size.width / 5 * 0.1, bottom: screenSize.size.height / 10 * 0.1),
+                margin: EdgeInsets.only(right: screenSize.size.width / 5 * 0.1, bottom: screenSize.size.height / 10 * 0.4),
                 child: _buildFloatingButton(context),
               ),
             ),

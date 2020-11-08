@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
@@ -170,7 +169,6 @@ class _SpacePageState extends State<SpacePage> with TickerProviderStateMixin {
                                               : Agenda(),
                                         )
 
-                                        //News
                                       ],
                                     ),
                                   ),

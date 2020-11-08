@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/main.dart';
-import 'package:ynotes/parsers/EcoleDirecte.dart';
+import 'package:ynotes/apis/EcoleDirecte.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 class SlidingCarousel extends StatefulWidget {
@@ -477,9 +477,7 @@ class _page4State extends State<page4> {
       height: screenSize.size.height,
       color: Theme.of(context).backgroundColor,
       child: CupertinoScrollbar(
-
-
-              child: SingleChildScrollView(
+        child: SingleChildScrollView(
           child: Container(
             height: screenSize.size.height,
             child: Column(
@@ -717,7 +715,7 @@ class _SlidingCarouselState extends State<SlidingCarousel> {
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
     return Scaffold(
-      backgroundColor: _pageOffset.toInt() == 3 ? Theme.of(context).backgroundColor: _getBGColor(),
+      backgroundColor: _pageOffset.toInt() == 3 ? Theme.of(context).backgroundColor : _getBGColor(),
       body: //Disable back button
           WillPopScope(
         onWillPop: () async {

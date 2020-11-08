@@ -12,7 +12,7 @@ import 'package:ynotes/UI/screens/homeworkPage.dart';
 import 'package:ynotes/UI/screens/summaryPage.dart';
 import 'package:ynotes/UI/utils/fileUtils.dart';
 import 'package:ynotes/main.dart';
-import 'package:ynotes/parsers/EcoleDirecte.dart';
+import 'package:ynotes/apis/EcoleDirecte.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 import '../../../classes.dart';

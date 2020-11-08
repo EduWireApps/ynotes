@@ -4,8 +4,9 @@ import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:uuid/uuid.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
+import 'package:ynotes/apis/utils.dart';
 import 'package:ynotes/main.dart';
-import 'package:ynotes/parsers/Pronote/PronoteAPI.dart';
+import 'package:ynotes/apis/Pronote/PronoteAPI.dart';
 
 import '../../../classes.dart';
 import '../../../usefulMethods.dart';
@@ -108,12 +109,15 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
       descriptionController.text = description;
       alarm = this.widget.customEvent.alarm ?? alarmType.none;
       id = this.widget.customEvent.id;
+      print("ID : " + id);
       tagColor = this.widget.customEvent.realColor;
       wholeDay = this.widget.customEvent.wholeDay;
       start = this.widget.customEvent.start;
       end = this.widget.customEvent.end;
       lesson = this.widget.customEvent.lesson;
       location = this.widget.customEvent.location;
+      canceled = this.widget.customEvent.canceled;
+      recurringScheme = this.widget.customEvent.recurrenceScheme;
     }
   }
 
@@ -126,8 +130,10 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
   String description;
   bool wholeDay = true;
   String id;
+  bool canceled = false;
   String location;
   Lesson lesson;
+  String recurringScheme;
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
@@ -140,6 +146,7 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
           children: <Widget>[
             Container(
               width: screenSize.size.width / 5 * 4.8,
+              height: (screenSize.size.height / 10 * 8.8) / 10 * 0.75,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -152,14 +159,23 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                     GestureDetector(
                         onTap: () async {
                           if (this.widget.customEvent != null) {
-                            await offline.removeAgendaEvent(id, await get_week(this.widget.customEvent.start));
+                            if (this.widget.customEvent.recurrenceScheme != null && this.widget.customEvent.recurrenceScheme != "0") {
+                              await offline.removeAgendaEvent(id, await get_week(this.widget.customEvent.start));
+                              await offline.removeAgendaEvent(id, this.widget.customEvent.recurrenceScheme);
+                            } else {
+                              await offline.removeAgendaEvent(id, await get_week(this.widget.customEvent.start));
+                            }
                           }
                           if (this.widget.reminder != null) {
                             await offline.removeReminder(id);
                           }
                           Navigator.of(context).pop("removed");
                         },
-                        child: Container(margin: EdgeInsets.only(top: screenSize.size.width / 5 * 0.2), height: (screenSize.size.height / 10 * 8.8) / 10 * 0.75, width: screenSize.size.width / 5 * 1, child: Icon(MdiIcons.trashCan, color: Colors.deepOrange))),
+                        child: Container(
+                            margin: EdgeInsets.only(top: screenSize.size.width / 5 * 0.2),
+                            height: (screenSize.size.height / 10 * 8.8) / 10 * 0.75,
+                            width: screenSize.size.width / 5 * 1,
+                            child: Icon((this.widget.isCustomEvent && this.widget.customEvent.isLesson) ? MdiIcons.restore : MdiIcons.trashCan, color: Colors.deepOrange))),
                   GestureDetector(
                       onTap: () {
                         //Exit with a value
@@ -171,8 +187,8 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                             Navigator.of(context).pop(reminder);
                           }
                           if (widget.isCustomEvent) {
-                            AgendaEvent event =
-                                AgendaEvent(wholeDay ? null : start, wholeDay ? null : end, titleController.text.trim(), location, null, null, lesson != null ? lesson.canceled : false, id, null, wholeDay: wholeDay, color: tagColor.value, alarm: alarm, lesson: lesson, isLesson: lesson != null, description: descriptionController.text.trim());
+                            AgendaEvent event = AgendaEvent(wholeDay ? null : start, wholeDay ? null : end, titleController.text.trim(), location, null, null, canceled, id, null,
+                                wholeDay: wholeDay, color: tagColor.value, alarm: alarm, lesson: lesson, isLesson: lesson != null, description: descriptionController.text.trim(), recurrenceScheme: recurringScheme);
                             Navigator.of(context).pop(event);
                           }
                         }
@@ -181,193 +197,249 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                 ],
               ),
             ),
-            SizedBox(height: screenSize.size.height / 10 * 0.2),
             Container(
-              margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
-              child: TextField(
-                controller: titleController,
-                style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.width / 5 * 0.35),
-                decoration: new InputDecoration.collapsed(hintText: 'Ajouter un titre', hintStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.8) : Colors.black.withOpacity(0.8))),
-              ),
-            ),
-            Divider(height: screenSize.size.height / 10 * 0.4),
-            GestureDetector(
-              onTap: () async {
-                Color color = await CustomDialogs.showColorPicker(context, tagColor);
-                if (color != null) {
-                  setState(() {
-                    tagColor = color;
-                  });
-                }
-              },
-              child: Container(
-                margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    AnimatedContainer(
-                      duration: Duration(milliseconds: 500),
-                      width: screenSize.size.width / 5 * 0.3,
-                      height: screenSize.size.width / 5 * 0.3,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: tagColor,
-                      ),
-                    ),
-                    SizedBox(width: screenSize.size.width / 5 * 0.1),
-                    Text(
-                      'Choisir une couleur',
-                      style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.8) : Colors.black.withOpacity(0.8), fontSize: screenSize.size.width / 5 * 0.25),
-                    )
-                  ],
-                ),
-              ),
-            ),
-            Divider(height: screenSize.size.height / 10 * 0.4),
-            if (widget.isCustomEvent)
-              Container(
-                margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.05),
+              height: (screenSize.size.height / 10 * 8.8) / 10 * 8.5,
+              child: SingleChildScrollView(
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SwitchListTile(
-                        contentPadding: EdgeInsets.zero,
-                        title: Text(
-                          'Toute la journée',
-                          style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.8) : Colors.black.withOpacity(0.8), fontSize: screenSize.size.width / 5 * 0.25),
-                        ),
-                        value: wholeDay,
-                        onChanged: (nValue) {
-                          setState(() {
-                            wholeDay = nValue;
-                          });
-                        }),
-                    if (!wholeDay)
-                      Column(
-                        children: [
-                          Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              onTap: () async {
-                                var tempDate = await showTimePicker(context: context, initialTime: TimeOfDay.fromDateTime(start));
-                                if (tempDate != null) {
-                                  setState(() {
-                                    start = DateTime(start.year, start.month, start.day, tempDate.hour, tempDate.minute);
-                                    if (start.isAfter(end)) {
-                                      end = start.add(Duration(minutes: 1));
-                                    }
-                                  });
-                                }
-                              },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    width: screenSize.size.width / 5 * 0.4,
-                                    height: screenSize.size.width / 5 * 0.4,
-                                    child: Icon(
-                                      MdiIcons.calendar,
-                                      size: screenSize.size.width / 5 * 0.4,
-                                      color: isDarkModeEnabled ? Colors.white : Colors.black,
-                                    ),
-                                  ),
-                                  SizedBox(width: screenSize.size.width / 5 * 0.1),
-                                  Text(
-                                    'Début ${DateFormat.Hm().format(start)}',
-                                    style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.8) : Colors.black.withOpacity(0.8), fontSize: screenSize.size.width / 5 * 0.25),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                          Divider(),
-                          Material(
-                            color: Colors.transparent,
-                            child: InkWell(
-                              onTap: () async {
-                                var tempDate = await showTimePicker(context: context, initialTime: TimeOfDay.fromDateTime(end));
-                                if (tempDate != null) {
-                                  setState(() {
-                                    end = DateTime(end.year, end.month, end.day, tempDate.hour, tempDate.minute);
-                                    if (end.isBefore(start)) {
-                                      start = end.subtract(Duration(minutes: 1));
-                                    }
-                                  });
-                                }
-                              },
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    width: screenSize.size.width / 5 * 0.4,
-                                    height: screenSize.size.width / 5 * 0.4,
-                                    child: Icon(
-                                      MdiIcons.calendar,
-                                      size: screenSize.size.width / 5 * 0.4,
-                                      color: isDarkModeEnabled ? Colors.white : Colors.black,
-                                    ),
-                                  ),
-                                  SizedBox(width: screenSize.size.width / 5 * 0.1),
-                                  Text(
-                                    'Fin  ${DateFormat.Hm().format(end)}',
-                                    style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.8) : Colors.black.withOpacity(0.8), fontSize: screenSize.size.width / 5 * 0.25),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                  ],
-                ),
-              ),
-            if (widget.isCustomEvent) Divider(height: screenSize.size.height / 10 * 0.4),
-            GestureDetector(
-              onTap: () async {
-                var choice = await CustomDialogs.showMultipleChoicesDialog(context, alarmChoices, [alarm.index]);
-                if (choice != null && choice.length == 1) {
-                  setState(() {
-                    alarm = alarmType.values[choice[0]];
-                  });
-                }
-              },
-              child: Container(
-                margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.05),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
+                    SizedBox(height: screenSize.size.height / 10 * 0.2),
                     Container(
-                      width: screenSize.size.width / 5 * 0.4,
-                      height: screenSize.size.width / 5 * 0.4,
-                      child: Icon(
-                        MdiIcons.bell,
-                        size: screenSize.size.width / 5 * 0.4,
-                        color: isDarkModeEnabled ? Colors.white : Colors.black,
+                      margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
+                      child: TextField(
+                        controller: titleController,
+                        style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.width / 5 * 0.35),
+                        decoration: new InputDecoration.collapsed(hintText: 'Ajouter un titre', hintStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.8) : Colors.black.withOpacity(0.8))),
                       ),
                     ),
-                    SizedBox(width: screenSize.size.width / 5 * 0.1),
-                    Text(
-                      alarmChoices[alarm.index],
-                      style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.8) : Colors.black.withOpacity(0.8), fontSize: screenSize.size.width / 5 * 0.25),
-                    )
+                    Divider(height: screenSize.size.height / 10 * 0.4),
+                    GestureDetector(
+                      onTap: () async {
+                        Color color = await CustomDialogs.showColorPicker(context, tagColor);
+                        if (color != null) {
+                          setState(() {
+                            tagColor = color;
+                          });
+                        }
+                      },
+                      child: Container(
+                        margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            AnimatedContainer(
+                              duration: Duration(milliseconds: 500),
+                              width: screenSize.size.width / 5 * 0.3,
+                              height: screenSize.size.width / 5 * 0.3,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: tagColor,
+                              ),
+                            ),
+                            SizedBox(width: screenSize.size.width / 5 * 0.1),
+                            Text(
+                              'Choisir une couleur',
+                              style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.8) : Colors.black.withOpacity(0.8), fontSize: screenSize.size.width / 5 * 0.25),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    Divider(height: screenSize.size.height / 10 * 0.4),
+                    if (widget.isCustomEvent)
+                      Container(
+                        margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.05),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SwitchListTile(
+                                contentPadding: EdgeInsets.zero,
+                                title: Text(
+                                  'Annulé',
+                                  style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.8) : Colors.black.withOpacity(0.8), fontSize: screenSize.size.width / 5 * 0.25),
+                                ),
+                                value: canceled,
+                                onChanged: (nValue) {
+                                  setState(() {
+                                    canceled = nValue;
+                                  });
+                                }),
+                            SwitchListTile(
+                                contentPadding: EdgeInsets.zero,
+                                title: Text(
+                                  'Toute la journée',
+                                  style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.8) : Colors.black.withOpacity(0.8), fontSize: screenSize.size.width / 5 * 0.25),
+                                ),
+                                value: wholeDay,
+                                onChanged: (nValue) {
+                                  setState(() {
+                                    wholeDay = nValue;
+                                  });
+                                }),
+                            if (!wholeDay)
+                              Column(
+                                children: [
+                                  Material(
+                                    color: Colors.transparent,
+                                    child: InkWell(
+                                      onTap: () async {
+                                        var tempDate = await showTimePicker(context: context, initialTime: TimeOfDay.fromDateTime(start));
+                                        if (tempDate != null) {
+                                          setState(() {
+                                            start = DateTime(start.year, start.month, start.day, tempDate.hour, tempDate.minute);
+                                            if (start.isAfter(end)) {
+                                              end = start.add(Duration(minutes: 1));
+                                            }
+                                          });
+                                        }
+                                      },
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            width: screenSize.size.width / 5 * 0.4,
+                                            height: screenSize.size.width / 5 * 0.4,
+                                            child: Icon(
+                                              MdiIcons.calendar,
+                                              size: screenSize.size.width / 5 * 0.4,
+                                              color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                            ),
+                                          ),
+                                          SizedBox(width: screenSize.size.width / 5 * 0.1),
+                                          Text(
+                                            'Début ${DateFormat.Hm().format(start)}',
+                                            style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.8) : Colors.black.withOpacity(0.8), fontSize: screenSize.size.width / 5 * 0.25),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                  Divider(),
+                                  Material(
+                                    color: Colors.transparent,
+                                    child: InkWell(
+                                      onTap: () async {
+                                        var tempDate = await showTimePicker(context: context, initialTime: TimeOfDay.fromDateTime(end));
+                                        if (tempDate != null) {
+                                          setState(() {
+                                            end = DateTime(end.year, end.month, end.day, tempDate.hour, tempDate.minute);
+                                            if (end.isBefore(start)) {
+                                              start = end.subtract(Duration(minutes: 1));
+                                            }
+                                          });
+                                        }
+                                      },
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            width: screenSize.size.width / 5 * 0.4,
+                                            height: screenSize.size.width / 5 * 0.4,
+                                            child: Icon(
+                                              MdiIcons.calendar,
+                                              size: screenSize.size.width / 5 * 0.4,
+                                              color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                            ),
+                                          ),
+                                          SizedBox(width: screenSize.size.width / 5 * 0.1),
+                                          Text(
+                                            'Fin  ${DateFormat.Hm().format(end)}',
+                                            style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.8) : Colors.black.withOpacity(0.8), fontSize: screenSize.size.width / 5 * 0.25),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                          ],
+                        ),
+                      ),
+                    if (widget.isCustomEvent) Divider(height: screenSize.size.height / 10 * 0.4),
+                    GestureDetector(
+                      onTap: () async {
+                        var temp = await CustomDialogs.showRecurringEventDialog(context, recurringScheme);
+                        if (temp != null) {
+                          setState(() {
+                            recurringScheme = temp;
+                          });
+
+                          print(recurringScheme);
+                        }
+                      },
+                      child: Container(
+                        margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.05),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: screenSize.size.width / 5 * 0.4,
+                              height: screenSize.size.width / 5 * 0.4,
+                              child: Icon(
+                                MdiIcons.repeat,
+                                size: screenSize.size.width / 5 * 0.4,
+                                color: isDarkModeEnabled ? Colors.white : Colors.black,
+                              ),
+                            ),
+                            SizedBox(width: screenSize.size.width / 5 * 0.1),
+                            Text(
+                              "Récurrence",
+                              style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.8) : Colors.black.withOpacity(0.8), fontSize: screenSize.size.width / 5 * 0.25),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    if (widget.isCustomEvent) Divider(height: screenSize.size.height / 10 * 0.4),
+                    GestureDetector(
+                      onTap: () async {
+                        var choice = await CustomDialogs.showMultipleChoicesDialog(context, alarmChoices, [alarm.index]);
+                        if (choice != null && choice.length == 1) {
+                          setState(() {
+                            alarm = alarmType.values[choice[0]];
+                          });
+                        }
+                      },
+                      child: Container(
+                        margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.05),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: screenSize.size.width / 5 * 0.4,
+                              height: screenSize.size.width / 5 * 0.4,
+                              child: Icon(
+                                MdiIcons.bell,
+                                size: screenSize.size.width / 5 * 0.4,
+                                color: isDarkModeEnabled ? Colors.white : Colors.black,
+                              ),
+                            ),
+                            SizedBox(width: screenSize.size.width / 5 * 0.1),
+                            Text(
+                              alarmChoices[alarm.index],
+                              style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.8) : Colors.black.withOpacity(0.8), fontSize: screenSize.size.width / 5 * 0.25),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    Divider(height: screenSize.size.height / 10 * 0.4),
+                    Container(
+                      margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
+                      width: screenSize.size.width / 5 * 4.5,
+                      height: screenSize.size.height / 10 * 2,
+                      child: TextField(
+                        style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.width / 5 * 0.25),
+                        keyboardType: TextInputType.multiline,
+                        controller: descriptionController,
+                        maxLines: null,
+                        decoration: new InputDecoration.collapsed(hintText: 'Description', hintStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.8) : Colors.black.withOpacity(0.8))),
+                      ),
+                    ),
+                    Divider(height: screenSize.size.height / 10 * 0.4),
                   ],
                 ),
               ),
-            ),
-            Divider(height: screenSize.size.height / 10 * 0.4),
-            Container(
-              margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
-              width: screenSize.size.width / 5 * 4.5,
-              height: screenSize.size.height / 10 * 2.5,
-              child: TextField(
-                style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.width / 5 * 0.25),
-                keyboardType: TextInputType.multiline,
-                controller: descriptionController,
-                maxLines: null,
-                decoration: new InputDecoration.collapsed(hintText: 'Description', hintStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.8) : Colors.black.withOpacity(0.8))),
-              ),
-            ),
-            Divider(height: screenSize.size.height / 10 * 0.4),
+            )
           ],
         ));
   }

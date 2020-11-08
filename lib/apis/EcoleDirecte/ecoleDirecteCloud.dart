@@ -3,12 +3,10 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:ynotes/UI/screens/apps/cloud.dart';
 import 'package:ynotes/classes.dart';
-import 'package:ynotes/parsers/EcoleDirecte.dart';
+import 'package:ynotes/apis/EcoleDirecte.dart';
 
 //The basical function to change folder
 changeFolder(String path) async {
-
-
   ///I've chosen to not use their weird "Loaded function", user doesn't care about a little loading
   List paths = path.split("/");
   var finalPath = paths.sublist(2);
@@ -38,7 +36,7 @@ changeFolder(String path) async {
 
       items.forEach((element) {
         if (element["taille"] != 0) {
-          toReturn.add(CloudItem(element["libelle"], element["type"].toString().toUpperCase(), element["proprietaire"] != null ? element["proprietaire"]["prenom"] + " " + element["proprietaire"]["nom"] : "", false, element["date"], id: element["id"], isLoaded: element["isLoaded"]));
+          toReturn.add(CloudItem(element["libelle"], element["type"].toString().toUpperCase(), element["proprietaire"] != null ? element["proprietaire"]["prenom"] + " " + element["proprietaire"]["nom"] : "", false, element["date"], id: element["id"]));
         }
       });
     } else {

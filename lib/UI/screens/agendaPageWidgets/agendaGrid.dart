@@ -44,6 +44,7 @@ class _AgendaGridState extends State<AgendaGrid> {
     _events.addAll(widget.events);
     // _events.removeWhere((element) => element.start.hour < _getStartHour(_events).hour || element.start.hour > _getEndHour(_events).hour);
     _events.removeWhere((element) => element.wholeDay);
+
     //sort events by date
     _events.sort((a, b) => a.end.compareTo(b.end));
 
@@ -79,8 +80,8 @@ class _AgendaGridState extends State<AgendaGrid> {
     for (var col in columns) {
       for (var ev in col) {
         int colSpan = expandEvent(ev, iColumn, columns);
-        ev.left = (iColumn / columns.length) * 4.3;
-        ev.width = ((colSpan) / (columns.length)) * 4.3;
+        ev.left = (iColumn / columns.length) * 4.5;
+        ev.width = ((colSpan) / (columns.length)) * 4.5;
       }
       iColumn++;
     }
@@ -110,12 +111,13 @@ class _AgendaGridState extends State<AgendaGrid> {
   }
 
   //Calculate the start hour
-  TimeOfDay _getStartHour(List lessons) {
-    if (lessons != null && lessons.length != 0) {
-      List lessonsIList = List();
-      lessonsIList.addAll(lessons);
-      lessonsIList.removeWhere((element) => element.lesson == null);
-      print(lessonsIList.length);
+  TimeOfDay _getStartHour(List<AgendaEvent> events) {
+    if (events != null && events.length != 0) {
+      List<AgendaEvent> lessonsIList = List();
+      lessonsIList.addAll(events);
+      if (widget.afterSchool) {
+        lessonsIList.removeWhere((element) => !element.isLesson);
+      }
       if (lessonsIList.length == 0) {
         if (widget.afterSchool) {
           return TimeOfDay(hour: minAfterSchoolDayLength[0], minute: 0);
@@ -123,6 +125,10 @@ class _AgendaGridState extends State<AgendaGrid> {
           return TimeOfDay(hour: minSchoolDayLength[0], minute: 0);
         }
       } else {
+        if (widget.afterSchool) {
+          lessonsIList.sort((a, b) => a.end.compareTo(b.end));
+          return TimeOfDay(hour: lessonsIList.last.end.hour, minute: 0);
+        }
         lessonsIList.sort((a, b) => a.start.compareTo(b.start));
         return TimeOfDay(hour: lessonsIList.first.start.hour, minute: 0);
       }
@@ -134,12 +140,13 @@ class _AgendaGridState extends State<AgendaGrid> {
   }
 
   //Calculate the end hour (end the start hour of the after school grid)
-  TimeOfDay _getEndHour(List lessons) {
-    if (lessons != null && lessons.length != 0) {
+  TimeOfDay _getEndHour(List events) {
+    if (events != null && events.length != 0) {
       List lessonsIList = List();
-      lessonsIList.addAll(lessons);
-
-      lessonsIList.removeWhere((element) => element.lesson == null);
+      lessonsIList.addAll(events);
+      if (!this.widget.afterSchool) {
+        lessonsIList.removeWhere((element) => element.lesson == null);
+      }
       if (lessonsIList.length == 0) {
         if (widget.afterSchool) {
           return TimeOfDay(hour: minAfterSchoolDayLength[1], minute: 0);
@@ -147,8 +154,7 @@ class _AgendaGridState extends State<AgendaGrid> {
           return TimeOfDay(hour: minSchoolDayLength[1], minute: 0);
         }
       } else {
-        lessonsIList.sort((a, b) => a.start.compareTo(b.start));
-
+        lessonsIList.sort((a, b) => a.end.compareTo(b.end));
         return TimeOfDay(hour: lessonsIList.last.end.hour + 1, minute: 0);
       }
     } else if (widget.afterSchool) {
@@ -170,6 +176,8 @@ class _AgendaGridState extends State<AgendaGrid> {
   Widget _buildGridDateTime() {
     SlidableController slidableController = SlidableController();
     var screenSize = MediaQuery.of(context);
+    print(_getEndHour(_events));
+    print(_getStartHour(_events));
     return GestureDetector(
       onScaleStart: (details) {
         _baseScaleFactor = _scaleFactor;
@@ -183,8 +191,8 @@ class _AgendaGridState extends State<AgendaGrid> {
       },
       child: Container(
         padding: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
-        height: screenSize.size.height / 10 * 6.5,
-        width: screenSize.size.width / 5 * 4.8,
+        height: screenSize.size.height / 10 * 7.2,
+        width: screenSize.size.width,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(11),
           child: SingleChildScrollView(
@@ -193,7 +201,7 @@ class _AgendaGridState extends State<AgendaGrid> {
             child: Stack(
               children: [
                 Column(
-                  children: List.generate(_getEndHour(_events).hour - _getStartHour(_events).hour, (int index) {
+                  children: List.generate(((_getEndHour(_events).hour - _getStartHour(_events).hour)) < 0 ? 0 : ((_getEndHour(_events).hour - _getStartHour(_events).hour)), (int index) {
                     if (index != 0) {
                       return GestureDetector(
                         onTapUp: (_) {
@@ -257,20 +265,21 @@ class _AgendaGridState extends State<AgendaGrid> {
                   }),
                 ),
                 for (AgendaEvent i in _events)
-                  AnimatedPositioned(
-                    duration: Duration(milliseconds: 250),
-                    left: screenSize.size.width / 5 * 0.15,
-                    top: _getPosition(_getStartHour(_events), i),
-                    child: AgendaElement(
-                      i,
-                      defaultGridHeight * _scaleFactor * i.end.difference(i.start).inMinutes / 60,
-                      widget.setStateCallback,
-                      width: i.width,
-                      position: i.left,
+                  if (_getPosition(_getStartHour(_events), i) != null && (this.widget.afterSchool ? !i.isLesson : true))
+                    Positioned(
+                      left: screenSize.size.width / 5 * 0.2,
+                      top: _getPosition(_getStartHour(_events), i),
+                      child: AgendaElement(
+                        i,
+                        defaultGridHeight * _scaleFactor * i.end.difference(i.start).inMinutes / 60,
+                        widget.setStateCallback,
+                        width: i.width,
+                        position: i.left,
+                      ),
                     ),
-                  ),
                 if (_getStartHour(_events) != null)
-                  Positioned(
+                  AnimatedPositioned(
+                    duration: Duration(milliseconds: 500),
                     top: _getBarPosition(_getStartHour(_events)),
                     child: Row(
                       children: [

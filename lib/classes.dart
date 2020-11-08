@@ -1,17 +1,15 @@
-import 'package:calendar_time/calendar_time.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ynotes/apis/EcoleDirecte.dart';
+import 'package:ynotes/apis/Pronote.dart';
+import 'package:ynotes/apis/utils.dart';
 import 'package:ynotes/main.dart';
-import 'package:ynotes/parsers/EcoleDirecte.dart';
-import 'package:ynotes/parsers/Pronote.dart';
-import 'package:ynotes/parsers/Pronote/PronoteAPI.dart';
+import 'package:ynotes/space/recurringEvents.dart';
 import 'package:ynotes/usefulMethods.dart';
-
-import 'UI/screens/agendaPageWidgets/agendaGrid.dart';
 
 part 'classes.g.dart';
 
@@ -352,9 +350,9 @@ enum alarmType {
 @JsonSerializable(nullable: false)
 class AgendaEvent {
   @HiveField(0)
-  final DateTime start;
+  DateTime start;
   @HiveField(1)
-  final DateTime end;
+  DateTime end;
   @HiveField(2)
   final String name;
   //Place or room
@@ -384,6 +382,8 @@ class AgendaEvent {
   final bool wholeDay;
   @HiveField(15)
   int color;
+  @HiveField(16)
+  String recurrenceScheme;
 
   bool collidesWith(AgendaEvent other) {
     return end.isAfter(other.start) && start.isBefore(other.end);
@@ -405,7 +405,7 @@ class AgendaEvent {
     return Color(color);
   }
 
-  AgendaEvent(this.start, this.end, this.name, this.location, this.left, this.height, this.canceled, this.id, this.width, {this.wholeDay = true, this.isLesson = false, this.lesson, this.reminders, this.description, this.alarm, this.color});
+  AgendaEvent(this.start, this.end, this.name, this.location, this.left, this.height, this.canceled, this.id, this.width, {this.wholeDay = true, this.isLesson = false, this.lesson, this.reminders, this.description, this.alarm, this.color, this.recurrenceScheme});
   factory AgendaEvent.fromJson(Map<String, dynamic> json) => _$AgendaEventFromJson(json);
   Map<String, dynamic> toJson() => _$AgendaEventToJson(this);
 }
@@ -421,13 +421,11 @@ class CloudItem {
   final bool isMainFolder;
   //E.G true
   final bool isMemberOf;
-  //E.G only useful for the ecoledirecte api
-  final bool isLoaded;
 
   final String id;
   final String date;
 
-  CloudItem(this.title, this.type, this.author, this.isMainFolder, this.date, {this.isMemberOf, this.isLoaded, this.id});
+  CloudItem(this.title, this.type, this.author, this.isMainFolder, this.date, {this.isMemberOf, this.id});
 }
 
 class Period {
@@ -479,14 +477,15 @@ abstract class API {
     List<AgendaEvent> events = List<AgendaEvent>();
     List<AgendaEvent> extracurricularEvents = List<AgendaEvent>();
     List<Lesson> lessons = await localApi.getNextLessons(date, forceReload: forceReload);
+    int week = await get_week(date);
     //Add lessons for this day
     if (lessons != null) {
-      if (!afterSchool) events.addAll(AgendaEvent.eventsFromLessons(lessons));
+      events.addAll(AgendaEvent.eventsFromLessons(lessons));
       //Add extracurricular events
       lessons.sort((a, b) => a.end.compareTo(b.end));
     }
     if (!afterSchool) {
-      extracurricularEvents = await offline.agendaEvents(await get_week(date));
+      extracurricularEvents = await offline.agendaEvents(week);
       if (extracurricularEvents != null) {
         if (lessons != null && lessons.length > 0) {
           //Last date
@@ -502,16 +501,13 @@ abstract class API {
         for (AgendaEvent extracurricularEvent in extracurricularEvents) {
           events.removeWhere((element) => element.id == extracurricularEvent.id);
         }
-      } else {
-        print("IS NULL1");
       }
     } else {
-      extracurricularEvents = await offline.agendaEvents(await get_week(date));
+      extracurricularEvents = await offline.agendaEvents(week);
 
       if (extracurricularEvents != null) {
-        extracurricularEvents.removeWhere((element) => element.isLesson);
+        //extracurricularEvents.removeWhere((element) => element.isLesson);
         if (lessons != null && lessons.length > 0) {
-          print("is not nll");
           //Last date
           DateTime lastLessonEnd = lessons.last.end;
           //delete the last one
@@ -522,14 +518,27 @@ abstract class API {
         for (AgendaEvent extracurricularEvent in extracurricularEvents) {
           events.removeWhere((element) => element.id == extracurricularEvent.id);
         }
-      } else {
-        print("IS NULL");
       }
     }
     if (extracurricularEvents != null) {
       events.addAll(extracurricularEvents);
     }
-    print(events.length);
+    RecurringEventSchemes recurr = RecurringEventSchemes();
+    recurr.date = date;
+    recurr.week = week;
+    var recurringEvents = await offline.agendaEvents(week, selector: recurr.testRequest);
+    if (recurringEvents != null && recurringEvents.length != 0) {
+      recurringEvents.forEach((element) {
+        print(element.name);
+        if (element.start != null && element.end != null) {
+          element.start = DateTime(date.year, date.month, date.day, element.start.hour, element.start.minute);
+          element.end = DateTime(date.year, date.month, date.day, element.end.hour, element.end.minute);
+        }
+      });
+      events.addAll(recurringEvents);
+    } else {
+      print("no one recurring event");
+    }
     return events;
   }
 

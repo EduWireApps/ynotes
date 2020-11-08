@@ -9,7 +9,7 @@ import 'package:ynotes/UI/animations/FadeAnimation.dart';
 import 'package:ynotes/UI/screens/schoolAPIChoicePage.dart';
 import 'package:ynotes/UI/utils/fileUtils.dart';
 import 'package:ynotes/main.dart';
-import 'package:ynotes/parsers/EcoleDirecte.dart';
+import 'package:ynotes/apis/EcoleDirecte.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 import '../../classes.dart';

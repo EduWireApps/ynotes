@@ -10,11 +10,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:stack/stack.dart' as sta;
 import 'package:ynotes/UI/screens/logsPage.dart';
+import 'package:ynotes/apis/utils.dart';
 import 'package:ynotes/main.dart';
-import 'package:ynotes/parsers/EcoleDirecte/EcoleDirecteCloud.dart';
-import 'package:ynotes/parsers/EcoleDirecte/ecoleDirecteConverters.dart';
-import 'package:ynotes/parsers/Pronote/PronoteAPI.dart';
-import 'package:ynotes/parsers/Pronote/PronoteCas.dart';
+import 'package:ynotes/apis/EcoleDirecte/ecoleDirecteCloud.dart';
+import 'package:ynotes/apis/EcoleDirecte/ecoleDirecteConverters.dart';
+import 'package:ynotes/apis/Pronote/PronoteAPI.dart';
+import 'package:ynotes/apis/Pronote/PronoteCas.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/classes.dart';
 
@@ -221,7 +222,6 @@ class APIEcoleDirecte extends API {
         toReturn = List();
 
         toReturn.addAll(offlineLesson);
-        print(toReturn.last.matiere);
         //filter lessons
         toReturn.removeWhere((lesson) => DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) != DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)));
       } else {
@@ -240,7 +240,6 @@ class APIEcoleDirecte extends API {
           print(e.toString());
         }
       }
-     
 
       toReturn.sort((a, b) => a.start.compareTo(b.start));
       return toReturn.where((lesson) => DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) == DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse))).toList();
@@ -279,52 +278,7 @@ Future getCloud(String args, String action, CloudItem item) async {
 
       case ("/"):
         {
-          //Refresh the token
-          await EcoleDirecteMethod.testToken();
-          String id = await storage.read(key: "userID");
-          //Get the espaces de travail
-          var url = "https://api.ecoledirecte.com/v3/E/$id/espacestravail.awp?verbe=get&";
-          String data = 'data={"token": "$token"}';
-          Map<String, String> headers = {"Content-type": "text/plain"};
-          var body = data;
-          var response = await http.post(url, headers: headers, body: body).catchError((e) {
-            throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou reessayez plus tard.");
-          });
-          try {
-            if (response.statusCode == 200) {
-              List<CloudItem> toReturn = List();
-              Map<String, dynamic> req = jsonDecode(utf8.decode(response.bodyBytes));
-              if (req["code"] == 200) {
-                String date = "";
-                List listData = req["data"];
-                listData.forEach((element) {
-                  String date = element["creeLe"];
-                  try {
-                    var split = date.split(" ");
-                    date = split[0];
-                  } catch (e) {}
-
-                  toReturn.add(CloudItem(
-                    element["titre"],
-                    "FOLDER",
-                    element["creePar"],
-                    true,
-                    date,
-                    isMemberOf: element["estMembre"],
-                    id: element["id"].toString(),
-                    isLoaded: false,
-                  ));
-                });
-                return toReturn;
-              } else {
-                print("The servor didn't returned the cloud folder. ${response.body}");
-              }
-            } else {
-              print("The servor didn't returned the cloud folder. ${response.body}");
-            }
-          } catch (e) {
-            print("Error during an action on the main folders: $e");
-          }
+          return await EcoleDirecteMethod.cloudFolders();
         }
         break;
       default:

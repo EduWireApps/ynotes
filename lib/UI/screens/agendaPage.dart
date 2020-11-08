@@ -22,29 +22,38 @@ class _AgendaPageState extends State<AgendaPage> {
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
     return Container(
+      width: screenSize.size.width,
       height: screenSize.size.height,
-      child: SingleChildScrollView(
-        physics: NeverScrollableScrollPhysics(),
+      child: Stack(
+        children: [
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: SingleChildScrollView(
+              physics: NeverScrollableScrollPhysics(),
               child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Container(
-              margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.3),
-              child: Expandables(
-                buildTopChild(),
-                buildBottomChild(),
-                minHeight: screenSize.size.height / 10 * 0.7,
-                maxHeight: screenSize.size.height / 10 * 7.2,
-                spaceBetween: screenSize.size.height / 10 * 0.2,
-                width: screenSize.size.width / 5 * 4.7,
-                bottomExpandableColor: Color(0xff282246),
-                onDragUpdate: handleDragUpdate,
-                animationDuration: 200,
-                topExpandableBorderRadius: 11,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Container(
+                    width: screenSize.size.width,
+                    child: Expandables(
+                      buildTopChild(),
+                      buildBottomChild(),
+                      minHeight: screenSize.size.height / 10 * 0.7,
+                      maxHeight: screenSize.size.height / 10 * 8,
+                      spaceBetween: screenSize.size.height / 10 * 0.2,
+                      width: screenSize.size.width,
+                      bottomExpandableColor: Color(0xff282246),
+                      onDragUpdate: handleDragUpdate,
+                      animationDuration: 200,
+                      topExpandableBorderRadius: 0,
+                      bottomExpandableBorderRadius: 0,
+                    ),
+                  ),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -52,15 +61,15 @@ class _AgendaPageState extends State<AgendaPage> {
   buildTopChild() {
     var screenSize = MediaQuery.of(context);
     return ClipRRect(
-      borderRadius: BorderRadius.circular(11),
+      borderRadius: BorderRadius.circular(0),
       child: Stack(
         children: [
           Transform.translate(
             offset: Offset(0, -(topPercents / 100) * screenSize.size.height / 10 * 0.7),
             child: Container(
               height: screenSize.size.height / 10 * 0.7,
-              width: screenSize.size.width / 5 * 4.7,
-              decoration: BoxDecoration(color: Theme.of(context).primaryColorDark, borderRadius: BorderRadius.circular(11)),
+              width: screenSize.size.width,
+              decoration: BoxDecoration(color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(0)),
               child: Stack(
                 children: [
                   Align(
@@ -101,15 +110,15 @@ class _AgendaPageState extends State<AgendaPage> {
   buildBottomChild() {
     var screenSize = MediaQuery.of(context);
     return ClipRRect(
-      borderRadius: BorderRadius.circular(11),
+      borderRadius: BorderRadius.circular(0),
       child: Stack(
         children: [
           Transform.translate(
             offset: Offset(0, -(btPercents / 100) * screenSize.size.height / 10 * 0.7),
             child: Container(
               height: screenSize.size.height / 10 * 0.7,
-              width: screenSize.size.width / 5 * 4.7,
-              decoration: BoxDecoration(color: Color(0xff100A30), borderRadius: BorderRadius.circular(11)),
+              width: screenSize.size.width,
+              decoration: BoxDecoration(color: Color(0xff100A30), borderRadius: BorderRadius.circular(0)),
               child: Stack(
                 children: [
                   Align(
