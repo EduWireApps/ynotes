@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:battery_optimization/battery_optimization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -560,10 +561,17 @@ class _page4State extends State<page4> {
                             MdiIcons.newBox,
                             color: isDarkModeEnabled ? Colors.white : Colors.black,
                           ),
-                          onChanged: (value) {
-                            setState(() {
-                              setSetting("notificationNewGrade", value);
-                            });
+                          onChanged: (value) async {
+                            if (!(await BatteryOptimization.isIgnoringBatteryOptimizations()) && await CustomDialogs.showAuthorizationsDialog(context, "la configuration d'optimisation de batterie", "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")) {
+                              setState(() {
+                                setSetting("notificationNewGrade", value);
+                              });
+                            }
+                            if (await BatteryOptimization.isIgnoringBatteryOptimizations()) {
+                              setState(() {
+                                setSetting("notificationNewGrade", value);
+                              });
+                            }
                           });
                     }),
                 Divider(),
@@ -577,10 +585,17 @@ class _page4State extends State<page4> {
                           "Notification de nouveau mail",
                           style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.3),
                         ),
-                        onChanged: (value) {
-                          setState(() {
-                            setSetting("notificationNewMail", value);
-                          });
+                        onChanged: (value) async {
+                          if (!(await BatteryOptimization.isIgnoringBatteryOptimizations()) && await CustomDialogs.showAuthorizationsDialog(context, "la configuration d'optimisation de batterie", "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")) {
+                            setState(() {
+                              setSetting("notificationNewGrade", value);
+                            });
+                          }
+                          if (await BatteryOptimization.isIgnoringBatteryOptimizations()) {
+                            setState(() {
+                              setSetting("notificationNewGrade", value);
+                            });
+                          }
                         },
                         secondary: Icon(
                           MdiIcons.newBox,

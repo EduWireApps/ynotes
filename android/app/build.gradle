@@ -67,7 +67,6 @@ android {
     flavorDimensions "app"
     productFlavors {
         dev {
-            
             dimension "app"
             applicationId "fr.ynotes.dev"
         }

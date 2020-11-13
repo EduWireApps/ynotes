@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:android_alarm_manager/android_alarm_manager.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:flutter_dnd/flutter_dnd.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive/hive.dart';
 import 'package:ynotes/apis/Pronote.dart';
@@ -50,6 +51,25 @@ class BackgroundService {
     await Future.forEach(lessons, (lesson) async {
       await LocalNotification.scheduleNotification(lesson, onGoing: true);
     });
+  }
+
+  static refreshHomework() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    await getChosenParser();
+    API api = APIManager();
+    //Login creds
+    String u = await ReadStorage("username");
+    String p = await ReadStorage("password");
+    String url = await ReadStorage("pronoteurl");
+    String cas = await ReadStorage("pronotecas");
+    if (connectivityResult != ConnectivityResult.none) {
+      try {
+        await api.login(u, p, url: url, cas: cas);
+      } catch (e) {
+        print("Error while logging");
+      }
+    }
+    await api.getNextHomework();
   }
 }
 
@@ -286,12 +306,24 @@ class LocalNotification {
     Lesson lesson;
     //Show next lesson if this one is after current datetime
     if (nextLesson != null && nextLesson.start.isAfter(DateTime.now())) {
+      if (await getSetting("enableDNDWhenOnGoingNotifEnabled")) {
+        if (await FlutterDnd.isNotificationPolicyAccessGranted) {
+          await FlutterDnd.setInterruptionFilter(FlutterDnd.INTERRUPTION_FILTER_NONE); // Turn on DND - All notifications are suppressed.
+        } else {
+          await logFile("Couldn't enabled DND");
+        }
+      }
       lesson = nextLesson;
+      await showOngoingNotification(lesson);
     } else {
-      lesson = currentLesson;
+      if (await getSetting("disableAtDayEnd")) {
+        await cancelOnGoingNotification();
+      } else {
+        lesson = currentLesson;
+        await showOngoingNotification(lesson);
+      }
     }
     //Logs for tests
-    await showOngoingNotification(lesson);
     if (lesson != null) {
       await logFile("Persistant notification next lesson callback triggered for the lesson ${lesson.codeMatiere} ${lesson.room}");
     } else {

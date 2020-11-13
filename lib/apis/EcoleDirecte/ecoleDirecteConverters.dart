@@ -136,6 +136,10 @@ class EcoleDirecteConverter {
         String codeMatiere = homework['codeMatiere'];
         String id = homework['id'].toString();
 
+        decodedContent = decodedContent.replaceAllMapped(new RegExp(r'(>|\s)+(https?.+?)(<|\s)', multiLine: true, caseSensitive: false), (match) {
+          return '${match.group(1)}<a href="${match.group(2)}">${match.group(2)}</a>${match.group(3)}';
+        });
+
         DateTime editingDate = DateTime.parse(homework['aFaire']['donneLe']);
         bool done = homework['aFaire']['effectue'] == 'true';
         String teacherName = homework['nomProf'];

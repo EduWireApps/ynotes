@@ -78,6 +78,9 @@ dependencies:
   calendar_time: ^1.0.1
   flutter_phoenix: ^0.1.0
   showcaseview: ^0.1.6
+  animated_text_kit: ^2.5.4
+  battery_optimization: ^0.1.0
+  flutter_dnd: ^0.1.3
   wiredash:
     git:
       url: https://github.com/wiredashio/wiredash-sdk
@@ -169,6 +172,7 @@ flutter:
     - assets/images/book.png
     - assets/animations/
     - assets/images/
+    - assets/images/persistantNotification/
     - assets/images/Pronote/
     - assets/images/EcoleDirecte/
     - assets/appico/

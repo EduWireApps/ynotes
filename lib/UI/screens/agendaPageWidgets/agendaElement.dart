@@ -45,7 +45,6 @@ class _AgendaElementState extends State<AgendaElement> {
     super.initState();
   }
 
-
   bool buttons = false;
   bool isAlarmSet = false;
   @override
@@ -78,13 +77,24 @@ class _AgendaElementState extends State<AgendaElement> {
                           _event.color = await getColor(this.widget.event.lesson.codeMatiere);
                         }
                         var temp = await agendaEventEdit(context, true, defaultDate: this.widget.event.start, customEvent: _event);
+
                         if (temp != null) {
                           if (temp != "removed") {
-                            await offline.addAgendaEvent(temp, await get_week(temp.start));
+                            if (temp != null) {
+                              if (temp.recurrenceScheme != null && temp.recurrenceScheme != "0") {
+                                await offline.addAgendaEvent(temp, temp.recurrenceScheme);
 
-                            setState(() {
-                              this.widget.event = temp;
-                            });
+                                setState(() {
+                                  this.widget.event = temp;
+                                });
+                              } else {
+                                await offline.addAgendaEvent(temp, await get_week(temp.start));
+
+                                setState(() {
+                                  this.widget.event = temp;
+                                });
+                              }
+                            }
                           }
                           await refreshAgendaFuture();
                           widget.setStateCallback();

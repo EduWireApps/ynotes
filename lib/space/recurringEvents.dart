@@ -34,7 +34,8 @@ class RecurringEventSchemes {
       }
     }
     print(selectedDays);
-    return (stringScheme.length == 9 && (((stringScheme[0] == "0" || stringScheme[0] == parity.toString()) && selectedDays.contains(date.day)) || stringScheme[1] == "1"));
+    print(date);
+    return (stringScheme.length == 9 && (((stringScheme[0] == "0" || stringScheme[0] == parity.toString()) && selectedDays.contains(date.weekday)) || stringScheme[1] == "1"));
   }
 
   static String humanReadableTranslaterFromRecurrencyScheme(int scheme) {

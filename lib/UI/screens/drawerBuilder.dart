@@ -50,7 +50,9 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
 
   Animation<double> quickMenuButtonAnimation;
   StreamSubscription tabBarconnexion;
-
+  final GlobalKey<AgendaPageState> agendaPage = new GlobalKey();
+  final GlobalKey<SummaryPageState> summaryPage = new GlobalKey();
+   final GlobalKey<HomeworkPageState> homeworkPage = new GlobalKey();
   bool isOffline = false;
   OverlayState overlayState;
   OverlayEntry _overlayEntry;
@@ -64,15 +66,12 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
   Animation<double> buttonScaleAnimation;
   Animation<double> fadeAnimation;
   bool isDrawerCollapsed = true;
-  int actualPage = 0;
+  int actualPage = 1;
 
   ///Apps
   ///`relatedApi` should be set to null if both APIs can use it
   List<Map> entries = [
-    {
-      "menuName": "Agenda",
-      "icon": MdiIcons.calendar,
-    },
+    {"menuName": "Agenda", "icon": MdiIcons.calendar},
     {
       "menuName": "Résumé",
       "icon": MdiIcons.home,
@@ -206,6 +205,31 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                                         shadowColor: Colors.transparent,
                                         backgroundColor: Colors.transparent,
                                         title: Text(entries[actualPage]["menuName"]),
+                                        actions: [
+                                          FlatButton(
+                                            color: Colors.transparent,
+                                            child: Icon(MdiIcons.wrenchOutline, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                            onPressed: () {
+                                             switch (actualPage) {
+                                                case 0:
+                                                  {
+                                                    agendaPage.currentState.triggerSettings();
+                                                  }
+                                                  break;
+                                                case 1:
+                                                  {
+                                                    summaryPage.currentState.triggerSettings();
+                                                  }
+                                                  break;
+                                                  case 3:
+                                                  {
+                                                    homeworkPage.currentState.triggerSettings();
+                                                  }
+                                                   break;
+                                              }
+                                            },
+                                          )
+                                        ],
                                         leading: FlatButton(
                                           color: Colors.transparent,
                                           child: Icon(MdiIcons.menu, color: isDarkModeEnabled ? Colors.white : Colors.black),
@@ -221,11 +245,14 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                                           },
                                         )),
                                   ),
-                                  body: PageView(physics: BouncingScrollPhysics(), controller: drawerPageViewController, onPageChanged: _onPageViewUpdate, children: [
-                                    AgendaPage(),
-                                    SummaryPage(switchPage: _switchPage),
+                                  body: PageView(physics: NeverScrollableScrollPhysics(), controller: drawerPageViewController, onPageChanged: _onPageViewUpdate, children: [
+                                    AgendaPage(key: agendaPage),
+                                    SummaryPage(
+                                      switchPage: _switchPage,
+                                      key: summaryPage,
+                                    ),
                                     SingleChildScrollView(physics: NeverScrollableScrollPhysics(), child: GradesPage()),
-                                    SingleChildScrollView(physics: NeverScrollableScrollPhysics(), child: HomeworkPage()),
+                                    HomeworkPage(key: homeworkPage,),
                                     AnimatedContainer(
                                         duration: Duration(milliseconds: 200),
                                         margin: EdgeInsets.only(top: isOffline ? screenSize.size.height / 10 * 0.4 : 0),
@@ -434,6 +461,6 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
 
   _scrollTo(int index) {
     // scroll the calculated ammount
-    drawerPageViewController.animateToPage(index, duration: Duration(milliseconds: 250), curve: Curves.ease);
+    drawerPageViewController.jumpToPage(index);
   }
 }

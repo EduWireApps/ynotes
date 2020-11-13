@@ -528,13 +528,14 @@ abstract class API {
     recurr.week = week;
     var recurringEvents = await offline.agendaEvents(week, selector: recurr.testRequest);
     if (recurringEvents != null && recurringEvents.length != 0) {
-      recurringEvents.forEach((element) {
-        print(element.name);
-        if (element.start != null && element.end != null) {
-          element.start = DateTime(date.year, date.month, date.day, element.start.hour, element.start.minute);
-          element.end = DateTime(date.year, date.month, date.day, element.end.hour, element.end.minute);
+      recurringEvents.forEach((recurringEvent) {
+        events.removeWhere((element) => element.id == recurringEvent.id);
+        if (recurringEvent.start != null && recurringEvent.end != null) {
+          recurringEvent.start = DateTime(date.year, date.month, date.day, recurringEvent.start.hour, recurringEvent.start.minute);
+          recurringEvent.end = DateTime(date.year, date.month, date.day, recurringEvent.end.hour, recurringEvent.end.minute);
         }
       });
+
       events.addAll(recurringEvents);
     } else {
       print("no one recurring event");

@@ -5,10 +5,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:ynotes/UI/components/modalBottomSheets/agendaEventBottomSheet.dart';
 import 'package:ynotes/UI/components/modalBottomSheets/agendaEventEditBottomSheet.dart';
 import 'package:ynotes/UI/screens/agendaPage.dart';
 import 'package:ynotes/UI/screens/agendaPageWidgets/agendaGrid.dart';
+import 'package:ynotes/UI/screens/agendaPageWidgets/buttons.dart';
 import 'package:ynotes/UI/screens/agendaPageWidgets/spaceAgenda.dart';
+import 'package:ynotes/UI/screens/homeworkPage.dart';
 import 'package:ynotes/UI/utils/fileUtils.dart';
 import 'package:ynotes/apis/EcoleDirecte.dart';
 import 'package:ynotes/apis/utils.dart';
@@ -27,16 +30,15 @@ Future agendaFuture;
 bool extended = false;
 
 class _AgendaState extends State<Agenda> {
-  @override
   List<FileInfo> listFiles;
-  // ignore: must_call_super
+  @override
   void initState() {
-    // TODO: implement initState
     if (agendaDate == null) {
       setState(() {
         agendaDate = CalendarTime().startOfToday;
       });
     }
+
     getLessons(agendaDate);
   }
 
@@ -71,6 +73,8 @@ class _AgendaState extends State<Agenda> {
         decoration: BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
       ),
       onPressed: () async {
+        agendaEventBottomSheet(context);
+        /*
         AgendaEvent temp = await agendaEventEdit(context, true, defaultDate: agendaDate);
         if (temp != null) {
           print(temp.recurrenceScheme);
@@ -82,7 +86,7 @@ class _AgendaState extends State<Agenda> {
             await refreshAgendaFutures(force: false);
           }
         }
-        setState(() {});
+        setState(() {});*/
       },
     );
   }
@@ -174,139 +178,8 @@ class _AgendaState extends State<Agenda> {
   _buildAgendaButtons(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
 
-    return Container(
-      width: screenSize.size.width / 5 * 4.2,
-      padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.005, horizontal: screenSize.size.width / 5 * 0.05),
-      decoration: BoxDecoration(color: Theme.of(context).primaryColorDark, borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15)),
-      child: FittedBox(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.05),
-              child: Material(
-                color: Theme.of(context).primaryColor,
-                borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-                  onTap: () async {
-                    setState(() {
-                      agendaDate = CalendarTime(agendaDate).startOfDay.subtract(Duration(hours: 24));
-                    });
-                    await getLessons(agendaDate);
-                  },
-                  child: Container(
-                      height: screenSize.size.height / 10 * 0.45,
-                      width: screenSize.size.width / 5 * 1,
-                      padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
-                      child: FittedBox(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Icon(
-                              MdiIcons.arrowLeft,
-                              color: isDarkModeEnabled ? Colors.white : Colors.black,
-                            ),
-                          ],
-                        ),
-                      )),
-                ),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(left: (screenSize.size.height / 10 * 8.8) / 10 * 0.05),
-              padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.05),
-              child: Material(
-                color: Theme.of(context).primaryColor,
-                borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-                  onTap: () async {
-                    DateTime someDate = await showDatePicker(
-                      locale: Locale('fr', 'FR'),
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(2018),
-                      lastDate: DateTime(2030),
-                      helpText: "",
-                      builder: (BuildContext context, Widget child) {
-                        return FittedBox(
-                          child: Material(
-                            color: Colors.transparent,
-                            child: Theme(
-                              data: isDarkModeEnabled ? ThemeData.dark() : ThemeData.light(),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[SizedBox(child: child)],
-                              ),
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                    if (someDate != null) {
-                      setState(() {
-                        agendaDate = someDate;
-                      });
-                      getLessons(agendaDate);
-                    }
-                  },
-                  child: Container(
-                      height: screenSize.size.height / 10 * 0.45,
-                      width: screenSize.size.width / 5 * 2,
-                      padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
-                      child: FittedBox(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              DateFormat("EEEE dd MMMM", "fr_FR").format(agendaDate),
-                              style: TextStyle(
-                                fontFamily: "Asap",
-                                color: isDarkModeEnabled ? Colors.white : Colors.black,
-                              ),
-                            ),
-                          ],
-                        ),
-                      )),
-                ),
-              ),
-            ),
-            Container(
-              margin: EdgeInsets.only(left: (screenSize.size.height / 10 * 8.8) / 10 * 0.05),
-              padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.05),
-              child: Material(
-                color: Theme.of(context).primaryColor,
-                borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-                  onTap: () async {
-                    setState(() {
-                      agendaDate = CalendarTime(agendaDate).startOfDay.add(Duration(hours: 25));
-                    });
-                    await getLessons(agendaDate);
-                  },
-                  child: Container(
-                      height: screenSize.size.height / 10 * 0.45,
-                      width: screenSize.size.width / 5 * 1,
-                      padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
-                      child: FittedBox(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Icon(
-                              MdiIcons.arrowRight,
-                              color: isDarkModeEnabled ? Colors.white : Colors.black,
-                            ),
-                          ],
-                        ),
-                      )),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+    return AgendaButtons(
+      getLessons: getLessons,
     );
   }
 

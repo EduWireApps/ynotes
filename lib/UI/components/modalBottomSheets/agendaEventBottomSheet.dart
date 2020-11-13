@@ -1,7 +1,9 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:ynotes/UI/animations/FadeAnimation.dart';
 
 import '../../../usefulMethods.dart';
 
@@ -9,7 +11,6 @@ import '../../../usefulMethods.dart';
 void agendaEventBottomSheet(context) {
   Color colorGroup;
 
-  MediaQueryData screenSize = MediaQuery.of(context);
   showModalBottomSheet(
       isScrollControlled: true,
       shape: RoundedRectangleBorder(
@@ -18,29 +19,59 @@ void agendaEventBottomSheet(context) {
       backgroundColor: Theme.of(context).primaryColor,
       context: context,
       builder: (BuildContext bc) {
-        return Container(
-            height: screenSize.size.height / 10 * 4,
-            padding: EdgeInsets.all(2),
-            child: FittedBox(
-              child: new Column(
-                children: <Widget>[
-                  Container(
-                      margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
-                      width: screenSize.size.width / 5 * 3.5,
-                      child: AutoSizeText(
-                        "Quel évènement voulez-vous créer ?",
-                        style: TextStyle(fontFamily: "Asap", fontSize: 26, fontWeight: FontWeight.w400, color: isDarkModeEnabled ? Colors.white : Colors.black),
-                        textAlign: TextAlign.center,
-                      )),
-                  SizedBox(
-                    height: screenSize.size.height / 10 * 0.1,
-                  ),
-                  _buildEventChoiceButton(context, "Récréation", Colors.green.shade200, MdiIcons.coffeeOutline),
-                  _buildEventChoiceButton(context, "Activité extra scolaire", Colors.blue.shade200, MdiIcons.piano),
-                ],
-              ),
-            ));
+        return AgendaEventChoice();
       });
+}
+
+class AgendaEventChoice extends StatelessWidget {
+  const AgendaEventChoice({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    MediaQueryData screenSize = MediaQuery.of(context);
+    return Container(
+        height: screenSize.size.height / 10 * 4,
+        padding: EdgeInsets.all(2),
+        child: FittedBox(
+          child: new Column(
+            children: <Widget>[
+              Container(
+                  margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
+                  width: screenSize.size.width / 5 * 3.5,
+                  child: FadeAnimatedTextKit(
+                    text: [
+                      "Organisez vos journées",
+                      "Organisez vos soirées",
+                      "Organisez votre vie",
+                    ],
+                    textStyle: TextStyle(
+                      fontFamily: "Asap",
+                      fontSize: 20,
+                      fontWeight: FontWeight.w400,
+                      color: isDarkModeEnabled ? Colors.white : Colors.black,
+                    ),
+                    textAlign: TextAlign.center,
+                    alignment: AlignmentDirectional.topStart,
+                    repeatForever: true,
+                    duration: Duration(milliseconds: 8000),
+                  )),
+              SizedBox(
+                height: screenSize.size.height / 10 * 0.1,
+              ),
+              FadeAnimation(
+                0.1,
+                _buildEventChoiceButton(context, "Événement", Colors.green.shade200, MdiIcons.calendar),
+              ),
+              FadeAnimation(
+                0.12,
+                _buildEventChoiceButton(context, "Événement intelligent", Colors.blue.shade200, MdiIcons.bus),
+              ),
+            ],
+          ),
+        ));
+  }
 }
 
 _buildEventChoiceButton(BuildContext context, String content, Color color, IconData icon) {
@@ -91,7 +122,7 @@ _buildEventChoiceButton(BuildContext context, String content, Color color, IconD
                             ))),
                   ),
                   Center(
-                    child: AutoSizeText(content, style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w700, fontSize: 28), textAlign: TextAlign.center),
+                    child: AutoSizeText(content, style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w300, fontSize: 28), textAlign: TextAlign.center),
                   ),
                 ],
               )),

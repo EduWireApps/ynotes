@@ -71,7 +71,7 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                     alignment: Alignment.topLeft,
                     child: Container(
                       padding: EdgeInsets.all(0),
-                      height: (screenSize.size.height / 3) / 2.5,
+                      height: screenSize.size.height / 10 * 1.5,
                       width: (screenSize.size.width / 5) * 1.5,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.only(bottomRight: Radius.circular(25), topLeft: Radius.circular(25)),
@@ -110,7 +110,7 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                       padding: EdgeInsets.symmetric(
                         horizontal: (screenSize.size.width / 5) * 0.5,
                       ),
-                      height: (screenSize.size.height / 3) / 2.5,
+                      height: screenSize.size.height / 10 * 1.5,
                       width: (screenSize.size.width / 5) * 3.5,
                       child: FittedBox(
                         child: Column(
@@ -149,52 +149,178 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                   Align(
                     alignment: Alignment.bottomCenter,
                     child: Container(
-                      height: (screenSize.size.height / 3) / 1.5,
-                      width: screenSize.size.width,
-                      margin: EdgeInsets.only(top: (screenSize.size.height / 3) / 10),
-                      child: FittedBox(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            buildKeyValuesInfo(context, "Moyenne de la classe :", [widget.grade.moyenneClasse != "" && widget.grade.moyenneClasse != null ? widget.grade.moyenneClasse : "-"]),
-                            SizedBox(
-                              height: (screenSize.size.height / 3) / 25,
+                      child: Card(
+                        color: darken(Theme.of(context).primaryColorDark, forceAmount: 0.05),
+                        margin: EdgeInsets.only(top: (screenSize.size.height / 10) * 1.6),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
+                        child: Container(
+                          height: screenSize.size.height / 10 * 1.4,
+                          padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
+                          width: screenSize.size.width / 5 * 4.5,
+                          child: FittedBox(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                buildKeyValuesInfo(context, "Moyenne de la classe :", [widget.grade.moyenneClasse != "" && widget.grade.moyenneClasse != null ? widget.grade.moyenneClasse : "-"]),
+                                SizedBox(
+                                  height: (screenSize.size.height / 3) / 25,
+                                ),
+                                buildKeyValuesInfo(context, "Type de devoir :", [widget.grade.typeDevoir != null ? widget.grade.typeDevoir : "-"]),
+                                SizedBox(
+                                  height: (screenSize.size.height / 3) / 25,
+                                ),
+                                GestureDetector(
+                                  onTap: () {},
+                                  child: buildKeyValuesInfo(context, "Date du devoir :",
+                                      [widget.grade.date != null ? (!widget.grade.date.contains("/") ? DateFormat("dd MMMM yyyy", "fr_FR").format(DateTime.parse(widget.grade.date)) : DateFormat("dd MMMM yyyy", "fr_FR").format(DateFormat("dd/MM/yyyy").parse(widget.grade.date))) : "-"]),
+                                )
+                              ],
                             ),
-                            buildKeyValuesInfo(context, "Type de devoir :", [widget.grade.typeDevoir != null ? widget.grade.typeDevoir : "-"]),
-                            SizedBox(
-                              height: (screenSize.size.height / 3) / 25,
-                            ),
-                            GestureDetector(
-                              onTap: () {
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  open = !open;
+                });
+              },
+              child: Card(
+                  margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
+                  color: darken(Theme.of(context).primaryColorDark, forceAmount: 0.05),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
+                  child: Container(
+                    width: screenSize.size.width / 5 * 4.5,
+                    height: screenSize.size.height / 10 * 0.6,
+                    padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.2, vertical: screenSize.size.height / 10 * 0.1),
+                    child: FittedBox(
+                      child: Wrap(
+                        direction: Axis.horizontal,
+                        alignment: WrapAlignment.center,
+                        crossAxisAlignment: WrapCrossAlignment.center,
+                        children: [
+                          //Plus button
+
+                          Container(
+                            width: screenSize.size.width / 5 * 0.4,
+                            height: screenSize.size.width / 5 * 0.4,
+                            child: RawMaterialButton(
+                              onPressed: () async {
                                 setState(() {
                                   open = !open;
                                 });
                               },
-                              child: buildKeyValuesInfo(context, "Date du devoir :",
-                                  [widget.grade.date != null ? (!widget.grade.date.contains("/") ? DateFormat("dd MMMM yyyy", "fr_FR").format(DateTime.parse(widget.grade.date)) : DateFormat("dd MMMM yyyy", "fr_FR").format(DateFormat("dd/MM/yyyy").parse(widget.grade.date))) : "-"]),
-                            )
-                          ],
-                        ),
+                              child: FittedBox(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      width: screenSize.size.width / 5 * 0.3,
+                                      height: screenSize.size.width / 5 * 0.3,
+                                      padding: EdgeInsets.all(
+                                        screenSize.size.width / 5 * 0.05,
+                                      ),
+                                      child: FittedBox(
+                                        child: new Icon(
+                                          Icons.bar_chart,
+                                          color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              shape: new CircleBorder(),
+                              elevation: 1.0,
+                              fillColor: Theme.of(context).primaryColor,
+                            ),
+                          ),
+                          SizedBox(width: screenSize.size.width / 5 * 0.1),
+                          Container(
+                            height: screenSize.size.height / 10 * 0.2,
+                            child: FittedBox(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    "SpaceStats",
+                                    style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, textBaseline: TextBaseline.ideographic, fontWeight: FontWeight.bold),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
+                        ],
                       ),
                     ),
-                  )
-                ],
-              ),
+                  )),
             ),
-            Container(
-              height: screenSize.size.height / 10 * 1,
-              child: FittedBox(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Ajouter un rappel",
-                      style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, textBaseline: TextBaseline.ideographic),
+            Card(
+                margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
+                color: darken(Theme.of(context).primaryColorDark, forceAmount: 0.05),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
+                child: AnimatedContainer(
+                  duration: Duration(milliseconds: 250),
+                  width: screenSize.size.width / 5 * 4.5,
+                  height: screenSize.size.height / 10 * (open ? 5 : 0),
+                  padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.2, vertical: screenSize.size.height / 10 * 0.1),
+                  child: FittedBox(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        //Plus button
+
+                        Container(
+                          width: screenSize.size.width / 5 * 0.4,
+                          height: screenSize.size.width / 5 * 0.4,
+                          child: FittedBox(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  width: screenSize.size.width / 5 * 0.3,
+                                  height: screenSize.size.width / 5 * 0.3,
+                                  padding: EdgeInsets.all(
+                                    screenSize.size.width / 5 * 0.05,
+                                  ),
+                                  child: FittedBox(
+                                    child: new Icon(
+                                      Icons.bar_chart,
+                                      color: isDarkModeEnabled ? Colors.white : Colors.grey,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: screenSize.size.width / 5 * 0.1),
+                        Container(
+                          height: screenSize.size.height / 10 * 0.2,
+                          child: FittedBox(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  "SpaceStats sera implémenté prochainement.",
+                                  style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.grey, textBaseline: TextBaseline.ideographic),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      ],
                     ),
-                  ],
-                ),
-              ),
-            )
+                  ),
+                ))
           ],
         ));
   }

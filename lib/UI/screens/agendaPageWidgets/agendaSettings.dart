@@ -8,76 +8,12 @@ import 'package:ynotes/background.dart';
 
 import '../../../usefulMethods.dart';
 
-class SpacePageGlobalSettings extends StatefulWidget {
+class AgendaSettings extends StatefulWidget {
   @override
-  _SpacePageGlobalSettingsState createState() => _SpacePageGlobalSettingsState();
+  _AgendaSettingsState createState() => _AgendaSettingsState();
 }
 
-class _SpacePageGlobalSettingsState extends State<SpacePageGlobalSettings> {
-  var boolSettings = {"organisationIsDefault": false};
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    getSettings();
-  }
-
-  void getSettings() async {
-    await Future.forEach(boolSettings.keys, (key) async {
-      var value = await getSetting(key);
-      setState(() {
-        boolSettings[key] = value;
-      });
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    var screenSize = MediaQuery.of(context);
-    return Container(
-      margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-        color: Theme.of(context).primaryColor,
-      ),
-      width: screenSize.size.width / 5 * 4.5,
-      child: Column(
-        children: [
-          Container(
-              width: screenSize.size.width / 5 * 4.5,
-              margin: EdgeInsets.all(screenSize.size.width / 5 * 0.2),
-              child: Text(
-                "Paramètres globaux",
-                style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: isDarkModeEnabled ? Colors.white : Colors.black),
-                textAlign: TextAlign.left,
-              )),
-          SwitchListTile(
-            value: boolSettings["organisationIsDefault"],
-            title: Text("Toujours afficher le menu Organisation par défaut", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.21)),
-            onChanged: (value) async {
-              setState(() {
-                boolSettings["organisationIsDefault"] = value;
-              });
-
-              await setSetting("organisationIsDefault", value);
-            },
-            secondary: Icon(
-              MdiIcons.viewAgenda,
-              color: isDarkModeEnabled ? Colors.white : Colors.black,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class OrganisationSettings extends StatefulWidget {
-  @override
-  _OrganisationSettingsState createState() => _OrganisationSettingsState();
-}
-
-class _OrganisationSettingsState extends State<OrganisationSettings> {
+class _AgendaSettingsState extends State<AgendaSettings> {
   @override
   void initState() {
     // TODO: implement initState
@@ -86,7 +22,7 @@ class _OrganisationSettingsState extends State<OrganisationSettings> {
   }
 
   //Settings
-  var boolSettings = {"lighteningOverride": false, "agendaOnGoingNotification": false};
+  var boolSettings = {"lighteningOverride": false, "agendaOnGoingNotification": false, "reverseWeekNames": false};
   var intSettings = {"lessonReminderDelay": 5};
   void getSettings() async {
     await Future.forEach(boolSettings.keys, (key) async {
@@ -120,7 +56,7 @@ class _OrganisationSettingsState extends State<OrganisationSettings> {
               width: screenSize.size.width / 5 * 4.5,
               margin: EdgeInsets.all(screenSize.size.width / 5 * 0.2),
               child: Text(
-                "Paramètres de la section organisation",
+                "Paramètres de l'agenda",
                 style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: isDarkModeEnabled ? Colors.white : Colors.black),
                 textAlign: TextAlign.left,
               )),
@@ -140,6 +76,21 @@ class _OrganisationSettingsState extends State<OrganisationSettings> {
             },
             secondary: Icon(
               MdiIcons.zipBox,
+              color: isDarkModeEnabled ? Colors.white : Colors.black,
+            ),
+          ),
+          SwitchListTile(
+            value: boolSettings["reverseWeekNames"],
+            title: Text("Inverser semaines A et B", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.21)),
+            onChanged: (value) async {
+              setState(() {
+                boolSettings["reverseWeekNames"] = value;
+              });
+
+              await setSetting("reverseWeekNames", value);
+            },
+            secondary: Icon(
+              MdiIcons.calendarWeek,
               color: isDarkModeEnabled ? Colors.white : Colors.black,
             ),
           ),
@@ -165,36 +116,23 @@ class _OrganisationSettingsState extends State<OrganisationSettings> {
             ),
           ),
           if (Platform.isAndroid)
-            SwitchListTile(
-              value: boolSettings["agendaOnGoingNotification"],
-              title: RichText(
-                text: TextSpan(
-                  style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.21),
-                  children: <TextSpan>[
-                    TextSpan(
-                      text: "Notification constante",
-                    ),
-                    TextSpan(text: '\n(experimental)', style: TextStyle(color: Colors.redAccent)),
-                  ],
-                ),
+            ListTile(
+              title: Text("Notification constante", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.21)),
+              subtitle: Text(
+                boolSettings["agendaOnGoingNotification"] ? "Activée" : "Désactivée",
+                style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.16),
               ),
-              onChanged: (value) async {
-                setState(() {
-                  boolSettings["agendaOnGoingNotification"] = value;
-                });
-
-                await setSetting("agendaOnGoingNotification", value);
-                if (value) {
-                  await LocalNotification.setOnGoingNotification();
-                } else {
-                  await LocalNotification.cancelOnGoingNotification();
-                }
+              onTap: () async {
+                await CustomDialogs.showPersistantNotificationDialog(context);
+                getSettings();
+                setState(() {});
               },
-              secondary: Icon(
+              leading: Icon(
                 MdiIcons.viewAgendaOutline,
                 color: isDarkModeEnabled ? Colors.white : Colors.black,
               ),
             ),
+          
         ],
       ),
     );

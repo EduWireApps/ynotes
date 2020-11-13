@@ -20,7 +20,16 @@ class _RecurringEventsDialogState extends State<RecurringEventsDialog> {
     // TODO: implement initState
     super.initState();
     _scheme = this.widget.scheme;
-    print(_scheme);
+    getReverseAB();
+  }
+
+  getReverseAB() async {
+    bool reverse = await getSetting("reverseWeekNames");
+    if (reverse) {
+      setState(() {
+        weekTypes = ["Toutes les semaines", "Semaine B", "Semaine A"];
+      });
+    }
   }
 
   export() {
@@ -112,8 +121,7 @@ class _RecurringEventsDialogState extends State<RecurringEventsDialog> {
                     } else {
                       CustomDialogs.showAnyDialog(context, "Vous devez sélectionner au moins un jour");
                     }
-                  }
-                  else {
+                  } else {
                     Navigator.of(context).pop();
                   }
                 },
@@ -153,6 +161,7 @@ class _RecurringEventsDialogState extends State<RecurringEventsDialog> {
                       if (enabled)
                         DropdownButton<String>(
                           value: weekTypes[weekType],
+                          dropdownColor: Theme.of(context).primaryColor,
                           iconSize: 0.0,
                           style: TextStyle(fontSize: 18, fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
                           onChanged: (String newValue) {

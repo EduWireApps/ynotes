@@ -1,4 +1,3 @@
-
 import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -76,24 +75,24 @@ class _HomeworkElementState extends State<HomeworkElement> {
             return Stack(
               children: <Widget>[
                 Align(
-                  alignment: Alignment.bottomLeft,
+                  alignment: Alignment.bottomCenter,
                   child: Container(
                       margin: EdgeInsets.only(top: (screenSize.size.height / 10 * 8.8) / 10 * 0.5),
-                      width: screenSize.size.width / 5 * 4.4,
+                      width: screenSize.size.width / 5 * 4.5,
                       decoration: BoxDecoration(
                         border: Border.all(width: 0, color: Colors.transparent),
                         color: Colors.transparent,
                         borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15), topRight: Radius.circular(15), bottomRight: Radius.circular(15)),
                       ),
                       child: ClipRRect(
-                        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15), bottomRight: Radius.circular(15)),
+                        borderRadius: BorderRadius.only(bottomLeft: Radius.circular(11), bottomRight: Radius.circular(11)),
                         child: Column(
                           children: <Widget>[
                             if (this.widget.homeworkForThisDay.interrogation == true && isExpanded)
                               Container(
                                 margin: EdgeInsets.only(top: screenSize.size.width / 10 * 0.15),
                                 padding: EdgeInsets.all(screenSize.size.width / 10 * 0.01),
-                                width: screenSize.size.width / 5 * 4.4,
+                                width: screenSize.size.width / 5 * 4.5,
                                 height: screenSize.size.width / 10 * 0.6,
                                 decoration: BoxDecoration(
                                     color: Colors.orangeAccent,
@@ -111,7 +110,7 @@ class _HomeworkElementState extends State<HomeworkElement> {
                               ),
                             Container(
                               color: isDarkModeEnabled ? darken(Theme.of(context).primaryColorDark, forceAmount: 0.1) : darken(Theme.of(context).primaryColor, forceAmount: 0.03),
-                              width: screenSize.size.width / 5 * 4.4,
+                              width: screenSize.size.width / 5 * 4.5,
                               height: isExpanded ? null : 0,
                               child: Container(
                                 decoration: BoxDecoration(border: Border.all(width: 0, color: Colors.transparent)),
@@ -121,7 +120,7 @@ class _HomeworkElementState extends State<HomeworkElement> {
                                     if ((widget.homeworkForThisDay.contenuDeSeance != null && widget.homeworkForThisDay.contenuDeSeance != "") || (widget.homeworkForThisDay.documentsContenuDeSeance != null && widget.homeworkForThisDay.documentsContenuDeSeance.length > 0))
                                       Container(
                                         height: screenSize.size.height / 10 * 0.6,
-                                        width: screenSize.size.width / 5 * 3.2,
+                                        width: screenSize.size.width / 5 * 4.5,
                                         child: CupertinoSegmentedControl<int>(
                                             onValueChanged: (i) {
                                               setState(() {
@@ -161,7 +160,7 @@ class _HomeworkElementState extends State<HomeworkElement> {
                             ),
                             if (this.widget.homeworkForThisDay.documents != null && (segmentedControlIndex == 0 ? this.widget.homeworkForThisDay.documents.length : this.widget.homeworkForThisDay.documentsContenuDeSeance.length) != 0 && isExpanded)
                               Container(
-                                width: screenSize.size.width / 5 * 4.4,
+                                width: screenSize.size.width / 5 * 4.5,
                                 child: Column(
                                   children: <Widget>[
                                     Material(
@@ -174,7 +173,7 @@ class _HomeworkElementState extends State<HomeworkElement> {
                                         },
                                         child: Container(
                                           height: screenSize.size.height / 10 * 0.5,
-                                          width: screenSize.size.width / 5 * 4.4,
+                                          width: screenSize.size.width / 5 * 4.5,
                                           child: Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: <Widget>[
@@ -194,7 +193,7 @@ class _HomeworkElementState extends State<HomeworkElement> {
                                     ),
                                     AnimatedContainer(
                                       duration: Duration(milliseconds: 75),
-                                      width: screenSize.size.width / 5 * 4.4,
+                                      width: screenSize.size.width / 5 * 4.5,
                                       height: isDocumentExpanded ? (segmentedControlIndex == 0 ? widget.homeworkForThisDay.documents.length : widget.homeworkForThisDay.documentsContenuDeSeance.length) * (screenSize.size.height / 10 * 0.7) : 0,
                                       child: ListView.builder(
                                           itemCount: segmentedControlIndex == 0 ? widget.homeworkForThisDay.documents.length : widget.homeworkForThisDay.documentsContenuDeSeance.length,
@@ -336,7 +335,7 @@ class _HomeworkElementState extends State<HomeworkElement> {
                                         await api.uploadFile("CDT", this.widget.homeworkForThisDay.idDevoir, file.path);*/
                                   },
                                   child: Container(
-                                    width: screenSize.size.width / 5 * 4.4,
+                                    width: screenSize.size.width / 5 * 4.9,
                                     height: screenSize.size.height / 10 * 0.5,
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
@@ -365,7 +364,7 @@ class _HomeworkElementState extends State<HomeworkElement> {
                                     decoration: BoxDecoration(
                                       border: Border.all(width: 0.00000, color: Colors.transparent),
                                     ),
-                                    width: screenSize.size.width / 5 * 4.4,
+                                    width: screenSize.size.width / 5 * 4.5,
                                     height: screenSize.size.height / 10 * 0.4,
                                     child: Center(
                                       child: Icon(Icons.expand_more),

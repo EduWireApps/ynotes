@@ -46,11 +46,14 @@ void backgroundFetchHeadlessTask(String taskId) async {
   var initializationSettings = new InitializationSettings(initializationSettingsAndroid, initializationSettingsIOS);
   flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
   flutterLocalNotificationsPlugin.initialize(initializationSettings, onSelectNotification: BackgroundService.onSelectNotification);
+  if (!await getSetting("batterySaver")) {
+    await BackgroundService.refreshHomework();
+  }
 //Ensure that grades notification are enabled and battery saver disabled
   if (await getSetting("notificationNewGrade") && !await getSetting("batterySaver")) {
     logFile("New grade test triggered");
     if (await mainTestNewGrades()) {
-      BackgroundService.showNotificationNewGrade();
+      await BackgroundService.showNotificationNewGrade();
     } else {
       print("Nothing updated");
     }
@@ -59,7 +62,7 @@ void backgroundFetchHeadlessTask(String taskId) async {
   }
   if (await getSetting("notificationNewMail") && !await getSetting("batterySaver")) {
     if (await mainTestNewMails()) {
-      BackgroundService.showNotificationNewMail();
+     await BackgroundService.showNotificationNewMail();
     } else {
       print("Nothing updated");
     }

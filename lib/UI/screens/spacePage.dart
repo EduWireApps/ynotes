@@ -4,7 +4,7 @@ import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/UI/screens/settingsPage.dart';
 import 'package:ynotes/UI/screens/spacePageWidgets/downloadsExplorer.dart';
 import 'package:ynotes/UI/screens/spacePageWidgets/news.dart';
-import 'package:ynotes/UI/screens/spacePageWidgets/spacePageSettings.dart';
+import 'package:ynotes/UI/screens/agendaPageWidgets/agendaSettings.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 import 'agendaPageWidgets/agenda.dart';
@@ -180,8 +180,7 @@ class _SpacePageState extends State<SpacePage> with TickerProviderStateMixin {
                                     scrollDirection: Axis.vertical,
                                     child: Column(
                                       children: <Widget>[
-                                        SpacePageGlobalSettings(),
-                                        OrganisationSettings(),
+                                        AgendaSettings(),
                                         Container(
                                           margin: EdgeInsets.only(top: screenSize.size.width / 5 * 0.2),
                                           height: (screenSize.size.height / 10 * 8.8) / 10 * 0.75,

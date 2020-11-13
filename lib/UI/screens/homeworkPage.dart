@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:share/share.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
+import 'package:ynotes/UI/components/hiddenSettings.dart';
 import 'package:ynotes/UI/screens/homeworkPageWidgets/HWsecondPage.dart';
 import 'package:ynotes/UI/screens/summaryPage.dart';
 import 'package:ynotes/main.dart';
@@ -23,8 +24,9 @@ Future<List<Homework>> homeworkListFuture;
 List<Homework> localListHomeworkDateToUse;
 
 class HomeworkPage extends StatefulWidget {
+  HomeworkPage({Key key}) : super(key: key);
   State<StatefulWidget> createState() {
-    return _HomeworkPageState();
+    return HomeworkPageState();
   }
 }
 
@@ -37,11 +39,11 @@ bool isPinnedDateToUse = false;
 List dates = List();
 //Only use to add homework to database
 
-class _HomeworkPageState extends State<HomeworkPage> {
+class HomeworkPageState extends State<HomeworkPage> {
   PageController _pageControllerHW;
   void initState() {
     super.initState();
-    _pageControllerHW = PageController(initialPage: 1);
+    _pageControllerHW = PageController(initialPage: 0);
     //WidgetsFlutterBinding.ensureInitialized();
     //Test if it's the first start
 
@@ -50,6 +52,11 @@ class _HomeworkPageState extends State<HomeworkPage> {
     });
 
     getPinnedStateDayToUse();
+  }
+
+  PageController agendaSettingsController = PageController(initialPage: 1);
+  void triggerSettings() {
+    agendaSettingsController.animateToPage(agendaSettingsController.page == 1 ? 0 : 1, duration: Duration(milliseconds: 300), curve: Curves.ease);
   }
 
   getPinnedStateDayToUse() async {
@@ -88,170 +95,169 @@ class _HomeworkPageState extends State<HomeworkPage> {
     //Show the pin dialog
     showDialog();
     MediaQueryData screenSize = MediaQuery.of(context);
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      children: [
-        Card(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.3),
-          color: Theme.of(context).primaryColor,
-          child: Container(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                //Homework list view
-                Container(
-                    width: screenSize.size.width / 5 * 4.7,
-                    height: screenSize.size.height / 10 * 7.6,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(15),
-                          topRight: Radius.circular(15),
-                        ),
-                        border: Border.all(width: 0.00000, color: Colors.transparent),
-                        color: Theme.of(context).primaryColor),
-                    child: Stack(
-                      children: <Widget>[
-                        ClipRRect(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(15),
+    return HiddenSettings(
+      controller: agendaSettingsController,
+      settingsWidget: HomeworkSettingPage(),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Card(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+            margin: EdgeInsets.zero,
+            color: Theme.of(context).primaryColor,
+            child: Container(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  //Homework list view
+                  Container(
+                      width: screenSize.size.width,
+                      height: screenSize.size.height / 10 * 8.18,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(15),
+                            topRight: Radius.circular(15),
                           ),
-                          child: PageView(
-                            controller: _pageControllerHW,
-                            physics: NeverScrollableScrollPhysics(),
-                            children: <Widget>[
-                              //First page with settings
-                              HomeworkSettingPage(animateToPage),
+                          border: Border.all(width: 0.00000, color: Colors.transparent),
+                          color: Theme.of(context).primaryColor),
+                      child: Stack(
+                        children: <Widget>[
+                          ClipRRect(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(15),
+                            ),
+                            child: PageView(
+                              controller: _pageControllerHW,
+                              physics: NeverScrollableScrollPhysics(),
+                              children: <Widget>[
+                                //Second page with homework
+                                HomeworkFirstPage(),
 
-                              //Second page with homework
-                              HomeworkFirstPage(),
-
-                              //Third page (with homework at a specific date)
-                              HomeworkSecondPage(animateToPage)
-                            ],
+                                //Third page (with homework at a specific date)
+                                HomeworkSecondPage(animateToPage)
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    )),
+                        ],
+                      )),
 
-                ///Button Bar
-                MediaQuery(
-                  data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
-                  child: Container(
-                    width: screenSize.size.width / 5 * 4.7,
-                    padding: EdgeInsets.only(top: (screenSize.size.height / 10 * 8.8) / 10 * 0.1, bottom: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(15),
-                          bottomRight: Radius.circular(15),
-                        ),
-                        border: Border.all(width: 0.00000, color: Colors.transparent),
-                        color: Theme.of(context).primaryColor),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        Material(
-                          color: Theme.of(context).primaryColorDark,
-                          borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-                          child: InkWell(
+                  ///Button Bar
+                  MediaQuery(
+                    data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+                    child: Container(
+                      width: screenSize.size.width / 5 * 4.7,
+                      padding: EdgeInsets.only(top: (screenSize.size.height / 10 * 8.8) / 10 * 0.1, bottom: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(15),
+                            bottomRight: Radius.circular(15),
+                          ),
+                          border: Border.all(width: 0.00000, color: Colors.transparent),
+                          color: Theme.of(context).primaryColor),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          Material(
+                            color: Theme.of(context).primaryColorDark,
                             borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-                            onTap: () {
-                              _pageControllerHW.animateTo(0, duration: Duration(milliseconds: 250), curve: Curves.ease);
-                            },
-                            child: Container(
-                                height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
-                                padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
-                                child: FittedBox(
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                              onTap: () {},
+                              child: Container(
+                                  height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
+                                  padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
+                                  child: FittedBox(
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Icon(
+                                          Icons.settings,
+                                          color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                        ),
+                                        Text(
+                                          "Paramètres",
+                                          style: TextStyle(
+                                            fontFamily: "Asap",
+                                            color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )),
+                            ),
+                          ),
+                          Material(
+                            color: Theme.of(context).primaryColorDark,
+                            borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                              onTap: () async {
+                                DateTime someDate = await showDatePicker(
+                                  locale: Locale('fr', 'FR'),
+                                  context: context,
+                                  initialDate: DateTime.now(),
+                                  firstDate: DateTime(2018),
+                                  lastDate: DateTime(2030),
+                                  helpText: "",
+                                  builder: (BuildContext context, Widget child) {
+                                    return FittedBox(
+                                      child: Material(
+                                        color: Colors.transparent,
+                                        child: Theme(
+                                          data: isDarkModeEnabled ? ThemeData.dark() : ThemeData.light(),
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: <Widget>[SizedBox(child: child)],
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                );
+                                if (someDate != null) {
+                                  setState(() {
+                                    dateToUse = someDate;
+                                    setState() {
+                                      localListHomeworkDateToUse = null;
+                                    }
+
+                                    getPinnedStateDayToUse();
+                                  });
+
+                                  _pageControllerHW.animateToPage(2, duration: Duration(milliseconds: 200), curve: Curves.easeIn);
+                                }
+                              },
+                              child: Container(
+                                  height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
+                                  padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                       Icon(
-                                        Icons.settings,
+                                        MdiIcons.calendar,
                                         color: isDarkModeEnabled ? Colors.white : Colors.black,
                                       ),
                                       Text(
-                                        "Paramètres",
+                                        "Choisir une date",
                                         style: TextStyle(
                                           fontFamily: "Asap",
                                           color: isDarkModeEnabled ? Colors.white : Colors.black,
                                         ),
                                       ),
                                     ],
-                                  ),
-                                )),
+                                  )),
+                            ),
                           ),
-                        ),
-                        Material(
-                          color: Theme.of(context).primaryColorDark,
-                          borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-                          child: InkWell(
-                            borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-                            onTap: () async {
-                              DateTime someDate = await showDatePicker(
-                                locale: Locale('fr', 'FR'),
-                                context: context,
-                                initialDate: DateTime.now(),
-                                firstDate: DateTime(2018),
-                                lastDate: DateTime(2030),
-                                helpText: "",
-                                builder: (BuildContext context, Widget child) {
-                                  return FittedBox(
-                                    child: Material(
-                                      color: Colors.transparent,
-                                      child: Theme(
-                                        data: isDarkModeEnabled ? ThemeData.dark() : ThemeData.light(),
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: <Widget>[SizedBox(child: child)],
-                                        ),
-                                      ),
-                                    ),
-                                  );
-                                },
-                              );
-                              if (someDate != null) {
-                                setState(() {
-                                  dateToUse = someDate;
-                                  setState() {
-                                    localListHomeworkDateToUse = null;
-                                  }
-
-                                  getPinnedStateDayToUse();
-                                });
-
-                                _pageControllerHW.animateToPage(2, duration: Duration(milliseconds: 200), curve: Curves.easeIn);
-                              }
-                            },
-                            child: Container(
-                                height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
-                                padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Icon(
-                                      MdiIcons.calendar,
-                                      color: isDarkModeEnabled ? Colors.white : Colors.black,
-                                    ),
-                                    Text(
-                                      "Choisir une date",
-                                      style: TextStyle(
-                                        fontFamily: "Asap",
-                                        color: isDarkModeEnabled ? Colors.white : Colors.black,
-                                      ),
-                                    ),
-                                  ],
-                                )),
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

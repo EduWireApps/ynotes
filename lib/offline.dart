@@ -519,7 +519,6 @@ class Offline {
         if (agendaEventsData != null) {
           var values = agendaEventsData.keys;
           var selectedValues = values.where(await selector);
-
           if (selectedValues != null) {
             List<AgendaEvent> agendaEvents = List();
 

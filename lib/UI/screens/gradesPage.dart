@@ -260,18 +260,28 @@ class _GradesPageState extends State<GradesPage> {
   ///Calculate the user average
   void setAverage(List<Discipline> disciplineList) {
     average = 0;
-    double counter = 0.0;
+    List<double> averages = List();
     disciplineList.where((i) => i.periode == periodeToUse).forEach((f) {
       try {
-        var doubleAverage = double.tryParse(f.moyenne.replaceAll(',', '.'));
-        if (doubleAverage != null) {
-          average += doubleAverage;
-          counter += 1;
+        double _average = 0.0;
+        double _counter = 0;
+        f.gradesList.forEach((grade) {
+          _counter += double.parse(grade.coef);
+          _average += double.parse(grade.valeur.replaceAll(',', '.')) * 20 / double.parse(grade.noteSur.replaceAll(',', '.')) * double.parse(grade.coef.replaceAll(',', '.'));
+        });
+        _average = _average / _counter;
+        if (_average != null && !_average.isNaN) {
+          averages.add(_average);
         }
       } catch (e) {}
     });
-
-    average = average / counter;
+    double sum = 0.0;
+    averages.forEach((element) {
+      if (element != null && !element.isNaN) {
+        sum += element;
+      }
+    });
+    average = sum / averages.length;
   }
 
   ///Get the corresponding disciplines and responding to the filter chosen
@@ -375,15 +385,15 @@ class _GradesPageState extends State<GradesPage> {
       height: screenSize.size.height,
       child: Column(mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
         Card(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.3),
+          margin: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
           color: Theme.of(context).primaryColor,
           child: Column(
             children: [
               Container(
                 padding: EdgeInsets.only(top: (screenSize.size.height / 10 * 8.8) / 10 * 1 / 6),
                 height: screenSize.size.height / 10 * 0.7,
-                width: screenSize.size.width / 5 * 4.7,
+                width: screenSize.size.width,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
                   border: Border.all(width: 0.00000, color: Colors.transparent),
@@ -392,7 +402,7 @@ class _GradesPageState extends State<GradesPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Container(
-                      height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
+                      height: screenSize.size.height / 10 * 9,
                       width: (screenSize.size.width / 5) * 2.2,
                       padding: EdgeInsets.symmetric(horizontal: (screenSize.size.width / 5) * 0.4),
                       decoration: BoxDecoration(
@@ -493,7 +503,7 @@ class _GradesPageState extends State<GradesPage> {
                 child: Container(
                   width: screenSize.size.width / 5 * 4.7,
                   padding: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
-                  height: screenSize.size.height / 10 * 5.8,
+                  height: screenSize.size.height / 10 * 6.7,
                   margin: EdgeInsets.only(top: 0),
                   decoration: BoxDecoration(
                       border: Border.all(width: 0.000000, color: Colors.transparent),
@@ -503,7 +513,7 @@ class _GradesPageState extends State<GradesPage> {
                       ),
                       color: Theme.of(context).primaryColor),
                   child: ClipRRect(
-                      borderRadius: BorderRadius.circular(15),
+                      borderRadius: BorderRadius.circular(0),
                       child: FutureBuilder<void>(
                           future: disciplinesListFuture,
                           builder: (BuildContext context, AsyncSnapshot snapshot) {
@@ -514,7 +524,7 @@ class _GradesPageState extends State<GradesPage> {
                                 return ListView.builder(
                                     physics: AlwaysScrollableScrollPhysics(),
                                     itemCount: getDisciplinesForPeriod(snapshot.data, periodeToUse, filter).length,
-                                    padding: EdgeInsets.symmetric(vertical: screenSize.size.width / 5 * 0.1, horizontal: screenSize.size.width / 5 * 0.125),
+                                    padding: EdgeInsets.symmetric(vertical: screenSize.size.width / 5 * 0.1, horizontal: screenSize.size.width / 5 * 0.05),
                                     itemBuilder: (BuildContext context, int index) {
                                       return GradesGroup(disciplinevar: getDisciplinesForPeriod(snapshot.data, periodeToUse, filter)[index]);
                                     });
@@ -592,13 +602,14 @@ class _GradesPageState extends State<GradesPage> {
 
         //Average section
         Card(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.3),
+          margin: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+          
           color: Theme.of(context).primaryColor,
           child: Container(
-            width: screenSize.size.width / 5 * 4.7,
+            margin: EdgeInsets.only(left: (screenSize.size.width / 5* 0.25)),
+            width: screenSize.size.width,
             height: (screenSize.size.height / 10 * 8.8) / 10 * 1.8,
-         
             child: ClipRRect(
                 borderRadius: BorderRadius.circular(15),
                 child: FutureBuilder<void>(
@@ -639,7 +650,7 @@ class _GradesPageState extends State<GradesPage> {
                                         child: Stack(
                                           children: <Widget>[
                                             Container(
-                                              margin: EdgeInsets.only(left: (screenSize.size.width / 5) * 0.9),
+                                              margin: EdgeInsets.only(left: (screenSize.size.width / 5) * 2),
                                               child: Column(
                                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                 crossAxisAlignment: CrossAxisAlignment.end,

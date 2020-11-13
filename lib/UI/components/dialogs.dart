@@ -2,7 +2,9 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ynotes/UI/components/dialogs/authorizationsDialog.dart';
 import 'package:ynotes/UI/components/dialogs/colorPicker.dart';
+import 'package:ynotes/UI/components/dialogs/persistantNotificationDialog.dart';
 import 'package:ynotes/UI/components/giffy_dialog/src/asset.dart';
 import 'package:ynotes/UI/screens/settingsPage.dart';
 import '../../usefulMethods.dart';
@@ -171,6 +173,20 @@ class CustomDialogs {
     );
   }
 
+  static Future showAuthorizationsDialog(BuildContext context, String authName, String goal) {
+    // show the dialog
+    return showDialog(
+      barrierDismissible: true,
+      context: context,
+      builder: (BuildContext context) {
+        return AuthorizationsDialog(
+          authName: authName,
+          goal: goal,
+        );
+      },
+    );
+  }
+
 //Bêta purposes : show when a function is not available yet
   static showUnimplementedSnackBar(BuildContext context) {
     Flushbar(
@@ -195,6 +211,16 @@ class CustomDialogs {
       ),
       borderRadius: 8,
     )..show(context);
+  }
+
+  static Future showPersistantNotificationDialog(BuildContext context) {
+    return showDialog(
+      barrierDismissible: true,
+      context: context,
+      builder: (BuildContext context) {
+        return PersistantNotificationConfigDialog();
+      },
+    );
   }
 
   static showAnyDialog(BuildContext context, String text) {

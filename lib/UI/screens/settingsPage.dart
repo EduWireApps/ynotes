@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dnd/flutter_dnd.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -304,8 +305,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     title: 'Bouton magique',
                     leading: Icon(MdiIcons.testTube, color: isDarkModeEnabled ? Colors.white : Colors.black),
                     onTap: () async {
-                      Navigator.of(context).push(router(ExportPage()));
-                      //await mainTestNewGrades();
+                    print(await  CustomDialogs.showAuthorizationsDialog(context, " la configuration du mode ne pas déranger.", "Désactiver ou activer le mode ne pas déranger dans la journée.")) ;
                     },
                     titleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
                     subtitleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
