@@ -266,8 +266,10 @@ class _GradesPageState extends State<GradesPage> {
         double _average = 0.0;
         double _counter = 0;
         f.gradesList.forEach((grade) {
-          _counter += double.parse(grade.coef);
-          _average += double.parse(grade.valeur.replaceAll(',', '.')) * 20 / double.parse(grade.noteSur.replaceAll(',', '.')) * double.parse(grade.coef.replaceAll(',', '.'));
+          if (!grade.nonSignificatif && !grade.letters) {
+            _counter += double.parse(grade.coef);
+            _average += double.parse(grade.valeur.replaceAll(',', '.')) * 20 / double.parse(grade.noteSur.replaceAll(',', '.')) * double.parse(grade.coef.replaceAll(',', '.'));
+          }
         });
         _average = _average / _counter;
         if (_average != null && !_average.isNaN) {
@@ -604,10 +606,9 @@ class _GradesPageState extends State<GradesPage> {
         Card(
           margin: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
-          
           color: Theme.of(context).primaryColor,
           child: Container(
-            margin: EdgeInsets.only(left: (screenSize.size.width / 5* 0.25)),
+            margin: EdgeInsets.only(left: (screenSize.size.width / 5 * 0.25)),
             width: screenSize.size.width,
             height: (screenSize.size.height / 10 * 8.8) / 10 * 1.8,
             child: ClipRRect(
@@ -1019,7 +1020,7 @@ class _GradesGroupState extends State<GradesGroup> {
               if (localList != null && localList.length != null) {
                 try {
                   if (marksColumnController != null && marksColumnController.hasClients) {
-                    marksColumnController.animateTo(localList.length * screenSize.size.width / 5 * 1.2, duration: new Duration(microseconds: 5), curve: Curves.ease);
+                    // marksColumnController.animateTo(localList.length * screenSize.size.width / 5 * 1.2, duration: new Duration(microseconds: 5), curve: Curves.ease);
                   }
                 } catch (e) {}
                 if (localList[index].dateSaisie == formattedDate) {
@@ -1124,141 +1125,5 @@ class _GradesGroupState extends State<GradesGroup> {
                 ],
               );
             }));
-  }
-
-//Modal share box
-  shareBox(Grade grade, Discipline discipline) {
-    MediaQueryData screenSize;
-    screenSize = MediaQuery.of(context);
-
-    return showGeneralDialog(
-        context: context,
-        barrierColor: Colors.black.withOpacity(0.5),
-        transitionBuilder: (context, a1, a2, widget) {
-          return Transform.scale(
-            scale: a1.value,
-            child: Opacity(
-                opacity: a1.value,
-                child: AlertDialog(
-                  backgroundColor: Colors.transparent,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0))),
-                  contentPadding: EdgeInsets.only(top: 10.0),
-                  content: Container(
-                    height: screenSize.size.height / 10 * 4,
-                    width: screenSize.size.width,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: <Widget>[
-                        Text(
-                          "Partager cette note",
-                          style: TextStyle(fontFamily: "Asap", color: Colors.white),
-                        ),
-                        Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.all(Radius.circular(32.0)),
-                            ),
-                            child: Column(children: <Widget>[
-                              Container(
-                                  child: Center(
-                                    child: Text(
-                                      discipline.nomDiscipline,
-                                      style: TextStyle(fontFamily: "Asap", color: Colors.black),
-                                    ),
-                                  ),
-                                  width: screenSize.size.width / 5 * 5,
-                                  height: screenSize.size.height / 10 * 0.5,
-                                  decoration: BoxDecoration(borderRadius: BorderRadius.only(topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)), color: Color(discipline.color))),
-                              Container(
-                                width: screenSize.size.width / 5 * 5,
-                                height: screenSize.size.height / 10 * 2,
-                                decoration: BoxDecoration(borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15.0), bottomRight: Radius.circular(15.0)), color: Theme.of(context).primaryColor),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text("Note du " + DateFormat("dd MMMM yyyy", "fr_FR").format(DateTime.parse(grade.date)),
-                                        style: TextStyle(
-                                          fontFamily: "Asap",
-                                          color: isDarkModeEnabled ? Colors.white : Colors.black,
-                                        )),
-                                    Text(grade.devoir, style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontWeight: FontWeight.bold), textAlign: TextAlign.center),
-                                    SizedBox(
-                                      height: screenSize.size.height / 10 * 0.2,
-                                    ),
-                                    Text("Ma note :", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontWeight: FontWeight.w300, fontSize: screenSize.size.height / 10 * 0.2), textAlign: TextAlign.center),
-                                    Container(
-                                      width: screenSize.size.width / 5 * 2,
-                                      height: screenSize.size.height / 10 * 0.6,
-                                      decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(50)), color: Theme.of(context).primaryColorDark),
-                                      child: Center(
-                                        child: AutoSizeText.rich(
-                                          //MARK
-                                          TextSpan(
-                                            text: grade.valeur,
-                                            style: TextStyle(color: isDarkModeEnabled ? Colors.white : Colors.black, fontFamily: "Asap", fontWeight: FontWeight.bold, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.3),
-                                            children: <TextSpan>[
-                                              if (grade.noteSur != "20")
-
-                                                //MARK ON
-                                                TextSpan(text: '/' + grade.noteSur, style: TextStyle(color: isDarkModeEnabled ? Colors.white : Colors.black, fontWeight: FontWeight.bold, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2)),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    )
-                                  ],
-                                ),
-                              )
-                            ])),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            RaisedButton(
-                              color: Color(0xffFFFC00),
-                              shape: CircleBorder(),
-                              onPressed: () {},
-                              child: Container(
-                                  width: screenSize.size.width / 5 * 0.8,
-                                  padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
-                                  child: Image(
-                                    image: AssetImage('assets/images/snapchatLogo.png'),
-                                    width: screenSize.size.width / 5 * 0.5,
-                                  )),
-                            ),
-                            RaisedButton(
-                              color: Colors.white,
-                              shape: CircleBorder(),
-                              onPressed: () {},
-                              child: Container(
-                                  width: screenSize.size.width / 5 * 0.8,
-                                  padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
-                                  child: Image(
-                                    image: AssetImage('assets/images/whatsappLogo.png'),
-                                    width: screenSize.size.width / 5 * 0.5,
-                                  )),
-                            ),
-                            RaisedButton(
-                              color: Theme.of(context).primaryColor,
-                              shape: CircleBorder(),
-                              onPressed: () {},
-                              child: Container(
-                                  padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
-                                  child: Icon(
-                                    MdiIcons.dotsHorizontal,
-                                    color: isDarkModeEnabled ? Colors.white : Colors.black,
-                                    size: screenSize.size.width / 5 * 0.5,
-                                  )),
-                            ),
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                )),
-          );
-        },
-        transitionDuration: Duration(milliseconds: 200),
-        barrierDismissible: true,
-        barrierLabel: '',
-        pageBuilder: (context, animation1, animation2) {});
   }
 }

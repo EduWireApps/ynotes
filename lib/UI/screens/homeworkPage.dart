@@ -162,7 +162,9 @@ class HomeworkPageState extends State<HomeworkPage> {
                             borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                             child: InkWell(
                               borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-                              onTap: () {},
+                              onTap: () {
+                                CustomDialogs.showUnimplementedSnackBar(context);
+                              },
                               child: Container(
                                   height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
                                   padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
@@ -171,11 +173,11 @@ class HomeworkPageState extends State<HomeworkPage> {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: <Widget>[
                                         Icon(
-                                          Icons.settings,
+                                          Icons.swap_horiz_outlined,
                                           color: isDarkModeEnabled ? Colors.white : Colors.black,
                                         ),
                                         Text(
-                                          "Paramètres",
+                                          "Devoirs à faire",
                                           style: TextStyle(
                                             fontFamily: "Asap",
                                             color: isDarkModeEnabled ? Colors.white : Colors.black,

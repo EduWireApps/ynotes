@@ -29,7 +29,7 @@ class _AppsPageState extends State<AppsPage> {
         child: MaterialApp(debugShowCheckedModeBanner: false, theme: lightTheme, darkTheme: darkTheme, themeMode: isDarkModeEnabled ? ThemeMode.dark : ThemeMode.light, initialRoute: initialRoute, routes: {
       '/homePage': (context) => Material(child: HomePage()),
       '/cloud': (context) => Material(child: CloudPage()),
-      '/mail': (context) => Material(child: MailPage(context: widget.rootcontext)),
+      '/mail': (context) => Material(child: MailPageOld(context: widget.rootcontext)),
       '/polls': (context) => Material(child: PollsAndInfosPage()),
     }));
   }

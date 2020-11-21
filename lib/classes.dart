@@ -205,7 +205,7 @@ class Mail {
   //E.G : 183 ==> To class mails in folders
   final String idClasseur;
   final Map<String, dynamic> from;
-  final List to;
+  final to;
   //E.G : "Coronavirus school prank"
   final String subject;
   final String date;
@@ -408,6 +408,21 @@ class AgendaEvent {
   AgendaEvent(this.start, this.end, this.name, this.location, this.left, this.height, this.canceled, this.id, this.width, {this.wholeDay = true, this.isLesson = false, this.lesson, this.reminders, this.description, this.alarm, this.color, this.recurrenceScheme});
   factory AgendaEvent.fromJson(Map<String, dynamic> json) => _$AgendaEventFromJson(json);
   Map<String, dynamic> toJson() => _$AgendaEventToJson(this);
+}
+
+@HiveType(typeId: 9)
+class Recipient {
+  @HiveField(0)
+  final String name;
+  @HiveField(1)
+  final String surname;
+  @HiveField(2)
+  final String id;
+  @HiveField(3)
+  final String discipline;
+  @HiveField(4)
+  final bool isTeacher;
+  Recipient(this.name, this.surname, this.id, this.isTeacher, this.discipline);
 }
 
 class CloudItem {

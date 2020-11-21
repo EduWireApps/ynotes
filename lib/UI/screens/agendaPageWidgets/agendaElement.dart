@@ -45,6 +45,22 @@ class _AgendaElementState extends State<AgendaElement> {
     super.initState();
   }
 
+  getEventName() {
+    if (this.widget.event != null && this.widget.event.name != null) {
+      return "${widget.event.name[0].toUpperCase()}${widget.event.name.substring(1).toLowerCase()}";
+    } else {
+      return "${widget.event.lesson.matiere[0].toUpperCase()}${widget.event.lesson.matiere.substring(1).toLowerCase()}";
+    }
+  }
+
+  Future<int> getRelatedColor() async {
+    if (this.widget.event != null && this.widget.event.color != null) {
+      return this.widget.event.color;
+    } else {
+      return await getColor(this.widget.event.lesson.codeMatiere);
+    }
+  }
+
   bool buttons = false;
   bool isAlarmSet = false;
   @override
@@ -54,10 +70,13 @@ class _AgendaElementState extends State<AgendaElement> {
       children: [
         Container(
           child: FutureBuilder(
-              future: this.widget.event.isLesson ? getColor(this.widget.event.lesson.codeMatiere) : getEventColor(this.widget.event),
+              future: getRelatedColor(),
               initialData: 0,
               builder: (context, snapshot) {
-                Color color = Color(snapshot.data);
+                Color color = Colors.white;
+                if (snapshot.data != null) {
+                  color = Color(snapshot.data);
+                }
                 final f = new DateFormat('H:mm');
                 return Container(
                   decoration: BoxDecoration(boxShadow: [
@@ -150,20 +169,12 @@ class _AgendaElementState extends State<AgendaElement> {
                                       child: Wrap(
                                         spacing: screenSize.size.width / 5 * 3.2,
                                         children: [
-                                          if (this.widget.event.isLesson)
-                                            AutoSizeText(
-                                              "${widget.event.lesson.matiere[0].toUpperCase()}${widget.event.lesson.matiere.substring(1).toLowerCase()}",
-                                              style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
-                                              textAlign: TextAlign.left,
-                                              minFontSize: 12,
-                                            ),
-                                          if (!this.widget.event.isLesson && widget.event.name != null && widget.event.name != "")
-                                            AutoSizeText(
-                                              "${widget.event.name[0].toUpperCase()}${widget.event.name.substring(1).toLowerCase()}",
-                                              style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
-                                              textAlign: TextAlign.left,
-                                              minFontSize: 12,
-                                            ),
+                                          AutoSizeText(
+                                            getEventName(),
+                                            style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
+                                            textAlign: TextAlign.left,
+                                            minFontSize: 12,
+                                          ),
                                           if (this.widget.event.isLesson && widget.event.lesson.teachers != null && widget.event.lesson.teachers.length > 0 && widget.event.lesson.teachers[0] != "")
                                             Wrap(children: [
                                               AutoSizeText(

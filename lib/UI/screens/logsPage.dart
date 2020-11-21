@@ -13,6 +13,8 @@ class LogsPage extends StatefulWidget {
 }
 
 class _LogsPageState extends State<LogsPage> {
+
+
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
     return Scaffold(
@@ -28,7 +30,6 @@ class _LogsPageState extends State<LogsPage> {
                   await removeLogFile();
                   setState(() {});
                 }
-                
               },
             ),
           ],

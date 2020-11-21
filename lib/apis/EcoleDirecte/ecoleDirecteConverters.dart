@@ -10,7 +10,7 @@ import '../../classes.dart';
 
 class EcoleDirecteConverter {
   static Mail mail(Map<String, dynamic> mailData) {
-    printWrapped(mailData.toString());
+    var to = mailData["to"];
     String id = mailData["id"].toString() ?? "";
     String messageType = mailData["mtype"] ?? "";
     bool isMailRead = mailData["read"] ?? false;
@@ -18,11 +18,10 @@ class EcoleDirecteConverter {
     Map from = mailData["from"] ?? "";
     String subject = mailData["subject"] ?? "";
     String date = mailData["date"];
-    List to = mailData["to"] ?? null;
+
     String loadedContent = "";
     List<Map<String, dynamic>> filesData = mailData["files"].cast<Map<String, dynamic>>();
     List<Document> files = documents(filesData);
-
     Mail mail = Mail(id, messageType, isMailRead, idClasseur, from, subject, date, to: to, files: files);
     return mail;
   }
@@ -219,5 +218,18 @@ class EcoleDirecteConverter {
       ));
     });
     return cloudFolders;
+  }
+
+  static List<Recipient> recipients(var recipientsData) {
+    List<Recipient> recipients = List();
+    recipientsData["data"]["contacts"].forEach((recipientData) {
+      String id = recipientData["id"].toString();
+      String name = recipientData["prenom"].toString();
+      bool isTeacher = recipientData["type"] == "P";
+      String surname = recipientData["nom"].toString();
+      String discipline = recipientData["classes"][0]["matiere"].toString();
+      recipients.add(Recipient(name, surname, id, isTeacher, discipline));
+    });
+    return recipients;
   }
 }

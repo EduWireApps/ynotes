@@ -128,6 +128,17 @@ class EcoleDirecteMethod {
     return cloudFolders;
   }
 
+  static Future<List<Recipient>> recipients() async {
+    await EcoleDirecteMethod.testToken();
+    String data = 'data={"token": "$token"}';
+    String rootUrl = 'https://api.ecoledirecte.com/v3/messagerie/contacts/professeurs.awp?verbe=get';
+    List<Recipient> recipients = await request(data, rootUrl, "", EcoleDirecteConverter.recipients, "Recipients request returned an error:", ignoreMethodAndId: true);
+    if (recipients != null) {
+      await offline.updateRecipients(recipients);
+    }
+    return recipients;
+  }
+
 //Bool value and Token validity tester
   static testToken() async {
     if (token == "" || token == null) {
@@ -156,6 +167,90 @@ class EcoleDirecteMethod {
         await EcoleDirecteMethod.refreshToken();
         return false;
       }
+    }
+  }
+
+  static Future sendMail(String subject, String content, List<Recipient> recipientsList) async {
+    String recipients = "";
+    String parsedContent = base64.encode(utf8.encode(content));
+    recipientsList.forEach((element) {
+      String eOrp = element.isTeacher ? "P" : "E";
+      int id = int.tryParse(element.id);
+      String surname = element.surname;
+      String name = element.name;
+
+      recipients += """{
+                        "to_cc_cci": "to",
+                        "type": "$eOrp",
+                        "id": $id,
+                        "isSelected": true,
+                        "nom": "$name",
+                        "prenom": "$surname",
+                        "fonction": {
+                            "id": 0,
+                            "libelle": ""
+                        },
+                        "classe": {
+                            "id": 0,
+                            "libelle": "",
+                            "code": ""
+                        },
+                        "classes": [],
+                        "responsable": {
+                            "id": 0,
+                            "typeResp": "",
+                            "versQui": "",
+                            "contacts": []
+                        }
+                    },""";
+    });
+
+    await EcoleDirecteMethod.testToken();
+    String id = await storage.read(key: "userID");
+    var url = 'https://api.ecoledirecte.com/v3/eleves/$id/messages.awp?verbe=post';
+
+    Map<String, String> headers = {"Content-type": "text/plain"};
+    String data = """data={
+    "message": {
+        "groupesDestinataires": [
+            {
+                "destinataires": [
+                    $recipients
+                ],
+            }
+        ],
+        "content": "$parsedContent",
+        "subject": "$subject",
+        "files": []
+    },
+    "anneeMessages": "",
+    "token": "$token"
+}""";
+    printWrapped(data);
+    //encode Map to JSON
+
+    var body = data;
+    var response = await http.post(url, headers: headers, body: body).catchError((e) {
+      throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou reessayez plus tard.");
+    });
+    print("Starting the mail reading");
+    try {
+      if (response.statusCode == 200) {
+        Map<String, dynamic> req = jsonDecode(response.body);
+        if (req['code'] == 200) {
+          print("Mail sent");
+          return;
+        }
+        //Return an error
+        else {
+          throw "Error wrong internal status code ";
+        }
+      } else {
+        print(response.statusCode);
+        throw "Error wrong status code";
+      }
+    } catch (e) {
+      throw ("Error while sending mail $e");
     }
   }
 

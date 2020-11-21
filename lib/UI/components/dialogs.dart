@@ -5,8 +5,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ynotes/UI/components/dialogs/authorizationsDialog.dart';
 import 'package:ynotes/UI/components/dialogs/colorPicker.dart';
 import 'package:ynotes/UI/components/dialogs/persistantNotificationDialog.dart';
+import 'package:ynotes/UI/components/dialogs/updateNoteDialog.dart';
 import 'package:ynotes/UI/components/giffy_dialog/src/asset.dart';
+import 'package:ynotes/UI/components/modalBottomSheets/writeMailBottomSheet.dart';
 import 'package:ynotes/UI/screens/settingsPage.dart';
+import 'package:ynotes/apis/EcoleDirecte/ecoleDirecteMethods.dart';
+import '../../classes.dart';
 import '../../usefulMethods.dart';
 import 'package:ynotes/UI/utils/fileUtils.dart';
 import 'dialogs/folderChoiceDialog.dart';
@@ -15,6 +19,7 @@ import 'dialogs/numberChoiceDialog.dart';
 import 'dialogs/recurringEventsDialog.dart';
 import 'dialogs/specialtiesDialog.dart';
 import 'dialogs/textFieldChoiceDialog.dart';
+import 'dialogs/newRecipientDialog.dart';
 
 class CustomDialogs {
   static void showGiffyDialog(BuildContext context, HelpDialog hd) {
@@ -151,13 +156,13 @@ class CustomDialogs {
     );
   }
 
-  static Future showMultipleChoicesDialog(BuildContext context, List choices, List<int> initialSelection) {
+  static Future showMultipleChoicesDialog(BuildContext context, List choices, List<int> initialSelection, {singleChoice = false}) {
     // show the dialog
     return showDialog(
       barrierDismissible: true,
       context: context,
       builder: (BuildContext context) {
-        return MultipleChoicesDialog(choices, initialSelection);
+        return MultipleChoicesDialog(choices, initialSelection, singleChoice: singleChoice);
       },
     );
   }
@@ -246,6 +251,43 @@ class CustomDialogs {
           screenSize = MediaQuery.of(context);
           return Container(child: DialogSpecialties());
         });
+  }
+
+  static showUpdateNoteDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return UpdateNoteDialog();
+        });
+  }
+
+  static showNewRecipientDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return NewRecipientDialog();
+        });
+  }
+
+  static Future writeModalBottomSheet(context, {List<Recipient> defaultListRecipients, defaultSubject}) async {
+    var mailData = await showModalBottomSheet(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+        ),
+        backgroundColor: Theme.of(context).primaryColor,
+        context: context,
+        isScrollControlled: true,
+        builder: (BuildContext bc) {
+          return WriteMailBottomSheet(defaultRecipients: defaultListRecipients, defaultSubject: defaultSubject);
+        });
+    if (mailData != null) {
+      await EcoleDirecteMethod.sendMail(mailData[0], mailData[1], mailData[2]).then((value) {
+        print("success");
+        CustomDialogs.showAnyDialog(context, "Le mail a été envoyé.");
+      }).catchError((Object error) {
+        CustomDialogs.showAnyDialog(context, "Le mail n'a pas été envoyé !");
+      });
+    }
   }
 }
 

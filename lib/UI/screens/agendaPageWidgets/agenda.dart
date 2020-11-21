@@ -5,16 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart' as ptr;
 import 'package:ynotes/UI/components/modalBottomSheets/agendaEventBottomSheet.dart';
-import 'package:ynotes/UI/components/modalBottomSheets/agendaEventEditBottomSheet.dart';
 import 'package:ynotes/UI/screens/agendaPage.dart';
 import 'package:ynotes/UI/screens/agendaPageWidgets/agendaGrid.dart';
 import 'package:ynotes/UI/screens/agendaPageWidgets/buttons.dart';
 import 'package:ynotes/UI/screens/agendaPageWidgets/spaceAgenda.dart';
-import 'package:ynotes/UI/screens/homeworkPage.dart';
 import 'package:ynotes/UI/utils/fileUtils.dart';
 import 'package:ynotes/apis/EcoleDirecte.dart';
-import 'package:ynotes/apis/utils.dart';
 import 'package:ynotes/classes.dart';
 import 'package:ynotes/main.dart';
 
@@ -183,6 +181,21 @@ class _AgendaState extends State<Agenda> {
     );
   }
 
+  void _onRefresh() async {
+    // monitor network fetch
+    await Future.delayed(Duration(milliseconds: 1000));
+    // if failed,use refreshFailed()
+    _refreshController.refreshCompleted();
+  }
+
+  void _onLoading() async {
+    // monitor network fetch
+    await Future.delayed(Duration(milliseconds: 1000));
+    // if failed,use loadFailed(),if no data return,use LoadNodata()
+  }
+
+  List<String> items = ["1", "2", "3", "4", "5", "6", "7", "8"];
+  ptr.RefreshController _refreshController = ptr.RefreshController(initialRefresh: false);
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
@@ -218,7 +231,7 @@ class _AgendaState extends State<Agenda> {
                                   future: agendaFuture,
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData && snapshot.data != null && snapshot.data.length != 0) {
-                                      return RefreshIndicator(onRefresh: refreshAgendaFutures, child: AgendaGrid(snapshot.data, initState));
+                                      return RefreshIndicator(onRefresh: refreshAgendaFutures, child: AgendaGrid(snapshot.data, initState,));
                                     }
                                     if (snapshot.data != null && snapshot.data.length == 0) {
                                       return Center(

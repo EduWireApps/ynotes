@@ -26,6 +26,7 @@ import 'package:ynotes/usefulMethods.dart';
 import 'UI/screens/logsPage.dart';
 import 'UI/screens/schoolAPIChoicePage.dart';
 import 'UI/utils/themeUtils.dart';
+import 'notifications.dart';
 
 var uuid = Uuid();
 

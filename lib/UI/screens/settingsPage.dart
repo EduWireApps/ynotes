@@ -1,3 +1,4 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -282,6 +283,15 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                   subtitleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
                 ),
                 SettingsTile(
+                  title: 'Note de mise à jour',
+                  leading: Icon(MdiIcons.file, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                  onTap: () async {
+                    CustomDialogs.showUpdateNoteDialog(context);
+                  },
+                  titleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                  subtitleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
+                ),
+                SettingsTile(
                   title: 'A propos de cette application',
                   leading: Icon(MdiIcons.information, color: isDarkModeEnabled ? Colors.white : Colors.black),
                   onTap: () async {
@@ -305,7 +315,25 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     title: 'Bouton magique',
                     leading: Icon(MdiIcons.testTube, color: isDarkModeEnabled ? Colors.white : Colors.black),
                     onTap: () async {
-                    print(await  CustomDialogs.showAuthorizationsDialog(context, " la configuration du mode ne pas déranger.", "Désactiver ou activer le mode ne pas déranger dans la journée.")) ;
+                      /* AwesomeNotifications().initialize('resource://drawable/calendar', [
+                        NotificationChannel(channelKey: 'alarm', defaultPrivacy: NotificationPrivacy.Public, channelName: 'Alarmes', importance: NotificationImportance.High, channelDescription: "Alarmes et rappels de l'application yNotes", defaultColor: Color(0xFF9D50DD), ledColor: Colors.white)
+                      ]);
+                      try {
+                        AwesomeNotifications().actionStream.listen((receivedNotification) {
+                          print(receivedNotification.id);
+                        });
+                      } catch (e) {}
+                      AwesomeNotifications().createNotification(
+                          content: NotificationContent(
+                            id: 10,
+                            channelKey: 'alarm',
+                            title: ' ${Emojis.building_school} Ramener les crayons de couleur',
+                            body: "Ramène ta fraise",
+                          
+                            progress: 5,
+                          ),
+                          actionButtons: [NotificationActionButton(key: "REPLY", label: "FAIT", autoCancel: true, buttonType: ActionButtonType.KeepOnTop), NotificationActionButton(key: "LOL", label: "PAS FAIT", autoCancel: true, buttonType: ActionButtonType.KeepOnTop)]);*/
+                      CustomDialogs.showUpdateNoteDialog(context);
                     },
                     titleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
                     subtitleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),

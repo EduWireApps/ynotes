@@ -23,7 +23,8 @@ class Offline {
   List<AgendaReminder> remindersData;
   //Return agenda event
   Map<dynamic, dynamic> agendaEventsData;
-
+  //Return recipients
+  List<Recipient> recipientsData;
 //Boxes containing offline data
   Box offlineBox;
   Box homeworkDoneBox;
@@ -41,6 +42,7 @@ class Offline {
       Hive.registerAdapter(PollInfoAdapter());
       Hive.registerAdapter(AgendaReminderAdapter());
       Hive.registerAdapter(AgendaEventAdapter());
+      Hive.registerAdapter(RecipientAdapter());
       Hive.registerAdapter(alarmTypeAdapter());
     } catch (e) {
       print("Error " + e.toString());
@@ -66,7 +68,7 @@ class Offline {
       var offlinePollsData = await offlineBox.get("polls");
       var offlineRemindersData = await offlineBox.get("reminders");
       var offlineAgendaEventsData = await offlineBox.get("agendaEvents");
-
+      var offlineRecipientsData = await offlineBox.get("recipients");
       //ensure that fetched data isn't null and if not, add it to the final value
       if (offlineLessonsData != null) {
         this.lessonsData = Map<dynamic, dynamic>.from(offlineLessonsData);
@@ -85,6 +87,9 @@ class Offline {
       }
       if (offlineAgendaEventsData != null) {
         this.agendaEventsData = Map<dynamic, dynamic>.from(offlineAgendaEventsData);
+      }
+      if (offlineRecipientsData != null) {
+        this.recipientsData = offlineRecipientsData.cast<Recipient>();
       }
     } catch (e) {
       print("Error while refreshing " + e.toString());
@@ -302,6 +307,23 @@ class Offline {
       await refreshData();
     } catch (e) {
       print("Error while updating polls " + e.toString());
+    }
+  }
+
+  updateRecipients(List<Recipient> newData) async {
+    try {
+      if (!offlineBox.isOpen) {
+        offlineBox = await Hive.openBox("offlineData");
+      }
+      var old = await offlineBox.get("recipients");
+      newData.forEach((recipient) {
+        old.removeWhere((a) => a.id == recipient.id);
+      });
+
+      await offlineBox.put("recipients", newData);
+      await refreshData();
+    } catch (e) {
+      print("Error while updating recipients " + e.toString());
     }
   }
 
@@ -550,6 +572,20 @@ class Offline {
       }
     } catch (e) {
       print("Error while returning agenda events for week $week " + e.toString());
+      return null;
+    }
+  }
+
+  Future<List<Recipient>> recipients() async {
+    try {
+      if (recipientsData != null) {
+        return recipientsData;
+      } else {
+        await refreshData();
+        return recipientsData.cast<Recipient>();
+      }
+    } catch (e) {
+      print("Error while returning recipients " + e.toString());
       return null;
     }
   }

@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:ynotes/apis/utils.dart';
 import 'package:ynotes/classes.dart';
 
@@ -36,6 +37,21 @@ class RecurringEventSchemes {
     print(selectedDays);
     print(date);
     return (stringScheme.length == 9 && (((stringScheme[0] == "0" || stringScheme[0] == parity.toString()) && selectedDays.contains(date.weekday)) || stringScheme[1] == "1"));
+  }
+
+  String toCron(int scheme) {
+    TimeOfDay tod = TimeOfDay.fromDateTime(this.date);
+    List selectedDays;
+    var stringScheme = scheme.toString();
+    for (int i = 2; i < stringScheme.runes.length; i++) {
+      selectedDays = List();
+      if (stringScheme[i] == "1") {
+        selectedDays.add(i - 1);
+      }
+    }
+    bool everyDay = (stringScheme[1] == "1");
+    String cron = tod.minute.toString() + " " + tod.hour.toString() + " *" + " *" + (everyDay ? "*" : (selectedDays.join(",")));
+    return cron;
   }
 
   static String humanReadableTranslaterFromRecurrencyScheme(int scheme) {

@@ -305,30 +305,30 @@ class _LoginPageState extends State<LoginPage> {
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: <Widget>[
                                           Material(
-                                            color: chosenParser == 0 ? Color(0xff2874A6) : Color(0xff61b872),
-                                            borderRadius: BorderRadius.only(topRight: Radius.circular(25), bottomRight: Radius.circular(25)),
+                                            shape: CircleBorder(),
+                                            color: chosenParser == 0 ? Colors.white : Color(0xff61b872),
                                             child: InkWell(
                                               onTap: () {
                                                 Navigator.of(context).pushReplacement(router(SchoolAPIChoice()));
                                               },
-                                              borderRadius: BorderRadius.only(topRight: Radius.circular(25), bottomRight: Radius.circular(25)),
+                                              customBorder: CircleBorder(),
                                               child: Container(
-                                                width: screenSize.size.width / 5 * 4,
-                                                height: screenSize.size.height / 10 * 1,
-                                                child: Row(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: <Widget>[
-                                                    Container(
-                                                      padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width / 10 * 0.1),
-                                                      margin: EdgeInsets.only(right: MediaQuery.of(context).size.width / 10 * 0.2),
-                                                      child: Image(
-                                                          width: MediaQuery.of(context).size.width / 5 * 0.5,
-                                                          height: screenSize.size.width / 5 * 0.5,
-                                                          fit: BoxFit.fitWidth,
-                                                          image: AssetImage('assets/images/${chosenParser == 0 ? "EcoleDirecte" : "Pronote"}/${chosenParser == 0 ? "EcoleDirecte" : "Pronote"}Icon.png')),
-                                                    ),
-                                                    Container(width: screenSize.size.width / 5 * 3, child: FittedBox(child: Text("Connexion avec ${chosenParser == 0 ? "EcoleDirecte" : "Pronote"}", textAlign: TextAlign.center, style: TextStyle(fontFamily: "Asap", color: Colors.white)))),
-                                                  ],
+                                                width: screenSize.size.width / 5 * 1,
+                                                height: screenSize.size.width / 5 * 1,
+                                                child: FittedBox(
+                                                  child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: <Widget>[
+                                                      Container(
+                                                        padding: EdgeInsets.all(MediaQuery.of(context).size.width / 10 * 0.1),
+                                                        child: Image(
+                                                            width: MediaQuery.of(context).size.width / 5 * 0.5,
+                                                            height: screenSize.size.width / 5 * 0.5,
+                                                            fit: BoxFit.fitWidth,
+                                                            image: AssetImage('assets/images/${chosenParser == 0 ? "EcoleDirecte" : "Pronote"}/${chosenParser == 0 ? "EcoleDirecte" : "Pronote"}Icon.png')),
+                                                      ),
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
                                             ),
@@ -336,9 +336,9 @@ class _LoginPageState extends State<LoginPage> {
                                           SingleChildScrollView(
                                             child: Container(
                                               margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
-                                              width: screenSize.size.width / 5 * 4,
+                                              width: screenSize.size.width,
                                               padding: EdgeInsets.symmetric(vertical: screenSize.size.width / 5 * 0.2),
-                                              decoration: BoxDecoration(borderRadius: BorderRadius.only(topRight: Radius.circular(25), bottomRight: Radius.circular(25)), color: Colors.white),
+                                              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(11)),
                                               child: SingleChildScrollView(
                                                 child: Column(
                                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -572,7 +572,54 @@ class _LoginPageState extends State<LoginPage> {
                                                                 SizedBox(
                                                                   width: screenSize.size.width / 5 * 0.2,
                                                                 ),
-                                                                OutlineButton(
+                                                                RaisedButton(
+                                                                  color: Colors.green,
+                                                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
+                                                                  onPressed: () async {
+                                                                    await getChosenParser();
+
+                                                                    //Actions when pressing the ok button
+                                                                    if (_username.text != "" && (chosenParser == 1 ? _url.text != null : true) && _password.text != null) {
+                                                                      //Login using the chosen API
+                                                                      connectionData = localApi.login(_username.text.trim(), _password.text.trim(), url: _url.text.trim(), cas: casValue);
+
+                                                                      openLoadingDialog();
+                                                                    } else {
+                                                                      setState(() {
+                                                                        _obligationText = " (obligatoire)";
+                                                                      });
+                                                                    }
+                                                                  },
+                                                                  onLongPress: () async {
+                                                                    if (chosenParser == 1 && _url.text.length == 0 && _password.text.length == 0 && _username.text.length == 0) {
+                                                                      connectionData = localApi.login("demonstration", "pronotevs", url: "https://demo.index-education.net/pronote/eleve.html", cas: "Aucun");
+
+                                                                      openLoadingDialog();
+                                                                    } else {
+                                                                      if (_username.text != "" && (chosenParser == 1 ? _url.text != null : true) && _password.text != null) {
+                                                                        //Login using the chosen API
+                                                                        connectionData = localApi.login(_username.text.trim(), _password.text.trim(), url: _url.text.trim(), cas: casValue);
+
+                                                                        openLoadingDialog();
+                                                                      } else {
+                                                                        setState(() {
+                                                                          _obligationText = " (obligatoire)";
+                                                                        });
+                                                                      }
+                                                                    }
+                                                                  },
+                                                                  child: Container(
+                                                                    child: Text(
+                                                                      'Connexion',
+                                                                      style: TextStyle(
+                                                                        color: Colors.white,
+                                                                        fontFamily: "Asap",
+                                                                        fontSize: screenSize.size.width / 5 * 0.3,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                /*OutlineButton(
                                                                   color: Color(0xff252B62),
                                                                   highlightColor: Color(0xff252B62),
                                                                   focusColor: Color(0xff252B62),
@@ -618,7 +665,7 @@ class _LoginPageState extends State<LoginPage> {
                                                                     style: TextStyle(fontFamily: "Asap", fontSize: screenSize.size.width / 5 * 0.3, fontWeight: FontWeight.bold, color: textButtonColor),
                                                                     maxFontSize: 45,
                                                                   ),
-                                                                ),
+                                                                ),*/
                                                               ],
                                                             ),
                                                           )),

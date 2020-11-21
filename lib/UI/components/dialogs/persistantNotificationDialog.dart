@@ -1,14 +1,14 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:battery_optimization/battery_optimization.dart';
-import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dnd/flutter_dnd.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/UI/screens/agendaPageWidgets/agenda.dart';
-import 'package:ynotes/background.dart';
 import 'package:ynotes/main.dart';
+
+import '../../../notifications.dart';
 import '../../../usefulMethods.dart';
 
 class PersistantNotificationConfigDialog extends StatefulWidget {
@@ -77,6 +77,7 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
         width: screenSize.size.width / 5 * 4.7,
         child: Column(
           children: [
+            
             Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(

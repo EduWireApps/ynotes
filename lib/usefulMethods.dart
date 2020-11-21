@@ -302,10 +302,8 @@ specialtiesSelectionAvailable() async {
   }
 }
 
-//lol
-Future<int> getEventColor(AgendaEvent event) async {
-  return event.color;
-}
+
+
 
 ReadStorage(_key) async {
   String u = await storage.read(key: _key);

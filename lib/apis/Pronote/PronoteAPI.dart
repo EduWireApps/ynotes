@@ -986,7 +986,6 @@ class PronotePeriod {
 
     var other = List();
     grades.forEach((element) async {
-      print(element["service"]["V"]["L"]);
       list.add(Grade(
           valeur: this.gradeTranslate(element["note"]["V"]),
           devoir: element["commentaire"],
@@ -998,7 +997,7 @@ class PronotePeriod {
           letters: element["note"]["V"].contains("|"),
           coef: element["coefficient"].toString(),
           noteSur: element["bareme"]["V"],
-          moyenneClasse: average(response, element["service"]["V"]["L"].hashCode.toString())[3],
+          moyenneClasse: this.gradeTranslate(element["moyenne"]["V"]),
           date: element["date"]["V"],
           nonSignificatif: this.gradeTranslate(element["note"]["V"]) == "NonNote" ? true : false,
           typeDevoir: "Interrogation",

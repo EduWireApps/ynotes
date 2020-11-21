@@ -36,12 +36,13 @@ class AgendaPageState extends State<AgendaPage> {
       controller: agendaPageSettingsController,
       settingsWidget: AgendaSettings(),
       child: Container(
+        margin: EdgeInsets.zero,
         width: screenSize.size.width,
         height: screenSize.size.height,
         child: Stack(
           children: [
             Align(
-              alignment: Alignment.bottomCenter,
+              alignment: Alignment.topCenter,
               child: SingleChildScrollView(
                 physics: NeverScrollableScrollPhysics(),
                 child: Column(
@@ -54,7 +55,7 @@ class AgendaPageState extends State<AgendaPage> {
                         buildBottomChild(),
                         minHeight: screenSize.size.height / 10 * 0.7,
                         maxHeight: screenSize.size.height / 10 * 8,
-                        spaceBetween: screenSize.size.height / 10 * 0.2,
+                        spaceBetween: screenSize.size.height / 10 * 0.3,
                         width: screenSize.size.width,
                         bottomExpandableColor: Color(0xff282246),
                         onDragUpdate: handleDragUpdate,

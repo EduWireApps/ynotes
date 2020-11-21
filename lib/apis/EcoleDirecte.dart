@@ -181,6 +181,12 @@ class APIEcoleDirecte extends API {
           return await getCloud(args, action, folder);
         }
         break;
+      case "mailRecipients":
+        {
+          print("Returing mail recipients");
+          return (await EcoleDirecteMethod.fetchAnyData(EcoleDirecteMethod.recipients, offline.recipients));
+        }
+        break;
     }
   }
 
@@ -392,7 +398,6 @@ Future readMail(String mailId, bool read) async {
   }
 }
 
-Future<Mail> sendMail() {}
 
 Future<int> getColor(String disciplineName) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();

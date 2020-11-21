@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -37,9 +36,10 @@ List<Map> entries = [
 class CustomDrawer extends StatefulWidget {
   Animation<Offset> buttonOffsetAnimation;
   Animation<double> buttonScaleAnimation;
+  final PageController controller;
   final int actualPage;
   @override
-  CustomDrawer(this.buttonOffsetAnimation, this.buttonScaleAnimation, this.actualPage);
+  CustomDrawer(this.buttonOffsetAnimation, this.buttonScaleAnimation, this.actualPage, this.controller);
   _CustomDrawerState createState() => _CustomDrawerState();
 }
 
@@ -135,10 +135,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             child: InkWell(
                               splashFactory: InkRipple.splashFactory,
                               onTap: () {
-                                  drawerPageViewController.jumpToPage(index);
-                               /* setState(() {
-                                  selected = index;
-                                });*/
+                                this.widget.controller.jumpToPage(index);
                               },
                               borderRadius: BorderRadius.circular(11),
                               child: Container(

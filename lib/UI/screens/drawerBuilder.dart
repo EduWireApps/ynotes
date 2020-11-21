@@ -11,16 +11,20 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:ynotes/UI/components/day_night_switch-master/lib/day_night_switch.dart';
 import 'package:ynotes/UI/components/quickMenu.dart';
 import 'package:ynotes/UI/screens/gradesPage.dart';
 import 'package:ynotes/UI/screens/homeworkPage.dart';
+import 'package:ynotes/UI/screens/mailPage.dart';
+import 'package:ynotes/UI/screens/settingsPage.dart';
 import 'package:ynotes/UI/screens/summaryPage.dart';
+import 'package:ynotes/apis/EcoleDirecte.dart';
 import 'package:ynotes/background.dart';
 import 'package:ynotes/classes.dart';
 import 'package:ynotes/main.dart';
-import 'package:ynotes/apis/EcoleDirecte.dart';
 
 import '../../models.dart';
+import '../../notifications.dart';
 import '../../usefulMethods.dart';
 import 'agendaPage.dart';
 import 'appsPage.dart';
@@ -37,10 +41,10 @@ class DrawerBuilder extends StatefulWidget {
 
 int _currentIndex = 0;
 bool isQuickMenuShown = false;
-// this will control the button clicks and tab changing
-PageController drawerPageViewController;
 
 class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateMixin {
+  PageController drawerPageViewController;
+  ValueNotifier<int> _notifier = ValueNotifier<int>(1);
   //Boolean
   bool isChanging = false;
 
@@ -52,7 +56,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
   StreamSubscription tabBarconnexion;
   final GlobalKey<AgendaPageState> agendaPage = new GlobalKey();
   final GlobalKey<SummaryPageState> summaryPage = new GlobalKey();
-   final GlobalKey<HomeworkPageState> homeworkPage = new GlobalKey();
+  final GlobalKey<HomeworkPageState> homeworkPage = new GlobalKey();
   bool isOffline = false;
   OverlayState overlayState;
   OverlayEntry _overlayEntry;
@@ -66,7 +70,8 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
   Animation<double> buttonScaleAnimation;
   Animation<double> fadeAnimation;
   bool isDrawerCollapsed = true;
-  int actualPage = 1;
+  int _previousPage;
+  var scaffoldKey = GlobalKey<ScaffoldState>();
 
   ///Apps
   ///`relatedApi` should be set to null if both APIs can use it
@@ -84,16 +89,19 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
       "menuName": "Devoirs",
       "icon": MdiIcons.calendarCheck,
     },
-    {"menuName": "Cloud", "icon": MdiIcons.cloud, "relatedApi": 0},
     {"menuName": "Messagerie", "icon": MdiIcons.mail, "relatedApi": 0},
+    {"menuName": "Cloud", "icon": MdiIcons.cloud, "relatedApi": 0},
     {"menuName": "Fichiers", "icon": MdiIcons.file, "relatedApi": 0}
   ];
+
   @override
   void initState() {
     super.initState();
 
     // this creates the controller
-    drawerPageViewController = PageController(initialPage: 1);
+    drawerPageViewController = PageController(
+      initialPage: 1,
+    )..addListener(_onPageViewUpdate);
     bodyController = AnimationController(vsync: this, duration: drawerAnimationDuration);
 
     showTransparentLoginStatusController = AnimationController(vsync: this, duration: Duration(milliseconds: 450));
@@ -121,13 +129,11 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
     ConnectionStatusSingleton connectionStatus = ConnectionStatusSingleton.getInstance();
     tabBarconnexion = connectionStatus.connectionChange.listen(connectionChanged);
     isOffline = !connectionStatus.hasConnection;
-    drawerPageViewController.addListener(() => _onPageViewUpdate);
+    _previousPage = drawerPageViewController.initialPage;
   }
 
-  _onPageViewUpdate(int change) {
-    setState(() {
-      actualPage = change;
-    });
+  _onPageViewUpdate() {
+    _notifier?.value = drawerPageViewController.page.round();
   }
 
   void removeQuickMenu() {
@@ -141,16 +147,18 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
     }
   }
 
+  @override
+  void dispose() {
+    _notifier?.dispose();
+    drawerPageViewController.dispose();
+    super.dispose();
+  }
+
   void connectionChanged(dynamic hasConnection) {
     print("connected");
     setState(() {
       isOffline = !hasConnection;
     });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   bool wiredashShown = false;
@@ -176,15 +184,131 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
       },
       //PAppbar
       child: Scaffold(
+          key: scaffoldKey,
           resizeToAvoidBottomPadding: false,
           resizeToAvoidBottomInset: false,
+          drawer: Theme(
+            data: Theme.of(context).copyWith(
+              canvasColor: Theme.of(context).primaryColor, //This will change the drawer background to blue.
+              //other styles
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.only(bottomRight: Radius.circular(20), topRight: Radius.circular(20)),
+              child: Container(
+                width: screenSize.size.width / 5 * 3.6,
+                child: Drawer(
+                  child: ListView(
+                      // Important: Remove any padding from the ListView.
+                      padding: EdgeInsets.zero,
+                      children: <Widget>[
+                        Container(
+                          width: screenSize.size.width / 5 * 3.6,
+                          height: screenSize.size.height / 10 * 0.9,
+                          child: DrawerHeader(
+                            padding: EdgeInsets.zero,
+                            child: Container(
+                              width: screenSize.size.width / 5 * 3.6,
+                              child: Stack(
+                                children: [
+                                  Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Container(
+                                      margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
+                                      child: Transform.rotate(
+                                          angle: 0,
+                                          child: Image(
+                                            image: AssetImage('assets/images/LogoYNotes.png'),
+                                            width: screenSize.size.width / 5 * 0.4,
+                                          )),
+                                    ),
+                                  ),
+                                  Align(
+                                    alignment: Alignment.centerRight,
+                                    child: Transform.scale(
+                                      scale: 0.4,
+                                      child: DayNightSwitch(
+                                        height: screenSize.size.height / 10 * 0.2,
+                                        value: isDarkModeEnabled,
+                                        dragStartBehavior: DragStartBehavior.start,
+                                        onChanged: (val) async {
+                                          print(val);
+                                          setState(() {
+                                            isDarkModeEnabled = val;
+                                          });
+                                          Provider.of<AppStateNotifier>(context, listen: false).updateTheme(val);
+                                          await setSetting("nightmode", val);
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).primaryColorDark,
+                            ),
+                          ),
+                        ),
+                        for (var entry in entries)
+                          if (entry["relatedApi"] == null || entry["relatedApi"] == chosenParser)
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                ValueListenableBuilder(
+                                    valueListenable: _notifier,
+                                    builder: (context, value, child) {
+                                      return Material(
+                                        borderRadius: BorderRadius.only(topRight: Radius.circular(11), bottomRight: Radius.circular(11)),
+                                        color: (entries.indexOf(entry) == value) ? Theme.of(context).backgroundColor : Colors.transparent,
+                                        child: InkWell(
+                                          splashFactory: InkRipple.splashFactory,
+                                          onTap: () {
+                                            drawerPageViewController.jumpToPage(entries.indexOf(entry));
+                                          },
+                                          borderRadius: BorderRadius.only(topRight: Radius.circular(11), bottomRight: Radius.circular(11)),
+                                          child: Container(
+                                            margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
+                                            width: screenSize.size.width / 5 * 3.4,
+                                            height: screenSize.size.height / 10 * 0.6,
+                                            child: Row(
+                                              children: [
+                                                SizedBox(width: screenSize.size.width / 5 * 0.1),
+                                                Icon(
+                                                  entry["icon"],
+                                                  size: screenSize.size.width / 5 * 0.3,
+                                                  color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                                ),
+                                                SizedBox(
+                                                  width: screenSize.size.width / 5 * 0.1,
+                                                ),
+                                                Text(entry["menuName"], style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.width / 5 * 0.3)),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    }),
+                                SizedBox(
+                                  height: screenSize.size.height / 10 * 0.1,
+                                ),
+                              ],
+                            )
+                      ]), // Populate the Drawer in the next step.
+                ),
+              ),
+            ),
+          ),
           backgroundColor: darken(Theme.of(context).backgroundColor, forceAmount: 0.05),
           body: AnimatedBuilder(
               animation: fadeAnimation,
               builder: (context, snapshot) {
                 return Stack(
                   children: <Widget>[
-                    CustomDrawer(buttonOffsetAnimation, buttonScaleAnimation, drawerPageViewController.hasClients ? drawerPageViewController.page.round() : null),
+                    ValueListenableBuilder(
+                        valueListenable: _notifier,
+                        builder: (context, value, child) {
+                          return CustomDrawer(buttonOffsetAnimation, buttonScaleAnimation, value, this.drawerPageViewController);
+                        }),
                     SlideTransition(
                       position: bodyOffsetAnimation,
                       child: ScaleTransition(
@@ -201,64 +325,58 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                                   backgroundColor: Theme.of(context).backgroundColor,
                                   appBar: PreferredSize(
                                     preferredSize: Size.fromHeight(screenSize.size.height / 10 * 0.7),
-                                    child: AppBar(
-                                        shadowColor: Colors.transparent,
-                                        backgroundColor: Colors.transparent,
-                                        title: Text(entries[actualPage]["menuName"]),
-                                        actions: [
-                                          FlatButton(
-                                            color: Colors.transparent,
-                                            child: Icon(MdiIcons.wrenchOutline, color: isDarkModeEnabled ? Colors.white : Colors.black),
-                                            onPressed: () {
-                                             switch (actualPage) {
-                                                case 0:
-                                                  {
-                                                    agendaPage.currentState.triggerSettings();
-                                                  }
-                                                  break;
-                                                case 1:
-                                                  {
-                                                    summaryPage.currentState.triggerSettings();
-                                                  }
-                                                  break;
-                                                  case 3:
-                                                  {
-                                                    homeworkPage.currentState.triggerSettings();
-                                                  }
-                                                   break;
-                                              }
-                                            },
-                                          )
-                                        ],
-                                        leading: FlatButton(
-                                          color: Colors.transparent,
-                                          child: Icon(MdiIcons.menu, color: isDarkModeEnabled ? Colors.white : Colors.black),
-                                          onPressed: () {
-                                            if (!isDrawerCollapsed) {
-                                              bodyController.reverse();
-                                            } else {
-                                              bodyController.forward();
-                                            }
-                                            setState(() {
-                                              isDrawerCollapsed = !isDrawerCollapsed;
-                                            });
-                                          },
-                                        )),
+                                    child: ValueListenableBuilder(
+                                        valueListenable: _notifier,
+                                        builder: (context, value, child) {
+                                          return AppBar(
+                                              shadowColor: Colors.transparent,
+                                              backgroundColor: Colors.transparent,
+                                              title: Text(entries[value]["menuName"]),
+                                              actions: [
+                                                FlatButton(
+                                                  color: Colors.transparent,
+                                                  child: Icon(MdiIcons.wrenchOutline, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                                  onPressed: () {
+                                                    switch (value) {
+                                                      case 0:
+                                                        {
+                                                          agendaPage.currentState.triggerSettings();
+                                                        }
+                                                        break;
+                                                      case 1:
+                                                        {
+                                                          summaryPage.currentState.triggerSettings();
+                                                        }
+                                                        break;
+                                                      case 3:
+                                                        {
+                                                          homeworkPage.currentState.triggerSettings();
+                                                        }
+                                                        break;
+                                                    }
+                                                  },
+                                                )
+                                              ],
+                                              leading: FlatButton(
+                                                color: Colors.transparent,
+                                                child: Icon(MdiIcons.menu, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                                onPressed: () {
+                                                  scaffoldKey.currentState.openDrawer();
+                                                },
+                                              ));
+                                        }),
                                   ),
-                                  body: PageView(physics: NeverScrollableScrollPhysics(), controller: drawerPageViewController, onPageChanged: _onPageViewUpdate, children: [
+                                  body: PageView(physics: NeverScrollableScrollPhysics(), controller: drawerPageViewController, children: [
                                     AgendaPage(key: agendaPage),
                                     SummaryPage(
                                       switchPage: _switchPage,
                                       key: summaryPage,
                                     ),
                                     SingleChildScrollView(physics: NeverScrollableScrollPhysics(), child: GradesPage()),
-                                    HomeworkPage(key: homeworkPage,),
-                                    AnimatedContainer(
-                                        duration: Duration(milliseconds: 200),
-                                        margin: EdgeInsets.only(top: isOffline ? screenSize.size.height / 10 * 0.4 : 0),
-                                        child: AppsPage(
-                                          rootcontext: this.context,
-                                        ))
+                                    HomeworkPage(
+                                      key: homeworkPage,
+                                    ),
+                                    MailPage()
                                   ]),
                                 ),
                                 IgnorePointer(
