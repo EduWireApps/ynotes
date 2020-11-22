@@ -6,6 +6,7 @@ import 'package:flutter_dnd/flutter_dnd.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/UI/screens/agendaPageWidgets/agenda.dart';
+import 'package:ynotes/utils/themeUtils.dart';
 import 'package:ynotes/main.dart';
 
 import '../../../notifications.dart';
@@ -77,7 +78,6 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
         width: screenSize.size.width / 5 * 4.7,
         child: Column(
           children: [
-            
             Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.only(
@@ -103,7 +103,7 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
                           TextSpan(text: ' dans le panneau de contrôle de votre appareil.'),
                         ],
                       ),
-                      style: TextStyle(color: isDarkModeEnabled ? Colors.white : Colors.black, fontFamily: "Asap"),
+                      style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
                     ),
                   )
                 ],
@@ -111,7 +111,7 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
             ),
             SwitchListTile(
               value: boolSettings["agendaOnGoingNotification"],
-              title: Text("Activée", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.21)),
+              title: Text("Activée", style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.21)),
               onChanged: (value) async {
                 setState(() {
                   boolSettings["agendaOnGoingNotification"] = value;
@@ -125,7 +125,7 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
               },
               secondary: Icon(
                 MdiIcons.power,
-                color: isDarkModeEnabled ? Colors.white : Colors.black,
+                color: ThemeUtils.textColor(),
               ),
             ),
             Divider(
@@ -133,7 +133,7 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
             ),
             SwitchListTile(
               value: boolSettings["enableDNDWhenOnGoingNotifEnabled"],
-              title: Text("Activer le mode ne pas déranger à l'entrée en cours", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.20)),
+              title: Text("Activer le mode ne pas déranger à l'entrée en cours", style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.20)),
               onChanged: (value) async {
                 setState(() {
                   boolSettings["enableDNDWhenOnGoingNotifEnabled"] = value;
@@ -151,12 +151,12 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
               },
               secondary: Icon(
                 MdiIcons.moonWaningCrescent,
-                color: isDarkModeEnabled ? Colors.white : Colors.black,
+                color: ThemeUtils.textColor(),
               ),
             ),
             SwitchListTile(
               value: boolSettings["disableAtDayEnd"],
-              title: Text("Desactiver en fin de journée", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.20)),
+              title: Text("Desactiver en fin de journée", style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.20)),
               onChanged: (value) async {
                 setState(() {
                   boolSettings["disableAtDayEnd"] = value;
@@ -166,14 +166,14 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
               },
               secondary: Icon(
                 MdiIcons.powerOff,
-                color: isDarkModeEnabled ? Colors.white : Colors.black,
+                color: ThemeUtils.textColor(),
               ),
             ),
             ListTile(
-              title: Text("Réparer les permissions", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.21)),
+              title: Text("Réparer les permissions", style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.21)),
               subtitle: Text(
                 perm,
-                style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.16),
+                style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.16),
               ),
               onTap: () async {
                 if (!(await BatteryOptimization.isIgnoringBatteryOptimizations()) && await CustomDialogs.showAuthorizationsDialog(context, "la configuration d'optimisation de batterie", "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")) {
@@ -183,7 +183,7 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
               },
               leading: Icon(
                 MdiIcons.autoFix,
-                color: isDarkModeEnabled ? Colors.white : Colors.black,
+                color: ThemeUtils.textColor(),
               ),
             ),
           ],

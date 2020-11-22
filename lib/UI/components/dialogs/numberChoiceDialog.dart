@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:ynotes/utils/themeUtils.dart';
 import '../../../usefulMethods.dart';
+
 class NumberChoiceDialog extends StatefulWidget {
   final String unit;
 
@@ -26,7 +28,7 @@ class _NumberChoiceDialogState extends State<NumberChoiceDialog> {
             Container(
               child: Text(
                 "Choisir ${widget.unit}",
-                style: TextStyle(fontFamily: 'Asap', color: isDarkModeEnabled ? Colors.white : Colors.black),
+                style: TextStyle(fontFamily: 'Asap', color: ThemeUtils.textColor()),
                 textAlign: TextAlign.left,
               ),
             ),
@@ -38,10 +40,10 @@ class _NumberChoiceDialogState extends State<NumberChoiceDialog> {
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: isDarkModeEnabled ? Colors.white : Colors.black),
+                    borderSide: BorderSide(color: ThemeUtils.textColor()),
                   ),
                   focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: isDarkModeEnabled ? Colors.white : Colors.black),
+                    borderSide: BorderSide(color: ThemeUtils.textColor()),
                   ),
                 ),
                 onChanged: (newValue) {
@@ -51,7 +53,7 @@ class _NumberChoiceDialogState extends State<NumberChoiceDialog> {
                 },
                 style: TextStyle(
                   fontFamily: 'Asap',
-                  color: isDarkModeEnabled ? Colors.white : Colors.black,
+                  color: ThemeUtils.textColor(),
                 ),
               ),
             ),

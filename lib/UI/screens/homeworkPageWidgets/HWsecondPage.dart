@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/UI/animations/FadeAnimation.dart';
 import 'package:ynotes/UI/screens/homeworkPage.dart';
+import 'package:ynotes/utils/themeUtils.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/usefulMethods.dart';
 
@@ -79,7 +80,7 @@ class _HomeworkSecondPageState extends State<HomeworkSecondPage> {
                           padding: EdgeInsets.only(top: screenSize.size.width / 5 * 0.1, bottom: screenSize.size.width / 5 * 0.1, left: screenSize.size.width / 5 * 0.5, right: screenSize.size.width / 5 * 0.5),
                           decoration: BoxDecoration(color: Theme.of(context).primaryColorDark, borderRadius: BorderRadius.only(bottomRight: Radius.circular(11), topRight: Radius.circular(11))),
                           child: FittedBox(
-                            child: Text((dateToUse != null ? toBeginningOfSentenceCase(DateFormat("EEEE d MMMM", "fr_FR").format(dateToUse).toString()) : ""), style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black)),
+                            child: Text((dateToUse != null ? toBeginningOfSentenceCase(DateFormat("EEEE d MMMM", "fr_FR").format(dateToUse).toString()) : ""), style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor())),
                           ),
                         ),
                       ),
@@ -134,7 +135,7 @@ class _HomeworkSecondPageState extends State<HomeworkSecondPage> {
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                             fontFamily: "Asap",
-                                            color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                            color: ThemeUtils.textColor(),
                                           ),
                                         ),
                                         FlatButton(
@@ -146,7 +147,7 @@ class _HomeworkSecondPageState extends State<HomeworkSecondPage> {
                                               ? Text("Recharger",
                                                   style: TextStyle(
                                                     fontFamily: "Asap",
-                                                    color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                                    color: ThemeUtils.textColor(),
                                                   ))
                                               : FittedBox(child: SpinKitThreeBounce(color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4)),
                                           shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(18.0), side: BorderSide(color: Theme.of(context).primaryColorDark)),

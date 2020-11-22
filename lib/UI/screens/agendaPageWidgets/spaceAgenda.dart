@@ -10,6 +10,7 @@ import 'package:ynotes/UI/screens/agendaPageWidgets/agenda.dart';
 import 'package:ynotes/UI/screens/agendaPageWidgets/agendaGrid.dart';
 import 'package:ynotes/UI/screens/agendaPageWidgets/buttons.dart';
 import 'package:ynotes/UI/utils/fileUtils.dart';
+import 'package:ynotes/utils/themeUtils.dart';
 import 'package:ynotes/apis/utils.dart';
 import 'package:ynotes/classes.dart';
 import 'package:ynotes/main.dart';
@@ -40,7 +41,6 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
 
     getLessons(agendaDate);
   }
-
 
   //Force get date
   getLessons(DateTime date) async {
@@ -102,7 +102,7 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
     return Container(
         height: screenSize.size.height / 10 * 8,
         margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15), color: Color(0xff282246)),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15), color: ThemeUtils.spaceColor()),
         width: screenSize.size.width,
         child: Stack(
           children: [

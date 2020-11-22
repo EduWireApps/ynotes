@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import '../../../usefulMethods.dart';
+import 'package:ynotes/utils/themeUtils.dart';
+
 class MultipleChoicesDialog extends StatefulWidget {
   List choices;
   List<int> initialSelection;
@@ -43,14 +45,13 @@ class _MultipleChoicesDialogState extends State<MultipleChoicesDialog> {
                   Navigator.of(context).pop(indexsSelected);
                 },
                 child: Container(
-                  
                   width: screenSize.size.width / 5 * 4,
                   height: screenSize.size.height / 10 * 0.5,
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(margin: EdgeInsets.only(top: screenSize.size.width / 5 * 0.2), height: (screenSize.size.height / 10 * 8.8) / 10 * 0.75, width: screenSize.size.width / 5 * 2, child: Icon(MdiIcons.check, color: isDarkModeEnabled ? Colors.white : Colors.black)),
+                      Container(margin: EdgeInsets.only(top: screenSize.size.width / 5 * 0.2), height: (screenSize.size.height / 10 * 8.8) / 10 * 0.75, width: screenSize.size.width / 5 * 2, child: Icon(MdiIcons.check, color: ThemeUtils.textColor())),
                     ],
                   ),
                 ),
@@ -69,7 +70,7 @@ class _MultipleChoicesDialogState extends State<MultipleChoicesDialog> {
                       child: Row(
                         children: <Widget>[
                           CircularCheckBox(
-                            inactiveColor: isDarkModeEnabled ? Colors.white : Colors.black,
+                            inactiveColor: ThemeUtils.textColor(),
                             onChanged: (value) {
                               if (widget.singleChoice) {
                                 indexsSelected.clear();
@@ -94,7 +95,7 @@ class _MultipleChoicesDialogState extends State<MultipleChoicesDialog> {
                             width: screenSize.size.width / 5 * 3,
                             child: AutoSizeText(
                               widget.choices[index].toString(),
-                              style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                              style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                             ),
                           ),
                         ],

@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:ynotes/utils/themeUtils.dart';
 
 import '../../../usefulMethods.dart';
 
@@ -28,7 +29,7 @@ class _SummaryPageSettingsState extends State<SummaryPageSettings> {
               margin: EdgeInsets.all(screenSize.size.width / 5 * 0.2),
               child: Text(
                 "Paramètres des devoirs rapides",
-                style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: ThemeUtils.textColor()),
                 textAlign: TextAlign.left,
               )),
           Container(
@@ -58,7 +59,7 @@ class _SummaryPageSettingsState extends State<SummaryPageSettings> {
                         child: AutoSizeText(
                           "Devoirs sur :\n" + (_slider.toString() == "11" ? "∞" : _slider.toString()) + " jour" + (_slider > 1 ? "s" : ""),
                           textAlign: TextAlign.center,
-                          style: TextStyle(fontFamily: "Asap", fontSize: 15, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                          style: TextStyle(fontFamily: "Asap", fontSize: 15, color: ThemeUtils.textColor()),
                         ),
                       )
                     ],

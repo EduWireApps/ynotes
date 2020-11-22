@@ -1,8 +1,10 @@
+
 import 'dart:convert';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:ynotes/UI/utils/hiveExportImportUtils.dart';
+import 'package:ynotes/utils/hiveExportImportUtils.dart';
+import 'package:ynotes/utils/themeUtils.dart';
 import 'package:ynotes/classes.dart';
 import 'package:ynotes/usefulMethods.dart';
 
@@ -25,7 +27,7 @@ class _ExportPageState extends State<ExportPage> {
         backgroundColor: Theme.of(context).primaryColor,
         title: new Text(
           "Gestionnaire de sauvegarde",
-          style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+          style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
           textAlign: TextAlign.center,
         ),
       ),
@@ -43,7 +45,7 @@ class _ExportPageState extends State<ExportPage> {
                     "rappels sur un autre téléphone. L'assistant d'exportation va vous permettre d'exporter un fichier contenant toutes ces données dans un fichier .json, " +
                     "ces données seront importables à partir de ce même menu depuis un autre téléphone ou de celui à partir duquel vous effectuez l'exportation. " +
                     "Notez que vos données sont exportées en clair, il est recommandé de stocker ce fichier en sécurité et de ne pas le communiquer à quelqu'un d'autre. Notez que yNotes s'occupera automatiquement de fusionner les données sans perte.",
-                style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                 minFontSize: 0,
                 maxLines: 15,
                 textAlign: TextAlign.justify,
@@ -52,7 +54,7 @@ class _ExportPageState extends State<ExportPage> {
             SwitchListTile(
                 title: Text(
                   "Exporter mes devoirs (hors ligne et épinglés)",
-                  style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                  style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                 ),
                 value: exportPinnedHomework,
                 onChanged: (newValue) {
@@ -63,7 +65,7 @@ class _ExportPageState extends State<ExportPage> {
             SwitchListTile(
                 title: Text(
                   "Exporter mes rappels",
-                  style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                  style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                 ),
                 value: exportReminders,
                 onChanged: (newValue) {

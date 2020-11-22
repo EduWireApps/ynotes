@@ -1,8 +1,10 @@
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/UI/utils/fileUtils.dart';
+import 'package:ynotes/utils/themeUtils.dart';
 
 import '../../usefulMethods.dart';
 
@@ -13,8 +15,6 @@ class LogsPage extends StatefulWidget {
 }
 
 class _LogsPageState extends State<LogsPage> {
-
-
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
     return Scaffold(
@@ -59,7 +59,7 @@ class _LogsPageState extends State<LogsPage> {
                                 reverse: true,
                                 child: SelectableText(
                                   snapshot.data,
-                                  style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                  style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                                 ),
                               )));
                     } else {

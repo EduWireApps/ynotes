@@ -1,3 +1,4 @@
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:battery_optimization/battery_optimization.dart';
 import 'package:flutter/cupertino.dart';
@@ -8,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
+import 'package:ynotes/utils/themeUtils.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/apis/EcoleDirecte.dart';
 import 'package:ynotes/usefulMethods.dart';
@@ -486,7 +488,7 @@ class _page4State extends State<page4> {
               children: <Widget>[
                 Text(
                   "Paramètrons votre application",
-                  style: TextStyle(fontFamily: "Asap", fontSize: screenSize.size.height / 10 * 0.35, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                  style: TextStyle(fontFamily: "Asap", fontSize: screenSize.size.height / 10 * 0.35, color: ThemeUtils.textColor()),
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(
@@ -498,9 +500,9 @@ class _page4State extends State<page4> {
                 ListTile(
                     title: Text(
                       "Choix de spécialités",
-                      style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.3),
+                      style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.3),
                     ),
-                    leading: Icon(MdiIcons.formatListBulleted, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                    leading: Icon(MdiIcons.formatListBulleted, color: ThemeUtils.textColor()),
                     onTap: () {
                       CustomDialogs.showSpecialtiesChoice(context);
                     }),
@@ -512,12 +514,12 @@ class _page4State extends State<page4> {
                   style: TextStyle(
                     fontFamily: "Asap",
                     fontSize: screenSize.size.height / 10 * 0.27,
-                    color: isDarkModeEnabled ? Colors.white : Colors.black,
+                    color: ThemeUtils.textColor(),
                   ),
                   textAlign: TextAlign.center,
                 ),
                 Divider(
-                  color: isDarkModeEnabled ? Colors.white : Colors.black,
+                  color: ThemeUtils.textColor(),
                 ),
                 FutureBuilder(
                     future: getSetting("nightmode"),
@@ -525,7 +527,7 @@ class _page4State extends State<page4> {
                     builder: (context, snapshot) {
                       return SwitchListTile(
                         value: snapshot.data,
-                        title: Text("Mode nuit", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.3)),
+                        title: Text("Mode nuit", style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.3)),
                         onChanged: (value) {
                           setState(() {
                             Provider.of<AppStateNotifier>(context, listen: false).updateTheme(value);
@@ -534,16 +536,16 @@ class _page4State extends State<page4> {
                         },
                         secondary: Icon(
                           Icons.lightbulb_outline,
-                          color: isDarkModeEnabled ? Colors.white : Colors.black,
+                          color: ThemeUtils.textColor(),
                         ),
                       );
                     }),
                 Divider(
-                  color: isDarkModeEnabled ? Colors.white : Colors.black,
+                  color: ThemeUtils.textColor(),
                 ),
                 Text(
                   "Notifications",
-                  style: TextStyle(fontFamily: "Asap", fontSize: screenSize.size.height / 10 * 0.27, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                  style: TextStyle(fontFamily: "Asap", fontSize: screenSize.size.height / 10 * 0.27, color: ThemeUtils.textColor()),
                   textAlign: TextAlign.center,
                 ),
                 Divider(),
@@ -555,11 +557,11 @@ class _page4State extends State<page4> {
                           value: snapshot.data,
                           title: Text(
                             "Notification de nouvelle note",
-                            style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.3),
+                            style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.3),
                           ),
                           secondary: Icon(
                             MdiIcons.newBox,
-                            color: isDarkModeEnabled ? Colors.white : Colors.black,
+                            color: ThemeUtils.textColor(),
                           ),
                           onChanged: (value) async {
                             if (!(await BatteryOptimization.isIgnoringBatteryOptimizations()) && await CustomDialogs.showAuthorizationsDialog(context, "la configuration d'optimisation de batterie", "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")) {
@@ -583,7 +585,7 @@ class _page4State extends State<page4> {
                         value: snapshot.data,
                         title: Text(
                           "Notification de nouveau mail",
-                          style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.3),
+                          style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.3),
                         ),
                         onChanged: (value) async {
                           if (!(await BatteryOptimization.isIgnoringBatteryOptimizations()) && await CustomDialogs.showAuthorizationsDialog(context, "la configuration d'optimisation de batterie", "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")) {
@@ -599,12 +601,12 @@ class _page4State extends State<page4> {
                         },
                         secondary: Icon(
                           MdiIcons.newBox,
-                          color: isDarkModeEnabled ? Colors.white : Colors.black,
+                          color: ThemeUtils.textColor(),
                         ),
                       );
                     }),
                 Divider(
-                  color: isDarkModeEnabled ? Colors.white : Colors.black,
+                  color: ThemeUtils.textColor(),
                 ),
                 RaisedButton(
                   color: Color(0xff5DADE2),

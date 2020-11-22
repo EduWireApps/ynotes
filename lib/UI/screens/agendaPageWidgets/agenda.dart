@@ -12,6 +12,7 @@ import 'package:ynotes/UI/screens/agendaPageWidgets/agendaGrid.dart';
 import 'package:ynotes/UI/screens/agendaPageWidgets/buttons.dart';
 import 'package:ynotes/UI/screens/agendaPageWidgets/spaceAgenda.dart';
 import 'package:ynotes/UI/utils/fileUtils.dart';
+import 'package:ynotes/utils/themeUtils.dart';
 import 'package:ynotes/apis/EcoleDirecte.dart';
 import 'package:ynotes/classes.dart';
 import 'package:ynotes/main.dart';
@@ -153,12 +154,12 @@ class _AgendaState extends State<Agenda> {
                             children: [
                               Text(
                                 DateFormat.Hm().format(lesson.start),
-                                style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: ThemeUtils.textColor()),
                               ),
-                              Icon(MdiIcons.arrowRight, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                              Icon(MdiIcons.arrowRight, color: ThemeUtils.textColor()),
                               Text(
                                 DateFormat.Hm().format(lesson.end),
-                                style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: ThemeUtils.textColor()),
                               )
                             ],
                           ),
@@ -231,7 +232,12 @@ class _AgendaState extends State<Agenda> {
                                   future: agendaFuture,
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData && snapshot.data != null && snapshot.data.length != 0) {
-                                      return RefreshIndicator(onRefresh: refreshAgendaFutures, child: AgendaGrid(snapshot.data, initState,));
+                                      return RefreshIndicator(
+                                          onRefresh: refreshAgendaFutures,
+                                          child: AgendaGrid(
+                                            snapshot.data,
+                                            initState,
+                                          ));
                                     }
                                     if (snapshot.data != null && snapshot.data.length == 0) {
                                       return Center(
@@ -247,7 +253,7 @@ class _AgendaState extends State<Agenda> {
                                               Text(
                                                 "Journée détente ?",
                                                 textAlign: TextAlign.center,
-                                                style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
+                                                style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
                                               ),
                                               FlatButton(
                                                 onPressed: () async {
@@ -255,7 +261,7 @@ class _AgendaState extends State<Agenda> {
                                                   await refreshAgendaFutures(force: true);
                                                 },
                                                 child: snapshot.connectionState != ConnectionState.waiting
-                                                    ? Text("Recharger", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2))
+                                                    ? Text("Recharger", style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2))
                                                     : FittedBox(child: SpinKitThreeBounce(color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4)),
                                                 shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(18.0), side: BorderSide(color: Theme.of(context).primaryColorDark)),
                                               )

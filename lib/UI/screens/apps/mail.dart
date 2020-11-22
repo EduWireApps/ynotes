@@ -10,6 +10,7 @@ import 'package:stacked/stacked.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/UI/components/modalBottomSheets/readMailBottomSheet.dart';
 import 'package:ynotes/UI/utils/fileUtils.dart';
+import 'package:ynotes/utils/themeUtils.dart';
 import 'package:ynotes/classes.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/apis/EcoleDirecte.dart';
@@ -79,14 +80,14 @@ class _MailPageOldState extends State<MailPageOld> {
                       children: <Widget>[
                         Icon(
                           MdiIcons.arrowLeft,
-                          color: isDarkModeEnabled ? Colors.white : Colors.black,
+                          color: ThemeUtils.textColor(),
                         ),
                         FittedBox(
                           child: Text("Revenir aux applications",
                               style: TextStyle(
                                 fontFamily: "Asap",
                                 fontSize: 15,
-                                color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                color: ThemeUtils.textColor(),
                               )),
                         ),
                       ],
@@ -122,8 +123,8 @@ class _MailPageOldState extends State<MailPageOld> {
                           child: DropdownButton<String>(
                             value: dossier,
                             iconSize: (screenSize.size.width / 5) * 0.3,
-                            iconEnabledColor: isDarkModeEnabled ? Colors.white : Colors.black,
-                            style: TextStyle(fontSize: 18, fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                            iconEnabledColor: ThemeUtils.textColor(),
+                            style: TextStyle(fontSize: 18, fontFamily: "Asap", color: ThemeUtils.textColor()),
                             onChanged: (String newValue) {
                               setState(() {
                                 dossier = newValue;
@@ -139,7 +140,7 @@ class _MailPageOldState extends State<MailPageOld> {
                                 child: Text(
                                   value,
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(fontSize: 18, fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                  style: TextStyle(fontSize: 18, fontFamily: "Asap", color: ThemeUtils.textColor()),
                                 ),
                               );
                             }).toList(),
@@ -171,7 +172,7 @@ class _MailPageOldState extends State<MailPageOld> {
                             sortValue.reversed_date: MdiIcons.sortDescending,
                             sortValue.author: MdiIcons.account,
                           }),
-                          color: isDarkModeEnabled ? Colors.white : Colors.black,
+                          color: ThemeUtils.textColor(),
                         ),
                       ),
                     ),
@@ -218,7 +219,7 @@ class _MailPageOldState extends State<MailPageOld> {
                                                 margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.2),
                                                 child: Icon(
                                                   MdiIcons.account,
-                                                  color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                                  color: ThemeUtils.textColor(),
                                                 ),
                                               ),
                                               Container(
@@ -235,7 +236,7 @@ class _MailPageOldState extends State<MailPageOld> {
                                                         style: TextStyle(
                                                           fontFamily: "Asap",
                                                           fontSize: screenSize.size.height / 10 * 0.25,
-                                                          color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                                          color: ThemeUtils.textColor(),
                                                         ),
                                                         overflow: TextOverflow.ellipsis,
                                                       ),
@@ -297,7 +298,7 @@ class _MailPageOldState extends State<MailPageOld> {
                           children: <Widget>[
                             Text(
                               "Une erreur a eu lieu",
-                              style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                              style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                             ),
                             FlatButton(
                               onPressed: () {
@@ -308,7 +309,7 @@ class _MailPageOldState extends State<MailPageOld> {
                                   ? Text("Recharger",
                                       style: TextStyle(
                                         fontFamily: "Asap",
-                                        color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                        color: ThemeUtils.textColor(),
                                       ))
                                   : FittedBox(child: SpinKitThreeBounce(color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4)),
                               shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(18.0), side: BorderSide(color: Theme.of(context).primaryColorDark)),

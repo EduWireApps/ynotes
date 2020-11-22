@@ -4,13 +4,11 @@ import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/UI/components/modalBottomSheets/agendaEventEditBottomSheet.dart';
 import 'package:ynotes/UI/components/modalBottomSheets/keyValues.dart';
+import 'package:ynotes/utils/themeUtils.dart';
 import 'package:ynotes/apis/utils.dart';
 import 'package:ynotes/main.dart';
-import 'package:ynotes/apis/EcoleDirecte.dart';
-import 'package:ynotes/apis/Pronote/PronoteAPI.dart';
 
 import '../../../classes.dart';
-import '../../../usefulMethods.dart';
 
 Future<void> lessonDetails(context, AgendaEvent event) async {
   return showModalBottomSheet(
@@ -118,19 +116,19 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                             },
                             child: new Icon(
                               Icons.edit,
-                              color: isDarkModeEnabled ? Colors.white : Colors.black,
+                              color: ThemeUtils.textColor(),
                               size: screenSize.size.height / 10 * 0.4,
                             ),
                             shape: new CircleBorder(),
                             elevation: 1.0,
-                            fillColor: !isDarkModeEnabled ? Colors.white : Colors.black,
+                            fillColor: ThemeUtils.textColor(revert: true),
                           ),
                         ),
                       ),
                     ),
                     Column(
                       children: [
-                        Container(padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1), child: Text("Infos de l'évènement", style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: isDarkModeEnabled ? Colors.white : Colors.black))),
+                        Container(padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1), child: Text("Infos de l'évènement", style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: ThemeUtils.textColor()))),
                         Container(
                           padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
                           margin: EdgeInsets.only(top: (screenSize.size.height / 10 * 0.2)),
@@ -233,7 +231,7 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                                                 child: FittedBox(
                                                   child: new Icon(
                                                     Icons.add,
-                                                    color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                                    color: ThemeUtils.textColor(),
                                                   ),
                                                 ),
                                               ),
@@ -254,7 +252,7 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                                           children: [
                                             Text(
                                               "Ajouter un rappel",
-                                              style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, textBaseline: TextBaseline.ideographic),
+                                              style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), textBaseline: TextBaseline.ideographic),
                                             ),
                                           ],
                                         ),
@@ -319,7 +317,7 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                                                   child: FittedBox(
                                                     child: new Icon(
                                                       MdiIcons.bellRing,
-                                                      color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                                      color: ThemeUtils.textColor(),
                                                     ),
                                                   ),
                                                 ),
@@ -341,7 +339,7 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                                             children: [
                                               Text(
                                                 reminders[index].name,
-                                                style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, textBaseline: TextBaseline.ideographic),
+                                                style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), textBaseline: TextBaseline.ideographic),
                                               ),
                                             ],
                                           ),

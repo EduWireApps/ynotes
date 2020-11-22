@@ -1,3 +1,4 @@
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:ynotes/UI/components/modalBottomSheets/disciplinesModalBottomSheet.dart';
 import 'package:ynotes/UI/components/modalBottomSheets/gradesModalBottomSheet.dart';
+import 'package:ynotes/utils/themeUtils.dart';
 import 'package:ynotes/main.dart';
 
 import '../../classes.dart';
@@ -236,13 +238,13 @@ class _GradesPageState extends State<GradesPage> {
                                 child: Icon(
                                   MdiIcons.borderNoneVariant,
                                   size: screenSize.size.width / 5 * 0.5,
-                                  color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                  color: ThemeUtils.textColor(),
                                 )),
                             Container(
                               margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.2),
                               child: Text(
                                 "Aucun filtre",
-                                style: TextStyle(fontSize: screenSize.size.width / 5 * 0.3, fontWeight: FontWeight.w500, fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                style: TextStyle(fontSize: screenSize.size.width / 5 * 0.3, fontWeight: FontWeight.w500, fontFamily: "Asap", color: ThemeUtils.textColor()),
                               ),
                             )
                           ],
@@ -428,14 +430,14 @@ class _GradesPageState extends State<GradesPage> {
                                         ? Container(
                                             child: Text(
                                               "Pas de periode",
-                                              style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                              style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                                             ),
                                           )
                                         : DropdownButtonHideUnderline(
                                             child: DropdownButton<String>(
                                               value: periodeToUse,
                                               iconSize: 0.0,
-                                              style: TextStyle(fontSize: 18, fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                              style: TextStyle(fontSize: 18, fontFamily: "Asap", color: ThemeUtils.textColor()),
                                               onChanged: (String newValue) {
                                                 setState(() {
                                                   periodeToUse = newValue;
@@ -448,7 +450,7 @@ class _GradesPageState extends State<GradesPage> {
                                                   child: Text(
                                                     period != null ? period.name : "-",
                                                     textAlign: TextAlign.center,
-                                                    style: TextStyle(fontSize: 18, fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                                    style: TextStyle(fontSize: 18, fontFamily: "Asap", color: ThemeUtils.textColor()),
                                                   ),
                                                 );
                                               }).toList(),
@@ -479,13 +481,13 @@ class _GradesPageState extends State<GradesPage> {
                                   children: <Widget>[
                                     Icon(
                                       Icons.settings,
-                                      color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                      color: ThemeUtils.textColor(),
                                     ),
                                     Text(
                                       "Trier",
                                       style: TextStyle(
                                         fontFamily: "Asap",
-                                        color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                        color: ThemeUtils.textColor(),
                                       ),
                                     ),
                                   ],
@@ -537,7 +539,7 @@ class _GradesPageState extends State<GradesPage> {
                                     Image(image: AssetImage('assets/images/book.png'), width: screenSize.size.width / 5 * 4),
                                     Container(
                                       margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.5),
-                                      child: AutoSizeText("Pas de notes pour cette periode.", textAlign: TextAlign.center, style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black)),
+                                      child: AutoSizeText("Pas de notes pour cette periode.", textAlign: TextAlign.center, style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor())),
                                     ),
                                     FlatButton(
                                       onPressed: () {
@@ -545,7 +547,7 @@ class _GradesPageState extends State<GradesPage> {
                                         refreshLocalGradeList();
                                       },
                                       child: snapshot.connectionState != ConnectionState.waiting
-                                          ? Text("Recharger", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2))
+                                          ? Text("Recharger", style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2))
                                           : FittedBox(child: SpinKitThreeBounce(color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4)),
                                       shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(18.0), side: BorderSide(color: Theme.of(context).primaryColorDark)),
                                     )
@@ -567,7 +569,7 @@ class _GradesPageState extends State<GradesPage> {
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           fontFamily: "Asap",
-                                          color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                          color: ThemeUtils.textColor(),
                                         )),
                                   ),
                                   FlatButton(
@@ -579,7 +581,7 @@ class _GradesPageState extends State<GradesPage> {
                                         ? Text("Recharger",
                                             style: TextStyle(
                                               fontFamily: "Asap",
-                                              color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                              color: ThemeUtils.textColor(),
                                             ))
                                         : FittedBox(child: SpinKitThreeBounce(color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4)),
                                     shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(18.0), side: BorderSide(color: Theme.of(context).primaryColorDark)),
@@ -661,7 +663,7 @@ class _GradesPageState extends State<GradesPage> {
                                                       mainAxisAlignment: MainAxisAlignment.center,
                                                       crossAxisAlignment: CrossAxisAlignment.center,
                                                       children: <Widget>[
-                                                        Text("Moyenne de la classe :", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: (screenSize.size.width / 5) * 0.18)),
+                                                        Text("Moyenne de la classe :", style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: (screenSize.size.width / 5) * 0.18)),
                                                         Container(
                                                           margin: EdgeInsets.only(left: (screenSize.size.width / 5) * 0.1),
                                                           decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Color(0xff2C2C2C)),
@@ -678,7 +680,7 @@ class _GradesPageState extends State<GradesPage> {
                                                       mainAxisAlignment: MainAxisAlignment.center,
                                                       crossAxisAlignment: CrossAxisAlignment.center,
                                                       children: <Widget>[
-                                                        Text("Meilleure moyenne:", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: (screenSize.size.width / 5) * 0.18)),
+                                                        Text("Meilleure moyenne:", style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: (screenSize.size.width / 5) * 0.18)),
                                                         Container(
                                                           margin: EdgeInsets.only(left: (screenSize.size.width / 5) * 0.1),
                                                           decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Color(0xff2C2C2C)),
@@ -695,8 +697,8 @@ class _GradesPageState extends State<GradesPage> {
                                                       mainAxisAlignment: MainAxisAlignment.center,
                                                       crossAxisAlignment: CrossAxisAlignment.center,
                                                       children: <Widget>[
-                                                        Text("Moyenne du filtre ", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: (screenSize.size.width / 5) * 0.2)),
-                                                        Text(filter, style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: (screenSize.size.width / 5) * 0.2)),
+                                                        Text("Moyenne du filtre ", style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: (screenSize.size.width / 5) * 0.2)),
+                                                        Text(filter, style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: ThemeUtils.textColor(), fontSize: (screenSize.size.width / 5) * 0.2)),
                                                       ],
                                                     )
                                                 ],
@@ -754,7 +756,7 @@ class _GradesPageState extends State<GradesPage> {
                           children: <Widget>[
                             Icon(
                               Icons.error,
-                              color: isDarkModeEnabled ? Colors.white : Colors.black,
+                              color: ThemeUtils.textColor(),
                               size: screenSize.size.width / 8,
                             ),
                           ],
@@ -938,7 +940,7 @@ class _GradesGroupState extends State<GradesGroup> {
                                 "Ecrit",
                                 style: TextStyle(
                                   fontFamily: "Asap",
-                                  color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                  color: ThemeUtils.textColor(),
                                 ),
                               )),
                       gradesColumn(0),
@@ -949,7 +951,7 @@ class _GradesGroupState extends State<GradesGroup> {
                           Text("Oral",
                               style: TextStyle(
                                 fontFamily: "Asap",
-                                color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                color: ThemeUtils.textColor(),
                               )),
                       if (widget.disciplinevar != null)
                         if (widget.disciplinevar.codeSousMatiere.length > 0) gradesColumn(1),

@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -6,6 +7,7 @@ import 'package:ynotes/UI/components/modalBottomSheets/readMailBottomSheet.dart'
 import 'package:ynotes/UI/components/modalBottomSheets/writeMailBottomSheet.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/UI/screens/apps/mail.dart';
+import 'package:ynotes/utils/themeUtils.dart';
 
 import '../../classes.dart';
 import '../../main.dart';
@@ -145,8 +147,8 @@ class _MailPageState extends State<MailPage> {
                                     child: DropdownButton<String>(
                                       value: dossier,
                                       iconSize: (screenSize.size.width / 5) * 0.3,
-                                      iconEnabledColor: isDarkModeEnabled ? Colors.white : Colors.black,
-                                      style: TextStyle(fontSize: 18, fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                      iconEnabledColor: ThemeUtils.textColor(),
+                                      style: TextStyle(fontSize: 18, fontFamily: "Asap", color: ThemeUtils.textColor()),
                                       onChanged: (String newValue) {
                                         setState(() {
                                           dossier = newValue;
@@ -162,7 +164,7 @@ class _MailPageState extends State<MailPage> {
                                           child: Text(
                                             value,
                                             textAlign: TextAlign.center,
-                                            style: TextStyle(fontSize: 18, fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                            style: TextStyle(fontSize: 18, fontFamily: "Asap", color: ThemeUtils.textColor()),
                                           ),
                                         );
                                       }).toList(),
@@ -172,7 +174,7 @@ class _MailPageState extends State<MailPage> {
                                 VerticalDivider(
                                   width: screenSize.size.width / 5 * 0.003,
                                   thickness: screenSize.size.width / 5 * 0.003,
-                                  color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                  color: ThemeUtils.textColor(),
                                 ),
                                 Container(
                                   margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
@@ -196,7 +198,7 @@ class _MailPageState extends State<MailPage> {
                                             sortValue.reversed_date: MdiIcons.sortDescending,
                                             sortValue.author: MdiIcons.account,
                                           }),
-                                          color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                          color: ThemeUtils.textColor(),
                                         ),
                                       ),
                                     ),
@@ -243,7 +245,7 @@ class _MailPageState extends State<MailPage> {
                                                             margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.2),
                                                             child: Icon(
                                                               MdiIcons.account,
-                                                              color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                                              color: ThemeUtils.textColor(),
                                                             ),
                                                           ),
                                                           Container(
@@ -260,7 +262,7 @@ class _MailPageState extends State<MailPage> {
                                                                     style: TextStyle(
                                                                       fontFamily: "Asap",
                                                                       fontSize: screenSize.size.height / 10 * 0.25,
-                                                                      color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                                                      color: ThemeUtils.textColor(),
                                                                     ),
                                                                     overflow: TextOverflow.ellipsis,
                                                                   ),
@@ -322,7 +324,7 @@ class _MailPageState extends State<MailPage> {
                                       children: <Widget>[
                                         Text(
                                           "Une erreur a eu lieu",
-                                          style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                          style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                                         ),
                                         FlatButton(
                                           onPressed: () {
@@ -333,7 +335,7 @@ class _MailPageState extends State<MailPage> {
                                               ? Text("Recharger",
                                                   style: TextStyle(
                                                     fontFamily: "Asap",
-                                                    color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                                    color: ThemeUtils.textColor(),
                                                   ))
                                               : FittedBox(child: SpinKitThreeBounce(color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4)),
                                           shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(18.0), side: BorderSide(color: Theme.of(context).primaryColorDark)),

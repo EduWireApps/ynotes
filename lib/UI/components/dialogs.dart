@@ -9,6 +9,7 @@ import 'package:ynotes/UI/components/dialogs/updateNoteDialog.dart';
 import 'package:ynotes/UI/components/giffy_dialog/src/asset.dart';
 import 'package:ynotes/UI/components/modalBottomSheets/writeMailBottomSheet.dart';
 import 'package:ynotes/UI/screens/settingsPage.dart';
+import 'package:ynotes/utils/themeUtils.dart';
 import 'package:ynotes/apis/EcoleDirecte/ecoleDirecteMethods.dart';
 import '../../classes.dart';
 import '../../usefulMethods.dart';
@@ -69,11 +70,11 @@ class CustomDialogs {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
       title: Text(
         "Confirmation",
-        style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+        style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
       ),
       content: Text(
         alternativeText,
-        style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+        style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
       ),
       actions: [
         FlatButton(

@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ynotes/utils/themeUtils.dart';
+
 import '../../../main.dart';
 import '../../../usefulMethods.dart';
 
@@ -81,7 +83,7 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
                                       child: Row(
                                         children: <Widget>[
                                           CircularCheckBox(
-                                            inactiveColor: isDarkModeEnabled ? Colors.white : Colors.black,
+                                            inactiveColor: ThemeUtils.textColor(),
                                             onChanged: (value) {
                                               if (chosenSpecialties.contains(disciplines[index])) {
                                                 setState(() {
@@ -104,7 +106,7 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
                                             width: screenSize.size.width / 5 * 3,
                                             child: AutoSizeText(
                                               disciplines[index],
-                                              style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                              style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                                             ),
                                           ),
                                         ],
@@ -117,7 +119,7 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Icon(MdiIcons.information, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                      Icon(MdiIcons.information, color: ThemeUtils.textColor()),
                                       AutoSizeText(
                                         "Pas assez de données pour générer votre liste de spécialités.",
                                         style: TextStyle(fontFamily: "Asap"),

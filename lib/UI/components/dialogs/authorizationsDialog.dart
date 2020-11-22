@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:ynotes/utils/themeUtils.dart';
 
 import '../../../usefulMethods.dart';
 
@@ -66,7 +67,7 @@ class _AuthorizationsDialogState extends State<AuthorizationsDialog> {
                           TextSpan(text: " pour que l'application fonctionne correctement."),
                         ],
                       ),
-                      style: TextStyle(color: isDarkModeEnabled ? Colors.white : Colors.black, fontFamily: "Asap"),
+                      style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
                       textAlign: TextAlign.center,
                     ),
                   ),
@@ -78,10 +79,10 @@ class _AuthorizationsDialogState extends State<AuthorizationsDialog> {
                       TextSpan(
                         children: <TextSpan>[
                           TextSpan(text: "Pour quoi faire ?", style: TextStyle(fontWeight: FontWeight.bold)),
-                          TextSpan(text: "\n"+widget.goal),
+                          TextSpan(text: "\n" + widget.goal),
                         ],
                       ),
-                      style: TextStyle(color: isDarkModeEnabled ? Colors.white : Colors.black, fontFamily: "Asap"),
+                      style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
                       textAlign: TextAlign.center,
                     ),
                   ),

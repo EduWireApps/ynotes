@@ -1,6 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:ynotes/utils/themeUtils.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 class ReorderableShortcuts extends StatefulWidget {
@@ -22,7 +22,7 @@ class _ReorderableShortcutsState extends State<ReorderableShortcuts> {
         children: [
           Icon(
             MdiIcons.menu,
-            color: isDarkModeEnabled ? Colors.white : Colors.black,
+            color: ThemeUtils.textColor(),
           ),
           SizedBox(
             width: screenSize.size.width / 5 * 0.1,

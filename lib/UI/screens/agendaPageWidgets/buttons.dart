@@ -2,6 +2,7 @@ import 'package:calendar_time/calendar_time.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:ynotes/utils/themeUtils.dart';
 import 'package:ynotes/apis/utils.dart';
 
 import '../../../usefulMethods.dart';
@@ -58,7 +59,7 @@ class _AgendaButtonsState extends State<AgendaButtons> {
           children: [
             Text(
               weekName,
-              style: TextStyle(color: isDarkModeEnabled ? Colors.white : Colors.black, fontFamily: "Asap"),
+              style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -86,7 +87,7 @@ class _AgendaButtonsState extends State<AgendaButtons> {
                               children: <Widget>[
                                 Icon(
                                   MdiIcons.arrowLeftCircleOutline,
-                                  color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                  color: ThemeUtils.textColor(),
                                 ),
                               ],
                             ),
@@ -151,7 +152,7 @@ class _AgendaButtonsState extends State<AgendaButtons> {
                                   DateFormat("EEEE dd MMMM", "fr_FR").format(agendaDate),
                                   style: TextStyle(
                                     fontFamily: "Asap",
-                                    color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                    color: ThemeUtils.textColor(),
                                   ),
                                 ),
                               ],
@@ -184,7 +185,7 @@ class _AgendaButtonsState extends State<AgendaButtons> {
                               children: <Widget>[
                                 Icon(
                                   MdiIcons.arrowRightCircleOutline,
-                                  color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                  color: ThemeUtils.textColor(),
                                 ),
                               ],
                             ),

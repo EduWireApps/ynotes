@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:ynotes/utils/themeUtils.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 class HomeworkSettingPage extends StatefulWidget {
-
   State<StatefulWidget> createState() {
     return _HomeworkSettingPageState();
   }
@@ -48,15 +48,15 @@ class _HomeworkSettingPageState extends State<HomeworkSettingPage> {
               margin: EdgeInsets.all(screenSize.size.width / 5 * 0.2),
               child: Text(
                 "Paramètres des devoirs",
-                style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: ThemeUtils.textColor()),
                 textAlign: TextAlign.left,
               )),
           SwitchListTile(
             value: boolSettings["isExpandedByDefault"],
-            title: Text("Étendre les devoirs", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.25)),
+            title: Text("Étendre les devoirs", style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.25)),
             subtitle: Text(
               "Afficher les détails des devoirs par défaut.",
-              style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.2),
+              style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.2),
             ),
             onChanged: (value) async {
               setState(() {
@@ -67,7 +67,7 @@ class _HomeworkSettingPageState extends State<HomeworkSettingPage> {
             },
             secondary: Icon(
               MdiIcons.arrowExpand,
-              color: isDarkModeEnabled ? Colors.white : Colors.black,
+              color: ThemeUtils.textColor(),
             ),
           )
         ],
@@ -85,7 +85,7 @@ class _HomeworkSettingPageState extends State<HomeworkSettingPage> {
             style: TextStyle(
               fontSize: screenSize.size.height / 10 * 0.3,
               fontFamily: "Asap",
-              color: isDarkModeEnabled ? Colors.white : Colors.black,
+              color: ThemeUtils.textColor(),
             ),
           ),
           SizedBox(
@@ -100,13 +100,13 @@ class _HomeworkSettingPageState extends State<HomeworkSettingPage> {
                   title: Text("Étendre les devoirs",
                       style: TextStyle(
                           fontFamily: "Asap",
-                          color: isDarkModeEnabled ? Colors.white : Colors.black,
+                          color: ThemeUtils.textColor(),
                           fontSize: screenSize.size.height / 10 * 0.25)),
                   subtitle: Text(
                     "Afficher les détails des devoirs par défaut.",
                     style: TextStyle(
                         fontFamily: "Asap",
-                        color: isDarkModeEnabled ? Colors.white : Colors.black,
+                        color: ThemeUtils.textColor(),
                         fontSize: screenSize.size.height / 10 * 0.2),
                   ),
                   onChanged: (value) {
@@ -118,7 +118,7 @@ class _HomeworkSettingPageState extends State<HomeworkSettingPage> {
                   },
                   secondary: Icon(
                     MdiIcons.arrowExpand,
-                    color: isDarkModeEnabled ? Colors.white : Colors.black,
+                    color: ThemeUtils.textColor(),
                   ),
                 );
               }),

@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 import 'package:hive/hive.dart';
 
-import '../../main.dart';
+import '../main.dart';
 import 'fileUtils.dart';
 
 class HiveBackUpManager {

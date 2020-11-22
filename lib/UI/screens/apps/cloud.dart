@@ -4,18 +4,19 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:stacked/stacked.dart';
 import 'package:ynotes/UI/utils/fileUtils.dart';
+import 'package:ynotes/utils/themeUtils.dart';
 import 'package:ynotes/main.dart';
 
 import '../../../classes.dart';
 import '../../../models.dart';
 import '../../../usefulMethods.dart';
 import '../appsPage.dart';
-
+/*
 String cloudUsedFolder = "";
 
-class CloudPage extends StatefulWidget {
+class CloudPageOld extends StatefulWidget {
   State<StatefulWidget> createState() {
-    return _CloudPageState();
+    return _CloudPageOldState();
   }
 }
 
@@ -28,7 +29,7 @@ var actualSort = sortValue.date;
 List<CloudItem> localFoldersList;
 String path = "/";
 
-class _CloudPageState extends State<CloudPage> {
+class _CloudPageOldState extends State<CloudPageOld> {
   //Initial path is "/""
 
   void initState() {
@@ -90,13 +91,13 @@ class _CloudPageState extends State<CloudPage> {
                       children: <Widget>[
                         Icon(
                           MdiIcons.arrowLeft,
-                          color: isDarkModeEnabled ? Colors.white : Colors.black,
+                          color: ThemeUtils.textColor(),
                         ),
                         Text("Revenir aux applications",
                             style: TextStyle(
                               fontFamily: "Asap",
                               fontSize: 15,
-                              color: isDarkModeEnabled ? Colors.white : Colors.black,
+                              color: ThemeUtils.textColor(),
                             )),
                       ],
                     ),
@@ -153,13 +154,13 @@ class _CloudPageState extends State<CloudPage> {
                         children: <Widget>[
                           Icon(
                             MdiIcons.arrowLeft,
-                            color: isDarkModeEnabled ? Colors.white : Colors.black,
+                            color: ThemeUtils.textColor(),
                           ),
                           Text("Retour",
                               style: TextStyle(
                                 fontFamily: "Asap",
                                 fontSize: 15,
-                                color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                color: ThemeUtils.textColor(),
                               )),
                         ],
                       ),
@@ -211,19 +212,19 @@ class _CloudPageState extends State<CloudPage> {
                                           child: new Container(
                                               margin: const EdgeInsets.only(left: 10.0, right: 20.0),
                                               child: Divider(
-                                                color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                                color: ThemeUtils.textColor(),
                                                 height: 36,
                                               )),
                                         ),
                                         Text(
                                           "Autres clouds",
-                                          style: TextStyle(color: isDarkModeEnabled ? Colors.white : Colors.black, fontFamily: "Asap"),
+                                          style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
                                         ),
                                         Expanded(
                                           child: new Container(
                                               margin: const EdgeInsets.only(left: 20.0, right: 10.0),
                                               child: Divider(
-                                                color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                                color: ThemeUtils.textColor(),
                                                 height: 36,
                                               )),
                                         ),
@@ -266,7 +267,11 @@ class _CloudPageState extends State<CloudPage> {
                                                             margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.2),
                                                             child: Icon(
                                                               (localFoldersList[index].type == "FOLDER") ? MdiIcons.folder : (snapshot.data || model.downloadProgress == 100 ? MdiIcons.fileCheck : MdiIcons.file),
-                                                              color: ((localFoldersList[index].type == "FOLDER") ? Colors.yellow.shade600 : isDarkModeEnabled ? Colors.grey.shade300 : Colors.grey.shade400),
+                                                              color: ((localFoldersList[index].type == "FOLDER")
+                                                                  ? Colors.yellow.shade600
+                                                                  : isDarkModeEnabled
+                                                                      ? Colors.grey.shade300
+                                                                      : Colors.grey.shade400),
                                                             ),
                                                           );
                                                         }),
@@ -284,7 +289,7 @@ class _CloudPageState extends State<CloudPage> {
                                                               style: TextStyle(
                                                                 fontFamily: "Asap",
                                                                 fontSize: screenSize.size.height / 10 * 0.25,
-                                                                color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                                                color: ThemeUtils.textColor(),
                                                               ),
                                                               overflow: TextOverflow.ellipsis,
                                                             ),
@@ -352,7 +357,7 @@ class _CloudPageState extends State<CloudPage> {
                           children: <Widget>[
                             Text(
                               "Une erreur a eu lieu",
-                              style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                              style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                             ),
                             FlatButton(
                               onPressed: () {
@@ -362,7 +367,7 @@ class _CloudPageState extends State<CloudPage> {
                               child: Text("Recharger",
                                   style: TextStyle(
                                     fontFamily: "Asap",
-                                    color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                    color: ThemeUtils.textColor(),
                                   )),
                               shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(18.0), side: BorderSide(color: Theme.of(context).primaryColorDark)),
                             ),
@@ -413,3 +418,4 @@ sortByGroupMainPage(List<CloudItem> list) {
   });
   return toReturn;
 }
+*/

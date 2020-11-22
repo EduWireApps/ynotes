@@ -362,9 +362,7 @@ class Client {
     Map data = {
       "_Signature_": {"onglet": 8},
     };
-    //var response = await this.communication.post('PageActualites', data: data);
-    var test = await Dio().get("http://demo2235921.mockable.io/");
-    var response = test.data;
+    var response = await this.communication.post('PageActualites', data: data);
     var listActus = response['donneesSec']['donnees']['listeActualites']["V"];
     List<PollInfo> listInfosPolls = List();
     listActus.forEach((element) {

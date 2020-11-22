@@ -10,6 +10,7 @@ import 'package:stacked/stacked.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/UI/utils/fileUtils.dart';
+import 'package:ynotes/utils/themeUtils.dart';
 import 'package:ynotes/apis/EcoleDirecte.dart';
 import 'package:ynotes/classes.dart';
 
@@ -66,7 +67,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                             onPressed: () {
                               Navigator.pop(context);
                             },
-                            icon: Icon(MdiIcons.arrowLeft, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                            icon: Icon(MdiIcons.arrowLeft, color: ThemeUtils.textColor()),
                           ),
                         ),
                         Align(
@@ -80,7 +81,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                     monochromatic = !monochromatic;
                                   });
                                 },
-                                icon: Icon((monochromatic ? MdiIcons.eye : MdiIcons.eyeOutline), color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                icon: Icon((monochromatic ? MdiIcons.eye : MdiIcons.eyeOutline), color: ThemeUtils.textColor()),
                               ),
                             ],
                           ),
@@ -99,7 +100,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                             child: AutoSizeText(
                               this.widget.mail.subject != "" ? this.widget.mail.subject : "(Sans sujet)",
                               maxLines: 100,
-                              style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontWeight: FontWeight.bold),
+                              style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontWeight: FontWeight.bold),
                               minFontSize: 18,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -115,7 +116,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                     child: CircleAvatar(
                                       child: Text(
                                         this.widget.mail.from["name"][0],
-                                        style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontWeight: FontWeight.bold),
+                                        style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontWeight: FontWeight.bold),
                                       ),
                                       maxRadius: screenSize.size.width / 5 * 0.8,
                                     )),
@@ -131,7 +132,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                         children: [
                                           Text(
                                             this.widget.mail.from["name"],
-                                            style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                            style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                                             overflow: TextOverflow.ellipsis,
                                           ),
                                           Text(
@@ -152,7 +153,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                   margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
                                   width: screenSize.size.width / 5 * 0.5,
                                   child: IconButton(
-                                    icon: Icon(MdiIcons.undoVariant, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                    icon: Icon(MdiIcons.undoVariant, color: ThemeUtils.textColor()),
                                     onPressed: () async {
                                       await CustomDialogs.writeModalBottomSheet(context, defaultSubject: this.widget.mail.subject, defaultListRecipients: recipientFromMap());
                                     },
@@ -176,7 +177,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                             throw "Unable to launch url";
                                           }
                                         },
-                                        textStyle: TextStyle(color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                        textStyle: TextStyle(color: ThemeUtils.textColor()),
                                       ),
                                       AnimatedContainer(
                                         duration: Duration(milliseconds: 75),
@@ -328,279 +329,6 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                       ),
                     ),
                   ),
-                  /* Container(
-                    height: screenSize.size.height / 10 * 1.0,
-                    width: screenSize.size.width / 5 * 4.8,
-                    child: FittedBox(
-                      child: Column(
-                        children: <Widget>[
-                          Text(
-                            this.widget.mail.subject,
-                            textAlign: TextAlign.center,
-                            style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: isDarkModeEnabled ? Colors.white : Colors.black),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              if (this.widget.mail.mtype != "send")
-                                Container(
-                                  width: screenSize.size.width / 5 * 2.6,
-                                  height: screenSize.size.height / 10 * 0.45,
-                                  padding: EdgeInsets.all(screenSize.size.height / 10 * 0.1),
-                                  decoration: ShapeDecoration(shape: StadiumBorder(), color: Theme.of(context).primaryColorDark),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      Text(
-                                        "de : ",
-                                        style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, fontSize: screenSize.size.height / 10 * 0.15, color: isDarkModeEnabled ? Colors.white70 : Colors.black87),
-                                      ),
-                                      Text(
-                                        this.widget.mail.from["name"],
-                                        style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, fontSize: screenSize.size.height / 10 * 0.15, color: isDarkModeEnabled ? Colors.white70 : Colors.black87),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              if (this.widget.mail.mtype != "received")
-                                Container(
-                                  padding: EdgeInsets.all(screenSize.size.height / 10 * 0.1),
-                                  width: screenSize.size.width / 5 * 2.6,
-                                  height: screenSize.size.height / 10 * 0.45,
-                                  decoration: ShapeDecoration(shape: StadiumBorder(), color: Theme.of(context).primaryColorDark),
-                                  child: FittedBox(
-                                    fit: BoxFit.fitWidth,
-                                    child: Row(
-                                      children: <Widget>[
-                                        Text(
-                                          "à : ",
-                                          style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, fontSize: screenSize.size.height / 10 * 0.15, color: isDarkModeEnabled ? Colors.white70 : Colors.black87),
-                                        ),
-                                        Container(
-                                          width: screenSize.size.width / 5 * 2.1,
-                                          height: screenSize.size.height / 10 * 0.45,
-                                          child: Marquee(
-                                            text: to,
-                                            style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, fontSize: screenSize.size.height / 10 * 0.15, color: isDarkModeEnabled ? Colors.white70 : Colors.black87),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              Container(
-                                margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
-                                width: screenSize.size.width / 5 * 1.3,
-                                padding: EdgeInsets.all(screenSize.size.height / 10 * 0.1),
-                                height: screenSize.size.height / 10 * 0.45,
-                                decoration: ShapeDecoration(shape: StadiumBorder(), color: Theme.of(context).primaryColorDark),
-                                child: FittedBox(
-                                  child: Text(
-                                    DateFormat("dd MMMM yyyy", "fr_FR").format(DateTime.parse(this.widget.mail.date)),
-                                    style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, fontSize: screenSize.size.height / 10 * 0.15, color: isDarkModeEnabled ? Colors.white70 : Colors.black87),
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Container(
-                    width: screenSize.size.width / 5 * 4.8,
-                    height: screenSize.size.height / 10 * 4,
-                    child: (snapshot.hasData)
-                        ? SingleChildScrollView(
-                            child: Column(
-                            children: <Widget>[
-                              Container(
-                                margin: EdgeInsets.only(top: screenSize.size.width / 5 * 0.2),
-                                height: screenSize.size.height / 10 * 0.5,
-                                width: screenSize.size.width / 5 * 3.5,
-                                child: RaisedButton(
-                                  color: Theme.of(context).primaryColorDark,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: new BorderRadius.circular(8),
-                                  ),
-                                  onPressed: () {
-                                    setState(() {
-                                      monochromatic = !monochromatic;
-                                    });
-                                  },
-                                  child: Row(
-                                    children: [
-                                      Icon(monochromatic ? MdiIcons.eye : MdiIcons.eyeOutline, color: isDarkModeEnabled ? Colors.white : Colors.black),
-                                      SizedBox(
-                                        width: screenSize.size.width / 5 * 0.15,
-                                      ),
-                                      Text(
-                                        monochromatic ? "Lecteur normal" : "Lecteur monochrome",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(fontSize: 18, fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              HtmlWidget(
-                                getMonochromaticColors(snapshot.data),
-                                hyperlinkColor: Colors.blue.shade300,
-                                onTapUrl: (url) async {
-                                  if (await canLaunch(url)) {
-                                    await launch(url);
-                                  } else {
-                                    throw "Unable to launch url";
-                                  }
-                                },
-                                textStyle: TextStyle(color: isDarkModeEnabled ? Colors.white : Colors.black),
-                              ),
-                              AnimatedContainer(
-                                duration: Duration(milliseconds: 75),
-                                width: screenSize.size.width / 5 * 4.4,
-                                height: this.widget.mail.files.length * (screenSize.size.height / 10 * 0.7),
-                                child: ListView.builder(
-                                    itemCount: this.widget.mail.files.length,
-                                    itemBuilder: (BuildContext context, int index) {
-                                      return Container(
-                                        margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.2),
-                                        child: Material(
-                                          borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.1),
-                                          color: Color(0xff5FA9DA),
-                                          child: InkWell(
-                                            borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.5),
-                                            child: Container(
-                                              decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 0, color: Colors.transparent))),
-                                              width: screenSize.size.width / 5 * 4.4,
-                                              height: screenSize.size.height / 10 * 0.7,
-                                              child: Stack(
-                                                children: <Widget>[
-                                                  Align(
-                                                    alignment: Alignment.centerLeft,
-                                                    child: Container(
-                                                      margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
-                                                      width: screenSize.size.width / 5 * 2.8,
-                                                      child: ClipRRect(
-                                                        child: Marquee(text: this.widget.mail.files[index].libelle, blankSpace: screenSize.size.width / 5 * 0.2, style: TextStyle(fontFamily: "Asap", color: Colors.white)),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Positioned(
-                                                    right: screenSize.size.width / 5 * 0.1,
-                                                    top: screenSize.size.height / 10 * 0.11,
-                                                    child: Container(
-                                                      height: screenSize.size.height / 10 * 0.5,
-                                                      decoration: BoxDecoration(color: darken(Color(0xff5FA9DA)), borderRadius: BorderRadius.circular(50)),
-                                                      child: Row(
-                                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                        children: <Widget>[
-                                                          if ((this.widget.mail.files[index].libelle).contains("pdf"))
-                                                            IconButton(
-                                                              icon: Icon(
-                                                                MdiIcons.eyeOutline,
-                                                                color: Colors.white,
-                                                              ),
-                                                              onPressed: () {
-                                                                // do something
-                                                              },
-                                                            ),
-                                                          if ((this.widget.mail.files[index].libelle).contains("pdf"))
-                                                            VerticalDivider(
-                                                              width: 2,
-                                                              color: Color(0xff5FA9DA),
-                                                            ),
-                                                          ViewModelBuilder<DownloadModel>.reactive(
-                                                              viewModelBuilder: () => DownloadModel(),
-                                                              builder: (context, model, child) {
-                                                                return FutureBuilder(
-                                                                    future: model.fileExists(this.widget.mail.files[index].libelle),
-                                                                    initialData: false,
-                                                                    builder: (context, snapshot) {
-                                                                      if (snapshot.data == false) {
-                                                                        if (model.isDownloading) {
-                                                                          /// If download is in progress or connecting
-                                                                          if (model.downloadProgress == null || model.downloadProgress < 100) {
-                                                                            return Container(
-                                                                              padding: EdgeInsets.symmetric(
-                                                                                horizontal: screenSize.size.width / 5 * 0.2,
-                                                                              ),
-                                                                              child: Center(
-                                                                                child: SizedBox(
-                                                                                  width: screenSize.size.width / 5 * 0.3,
-                                                                                  height: screenSize.size.width / 5 * 0.3,
-                                                                                  child: CircularProgressIndicator(
-                                                                                    backgroundColor: Colors.green,
-                                                                                    strokeWidth: screenSize.size.width / 5 * 0.05,
-                                                                                    value: model.downloadProgress,
-                                                                                  ),
-                                                                                ),
-                                                                              ),
-                                                                            );
-                                                                          }
-
-                                                                          ///Download is ended
-                                                                          else {
-                                                                            return Container(
-                                                                                child: IconButton(
-                                                                              icon: Icon(
-                                                                                MdiIcons.check,
-                                                                                color: Colors.green,
-                                                                              ),
-                                                                              onPressed: () async {
-                                                                                FileAppUtil.openFile(this.widget.mail.files[index].libelle, usingFileName: true);
-                                                                              },
-                                                                            ));
-                                                                          }
-                                                                        }
-
-                                                                        ///Isn't downloading
-                                                                        if (!model.isDownloading) {
-                                                                          return IconButton(
-                                                                            icon: Icon(
-                                                                              MdiIcons.fileDownloadOutline,
-                                                                              color: Colors.white,
-                                                                            ),
-                                                                            onPressed: () async {
-                                                                              await model.download(this.widget.mail.files[index]);
-                                                                            },
-                                                                          );
-                                                                        }
-                                                                      }
-
-                                                                      ///If file already exists
-                                                                      else {
-                                                                        return Container(
-                                                                            child: IconButton(
-                                                                          icon: Icon(
-                                                                            MdiIcons.check,
-                                                                            color: Colors.green,
-                                                                          ),
-                                                                          onPressed: () async {
-                                                                            FileAppUtil.openFile(this.widget.mail.files[index].libelle, usingFileName: true);
-                                                                          },
-                                                                        ));
-                                                                      }
-                                                                    });
-                                                              }),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      );
-                                    }),
-                              )
-                            ],
-                          ))
-                        : SpinKitFadingFour(
-                            color: Theme.of(context).primaryColorDark,
-                            size: screenSize.size.width / 5 * 0.7,
-                          ),
-                  )*/
                 ],
               ));
         });

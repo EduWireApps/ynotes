@@ -6,6 +6,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/UI/screens/homeworkPage.dart';
 import 'package:ynotes/UI/screens/homeworkPageWidgets/HWelement.dart';
+import 'package:ynotes/utils/themeUtils.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/usefulMethods.dart';
 
@@ -75,19 +76,19 @@ class _HomeworkFirstPageState extends State<HomeworkFirstPage> {
                                       child: new Container(
                                           margin: const EdgeInsets.only(left: 10.0, right: 20.0),
                                           child: Divider(
-                                            color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                            color: ThemeUtils.textColor(),
                                             height: 36,
                                           )),
                                     ),
                                     Text(
                                       getWeeksRelation(index, snapshot.data),
-                                      style: TextStyle(color: isDarkModeEnabled ? Colors.white : Colors.black, fontFamily: "Asap"),
+                                      style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
                                     ),
                                     Expanded(
                                       child: new Container(
                                           margin: const EdgeInsets.only(left: 20.0, right: 10.0),
                                           child: Divider(
-                                            color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                            color: ThemeUtils.textColor(),
                                             height: 36,
                                           )),
                                     ),
@@ -112,7 +113,7 @@ class _HomeworkFirstPageState extends State<HomeworkFirstPage> {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontFamily: "Asap",
-                          color: isDarkModeEnabled ? Colors.white : Colors.black,
+                          color: ThemeUtils.textColor(),
                         ),
                       ),
                       FlatButton(
@@ -124,7 +125,7 @@ class _HomeworkFirstPageState extends State<HomeworkFirstPage> {
                             ? Text("Recharger",
                                 style: TextStyle(
                                   fontFamily: "Asap",
-                                  color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                  color: ThemeUtils.textColor(),
                                 ))
                             : FittedBox(child: SpinKitThreeBounce(color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4)),
                         shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(18.0), side: BorderSide(color: Theme.of(context).primaryColorDark)),
@@ -278,7 +279,7 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
                                     //The main date or date relation
                                     mainLabel,
                                     textAlign: TextAlign.left,
-                                    style: TextStyle(color: isDarkModeEnabled ? Colors.white : Colors.black, fontFamily: "Asap", fontSize: screenSize.size.height / 10 * 0.4, fontWeight: FontWeight.w600),
+                                    style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontSize: screenSize.size.height / 10 * 0.4, fontWeight: FontWeight.w600),
                                     maxLines: 1,
                                   ),
                                 ),
@@ -309,14 +310,12 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
                             color: isDarkModeEnabled ? Color(0xff656565) : Colors.white,
                           ),
                           padding: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1, bottom: screenSize.size.height / 10 * 0.1),
-                          
                           height: screenSize.size.width / 10 * containerSize / 1.2,
                           child: ClipRRect(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
-
                                 //Pin button
                                 RaisedButton(
                                   color: Color(0xff3b3b3b),
@@ -352,7 +351,7 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
             ),
             AnimatedContainer(
               duration: Duration(milliseconds: 170),
-              margin: EdgeInsets.only(top: containerSize == 0 ? screenSize.size.height / 10 * 0.8 : (screenSize.size.height / 10 * 1.5 + (showSmallLabel?screenSize.size.height / 10 * 0.2:0))),
+              margin: EdgeInsets.only(top: containerSize == 0 ? screenSize.size.height / 10 * 0.8 : (screenSize.size.height / 10 * 1.5 + (showSmallLabel ? screenSize.size.height / 10 * 0.2 : 0))),
               padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.1, horizontal: screenSize.size.width / 5 * 0.1),
               child: Container(
                 child: ListView.builder(

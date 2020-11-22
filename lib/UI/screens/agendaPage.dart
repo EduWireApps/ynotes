@@ -1,3 +1,4 @@
+
 import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -9,6 +10,7 @@ import 'package:ynotes/UI/components/hiddenSettings.dart';
 import 'package:ynotes/UI/screens/agendaPageWidgets/agenda.dart';
 import 'package:ynotes/UI/screens/agendaPageWidgets/spaceAgenda.dart';
 import 'package:ynotes/UI/screens/agendaPageWidgets/agendaSettings.dart';
+import 'package:ynotes/utils/themeUtils.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 class AgendaPage extends StatefulWidget {
@@ -57,7 +59,7 @@ class AgendaPageState extends State<AgendaPage> {
                         maxHeight: screenSize.size.height / 10 * 8,
                         spaceBetween: screenSize.size.height / 10 * 0.3,
                         width: screenSize.size.width,
-                        bottomExpandableColor: Color(0xff282246),
+                        bottomExpandableColor: ThemeUtils.spaceColor(),
                         onDragUpdate: handleDragUpdate,
                         animationDuration: 200,
                         topExpandableBorderRadius: 0,
@@ -94,7 +96,7 @@ class AgendaPageState extends State<AgendaPage> {
                         margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
                         child: AutoSizeText(
                           "Agenda",
-                          style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontWeight: FontWeight.bold),
+                          style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontWeight: FontWeight.bold),
                         )),
                   ),
                   Align(
@@ -105,7 +107,7 @@ class AgendaPageState extends State<AgendaPage> {
                         angle: pi * (topPercents / 100),
                         child: Icon(
                           MdiIcons.arrowDownThick,
-                          color: isDarkModeEnabled ? Colors.white : Colors.black,
+                          color: ThemeUtils.textColor(),
                         ),
                       ),
                     ),

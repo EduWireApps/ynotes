@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ynotes/UI/components/modalBottomSheets/disciplinesModalBottomSheet.dart';
 import 'package:ynotes/UI/components/modalBottomSheets/keyValues.dart';
+import 'package:ynotes/utils/themeUtils.dart';
 
 import '../../../classes.dart';
 import '../../../usefulMethods.dart';
@@ -85,17 +86,17 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                             child: Text(
                               widget.grade.valeur != null ? widget.grade.valeur : "-",
                               textAlign: TextAlign.center,
-                              style: TextStyle(color: isDarkModeEnabled ? Colors.white : Colors.black, fontFamily: "Asap", fontWeight: FontWeight.w600, fontSize: (screenSize.size.width / 5) * 0.3),
+                              style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontWeight: FontWeight.w600, fontSize: (screenSize.size.width / 5) * 0.3),
                             ),
                           ),
                           Container(
                             padding: EdgeInsets.symmetric(horizontal: (screenSize.size.width / 5) * 0.4),
-                            child: Divider(height: (screenSize.size.height / 3) / 75, thickness: (screenSize.size.height / 3) / 75, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                            child: Divider(height: (screenSize.size.height / 3) / 75, thickness: (screenSize.size.height / 3) / 75, color: ThemeUtils.textColor()),
                           ),
                           FittedBox(
                             child: Text(
                               widget.grade.noteSur != null ? widget.grade.noteSur : "-",
-                              style: TextStyle(color: isDarkModeEnabled ? Colors.white : Colors.black, fontFamily: "Asap", fontWeight: FontWeight.w600, fontSize: (screenSize.size.width / 5) * 0.3),
+                              style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontWeight: FontWeight.w600, fontSize: (screenSize.size.width / 5) * 0.3),
                             ),
                           ),
                         ],
@@ -137,7 +138,7 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                               child: AutoSizeText(
                                 widget.grade.devoir != null ? widget.grade.devoir : "-",
                                 minFontSize: 18,
-                                style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: ThemeUtils.textColor()),
                                 textAlign: TextAlign.center,
                               ),
                             ),
@@ -229,7 +230,7 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                                       child: FittedBox(
                                         child: new Icon(
                                           Icons.bar_chart,
-                                          color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                          color: ThemeUtils.textColor(),
                                         ),
                                       ),
                                     ),
@@ -250,7 +251,7 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                                 children: [
                                   Text(
                                     "SpaceStats",
-                                    style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, textBaseline: TextBaseline.ideographic, fontWeight: FontWeight.bold),
+                                    style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), textBaseline: TextBaseline.ideographic, fontWeight: FontWeight.bold),
                                   ),
                                 ],
                               ),

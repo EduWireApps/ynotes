@@ -1,3 +1,4 @@
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flutter/cupertino.dart';
@@ -11,6 +12,9 @@ import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/UI/components/hiddenSettings.dart';
 import 'package:ynotes/UI/screens/homeworkPageWidgets/HWsecondPage.dart';
 import 'package:ynotes/UI/screens/summaryPage.dart';
+import 'package:ynotes/utils/themeUtils.dart';
+import 'package:ynotes/utils/fileUtils.dart';
+
 import 'package:ynotes/main.dart';
 import 'package:ynotes/apis/EcoleDirecte.dart';
 
@@ -174,13 +178,13 @@ class HomeworkPageState extends State<HomeworkPage> {
                                       children: <Widget>[
                                         Icon(
                                           Icons.swap_horiz_outlined,
-                                          color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                          color: ThemeUtils.textColor(),
                                         ),
                                         Text(
                                           "Devoirs à faire",
                                           style: TextStyle(
                                             fontFamily: "Asap",
-                                            color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                            color: ThemeUtils.textColor(),
                                           ),
                                         ),
                                       ],
@@ -237,13 +241,13 @@ class HomeworkPageState extends State<HomeworkPage> {
                                     children: <Widget>[
                                       Icon(
                                         MdiIcons.calendar,
-                                        color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                        color: ThemeUtils.textColor(),
                                       ),
                                       Text(
                                         "Choisir une date",
                                         style: TextStyle(
                                           fontFamily: "Asap",
-                                          color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                          color: ThemeUtils.textColor(),
                                         ),
                                       ),
                                     ],
@@ -429,7 +433,7 @@ class _DialogHomeworkState extends State<DialogHomework> {
                     padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
                     child: Icon(
                       MdiIcons.share,
-                      color: isDarkModeEnabled ? Colors.white : Colors.black,
+                      color: ThemeUtils.textColor(),
                       size: screenSize.size.width / 5 * 0.5,
                     )),
               ),
@@ -473,7 +477,7 @@ class _DialogHomeworkState extends State<DialogHomework> {
                 child: SingleChildScrollView(
                   child: AutoSizeText(
                     parsedHtml,
-                    style: TextStyle(fontSize: 20, fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                    style: TextStyle(fontSize: 20, fontFamily: "Asap", color: ThemeUtils.textColor()),
                     textAlign: TextAlign.justify,
                   ),
                 ),
@@ -619,7 +623,7 @@ class _DialogHomeworkState extends State<DialogHomework> {
                                       "J'ai fait ce devoir",
                                       style: TextStyle(
                                         fontFamily: "Asap",
-                                        color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                        color: ThemeUtils.textColor(),
                                       ),
                                     )
                                   ],

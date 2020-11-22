@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
 import '../../../usefulMethods.dart';
+import 'package:ynotes/utils/themeUtils.dart';
 
 class RecurringEventsDialog extends StatefulWidget {
   String scheme;
@@ -132,7 +133,7 @@ class _RecurringEventsDialogState extends State<RecurringEventsDialog> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(margin: EdgeInsets.only(top: screenSize.size.width / 5 * 0.2), height: (screenSize.size.height / 10 * 8.8) / 10 * 0.75, width: screenSize.size.width / 5 * 2, child: Icon(MdiIcons.check, color: isDarkModeEnabled ? Colors.white : Colors.black)),
+                      Container(margin: EdgeInsets.only(top: screenSize.size.width / 5 * 0.2), height: (screenSize.size.height / 10 * 8.8) / 10 * 0.75, width: screenSize.size.width / 5 * 2, child: Icon(MdiIcons.check, color: ThemeUtils.textColor())),
                     ],
                   ),
                 ),
@@ -163,7 +164,7 @@ class _RecurringEventsDialogState extends State<RecurringEventsDialog> {
                           value: weekTypes[weekType],
                           dropdownColor: Theme.of(context).primaryColor,
                           iconSize: 0.0,
-                          style: TextStyle(fontSize: 18, fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                          style: TextStyle(fontSize: 18, fontFamily: "Asap", color: ThemeUtils.textColor()),
                           onChanged: (String newValue) {
                             setState(() {
                               weekType = weekTypes.indexOf(newValue);
@@ -176,7 +177,7 @@ class _RecurringEventsDialogState extends State<RecurringEventsDialog> {
                               child: Text(
                                 value,
                                 textAlign: TextAlign.left,
-                                style: TextStyle(fontSize: 18, fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                style: TextStyle(fontSize: 18, fontFamily: "Asap", color: ThemeUtils.textColor()),
                               ),
                             );
                           }).toList(),

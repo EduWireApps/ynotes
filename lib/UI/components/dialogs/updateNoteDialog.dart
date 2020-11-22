@@ -1,18 +1,10 @@
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:battery_optimization/battery_optimization.dart';
-import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_dnd/flutter_dnd.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:ynotes/UI/components/dialogs.dart';
-import 'package:ynotes/UI/screens/agendaPageWidgets/agenda.dart';
 import 'package:ynotes/UI/utils/fileUtils.dart';
-import 'package:ynotes/background.dart';
-import 'package:ynotes/main.dart';
-import '../../../notifications.dart';
+import 'package:ynotes/utils/themeUtils.dart';
+
 import '../../../usefulMethods.dart';
 
 class UpdateNoteDialog extends StatefulWidget {
@@ -71,14 +63,14 @@ class _UpdateNoteDialogState extends State<UpdateNoteDialog> {
                     selectable: true,
                     data: markdown,
                     styleSheet: MarkdownStyleSheet(
-                      p: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
-                      listBullet: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
-                      h1: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
-                      h2: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
-                      h3: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
-                      h4: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
-                      h5: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
-                      h6: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                      p: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                      listBullet: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                      h1: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                      h2: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                      h3: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                      h4: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                      h5: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                      h6: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                     )),
               ),
             ],

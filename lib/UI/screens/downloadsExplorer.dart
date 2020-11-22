@@ -1,3 +1,4 @@
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -5,7 +6,8 @@ import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:flutter/src/scheduler/binding.dart';
-import '../../../usefulMethods.dart';
+import 'package:ynotes/utils/themeUtils.dart';
+import '../../usefulMethods.dart';
 import 'package:ynotes/UI/utils/fileUtils.dart';
 import 'dart:async';
 import 'package:path/path.dart' as pathPackage;
@@ -113,7 +115,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
               margin: EdgeInsets.all(screenSize.size.width / 5 * 0.2),
               child: Text(
                 "Mes documents",
-                style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: ThemeUtils.textColor()),
                 textAlign: TextAlign.left,
               )),
           Container(
@@ -182,7 +184,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                                         children: <Widget>[
                                           Icon(
                                             MdiIcons.arrowLeft,
-                                            color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                            color: ThemeUtils.textColor(),
                                           ),
                                         ],
                                       ),
@@ -227,7 +229,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                                         children: <Widget>[
                                           Icon(
                                             MdiIcons.cancel,
-                                            color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                            color: ThemeUtils.textColor(),
                                           ),
                                         ],
                                       ),
@@ -306,7 +308,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                                         children: <Widget>[
                                           Icon(
                                             MdiIcons.cursorText,
-                                            color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                            color: ThemeUtils.textColor(),
                                           ),
                                         ],
                                       ),
@@ -359,14 +361,12 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                                             color: Colors.red,
                                           )
                                         : Icon(
-                                        
                                             case2(actualSort, {
                                               explorerSortValue.date: MdiIcons.sortAscending,
                                               explorerSortValue.reversed_date: MdiIcons.sortDescending,
                                               explorerSortValue.name: MdiIcons.sortAlphabeticalAscending,
                                             }),
-                                           
-                                            color: isDarkModeEnabled ? Colors.white : Colors.black87,
+                                            color: ThemeUtils.textColor(),
                                           ),
                                   ),
                                 ],
@@ -407,7 +407,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                                         children: <Widget>[
                                           Icon(
                                             Icons.content_copy,
-                                            color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                            color: ThemeUtils.textColor(),
                                           ),
                                         ],
                                       ),
@@ -457,7 +457,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                                       opacity: clipboard.length > 0 ? 1.0 : 0.6,
                                       child: Icon(
                                         MdiIcons.contentPaste,
-                                        color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                        color: ThemeUtils.textColor(),
                                       ),
                                     ),
                                   ],
@@ -486,7 +486,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                     if (snapshot.data.length != 0) {
                       listFiles = snapshot.data;
                       return Container(
-                        height: screenSize.size.height / 10 * 3.7,
+                        height: screenSize.size.height / 10 * 7.3,
                         child: RefreshIndicator(
                           onRefresh: () => refreshFileListFuture(),
                           child: ListView.builder(
@@ -496,7 +496,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                               final item = listFiles[index].fileName;
                               bool selected = false;
                               return Dismissible(
-                                direction: DismissDirection.startToEnd,
+                                direction: DismissDirection.endToStart,
                                 background: Container(color: Colors.red),
                                 confirmDismiss: (direction) async {
                                   setState(() {});
@@ -554,7 +554,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                                                     children: <Widget>[
                                                       Icon(
                                                         (listFiles[index].element is Directory) ? MdiIcons.folder : MdiIcons.file,
-                                                        color: (listFiles[index].element is Directory) ? Colors.yellow.shade100 : isDarkModeEnabled ? Colors.white : Colors.black87,
+                                                        color: (listFiles[index].element is Directory) ? Colors.yellow.shade100 : ThemeUtils.textColor().withOpacity(0.5),
                                                       ),
                                                       Column(
                                                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -563,7 +563,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                                                             width: screenSize.size.width / 5 * 3.25,
                                                             child: Text(
                                                               snapshot.data[index].fileName ?? "",
-                                                              style: TextStyle(fontFamily: "Asap", fontSize: screenSize.size.height / 10 * 0.2, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                                              style: TextStyle(fontFamily: "Asap", fontSize: screenSize.size.height / 10 * 0.2, color: ThemeUtils.textColor()),
                                                             ),
                                                           ),
                                                           if (snapshot.data[index].lastModifiedDate != null)
@@ -594,7 +594,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                       );
                     } else {
                       return Container(
-                        height: screenSize.size.height / 10 * 3.7,
+                        height: screenSize.size.height / 10 * 7.3,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
@@ -603,14 +603,14 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                               child: FittedBox(
                                 child: Icon(
                                   MdiIcons.downloadOffOutline,
-                                  color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                  color: ThemeUtils.textColor(),
                                   size: screenSize.size.width / 5 * 1.5,
                                 ),
                               ),
                             ),
                             Text(
                               "Aucun élément.",
-                              style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: 15),
+                              style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: 15),
                             )
                           ],
                         ),

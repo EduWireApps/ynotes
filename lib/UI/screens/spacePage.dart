@@ -1,10 +1,12 @@
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/UI/screens/settingsPage.dart';
-import 'package:ynotes/UI/screens/spacePageWidgets/downloadsExplorer.dart';
+import 'package:ynotes/UI/screens/downloadsExplorer.dart';
 import 'package:ynotes/UI/screens/spacePageWidgets/news.dart';
 import 'package:ynotes/UI/screens/agendaPageWidgets/agendaSettings.dart';
+import 'package:ynotes/utils/themeUtils.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 import 'agendaPageWidgets/agenda.dart';
@@ -40,8 +42,8 @@ class _SpacePageState extends State<SpacePage> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
     final Map<int, Widget> spaceTabs = <int, Widget>{
-      0: Text("Outils", style: TextStyle(color: isDarkModeEnabled ? Colors.white : Colors.black, fontFamily: "Asap", fontWeight: FontWeight.bold, fontSize: screenSize.size.width / 5 * 0.2)),
-      1: Text("Organisation", style: TextStyle(color: isDarkModeEnabled ? Colors.white : Colors.black, fontFamily: "Asap", fontWeight: FontWeight.bold, fontSize: screenSize.size.width / 5 * 0.2))
+      0: Text("Outils", style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontWeight: FontWeight.bold, fontSize: screenSize.size.width / 5 * 0.2)),
+      1: Text("Organisation", style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontWeight: FontWeight.bold, fontSize: screenSize.size.width / 5 * 0.2))
     };
 
     return Container(
@@ -72,12 +74,12 @@ class _SpacePageState extends State<SpacePage> with TickerProviderStateMixin {
                     children: <Widget>[
                       Icon(
                         Icons.settings,
-                        color: isDarkModeEnabled ? Colors.white : Colors.black,
+                        color: ThemeUtils.textColor(),
                       ),
                       Container(
                         child: Text(
                           "Accéder aux préférences",
-                          style: TextStyle(color: isDarkModeEnabled ? Colors.white : Colors.black, fontFamily: "Asap", fontWeight: FontWeight.bold, fontSize: screenSize.size.width / 5 * 0.2),
+                          style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontWeight: FontWeight.bold, fontSize: screenSize.size.width / 5 * 0.2),
                         ),
                       ),
                     ],
@@ -110,12 +112,12 @@ class _SpacePageState extends State<SpacePage> with TickerProviderStateMixin {
                             },
                             child: new Icon(
                               Icons.settings,
-                              color: isDarkModeEnabled ? Colors.white : Colors.black,
+                              color: ThemeUtils.textColor(),
                               size: screenSize.size.height / 10 * 0.4,
                             ),
                             shape: new CircleBorder(),
                             elevation: 1.0,
-                            fillColor: !isDarkModeEnabled ? Colors.white : Colors.black,
+                            fillColor: ThemeUtils.textColor(),
                           ),
                         ),
                       ),
@@ -168,7 +170,6 @@ class _SpacePageState extends State<SpacePage> with TickerProviderStateMixin {
                                                 )
                                               : Agenda(),
                                         )
-
                                       ],
                                     ),
                                   ),
@@ -196,7 +197,7 @@ class _SpacePageState extends State<SpacePage> with TickerProviderStateMixin {
                                             child: Text(
                                               "Retour",
                                               textAlign: TextAlign.center,
-                                              style: TextStyle(fontSize: 18, fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                              style: TextStyle(fontSize: 18, fontFamily: "Asap", color: ThemeUtils.textColor()),
                                             ),
                                           ),
                                         )

@@ -2,7 +2,9 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/UI/utils/fileUtils.dart';
+import 'package:ynotes/utils/themeUtils.dart';
 import '../../../usefulMethods.dart';
+
 class FolderChoiceDialog extends StatefulWidget {
   BuildContext context;
   String path;
@@ -49,7 +51,7 @@ class _FolderChoiceDialogState extends State<FolderChoiceDialog> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
       title: Text(
         "Création de dossier",
-        style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+        style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
       ),
       content: Container(
         height: widget.selectionMode ? screenSize.size.height / 10 * 2.5 : screenSize.size.height / 10 * 1.2,
@@ -59,7 +61,7 @@ class _FolderChoiceDialogState extends State<FolderChoiceDialog> {
             Container(
               child: Text(
                 "Donnez un nom à ce dossier",
-                style: TextStyle(fontFamily: 'Asap', color: isDarkModeEnabled ? Colors.white : Colors.black),
+                style: TextStyle(fontFamily: 'Asap', color: ThemeUtils.textColor()),
                 textAlign: TextAlign.left,
               ),
             ),
@@ -78,15 +80,15 @@ class _FolderChoiceDialogState extends State<FolderChoiceDialog> {
                 },
                 decoration: InputDecoration(
                   enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: isDarkModeEnabled ? Colors.white : Colors.black),
+                    borderSide: BorderSide(color: ThemeUtils.textColor()),
                   ),
                   focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: isDarkModeEnabled ? Colors.white : Colors.black),
+                    borderSide: BorderSide(color: ThemeUtils.textColor()),
                   ),
                 ),
                 style: TextStyle(
                   fontFamily: 'Asap',
-                  color: isDarkModeEnabled ? Colors.white : Colors.black,
+                  color: ThemeUtils.textColor(),
                 ),
               ),
             ),
@@ -94,7 +96,7 @@ class _FolderChoiceDialogState extends State<FolderChoiceDialog> {
               Container(
                 child: Text(
                   "Utiliser un dossier existant",
-                  style: TextStyle(fontFamily: 'Asap', color: isDarkModeEnabled ? Colors.white : Colors.black),
+                  style: TextStyle(fontFamily: 'Asap', color: ThemeUtils.textColor()),
                   textAlign: TextAlign.left,
                 ),
               ),
@@ -104,12 +106,12 @@ class _FolderChoiceDialogState extends State<FolderChoiceDialog> {
                 child: DropdownButton<String>(
                   value: dropDownValue,
                   dropdownColor: Theme.of(context).primaryColor,
-                  style: TextStyle(color: isDarkModeEnabled ? Colors.white : Colors.black),
+                  style: TextStyle(color: ThemeUtils.textColor()),
                   icon: null,
                   iconSize: 0,
                   underline: Container(
                     height: screenSize.size.height / 10 * 0.02,
-                    color: isDarkModeEnabled ? Colors.white : Colors.black,
+                    color: ThemeUtils.textColor(),
                   ),
                   onChanged: (String newValue) {
                     setState(() {
@@ -125,7 +127,7 @@ class _FolderChoiceDialogState extends State<FolderChoiceDialog> {
                       value: value ?? "",
                       child: Text(
                         value ?? "",
-                        style: TextStyle(fontFamily: 'Asap', color: isDarkModeEnabled ? Colors.white : Colors.black),
+                        style: TextStyle(fontFamily: 'Asap', color: ThemeUtils.textColor()),
                       ),
                     );
                   }).toList(),

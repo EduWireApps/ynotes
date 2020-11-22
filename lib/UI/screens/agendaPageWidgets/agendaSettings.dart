@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
+import 'package:ynotes/utils/themeUtils.dart';
 import 'package:ynotes/background.dart';
 
 import '../../../usefulMethods.dart';
@@ -57,15 +58,15 @@ class _AgendaSettingsState extends State<AgendaSettings> {
               margin: EdgeInsets.all(screenSize.size.width / 5 * 0.2),
               child: Text(
                 "Paramètres de l'agenda",
-                style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: ThemeUtils.textColor()),
                 textAlign: TextAlign.left,
               )),
           SwitchListTile(
             value: boolSettings["lighteningOverride"],
-            title: Text("Ignorer la réduction de stockage hors ligne", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.21)),
+            title: Text("Ignorer la réduction de stockage hors ligne", style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.21)),
             subtitle: Text(
               "Stocke plus de semaines hors ligne mais augmente la taille de l'application",
-              style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.16),
+              style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.16),
             ),
             onChanged: (value) async {
               setState(() {
@@ -76,12 +77,12 @@ class _AgendaSettingsState extends State<AgendaSettings> {
             },
             secondary: Icon(
               MdiIcons.zipBox,
-              color: isDarkModeEnabled ? Colors.white : Colors.black,
+              color: ThemeUtils.textColor(),
             ),
           ),
           SwitchListTile(
             value: boolSettings["reverseWeekNames"],
-            title: Text("Inverser semaines A et B", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.21)),
+            title: Text("Inverser semaines A et B", style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.21)),
             onChanged: (value) async {
               setState(() {
                 boolSettings["reverseWeekNames"] = value;
@@ -91,14 +92,14 @@ class _AgendaSettingsState extends State<AgendaSettings> {
             },
             secondary: Icon(
               MdiIcons.calendarWeek,
-              color: isDarkModeEnabled ? Colors.white : Colors.black,
+              color: ThemeUtils.textColor(),
             ),
           ),
           ListTile(
-            title: Text("Me rappeler les cours", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.21)),
+            title: Text("Me rappeler les cours", style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.21)),
             subtitle: Text(
               "${(intSettings["lessonReminderDelay"]).toString()} minutes avant",
-              style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.16),
+              style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.16),
             ),
             onTap: () async {
               var value = await CustomDialogs.showNumberChoiceDialog(context, text: "la durée");
@@ -112,15 +113,15 @@ class _AgendaSettingsState extends State<AgendaSettings> {
             },
             leading: Icon(
               MdiIcons.clockAlert,
-              color: isDarkModeEnabled ? Colors.white : Colors.black,
+              color: ThemeUtils.textColor(),
             ),
           ),
           if (Platform.isAndroid)
             ListTile(
-              title: Text("Notification constante", style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.21)),
+              title: Text("Notification constante", style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.21)),
               subtitle: Text(
                 boolSettings["agendaOnGoingNotification"] ? "Activée" : "Désactivée",
-                style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.16),
+                style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.16),
               ),
               onTap: () async {
                 await CustomDialogs.showPersistantNotificationDialog(context);
@@ -129,10 +130,9 @@ class _AgendaSettingsState extends State<AgendaSettings> {
               },
               leading: Icon(
                 MdiIcons.viewAgendaOutline,
-                color: isDarkModeEnabled ? Colors.white : Colors.black,
+                color: ThemeUtils.textColor(),
               ),
             ),
-          
         ],
       ),
     );

@@ -1,3 +1,4 @@
+
 import 'dart:ui';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -20,6 +21,7 @@ import 'package:ynotes/UI/components/hiddenSettings.dart';
 import 'package:ynotes/UI/screens/gradesPage.dart';
 import 'package:ynotes/UI/screens/homeworkPage.dart';
 import 'package:ynotes/UI/screens/summaryPageWidgets/summaryPageSettings.dart';
+import 'package:ynotes/utils/themeUtils.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/apis/EcoleDirecte.dart';
 import 'package:ynotes/usefulMethods.dart';
@@ -160,7 +162,7 @@ class SummaryPageState extends State<SummaryPage> {
                                   margin: EdgeInsets.only(right: screenSize.size.width / 5 * 0.2),
                                   child: Material(
                                     color: Colors.transparent,
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50), side: BorderSide(width: screenSize.size.width / 5 * 0.008, color: isDarkModeEnabled ? Colors.white : Colors.black)),
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(50), side: BorderSide(width: screenSize.size.width / 5 * 0.008, color: ThemeUtils.textColor())),
                                     child: InkWell(
                                       onTap: () {
                                         widget.switchPage(index);
@@ -172,7 +174,7 @@ class SummaryPageState extends State<SummaryPage> {
                                         child: Center(
                                           child: Text(
                                             entries[index]["menuName"],
-                                            style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                            style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                                           ),
                                         ),
                                       ),
@@ -208,12 +210,12 @@ class SummaryPageState extends State<SummaryPage> {
                                         percent: (snapshot.data ?? 100) / 100,
                                         center: new Text(
                                           (snapshot.data ?? "100").toString() + "%",
-                                          style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0, fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                          style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0, fontFamily: "Asap", color: ThemeUtils.textColor()),
                                         ),
                                         header: new Text(
                                           "Travail fait",
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(fontFamily: "Asap", fontSize: 18, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                          style: TextStyle(fontFamily: "Asap", fontSize: 18, color: ThemeUtils.textColor()),
                                         ),
                                         backgroundColor: Colors.orange.shade400,
                                         animationDuration: 550,
@@ -248,7 +250,7 @@ class SummaryPageState extends State<SummaryPage> {
                                         child: Text(
                                           "A faire",
                                           textAlign: TextAlign.center,
-                                          style: TextStyle(fontFamily: "Asap", fontSize: 18, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                          style: TextStyle(fontFamily: "Asap", fontSize: 18, color: ThemeUtils.textColor()),
                                         ),
                                       )),
                                   Align(
@@ -279,19 +281,19 @@ class SummaryPageState extends State<SummaryPage> {
                                                                       child: new Container(
                                                                           margin: const EdgeInsets.only(left: 10.0, right: 20.0),
                                                                           child: Divider(
-                                                                            color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                                                            color: ThemeUtils.textColor(),
                                                                             height: 36,
                                                                           )),
                                                                     ),
                                                                     Text(
                                                                       DateFormat("EEEE d MMMM", "fr_FR").format(snapshot.data[index].date).toString(),
-                                                                      style: TextStyle(color: isDarkModeEnabled ? Colors.white : Colors.black, fontFamily: "Asap"),
+                                                                      style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
                                                                     ),
                                                                     Expanded(
                                                                       child: Container(
                                                                           margin: const EdgeInsets.only(left: 20.0, right: 10.0),
                                                                           child: Divider(
-                                                                            color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                                                            color: ThemeUtils.textColor(),
                                                                             height: 36,
                                                                           )),
                                                                     ),
@@ -313,7 +315,7 @@ class SummaryPageState extends State<SummaryPage> {
                                                           Text(
                                                             "Pas de devoirs à l'horizon... \non se détend ?",
                                                             textAlign: TextAlign.center,
-                                                            style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
+                                                            style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
                                                           ),
                                                           FlatButton(
                                                             onPressed: () {
@@ -324,7 +326,7 @@ class SummaryPageState extends State<SummaryPage> {
                                                                 ? Text("Recharger",
                                                                     style: TextStyle(
                                                                       fontFamily: "Asap",
-                                                                      color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                                                      color: ThemeUtils.textColor(),
                                                                     ))
                                                                 : FittedBox(child: SpinKitThreeBounce(color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4)),
                                                             shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(18.0), side: BorderSide(color: Theme.of(context).primaryColorDark)),
@@ -412,7 +414,7 @@ class SummaryPageState extends State<SummaryPage> {
                                                                   ),
                                                                   Text(
                                                                     getAllGrades(snapshot.data)[position].libelleMatiere + " - " + getAllGrades(snapshot.data)[position].date,
-                                                                    style: TextStyle(fontFamily: "Asap", color: (isDarkModeEnabled ? Colors.white : Colors.black)),
+                                                                    style: TextStyle(fontFamily: "Asap", color: (ThemeUtils.textColor())),
                                                                     textAlign: TextAlign.center,
                                                                   ),
                                                                 ],
@@ -421,15 +423,13 @@ class SummaryPageState extends State<SummaryPage> {
                                                                 //MARK
                                                                 TextSpan(
                                                                   text: (getAllGrades(snapshot.data)[position].nonSignificatif ? "(" + getAllGrades(snapshot.data)[position].valeur : getAllGrades(snapshot.data)[position].valeur),
-                                                                  style: TextStyle(color: (isDarkModeEnabled ? Colors.white : Colors.black), fontFamily: "Asap", fontWeight: FontWeight.normal, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.5),
+                                                                  style: TextStyle(color: (ThemeUtils.textColor()), fontFamily: "Asap", fontWeight: FontWeight.normal, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.5),
                                                                   children: <TextSpan>[
                                                                     if (getAllGrades(snapshot.data)[position].noteSur != "20")
 
                                                                       //MARK ON
-                                                                      TextSpan(
-                                                                          text: '/' + getAllGrades(snapshot.data)[position].noteSur, style: TextStyle(color: (isDarkModeEnabled ? Colors.white : Colors.black), fontWeight: FontWeight.normal, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.4)),
-                                                                    if (getAllGrades(snapshot.data)[position].nonSignificatif == true)
-                                                                      TextSpan(text: ")", style: TextStyle(color: (isDarkModeEnabled ? Colors.white : Colors.black), fontWeight: FontWeight.normal, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.5)),
+                                                                      TextSpan(text: '/' + getAllGrades(snapshot.data)[position].noteSur, style: TextStyle(color: (ThemeUtils.textColor()), fontWeight: FontWeight.normal, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.4)),
+                                                                    if (getAllGrades(snapshot.data)[position].nonSignificatif == true) TextSpan(text: ")", style: TextStyle(color: (ThemeUtils.textColor()), fontWeight: FontWeight.normal, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.5)),
                                                                   ],
                                                                 ),
                                                               ),
@@ -441,7 +441,7 @@ class SummaryPageState extends State<SummaryPage> {
                                                                     getAllGrades(snapshot.data)[position].devoir,
                                                                     textAlign: TextAlign.center,
                                                                     overflow: TextOverflow.ellipsis,
-                                                                    style: TextStyle(fontSize: 15, fontFamily: "Asap", color: (isDarkModeEnabled ? Colors.white : Colors.black)),
+                                                                    style: TextStyle(fontSize: 15, fontFamily: "Asap", color: (ThemeUtils.textColor())),
                                                                   ),
                                                                 )
                                                             ],
@@ -471,7 +471,7 @@ class SummaryPageState extends State<SummaryPage> {
                                                     padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
                                                     child: Icon(
                                                       Icons.arrow_left,
-                                                      color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                                      color: ThemeUtils.textColor(),
                                                       size: screenSize.size.width / 5 * 0.4,
                                                     )),
                                               ),
@@ -493,13 +493,13 @@ class SummaryPageState extends State<SummaryPage> {
                                             children: [
                                               Icon(
                                                 MdiIcons.emoticonConfused,
-                                                color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                                color: ThemeUtils.textColor(),
                                               ),
                                               Container(
                                                 margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.05),
                                                 child: AutoSizeText(
                                                   "Pas de notes.",
-                                                  style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                                  style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                                                 ),
                                               ),
                                             ],
@@ -513,7 +513,7 @@ class SummaryPageState extends State<SummaryPage> {
                                                 ? Text("Recharger",
                                                     style: TextStyle(
                                                       fontFamily: "Asap",
-                                                      color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                                      color: ThemeUtils.textColor(),
                                                     ))
                                                 : FittedBox(child: SpinKitThreeBounce(color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4)),
                                             shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(18.0), side: BorderSide(color: Theme.of(context).primaryColorDark)),

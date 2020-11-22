@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:ynotes/UI/utils/fileUtils.dart';
+import 'package:ynotes/utils/themeUtils.dart';
 
 import '../../../usefulMethods.dart';
 
@@ -36,10 +37,7 @@ class _NewsState extends State<News> {
                 margin: EdgeInsets.all(screenSize.size.width / 5 * 0.2),
                 child: Text(
                   "Actualité",
-                  style: TextStyle(
-                      fontFamily: "Asap",
-                      fontWeight: FontWeight.bold,
-                      color: isDarkModeEnabled ? Colors.white : Colors.black),
+                  style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: ThemeUtils.textColor()),
                   textAlign: TextAlign.left,
                 )),
             Container(
@@ -57,9 +55,7 @@ class _NewsState extends State<News> {
                               children: <Widget>[
                                 Text(
                                   "Une erreur a eu lieu",
-                                  style: TextStyle(
-                                      fontFamily: "Asap",
-                                      color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                  style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                                 ),
                                 FlatButton(
                                   onPressed: () {
@@ -68,11 +64,9 @@ class _NewsState extends State<News> {
                                   child: Text("Recharger",
                                       style: TextStyle(
                                         fontFamily: "Asap",
-                                        color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                        color: ThemeUtils.textColor(),
                                       )),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: new BorderRadius.circular(18.0),
-                                      side: BorderSide(color: Theme.of(context).primaryColorDark)),
+                                  shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(18.0), side: BorderSide(color: Theme.of(context).primaryColorDark)),
                                 ),
                               ],
                             ),
@@ -91,22 +85,11 @@ class _NewsState extends State<News> {
                                           children: <Widget>[
                                             Text(
                                               snapshot.data[index]["title"],
-                                              style: TextStyle(
-                                                  fontFamily: "Asap",
-                                                  fontWeight: FontWeight.bold,
-                                                  color: isDarkModeEnabled
-                                                      ? Colors.white
-                                                      : Colors.black),
+                                              style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: isDarkModeEnabled ? Colors.white : Colors.black),
                                             ),
                                             SizedBox(
                                               width: screenSize.size.width / 5 * 4.3,
-                                              child: Text(snapshot.data[index]["content"],
-                                                  style: TextStyle(
-                                                      fontFamily: "Asap",
-                                                      color: isDarkModeEnabled
-                                                          ? Colors.white
-                                                          : Colors.black),
-                                                  textAlign: TextAlign.center),
+                                              child: Text(snapshot.data[index]["content"], style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black), textAlign: TextAlign.center),
                                             ),
                                           ],
                                         ),
@@ -135,9 +118,7 @@ class _NewsState extends State<News> {
 class AppNews {
   static Future<List> checkAppNews() async {
     try {
-      dioResponse.Response response = await dio.Dio().get(
-          "https://raw.githubusercontent.com/ModernChocolate/ynotes-website/master/dist/src/app-src/news.json",
-          options: dio.Options(responseType: dio.ResponseType.plain));
+      dioResponse.Response response = await dio.Dio().get("https://raw.githubusercontent.com/ModernChocolate/ynotes-website/master/dist/src/app-src/news.json", options: dio.Options(responseType: dio.ResponseType.plain));
       var dir = await FolderAppUtil.getDirectory();
       File jsonfile = File(dir.path + "/news.json");
       jsonfile.writeAsString(response.data.toString());

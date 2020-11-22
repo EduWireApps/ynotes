@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/UI/animations/FadeAnimation.dart';
+import 'package:ynotes/utils/themeUtils.dart';
 
 import '../../../usefulMethods.dart';
 
@@ -50,7 +51,7 @@ class AgendaEventChoice extends StatelessWidget {
                       fontFamily: "Asap",
                       fontSize: 20,
                       fontWeight: FontWeight.w400,
-                      color: isDarkModeEnabled ? Colors.white : Colors.black,
+                      color: ThemeUtils.textColor(),
                     ),
                     textAlign: TextAlign.center,
                     alignment: AlignmentDirectional.topStart,

@@ -1,13 +1,14 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/UI/screens/settingsPage.dart';
 import 'package:ynotes/UI/utils/fileUtils.dart';
+import 'package:ynotes/utils/themeUtils.dart';
 
 import '../../usefulMethods.dart';
 import 'dialogs.dart';
+
 class QuickMenu extends StatefulWidget {
   final Function close;
 
@@ -109,7 +110,6 @@ class _QuickMenuState extends State<QuickMenu> with TickerProviderStateMixin {
                                                   break;
                                                 case 2:
                                                   {
-                                                    
                                                     //helpDialogs[0].resetEveryHelpDialog();
                                                   }
                                                   break;
@@ -125,12 +125,12 @@ class _QuickMenuState extends State<QuickMenu> with TickerProviderStateMixin {
                                                     alignment: Alignment.centerLeft,
                                                     child: Text(
                                                       quickMenuTexts[index],
-                                                      style: TextStyle(fontFamily: "Asap", fontSize: screenSize.size.height / 10 * 0.2, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                                      style: TextStyle(fontFamily: "Asap", fontSize: screenSize.size.height / 10 * 0.2, color: ThemeUtils.textColor()),
                                                     ),
                                                   ),
                                                   Align(
                                                     alignment: Alignment.centerRight,
-                                                    child: Icon(quickMenuIcons[index], color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                                    child: Icon(quickMenuIcons[index], color: ThemeUtils.textColor()),
                                                   )
                                                 ],
                                               ),
@@ -189,7 +189,7 @@ class _QuickMenuState extends State<QuickMenu> with TickerProviderStateMixin {
                                                             child: InkWell(
                                                               splashColor: Color(0xff525252),
                                                               onTap: () {
-                                                               FileAppUtil.openFile(listFiles[index].element.path,usingFileName: true);
+                                                                FileAppUtil.openFile(listFiles[index].element.path, usingFileName: true);
                                                               },
                                                               child: Container(
                                                                 width: screenSize.size.width / 5 * 3,
@@ -202,7 +202,7 @@ class _QuickMenuState extends State<QuickMenu> with TickerProviderStateMixin {
                                                                           alignment: Alignment.centerLeft,
                                                                           child: Text(
                                                                             snapshot.data[index].fileName,
-                                                                            style: TextStyle(fontFamily: "Asap", fontSize: screenSize.size.height / 10 * 0.2, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                                                            style: TextStyle(fontFamily: "Asap", fontSize: screenSize.size.height / 10 * 0.2, color: ThemeUtils.textColor()),
                                                                           ),
                                                                         ),
                                                                       ],
@@ -236,12 +236,12 @@ class _QuickMenuState extends State<QuickMenu> with TickerProviderStateMixin {
                                             children: <Widget>[
                                               Icon(
                                                 MdiIcons.downloadOffOutline,
-                                                color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                                color: ThemeUtils.textColor(),
                                                 size: screenSize.size.width / 5 * 1.5,
                                               ),
                                               Text(
                                                 "Aucun téléchargement.",
-                                                style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: 15),
+                                                style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: 15),
                                               )
                                             ],
                                           ),

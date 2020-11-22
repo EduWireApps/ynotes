@@ -1,12 +1,12 @@
+
 import 'package:flutter/material.dart';
-import 'package:ynotes/UI/utils/themeUtils.dart';
+import 'package:ynotes/utils/themeUtils.dart';
 
 import '../../main.dart';
 import '../../usefulMethods.dart';
 import 'apps/cloud.dart';
 import 'apps/mail.dart';
 import 'apps/polls.dart';
-
 
 class AppsPage extends StatefulWidget {
   final BuildContext rootcontext;
@@ -28,9 +28,8 @@ class _AppsPageState extends State<AppsPage> {
     return Container(
         child: MaterialApp(debugShowCheckedModeBanner: false, theme: lightTheme, darkTheme: darkTheme, themeMode: isDarkModeEnabled ? ThemeMode.dark : ThemeMode.light, initialRoute: initialRoute, routes: {
       '/homePage': (context) => Material(child: HomePage()),
-      '/cloud': (context) => Material(child: CloudPage()),
       '/mail': (context) => Material(child: MailPageOld(context: widget.rootcontext)),
-      '/polls': (context) => Material(child: PollsAndInfosPage()),
+      '/polls': (context) => Material(child: PollsAndInfosPageOld()),
     }));
   }
 }
@@ -59,7 +58,7 @@ class _HomePageState extends State<HomePage> {
         children: <Widget>[
           Text(
             "Accédez à vos applications",
-            style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.4, fontWeight: FontWeight.w200),
+            style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.4, fontWeight: FontWeight.w200),
             textAlign: TextAlign.center,
           ),
           SizedBox(
@@ -68,7 +67,8 @@ class _HomePageState extends State<HomePage> {
           localApi.listApp.length == 0
               ? Text(
                   "Il semblerait qu'aucune application ne soit encore disponible. L'implémentation d'applications est en plein développement, revenez plus tard !",
-                  style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black), textAlign: TextAlign.center,
+                  style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                  textAlign: TextAlign.center,
                 )
               : Wrap(
                   children: List.generate(localApi.listApp.length, (index) {
@@ -95,14 +95,14 @@ class _HomePageState extends State<HomePage> {
                                       child: Icon(
                                         localApi.listApp[index].icon,
                                         size: screenSize.size.width / 6,
-                                        color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                        color: ThemeUtils.textColor(),
                                       ),
                                     ),
                                   ))),
                           //label
                           Text(
                             localApi.listApp[index].name,
-                            style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.height / 10 * 0.2),
+                            style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.2),
                           )
                         ],
                       ),

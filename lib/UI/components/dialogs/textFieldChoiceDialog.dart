@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../../../usefulMethods.dart';
+import 'package:ynotes/utils/themeUtils.dart';
 
 class TextFieldChoiceDialog extends StatefulWidget {
   final String unit;
@@ -45,7 +45,7 @@ class _TextFieldChoiceDialogState extends State<TextFieldChoiceDialog> {
             Container(
               child: Text(
                 "Choisir ${widget.unit}",
-                style: TextStyle(fontFamily: 'Asap', color: isDarkModeEnabled ? Colors.white : Colors.black),
+                style: TextStyle(fontFamily: 'Asap', color: ThemeUtils.textColor()),
                 textAlign: TextAlign.left,
               ),
             ),
@@ -57,10 +57,10 @@ class _TextFieldChoiceDialogState extends State<TextFieldChoiceDialog> {
                 autofocus: true,
                 decoration: InputDecoration(
                   enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: isDarkModeEnabled ? Colors.white : Colors.black),
+                    borderSide: BorderSide(color: ThemeUtils.textColor()),
                   ),
                   focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: isDarkModeEnabled ? Colors.white : Colors.black),
+                    borderSide: BorderSide(color: ThemeUtils.textColor()),
                   ),
                 ),
                 onChanged: (newValue) {
@@ -70,7 +70,7 @@ class _TextFieldChoiceDialogState extends State<TextFieldChoiceDialog> {
                 },
                 style: TextStyle(
                   fontFamily: 'Asap',
-                  color: isDarkModeEnabled ? Colors.white : Colors.black,
+                  color: ThemeUtils.textColor(),
                 ),
               ),
             ),

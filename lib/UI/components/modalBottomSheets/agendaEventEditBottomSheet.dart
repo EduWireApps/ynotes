@@ -4,9 +4,9 @@ import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:uuid/uuid.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
+import 'package:ynotes/utils/themeUtils.dart';
 import 'package:ynotes/apis/utils.dart';
 import 'package:ynotes/main.dart';
-import 'package:ynotes/apis/Pronote/PronoteAPI.dart';
 
 import '../../../classes.dart';
 import '../../../usefulMethods.dart';
@@ -193,7 +193,7 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                           }
                         }
                       },
-                      child: Container(margin: EdgeInsets.only(top: screenSize.size.width / 5 * 0.2), height: (screenSize.size.height / 10 * 8.8) / 10 * 0.75, width: screenSize.size.width / 5 * 1, child: Icon(MdiIcons.check, color: isDarkModeEnabled ? Colors.white : Colors.black))),
+                      child: Container(margin: EdgeInsets.only(top: screenSize.size.width / 5 * 0.2), height: (screenSize.size.height / 10 * 8.8) / 10 * 0.75, width: screenSize.size.width / 5 * 1, child: Icon(MdiIcons.check, color: ThemeUtils.textColor()))),
                 ],
               ),
             ),
@@ -207,8 +207,8 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                       margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
                       child: TextField(
                         controller: titleController,
-                        style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.width / 5 * 0.35),
-                        decoration: new InputDecoration.collapsed(hintText: 'Ajouter un titre', hintStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.8) : Colors.black.withOpacity(0.8))),
+                        style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.width / 5 * 0.35),
+                        decoration: new InputDecoration.collapsed(hintText: 'Ajouter un titre', hintStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor().withOpacity(0.8))),
                       ),
                     ),
                     Divider(height: screenSize.size.height / 10 * 0.4),
@@ -238,7 +238,7 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                             SizedBox(width: screenSize.size.width / 5 * 0.1),
                             Text(
                               'Choisir une couleur',
-                              style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.8) : Colors.black.withOpacity(0.8), fontSize: screenSize.size.width / 5 * 0.25),
+                              style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor().withOpacity(0.8), fontSize: screenSize.size.width / 5 * 0.25),
                             )
                           ],
                         ),
@@ -255,7 +255,7 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                                 contentPadding: EdgeInsets.zero,
                                 title: Text(
                                   'Annulé',
-                                  style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.8) : Colors.black.withOpacity(0.8), fontSize: screenSize.size.width / 5 * 0.25),
+                                  style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor().withOpacity(0.8), fontSize: screenSize.size.width / 5 * 0.25),
                                 ),
                                 value: canceled,
                                 onChanged: (nValue) {
@@ -267,7 +267,7 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                                 contentPadding: EdgeInsets.zero,
                                 title: Text(
                                   'Toute la journée',
-                                  style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.8) : Colors.black.withOpacity(0.8), fontSize: screenSize.size.width / 5 * 0.25),
+                                  style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor().withOpacity(0.8), fontSize: screenSize.size.width / 5 * 0.25),
                                 ),
                                 value: wholeDay,
                                 onChanged: (nValue) {
@@ -301,13 +301,13 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                                             child: Icon(
                                               MdiIcons.calendar,
                                               size: screenSize.size.width / 5 * 0.4,
-                                              color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                              color: ThemeUtils.textColor(),
                                             ),
                                           ),
                                           SizedBox(width: screenSize.size.width / 5 * 0.1),
                                           Text(
                                             'Début ${DateFormat.Hm().format(start)}',
-                                            style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.8) : Colors.black.withOpacity(0.8), fontSize: screenSize.size.width / 5 * 0.25),
+                                            style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor().withOpacity(0.8), fontSize: screenSize.size.width / 5 * 0.25),
                                           )
                                         ],
                                       ),
@@ -337,7 +337,7 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                                             child: Icon(
                                               MdiIcons.calendar,
                                               size: screenSize.size.width / 5 * 0.4,
-                                              color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                              color: ThemeUtils.textColor(),
                                             ),
                                           ),
                                           SizedBox(width: screenSize.size.width / 5 * 0.1),
@@ -377,7 +377,7 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                               child: Icon(
                                 MdiIcons.repeat,
                                 size: screenSize.size.width / 5 * 0.4,
-                                color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                color: ThemeUtils.textColor(),
                               ),
                             ),
                             SizedBox(width: screenSize.size.width / 5 * 0.1),
@@ -410,7 +410,7 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                               child: Icon(
                                 MdiIcons.bell,
                                 size: screenSize.size.width / 5 * 0.4,
-                                color: isDarkModeEnabled ? Colors.white : Colors.black,
+                                color: ThemeUtils.textColor(),
                               ),
                             ),
                             SizedBox(width: screenSize.size.width / 5 * 0.1),
@@ -428,7 +428,7 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                       width: screenSize.size.width / 5 * 4.5,
                       height: screenSize.size.height / 10 * 2,
                       child: TextField(
-                        style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.black, fontSize: screenSize.size.width / 5 * 0.25),
+                        style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.width / 5 * 0.25),
                         keyboardType: TextInputType.multiline,
                         controller: descriptionController,
                         maxLines: null,
