@@ -3,16 +3,19 @@ import 'dart:async';
 import 'package:android_alarm_manager/android_alarm_manager.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_dnd/flutter_dnd.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive/hive.dart';
+import 'package:ynotes/shared_preferences.dart';
 import 'package:ynotes/classes.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 import 'UI/screens/agendaPageWidgets/agenda.dart';
 import 'UI/screens/logsPage.dart';
-import 'UI/utils/fileUtils.dart';
+import 'utils/themeUtils.dart';
+import 'utils/fileUtils.dart';
 import 'apis/utils.dart';
 import 'background.dart';
 
@@ -24,7 +27,40 @@ class LocalNotification {
       schedule: NotificationSchedule(
         initialDateTime: event.start,
       ),
-     
+    );
+  }
+
+  static showNewMailNotification(Mail mail, String content) async {
+    await AwesomeNotifications().initialize('resource://drawable/mail', [
+      NotificationChannel(
+          channelKey: 'newmail', defaultPrivacy: NotificationPrivacy.Public, channelShowBadge: true, channelName: 'Nouveau mail', importance: NotificationImportance.High, groupKey: "mailsGroup", channelDescription: "Nouveau mail", defaultColor: ThemeUtils.spaceColor(), ledColor: Colors.white)
+    ]);
+
+    AwesomeNotifications().createNotification(
+      content: NotificationContent(
+          id: int.parse(mail.id),
+          channelKey: 'newmail',
+          title: 'Nouveau mail de ${mail.from["prenom"]}',
+          summary: mail.subject,
+          body: content,
+          payload: {"name": mail.from["prenom"], "surname": mail.from["nom"], "id": mail.id.toString(), "isTeacher": (mail.from["type"] == "P").toString(), "subject": mail.subject}),
+      actionButtons: [
+        NotificationActionButton(key: "REPLY", label: "Répondre", autoCancel: true, buttonType: ActionButtonType.Default),
+      ],
+    );
+  }
+
+  static showNewGradeNotification() async {
+    await AwesomeNotifications().initialize('resource://drawable/newgradeicon',
+        [NotificationChannel(channelKey: 'newgrade', defaultPrivacy: NotificationPrivacy.Public, channelName: 'Nouvelle note', importance: NotificationImportance.High, channelDescription: "Nouvelles notes", defaultColor: ThemeUtils.spaceColor(), ledColor: Colors.white)]);
+
+    AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: 0,
+        channelKey: 'newgrade',
+        title: 'Vous avez une ou plusieurs nouvelles notes !',
+        summary: "Tapez pour consulter",
+      ),
     );
   }
 
@@ -62,43 +98,39 @@ class LocalNotification {
   static Future<void> showOngoingNotification(Lesson lesson) async {
     var id = 333;
 
-    var androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      '2007',
-      'yNotes',
-      'Rappel de cours constant',
-      importance: Importance.Low,
-      priority: Priority.Low,
-      ongoing: true,
-      autoCancel: false,
-      enableLights: false,
-      playSound: false,
-      enableVibration: false,
-      icon: "tfiche",
-      styleInformation: BigTextStyleInformation(''),
-    );
-    var iOSPlatformChannelSpecifics = IOSNotificationDetails();
-    var platformChannelSpecifics = NotificationDetails(androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-    String defaultSentence = "";
-    if (lesson != null) {
-      defaultSentence = 'Vous êtes en ${lesson.matiere} dans la salle ${lesson.room}';
-      if (lesson.room == null || lesson.room == "") {
-        defaultSentence = "Vous êtes en ${lesson.matiere}";
-      }
-    } else {
-      defaultSentence = "Vous êtes en pause";
-    }
+    if (await getSetting("agendaOnGoingNotification")) {
+      await AwesomeNotifications().initialize('resource://drawable/tfiche', [
+        NotificationChannel(channelKey: 'persisnotif', defaultPrivacy: NotificationPrivacy.Public, channelName: 'Rappel de cours constant', importance: NotificationImportance.Low, channelDescription: "Notification persistante de cours", defaultColor: ThemeUtils.spaceColor(), ledColor: Colors.white)
+      ]);
 
-    var sentence = defaultSentence;
-    try {
-      if (lesson.canceled) {
-        sentence = "Votre cours a été annulé.";
+      String defaultSentence = "";
+      if (lesson != null) {
+        defaultSentence = 'Vous êtes en ${lesson.matiere} dans la salle ${lesson.room}';
+        if (lesson.room == null || lesson.room == "") {
+          defaultSentence = "Vous êtes en ${lesson.matiere}";
+        }
+      } else {
+        defaultSentence = "Vous êtes en pause";
       }
-    } catch (e) {}
-    await flutterLocalNotificationsPlugin.show(id, 'Rappel de cours constant', sentence, platformChannelSpecifics);
+
+      var sentence = defaultSentence;
+      try {
+        if (lesson.canceled) {
+          sentence = "Votre cours a été annulé.";
+        }
+      } catch (e) {}
+      await AwesomeNotifications().createNotification(
+        content: NotificationContent(id: id, channelKey: 'persisnotif', title: 'Rappel de cours constant', summary: sentence, body: sentence, locked: true, autoCancel: false),
+        actionButtons: [
+          NotificationActionButton(key: "REFRESH", label: "Actualiser", autoCancel: false, buttonType: ActionButtonType.KeepOnTop),
+          NotificationActionButton(key: "KILL", label: "Désactiver", autoCancel: true, buttonType: ActionButtonType.Default),
+        ],
+      );
+    }
   }
 
   static Future<void> cancelNotification(int id) async {
-    await flutterLocalNotificationsPlugin.cancel(id);
+    await AwesomeNotifications().cancel(id);
   }
 
   ///Set an on going notification which is automatically refreshed (online or not) each hour
@@ -108,11 +140,6 @@ class LocalNotification {
     print("Setting on going notification");
     var connectivityResult = await (Connectivity().checkConnectivity());
     List<Lesson> lessons = List();
-    var initializationSettingsAndroid = new AndroidInitializationSettings('newgradeicon');
-    var initializationSettingsIOS = new IOSInitializationSettings();
-    var initializationSettings = new InitializationSettings(initializationSettingsAndroid, initializationSettingsIOS);
-    flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
-    flutterLocalNotificationsPlugin.initialize(initializationSettings, onSelectNotification: BackgroundService.onSelectNotification);
     await getChosenParser();
     API api = APIManager();
     //Login creds
@@ -171,17 +198,14 @@ class LocalNotification {
       await Future.forEach(lessons, (Lesson lesson) async {
         if (lesson.start.isAfter(date)) {
           try {
-            await AndroidAlarmManager.oneShotAt(lesson.start.subtract(Duration(minutes: minutes)), lesson.start.hashCode, callback, exact: true, allowWhileIdle: true);
-
-            print("scheduled " + lesson.start.hashCode.toString() + " $minutes minutes before.");
+            if (await AndroidAlarmManager.oneShotAt(lesson.start.subtract(Duration(minutes: minutes)), lesson.start.hashCode, callback, exact: true, allowWhileIdle: true)) print("scheduled " + lesson.start.hashCode.toString() + " $minutes minutes before.");
           } catch (e) {
             print("failed " + e.toString());
           }
         }
       });
       try {
-        await AndroidAlarmManager.oneShotAt(lessons.last.end.subtract(Duration(minutes: minutes)), lessons.last.end.hashCode, callback, exact: true, allowWhileIdle: true);
-        print("Scheduled last lesson");
+        if (await AndroidAlarmManager.oneShotAt(lessons.last.end.subtract(Duration(minutes: minutes)), lessons.last.end.hashCode, callback, exact: true, allowWhileIdle: true)) print("Scheduled last lesson");
       } catch (e) {}
       print("Success !");
     }
@@ -189,8 +213,6 @@ class LocalNotification {
 
   static Future<void> cancelOnGoingNotification() async {
     await cancelNotification(333);
-    //Make sure notification is deleted by deleting it's channel
-    await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.deleteNotificationChannel("2007");
 
     print("Cancelled on going notification");
   }
@@ -270,6 +292,10 @@ class LocalNotification {
       lesson = nextLesson;
       await showOngoingNotification(lesson);
     } else {
+      final prefs = await SharedPreferences.getInstance();
+      bool value = prefs.getBool("disableAtDayEnd");
+      print(value);
+      print(await getSetting("disableAtDayEnd"));
       if (await getSetting("disableAtDayEnd")) {
         await cancelOnGoingNotification();
       } else {

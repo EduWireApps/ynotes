@@ -1,9 +1,9 @@
+import 'package:ynotes/utils/fileUtils.dart';
 
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
-import 'package:ynotes/UI/utils/fileUtils.dart';
 import 'package:ynotes/utils/themeUtils.dart';
 
 import '../../usefulMethods.dart';

@@ -1,3 +1,4 @@
+import 'package:ynotes/utils/fileUtils.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:battery_optimization/battery_optimization.dart';
@@ -6,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ynotes/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/utils/themeUtils.dart';
@@ -434,6 +435,7 @@ class _page3State extends State<page3> {
 }
 
 class _page4State extends State<page4> {
+  bool isIgnoringBatteryOptimization = false;
   bool specialtiesAvailable = false;
   Future carouselDisciplineListFuture;
   String localClasse;
@@ -442,12 +444,25 @@ class _page4State extends State<page4> {
     // TODO: implement initState
     super.initState();
     getSpecialitiesChoiceAvailability();
+    getAuth();
   }
 
   void refreshCarouselDLFuture() {
     setState(() {
       carouselDisciplineListFuture = localApi.getGrades();
     });
+  }
+
+  void getAuth() async {
+    if ((await BatteryOptimization.isIgnoringBatteryOptimizations())) {
+      setState(() {
+        isIgnoringBatteryOptimization = true;
+      });
+    } else {
+      if (await CustomDialogs.showAuthorizationsDialog(context, "la configuration d'optimisation de batterie", "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")) {
+        isIgnoringBatteryOptimization = false;
+      }
+    }
   }
 
   void getSpecialitiesChoiceAvailability() async {
@@ -564,15 +579,15 @@ class _page4State extends State<page4> {
                             color: ThemeUtils.textColor(),
                           ),
                           onChanged: (value) async {
-                            if (!(await BatteryOptimization.isIgnoringBatteryOptimizations()) && await CustomDialogs.showAuthorizationsDialog(context, "la configuration d'optimisation de batterie", "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")) {
+                            if ((await BatteryOptimization.isIgnoringBatteryOptimizations())) {
                               setState(() {
                                 setSetting("notificationNewGrade", value);
                               });
-                            }
-                            if (await BatteryOptimization.isIgnoringBatteryOptimizations()) {
-                              setState(() {
-                                setSetting("notificationNewGrade", value);
-                              });
+                            } else {
+                              if (await CustomDialogs.showAuthorizationsDialog(context, "la configuration d'optimisation de batterie", "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") != null) {
+                                await BatteryOptimization.openBatteryOptimizationSettings();
+                                getAuth();
+                              }
                             }
                           });
                     }),
@@ -588,15 +603,15 @@ class _page4State extends State<page4> {
                           style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.3),
                         ),
                         onChanged: (value) async {
-                          if (!(await BatteryOptimization.isIgnoringBatteryOptimizations()) && await CustomDialogs.showAuthorizationsDialog(context, "la configuration d'optimisation de batterie", "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")) {
+                          if ((await BatteryOptimization.isIgnoringBatteryOptimizations())) {
                             setState(() {
-                              setSetting("notificationNewGrade", value);
+                              setSetting("notificationNewMail", value);
                             });
-                          }
-                          if (await BatteryOptimization.isIgnoringBatteryOptimizations()) {
-                            setState(() {
-                              setSetting("notificationNewGrade", value);
-                            });
+                          } else {
+                            if (await CustomDialogs.showAuthorizationsDialog(context, "la configuration d'optimisation de batterie", "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") != null) {
+                              await BatteryOptimization.openBatteryOptimizationSettings();
+                              getAuth();
+                            }
                           }
                         },
                         secondary: Icon(

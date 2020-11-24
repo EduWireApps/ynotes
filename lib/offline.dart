@@ -2,7 +2,8 @@ import 'dart:async';
 
 import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
-import 'package:ynotes/UI/utils/fileUtils.dart';
+import 'package:ynotes/utils/fileUtils.dart';
+
 import 'package:ynotes/apis/Pronote/PronoteAPI.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'apis/utils.dart';
@@ -529,7 +530,7 @@ class Offline {
           return agendaEvents;
         } else {
           await refreshData();
-          if (agendaEventsData[week] != null) {
+          if (agendaEventsData != null && agendaEventsData[week] != null) {
             List<AgendaEvent> agendaEvents = List();
             agendaEvents.addAll(agendaEventsData[week].cast<AgendaEvent>());
             return agendaEvents;

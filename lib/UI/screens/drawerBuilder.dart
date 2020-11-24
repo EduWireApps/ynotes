@@ -1,3 +1,6 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:ynotes/UI/components/dialogs.dart';
+import 'package:ynotes/utils/fileUtils.dart';
 
 import 'dart:async';
 import 'dart:ui';
@@ -77,10 +80,44 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
   int _previousPage;
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
 
+  //Chose which triggered action to use
+  getRelatedAction(ReceivedNotification receivedNotification) async {
+    if (receivedNotification.channelKey == "newmail" && receivedNotification.toMap()["buttonKeyPressed"] == "REPLY") {
+      CustomDialogs.writeModalBottomSheet(context,
+          defaultListRecipients: [Recipient(receivedNotification.payload["name"], receivedNotification.payload["surname"], receivedNotification.payload["id"], receivedNotification.payload["isTeacher"] == "true", null)], defaultSubject: receivedNotification.payload["subject"]);
+      return;
+    }
+
+    if (receivedNotification.channelKey == "newmail") {
+      drawerPageViewController.jumpToPage(5);
+      return;
+    }
+
+    if (receivedNotification.channelKey == "newgrade") {
+      drawerPageViewController.jumpToPage(3);
+      return;
+    }
+    if (receivedNotification.channelKey == "persisnotif" && receivedNotification.toMap()["buttonKeyPressed"] == "REFRESH") {
+      await LocalNotification.setOnGoingNotification();
+      return;
+    }
+    if (receivedNotification.channelKey == "persisnotif" && receivedNotification.toMap()["buttonKeyPressed"] == "KILL") {
+      await setSetting("agendaOnGoingNotification", false);
+      await LocalNotification.cancelOnGoingNotification();
+      return;
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-
+    AwesomeNotifications().initialize(
+        null, [NotificationChannel(channelKey: 'alarm', defaultPrivacy: NotificationPrivacy.Private, channelName: 'Alarmes', importance: NotificationImportance.High, channelDescription: "Alarmes et rappels de l'application yNotes", defaultColor: Color(0xFF9D50DD), ledColor: Colors.white)]);
+    try {
+      AwesomeNotifications().actionStream.listen((receivedNotification) async {
+        await getRelatedAction(receivedNotification);
+      });
+    } catch (e) {}
     // this creates the controller
     drawerPageViewController = PageController(
       initialPage: 2,

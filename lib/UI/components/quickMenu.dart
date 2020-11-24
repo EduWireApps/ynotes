@@ -3,7 +3,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/UI/screens/settingsPage.dart';
-import 'package:ynotes/UI/utils/fileUtils.dart';
+import 'package:ynotes/utils/fileUtils.dart';
 import 'package:ynotes/utils/themeUtils.dart';
 
 import '../../usefulMethods.dart';

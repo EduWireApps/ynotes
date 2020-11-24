@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:android_alarm_manager/android_alarm_manager.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -62,8 +63,10 @@ void backgroundFetchHeadlessTask(String taskId) async {
     print("New grade notification disabled");
   }
   if (await getSetting("notificationNewMail") && !await getSetting("batterySaver")) {
-    if (await mainTestNewMails()) {
-     await BackgroundService.showNotificationNewMail();
+    Mail mail = mainTestNewMails();
+    if (mail != null) {
+      String content = await readMail(mail.id, mail.read);
+      await LocalNotification.showNewMailNotification(mail, content);
     } else {
       print("Nothing updated");
     }
@@ -123,17 +126,17 @@ mainTestNewMails() async {
     var oldMailLength = await getIntSetting("mailNumber");
     print("Old length is $oldMailLength");
     //Get new mails
-    await getMails();
+    List<Mail> mails = await getMails();
     var newMailLength = await getIntSetting("mailNumber");
     print("New length is ${newMailLength}");
     if (oldMailLength != 0) {
       if (oldMailLength < (newMailLength != null ? newMailLength : 0)) {
-        return true;
+        return mails.last;
       } else {
-        return false;
+        return null;
       }
     } else {
-      return false;
+      return null;
     }
   } catch (e) {
     print("Erreur dans la verification de nouveaux mails hors ligne " + e.toString());
@@ -152,6 +155,7 @@ Future main() async {
   var initializationSettings = new InitializationSettings(initializationSettingsAndroid, initializationSettingsIOS);
   flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
   flutterLocalNotificationsPlugin.initialize(initializationSettings, onSelectNotification: BackgroundService.onSelectNotification);
+
   //Init offline data
   await offline.init();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(systemNavigationBarColor: isDarkModeEnabled ? Color(0xff414141) : Color(0xffF3F3F3), statusBarColor: Colors.transparent));

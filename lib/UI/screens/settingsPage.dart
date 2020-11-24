@@ -1,3 +1,8 @@
+import 'package:ynotes/shared_preferences.dart';
+import 'package:ynotes/apis/EcoleDirecte.dart';
+import 'package:ynotes/apis/EcoleDirecte.dart';
+import 'package:ynotes/classes.dart';
+import 'package:ynotes/utils/fileUtils.dart';
 
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/cupertino.dart';
@@ -17,6 +22,7 @@ import 'package:ynotes/UI/screens/logsPage.dart';
 import 'package:ynotes/utils/themeUtils.dart';
 import 'package:ynotes/main.dart';
 
+import '../../notifications.dart';
 import '../../tests.dart';
 import '../../usefulMethods.dart';
 
@@ -316,27 +322,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                   SettingsTile(
                     title: 'Bouton magique',
                     leading: Icon(MdiIcons.testTube, color: ThemeUtils.textColor()),
-                    onTap: () async {
-                      /* AwesomeNotifications().initialize('resource://drawable/calendar', [
-                        NotificationChannel(channelKey: 'alarm', defaultPrivacy: NotificationPrivacy.Public, channelName: 'Alarmes', importance: NotificationImportance.High, channelDescription: "Alarmes et rappels de l'application yNotes", defaultColor: Color(0xFF9D50DD), ledColor: Colors.white)
-                      ]);
-                      try {
-                        AwesomeNotifications().actionStream.listen((receivedNotification) {
-                          print(receivedNotification.id);
-                        });
-                      } catch (e) {}
-                      AwesomeNotifications().createNotification(
-                          content: NotificationContent(
-                            id: 10,
-                            channelKey: 'alarm',
-                            title: ' ${Emojis.building_school} Ramener les crayons de couleur',
-                            body: "Ramène ta fraise",
-                          
-                            progress: 5,
-                          ),
-                          actionButtons: [NotificationActionButton(key: "REPLY", label: "FAIT", autoCancel: true, buttonType: ActionButtonType.KeepOnTop), NotificationActionButton(key: "LOL", label: "PAS FAIT", autoCancel: true, buttonType: ActionButtonType.KeepOnTop)]);*/
-                      CustomDialogs.showUpdateNoteDialog(context);
-                    },
+                    onTap: () {},
                     titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                     subtitleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
                   ),

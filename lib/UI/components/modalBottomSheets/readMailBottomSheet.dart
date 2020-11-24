@@ -9,10 +9,10 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:stacked/stacked.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
-import 'package:ynotes/UI/utils/fileUtils.dart';
-import 'package:ynotes/utils/themeUtils.dart';
+import 'package:ynotes/utils/fileUtils.dart';
 import 'package:ynotes/apis/EcoleDirecte.dart';
 import 'package:ynotes/classes.dart';
+import 'package:ynotes/utils/themeUtils.dart';
 
 import '../../../models.dart';
 import '../../../usefulMethods.dart';

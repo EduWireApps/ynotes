@@ -1,3 +1,4 @@
+import 'package:ynotes/utils/fileUtils.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -8,7 +9,6 @@ import 'package:ynotes/UI/components/modalBottomSheets/readMailBottomSheet.dart'
 import 'package:ynotes/UI/components/modalBottomSheets/writeMailBottomSheet.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/UI/screens/apps/mail.dart';
-import 'package:ynotes/UI/utils/fileUtils.dart';
 import 'package:ynotes/utils/themeUtils.dart';
 
 import '../../classes.dart';

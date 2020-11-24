@@ -1,3 +1,5 @@
+import 'package:ynotes/UI/components/dialogs.dart';
+import 'package:ynotes/utils/fileUtils.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:badges/badges.dart';
@@ -9,7 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:marquee/marquee.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ynotes/shared_preferences.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:ynotes/UI/components/modalBottomSheets/disciplinesModalBottomSheet.dart';
 import 'package:ynotes/UI/components/modalBottomSheets/gradesModalBottomSheet.dart';
@@ -69,6 +71,7 @@ class _GradesPageState extends State<GradesPage> {
       disciplinesListFuture = localApi.getGrades(forceReload: true);
     });
     var realdisciplinesListFuture = await disciplinesListFuture;
+    setState(() {});
   }
 
   Future<void> refreshLocalGradeListWithoutForce() async {
@@ -76,6 +79,7 @@ class _GradesPageState extends State<GradesPage> {
       disciplinesListFuture = localApi.getGrades();
     });
     var realdisciplinesListFuture = await disciplinesListFuture;
+    setState(() {});
   }
 
   //Get the actual periode
@@ -686,7 +690,7 @@ class _GradesPageState extends State<GradesPage> {
                                                           decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Color(0xff2C2C2C)),
                                                           padding: EdgeInsets.symmetric(horizontal: (screenSize.size.width / 5) * 0.1, vertical: (screenSize.size.width / 5) * 0.08),
                                                           child: Text(
-                                                            (getLastDiscipline != null && getLastDiscipline.moyenneGeneralClasseMax != null ? getLastDiscipline.moyenneGeneralClasseMax : "-"),
+                                                            (getLastDiscipline != null && getLastDiscipline.moyenneGeneralClasseMax != null ? (double.tryParse(getLastDiscipline.moyenneGeneralClasseMax.replaceAll(",", ".")) <= average ? getLastDiscipline.moyenneGeneralClasseMax : average) : "-"),
                                                             style: TextStyle(fontFamily: "Asap", color: Colors.white, fontSize: (screenSize.size.width / 5) * 0.18),
                                                           ),
                                                         )
@@ -1044,10 +1048,9 @@ class _GradesGroupState extends State<GradesGroup> {
                         onTap: () {
                           gradesModalBottomSheet(context, localList[index], widget.disciplinevar, callback, this.widget);
                         },
-                        /*
                         onLongPress: () {
-                          shareBox(localList[index], widget.disciplinevar);
-                        },*/
+                          CustomDialogs.showShareGradeDialog(context, localList[index], widget.disciplinevar);
+                        },
                         child: ClipRRect(
                           child: Stack(
                             children: <Widget>[

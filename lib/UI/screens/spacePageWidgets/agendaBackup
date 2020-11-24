@@ -17,7 +17,8 @@ import 'package:ynotes/UI/components/space/spaceOverlay.dart';
 import 'package:ynotes/UI/screens/spacePageWidgets/agendaElement.dart';
 import 'package:ynotes/UI/screens/spacePageWidgets/agendaGrid.dart';
 import 'package:ynotes/apis/EcoleDirecte.dart';
-import 'package:ynotes/UI/utils/fileUtils.dart';
+import 'package:ynotes/utils/themeUtils.dart';
+
 import 'package:ynotes/main.dart';
 import 'package:ynotes/classes.dart';
 import 'dart:async';

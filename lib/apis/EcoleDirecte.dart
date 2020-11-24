@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:alice/alice.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ynotes/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:stack/stack.dart' as sta;
 import 'package:ynotes/UI/screens/logsPage.dart';
@@ -397,7 +397,6 @@ Future readMail(String mailId, bool read) async {
     print("error during the mail reading $e");
   }
 }
-
 
 Future<int> getColor(String disciplineName) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();

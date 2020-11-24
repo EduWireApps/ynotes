@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
-
 import 'package:convert/convert.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
@@ -219,7 +218,6 @@ class Client {
     try {
       if (this.auth_response['donneesSec']['donnees'].toString().contains("cle")) {
         await this.communication.after_auth(this.communication.last_response, this.auth_response, e.aes_key);
-        this.encryption.aes_key = e.aes_key;
         if (isOldAPIUsed == false) {
           try {
             paramsUser = await this.communication.post("ParametresUtilisateur", data: {'donnees': {}});
@@ -254,16 +252,17 @@ class Client {
   }
 
   downloadUrl(localapi.Document document) {
-    var data = {"N": document.id, "G": 1};
-    //Used by pronote to encrypt the data (I don't know why)
-
-    var magic_stuff = this.encryption.aes_encryptFromString(jsonEncode(data));
-
-    String libelle = Uri.encodeComponent(document.libelle);
-    String url = this.communication.root_site + '/FichiersExternes/' + magic_stuff + '/' + libelle + '?Session=' + this.attributes['h'].toString();
-    print(this.attributes.toString());
-    print(url);
-    return url;
+    try {
+      Map data = {"N": document.id, "G": int.parse(document.type)};
+      //Used by pronote to encrypt the data (I don't know why)
+      var magic_stuff = this.encryption.aes_encryptFromString(jsonEncode(data));
+      String libelle = Uri.encodeComponent(Uri.encodeComponent(document.libelle));
+      String url = this.communication.root_site + '/FichiersExternes/' + magic_stuff + '/' + libelle + '?Session=' + this.attributes['h'].toString();
+    
+      return url;
+    } catch (e) {
+      print(e);
+    }
   }
 
   homework(DateTime date_from, {DateTime date_to}) async {
@@ -303,15 +302,10 @@ class Client {
         try {
           value["ListePieceJointe"]["V"].forEach((pj) {
             try {
-              //listDocs.add(localapi.Document(pj["L"], pj["N"], pj["G"].toString(), 0));
-              if (pj["L"] == "The Tales of Mother Goose - Blue Beard.pdf") {
-                downloadUrl(localapi.Document(pj["L"], pj["N"], pj["G"].toString(), 0));
-              }
+              downloadUrl(localapi.Document(pj["L"], pj["N"], pj["G"].toString(), 0));
             } catch (e) {}
           });
-        } catch (e) {
-          //print("PJ ERREUR" + e.toString());
-        }
+        } catch (e) {}
       });
 
       listCHW.add(localapi.Homework(h["Matiere"]["V"]["L"], h["Matiere"]["V"]["L"].hashCode.toString(), "", "", description, DateFormat("dd/MM/yyyy hh:mm:ss").parse(h["DateFin"]["V"]), DateFormat("dd/MM/yyyy hh:mm:ss").parse(h["Date"]["V"]), false, false, false, listDocs, listDocs, ""));
@@ -667,7 +661,7 @@ class _Communication {
     }
 
     var r_number = encryption.aes_encrypt(utf8.encode(this.request_number.toString()));
-
+    print(r_number);
     var json = {'session': int.parse(this.attributes['h']), 'numeroOrdre': r_number, 'nom': function_name, 'donneesSec': data};
     String p_site = this.root_site + '/appelfonction/' + this.attributes['a'] + '/' + this.attributes['h'] + '/' + r_number;
 
@@ -829,7 +823,6 @@ class _Encryption {
   aes_encryptFromString(String data) {
     var key = Key.fromBase16(this.aes_key.toString());
     final encrypter = Encrypter(AES(key, mode: AESMode.cbc, padding: "PKCS7"));
-
     final encrypted = encrypter.encrypt(data, iv: this.aes_iv).base16;
 
     return (encrypted);

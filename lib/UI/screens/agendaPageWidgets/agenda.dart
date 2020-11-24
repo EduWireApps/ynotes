@@ -6,18 +6,17 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart' as ptr;
-import 'package:ynotes/UI/components/modalBottomSheets/agendaEventBottomSheet.dart';
+import 'package:ynotes/UI/components/modalBottomSheets/agendaEventEditBottomSheet.dart';
 import 'package:ynotes/UI/screens/agendaPage.dart';
 import 'package:ynotes/UI/screens/agendaPageWidgets/agendaGrid.dart';
 import 'package:ynotes/UI/screens/agendaPageWidgets/buttons.dart';
 import 'package:ynotes/UI/screens/agendaPageWidgets/spaceAgenda.dart';
-import 'package:ynotes/UI/utils/fileUtils.dart';
-import 'package:ynotes/utils/themeUtils.dart';
 import 'package:ynotes/apis/EcoleDirecte.dart';
+import 'package:ynotes/apis/utils.dart';
 import 'package:ynotes/classes.dart';
 import 'package:ynotes/main.dart';
-
-import '../../../usefulMethods.dart';
+import 'package:ynotes/utils/fileUtils.dart';
+import 'package:ynotes/utils/themeUtils.dart';
 
 class Agenda extends StatefulWidget {
   @override
@@ -72,8 +71,6 @@ class _AgendaState extends State<Agenda> {
         decoration: BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
       ),
       onPressed: () async {
-        agendaEventBottomSheet(context);
-        /*
         AgendaEvent temp = await agendaEventEdit(context, true, defaultDate: agendaDate);
         if (temp != null) {
           print(temp.recurrenceScheme);
@@ -85,7 +82,7 @@ class _AgendaState extends State<Agenda> {
             await refreshAgendaFutures(force: false);
           }
         }
-        setState(() {});*/
+        setState(() {});
       },
     );
   }

@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ynotes/shared_preferences.dart';
 import 'package:tinycolor/tinycolor.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/classes.dart';
@@ -72,6 +72,7 @@ Future<bool> getSetting(String setting) async {
   final prefs = await SharedPreferences.getInstance();
   bool value = prefs.getBool(setting);
   if (value == null) {
+    print("Setting was null");
     setSetting(setting, false);
     value = false;
   }
@@ -80,7 +81,8 @@ Future<bool> getSetting(String setting) async {
 
 setSetting(String setting, bool value) async {
   final prefs = await SharedPreferences.getInstance();
-  prefs.setBool(setting, value);
+
+  await prefs.setBool(setting, value);
 }
 
 Future<int> getIntSetting(String setting) async {
@@ -301,9 +303,6 @@ specialtiesSelectionAvailable() async {
     return [false];
   }
 }
-
-
-
 
 ReadStorage(_key) async {
   String u = await storage.read(key: _key);

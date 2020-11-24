@@ -1,14 +1,14 @@
+import 'package:ynotes/utils/fileUtils.dart';
 
 import 'dart:async';
 import 'dart:convert';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ynotes/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/UI/animations/FadeAnimation.dart';
 import 'package:ynotes/UI/screens/schoolAPIChoicePage.dart';
-import 'package:ynotes/UI/utils/fileUtils.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/apis/EcoleDirecte.dart';
 import 'package:ynotes/usefulMethods.dart';

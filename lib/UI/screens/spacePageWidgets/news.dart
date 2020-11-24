@@ -6,8 +6,8 @@ import 'package:dio/src/response.dart' as dioResponse;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:ynotes/UI/utils/fileUtils.dart';
 import 'package:ynotes/utils/themeUtils.dart';
+import 'package:ynotes/utils/fileUtils.dart';
 
 import '../../../usefulMethods.dart';
 

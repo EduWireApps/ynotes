@@ -9,7 +9,8 @@ import 'package:marquee/marquee.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:stacked/stacked.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:ynotes/UI/utils/fileUtils.dart';
+import 'package:ynotes/utils/themeUtils.dart';
+
 import 'package:ynotes/utils/themeUtils.dart';
 import 'package:ynotes/apis/EcoleDirecte.dart';
 import 'package:ynotes/classes.dart';

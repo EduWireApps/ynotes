@@ -9,8 +9,9 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/UI/screens/homeworkPage.dart';
 import 'package:ynotes/UI/screens/summaryPage.dart';
-import 'package:ynotes/UI/utils/fileUtils.dart';
 import 'package:ynotes/utils/themeUtils.dart';
+import 'package:ynotes/utils/fileUtils.dart';
+
 import 'package:ynotes/main.dart';
 import 'package:ynotes/apis/EcoleDirecte.dart';
 import 'package:ynotes/usefulMethods.dart';

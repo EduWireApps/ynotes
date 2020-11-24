@@ -4,10 +4,10 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:ynotes/UI/utils/fileUtils.dart';
-import 'package:ynotes/main.dart';
+import 'package:ynotes/utils/fileUtils.dart';
 import 'package:ynotes/apis/EcoleDirecte.dart';
 import 'package:ynotes/apis/Pronote.dart';
+import 'package:ynotes/main.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 import 'classes.dart';
