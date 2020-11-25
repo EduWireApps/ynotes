@@ -29,7 +29,7 @@ class BackgroundService {
       print(payload);
     }
   }
-
+/*
   //Currently Pronote only feature
   static Future<void> refreshOnGoingNotif() async {
     API api = APIPronote();
@@ -42,10 +42,10 @@ class BackgroundService {
     var date = DateTime.now();
     List<Lesson> lessons = await api.getNextLessons(date);
     await Future.forEach(lessons, (lesson) async {
-      await LocalNotification.scheduleNotification(lesson, onGoing: true);
+      await LocalNotification.scheduleReminders(lesson, onGoing: true);
     });
   }
-
+*/
   static refreshHomework() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     await getChosenParser();

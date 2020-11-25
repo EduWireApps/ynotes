@@ -123,6 +123,14 @@ class SummaryPageState extends State<SummaryPage> {
 
   showDialog() async {
     await helpDialogs[0].showDialog(context);
+    await showUpdateNote();
+  }
+
+  showUpdateNote() async {
+    if (!(await getSetting("updateNote0.9"))) {
+      CustomDialogs.showUpdateNoteDialog(context);
+      await setSetting("updateNote0.9", true);
+    }
   }
 
   @override

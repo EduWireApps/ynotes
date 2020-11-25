@@ -257,11 +257,19 @@ class CustomDialogs {
   }
 
   static showUpdateNoteDialog(BuildContext context) {
-    return showDialog(
+    return showGeneralDialog(
         context: context,
-        builder: (BuildContext context) {
-          return UpdateNoteDialog();
-        });
+        barrierColor: Colors.black.withOpacity(0.5),
+        transitionBuilder: (context, a1, a2, widget) {
+          return Transform.scale(
+            scale: a1.value,
+            child: Opacity(opacity: a1.value, child: UpdateNoteDialog()),
+          );
+        },
+        transitionDuration: Duration(milliseconds: 200),
+        barrierDismissible: true,
+        barrierLabel: '',
+        pageBuilder: (context, animation1, animation2) {});
   }
 
   static showNewRecipientDialog(BuildContext context) {

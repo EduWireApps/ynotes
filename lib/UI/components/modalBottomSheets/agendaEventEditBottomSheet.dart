@@ -392,7 +392,7 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                     if (widget.isCustomEvent) Divider(height: screenSize.size.height / 10 * 0.4),
                     GestureDetector(
                       onTap: () async {
-                        var choice = await CustomDialogs.showMultipleChoicesDialog(context, alarmChoices, [alarm.index]);
+                        var choice = await CustomDialogs.showMultipleChoicesDialog(context, alarmChoices, [alarm.index], singleChoice: true);
                         if (choice != null && choice.length == 1) {
                           setState(() {
                             alarm = alarmType.values[choice[0]];

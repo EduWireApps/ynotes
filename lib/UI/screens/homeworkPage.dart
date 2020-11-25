@@ -94,6 +94,8 @@ class HomeworkPageState extends State<HomeworkPage> {
     await helpDialogs[2].showDialog(context);
   }
 
+ 
+
 //Build the main widget container of the homeworkpage
   @override
   Widget build(BuildContext context) {

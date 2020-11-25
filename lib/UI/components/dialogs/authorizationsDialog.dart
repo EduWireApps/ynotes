@@ -1,6 +1,8 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:ynotes/utils/themeUtils.dart';
 
 import '../../../usefulMethods.dart';
@@ -8,15 +10,16 @@ import '../../../usefulMethods.dart';
 class AuthorizationsDialog extends StatefulWidget {
   final String authName;
   final String goal;
-
   const AuthorizationsDialog({Key key, this.authName, this.goal}) : super(key: key);
   @override
   _AuthorizationsDialogState createState() => _AuthorizationsDialogState();
 }
 
 class _AuthorizationsDialogState extends State<AuthorizationsDialog> {
+  
   @override
   Widget build(BuildContext context) {
+
     MediaQueryData screenSize;
     screenSize = MediaQuery.of(context);
     return AlertDialog(

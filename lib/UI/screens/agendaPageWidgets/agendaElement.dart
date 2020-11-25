@@ -11,6 +11,7 @@ import 'package:ynotes/UI/screens/agendaPageWidgets/agenda.dart';
 import 'package:ynotes/UI/screens/agendaPageWidgets/spaceAgenda.dart';
 import 'package:ynotes/apis/EcoleDirecte.dart';
 import 'package:ynotes/apis/utils.dart';
+import 'package:ynotes/notifications.dart';
 
 import '../../../background.dart';
 import '../../../classes.dart';
@@ -46,10 +47,13 @@ class _AgendaElementState extends State<AgendaElement> {
   }
 
   getEventName() {
-    if (this.widget.event != null && this.widget.event.name != null) {
+    if (this.widget.event != null && this.widget.event.name != null && this.widget.event.name!="") {
       return "${widget.event.name[0].toUpperCase()}${widget.event.name.substring(1).toLowerCase()}";
-    } else {
+    } else if(this.widget.event.name!=""){
       return "${widget.event.lesson.matiere[0].toUpperCase()}${widget.event.lesson.matiere.substring(1).toLowerCase()}";
+    }
+    else {
+      return "(sans nom)";
     }
   }
 
@@ -113,7 +117,11 @@ class _AgendaElementState extends State<AgendaElement> {
                                   this.widget.event = temp;
                                 });
                               }
+                              await LocalNotification.scheduleAgendaReminders(temp);
                             }
+                          } else {
+                            await offline.removeAllReminders(_event.id);
+                            await LocalNotification.cancelNotification(_event.id.hashCode);
                           }
                           await refreshAgendaFuture();
                           widget.setStateCallback();

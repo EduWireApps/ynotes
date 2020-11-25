@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/UI/components/modalBottomSheets/agendaEventEditBottomSheet.dart';
 import 'package:ynotes/UI/components/modalBottomSheets/keyValues.dart';
+import 'package:ynotes/notifications.dart';
 import 'package:ynotes/utils/themeUtils.dart';
 import 'package:ynotes/apis/utils.dart';
 import 'package:ynotes/main.dart';
@@ -108,10 +109,10 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                                   }
                                 } else {
                                   await offline.addAgendaEvent(temp, await get_week(temp.start));
-                                  setState(() {
-                                    this.widget.event = temp;
-                                  });
                                 }
+                                setState(() {
+                                  this.widget.event = temp;
+                                });
                               }
                             },
                             child: new Icon(
@@ -186,6 +187,7 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                             setState(() {
                               reminders.add(reminder);
                             });
+                            await LocalNotification.scheduleReminders(widget.event);
                             offline.updateReminder(reminder);
                           }
                         },

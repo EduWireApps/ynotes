@@ -61,7 +61,7 @@ class _UpdateNoteDialogState extends State<UpdateNoteDialog> {
                 height: MediaQuery.of(context).size.height / 10 * 5.3,
                 child: Markdown(
                     selectable: true,
-                    data: markdown,
+                    data: markdown??"",
                     styleSheet: MarkdownStyleSheet(
                       p: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                       listBullet: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),

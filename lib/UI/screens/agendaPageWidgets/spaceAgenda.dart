@@ -6,6 +6,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/UI/components/modalBottomSheets/agendaEventEditBottomSheet.dart';
+import 'package:ynotes/UI/screens/agendaPageWidgets/addEvent.dart';
 import 'package:ynotes/UI/screens/agendaPageWidgets/agenda.dart';
 import 'package:ynotes/UI/screens/agendaPageWidgets/agendaGrid.dart';
 import 'package:ynotes/UI/screens/agendaPageWidgets/buttons.dart';
@@ -74,7 +75,10 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
         decoration: BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
       ),
       onPressed: () async {
-        AgendaEvent temp = await agendaEventEdit(context, true, defaultDate: agendaDate);
+        await addEvent(context);
+        await refreshAgendaFutures(force: false);
+        setState(() {});
+        /*AgendaEvent temp = await agendaEventEdit(context, true, defaultDate: agendaDate);
         if (temp != null) {
           if (temp.recurrenceScheme != null && temp.recurrenceScheme != "0") {
             await offline.addAgendaEvent(temp, temp.recurrenceScheme);
@@ -84,7 +88,7 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
             await refreshAgendaFutures(force: false);
           }
         }
-        setState(() {});
+        setState(() {});*/
       },
     );
   }

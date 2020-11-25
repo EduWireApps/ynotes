@@ -352,6 +352,27 @@ class Offline {
     }
   }
 
+  ///Remove all reminders associated with the give `lessonId`
+  removeAllReminders(String lessonId) async {
+    try {
+      if (!offlineBox.isOpen) {
+        offlineBox = await Hive.openBox("offlineData");
+      }
+      var old = await offlineBox.get("reminders");
+      List<AgendaReminder> offline = List();
+      if (old != null) {
+        offline = old.cast<AgendaReminder>();
+      }
+      if (offline != null) {
+        offline.removeWhere((element) => element.lessonID == lessonId);
+      }
+      await offlineBox.put("reminders", offline);
+      await refreshData();
+    } catch (e) {
+      print("Error while removing reminder " + e.toString());
+    }
+  }
+
   ///Remove a reminder with its `id`
   void removeReminder(String id) async {
     try {

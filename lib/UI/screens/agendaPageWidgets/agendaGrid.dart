@@ -4,8 +4,10 @@ import 'package:dotted_line/dotted_line.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
+import 'package:ynotes/UI/screens/agendaPage.dart';
 import 'package:ynotes/UI/screens/agendaPageWidgets/agendaElement.dart';
 import 'package:ynotes/UI/screens/agendaPageWidgets/spaceAgenda.dart';
+import 'package:ynotes/UI/screens/homeworkPage.dart';
 import 'package:ynotes/classes.dart';
 
 class AgendaGrid extends StatefulWidget {
@@ -277,7 +279,7 @@ class _AgendaGridState extends State<AgendaGrid> {
                         position: i.left,
                       ),
                     ),
-                if (_getStartHour(_events) != null)
+                if (_getStartHour(_events) != null && CalendarTime(agendaDate).isToday)
                   AnimatedPositioned(
                     duration: Duration(milliseconds: 500),
                     top: _getBarPosition(_getStartHour(_events)),

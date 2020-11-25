@@ -18,6 +18,8 @@ import 'package:ynotes/main.dart';
 import 'package:ynotes/utils/fileUtils.dart';
 import 'package:ynotes/utils/themeUtils.dart';
 
+import 'addEvent.dart';
+
 class Agenda extends StatefulWidget {
   @override
   _AgendaState createState() => _AgendaState();
@@ -71,17 +73,8 @@ class _AgendaState extends State<Agenda> {
         decoration: BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
       ),
       onPressed: () async {
-        AgendaEvent temp = await agendaEventEdit(context, true, defaultDate: agendaDate);
-        if (temp != null) {
-          print(temp.recurrenceScheme);
-          if (temp.recurrenceScheme != null && temp.recurrenceScheme != "0") {
-            await offline.addAgendaEvent(temp, temp.recurrenceScheme);
-            await refreshAgendaFutures(force: false);
-          } else {
-            await offline.addAgendaEvent(temp, await get_week(temp.start));
-            await refreshAgendaFutures(force: false);
-          }
-        }
+        await addEvent(context);
+        await refreshAgendaFutures(force: false);
         setState(() {});
       },
     );
