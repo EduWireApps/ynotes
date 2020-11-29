@@ -21,7 +21,7 @@ class BackgroundService {
     var androidPlatformChannelSpecifics = AndroidNotificationDetails('2005', 'yNotes', 'Nouveau mail', importance: Importance.Max, priority: Priority.High, ticker: 'ticker', visibility: NotificationVisibility.Public);
     var iOSPlatformChannelSpecifics = IOSNotificationDetails();
     var platformChannelSpecifics = NotificationDetails(androidPlatformChannelSpecifics, iOSPlatformChannelSpecifics);
-    await flutterLocalNotificationsPlugin.show(0, 'Vous avez reçu un mail.', 'Cliquez pour la consulter.', platformChannelSpecifics, payload: 'mail');
+    await flutterLocalNotificationsPlugin.show(0, 'Vous avez reçu un mail.', 'Cliquez pour le consulter.', platformChannelSpecifics, payload: 'mail');
   }
 
   static Future<void> onSelectNotification(String payload) async {

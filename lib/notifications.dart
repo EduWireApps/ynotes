@@ -7,52 +7,56 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dnd/flutter_dnd.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive/hive.dart';
-import 'package:ynotes/shared_preferences.dart';
+import 'package:html/parser.dart';
+import 'package:intl/intl.dart';
 import 'package:ynotes/classes.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/shared_preferences.dart';
 import 'package:ynotes/usefulMethods.dart';
 
-import 'UI/screens/agendaPageWidgets/agenda.dart';
-import 'UI/screens/logsPage.dart';
-import 'utils/themeUtils.dart';
-import 'utils/fileUtils.dart';
+import 'UI/screens/agenda/agendaPageWidgets/agenda.dart';
+import 'UI/screens/settings/sub_pages/logsPage.dart';
 import 'apis/utils.dart';
 import 'background.dart';
+import 'utils/fileUtils.dart';
+import 'utils/themeUtils.dart';
 
 class LocalNotification {
   static Future<void> scheduleAgendaReminders(AgendaEvent event) async {
-    await AwesomeNotifications()
-        .initialize('resource://drawable/calendar', [NotificationChannel(channelKey: 'alarm', defaultPrivacy: NotificationPrivacy.Public, channelShowBadge: true, channelName: 'Alarme', importance: NotificationImportance.High, defaultColor: ThemeUtils.spaceColor(), ledColor: Colors.white)]);
-    //Unschedule existing
-    if (event.alarm == alarmType.none) {
-      
-    } else {
-      //delay between task start and task end
-      Duration delay = Duration();
-      if (event.alarm == alarmType.exactly) {
-        delay = Duration.zero;
+    try {
+      AwesomeNotifications().initialize(null, [
+        NotificationChannel(icon: 'resource://drawable/calendar', channelKey: 'alarm', channelName: 'Alarmes', channelDescription: 'Alarmes', defaultColor: ThemeUtils.spaceColor(), ledColor: Colors.white),
+      ]);
+
+      //Unschedule existing
+      if (event.alarm == alarmType.none) {
+      } else {
+        //delay between task start and task end
+        Duration delay = Duration();
+        if (event.alarm == alarmType.exactly) {
+          delay = Duration.zero;
+        }
+        if (event.alarm == alarmType.fiveMinutes) {
+          delay = Duration(minutes: 5);
+        }
+        if (event.alarm == alarmType.fifteenMinutes) {
+          delay = Duration(minutes: 15);
+        }
+        if (event.alarm == alarmType.thirtyMinutes) {
+          delay = Duration(minutes: 30);
+        }
+        if (event.alarm == alarmType.oneDay) {
+          delay = Duration(days: 1);
+        }
+        String time = DateFormat("HH:mm").format(event.start);
+        await AwesomeNotifications().createNotification(
+            content: NotificationContent(id: event.id.hashCode, channelKey: 'alarm', title: (event.name ?? "(Sans titre)") + " à time", body: event.description, notificationLayout: parse(event.description).documentElement.text.length < 49 ? NotificationLayout.Default : NotificationLayout.BigText),
+            schedule: NotificationSchedule(preciseSchedules: [event.start.subtract(delay).toUtc()]));
+        print("Scheduled an alarm" + event.start.subtract(delay).toString() + " " + event.id.hashCode.toString());
       }
-      if (event.alarm == alarmType.fiveMinutes) {
-        delay = Duration(minutes: 5);
-      }
-      if (event.alarm == alarmType.fifteenMinutes) {
-        delay = Duration(minutes: 15);
-      }
-      if (event.alarm == alarmType.thirtyMinutes) {
-        delay = Duration(minutes: 30);
-      }
-      if (event.alarm == alarmType.oneDay) {
-        delay = Duration(days: 1);
-      }
-      await AwesomeNotifications().createNotification(
-        content: NotificationContent(id: 10, channelKey: 'alarm', title: (event.name != "" && event.name != null) ? event.name : "Sans titre", body: event.description),
-        actionButtons: [NotificationActionButton(key: "DONE", label: "C'est fait", autoCancel: true, buttonType: ActionButtonType.KeepOnTop), NotificationActionButton(key: "RESCHEDULE", label: "Me le rappeler dans 5 minutes", autoCancel: true, buttonType: ActionButtonType.KeepOnTop)],
-        schedule: NotificationSchedule(
-          initialDateTime: event.start.subtract(delay),
-        ),
-      );
+    } catch (e) {
+      print(e);
     }
-    print("Scheduled an alarm");
   }
 
   static showNewMailNotification(Mail mail, String content) async {
@@ -93,7 +97,7 @@ class LocalNotification {
   static Future<void> scheduleReminders(AgendaEvent event) async {
     await AwesomeNotifications().initialize(
         'resource://drawable/clock', [NotificationChannel(channelKey: 'reminder', defaultPrivacy: NotificationPrivacy.Public, channelShowBadge: true, channelName: 'Rappel pour un évènement', importance: NotificationImportance.High, defaultColor: ThemeUtils.spaceColor(), ledColor: Colors.white)]);
-    List<AgendaReminder> reminders = await offline.reminders(event.id);
+    List<AgendaReminder> reminders = await offline.reminders.getReminders(event.lesson.id);
     await Future.forEach(reminders, (AgendaReminder rmd) async {
       //Unschedule existing
       if (rmd.alarm == alarmType.none) {
@@ -117,16 +121,14 @@ class LocalNotification {
           delay = Duration(days: 1);
         }
         String text = "Rappel relié à l'évènement ${event.name} : \n <b>${rmd.name}</b> ${rmd.description}";
+        print(event.start.subtract(delay));
+        print(text);
+
         await AwesomeNotifications().createNotification(
-          content: NotificationContent(id: 11, channelKey: 'reminder', title: "Rappel d'évènement"),
-          schedule: NotificationSchedule(
-            initialDateTime: event.start.subtract(delay),
-          ),
-        );
+            content: NotificationContent(id: rmd.id.hashCode, channelKey: 'reminder', title: "Rappel d'évènement", body: text, notificationLayout: event.description.length < 49 ? NotificationLayout.Default : NotificationLayout.BigText),
+            schedule: NotificationSchedule(preciseSchedules: [event.start.subtract(delay).toUtc()]));
       }
     });
-
-
   }
 
   static Future<void> showOngoingNotification(Lesson lesson) async {
@@ -134,7 +136,15 @@ class LocalNotification {
 
     if (await getSetting("agendaOnGoingNotification")) {
       await AwesomeNotifications().initialize('resource://drawable/tfiche', [
-        NotificationChannel(channelKey: 'persisnotif', defaultPrivacy: NotificationPrivacy.Public, channelName: 'Rappel de cours constant', importance: NotificationImportance.Low, channelDescription: "Notification persistante de cours", defaultColor: ThemeUtils.spaceColor(), ledColor: Colors.white)
+        NotificationChannel(
+            channelKey: 'persisnotif',
+            defaultPrivacy: NotificationPrivacy.Public,
+            channelName: 'Rappel de cours constant',
+            importance: NotificationImportance.Low,
+            channelDescription: "Notification persistante de cours",
+            defaultColor: ThemeUtils.spaceColor(),
+            ledColor: Colors.white,
+            onlyAlertOnce: true)
       ]);
 
       String defaultSentence = "";
@@ -153,18 +163,32 @@ class LocalNotification {
           sentence = "Votre cours a été annulé.";
         }
       } catch (e) {}
-      await AwesomeNotifications().createNotification(
-        content: NotificationContent(id: id, notificationLayout: NotificationLayout.BigText, channelKey: 'persisnotif', title: 'Rappel de cours constant', body: sentence, backgroundColor: ThemeUtils.spaceColor(), locked: true, autoCancel: false),
-        actionButtons: [
-          NotificationActionButton(key: "REFRESH", label: "Actualiser", autoCancel: false, buttonType: ActionButtonType.KeepOnTop),
-          NotificationActionButton(key: "KILL", label: "Désactiver", autoCancel: true, buttonType: ActionButtonType.Default),
-        ],
-      );
+      try {
+        print(parse(sentence).documentElement.text.length);
+        await AwesomeNotifications().createNotification(
+          content: NotificationContent(
+            id: id,
+            notificationLayout: parse(sentence).documentElement.text.length < 49 ? null : NotificationLayout.BigText,
+            channelKey: 'persisnotif',
+            title: 'Rappel de cours constant',
+            body: sentence,
+            locked: true,
+            autoCancel: false,
+          ),
+          actionButtons: [
+            NotificationActionButton(key: "REFRESH", label: "Actualiser", autoCancel: false, buttonType: ActionButtonType.KeepOnTop),
+            NotificationActionButton(key: "KILL", label: "Désactiver", autoCancel: true, buttonType: ActionButtonType.Default),
+          ],
+        );
+      } catch (e) {
+        print(e);
+      }
     }
   }
 
   static Future<void> cancelNotification(int id) async {
     await AwesomeNotifications().cancel(id);
+    print("Unscheduled $id");
   }
 
   ///Set an on going notification which is automatically refreshed (online or not) each hour
@@ -225,6 +249,13 @@ class LocalNotification {
     if (await getSetting("agendaOnGoingNotification")) {
       Lesson getActualLesson = getCurrentLesson(lessons);
       if (!dontShowActual) {
+        if (await getSetting("enableDNDWhenOnGoingNotifEnabled")) {
+          if (await FlutterDnd.isNotificationPolicyAccessGranted) {
+            await FlutterDnd.setInterruptionFilter(FlutterDnd.INTERRUPTION_FILTER_NONE); // Turn on DND - All notifications are suppressed.
+          } else {
+            await logFile("Couldn't enabled DND");
+          }
+        }
         await showOngoingNotification(getActualLesson);
       }
 

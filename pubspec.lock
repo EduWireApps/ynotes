@@ -169,6 +169,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.1"
+  catex:
+    dependency: transitive
+    description:
+      name: catex
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.1+6"
   characters:
     dependency: transitive
     description:
@@ -538,7 +545,7 @@ packages:
       name: flutter_widget_from_html_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.3+4"
+    version: "0.5.1+4"
   glob:
     dependency: transitive
     description:
@@ -679,6 +686,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.5.0"
+  katex_flutter:
+    dependency: "direct main"
+    description:
+      name: katex_flutter
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.0.2+26"
   logging:
     dependency: transitive
     description:

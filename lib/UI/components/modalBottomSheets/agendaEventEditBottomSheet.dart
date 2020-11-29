@@ -109,7 +109,6 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
       descriptionController.text = description;
       alarm = this.widget.customEvent.alarm ?? alarmType.none;
       id = this.widget.customEvent.id;
-      print("ID : " + id);
       tagColor = this.widget.customEvent.realColor;
       wholeDay = this.widget.customEvent.wholeDay;
       start = this.widget.customEvent.start;
@@ -160,14 +159,14 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                         onTap: () async {
                           if (this.widget.customEvent != null) {
                             if (this.widget.customEvent.recurrenceScheme != null && this.widget.customEvent.recurrenceScheme != "0") {
-                              await offline.removeAgendaEvent(id, await get_week(this.widget.customEvent.start));
-                              await offline.removeAgendaEvent(id, this.widget.customEvent.recurrenceScheme);
+                              await offline.agendaEvents.removeAgendaEvent(id, await get_week(this.widget.customEvent.start));
+                              await offline.agendaEvents.removeAgendaEvent(id, this.widget.customEvent.recurrenceScheme);
                             } else {
-                              await offline.removeAgendaEvent(id, await get_week(this.widget.customEvent.start));
+                              await offline.agendaEvents.removeAgendaEvent(id, await get_week(this.widget.customEvent.start));
                             }
                           }
                           if (this.widget.reminder != null) {
-                            await offline.removeReminder(id);
+                            await offline.reminders.remove(id);
                           }
                           Navigator.of(context).pop("removed");
                         },
@@ -287,7 +286,7 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                                           setState(() {
                                             start = DateTime(start.year, start.month, start.day, tempDate.hour, tempDate.minute);
                                             if (start.isAfter(end)) {
-                                              end = start.add(Duration(minutes: 1));
+                                              end = start.add(Duration(minutes: 30));
                                             }
                                           });
                                         }
@@ -323,7 +322,7 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                                           setState(() {
                                             end = DateTime(end.year, end.month, end.day, tempDate.hour, tempDate.minute);
                                             if (end.isBefore(start)) {
-                                              start = end.subtract(Duration(minutes: 1));
+                                              start = end.subtract(Duration(minutes: 30));
                                             }
                                           });
                                         }

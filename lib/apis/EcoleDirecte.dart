@@ -9,7 +9,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:ynotes/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:stack/stack.dart' as sta;
-import 'package:ynotes/UI/screens/logsPage.dart';
+import 'package:ynotes/UI/screens/settings/sub_pages/logsPage.dart';
 import 'package:ynotes/apis/utils.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/apis/EcoleDirecte/ecoleDirecteCloud.dart';
@@ -125,13 +125,13 @@ class APIEcoleDirecte extends API {
 
   @override
   Future<List<Period>> getPeriods() async {
-    return await EcoleDirecteMethod.fetchAnyData(EcoleDirecteMethod.periods, offline.periods);
+    return await EcoleDirecteMethod.fetchAnyData(EcoleDirecteMethod.periods, offline.disciplines.getPeriods);
   }
 
   @override
 //Getting grades
   Future<List<Discipline>> getGrades({bool forceReload}) async {
-    return await EcoleDirecteMethod.fetchAnyData(EcoleDirecteMethod.grades, offline.disciplines, forceFetch: forceReload ?? false);
+    return await EcoleDirecteMethod.fetchAnyData(EcoleDirecteMethod.grades, offline.disciplines.getDisciplines, forceFetch: forceReload ?? false);
   }
 
   Future<List<DateTime>> getDatesNextHomework() async {
@@ -140,7 +140,7 @@ class APIEcoleDirecte extends API {
 
 //Get dates of the the next homework (based on the EcoleDirecte API)
   Future<List<Homework>> getNextHomework({bool forceReload}) async {
-    return await EcoleDirecteMethod.fetchAnyData(EcoleDirecteMethod.nextHomework, offline.homework, forceFetch: forceReload ?? false);
+    return await EcoleDirecteMethod.fetchAnyData(EcoleDirecteMethod.nextHomework, offline.homework.getHomework, forceFetch: forceReload ?? false);
   }
 
 //Get homeworks for a specific date
@@ -152,7 +152,7 @@ class APIEcoleDirecte extends API {
   Future<bool> testNewGrades() async {
     try {
       //Getting the offline count of grades
-      List<Grade> listOfflineGrades = getAllGrades(await offline.disciplines(), overrideLimit: true);
+      List<Grade> listOfflineGrades = getAllGrades(await offline.disciplines.getDisciplines(), overrideLimit: true);
       print("Offline length is ${listOfflineGrades.length}");
       //Getting the online count of grades
       List<Grade> listOnlineGrades = getAllGrades(await EcoleDirecteMethod.grades(), overrideLimit: true);
@@ -184,7 +184,7 @@ class APIEcoleDirecte extends API {
       case "mailRecipients":
         {
           print("Returing mail recipients");
-          return (await EcoleDirecteMethod.fetchAnyData(EcoleDirecteMethod.recipients, offline.recipients));
+          return (await EcoleDirecteMethod.fetchAnyData(EcoleDirecteMethod.recipients, offline.recipients.getRecipients));
         }
         break;
     }
@@ -222,7 +222,7 @@ class APIEcoleDirecte extends API {
       List<Lesson> toReturn;
       var connectivityResult = await (Connectivity().checkConnectivity());
       //get lessons from offline storage
-      var offlineLesson = await offline.lessons(week);
+      var offlineLesson = await offline.lessons.get(week);
       if (offlineLesson != null) {
         //Important init to return
         toReturn = List();
@@ -239,7 +239,7 @@ class APIEcoleDirecte extends API {
           print("Getting next lessons from online");
           List<Lesson> onlineLessons = await EcoleDirecteMethod.lessons(dateToUse, week);
 
-          await offline.updateLessons(onlineLessons, week);
+          await offline.lessons.updateLessons(onlineLessons, week);
 
           toReturn = onlineLessons;
         } catch (e) {

@@ -3,7 +3,13 @@ import 'package:ynotes/usefulMethods.dart';
 
 class ThemeUtils {
   static Color spaceColor() => Color(0xff282246);
-  static Color textColor({bool revert = false}) => (isDarkModeEnabled ^= revert) ? Colors.white : Colors.black;
+  static Color textColor({bool revert = false}) {
+    if (revert) {
+      return isDarkModeEnabled ? Colors.black : Colors.white;
+    } else {
+      return isDarkModeEnabled ? Colors.white : Colors.black;
+    }
+  }
 }
 
 ThemeData darkTheme = ThemeData(

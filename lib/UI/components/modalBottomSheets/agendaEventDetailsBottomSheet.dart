@@ -36,12 +36,12 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
   @override
   void initState() {
     // TODO: implement initState
-    super.initState();
+
     getAssociatedReminders();
   }
 
   void getAssociatedReminders() async {
-    List<AgendaReminder> remindersOnline = await offline.reminders(widget.event.id);
+    List<AgendaReminder> remindersOnline = await offline.reminders.getReminders(widget.event.id);
     setState(() {
       if (remindersOnline != null) {
         reminders = remindersOnline;
@@ -108,7 +108,8 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                                     Navigator.pop(context);
                                   }
                                 } else {
-                                  await offline.addAgendaEvent(temp, await get_week(temp.start));
+                                  await offline.agendaEvents.addAgendaEvent(temp, await get_week(temp.start));
+                                  await LocalNotification.scheduleAgendaReminders(temp);
                                 }
                                 setState(() {
                                   this.widget.event = temp;
@@ -187,8 +188,8 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                             setState(() {
                               reminders.add(reminder);
                             });
+                            offline.reminders.updateReminders(reminder);
                             await LocalNotification.scheduleReminders(widget.event);
-                            offline.updateReminder(reminder);
                           }
                         },
                         child: Card(
@@ -217,6 +218,8 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                                             setState(() {
                                               reminders.add(reminder);
                                             });
+                                            offline.reminders.updateReminders(reminder);
+                                            await LocalNotification.scheduleReminders(widget.event);
                                           }
                                         },
                                         child: FittedBox(
@@ -268,12 +271,23 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                     } else {
                       return GestureDetector(
                         onTap: () async {
-                          AgendaReminder reminder = await agendaEventEdit(context, false, reminder: reminders[index], lessonID: widget.event.id);
+                          var reminder = await agendaEventEdit(context, false, lessonID: widget.event.id, reminder: reminders[index]);
+
                           if (reminder != null) {
-                            setState(() {
-                              reminders[index] = reminder;
-                            });
-                            offline.updateReminder(reminder);
+                            if (reminder.runtimeType.toString().contains("String")) {
+                              if (reminder == "removed") {
+                                await LocalNotification.cancelNotification(reminders[index].id.hashCode);
+                                setState(() {
+                                  reminders.removeAt(index);
+                                });
+                              }
+                            } else {
+                              setState(() {
+                                reminders.add(reminder);
+                              });
+                              offline.reminders.updateReminders(reminder);
+                              await LocalNotification.scheduleReminders(widget.event);
+                            }
                           }
                         },
                         child: Card(
@@ -297,12 +311,23 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                                         height: screenSize.size.width / 5 * 0.4,
                                         child: RawMaterialButton(
                                           onPressed: () async {
-                                            AgendaReminder reminder = await agendaEventEdit(context, false, reminder: reminders[index], lessonID: widget.event.id);
+                                            var reminder = await agendaEventEdit(context, false, lessonID: widget.event.id, reminder: reminders[index]);
+
                                             if (reminder != null) {
-                                              setState(() {
-                                                reminders[index] = reminder;
-                                              });
-                                              offline.updateReminder(reminder);
+                                              if (reminder.runtimeType.toString().contains("String")) {
+                                                if (reminder == "removed") {
+                                                  await LocalNotification.cancelNotification(reminders[index].id.hashCode);
+                                                  setState(() {
+                                                    reminders.removeAt(index);
+                                                  });
+                                                }
+                                              } else {
+                                                setState(() {
+                                                  reminders.add(reminder);
+                                                });
+                                                offline.reminders.updateReminders(reminder);
+                                                await LocalNotification.scheduleReminders(widget.event);
+                                              }
                                             }
                                           },
                                           child: FittedBox(

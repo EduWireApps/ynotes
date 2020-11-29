@@ -1,8 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:ynotes/UI/screens/apps/cloud.dart';
-import 'package:ynotes/UI/screens/cloudPage.dart';
+import 'package:ynotes/UI/screens/cloud/cloudPage.dart';
 import 'package:ynotes/classes.dart';
 import 'package:ynotes/apis/EcoleDirecte.dart';
 

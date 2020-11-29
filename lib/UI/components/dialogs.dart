@@ -9,7 +9,7 @@ import 'package:ynotes/UI/components/dialogs/shareDialog.dart';
 import 'package:ynotes/UI/components/dialogs/updateNoteDialog.dart';
 import 'package:ynotes/UI/components/giffy_dialog/src/asset.dart';
 import 'package:ynotes/UI/components/modalBottomSheets/writeMailBottomSheet.dart';
-import 'package:ynotes/UI/screens/settingsPage.dart';
+import 'package:ynotes/UI/screens/settings/settingsPage.dart';
 import 'package:ynotes/utils/fileUtils.dart';
 import 'package:ynotes/apis/EcoleDirecte/ecoleDirecteMethods.dart';
 import 'package:ynotes/utils/themeUtils.dart';

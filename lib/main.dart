@@ -12,20 +12,20 @@ import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:wiredash/wiredash.dart';
-import 'package:ynotes/UI/screens/carousel.dart';
-import 'package:ynotes/UI/screens/drawerBuilder.dart';
-import 'package:ynotes/UI/screens/loadingPage.dart';
+import 'package:ynotes/UI/screens/carousel/carousel.dart';
+import 'package:ynotes/UI/screens/drawer/drawerBuilder.dart';
+import 'package:ynotes/UI/screens/loading/loadingPage.dart';
 import 'package:ynotes/background.dart';
 import 'package:ynotes/classes.dart';
 import 'package:ynotes/models.dart';
-import 'package:ynotes/offline.dart';
+import 'package:ynotes/offline/offline.dart';
 import 'package:ynotes/apis/EcoleDirecte.dart';
 import 'package:ynotes/apis/EcoleDirecte/ecoleDirecteMethods.dart';
 import 'package:ynotes/apis/Pronote.dart';
 import 'package:ynotes/usefulMethods.dart';
 
-import 'UI/screens/logsPage.dart';
-import 'UI/screens/schoolAPIChoicePage.dart';
+import 'UI/screens/settings/sub_pages/logsPage.dart';
+import 'UI/screens/school_api_choice/schoolAPIChoicePage.dart';
 import 'utils/themeUtils.dart';
 import 'notifications.dart';
 
@@ -63,7 +63,7 @@ void backgroundFetchHeadlessTask(String taskId) async {
     print("New grade notification disabled");
   }
   if (await getSetting("notificationNewMail") && !await getSetting("batterySaver")) {
-    Mail mail = mainTestNewMails();
+    Mail mail = await mainTestNewMails();
     if (mail != null) {
       String content = await readMail(mail.id, mail.read);
       await LocalNotification.showNewMailNotification(mail, content);
@@ -86,7 +86,7 @@ mainTestNewGrades() async {
   try {
     //Getting the offline count of grades
 
-    List<Grade> listOfflineGrades = getAllGrades(await offline.disciplines(), overrideLimit: true);
+    List<Grade> listOfflineGrades = getAllGrades(await offline.disciplines.getDisciplines(), overrideLimit: true);
 
     print("Offline length is ${listOfflineGrades.length}");
     //Getting the online count of grades
@@ -163,13 +163,11 @@ Future main() async {
   connectionStatus.initialize();
   runZoned<Future<Null>>(() async {
     runApp(
-      Phoenix(
-        child: ChangeNotifierProvider<AppStateNotifier>(
-          child: HomeApp(),
-          create: (BuildContext context) {
-            return AppStateNotifier();
-          },
-        ),
+      ChangeNotifierProvider<AppStateNotifier>(
+        child: HomeApp(),
+        create: (BuildContext context) {
+          return AppStateNotifier();
+        },
       ),
     );
   });
@@ -184,38 +182,35 @@ class HomeApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AppStateNotifier>(
-      builder: (context, appState, child) {
-        return Wiredash(
-          projectId: "ynotes-giw0qs2",
-          secret: "y9zengsvskpriizwniqxr6vxa1ka1n6u",
-          navigatorKey: _navigatorKey,
-          options: WiredashOptionsData(
-            /// You can set your own locale to override device default (`window.locale` by default)
-            locale: const Locale.fromSubtags(languageCode: 'fr'),
-          ),
-          child: MaterialApp(
-            localizationsDelegates: [
-              // ... app-specific localization delegate[s] here
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: [
-              const Locale('en'), // English (could be useless ?)
-              const Locale('fr'), //French
+    final themeNotifier = Provider.of<AppStateNotifier>(context);
+    return Wiredash(
+      projectId: "ynotes-giw0qs2",
+      secret: "y9zengsvskpriizwniqxr6vxa1ka1n6u",
+      navigatorKey: _navigatorKey,
+      options: WiredashOptionsData(
+        /// You can set your own locale to override device default (`window.locale` by default)
+        locale: const Locale.fromSubtags(languageCode: 'fr'),
+      ),
+      child: MaterialApp(
+        localizationsDelegates: [
+          // ... app-specific localization delegate[s] here
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: [
+          const Locale('en'), // English (could be useless ?)
+          const Locale('fr'), //French
 
-              // ... other locales the app supports
-            ],
-            debugShowCheckedModeBanner: false,
-            theme: lightTheme,
-            navigatorKey: _navigatorKey,
-            darkTheme: darkTheme,
-            home: loader(),
-            themeMode: appState.isDarkMode ? ThemeMode.dark : ThemeMode.light,
-          ),
-        );
-      },
+          // ... other locales the app supports
+        ],
+        debugShowCheckedModeBanner: false,
+        theme: lightTheme,
+        navigatorKey: _navigatorKey,
+        darkTheme: darkTheme,
+        home: loader(),
+        themeMode: themeNotifier.getTheme(),
+      ),
     );
   }
 }

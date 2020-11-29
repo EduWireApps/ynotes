@@ -24,6 +24,7 @@ _Merci d'accueillir cette version 0.9 après tout le temps nécessaire à son d�
     - Ecran de configuration
     - Mode ne pas déranger
     - Désactivation en fin de journée
+    - Boutons sur la notification : J'ai entendu vos remarques sur la notification persistante ! Ainsi pour lutter contre les requêtes en arrière plan non effectuées vous pourrez vous-même actualiser la notification depuis le panneau de notifications.
 
 - Exportation des données hors ligne vers un autre appareil ou en tant que sauvegarde
 

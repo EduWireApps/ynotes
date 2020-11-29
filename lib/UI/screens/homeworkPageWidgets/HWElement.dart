@@ -1,14 +1,16 @@
+import 'package:catex/catex.dart';
 import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
+import 'package:katex_flutter/katex_flutter.dart';
 import 'package:marquee/marquee.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:stacked/stacked.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
-import 'package:ynotes/UI/screens/homeworkPage.dart';
-import 'package:ynotes/UI/screens/summaryPage.dart';
+import 'package:ynotes/UI/screens/homework/homeworkPage.dart';
+import 'package:ynotes/UI/screens/summary/summaryPage.dart';
 import 'package:ynotes/utils/themeUtils.dart';
 import 'package:ynotes/utils/fileUtils.dart';
 
@@ -73,7 +75,6 @@ class _HomeworkElementState extends State<HomeworkElement> {
           initialData: 0,
           builder: (context, snapshot) {
             Color color = Color(snapshot.data);
-
             return Stack(
               children: <Widget>[
                 Align(
@@ -148,8 +149,17 @@ class _HomeworkElementState extends State<HomeworkElement> {
                                         this.widget.homeworkForThisDay.nomProf,
                                         style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                                       )),
-                                    HtmlWidget(segmentedControlIndex == 0 ? this.widget.homeworkForThisDay.contenu : this.widget.homeworkForThisDay.contenuDeSeance,
-                                        bodyPadding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.1), textStyle: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"), onTapUrl: (url) async {
+                                    HtmlWidget(segmentedControlIndex == 0 ? this.widget.homeworkForThisDay.contenu : this.widget.homeworkForThisDay.contenuDeSeance, textStyle: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"), customWidgetBuilder: (element) {
+                                      if (element.attributes['class'] == 'math-tex') {
+                                        try {
+                                          return KaTeX(laTeXCode: Text("\$" + element.text.toString(), style: Theme.of(context).textTheme.bodyText1.copyWith(color: Colors.red)));
+                                        } catch (e) {
+                                          return Container();
+                                        }
+                                      }
+
+                                      return null;
+                                    }, onTapUrl: (url) async {
                                       if (await canLaunch(url)) {
                                         await launch(url);
                                       } else {
@@ -451,7 +461,7 @@ class _HomeworkElementState extends State<HomeworkElement> {
                                                       done = !done;
                                                       donePercentFuture = getHomeworkDonePercent();
                                                     });
-                                                    offline.setHWCompletion(widget.homeworkForThisDay.id, x);
+                                                    offline.doneHomework.setHWCompletion(widget.homeworkForThisDay.id, x);
                                                   },
                                                 );
                                               }),

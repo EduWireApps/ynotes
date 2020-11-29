@@ -8,7 +8,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:ynotes/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/UI/animations/FadeAnimation.dart';
-import 'package:ynotes/UI/screens/schoolAPIChoicePage.dart';
+import 'package:ynotes/UI/screens/school_api_choice/schoolAPIChoicePage.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/apis/EcoleDirecte.dart';
 import 'package:ynotes/usefulMethods.dart';

@@ -13,7 +13,7 @@ import 'package:ynotes/classes.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/apis/EcoleDirecte.dart';
 
-import 'UI/screens/summaryPage.dart';
+import 'UI/screens/summary/summaryPage.dart';
 
 launchURL(url) async {
   if (await canLaunch(url)) {
@@ -33,6 +33,7 @@ bool isDarkModeEnabled = false;
 //Change notifier to deal with themes
 class AppStateNotifier extends ChangeNotifier {
   bool isDarkMode = false;
+  getTheme() => isDarkMode ? ThemeMode.dark : ThemeMode.light;
 
   void updateTheme(bool isDarkMode) {
     this.isDarkMode = isDarkMode;

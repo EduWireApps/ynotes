@@ -1,9 +1,9 @@
-import 'package:ynotes/utils/fileUtils.dart';
+/* import 'package:ynotes/utils/fileUtils.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
-import 'package:ynotes/UI/screens/settingsPage.dart';
+import 'package:ynotes/UI/screens/settings/settingsPage.dart';
 import 'package:ynotes/UI/screens/downloadsExplorer.dart';
 import 'package:ynotes/UI/screens/spacePageWidgets/news.dart';
 import 'package:ynotes/UI/screens/agendaPageWidgets/agendaSettings.dart';
@@ -222,3 +222,4 @@ class _SpacePageState extends State<SpacePage> with TickerProviderStateMixin {
     );
   }
 }
+ */

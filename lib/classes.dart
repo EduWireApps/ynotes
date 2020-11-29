@@ -500,7 +500,7 @@ abstract class API {
       lessons.sort((a, b) => a.end.compareTo(b.end));
     }
     if (!afterSchool) {
-      extracurricularEvents = await offline.agendaEvents(week);
+      extracurricularEvents = await offline.agendaEvents.getAgendaEvents(week);
       if (extracurricularEvents != null) {
         if (lessons != null && lessons.length > 0) {
           //Last date
@@ -518,7 +518,7 @@ abstract class API {
         }
       }
     } else {
-      extracurricularEvents = await offline.agendaEvents(week);
+      extracurricularEvents = await offline.agendaEvents.getAgendaEvents(week);
 
       if (extracurricularEvents != null) {
         //extracurricularEvents.removeWhere((element) => element.isLesson);
@@ -541,7 +541,7 @@ abstract class API {
     RecurringEventSchemes recurr = RecurringEventSchemes();
     recurr.date = date;
     recurr.week = week;
-    var recurringEvents = await offline.agendaEvents(week, selector: recurr.testRequest);
+    var recurringEvents = await offline.agendaEvents.getAgendaEvents(week, selector: recurr.testRequest);
     if (recurringEvents != null && recurringEvents.length != 0) {
       recurringEvents.forEach((recurringEvent) {
         events.removeWhere((element) => element.id == recurringEvent.id);
@@ -552,9 +552,7 @@ abstract class API {
       });
 
       events.addAll(recurringEvents);
-    } else {
-      print("no one recurring event");
-    }
+    } else {}
     return events;
   }
 

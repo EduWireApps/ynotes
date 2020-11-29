@@ -21,7 +21,7 @@ class EcoleDirecteMethod {
     String rootUrl = "https://api.ecoledirecte.com/v3/E/";
     String method = "emploidutemps.awp?verbe=get&";
     List<Lesson> lessonsList = await request(data, rootUrl, method, EcoleDirecteConverter.lessons, "Lessons request returned an error:");
-    await offline.updateLessons(lessonsList, week);
+    await offline.lessons.updateLessons(lessonsList, week);
     return lessonsList;
   }
 
@@ -63,7 +63,7 @@ class EcoleDirecteMethod {
     //Update colors;
     disciplinesList = await refreshDisciplinesListColors(disciplinesList);
 
-    await offline.updateDisciplines(disciplinesList);
+    await offline.disciplines.updateDisciplines(disciplinesList);
     createStack();
 
     return disciplinesList;
@@ -80,7 +80,7 @@ class EcoleDirecteMethod {
       homeworkDates.removeWhere((date) => DateFormat("yyyy-MM-dd").parse(date.toString()).difference(DateFormat("yyyy-MM-dd").parse(DateTime.now().toString())).inDays > 7);
     }
     //Get pinned dates
-    List<DateTime> pinnedDates = await offline.getPinnedHomeworkDates();
+    List<DateTime> pinnedDates = await offline.pinnedHomework.getPinnedHomeworkDates();
     //Combine lists
     pinnedDates.forEach((element) {
       if (!homeworkDates.any((hwlistelement) => hwlistelement == element)) {
@@ -102,7 +102,7 @@ class EcoleDirecteMethod {
         homeworkList.add(h);
       });
     });
-    await offline.updateHomework(homeworkList);
+    await offline.homework.updateHomework(homeworkList);
     return homeworkList;
   }
 
@@ -134,7 +134,7 @@ class EcoleDirecteMethod {
     String rootUrl = 'https://api.ecoledirecte.com/v3/messagerie/contacts/professeurs.awp?verbe=get';
     List<Recipient> recipients = await request(data, rootUrl, "", EcoleDirecteConverter.recipients, "Recipients request returned an error:", ignoreMethodAndId: true);
     if (recipients != null) {
-      await offline.updateRecipients(recipients);
+      await offline.recipients.recipients.updateRecipients(recipients);
     }
     return recipients;
   }
