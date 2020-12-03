@@ -52,7 +52,7 @@ class _AgendaElementState extends State<AgendaElement> {
     }
   }
 
-  Future<int> getRelatedColor() async {
+  Future<int> _getRelatedColor() async {
     if (this.widget.event != null && this.widget.event.color != null) {
       return this.widget.event.color;
     } else {
@@ -69,7 +69,7 @@ class _AgendaElementState extends State<AgendaElement> {
       children: [
         Container(
           child: FutureBuilder(
-              future: getRelatedColor(),
+              future: _getRelatedColor(),
               initialData: 0,
               builder: (context, snapshot) {
                 Color color = Colors.white;
@@ -172,11 +172,18 @@ class _AgendaElementState extends State<AgendaElement> {
                                       child: Wrap(
                                         spacing: screenSize.size.width / 5 * 3.2,
                                         children: [
-                                          AutoSizeText(
-                                            getEventName(),
-                                            style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
-                                            textAlign: TextAlign.left,
-                                            minFontSize: 12,
+                                          Wrap(
+                                            crossAxisAlignment: WrapCrossAlignment.center,
+                                            spacing: screenSize.size.width / 5 * 0.1,
+                                            children: [
+                                              AutoSizeText(
+                                                getEventName(),
+                                                style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
+                                                textAlign: TextAlign.left,
+                                                minFontSize: 12,
+                                              ),
+                                              if (this.widget.event.alarm != null && this.widget.event.alarm != alarmType.none) Container(width: screenSize.size.width / 5 * 0.3, child: FittedBox(child: Icon(Icons.notifications_active_outlined))),
+                                            ],
                                           ),
                                           if (this.widget.event.isLesson && widget.event.lesson.teachers != null && widget.event.lesson.teachers.length > 0 && widget.event.lesson.teachers[0] != "")
                                             Wrap(children: [

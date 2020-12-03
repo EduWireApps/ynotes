@@ -72,7 +72,7 @@ class APIPronote extends API {
         List<Discipline> listDisciplines = List<Discipline>();
         for (var i = 0; i < periods.length; i++) {
           //Grades and average
-          List data = await periods[i].disciplines(i + 1);
+          List data = await periods[i].grades(i + 1);
 
           grades.addAll(data[0]);
           averages.addAll(data[1]);

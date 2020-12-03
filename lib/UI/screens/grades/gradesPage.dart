@@ -1047,7 +1047,7 @@ class _GradesGroupState extends State<GradesGroup> {
                         },
                         onLongPress: () {
                           print("ok");
-                          CustomDialogs.showShareGradeDialog(context, localList[index], widget.disciplinevar);
+                          CustomDialogs.showShareGradeDialog(context, localList[index]);
                         },
                         child: ClipRRect(
                           child: Stack(

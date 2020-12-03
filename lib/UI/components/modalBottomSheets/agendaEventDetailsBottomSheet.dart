@@ -8,7 +8,6 @@ import 'package:ynotes/notifications.dart';
 import 'package:ynotes/utils/themeUtils.dart';
 import 'package:ynotes/apis/utils.dart';
 import 'package:ynotes/main.dart';
-
 import '../../../classes.dart';
 
 Future<void> lessonDetails(context, AgendaEvent event) async {

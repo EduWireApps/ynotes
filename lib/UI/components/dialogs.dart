@@ -280,14 +280,14 @@ class CustomDialogs {
         });
   }
 
-  static showShareGradeDialog(BuildContext context, Grade grade, Discipline discipline) {
+  static showShareGradeDialog(BuildContext context, Grade grade) {
     return showGeneralDialog(
         context: context,
         barrierColor: Colors.black.withOpacity(0.5),
         transitionBuilder: (context, a1, a2, widget) {
           return Transform.scale(
             scale: a1.value,
-            child: Opacity(opacity: a1.value, child: ShareBox(grade, discipline)),
+            child: Opacity(opacity: a1.value, child: ShareBox(grade)),
           );
         },
         transitionDuration: Duration(milliseconds: 200),

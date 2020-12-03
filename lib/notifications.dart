@@ -239,7 +239,7 @@ class LocalNotification {
       } catch (e) {
         print("Error while collecting online lessons. ${e.toString()}");
 
-        Box _offlineBox = await Hive.openBox("offlineData");
+        Box _offlineBox = await Hive.openBox("offlineData2");
         var offlineLessons = await _offlineBox.get("lessons");
         if (offlineLessons[week] != null) {
           lessons = offlineLessons[week].cast<Lesson>();

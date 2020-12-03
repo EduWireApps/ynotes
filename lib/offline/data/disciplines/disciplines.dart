@@ -8,6 +8,7 @@ class DisciplinesOffline extends Offline {
   Future<List<Discipline>> getDisciplines() async {
     try {
       if (disciplinesData != null) {
+        await refreshData();
         return disciplinesData;
       } else {
         await refreshData();

@@ -8,11 +8,10 @@ import 'package:ynotes/utils/fileUtils.dart';
 import '../../../classes.dart';
 
 class HomeworkOffline extends Offline {
-
   ///Update existing offline.homework.get() with passed data
   ///if `add` boolean is set to true passed data is combined with old data
   updateHomework(List<Homework> newData, {bool add = false}) async {
-    print("Update offline.homework.get()");
+    print("Update offline homwork");
     try {
       if (!offlineBox.isOpen) {
         offlineBox = await Hive.openBox("offlineData");

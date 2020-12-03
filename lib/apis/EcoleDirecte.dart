@@ -21,12 +21,7 @@ import 'package:ynotes/classes.dart';
 
 import 'EcoleDirecte/ecoleDirecteMethods.dart';
 
-sta.Stack<String> Colorstack = sta.Stack();
-void createStack() {
-  colorList.forEach((color) {
-    Colorstack.push(color);
-  });
-}
+
 
 Alice alice = Alice();
 //Create a secure storage
@@ -395,24 +390,5 @@ Future readMail(String mailId, bool read) async {
     }
   } catch (e) {
     print("error during the mail reading $e");
-  }
-}
-
-Future<int> getColor(String disciplineName) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-//prefs.clear();
-
-  if (prefs.containsKey(disciplineName)) {
-    String color = prefs.getString(disciplineName);
-    return HexColor(color).value;
-  } else {
-    if (Colorstack.isEmpty) {
-      createStack();
-    }
-    await prefs.setString(disciplineName, Colorstack.pop());
-
-    String color = prefs.getString(disciplineName);
-
-    return HexColor(color).value;
   }
 }

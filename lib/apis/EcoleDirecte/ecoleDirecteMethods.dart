@@ -8,7 +8,7 @@ import 'package:ynotes/main.dart';
 import 'package:ynotes/apis/EcoleDirecte/ecoleDirecteConverters.dart';
 import 'package:ynotes/apis/Pronote/PronoteCas.dart';
 import 'package:ynotes/usefulMethods.dart';
-
+import 'package:ynotes/apis/utils.dart';
 import '../EcoleDirecte.dart';
 
 class EcoleDirecteMethod {

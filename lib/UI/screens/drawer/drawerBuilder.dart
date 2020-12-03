@@ -459,6 +459,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
   }
 
   _scrollTo(int index) {
+    print("test");
     // scroll the calculated ammount
     drawerPageViewController.jumpToPage(index);
   }

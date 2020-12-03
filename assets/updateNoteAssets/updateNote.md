@@ -8,7 +8,8 @@ _Merci d'accueillir cette version 0.9 après tout le temps nécessaire à son d�
 
 - Ajout d'un drawer
 
-- Mise à jour de l'écran de résumé (shortcuts et stats avancés)
+- Mise à jour de l'écran de résumé (shortcuts et stats)
+  - Pas encore énormément de statistiques mais je vous *promets* que j'en ajouterai d'autres !
 
 - Ecrans de paramètres séparés (par clic sur le bouton d'action de la barre d'application)
 

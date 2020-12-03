@@ -13,7 +13,7 @@ import 'package:ynotes/UI/screens/homework/homeworkPage.dart';
 import 'package:ynotes/UI/screens/summary/summaryPage.dart';
 import 'package:ynotes/utils/themeUtils.dart';
 import 'package:ynotes/utils/fileUtils.dart';
-
+import 'package:ynotes/apis/utils.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/apis/EcoleDirecte.dart';
 import 'package:ynotes/usefulMethods.dart';
@@ -447,7 +447,7 @@ class _HomeworkElementState extends State<HomeworkElement> {
                                         height: screenSize.size.width / 5 * 0.5,
                                         child: FittedBox(
                                           child: FutureBuilder(
-                                              future: offline.getHWCompletion(widget.homeworkForThisDay.id ?? ''),
+                                              future: offline.doneHomework.getHWCompletion(widget.homeworkForThisDay.id ?? ''),
                                               initialData: false,
                                               builder: (context, snapshot) {
                                                 bool done = snapshot.data;

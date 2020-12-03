@@ -73,11 +73,12 @@ class Offline {
       print("Error " + e.toString());
     }
     final dir = await FolderAppUtil.getDirectory();
-    Hive.init("${dir.path}/offline");
-    offlineBox = await Hive.openBox("offlineData");
-    homeworkDoneBox = await Hive.openBox('doneHomework');
-    pinnedHomeworkBox = await Hive.openBox('pinnedHomework');
-
+    try {
+      Hive.init("${dir.path}/offline");
+      offlineBox = await Hive.openBox("offlineData");
+      homeworkDoneBox = await Hive.openBox('doneHomework');
+      pinnedHomeworkBox = await Hive.openBox('pinnedHomework');
+    } catch (e) {}
     homework = HomeworkOffline();
     doneHomework = DoneHomeworkOffline();
     pinnedHomework = PinnedHomeworkOffline();
@@ -175,19 +176,4 @@ class Offline {
     }
   }
 
-  Future<bool> getHWCompletion(String id) async {
-    try {
-      final dir = await FolderAppUtil.getDirectory();
-      Hive.init("${dir.path}/offline");
-
-      bool toReturn = homeworkDoneBox.get(id.toString());
-
-      //If to return is null return false
-      return (toReturn != null) ? toReturn : false;
-    } catch (e) {
-      print("Error during the getHomeworkDoneProcess $e");
-
-      return false;
-    }
-  }
 }

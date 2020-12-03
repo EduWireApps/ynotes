@@ -6,16 +6,17 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart' as ptr;
-import 'package:ynotes/UI/components/modalBottomSheets/agendaEventBottomSheet.dart';
 import 'package:ynotes/UI/screens/agenda/agendaPage.dart';
 import 'package:ynotes/UI/screens/agenda/agendaPageWidgets/agendaGrid.dart';
 import 'package:ynotes/UI/screens/agenda/agendaPageWidgets/buttons.dart';
 import 'package:ynotes/UI/screens/agenda/agendaPageWidgets/spaceAgenda.dart';
-import 'package:ynotes/utils/fileUtils.dart';
-import 'package:ynotes/utils/themeUtils.dart';
 import 'package:ynotes/apis/EcoleDirecte.dart';
 import 'package:ynotes/classes.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/models/agenda/addEvent.dart';
+import 'package:ynotes/utils/fileUtils.dart';
+import 'package:ynotes/utils/themeUtils.dart';
+import 'package:ynotes/apis/utils.dart';
 
 class Agenda extends StatefulWidget {
   @override
@@ -54,7 +55,16 @@ class _AgendaState extends State<Agenda> {
     var realSAF = await agendaFuture;
     var realAF = await spaceAgendaFuture;
   }
-
+ Future<void> refreshAgendaFuture() async {
+    if (mounted) {
+      setState(() {
+        spaceAgendaFuture = localApi.getEvents(agendaDate, true);
+        agendaFuture = localApi.getEvents(agendaDate, false);
+      });
+    }
+    var realAF = await spaceAgendaFuture;
+    var realSAF = await agendaFuture;
+  }
   _buildFloatingButton(BuildContext context) {
     var screenSize = MediaQuery.of(context);
     return FloatingActionButton(
@@ -70,20 +80,9 @@ class _AgendaState extends State<Agenda> {
         decoration: BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
       ),
       onPressed: () async {
-        agendaEventBottomSheet(context);
-        /*
-        AgendaEvent temp = await agendaEventEdit(context, true, defaultDate: agendaDate);
-        if (temp != null) {
-          print(temp.recurrenceScheme);
-          if (temp.recurrenceScheme != null && temp.recurrenceScheme != "0") {
-            await offline.addAgendaEvent(temp, temp.recurrenceScheme);
-            await refreshAgendaFutures(force: false);
-          } else {
-            await offline.addAgendaEvent(temp, await get_week(temp.start));
-            await refreshAgendaFutures(force: false);
-          }
-        }
-        setState(() {});*/
+        await addEvent(context);
+        await refreshAgendaFutures(force: false);
+        setState(() {});
       },
     );
   }

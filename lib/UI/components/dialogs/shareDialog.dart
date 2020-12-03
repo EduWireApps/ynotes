@@ -12,6 +12,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:path_provider/path_provider.dart';
 import 'package:share/share.dart';
 import 'package:ynotes/UI/components/quickMenu.dart';
+import 'package:ynotes/apis/utils.dart';
 import 'package:ynotes/utils/themeUtils.dart';
 import 'dart:ui' as ui;
 
@@ -19,9 +20,8 @@ import '../../../classes.dart';
 
 class ShareBox extends StatefulWidget {
   final Grade grade;
-  final Discipline discipline;
 
-  const ShareBox(this.grade, this.discipline, {Key key}) : super(key: key);
+  const ShareBox(this.grade, {Key key}) : super(key: key);
   @override
   _ShareBoxState createState() => _ShareBoxState();
 }
@@ -76,16 +76,22 @@ class _ShareBoxState extends State<ShareBox> {
                       child: Stack(
                         children: [
                           Column(mainAxisSize: MainAxisSize.max, children: <Widget>[
-                            Container(
-                                child: Center(
-                                  child: Text(
-                                    widget.discipline.nomDiscipline,
-                                    style: TextStyle(fontFamily: "Asap", color: Colors.black),
-                                  ),
-                                ),
-                                width: screenSize.size.width / 5 * 5,
-                                height: screenSize.size.height / 10 * 0.5,
-                                decoration: BoxDecoration(borderRadius: BorderRadius.only(topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)), color: Color(widget.discipline.color))),
+                            FutureBuilder(
+                              initialData: 0,
+                              future: getColor(widget.grade.codeMatiere),
+                              builder: (context, snapshot) {
+                                return Container(
+                                    child: Center(
+                                      child: Text(
+                                        widget.grade.libelleMatiere,
+                                        style: TextStyle(fontFamily: "Asap", color: Colors.black),
+                                      ),
+                                    ),
+                                    width: screenSize.size.width / 5 * 5,
+                                    height: screenSize.size.height / 10 * 0.5,
+                                    decoration: BoxDecoration(borderRadius: BorderRadius.only(topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)), color: Color(snapshot.data)));
+                              }
+                            ),
                             Container(
                               width: screenSize.size.width / 5 * 5,
                               height: screenSize.size.height / 10 * 2,

@@ -1,6 +1,3 @@
-import 'package:ynotes/UI/screens/drawer/drawerBuilderWidgets/drawer.dart';
-import 'package:ynotes/utils/fileUtils.dart';
-
 import 'dart:ui';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -20,16 +17,18 @@ import 'package:visibility_detector/visibility_detector.dart';
 import 'package:ynotes/UI/animations/FadeAnimation.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/UI/components/hiddenSettings.dart';
+import 'package:ynotes/UI/screens/drawer/drawerBuilderWidgets/drawer.dart';
 import 'package:ynotes/UI/screens/grades/gradesPage.dart';
 import 'package:ynotes/UI/screens/homework/homeworkPage.dart';
+import 'package:ynotes/UI/screens/summary/summaryPageWidgets/quickGrades.dart';
 import 'package:ynotes/UI/screens/summary/summaryPageWidgets/summaryPageSettings.dart';
-import 'package:ynotes/utils/themeUtils.dart';
+import 'package:ynotes/UI/screens/summary/summaryPageWidgets/chart.dart';
+import 'package:ynotes/apis/utils.dart';
 import 'package:ynotes/main.dart';
-import 'package:ynotes/apis/EcoleDirecte.dart';
 import 'package:ynotes/usefulMethods.dart';
+import 'package:ynotes/utils/themeUtils.dart';
 
 import '../../../classes.dart';
-import 'package:ynotes/UI/screens/drawer/drawerBuilder.dart';
 
 ///First page to access quickly to last grades, homework and
 class SummaryPage extends StatefulWidget {
@@ -42,7 +41,7 @@ class SummaryPage extends StatefulWidget {
 }
 
 Future donePercentFuture;
-
+int oldGauge = 0;
 Future allGrades;
 bool firstStart = true;
 GlobalKey _one = GlobalKey();
@@ -57,6 +56,13 @@ class SummaryPageState extends State<SummaryPage> {
   int _slider = 1;
   List items = [1, 2, 3, 4, 5];
   PageController summarySettingsController = PageController(initialPage: 1);
+  setGauge() async {
+    var tempGauge = await getHomeworkDonePercent();
+    setState(() {
+      oldGauge = tempGauge ?? 0;
+    });
+  }
+
   initState() {
     super.initState();
 
@@ -71,10 +77,10 @@ class SummaryPageState extends State<SummaryPage> {
     });
     homeworkListFuture = localApi.getNextHomework();
     disciplinesListFuture = localApi.getGrades();
-
     setState(() {
       donePercentFuture = getHomeworkDonePercent();
     });
+    setGauge();
     SchedulerBinding.instance.addPostFrameCallback(!mounted
         ? null
         : (_) => {
@@ -128,7 +134,7 @@ class SummaryPageState extends State<SummaryPage> {
   }
 
   showUpdateNote() async {
-    if (!(await getSetting("updateNote0.9"))) {
+    if ((!await getSetting("updateNote0.9"))) {
       await CustomDialogs.showUpdateNoteDialog(context);
       await setSetting("updateNote0.9", true);
     }
@@ -197,54 +203,67 @@ class SummaryPageState extends State<SummaryPage> {
                             }),
                       ),
                     ),
-
                     //First division (gauge)
 
                     Container(
+                        decoration: BoxDecoration(
+                            gradient: LinearGradient(colors: [
+                              Color(0xff2c274c),
+                              Color(0xff46426c),
+                            ]),
+                            border: Border.all(width: 0),
+                            borderRadius: BorderRadius.circular(12)),
                         margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
                         child: Card(
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                            color: Theme.of(context).primaryColor,
+                            color: Colors.transparent,
                             child: Container(
+                              color: Colors.transparent,
                               width: screenSize.size.width / 5 * 4.5,
                               height: (screenSize.size.height / 10 * 8.8) / 10 * 2,
-                              child: FittedBox(
-                                child: FutureBuilder<int>(
-                                    future: donePercentFuture,
-                                    initialData: 0,
-                                    builder: (context, snapshot) {
-                                      return CircularPercentIndicator(
-                                        radius: 120.0,
-                                        lineWidth: 13.0,
-                                        animation: true,
-                                        percent: (snapshot.data ?? 100) / 100,
-                                        center: new Text(
-                                          (snapshot.data ?? "100").toString() + "%",
-                                          style: new TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0, fontFamily: "Asap", color: ThemeUtils.textColor()),
-                                        ),
-                                        header: new Text(
-                                          "Travail fait",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(fontFamily: "Asap", fontSize: 18, color: ThemeUtils.textColor()),
-                                        ),
-                                        backgroundColor: Colors.orange.shade400,
-                                        animationDuration: 550,
-                                        circularStrokeCap: CircularStrokeCap.round,
-                                        progressColor: Colors.green.shade300,
-                                      );
-                                    }),
+                              child: Row(
+                                children: [
+                                  Container(
+                                      color: Colors.transparent,
+                                      width: screenSize.size.width / 5 * 4.5,
+                                      child: FutureBuilder(
+                                          future: disciplinesListFuture,
+                                          builder: (context, snapshot) {
+                                            if (snapshot.hasData) {
+                                              return SummaryChart(getAllGrades(snapshot.data));
+                                            } else {
+                                              return SpinKitThreeBounce(color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4);
+                                            }
+                                          }))
+                                ],
                               ),
                             ))),
+                    //Third division (quick marks)
+                    Container(
+                      margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.2, top: screenSize.size.height / 10 * 0.1),
+                      child: FutureBuilder(
+                          future: disciplinesListFuture,
+                          initialData: null,
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              return QuickGrades(
+                                grades: getAllGrades(snapshot.data),
+                                callback: widget.switchPage,
+                              );
+                            } else {
+                              return Container();
+                            }
+                          }),
+                    ),
 
-                    //SecondDivision (homeworks)
                     Card(
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                      margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.3),
+                      margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
                       color: Theme.of(context).primaryColor,
                       child: Container(
                         margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
                         width: screenSize.size.width / 5 * 4.5,
-                        height: (screenSize.size.height / 10 * 8.8) / 10 * 4.2,
+                        height: (screenSize.size.height / 10 * 8.8) / 10 * 5.3,
                         child: ClipRRect(
                           borderRadius: BorderRadius.all(Radius.circular(12)),
                           child: PageView(
@@ -257,17 +276,41 @@ class SummaryPageState extends State<SummaryPage> {
                                       alignment: Alignment.topCenter,
                                       child: Container(
                                         margin: EdgeInsets.only(top: (screenSize.size.height / 10 * 8.8) / 10 * 0.1),
-                                        child: Text(
-                                          "A faire",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(fontFamily: "Asap", fontSize: 18, color: ThemeUtils.textColor()),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Container(
+                                                width: screenSize.size.width / 5 * 0.5,
+                                                height: screenSize.size.width / 5 * 0.5,
+                                                child: FittedBox(
+                                                  child: FutureBuilder<int>(
+                                                      future: donePercentFuture,
+                                                      initialData: oldGauge,
+                                                      builder: (context, snapshot) {
+                                                        return CircularPercentIndicator(
+                                                          radius: 120,
+                                                          lineWidth: screenSize.size.width / 5 * 0.4,
+                                                          percent: (snapshot.data ?? 100) / 100,
+                                                          backgroundColor: Colors.orange.shade400,
+                                                          animationDuration: 550,
+                                                          circularStrokeCap: CircularStrokeCap.round,
+                                                          progressColor: Colors.green.shade300,
+                                                        );
+                                                      }),
+                                                )),
+                                            Text(
+                                              "A faire",
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(fontFamily: "Asap", fontSize: 18, color: ThemeUtils.textColor()),
+                                            ),
+                                          ],
                                         ),
                                       )),
                                   Align(
                                     alignment: Alignment.bottomCenter,
                                     child: Container(
-                                      margin: EdgeInsets.only(bottom: (screenSize.size.height / 10 * 8.8) / 10 * 0.2, top: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
-                                      height: (screenSize.size.height / 10 * 8.8) / 10 * 3,
+                                      margin: EdgeInsets.only(bottom: (screenSize.size.height / 10 * 8.8) / 10 * 0.2, top: screenSize.size.height / 10 * 0.1),
+                                      height: (screenSize.size.height / 10 * 8.8) / 10 * 4.4,
                                       child: RefreshIndicator(
                                         onRefresh: refreshLocalHomeworkList,
                                         child: CupertinoScrollbar(
@@ -363,8 +406,8 @@ class SummaryPageState extends State<SummaryPage> {
                         ),
                       ),
                     ),
-
-                    //Third division (quick marks)
+                    //SecondDivision (homeworks)
+                    /*
                     Card(
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                       margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.3),
@@ -541,7 +584,7 @@ class SummaryPageState extends State<SummaryPage> {
                               }
                             }),
                       ),
-                    ),
+                    ),*/
                   ],
                 ),
               );
@@ -607,7 +650,7 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
                 Container(
                   width: screenSize.size.width / 5 * 0.8,
                   child: FutureBuilder(
-                      future: offline.getHWCompletion(widget._homework.id ?? ''),
+                      future: offline.doneHomework.getHWCompletion(widget._homework.id ?? ''),
                       initialData: false,
                       builder: (context, snapshot) {
                         bool done = snapshot.data;
@@ -675,7 +718,7 @@ Future<int> getHomeworkDonePercent() async {
       int done = 0;
 
       await Future.forEach(list, (element) async {
-        bool isDone = await offline.getHWCompletion(element.id);
+        bool isDone = await offline.doneHomework.getHWCompletion(element.id);
         if (isDone) {
           done++;
         }

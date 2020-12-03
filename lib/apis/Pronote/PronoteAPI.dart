@@ -258,7 +258,7 @@ class Client {
       var magic_stuff = this.encryption.aes_encryptFromString(jsonEncode(data));
       String libelle = Uri.encodeComponent(Uri.encodeComponent(document.libelle));
       String url = this.communication.root_site + '/FichiersExternes/' + magic_stuff + '/' + libelle + '?Session=' + this.attributes['h'].toString();
-    
+
       return url;
     } catch (e) {
       print(e);
@@ -341,7 +341,7 @@ class Client {
     try {
       json = this.func_options['donneesSec']['donnees']['General']['ListePeriodes'];
     } catch (e) {
-      print(e);
+      print("ERROR WHILE PARSING JSON " + e.toString());
     }
 
     List toReturn = List();

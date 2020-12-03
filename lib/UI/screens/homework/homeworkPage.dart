@@ -11,7 +11,7 @@ import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/UI/components/hiddenSettings.dart';
 import 'package:ynotes/UI/screens/homework/homeworkPageWidgets/HWsecondPage.dart';
 import 'package:ynotes/UI/screens/summary/summaryPage.dart';
-import 'package:ynotes/apis/EcoleDirecte.dart';
+import 'package:ynotes/apis/utils.dart';
 import 'package:ynotes/classes.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/usefulMethods.dart';
@@ -595,7 +595,7 @@ class _DialogHomeworkState extends State<DialogHomework> {
                             style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.grey.shade200 : Colors.black54, fontSize: screenSize.size.height / 10 * 0.25),
                           ),
                           FutureBuilder(
-                              future: offline.getHWCompletion(widget.hw.id ?? ''),
+                              future: offline.doneHomework.getHWCompletion(widget.hw.id ?? ''),
                               initialData: false,
                               builder: (context, snapshot) {
                                 bool done = snapshot.data;

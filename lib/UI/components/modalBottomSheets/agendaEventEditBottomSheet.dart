@@ -7,9 +7,10 @@ import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/utils/themeUtils.dart';
 import 'package:ynotes/apis/utils.dart';
 import 'package:ynotes/main.dart';
+import 'package:calendar_time/calendar_time.dart';
 
-import '../../../classes.dart';
-import '../../../usefulMethods.dart';
+import 'package:ynotes/classes.dart';
+import 'package:ynotes/usefulMethods.dart';
 
 ///Agenda event editor, has to be called with a `buildContext`, and the boolean `isLesson` is not optionnal to avoid any confusions.
 ///`customEvent` and `reminder` are optionals (for editing existing events), but can't both be set.
@@ -186,7 +187,8 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                             Navigator.of(context).pop(reminder);
                           }
                           if (widget.isCustomEvent) {
-                            AgendaEvent event = AgendaEvent(wholeDay ? null : start, wholeDay ? null : end, titleController.text.trim(), location, null, null, canceled, id, null,
+                            if (wholeDay) {}
+                            AgendaEvent event = AgendaEvent(wholeDay ? widget.defaultDate : start, wholeDay ? widget.defaultDate : end, titleController.text.trim(), location, null, null, canceled, id, null,
                                 wholeDay: wholeDay, color: tagColor.value, alarm: alarm, lesson: lesson, isLesson: lesson != null, description: descriptionController.text.trim(), recurrenceScheme: recurringScheme);
                             Navigator.of(context).pop(event);
                           }
