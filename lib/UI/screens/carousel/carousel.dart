@@ -1,3 +1,4 @@
+import 'package:permission_handler/permission_handler.dart';
 import 'package:ynotes/utils/fileUtils.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -459,9 +460,9 @@ class _page4State extends State<page4> {
         isIgnoringBatteryOptimization = true;
       });
     } else {
-      if (await CustomDialogs.showAuthorizationsDialog(context, "la configuration d'optimisation de batterie", "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")) {
+      setState(() {
         isIgnoringBatteryOptimization = false;
-      }
+      });
     }
   }
 
@@ -579,13 +580,13 @@ class _page4State extends State<page4> {
                             color: ThemeUtils.textColor(),
                           ),
                           onChanged: (value) async {
-                            if ((await BatteryOptimization.isIgnoringBatteryOptimizations())) {
+                            if (await Permission.ignoreBatteryOptimizations.isGranted) {
                               setState(() {
                                 setSetting("notificationNewGrade", value);
                               });
                             } else {
-                              if (await CustomDialogs.showAuthorizationsDialog(context, "la configuration d'optimisation de batterie", "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") != null) {
-                                await BatteryOptimization.openBatteryOptimizationSettings();
+                              if (await CustomDialogs.showAuthorizationsDialog(context, "la configuration d'optimisation de batterie", "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")) {
+                                await Permission.ignoreBatteryOptimizations.request();
                                 getAuth();
                               }
                             }
@@ -603,13 +604,13 @@ class _page4State extends State<page4> {
                           style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.3),
                         ),
                         onChanged: (value) async {
-                          if ((await BatteryOptimization.isIgnoringBatteryOptimizations())) {
+                          if ((await Permission.ignoreBatteryOptimizations.isGranted)) {
                             setState(() {
                               setSetting("notificationNewMail", value);
                             });
                           } else {
-                            if (await CustomDialogs.showAuthorizationsDialog(context, "la configuration d'optimisation de batterie", "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") != null) {
-                              await BatteryOptimization.openBatteryOptimizationSettings();
+                            if (await CustomDialogs.showAuthorizationsDialog(context, "la configuration d'optimisation de batterie", "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")) {
+                              await Permission.ignoreBatteryOptimizations.request();
                               getAuth();
                             }
                           }

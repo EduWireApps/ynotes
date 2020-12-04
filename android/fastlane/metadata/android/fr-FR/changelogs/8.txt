@@ -1,0 +1,4 @@
+Le logo de l'application fait peau neuve !
+Correction du bug qui empêchait les utilisateurs Pronote de se connecter. Ajout d'une nouvelle barre de navigation plus fluide et esthétique.
+Le calcul des moyennes générales s'effectue désormais par la moyenne des moyennes des disciplines pour s'aligner avec les données fournies par les services scolaires. 
+Cette mise à jour inclut également des corrections de bugs mineurs et une amélioration de l'interface utilisateur.

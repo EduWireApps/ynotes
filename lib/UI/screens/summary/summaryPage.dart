@@ -245,14 +245,10 @@ class SummaryPageState extends State<SummaryPage> {
                           future: disciplinesListFuture,
                           initialData: null,
                           builder: (context, snapshot) {
-                            if (snapshot.hasData) {
-                              return QuickGrades(
-                                grades: getAllGrades(snapshot.data),
-                                callback: widget.switchPage,
-                              );
-                            } else {
-                              return Container();
-                            }
+                            return QuickGrades(
+                              grades: getAllGrades(snapshot.data),
+                              callback: widget.switchPage,
+                            );
                           }),
                     ),
 

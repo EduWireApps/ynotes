@@ -202,43 +202,47 @@ class ConnectionStatusSingleton {
 List<Grade> allGradesOld;
 //Get only grades as a list
 List<Grade> getAllGrades(List<Discipline> list, {bool overrideLimit = false}) {
-  List<Grade> listToReturn = List();
-  list.forEach((element) {
-    element.gradesList.forEach((grade) {
-      if (!listToReturn.contains(grade)) {
-        listToReturn.add(grade);
-      }
+  if (localApi != null) {
+    List<Grade> listToReturn = List();
+    list.forEach((element) {
+      element.gradesList.forEach((grade) {
+        if (!listToReturn.contains(grade)) {
+          listToReturn.add(grade);
+        }
+      });
     });
-  });
-  if (localApi.gradesList != null && localApi.gradesList.length > 0 && listToReturn.length == localApi.gradesList.length) {
-    return localApi.gradesList;
-  }
-  listToReturn = listToReturn.toSet().toList();
-  //print("Refreshing all grades");
-  if (chosenParser == 0) {
-    listToReturn.sort((a, b) => a.dateSaisie.compareTo(b.dateSaisie));
+    if (localApi.gradesList != null && localApi.gradesList.length > 0 && listToReturn.length == localApi.gradesList.length) {
+      return localApi.gradesList;
+    }
+    listToReturn = listToReturn.toSet().toList();
+    //print("Refreshing all grades");
+    if (chosenParser == 0) {
+      listToReturn.sort((a, b) => a.dateSaisie.compareTo(b.dateSaisie));
+    } else {
+      listToReturn.sort((a, b) {
+        //Format dates and compare
+        var adate = DateFormat("dd/MM/yyyy").parse(a.date);
+        var bdate = DateFormat("dd/MM/yyyy").parse(b.date);
+
+        return adate.compareTo(bdate);
+      });
+    }
+
+    listToReturn = listToReturn.reversed.toList();
+    if (localApi.gradesList == null) {
+      localApi.gradesList = List<Grade>();
+    }
+    localApi.gradesList.clear();
+    localApi.gradesList.addAll(listToReturn);
+
+    if (overrideLimit == false && listToReturn != null) {
+      listToReturn = listToReturn.sublist(0, (listToReturn.length >= 5) ? 5 : listToReturn.length);
+    }
+
+    return listToReturn;
   } else {
-    listToReturn.sort((a, b) {
-      //Format dates and compare
-      var adate = DateFormat("dd/MM/yyyy").parse(a.date);
-      var bdate = DateFormat("dd/MM/yyyy").parse(b.date);
-
-      return adate.compareTo(bdate);
-    });
+    return [];
   }
-
-  listToReturn = listToReturn.reversed.toList();
-  if (localApi.gradesList == null) {
-    localApi.gradesList = List<Grade>();
-  }
-  localApi.gradesList.clear();
-  localApi.gradesList.addAll(listToReturn);
-
-  if (overrideLimit == false && listToReturn != null) {
-    listToReturn = listToReturn.sublist(0, (listToReturn.length >= 5) ? 5 : listToReturn.length);
-  }
-
-  return listToReturn;
 }
 
 //Redefine the switch statement

@@ -1,29 +1,23 @@
-import 'package:ynotes/apis/Pronote/PronoteCas.dart';
-import 'package:ynotes/shared_preferences.dart';
-import 'package:ynotes/apis/EcoleDirecte.dart';
-import 'package:ynotes/apis/EcoleDirecte.dart';
-import 'package:ynotes/classes.dart';
-import 'package:ynotes/utils/fileUtils.dart';
+
 
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dnd/flutter_dnd.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:package_info/package_info.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:wiredash/wiredash.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/UI/screens/settings/sub_pages/exportPage.dart';
 import 'package:ynotes/UI/screens/settings/sub_pages/logsPage.dart';
-import 'package:ynotes/utils/themeUtils.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/utils/themeUtils.dart';
 
-import '../../../notifications.dart';
 import '../../../tests.dart';
 import '../../../usefulMethods.dart';
 
@@ -180,11 +174,16 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                   subtitleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
                   switchValue: boolSettings["notificationNewMail"],
                   onToggle: (bool value) async {
-                    setState(() {
-                      boolSettings["notificationNewMail"] = value;
-                    });
-
-                    await setSetting("notificationNewMail", value);
+                    if ((await Permission.ignoreBatteryOptimizations.isGranted)) {
+                      setState(() {
+                        boolSettings["notificationNewMail"] = value;
+                      });
+                      await setSetting("notificationNewMail", value);
+                    } else {
+                      if (await CustomDialogs.showAuthorizationsDialog(context, "la configuration d'optimisation de batterie", "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ?? false) {
+                        await Permission.ignoreBatteryOptimizations.request();
+                      }
+                    }
                   },
                 ),
                 SettingsTile.switchTile(
@@ -194,11 +193,16 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                   subtitleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
                   switchValue: boolSettings["notificationNewGrade"],
                   onToggle: (bool value) async {
-                    setState(() {
-                      boolSettings["notificationNewGrade"] = value;
-                    });
-
-                    await setSetting("notificationNewGrade", value);
+                    if ((await Permission.ignoreBatteryOptimizations.isGranted)) {
+                      setState(() {
+                        boolSettings["notificationNewGrade"] = value;
+                      });
+                      await setSetting("notificationNewGrade", value);
+                    } else {
+                      if (await CustomDialogs.showAuthorizationsDialog(context, "la configuration d'optimisation de batterie", "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ?? false) {
+                        await Permission.ignoreBatteryOptimizations.request();
+                      }
+                    }
                   },
                 ),
               ],
@@ -284,7 +288,6 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                   leading: Icon(MdiIcons.deleteAlert, color: ThemeUtils.textColor()),
                   onTap: () async {
                     if (await CustomDialogs.showConfirmationDialog(context, null, alternativeText: "Etes-vous sûr de vouloir supprimer les données hors ligne ? (irréversible)")) {
-                      Phoenix.rebirth(context);
                       await offline.clearAll();
                     }
                   },
@@ -330,7 +333,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                       await AwesomeNotifications().createNotification(
                           content: NotificationContent(
                               id: 555, channelKey: 'alarm', title: 'Notification scheduled to play precisely 3 times', body: 'This notification was schedule to repeat precisely 3 times.', notificationLayout: NotificationLayout.BigPicture, bigPicture: 'asset://assets/images/melted-clock.png'),
-                          schedule: NotificationSchedule(preciseSchedules: [ DateTime.now().add(Duration(seconds: 5)).toUtc()]));
+                          schedule: NotificationSchedule(preciseSchedules: [DateTime.now().add(Duration(seconds: 5)).toUtc()]));
                     },
                     titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                     subtitleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),

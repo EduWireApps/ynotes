@@ -289,6 +289,19 @@ class _GradesPageState extends State<GradesPage> {
     average = sum / averages.length;
   }
 
+  getBestAverage(Discipline lastDiscipline) {
+    if (lastDiscipline != null && lastDiscipline.moyenneGeneralClasseMax != null) {
+      double value = double.tryParse(lastDiscipline.moyenneGeneralClasseMax.replaceAll(",", "."));
+      if (value != null) {
+        return value >= average ? value.toString() : average.toStringAsFixed(2);
+      } else {
+        return "-";
+      }
+    } else {
+      return "-";
+    }
+  }
+
   ///Get the corresponding disciplines and responding to the filter chosen
   List<Discipline> getDisciplinesForPeriod(List<Discipline> list, periode, String sortBy) {
     List<Discipline> toReturn = new List<Discipline>();
@@ -687,7 +700,7 @@ class _GradesPageState extends State<GradesPage> {
                                                           decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Color(0xff2C2C2C)),
                                                           padding: EdgeInsets.symmetric(horizontal: (screenSize.size.width / 5) * 0.1, vertical: (screenSize.size.width / 5) * 0.08),
                                                           child: Text(
-                                                            (getLastDiscipline != null && getLastDiscipline.moyenneGeneralClasseMax != null ? (double.parse(getLastDiscipline.moyenneGeneralClasseMax.replaceAll(",", ".")) >= average ? getLastDiscipline.moyenneGeneralClasseMax : average.toStringAsFixed(2)) : "-"),
+                                                            getBestAverage(getLastDiscipline),
                                                             style: TextStyle(fontFamily: "Asap", color: Colors.white, fontSize: (screenSize.size.width / 5) * 0.18),
                                                           ),
                                                         )
