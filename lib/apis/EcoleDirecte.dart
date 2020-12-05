@@ -21,8 +21,6 @@ import 'package:ynotes/classes.dart';
 
 import 'EcoleDirecte/ecoleDirecteMethods.dart';
 
-
-
 Alice alice = Alice();
 //Create a secure storage
 void CreateStorage(String key, String data) async {

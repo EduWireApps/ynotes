@@ -68,10 +68,10 @@ class LocalNotification {
     AwesomeNotifications().createNotification(
       content: NotificationContent(
           id: int.parse(mail.id),
-          notificationLayout: NotificationLayout.Messaging,
+          notificationLayout: parse(content).documentElement.text.length < 49 ? null : NotificationLayout.BigText,
           channelKey: 'newmail',
           title: 'Nouveau mail de ${mail.from["prenom"]}',
-          summary: mail.subject,
+          summary: content,
           body: content,
           payload: {"name": mail.from["prenom"], "surname": mail.from["nom"], "id": mail.id.toString(), "isTeacher": (mail.from["type"] == "P").toString(), "subject": mail.subject}),
       actionButtons: [

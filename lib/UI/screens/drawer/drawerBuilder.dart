@@ -83,12 +83,12 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
       return;
     }
 
-    if (receivedNotification.channelKey == "newmail") {
-      drawerPageViewController.jumpToPage(5);
+    if (receivedNotification.channelKey == "newmail" && receivedNotification.toMap()["buttonKeyPressed"] != null) {
+      drawerPageViewController.jumpToPage(4);
       return;
     }
 
-    if (receivedNotification.channelKey == "newgrade") {
+    if (receivedNotification.channelKey == "newgrade" && receivedNotification.toMap()["buttonKeyPressed"] != null) {
       drawerPageViewController.jumpToPage(3);
       return;
     }

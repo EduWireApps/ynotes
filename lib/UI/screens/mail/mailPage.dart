@@ -108,18 +108,6 @@ class _MailPageState extends State<MailPage> {
     }
   }
 
-  void mailModalBottomSheet(context, Mail mail, {int index}) {
-    showModalBottomSheet(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
-        ),
-        backgroundColor: Theme.of(context).primaryColor,
-        context: context,
-        isScrollControlled: true,
-        builder: (BuildContext bc) {
-          return ReadMailBottomSheet(mail, index);
-        });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -399,3 +387,16 @@ class _MailPageState extends State<MailPage> {
     );
   }
 }
+
+  void mailModalBottomSheet(context, Mail mail, {int index}) {
+    showModalBottomSheet(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+        ),
+        backgroundColor: Theme.of(context).primaryColor,
+        context: context,
+        isScrollControlled: true,
+        builder: (BuildContext bc) {
+          return ReadMailBottomSheet(mail, index);
+        });
+  }

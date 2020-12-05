@@ -13,7 +13,10 @@ import 'package:wiredash/wiredash.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/UI/screens/settings/sub_pages/exportPage.dart';
 import 'package:ynotes/UI/screens/settings/sub_pages/logsPage.dart';
+import 'package:ynotes/apis/EcoleDirecte.dart';
+import 'package:ynotes/classes.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/notifications.dart';
 import 'package:ynotes/utils/themeUtils.dart';
 
 import '../../../tests.dart';
@@ -335,13 +338,9 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     title: 'Bouton magique',
                     leading: Icon(MdiIcons.testTube, color: ThemeUtils.textColor()),
                     onTap: () async {
-                      AwesomeNotifications().initialize(null, [
-                        NotificationChannel(icon: 'resource://drawable/calendar', channelKey: 'alarm', channelName: 'Alarmes', channelDescription: 'Alarmes', defaultColor: ThemeUtils.spaceColor(), ledColor: Colors.white),
-                      ]);
-                      await AwesomeNotifications().createNotification(
-                          content: NotificationContent(
-                              id: 555, channelKey: 'alarm', title: 'Notification scheduled to play precisely 3 times', body: 'This notification was schedule to repeat precisely 3 times.', notificationLayout: NotificationLayout.BigPicture, bigPicture: 'asset://assets/images/melted-clock.png'),
-                          schedule: NotificationSchedule(preciseSchedules: [DateTime.now().add(Duration(seconds: 5)).toUtc()]));
+                      Mail mail = await mainTestNewMails();
+                      String content = await readMail(mail.id, mail.read);
+                      await LocalNotification.showNewMailNotification(mail, content);
                     },
                     titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                     subtitleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),

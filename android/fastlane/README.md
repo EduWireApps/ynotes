@@ -20,6 +20,16 @@ or alternatively using `brew install fastlane`
 fastlane internal
 ```
 
+### test
+```
+fastlane test
+```
+
+### githubrelease
+```
+fastlane githubrelease
+```
+
 ### release
 ```
 fastlane release

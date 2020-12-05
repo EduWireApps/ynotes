@@ -41,15 +41,13 @@ lane :internal do
   build_number = number_of_commits()
   version = flutter_version()["version_name"]
   continue = prompt(
-  text: ENV["GITHUB_TOKEN"],
+  text: "Do you really want to push to INTERNAL ? Please check that every files (including changelog) are ready.",
   boolean: true)
-
   #Copy changelog
   if continue
     Dir.chdir "metadata/android/fr-FR" do
       sh("type last_changelog.txt >> changelogs/#{build_number}.txt")
     end
-  
     Dir.chdir "../.." do
       sh("flutter", "packages", "get")
       sh("flutter", "clean")
@@ -57,17 +55,7 @@ lane :internal do
       sh("flutter", "build", "apk","--build-number=#{build_number}", "--split-per-abi")
 
     end
-    github_release = set_github_release(
-      repository_name: "ModernChocolate/ynotes",
-      api_token: ENV["GITHUB_TOKEN"],
-      name: "yNotes #{version}+#{build_number}",
-      tag_name: "v#{version}+#{build_number}",
-      description: (File.read("metadata/android/fr-FR/last_changelog_github.txt") rescue "No changelog provided."),
-      commitish: "master",
-      upload_assets: ["../../app/outputs/apk/release/"]
-    )
     upload_to_play_store(track: 'internal', aab: '../build/app/outputs/bundle/release/app-release.aab', package_name: "fr.ynotes")
-
     mailgun(
     to: "gola.idspace@gmail.com",
     success: true,
@@ -75,12 +63,34 @@ lane :internal do
   end
 
 end
-
+lane :test do
+  mailgun(
+  to: "gola.idspace@gmail.com",
+  success: true,
+  message: "Coucou mon petit ! \n test")
+end
+lane :githubrelease do
+  
+  build_number = number_of_commits()
+  version = flutter_version()["version_name"]
+  Dir.chdir "../.." do
+    sh("flutter", "build", "apk","--build-number=#{build_number}", "--split-per-abi")
+  end
+  github_release = set_github_release(
+    repository_name: "ModernChocolate/ynotes",
+    api_token: ENV["GITHUB_TOKEN"],
+    name: "yNotes #{version}+#{build_number}",
+    tag_name: "v#{version}+#{build_number}",
+    description: (File.read("metadata/android/fr-FR/last_changelog_github.txt") rescue "No changelog provided."),
+    commitish: "master",
+    is_prerelease: true,
+    upload_assets: ["../app/outputs/apk/release/app-arm64-v8a-release.apk", "../app/outputs/apk/release/app-armeabi-v7a-release.apk", "../app/outputs/apk/release/app-x86_64-release.apk"]
+  )
+end
 lane :release do
   # Variant 1: Read from file system
   #   note the `..`, since fastlane runs in the _fastlane_ directory
   changelog = File.read("../Changelog.txt")
-
   gradle(
     task: 'assemble',
     build_type: 'Release'

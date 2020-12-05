@@ -127,7 +127,15 @@ mainTestNewMails() async {
     print("Old length is $oldMailLength");
     //Get new mails
     List<Mail> mails = await getMails();
+    mails.retainWhere((element) => element.mtype == "received");
+
+    mails.sort((a, b) {
+      DateTime datea = DateTime.parse(a.date);
+      DateTime dateb = DateTime.parse(b.date);
+      return datea.compareTo(dateb);
+    });
     var newMailLength = await getIntSetting("mailNumber");
+
     print("New length is ${newMailLength}");
     if (oldMailLength != 0) {
       if (oldMailLength < (newMailLength != null ? newMailLength : 0)) {

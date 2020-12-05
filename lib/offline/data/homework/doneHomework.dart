@@ -21,6 +21,9 @@ class DoneHomeworkOffline extends Offline {
     try {
       final dir = await FolderAppUtil.getDirectory();
       Hive.init("${dir.path}/offline");
+      if (homeworkDoneBox == null || !homeworkDoneBox.isOpen) {
+        homeworkDoneBox = await Hive.openBox("doneHomework");
+      }
 
       bool toReturn = homeworkDoneBox.get(id.toString());
 
