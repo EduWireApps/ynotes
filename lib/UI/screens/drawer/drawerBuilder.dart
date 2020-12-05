@@ -318,7 +318,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                           child: Opacity(
                             opacity: 0.55,
                             child: Container(
-                              margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.15, right: screenSize.size.width / 5 * 0.15),
+                              margin: EdgeInsets.only(left: screenSize.size.width / 5 * 1.0, right: screenSize.size.width / 5 * 1, top: screenSize.size.height / 10 * 0.1),
                               height: screenSize.size.height / 10 * 0.55,
                               decoration: BoxDecoration(
                                 color: case2(model.actualState, {

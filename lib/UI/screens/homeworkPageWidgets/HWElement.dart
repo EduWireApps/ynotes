@@ -404,7 +404,7 @@ class _HomeworkElementState extends State<HomeworkElement> {
                       child: GestureDetector(
                         excludeFromSemantics: true,
                         onLongPress: () async {
-                          await showHomeworkDetails(context, this.widget.homeworkForThisDay);
+                          await CustomDialogs.showHomeworkDetailsDialog(context, this.widget.homeworkForThisDay);
                           setState(() {});
                         },
                         child: Container(

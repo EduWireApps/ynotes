@@ -635,6 +635,10 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
           onTap: () {
             widget.pageSwitcher(4);
           },
+          onLongPress: () async {
+            await CustomDialogs.showHomeworkDetailsDialog(context, this.widget._homework);
+            setState(() {});
+          },
           child: Container(
             width: screenSize.size.width / 5 * 4,
             height: (screenSize.size.height / 10 * 8.8) / 10 * 0.8,

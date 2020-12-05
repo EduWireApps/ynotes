@@ -580,14 +580,17 @@ class _page4State extends State<page4> {
                             color: ThemeUtils.textColor(),
                           ),
                           onChanged: (value) async {
-                            if (await Permission.ignoreBatteryOptimizations.isGranted) {
+                            if ((await Permission.ignoreBatteryOptimizations.isGranted)) {
                               setState(() {
                                 setSetting("notificationNewGrade", value);
                               });
                             } else {
-                              if (await CustomDialogs.showAuthorizationsDialog(context, "la configuration d'optimisation de batterie", "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")) {
-                                await Permission.ignoreBatteryOptimizations.request();
-                                getAuth();
+                              if (await CustomDialogs.showAuthorizationsDialog(context, "la configuration d'optimisation de batterie", "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ?? false) {
+                                if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
+                                  setState(() {
+                                    setSetting("notificationNewGrade", value);
+                                  });
+                                }
                               }
                             }
                           });
@@ -609,9 +612,12 @@ class _page4State extends State<page4> {
                               setSetting("notificationNewMail", value);
                             });
                           } else {
-                            if (await CustomDialogs.showAuthorizationsDialog(context, "la configuration d'optimisation de batterie", "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")) {
-                              await Permission.ignoreBatteryOptimizations.request();
-                              getAuth();
+                            if (await CustomDialogs.showAuthorizationsDialog(context, "la configuration d'optimisation de batterie", "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ?? false) {
+                              if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
+                                setState(() {
+                                  setSetting("notificationNewMail", value);
+                                });
+                              }
                             }
                           }
                         },

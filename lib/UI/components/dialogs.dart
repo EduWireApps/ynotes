@@ -1,6 +1,7 @@
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:ynotes/UI/components/dialogs/homeworkDetails.dart';
 import 'package:ynotes/shared_preferences.dart';
 import 'package:ynotes/UI/components/dialogs/authorizationsDialog.dart';
 import 'package:ynotes/UI/components/dialogs/colorPicker.dart';
@@ -294,6 +295,21 @@ class CustomDialogs {
         barrierDismissible: true,
         barrierLabel: '',
         pageBuilder: (context, animation1, animation2) {});
+  }
+
+  static Future<void> showHomeworkDetailsDialog(BuildContext context, Homework hw) async {
+    String returnVal = await showGeneralDialog(
+        context: context,
+        barrierColor: Colors.black.withOpacity(0.5),
+        transitionDuration: Duration(milliseconds: 200),
+        barrierDismissible: true,
+        barrierLabel: '',
+        pageBuilder: (context, animation1, animation2) {},
+        transitionBuilder: (context, a1, a2, widget) {
+          MediaQueryData screenSize;
+          screenSize = MediaQuery.of(context);
+          return Transform.scale(scale: a1.value, child: Container(child: DialogHomework(hw)));
+        });
   }
 
   static Future writeModalBottomSheet(context, {List<Recipient> defaultListRecipients, defaultSubject}) async {

@@ -1,5 +1,3 @@
-
-
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -181,7 +179,12 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                       await setSetting("notificationNewMail", value);
                     } else {
                       if (await CustomDialogs.showAuthorizationsDialog(context, "la configuration d'optimisation de batterie", "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ?? false) {
-                        await Permission.ignoreBatteryOptimizations.request();
+                        if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
+                          setState(() {
+                            boolSettings["notificationNewMail"] = value;
+                          });
+                          await setSetting("notificationNewMail", value);
+                        }
                       }
                     }
                   },
@@ -200,7 +203,12 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                       await setSetting("notificationNewGrade", value);
                     } else {
                       if (await CustomDialogs.showAuthorizationsDialog(context, "la configuration d'optimisation de batterie", "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ?? false) {
-                        await Permission.ignoreBatteryOptimizations.request();
+                        if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
+                          setState(() {
+                            boolSettings["notificationNewGrade"] = value;
+                          });
+                          await setSetting("notificationNewGrade", value);
+                        }
                       }
                     }
                   },

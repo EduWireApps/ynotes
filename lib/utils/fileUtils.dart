@@ -7,6 +7,7 @@ import 'package:open_file/open_file.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:ynotes/UI/components/dialogs.dart';
 
 class FileInfo {
   final element;

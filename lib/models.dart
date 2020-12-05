@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/utils/fileUtils.dart';
 import 'package:ynotes/apis/EcoleDirecte.dart';
 import 'package:ynotes/apis/Pronote.dart';

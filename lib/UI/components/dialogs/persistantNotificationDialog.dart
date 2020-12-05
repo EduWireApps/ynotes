@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dnd/flutter_dnd.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/UI/screens/agenda/agendaPageWidgets/agenda.dart';
 import 'package:ynotes/utils/themeUtils.dart';
@@ -113,14 +114,31 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
               value: boolSettings["agendaOnGoingNotification"],
               title: Text("Activée", style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.21)),
               onChanged: (value) async {
-                setState(() {
-                  boolSettings["agendaOnGoingNotification"] = value;
-                });
-                await setSetting("agendaOnGoingNotification", value);
-                if (value) {
-                  await LocalNotification.setOnGoingNotification();
+                if ((await Permission.ignoreBatteryOptimizations.isGranted)) {
+                  setState(() {
+                    boolSettings["agendaOnGoingNotification"] = value;
+                  });
+                  await setSetting("agendaOnGoingNotification", value);
+                  if (value) {
+                    await LocalNotification.setOnGoingNotification();
+                  } else {
+                    await LocalNotification.cancelOnGoingNotification();
+                  }
                 } else {
-                  await LocalNotification.cancelOnGoingNotification();
+                  if (await CustomDialogs.showAuthorizationsDialog(context, "la configuration d'optimisation de batterie", "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ?? false) {
+                    if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
+                      setState(() {
+                        boolSettings["agendaOnGoingNotification"] = value;
+                      });
+                      await setSetting("agendaOnGoingNotification", value);
+                      if (value) {
+                        await LocalNotification.setOnGoingNotification();
+                      } else {
+                        await LocalNotification.cancelOnGoingNotification();
+                      }
+                    }
+                    
+                  }
                 }
               },
               secondary: Icon(

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -19,12 +21,26 @@ Future mailsListFuture;
 String dossier = "Reçus";
 enum sortValue { date, reversed_date, author }
 
+StreamSubscription loginconnexion;
+
+bool isOffline = false;
+
 class _MailPageState extends State<MailPage> {
   var actualSort = sortValue.date;
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {
           mailsListFuture = localApi.app("mail");
         }));
+    ConnectionStatusSingleton connectionStatus = ConnectionStatusSingleton.getInstance();
+    loginconnexion = connectionStatus.connectionChange.listen(connectionChanged);
+    isOffline = !connectionStatus.hasConnection;
+  }
+
+  void connectionChanged(dynamic hasConnection) {
+    print("connexion change");
+    setState(() {
+      isOffline = !hasConnection;
+    });
   }
 
   Future<void> refreshLocalMailsList() async {
@@ -65,28 +81,31 @@ class _MailPageState extends State<MailPage> {
         trad = "send";
         break;
     }
-    print(trad);
-    list.forEach((element) {
-      if (element.mtype == trad) {
-        toReturn.add(element);
-      }
-    });
-    toReturn.sort((a, b) {
-      DateTime datea = DateTime.parse(a.date);
-      DateTime dateb = DateTime.parse(b.date);
-      switch (actualSort) {
-        case (sortValue.date):
-          return dateb.compareTo(datea);
-          break;
-        case (sortValue.reversed_date):
-          return datea.compareTo(dateb);
-          break;
-        case (sortValue.author):
-          return b.from["nom"].compareTo(a.from["nom"]);
-          break;
-      }
-    });
-    return toReturn;
+    if (list != null) {
+      list.forEach((element) {
+        if (element.mtype == trad) {
+          toReturn.add(element);
+        }
+      });
+      toReturn.sort((a, b) {
+        DateTime datea = DateTime.parse(a.date);
+        DateTime dateb = DateTime.parse(b.date);
+        switch (actualSort) {
+          case (sortValue.date):
+            return dateb.compareTo(datea);
+            break;
+          case (sortValue.reversed_date):
+            return datea.compareTo(dateb);
+            break;
+          case (sortValue.author):
+            return b.from["nom"].compareTo(a.from["nom"]);
+            break;
+        }
+      });
+      return toReturn;
+    } else {
+      return toReturn;
+    }
   }
 
   void mailModalBottomSheet(context, Mail mail, {int index}) {
@@ -213,6 +232,21 @@ class _MailPageState extends State<MailPage> {
                               //Get all the mails
                               future: mailsListFuture,
                               builder: (context, snapshot) {
+                                if (isOffline == true) {
+                                  return Center(
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          MdiIcons.networkStrengthOff,
+                                          color: ThemeUtils.textColor(),
+                                        ),
+                                        Text("Les mails ne sont pas encore lisibles hors ligne...", style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asapê"))
+                                      ],
+                                    ),
+                                  );
+                                }
+
                                 if (snapshot.connectionState == ConnectionState.done) {
                                   localList = getCorrespondingClasseur(dossier, snapshot.data);
                                   return ClipRRect(
