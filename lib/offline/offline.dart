@@ -175,5 +175,4 @@ class Offline {
       print("Failed to clear all db " + e.toString());
     }
   }
-
 }

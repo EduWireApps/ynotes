@@ -109,7 +109,7 @@ mainTestNewGrades() async {
     }
 
     print("Online length is ${listOnlineGrades.length}");
-    if (listOfflineGrades.length < listOnlineGrades.length) {
+    if (listOfflineGrades.length != 0 && listOfflineGrades.length < listOnlineGrades.length) {
       return true;
     } else {
       return false;
