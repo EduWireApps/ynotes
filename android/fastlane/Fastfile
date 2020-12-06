@@ -37,6 +37,29 @@ platform :android do
   end
 end
 
+lane :beta do
+  build_number = number_of_commits()
+  version = flutter_version()["version_name"]
+  continue = prompt(
+  text: "Do you really want to push to BETA ? Please check that every files (including changelog) are ready.",
+  boolean: true)
+  #Copy changelog
+  if continue
+    Dir.chdir "metadata/android/fr-FR" do
+      sh("type last_changelog.txt >> changelogs/#{build_number}.txt")
+    end
+    Dir.chdir "../.." do
+      sh("flutter", "packages", "get")
+      sh("flutter", "clean")
+      sh("flutter", "build", "appbundle","--build-number=#{build_number}")
+      sh("flutter", "build", "apk","--build-number=#{build_number}", "--split-per-abi")
+
+    end
+    upload_to_play_store(track: 'beta', aab: '../build/app/outputs/bundle/release/app-release.aab', package_name: "fr.ynotes")
+  end
+
+end
+
 lane :internal do
   build_number = number_of_commits()
   version = flutter_version()["version_name"]
@@ -56,10 +79,6 @@ lane :internal do
 
     end
     upload_to_play_store(track: 'internal', aab: '../build/app/outputs/bundle/release/app-release.aab', package_name: "fr.ynotes")
-    mailgun(
-    to: "gola.idspace@gmail.com",
-    success: true,
-    message: "La mise en circuit interne de l'application yNotes (build : #{build_number}) est un succès !")
   end
 
 end
@@ -86,14 +105,4 @@ lane :githubrelease do
     is_prerelease: true,
     upload_assets: ["../build/app/outputs/apk/release/app-arm64-v8a-release.apk", "../build/app/outputs/apk/release/app-armeabi-v7a-release.apk", "../build/app/outputs/apk/release/app-x86_64-release.apk"]
   )
-end
-lane :release do
-  # Variant 1: Read from file system
-  #   note the `..`, since fastlane runs in the _fastlane_ directory
-  changelog = File.read("../Changelog.txt")
-  gradle(
-    task: 'assemble',
-    build_type: 'Release'
-  )
-  upload_to_play_store
 end

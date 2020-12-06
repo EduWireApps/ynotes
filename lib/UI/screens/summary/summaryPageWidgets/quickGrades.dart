@@ -10,7 +10,8 @@ import 'package:ynotes/utils/themeUtils.dart';
 class QuickGrades extends StatefulWidget {
   final List<Grade> grades;
   final Function callback;
-  const QuickGrades({Key key, this.grades, this.callback}) : super(key: key);
+  final Function refreshCallback;
+  const QuickGrades({Key key, this.grades, this.callback, this.refreshCallback}) : super(key: key);
   @override
   _QuickGradesState createState() => _QuickGradesState();
 }
@@ -92,37 +93,39 @@ class _QuickGradesState extends State<QuickGrades> {
           ),
         ),
       );
-    }
-    else {
+    } else {
       return Container(
         height: screenSize.size.height / 10 * 1.2,
-        child: ListView.builder(
-            itemCount: widget.grades.length,
-            scrollDirection: Axis.horizontal,
-            itemBuilder: (context, index) {
-              return Card(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
-                color: Theme.of(context).primaryColor,
-                child: Material(
-                  borderRadius: BorderRadius.circular(11),
+        child: RefreshIndicator(
+          onRefresh: widget.refreshCallback,
+          child: ListView.builder(
+              itemCount: widget.grades.length,
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (context, index) {
+                return Card(
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
                   color: Theme.of(context).primaryColor,
-                  child: InkWell(
+                  child: Material(
                     borderRadius: BorderRadius.circular(11),
-                    onLongPress: () {
-                      CustomDialogs.showShareGradeDialog(context, widget.grades[index]);
-                    },
-                    onTap: () {
-                      widget.callback(3);
-                    },
-                    child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.height / 10 * 0.1),
-                      height: screenSize.size.height / 10 * 0.5,
-                      child: buildGradeItem(widget.grades[index]),
+                    color: Theme.of(context).primaryColor,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(11),
+                      onLongPress: () {
+                        CustomDialogs.showShareGradeDialog(context, widget.grades[index]);
+                      },
+                      onTap: () {
+                        widget.callback(3);
+                      },
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.height / 10 * 0.1),
+                        height: screenSize.size.height / 10 * 0.5,
+                        child: buildGradeItem(widget.grades[index]),
+                      ),
                     ),
                   ),
-                ),
-              );
-            }),
+                );
+              }),
+        ),
       );
     }
   }

@@ -9,7 +9,8 @@ _Merci d'accueillir cette version 0.9 après tout le temps nécessaire à son d�
 - Ajout d'un drawer
 
 - Mise à jour de l'écran de résumé (shortcuts et stats)
-  - Pas encore énormément de statistiques mais je vous *promets* que j'en ajouterai d'autres !
+
+  - Pas encore énormément de statistiques mais je vous _promets_ que j'en ajouterai d'autres !
 
 - Ecrans de paramètres séparés (par clic sur le bouton d'action de la barre d'application)
 
@@ -31,7 +32,11 @@ _Merci d'accueillir cette version 0.9 après tout le temps nécessaire à son d�
 
 - Dialogues d'autorisation
 
-- Lecteur de mail monochrome
+- Mise à jour des mails
+
+  - Support de l'envoi de mails
+  - Notifications des nouveaux mails améliorée
+  - Lecteur de mail monochrome
 
 - Conversion automatique des liens
 

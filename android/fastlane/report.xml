@@ -5,27 +5,22 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.0030172">
+      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.0032405">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="1: number_of_commits" time="0.1931303">
+      <testcase classname="fastlane.lanes" name="1: number_of_commits" time="0.1414965">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="2: flutter_version" time="0.0245047">
+      <testcase classname="fastlane.lanes" name="2: flutter_version" time="0.0168205">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="3: flutter build apk --build-number=109 --split-per-abi" time="23.9369306">
-        
-      </testcase>
-    
-      
-      <testcase classname="fastlane.lanes" name="4: set_github_release" time="0.3385425">
+      <testcase classname="fastlane.lanes" name="3: prompt" time="3.5614046">
         
       </testcase>
     

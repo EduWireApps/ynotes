@@ -329,58 +329,60 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                                 }),
                                 borderRadius: BorderRadius.all(Radius.circular(11)),
                               ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  case2(
-                                    model.actualState,
-                                    {
-                                      loginStatus.loggedOff: SpinKitThreeBounce(
+                              child: FittedBox(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    case2(
+                                      model.actualState,
+                                      {
+                                        loginStatus.loggedOff: SpinKitThreeBounce(
+                                          size: screenSize.size.width / 5 * 0.4,
+                                          color: Theme.of(context).primaryColorDark,
+                                        ),
+                                        loginStatus.offline: Icon(
+                                          MdiIcons.networkStrengthOff,
+                                          color: Theme.of(context).primaryColorDark,
+                                        ),
+                                        loginStatus.error: Icon(
+                                          MdiIcons.exclamation,
+                                          color: Theme.of(context).primaryColorDark,
+                                        ),
+                                        loginStatus.loggedIn: Icon(
+                                          MdiIcons.check,
+                                          color: Theme.of(context).primaryColorDark,
+                                        )
+                                      },
+                                      SpinKitThreeBounce(
                                         size: screenSize.size.width / 5 * 0.4,
                                         color: Theme.of(context).primaryColorDark,
                                       ),
-                                      loginStatus.offline: Icon(
-                                        MdiIcons.networkStrengthOff,
-                                        color: Theme.of(context).primaryColorDark,
-                                      ),
-                                      loginStatus.error: Icon(
-                                        MdiIcons.exclamation,
-                                        color: Theme.of(context).primaryColorDark,
-                                      ),
-                                      loginStatus.loggedIn: Icon(
-                                        MdiIcons.check,
-                                        color: Theme.of(context).primaryColorDark,
-                                      )
-                                    },
-                                    SpinKitThreeBounce(
-                                      size: screenSize.size.width / 5 * 0.4,
-                                      color: Theme.of(context).primaryColorDark,
                                     ),
-                                  ),
-                                  FittedBox(
-                                    child: Row(
-                                      children: <Widget>[
-                                        Text(
-                                          model.details,
-                                          style: TextStyle(fontFamily: "Asap", color: Theme.of(context).primaryColorDark),
-                                        ),
-                                        SizedBox(
-                                          width: screenSize.size.width / 5 * 0.1,
-                                        ),
-                                        if (model.actualState == loginStatus.error)
-                                          GestureDetector(
-                                            onTap: () async {
-                                              await model.login();
-                                            },
-                                            child: Text(
-                                              "Réessayer",
-                                              style: TextStyle(fontFamily: "Asap", color: Colors.blue.shade50),
-                                            ),
+                                    FittedBox(
+                                      child: Row(
+                                        children: <Widget>[
+                                          Text(
+                                            model.details,
+                                            style: TextStyle(fontFamily: "Asap", color: Theme.of(context).primaryColorDark),
                                           ),
-                                      ],
-                                    ),
-                                  )
-                                ],
+                                          SizedBox(
+                                            width: screenSize.size.width / 5 * 0.1,
+                                          ),
+                                          if (model.actualState == loginStatus.error)
+                                            GestureDetector(
+                                              onTap: () async {
+                                                await model.login();
+                                              },
+                                              child: Text(
+                                                "Réessayer",
+                                                style: TextStyle(fontFamily: "Asap", color: Colors.blue.shade50),
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                ),
                               ),
                             ),
                           ),

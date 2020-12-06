@@ -146,7 +146,9 @@ class Offline {
       }
       try {
         await offlineBox.clear();
-      } catch (e) {}
+      } catch (e) {
+        print("Fail to clear offline");
+      }
       try {
         await homeworkDoneBox.clear();
       } catch (e) {}
@@ -155,7 +157,9 @@ class Offline {
       } catch (e) {}
       try {
         disciplinesData.clear();
-      } catch (e) {}
+      } catch (e) {
+        print("Fail to clear disciplines " + e.toString());
+      }
       try {
         remindersData.clear();
       } catch (e) {}
@@ -171,6 +175,7 @@ class Offline {
       try {
         agendaEventsData.clear();
       } catch (e) {}
+      print("Cleared all");
     } catch (e) {
       print("Failed to clear all db " + e.toString());
     }

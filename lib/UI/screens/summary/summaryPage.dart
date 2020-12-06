@@ -248,6 +248,7 @@ class SummaryPageState extends State<SummaryPage> {
                             return QuickGrades(
                               grades: getAllGrades(snapshot.data),
                               callback: widget.switchPage,
+                              refreshCallback: refreshLocalGradesList,
                             );
                           }),
                     ),
