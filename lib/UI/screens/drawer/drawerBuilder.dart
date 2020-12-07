@@ -46,7 +46,7 @@ bool isQuickMenuShown = false;
 
 class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateMixin {
   PageController drawerPageViewController;
-  ValueNotifier<int> _notifier = ValueNotifier<int>(2);
+  ValueNotifier<int> _notifier = ValueNotifier<int>(0);
   //Boolean
   bool isChanging = false;
 
@@ -115,7 +115,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
     } catch (e) {}
     // this creates the controller
     drawerPageViewController = PageController(
-      initialPage: 2,
+      initialPage: 0,
     )..addListener(_onPageViewUpdate);
     bodyController = AnimationController(vsync: this, duration: drawerAnimationDuration);
 
@@ -237,18 +237,18 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                                   backgroundColor: Colors.transparent,
                                   title: Text(entries[value]["menuName"]),
                                   actions: [
-                                    if ([0, 2, 4].contains(value))
+                                    if ([0, 1, 4].contains(value))
                                       FlatButton(
                                         color: Colors.transparent,
                                         child: Icon(MdiIcons.wrenchOutline, color: isDarkModeEnabled ? Colors.white : Colors.black),
                                         onPressed: () {
                                           switch (value) {
-                                            case 0:
+                                            case 1:
                                               {
                                                 agendaPage.currentState.triggerSettings();
                                               }
                                               break;
-                                            case 2:
+                                            case 0:
                                               {
                                                 summaryPage.currentState.triggerSettings();
                                               }
@@ -272,12 +272,12 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                             }),
                       ),
                       body: PageView(physics: NeverScrollableScrollPhysics(), controller: drawerPageViewController, children: [
-                        AgendaPage(key: agendaPage),
-                        DownloadsExplorer(),
                         SummaryPage(
                           switchPage: _switchPage,
                           key: summaryPage,
                         ),
+                        AgendaPage(key: agendaPage),
+                        DownloadsExplorer(),
                         SingleChildScrollView(physics: NeverScrollableScrollPhysics(), child: GradesPage()),
                         HomeworkPage(
                           key: homeworkPage,
@@ -316,7 +316,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                         return Transform.translate(
                           offset: Offset(0, -screenSize.size.height / 10 * 1.2 * showTransparentLoginStatus.value),
                           child: Opacity(
-                            opacity: 0.55,
+                            opacity: 0.8,
                             child: Container(
                               margin: EdgeInsets.only(left: screenSize.size.width / 5 * 1.0, right: screenSize.size.width / 5 * 1, top: screenSize.size.height / 10 * 0.1),
                               height: screenSize.size.height / 10 * 0.55,

@@ -29,6 +29,7 @@ class BackgroundService {
       print(payload);
     }
   }
+
 /*
   //Currently Pronote only feature
   static Future<void> refreshOnGoingNotif() async {
@@ -58,10 +59,10 @@ class BackgroundService {
     if (connectivityResult != ConnectivityResult.none) {
       try {
         await api.login(u, p, url: url, cas: cas);
+        await api.getNextHomework(forceReload: true);
       } catch (e) {
-        print("Error while logging");
+        print("Error while fetching homework in background " + e.toString());
       }
     }
-    await api.getNextHomework();
   }
 }

@@ -167,17 +167,20 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                             child: (snapshot.hasData)
                                 ? Column(
                                     children: <Widget>[
-                                      HtmlWidget(
-                                        getMonochromaticColors(snapshot.data),
-                                        hyperlinkColor: Colors.blue.shade300,
-                                        onTapUrl: (url) async {
-                                          if (await canLaunch(url)) {
-                                            await launch(url);
-                                          } else {
-                                            throw "Unable to launch url";
-                                          }
-                                        },
-                                        textStyle: TextStyle(color: ThemeUtils.textColor()),
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
+                                        child: HtmlWidget(
+                                          getMonochromaticColors(snapshot.data),
+                                          hyperlinkColor: Colors.blue.shade300,
+                                          onTapUrl: (url) async {
+                                            if (await canLaunch(url)) {
+                                              await launch(url);
+                                            } else {
+                                              throw "Unable to launch url";
+                                            }
+                                          },
+                                          textStyle: TextStyle(color: ThemeUtils.textColor()),
+                                        ),
                                       ),
                                       AnimatedContainer(
                                         duration: Duration(milliseconds: 75),

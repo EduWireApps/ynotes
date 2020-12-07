@@ -135,16 +135,19 @@ class Offline {
   //Clear all databases
   clearAll() async {
     try {
-      if (!offlineBox.isOpen) {
+      if (offlineBox==null||!offlineBox.isOpen) {
         offlineBox = await Hive.openBox("offlineData");
       }
-      if (!homeworkDoneBox.isOpen) {
+      if (homeworkDoneBox==null||!homeworkDoneBox.isOpen) {
         homeworkDoneBox = await Hive.openBox("doneHomework");
       }
-      if (!pinnedHomeworkBox.isOpen) {
+      if (pinnedHomeworkBox==null||!pinnedHomeworkBox.isOpen) {
         pinnedHomeworkBox = await Hive.openBox('pinnedHomework');
       }
-      try {
+      await offlineBox.deleteFromDisk();
+      await homeworkDoneBox.deleteFromDisk();
+      await pinnedHomeworkBox.deleteFromDisk();
+      /*try {
         await offlineBox.clear();
       } catch (e) {
         print("Fail to clear offline");
@@ -175,7 +178,7 @@ class Offline {
       try {
         agendaEventsData.clear();
       } catch (e) {}
-      print("Cleared all");
+      print("Cleared all");*/
     } catch (e) {
       print("Failed to clear all db " + e.toString());
     }

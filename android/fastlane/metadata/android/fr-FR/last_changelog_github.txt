@@ -1,2 +1,1 @@
-Notifications fix.
-
+Minor bug fixes.

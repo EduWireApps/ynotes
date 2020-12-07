@@ -55,7 +55,8 @@ class _AgendaState extends State<Agenda> {
     var realSAF = await agendaFuture;
     var realAF = await spaceAgendaFuture;
   }
- Future<void> refreshAgendaFuture() async {
+
+  Future<void> refreshAgendaFuture() async {
     if (mounted) {
       setState(() {
         spaceAgendaFuture = localApi.getEvents(agendaDate, true);
@@ -65,6 +66,7 @@ class _AgendaState extends State<Agenda> {
     var realAF = await spaceAgendaFuture;
     var realSAF = await agendaFuture;
   }
+
   _buildFloatingButton(BuildContext context) {
     var screenSize = MediaQuery.of(context);
     return FloatingActionButton(
@@ -297,16 +299,20 @@ class _AgendaState extends State<Agenda> {
 Lesson getCurrentLesson(List<Lesson> lessons, {DateTime now}) {
   List<Lesson> dailyLessons = List();
   Lesson lesson;
-  dailyLessons = lessons.where((lesson) => DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) == DateTime.parse(DateFormat("yyyy-MM-dd").format(now ?? DateTime.now()))).toList();
-  if (dailyLessons != null && dailyLessons.length != 0) {
-    //Get current lesson
-    try {
-      lesson = dailyLessons.firstWhere((lesson) => (now ?? DateTime.now()).isBefore(lesson.end) && (now ?? DateTime.now()).isAfter(lesson.start));
-    } catch (e) {
-      print(lessons);
-    }
+  if (lessons != null) {
+    dailyLessons = lessons.where((lesson) => DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) == DateTime.parse(DateFormat("yyyy-MM-dd").format(now ?? DateTime.now()))).toList();
+    if (dailyLessons != null && dailyLessons.length != 0) {
+      //Get current lesson
+      try {
+        lesson = dailyLessons.firstWhere((lesson) => (now ?? DateTime.now()).isBefore(lesson.end) && (now ?? DateTime.now()).isAfter(lesson.start));
+      } catch (e) {
+        print(lessons);
+      }
 
-    return lesson;
+      return lesson;
+    } else {
+      return null;
+    }
   } else {
     return null;
   }
@@ -315,17 +321,21 @@ Lesson getCurrentLesson(List<Lesson> lessons, {DateTime now}) {
 getNextLesson(List<Lesson> lessons) {
   List<Lesson> dailyLessons = List();
   Lesson lesson;
-  dailyLessons = lessons.where((lesson) => DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) == DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now()))).toList();
-  if (dailyLessons != null && dailyLessons.length != 0) {
-    //Get current lesson
-    try {
-      dailyLessons.sort((a, b) => a.start.compareTo(b.start));
-      lesson = dailyLessons.firstWhere((lesson) => DateTime.now().isBefore(lesson.start));
-    } catch (e) {
-      print(e.toString());
-    }
+  if (lessons != null) {
+    dailyLessons = lessons.where((lesson) => DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) == DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now()))).toList();
+    if (dailyLessons != null && dailyLessons.length != 0) {
+      //Get current lesson
+      try {
+        dailyLessons.sort((a, b) => a.start.compareTo(b.start));
+        lesson = dailyLessons.firstWhere((lesson) => DateTime.now().isBefore(lesson.start));
+      } catch (e) {
+        print(e.toString());
+      }
 
-    return lesson;
+      return lesson;
+    } else {
+      return null;
+    }
   } else {
     return null;
   }

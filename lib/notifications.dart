@@ -263,14 +263,14 @@ class LocalNotification {
       await Future.forEach(lessons, (Lesson lesson) async {
         if (lesson.start.isAfter(date)) {
           try {
-            if (await AndroidAlarmManager.oneShotAt(lesson.start.subtract(Duration(minutes: minutes)), lesson.start.hashCode, callback, exact: true, allowWhileIdle: true)) print("scheduled " + lesson.start.hashCode.toString() + " $minutes minutes before.");
+            if (await AndroidAlarmManager.oneShotAt(lesson.start.subtract(Duration(minutes: minutes)), lesson.start.hashCode, callback, allowWhileIdle: true, rescheduleOnReboot: true)) print("scheduled " + lesson.start.hashCode.toString() + " $minutes minutes before.");
           } catch (e) {
             print("failed " + e.toString());
           }
         }
       });
       try {
-        if (await AndroidAlarmManager.oneShotAt(lessons.last.end.subtract(Duration(minutes: minutes)), lessons.last.end.hashCode, callback, exact: true, allowWhileIdle: true)) print("Scheduled last lesson");
+        if (await AndroidAlarmManager.oneShotAt(lessons.last.end.subtract(Duration(minutes: minutes)), lessons.last.end.hashCode, callback, allowWhileIdle: true, rescheduleOnReboot: true)) print("Scheduled last lesson");
       } catch (e) {}
       print("Success !");
     }

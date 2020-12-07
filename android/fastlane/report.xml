@@ -5,22 +5,52 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.0032405">
+      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.0022931">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="1: number_of_commits" time="0.1414965">
+      <testcase classname="fastlane.lanes" name="1: number_of_commits" time="0.1333893">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="2: flutter_version" time="0.0168205">
+      <testcase classname="fastlane.lanes" name="2: flutter_version" time="0.0284756">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="3: prompt" time="3.5614046">
+      <testcase classname="fastlane.lanes" name="3: prompt" time="61.9739506">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="4: type last_changelog.txt &gt;&gt; changelogs/111.txt" time="0.0357423">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="5: flutter packages get" time="6.6029003">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="6: flutter clean" time="9.6561405">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="7: flutter build appbundle --build-number=111" time="147.6195416">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="8: flutter build apk --build-number=111 --split-per-abi" time="60.2884942">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="9: upload_to_play_store" time="85.936142">
         
       </testcase>
     

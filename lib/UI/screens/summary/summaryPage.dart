@@ -676,7 +676,7 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text(widget._homework.matiere, textScaleFactor: 1.0, textAlign: TextAlign.left, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 14, fontFamily: "Asap", fontWeight: FontWeight.bold)),
+                      Container(width: screenSize.size.width / 5 * 2.8, child: Text(widget._homework.matiere, textScaleFactor: 1.0, textAlign: TextAlign.left, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 14, fontFamily: "Asap", fontWeight: FontWeight.bold))),
                       Container(
                         width: screenSize.size.width / 5 * 2.8,
                         child: AutoSizeText(

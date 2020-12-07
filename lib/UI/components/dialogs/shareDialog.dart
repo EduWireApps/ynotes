@@ -13,6 +13,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share/share.dart';
 import 'package:ynotes/UI/components/quickMenu.dart';
 import 'package:ynotes/apis/utils.dart';
+import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/utils/themeUtils.dart';
 import 'dart:ui' as ui;
 
@@ -49,6 +50,12 @@ class _ShareBoxState extends State<ShareBox> {
 
   @override
   Widget build(BuildContext context) {
+    DateTime parsedDate;
+    if (chosenParser == 0) {
+      parsedDate = DateTime.parse(widget.grade.date);
+    } else {
+      parsedDate = DateFormat("dd/MM/yyyy").parse(widget.grade.date);
+    }
     MediaQueryData screenSize;
     screenSize = MediaQuery.of(context);
     return AlertDialog(
@@ -77,21 +84,20 @@ class _ShareBoxState extends State<ShareBox> {
                         children: [
                           Column(mainAxisSize: MainAxisSize.max, children: <Widget>[
                             FutureBuilder(
-                              initialData: 0,
-                              future: getColor(widget.grade.codeMatiere),
-                              builder: (context, snapshot) {
-                                return Container(
-                                    child: Center(
-                                      child: Text(
-                                        widget.grade.libelleMatiere,
-                                        style: TextStyle(fontFamily: "Asap", color: Colors.black),
+                                initialData: 0,
+                                future: getColor(widget.grade.codeMatiere),
+                                builder: (context, snapshot) {
+                                  return Container(
+                                      child: Center(
+                                        child: Text(
+                                          widget.grade.libelleMatiere,
+                                          style: TextStyle(fontFamily: "Asap", color: Colors.black),
+                                        ),
                                       ),
-                                    ),
-                                    width: screenSize.size.width / 5 * 5,
-                                    height: screenSize.size.height / 10 * 0.5,
-                                    decoration: BoxDecoration(borderRadius: BorderRadius.only(topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)), color: Color(snapshot.data)));
-                              }
-                            ),
+                                      width: screenSize.size.width / 5 * 5,
+                                      height: screenSize.size.height / 10 * 0.5,
+                                      decoration: BoxDecoration(borderRadius: BorderRadius.only(topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)), color: Color(snapshot.data)));
+                                }),
                             Container(
                               width: screenSize.size.width / 5 * 5,
                               height: screenSize.size.height / 10 * 2,
@@ -99,7 +105,7 @@ class _ShareBoxState extends State<ShareBox> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
-                                  Text("Note du " + DateFormat("dd MMMM yyyy", "fr_FR").format(DateTime.parse(widget.grade.date)),
+                                  Text("Note du " + DateFormat("dd MMMM yyyy", "fr_FR").format(parsedDate),
                                       style: TextStyle(
                                         fontFamily: "Asap",
                                         color: ThemeUtils.textColor(),

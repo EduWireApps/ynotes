@@ -13,14 +13,14 @@ import 'package:ynotes/utils/themeUtils.dart';
 ///`relatedApi` should be set to null if both APIs can use it
 List<Map> entries = [
   {
+    "menuName": "Résumé",
+    "icon": MdiIcons.home,
+  },
+  {
     "menuName": "Agenda",
     "icon": MdiIcons.calendar,
   },
   {"menuName": "Fichiers", "icon": MdiIcons.file, "relatedApi": 0},
-  {
-    "menuName": "Résumé",
-    "icon": MdiIcons.home,
-  },
   {
     "menuName": "Notes",
     "icon": MdiIcons.trophy,

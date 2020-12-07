@@ -136,6 +136,7 @@ mainTestNewMails() async {
     });
     var newMailLength = await getIntSetting("mailNumber");
 
+    await logFile("Mails checking triggered");
     print("New length is ${newMailLength}");
     if (oldMailLength != 0) {
       if (oldMailLength < (newMailLength != null ? newMailLength : 0)) {
