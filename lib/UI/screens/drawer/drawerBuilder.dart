@@ -234,7 +234,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                             builder: (context, value, child) {
                               return AppBar(
                                   shadowColor: Colors.transparent,
-                                  backgroundColor: Colors.transparent,
+                                  backgroundColor: Theme.of(context).primaryColorDark,
                                   title: Text(entries[value]["menuName"]),
                                   actions: [
                                     if ([0, 1, 4].contains(value))
