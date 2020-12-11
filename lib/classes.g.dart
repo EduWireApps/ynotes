@@ -200,8 +200,8 @@ class GradeAdapter extends TypeAdapter<Grade> {
       noteSur: fields[8] as String,
       moyenneClasse: fields[9] as String,
       typeDevoir: fields[10] as String,
-      date: fields[11] as String,
-      dateSaisie: fields[12] as String,
+      date: fields[11] as DateTime,
+      dateSaisie: fields[12] as DateTime,
       nonSignificatif: fields[13] as bool,
       nomPeriode: fields[14] as String,
     );

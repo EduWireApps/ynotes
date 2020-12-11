@@ -173,7 +173,7 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                                 GestureDetector(
                                   onTap: () {},
                                   child: buildKeyValuesInfo(context, "Date du devoir :",
-                                      [widget.grade.date != null ? (!widget.grade.date.contains("/") ? DateFormat("dd MMMM yyyy", "fr_FR").format(DateTime.parse(widget.grade.date)) : DateFormat("dd MMMM yyyy", "fr_FR").format(DateFormat("dd/MM/yyyy").parse(widget.grade.date))) : "-"]),
+                                      [widget.grade.date != null ? DateFormat("dd MMMM yyyy", "fr_FR").format(widget.grade.date) : "-"]),
                                 )
                               ],
                             ),

@@ -50,12 +50,6 @@ class _ShareBoxState extends State<ShareBox> {
 
   @override
   Widget build(BuildContext context) {
-    DateTime parsedDate;
-    if (chosenParser == 0) {
-      parsedDate = DateTime.parse(widget.grade.date);
-    } else {
-      parsedDate = DateFormat("dd/MM/yyyy").parse(widget.grade.date);
-    }
     MediaQueryData screenSize;
     screenSize = MediaQuery.of(context);
     return AlertDialog(
@@ -105,7 +99,7 @@ class _ShareBoxState extends State<ShareBox> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
-                                  Text("Note du " + DateFormat("dd MMMM yyyy", "fr_FR").format(parsedDate),
+                                  Text("Note du " + DateFormat("dd MMMM yyyy", "fr_FR").format(widget.grade.date),
                                       style: TextStyle(
                                         fontFamily: "Asap",
                                         color: ThemeUtils.textColor(),

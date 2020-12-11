@@ -216,18 +216,8 @@ List<Grade> getAllGrades(List<Discipline> list, {bool overrideLimit = false}) {
         return localApi.gradesList;
       }
       listToReturn = listToReturn.toSet().toList();
-      //print("Refreshing all grades");
-      if (chosenParser == 0) {
-        listToReturn.sort((a, b) => a.dateSaisie.compareTo(b.dateSaisie));
-      } else {
-        listToReturn.sort((a, b) {
-          //Format dates and compare
-          var adate = DateFormat("dd/MM/yyyy").parse(a.date);
-          var bdate = DateFormat("dd/MM/yyyy").parse(b.date);
 
-          return adate.compareTo(bdate);
-        });
-      }
+      listToReturn.sort((a, b) => a.dateSaisie.compareTo(b.dateSaisie));
 
       listToReturn = listToReturn.reversed.toList();
       if (localApi.gradesList == null) {

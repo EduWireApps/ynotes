@@ -103,10 +103,10 @@ class Grade {
   final String typeDevoir;
   //E.G : 16/02
   @HiveField(11)
-  final String date;
+  final DateTime date;
   //E.G : 16/02
   @HiveField(12)
-  final String dateSaisie;
+  final DateTime dateSaisie;
   @HiveField(13)
   final bool nonSignificatif;
   @HiveField(14)

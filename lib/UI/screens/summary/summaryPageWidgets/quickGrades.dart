@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/apis/Pronote.dart';
 import 'package:ynotes/classes.dart';
@@ -46,6 +47,8 @@ class _QuickGradesState extends State<QuickGrades> {
   }
 
   Widget buildGradeItem(Grade grade) {
+    
+    DateFormat df = DateFormat("EEEE dddd MMMM");
     var screenSize = MediaQuery.of(context);
 
     return Row(children: [
@@ -71,7 +74,7 @@ class _QuickGradesState extends State<QuickGrades> {
             textAlign: TextAlign.left,
           ),
           Text(
-            grade.date,
+            df.format(grade.date),
             style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
             textAlign: TextAlign.left,
           )
