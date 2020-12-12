@@ -43,7 +43,10 @@ class Homework extends HiveObject {
   final List<Document> documentsContenuDeSeance;
   @HiveField(12)
   final String nomProf;
-  Homework(this.matiere, this.codeMatiere, this.id, this.contenu, this.contenuDeSeance, this.date, this.datePost, this.done, this.rendreEnLigne, this.interrogation, this.documents, this.documentsContenuDeSeance, this.nomProf);
+  @HiveField(13)
+  final bool loaded;
+  Homework(this.matiere, this.codeMatiere, this.id, this.contenu, this.contenuDeSeance, this.date, this.datePost,
+      this.done, this.rendreEnLigne, this.interrogation, this.documents, this.documentsContenuDeSeance, this.nomProf, this.loaded);
   factory Homework.fromJson(Map<String, dynamic> json) => _$HomeworkFromJson(json);
   Map<String, dynamic> toJson() => _$HomeworkToJson(this);
 }
@@ -102,17 +105,32 @@ class Grade {
   @HiveField(10)
   final String typeDevoir;
   //E.G : 16/02
-  @HiveField(11)
+  @HiveField(16)
   final DateTime date;
   //E.G : 16/02
-  @HiveField(12)
+  @HiveField(15)
   final DateTime dateSaisie;
   @HiveField(13)
   final bool nonSignificatif;
   @HiveField(14)
   //E.G : Trimestre 1
   final String nomPeriode;
-  Grade({this.devoir, this.codePeriode, this.codeMatiere, this.codeSousMatiere, this.libelleMatiere, this.letters, this.valeur, this.coef, this.noteSur, this.moyenneClasse, this.typeDevoir, this.date, this.dateSaisie, this.nonSignificatif, this.nomPeriode});
+  Grade(
+      {this.devoir,
+      this.codePeriode,
+      this.codeMatiere,
+      this.codeSousMatiere,
+      this.libelleMatiere,
+      this.letters,
+      this.valeur,
+      this.coef,
+      this.noteSur,
+      this.moyenneClasse,
+      this.typeDevoir,
+      this.date,
+      this.dateSaisie,
+      this.nonSignificatif,
+      this.nomPeriode});
 
   factory Grade.fromEcoleDirecteJson(Map<String, dynamic> json, String nomPeriode) {
     return Grade(
@@ -128,8 +146,8 @@ class Grade {
         noteSur: json['noteSur'],
         moyenneClasse: json['moyenneClasse'],
         typeDevoir: json['typeDevoir'],
-        date: json['date'],
-        dateSaisie: json['dateSaisie'],
+        date: DateTime.parse(json['date']),
+        dateSaisie: DateTime.parse(json['dateSaisie']),
         nonSignificatif: json['nonSignificatif']);
   }
 }
@@ -165,7 +183,21 @@ class Discipline {
   List<Grade> gradesList;
   @HiveField(13)
   int color;
-  Discipline({this.gradesList, this.moyenneGeneralClasseMax, this.moyenneGeneraleClasse, this.moyenneGenerale, this.moyenneClasse, this.moyenneMin, this.moyenneMax, this.codeMatiere, this.codeSousMatiere, this.moyenne, this.professeurs, this.nomDiscipline, this.periode, this.color});
+  Discipline(
+      {this.gradesList,
+      this.moyenneGeneralClasseMax,
+      this.moyenneGeneraleClasse,
+      this.moyenneGenerale,
+      this.moyenneClasse,
+      this.moyenneMin,
+      this.moyenneMax,
+      this.codeMatiere,
+      this.codeSousMatiere,
+      this.moyenne,
+      this.professeurs,
+      this.nomDiscipline,
+      this.periode,
+      this.color});
 
   set setcolor(Color newcolor) {
     color = newcolor.value;
@@ -177,7 +209,14 @@ class Discipline {
 //Map<String, dynamic> json, List<String> profs, String codeMatiere, String periode, Color color, String moyenneG, String bmoyenneClasse, String moyenneClasse
 //disciplinesList.add(Discipline.fromJson(element, teachersNames, element['codeMatiere'], periodeElement["idPeriode"], Colors.blue, periodeElement["ensembleMatieres"]["moyenneGenerale"], periodeElement["ensembleMatieres"]["moyenneMax"], periodeElement["ensembleMatieres"]["moyenneClasse"]));
 
-  factory Discipline.fromEcoleDirecteJson({@required Map<String, dynamic> json, @required List<String> profs, @required String periode, @required String moyenneG, @required String bmoyenneClasse, @required String moyenneClasse, @required Color color}) {
+  factory Discipline.fromEcoleDirecteJson(
+      {@required Map<String, dynamic> json,
+      @required List<String> profs,
+      @required String periode,
+      @required String moyenneG,
+      @required String bmoyenneClasse,
+      @required String moyenneClasse,
+      @required Color color}) {
     return Discipline(
       codeSousMatiere: [],
       codeMatiere: json['codeMatiere'],
@@ -211,7 +250,8 @@ class Mail {
   final String date;
   final String content;
   final List<Document> files;
-  Mail(this.id, this.mtype, this.read, this.idClasseur, this.from, this.subject, this.date, {this.content, this.to, this.files});
+  Mail(this.id, this.mtype, this.read, this.idClasseur, this.from, this.subject, this.date,
+      {this.content, this.to, this.files});
 }
 
 @JsonSerializable(nullable: false)
@@ -396,7 +436,9 @@ class AgendaEvent {
       if (lesson.start.hour == 0 && lesson.end.hour == 0) {
         wholeDay = true;
       }
-      events.add(AgendaEvent(lesson.start, lesson.end, lesson.matiere, lesson.room, null, null, lesson.canceled, lesson.id, null, isLesson: true, lesson: lesson, wholeDay: wholeDay));
+      events.add(AgendaEvent(
+          lesson.start, lesson.end, lesson.matiere, lesson.room, null, null, lesson.canceled, lesson.id, null,
+          isLesson: true, lesson: lesson, wholeDay: wholeDay));
     }
     return events;
   }
@@ -405,7 +447,16 @@ class AgendaEvent {
     return Color(color);
   }
 
-  AgendaEvent(this.start, this.end, this.name, this.location, this.left, this.height, this.canceled, this.id, this.width, {this.wholeDay = true, this.isLesson = false, this.lesson, this.reminders, this.description, this.alarm, this.color, this.recurrenceScheme});
+  AgendaEvent(
+      this.start, this.end, this.name, this.location, this.left, this.height, this.canceled, this.id, this.width,
+      {this.wholeDay = true,
+      this.isLesson = false,
+      this.lesson,
+      this.reminders,
+      this.description,
+      this.alarm,
+      this.color,
+      this.recurrenceScheme});
   factory AgendaEvent.fromJson(Map<String, dynamic> json) => _$AgendaEventFromJson(json);
   Map<String, dynamic> toJson() => _$AgendaEventToJson(this);
 }
@@ -507,7 +558,9 @@ abstract class API {
           DateTime lastLessonEnd = lessons.last.end;
           //delete the last one
 
-          extracurricularEvents.removeWhere((event) => DateTime.parse(DateFormat("yyyy-MM-dd").format(event.start)) != DateTime.parse(DateFormat("yyyy-MM-dd").format(date)));
+          extracurricularEvents.removeWhere((event) =>
+              DateTime.parse(DateFormat("yyyy-MM-dd").format(event.start)) !=
+              DateTime.parse(DateFormat("yyyy-MM-dd").format(date)));
           /*if (lessons.last.end != null) {
             extracurricularEvents.removeWhere((element) => element.start.isAfter(lastLessonEnd));
           }*/
@@ -526,7 +579,9 @@ abstract class API {
           //Last date
           DateTime lastLessonEnd = lessons.last.end;
           //delete the last one
-          extracurricularEvents.removeWhere((event) => DateTime.parse(DateFormat("yyyy-MM-dd").format(event.start)) != DateTime.parse(DateFormat("yyyy-MM-dd").format(date)));
+          extracurricularEvents.removeWhere((event) =>
+              DateTime.parse(DateFormat("yyyy-MM-dd").format(event.start)) !=
+              DateTime.parse(DateFormat("yyyy-MM-dd").format(date)));
           //extracurricularEvents.removeWhere((event) => event.start.isBefore(lastLessonEnd));
         }
         //merge
@@ -546,8 +601,10 @@ abstract class API {
       recurringEvents.forEach((recurringEvent) {
         events.removeWhere((element) => element.id == recurringEvent.id);
         if (recurringEvent.start != null && recurringEvent.end != null) {
-          recurringEvent.start = DateTime(date.year, date.month, date.day, recurringEvent.start.hour, recurringEvent.start.minute);
-          recurringEvent.end = DateTime(date.year, date.month, date.day, recurringEvent.end.hour, recurringEvent.end.minute);
+          recurringEvent.start =
+              DateTime(date.year, date.month, date.day, recurringEvent.start.hour, recurringEvent.start.minute);
+          recurringEvent.end =
+              DateTime(date.year, date.month, date.day, recurringEvent.end.hour, recurringEvent.end.minute);
         }
       });
 

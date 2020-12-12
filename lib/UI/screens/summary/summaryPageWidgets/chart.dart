@@ -8,7 +8,7 @@ import 'package:ynotes/utils/themeUtils.dart';
 class SummaryChart extends StatefulWidget {
   final List<Grade> lastGrades;
 
-  const SummaryChart(
+  SummaryChart(
     this.lastGrades, {
     Key key,
   }) : super(key: key);
@@ -17,10 +17,21 @@ class SummaryChart extends StatefulWidget {
 }
 
 class _SummaryChartState extends State<SummaryChart> {
+  List<Grade> _grades = List();
+  initState() {
+    super.initState();
+    if (widget.lastGrades != null) {
+      _grades.addAll(widget.lastGrades);
+      _grades.sort((a, b) => a.dateSaisie.compareTo(b.dateSaisie));
+    }
+  }
+
   toDouble(Grade grade) {
     double toReturn;
     if (!grade.letters) {
-      toReturn = (double.tryParse(grade.valeur.replaceAll(",", ".")) * 20 / double.tryParse(grade.noteSur.replaceAll(",", ".")));
+      toReturn = (double.tryParse(grade.valeur.replaceAll(",", ".")) *
+          20 /
+          double.tryParse(grade.noteSur.replaceAll(",", ".")));
       return toReturn;
     }
   }
@@ -32,7 +43,7 @@ class _SummaryChartState extends State<SummaryChart> {
       color: Colors.transparent,
       elevation: 0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-      child: (widget.lastGrades != null && (widget.lastGrades.length != 0))
+      child: (_grades != null && (_grades.length != 0))
           ? Container(
               height: screenSize.size.height / 10 * 3,
               child: Column(
@@ -114,12 +125,13 @@ class _SummaryChartState extends State<SummaryChart> {
       axisTitleData: FlAxisTitleData(topTitle: AxisTitle()),
       borderData: FlBorderData(show: false, border: Border.all(color: const Color(0xff37434d), width: 1)),
       minX: 0,
-      maxX: (widget.lastGrades.length > 10 ? 10 : widget.lastGrades.length).toDouble(),
+      maxX: (_grades.length > 10 ? 10 : _grades.length).toDouble(),
       minY: 0,
       maxY: 20,
       lineBarsData: [
         LineChartBarData(
-          spots: List.generate(widget.lastGrades.length > 10 ? 10 : widget.lastGrades.length, (index) => FlSpot(index.toDouble(), toDouble(widget.lastGrades[index]))),
+          spots: List.generate(
+              _grades.length > 10 ? 10 : _grades.length, (index) => FlSpot(index.toDouble(), toDouble(_grades[index]))),
           isCurved: true,
           colors: [
             ColorTween(begin: gradientColors[0], end: gradientColors[1]).lerp(0.2),

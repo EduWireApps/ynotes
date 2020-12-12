@@ -25,7 +25,10 @@ import '../../classes.dart';
 import '../EcoleDirecte.dart';
 import '../utils.dart';
 
-Map error_messages = {22: '[ERROR 22] The object was from a previous session. Please read the "Long Term Usage" section in README on github.', 10: '[ERROR 10] Session has expired and pronotepy was not able to reinitialise the connection.'};
+Map error_messages = {
+  22: '[ERROR 22] The object was from a previous session. Please read the "Long Term Usage" section in README on github.',
+  10: '[ERROR 10] Session has expired and pronotepy was not able to reinitialise the connection.'
+};
 bool isOldAPIUsed = false;
 
 class Client {
@@ -78,8 +81,10 @@ class Client {
     this.localPeriods = this.periods();
     this.week = await get_week(DateTime.now());
 
-    this.hour_start = DateFormat("""'hh'h'mm'""").parse(this.func_options['donneesSec']['donnees']['General']['ListeHeures']['V'][0]['L']);
-    this.hour_end = DateFormat("""'hh'h'mm'""").parse(this.func_options['donneesSec']['donnees']['General']['ListeHeuresFin']['V'][0]['L']);
+    this.hour_start = DateFormat("""'hh'h'mm'""")
+        .parse(this.func_options['donneesSec']['donnees']['General']['ListeHeures']['V'][0]['L']);
+    this.hour_end = DateFormat("""'hh'h'mm'""")
+        .parse(this.func_options['donneesSec']['donnees']['General']['ListeHeuresFin']['V'][0]['L']);
 
     this.one_hour_duration = hour_end.difference(hour_start).inMinutes;
     print("ohduration " + one_hour_duration.toString());
@@ -129,8 +134,10 @@ class Client {
     this.localPeriods = this.periods;
     this.logged_in = await this._login();
 
-    this.hour_start = DateFormat("hh'h'mm").parse(this.func_options['donneesSec']['donnees']['General']['ListeHeures']['V'][0]['L']);
-    this.hour_end = DateFormat("hh'h'mm").parse(this.func_options['donneesSec']['donnees']['General']['ListeHeuresFin']['V'][0]['L']);
+    this.hour_start =
+        DateFormat("hh'h'mm").parse(this.func_options['donneesSec']['donnees']['General']['ListeHeures']['V'][0]['L']);
+    this.hour_end = DateFormat("hh'h'mm")
+        .parse(this.func_options['donneesSec']['donnees']['General']['ListeHeuresFin']['V'][0]['L']);
 
     this.one_hour_duration = hour_end.difference(hour_start).inMinutes;
     this._expired = false;
@@ -210,7 +217,8 @@ class Client {
     Map auth_json = {"connexion": 0, "challenge": ch, "espace": int.parse(this.attributes['a'])};
     try {
       print("Authentification");
-      this.auth_response = await this.communication.post("Authentification", data: {'donnees': auth_json, 'identifiantNav': ''});
+      this.auth_response =
+          await this.communication.post("Authentification", data: {'donnees': auth_json, 'identifiantNav': ''});
     } catch (e) {
       throw ("Error during auth" + e.toString());
     }
@@ -222,7 +230,8 @@ class Client {
           try {
             paramsUser = await this.communication.post("ParametresUtilisateur", data: {'donnees': {}});
 
-            this.communication.authorized_onglets = _prepare_onglets(paramsUser['donneesSec']['donnees']['listeOnglets']);
+            this.communication.authorized_onglets =
+                _prepare_onglets(paramsUser['donneesSec']['donnees']['listeOnglets']);
             try {
               CreateStorage("classe", paramsUser['donneesSec']['donnees']['ressource']["classeDEleve"]["L"] ?? "");
               CreateStorage("userFullName", paramsUser['donneesSec']['donnees']['ressource']["L"] ?? "");
@@ -257,7 +266,13 @@ class Client {
       //Used by pronote to encrypt the data (I don't know why)
       var magic_stuff = this.encryption.aes_encryptFromString(jsonEncode(data));
       String libelle = Uri.encodeComponent(Uri.encodeComponent(document.libelle));
-      String url = this.communication.root_site + '/FichiersExternes/' + magic_stuff + '/' + libelle + '?Session=' + this.attributes['h'].toString();
+      String url = this.communication.root_site +
+          '/FichiersExternes/' +
+          magic_stuff +
+          '/' +
+          libelle +
+          '?Session=' +
+          this.attributes['h'].toString();
 
       return url;
     } catch (e) {
@@ -308,7 +323,21 @@ class Client {
         } catch (e) {}
       });
 
-      listCHW.add(localapi.Homework(h["Matiere"]["V"]["L"], h["Matiere"]["V"]["L"].hashCode.toString(), "", "", description, DateFormat("dd/MM/yyyy hh:mm:ss").parse(h["DateFin"]["V"]), DateFormat("dd/MM/yyyy hh:mm:ss").parse(h["Date"]["V"]), false, false, false, listDocs, listDocs, ""));
+      listCHW.add(localapi.Homework(
+          h["Matiere"]["V"]["L"],
+          h["Matiere"]["V"]["L"].hashCode.toString(),
+          "",
+          "",
+          description,
+          DateFormat("dd/MM/yyyy hh:mm:ss").parse(h["DateFin"]["V"]),
+          DateFormat("dd/MM/yyyy hh:mm:ss").parse(h["Date"]["V"]),
+          false,
+          false,
+          false,
+          listDocs,
+          listDocs,
+          "",
+          true));
     });
 
     //Homework(matiere, codeMatiere, idDevoir, contenu, contenuDeSeance, date, datePost, done, rendreEnLigne, interrogation, documents, documentsContenuDeSeance, nomProf)
@@ -316,13 +345,30 @@ class Client {
     List<localapi.Homework> listHW = List();
     h_list.forEach((h) {
       //set a generated ID (Pronote ID is never the same)
-      String idDevoir = (DateFormat("dd/MM/yyyy").parse(h["PourLe"]["V"]).toString() + h["Matiere"]["V"]["L"]).hashCode.toString() + h["descriptif"]["V"].hashCode.toString();
+      String idDevoir =
+          (DateFormat("dd/MM/yyyy").parse(h["PourLe"]["V"]).toString() + h["Matiere"]["V"]["L"]).hashCode.toString() +
+              h["descriptif"]["V"].hashCode.toString();
       listHW.add(localapi.Homework(
-          h["Matiere"]["V"]["L"], h["Matiere"]["V"]["L"].hashCode.toString(), idDevoir, h["descriptif"]["V"], null, DateFormat("dd/MM/yyyy").parse(h["PourLe"]["V"]), DateFormat("dd/MM/yyyy").parse(h["DonneLe"]["V"]), h["TAFFait"] ?? false, h["peuRendre"] ?? false, false, null, null, ""));
+          h["Matiere"]["V"]["L"],
+          h["Matiere"]["V"]["L"].hashCode.toString(),
+          idDevoir,
+          h["descriptif"]["V"],
+          null,
+          DateFormat("dd/MM/yyyy").parse(h["PourLe"]["V"]),
+          DateFormat("dd/MM/yyyy").parse(h["DonneLe"]["V"]),
+          h["TAFFait"] ?? false,
+          h["peuRendre"] ?? false,
+          false,
+          null,
+          null,
+          "",
+          true));
     });
     listHW.forEach((homework) {
       try {
-        homework.contenuDeSeance = listCHW.firstWhere((content) => content.codeMatiere == homework.codeMatiere && content.date == homework.date).contenuDeSeance;
+        homework.contenuDeSeance = listCHW
+            .firstWhere((content) => content.codeMatiere == homework.codeMatiere && content.date == homework.date)
+            .contenuDeSeance;
       } catch (e) {}
     });
     return listHW;
@@ -374,7 +420,15 @@ class Client {
         element["listeQuestions"]["V"].forEach((question) {
           questions.add(jsonEncode(question));
         });
-        listInfosPolls.add(localapi.PollInfo(element["elmauteur"]["V"]["L"], DateFormat("dd/MM/yyyy").parse(element["dateDebut"]["V"]), questions, element["lue"], element["L"], element["N"], documents, element));
+        listInfosPolls.add(localapi.PollInfo(
+            element["elmauteur"]["V"]["L"],
+            DateFormat("dd/MM/yyyy").parse(element["dateDebut"]["V"]),
+            questions,
+            element["lue"],
+            element["L"],
+            element["N"],
+            documents,
+            element));
       } catch (e) {
         print("Failed to add an element to the polls list " + e.toString());
       }
@@ -516,7 +570,17 @@ class Client {
           if (lesson["estAnnule"] != null) {
             canceled = lesson["estAnnule"];
           }
-          listToReturn.add(Lesson(room: room, teachers: teachers, start: start, end: end, duration: duration, canceled: canceled, status: status, matiere: matiere, id: id, codeMatiere: codeMatiere));
+          listToReturn.add(Lesson(
+              room: room,
+              teachers: teachers,
+              start: start,
+              end: end,
+              duration: duration,
+              canceled: canceled,
+              status: status,
+              matiere: matiere,
+              id: id,
+              codeMatiere: codeMatiere));
         } catch (e) {
           print("Error while getting lessons " + e.toString());
         }
@@ -587,9 +651,14 @@ class _Communication {
     }
 
     print(this.root_site + "/" + this.html_page);
-    var headers = {'connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/74.0'};
+    var headers = {
+      'connection': 'keep-alive',
+      'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/74.0'
+    };
 
-    var get_response = await Requests.get(this.root_site + "/" + this.html_page + (this.cookies != null ? "?fd=1" : ''), headers: headers).catchError((e) {
+    var get_response = await Requests.get(this.root_site + "/" + this.html_page + (this.cookies != null ? "?fd=1" : ''),
+            headers: headers)
+        .catchError((e) {
       throw ("Impossible de se connecter");
     });
 
@@ -607,7 +676,8 @@ class _Communication {
     var json_post = {'Uuid': uuid};
     this.encrypt_requests = (this.attributes["sCra"] != null ? !this.attributes["sCra"] : false);
     this.compress_requests = (this.attributes["sCra"] != null ? !this.attributes["sCoA"] : false);
-    var initial_response = await this.post('FonctionParametres', data: {'donnees': json_post}, decryption_change: {'iv': md5.convert(this.encryption.aes_iv_temp).toString()});
+    var initial_response = await this.post('FonctionParametres',
+        data: {'donnees': json_post}, decryption_change: {'iv': md5.convert(this.encryption.aes_iv_temp).toString()});
 
     return [this.attributes, initial_response];
   }
@@ -641,7 +711,8 @@ class _Communication {
 
   post(String function_name, {var data, bool recursive = false, var decryption_change = null}) async {
     if (data != null) {
-      if (data["_Signature_"] != null && !this.authorized_onglets.toString().contains(data['_Signature_']['onglet'].toString())) {
+      if (data["_Signature_"] != null &&
+          !this.authorized_onglets.toString().contains(data['_Signature_']['onglet'].toString())) {
         throw ('Action not permitted. (onglet is not normally accessible)');
       }
     }
@@ -662,8 +733,14 @@ class _Communication {
 
     var r_number = encryption.aes_encrypt(utf8.encode(this.request_number.toString()));
     print(r_number);
-    var json = {'session': int.parse(this.attributes['h']), 'numeroOrdre': r_number, 'nom': function_name, 'donneesSec': data};
-    String p_site = this.root_site + '/appelfonction/' + this.attributes['a'] + '/' + this.attributes['h'] + '/' + r_number;
+    var json = {
+      'session': int.parse(this.attributes['h']),
+      'numeroOrdre': r_number,
+      'nom': function_name,
+      'donneesSec': data
+    };
+    String p_site =
+        this.root_site + '/appelfonction/' + this.attributes['a'] + '/' + this.attributes['h'] + '/' + r_number;
 
     this.request_number += 2;
     if (request_number > 90) {
@@ -760,7 +837,10 @@ class _Communication {
   }
 
   get_root_address(addr) {
-    return [(addr.split('/').sublist(0, addr.split('/').length - 1).join("/")), (addr.split('/').sublist(addr.split('/').length - 1, addr.split('/').length).join("/"))];
+    return [
+      (addr.split('/').sublist(0, addr.split('/').length - 1).join("/")),
+      (addr.split('/').sublist(addr.split('/').length - 1, addr.split('/').length).join("/"))
+    ];
   }
 
   _enBytes(String string) {
@@ -938,7 +1018,16 @@ class PronotePeriod {
     this.end = inputFormat.parse(parsed_json['dateFin']['V']);
   }
   gradeTranslate(String value) {
-    List grade_translate = ['Absent', 'Dispensé', 'Non noté', 'Inapte', 'Non rendu', 'Absent zéro', 'Non rendu zéro', 'Félicitations'];
+    List grade_translate = [
+      'Absent',
+      'Dispensé',
+      'Non noté',
+      'Inapte',
+      'Non rendu',
+      'Absent zéro',
+      'Non rendu zéro',
+      'Félicitations'
+    ];
     if (value.contains("|")) {
       return grade_translate[int.parse(value[1]) - 1];
     } else {
@@ -955,7 +1044,12 @@ class PronotePeriod {
     var averageData = services.firstWhere((element) => element["L"].hashCode.toString() == codeMatiere);
     //print(averageData["moyEleve"]["V"]);
 
-    return [gradeTranslate(averageData["moyEleve"]["V"]), gradeTranslate(averageData["moyMax"]["V"]), gradeTranslate(averageData["moyMin"]["V"]), gradeTranslate(averageData["moyClasse"]["V"])];
+    return [
+      gradeTranslate(averageData["moyEleve"]["V"]),
+      gradeTranslate(averageData["moyMax"]["V"]),
+      gradeTranslate(averageData["moyMin"]["V"]),
+      gradeTranslate(averageData["moyClasse"]["V"])
+    ];
   }
 
   grades(int codePeriode) async {
@@ -989,10 +1083,10 @@ class PronotePeriod {
           coef: element["coefficient"].toString(),
           noteSur: element["bareme"]["V"],
           moyenneClasse: this.gradeTranslate(element["moyenne"]["V"]),
-          date: element["date"]["V"],
+          date: DateFormat("dd/MM/yyyy").parse(element["date"]["V"]),
           nonSignificatif: this.gradeTranslate(element["note"]["V"]) == "NonNote" ? true : false,
           typeDevoir: "Interrogation",
-          dateSaisie: element["date"]["V"]));
+          dateSaisie: DateFormat("dd/MM/yyyy").parse(element["date"]["V"])));
       other.add(average(response, element["service"]["V"]["L"].hashCode.toString()));
     });
     return [list, other];

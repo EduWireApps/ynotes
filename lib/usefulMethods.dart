@@ -40,7 +40,9 @@ class AppStateNotifier extends ChangeNotifier {
     this.isDarkMode = isDarkMode;
     isDarkModeEnabled = isDarkMode;
 
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(systemNavigationBarColor: isDarkModeEnabled ? Color(0xff414141) : Color(0xffF3F3F3), statusBarColor: Colors.transparent // navigation bar color
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+        systemNavigationBarColor: isDarkModeEnabled ? Color(0xff414141) : Color(0xffF3F3F3),
+        statusBarColor: Colors.transparent // navigation bar color
         // status bar color
         ));
 
@@ -212,24 +214,30 @@ List<Grade> getAllGrades(List<Discipline> list, {bool overrideLimit = false}) {
           }
         });
       });
-      if (localApi.gradesList != null && localApi.gradesList.length > 0 && listToReturn.length == localApi.gradesList.length) {
+      if (localApi.gradesList != null &&
+          localApi.gradesList.length > 0 &&
+          listToReturn.length == localApi.gradesList.length) {
         return localApi.gradesList;
       }
       listToReturn = listToReturn.toSet().toList();
+      if (listToReturn != null) {
+        //sort grades
+        listToReturn.sort(
+            (a, b) => (a.dateSaisie != null && b.dateSaisie != null) ? (a.dateSaisie.compareTo(b.dateSaisie)) : 1);
 
-      listToReturn.sort((a, b) => a.dateSaisie.compareTo(b.dateSaisie));
+        //remove duplicates
+        listToReturn = listToReturn.toSet().toList();
+        listToReturn = listToReturn.reversed.toList();
+        if (localApi.gradesList == null) {
+          localApi.gradesList = List<Grade>();
+        }
+        localApi.gradesList.clear();
+        localApi.gradesList.addAll(listToReturn);
 
-      listToReturn = listToReturn.reversed.toList();
-      if (localApi.gradesList == null) {
-        localApi.gradesList = List<Grade>();
+        if (overrideLimit == false && listToReturn != null) {
+          listToReturn = listToReturn.sublist(0, (listToReturn.length >= 5) ? 5 : listToReturn.length);
+        }
       }
-      localApi.gradesList.clear();
-      localApi.gradesList.addAll(listToReturn);
-
-      if (overrideLimit == false && listToReturn != null) {
-        listToReturn = listToReturn.sublist(0, (listToReturn.length >= 5) ? 5 : listToReturn.length);
-      }
-
       return listToReturn;
     } else {
       return [];

@@ -12,7 +12,8 @@ class QuickGrades extends StatefulWidget {
   final List<Grade> grades;
   final Function callback;
   final Function refreshCallback;
-  const QuickGrades({Key key, this.grades, this.callback, this.refreshCallback}) : super(key: key);
+  const QuickGrades({Key key, this.grades, this.callback, this.refreshCallback})
+      : super(key: key);
   @override
   _QuickGradesState createState() => _QuickGradesState();
 }
@@ -30,12 +31,29 @@ class _QuickGradesState extends State<QuickGrades> {
           //MARK
           TextSpan(
             text: (grade.nonSignificatif ? "(" + grade.valeur : grade.valeur),
-            style: TextStyle(color: (ThemeUtils.textColor()), fontFamily: "Asap", fontWeight: FontWeight.normal, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.5),
+            style: TextStyle(
+                color: (ThemeUtils.textColor()),
+                fontFamily: "Asap",
+                fontWeight: FontWeight.normal,
+                fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.5),
             children: <TextSpan>[
               if (grade.noteSur != "20")
                 //MARK ON
-                TextSpan(text: '/' + grade.noteSur, style: TextStyle(color: (ThemeUtils.textColor()), fontWeight: FontWeight.normal, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.4)),
-              if (grade.nonSignificatif == true) TextSpan(text: ")", style: TextStyle(color: (ThemeUtils.textColor()), fontWeight: FontWeight.normal, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.5)),
+                TextSpan(
+                    text: '/' + grade.noteSur,
+                    style: TextStyle(
+                        color: (ThemeUtils.textColor()),
+                        fontWeight: FontWeight.normal,
+                        fontSize:
+                            (screenSize.size.height / 10 * 8.8) / 10 * 0.4)),
+              if (grade.nonSignificatif == true)
+                TextSpan(
+                    text: ")",
+                    style: TextStyle(
+                        color: (ThemeUtils.textColor()),
+                        fontWeight: FontWeight.normal,
+                        fontSize:
+                            (screenSize.size.height / 10 * 8.8) / 10 * 0.5)),
             ],
           ),
         ),
@@ -47,8 +65,7 @@ class _QuickGradesState extends State<QuickGrades> {
   }
 
   Widget buildGradeItem(Grade grade) {
-    
-    DateFormat df = DateFormat("EEEE dddd MMMM");
+    DateFormat df = DateFormat("dd MMMM", "fr_FR");
     var screenSize = MediaQuery.of(context);
 
     return Row(children: [
@@ -63,18 +80,22 @@ class _QuickGradesState extends State<QuickGrades> {
             children: [
               Text(
                 grade.libelleMatiere ?? "",
-                style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
+                style: TextStyle(
+                    color: ThemeUtils.textColor(), fontFamily: "Asap"),
                 textAlign: TextAlign.left,
               )
             ],
           ),
           Text(
             grade.devoir ?? "",
-            style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontWeight: FontWeight.bold),
+            style: TextStyle(
+                color: ThemeUtils.textColor(),
+                fontFamily: "Asap",
+                fontWeight: FontWeight.bold),
             textAlign: TextAlign.left,
           ),
           Text(
-            df.format(grade.date),
+            grade.date != null ? df.format(grade.date) : "",
             style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
             textAlign: TextAlign.left,
           )
@@ -106,7 +127,8 @@ class _QuickGradesState extends State<QuickGrades> {
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) {
                 return Card(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(11)),
                   color: Theme.of(context).primaryColor,
                   child: Material(
                     borderRadius: BorderRadius.circular(11),
@@ -114,13 +136,16 @@ class _QuickGradesState extends State<QuickGrades> {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(11),
                       onLongPress: () {
-                        CustomDialogs.showShareGradeDialog(context, widget.grades[index]);
+                        CustomDialogs.showShareGradeDialog(
+                            context, widget.grades[index]);
                       },
                       onTap: () {
                         widget.callback(3);
                       },
                       child: Container(
-                        padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.height / 10 * 0.1),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: screenSize.size.width / 5 * 0.1,
+                            vertical: screenSize.size.height / 10 * 0.1),
                         height: screenSize.size.height / 10 * 0.5,
                         child: buildGradeItem(widget.grades[index]),
                       ),

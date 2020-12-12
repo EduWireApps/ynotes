@@ -99,7 +99,7 @@ class _ShareBoxState extends State<ShareBox> {
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
-                                  Text("Note du " + DateFormat("dd MMMM yyyy", "fr_FR").format(widget.grade.date),
+                                  Text(widget.grade.date!=null?("Note du " + DateFormat("dd MMMM yyyy", "fr_FR").format(widget.grade.date)):"",
                                       style: TextStyle(
                                         fontFamily: "Asap",
                                         color: ThemeUtils.textColor(),

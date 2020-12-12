@@ -10,19 +10,25 @@ import '../../../classes.dart';
 class HomeworkOffline extends Offline {
   ///Update existing offline.homework.get() with passed data
   ///if `add` boolean is set to true passed data is combined with old data
-  updateHomework(List<Homework> newData, {bool add = false}) async {
+  updateHomework(List<Homework> newData, {bool add = false, forceAdd = false}) async {
     print("Update offline homwork");
     try {
       if (!offlineBox.isOpen) {
         offlineBox = await Hive.openBox("offlineData");
       }
       if (add == true && newData != null) {
-        List<Homework> oldHW = offlineBox.get("homework").cast<Homework>();
+        List<Homework> oldHW = List();
+        if (offlineBox.get("homework") != null) {
+          oldHW = offlineBox.get("homework").cast<Homework>();
+        }
 
         List<Homework> combinedList = List();
         combinedList.addAll(oldHW);
         newData.forEach((newdataelement) {
-          if (!combinedList.any((clistelement) => clistelement.id == newdataelement.id)) {
+          if (forceAdd) {
+            combinedList.removeWhere((element) => element.id == newdataelement.id);
+            combinedList.add(newdataelement);
+          } else if (combinedList.any((clistelement) => clistelement.id == newdataelement.id)) {
             combinedList.add(newdataelement);
           }
         });

@@ -1,2 +1,2 @@
-json_key_file("E:/Desktop/pc-api-8841092832662857981-537-d6380090d6cb.json") # Path to the json secret file - Follow https://docs.fastlane.tools/actions/supply/#setup to get one
+json_key_file("/home/jsonlines/Documents/pc-api-8841092832662857981-537-d6380090d6cb.json") # Path to the json secret file - Follow https://docs.fastlane.tools/actions/supply/#setup to get one
 package_name("fr.ynotes") # e.g. com.krausefx.app

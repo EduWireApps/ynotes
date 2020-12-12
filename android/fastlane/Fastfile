@@ -83,10 +83,7 @@ lane :internal do
 
 end
 lane :test do
-  mailgun(
-  to: "gola.idspace@gmail.com",
-  success: true,
-  message: "Coucou mon petit ! \n test")
+  validate_play_store_json_key()
 end
 lane :githubrelease do
   

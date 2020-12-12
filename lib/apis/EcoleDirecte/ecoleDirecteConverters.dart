@@ -58,7 +58,11 @@ class EcoleDirecteConverter {
         //Sub discipline
         else {
           try {
-            disciplinesList[disciplinesList.lastIndexWhere((disciplinesList) => disciplinesList.codeMatiere == rawData['codeMatiere'] && disciplinesList.periode == periodeElement["periode"])].codeSousMatiere.add(rawData['codeSousMatiere']);
+            disciplinesList[disciplinesList.lastIndexWhere((disciplinesList) =>
+                    disciplinesList.codeMatiere == rawData['codeMatiere'] &&
+                    disciplinesList.periode == periodeElement["periode"])]
+                .codeSousMatiere
+                .add(rawData['codeSousMatiere']);
           } catch (e) {
             print(e);
           }
@@ -70,7 +74,8 @@ class EcoleDirecteConverter {
           final List<Grade> localGradesList = List<Grade>();
 
           gradesData.forEach((element) {
-            if (element["codeMatiere"] == discipline.codeMatiere && element["codePeriode"] == periodeElement["idPeriode"]) {
+            if (element["codeMatiere"] == discipline.codeMatiere &&
+                element["codePeriode"] == periodeElement["idPeriode"]) {
               String nomPeriode = periodeElement["periode"];
               localGradesList.add(Grade.fromEcoleDirecteJson(element, nomPeriode));
             }
@@ -100,6 +105,29 @@ class EcoleDirecteConverter {
       dates.add(DateTime.parse(key));
     });
     return dates;
+  }
+
+  static List<Homework> unloadedHomework(Map<String, dynamic> uhwData) {
+    Map<String, dynamic> hwData = uhwData['data'];
+    List<Homework> unloadedHWList = List();
+    hwData.forEach((key, value) {
+      value.forEach((var hw) {
+        Map mappedHomework = hw;
+        bool loaded = false;
+        String matiere = mappedHomework["matiere"];
+        String codeMatiere = mappedHomework["codeMatiere"].toString();
+        String id = mappedHomework["idDevoir"].toString();
+        DateTime date = DateTime.parse(key);
+        DateTime datePost = DateTime.parse(mappedHomework["donneLe"]);
+        bool done = mappedHomework["effectue"] == "true";
+        bool rendreEnLigne = mappedHomework["rendreEnLigne"] == "true";
+        bool interrogation = mappedHomework["interrogation"] == "true";
+
+        unloadedHWList.add(Homework(matiere, codeMatiere, id, null, null, date, null, done, rendreEnLigne,
+            interrogation, null, null, null, loaded));
+      });
+    });
+    return unloadedHWList;
   }
 
   static List<Homework> homework(Map<String, dynamic> hwData) {
@@ -135,7 +163,8 @@ class EcoleDirecteConverter {
         String codeMatiere = homework['codeMatiere'];
         String id = homework['id'].toString();
 
-        decodedContent = decodedContent.replaceAllMapped(new RegExp(r'(>|\s)+(https?.+?)(<|\s)', multiLine: true, caseSensitive: false), (match) {
+        decodedContent = decodedContent
+            .replaceAllMapped(new RegExp(r'(>|\s)+(https?.+?)(<|\s)', multiLine: true, caseSensitive: false), (match) {
           return '${match.group(1)}<a href="${match.group(2)}">${match.group(2)}</a>${match.group(3)}';
         });
 
@@ -143,20 +172,20 @@ class EcoleDirecteConverter {
         bool done = homework['aFaire']['effectue'] == 'true';
         String teacherName = homework['nomProf'];
         homeworkList.add(new Homework(
-          matiere,
-          codeMatiere,
-          id,
-          decodedContent,
-          decodedContenuDeSeance,
-          null,
-          editingDate,
-          done,
-          rendreEnLigne,
-          interrogation,
-          documentsAFaire,
-          documentsContenuDeCours,
-          teacherName,
-        ));
+            matiere,
+            codeMatiere,
+            id,
+            decodedContent,
+            decodedContenuDeSeance,
+            null,
+            editingDate,
+            done,
+            rendreEnLigne,
+            interrogation,
+            documentsAFaire,
+            documentsContenuDeCours,
+            teacherName,
+            true));
       }
     });
     return homeworkList;
@@ -172,7 +201,15 @@ class EcoleDirecteConverter {
       bool canceled = lesson["isAnnule"] == true;
       String matiere = lesson["matiere"];
       String codeMatiere = lesson["codeMatiere"].toString();
-      Lesson parsedLesson = Lesson(room: room, teachers: teachers, start: start, end: end, canceled: canceled, matiere: matiere, codeMatiere: codeMatiere, id: (await getLessonID(start, end, matiere)).toString());
+      Lesson parsedLesson = Lesson(
+          room: room,
+          teachers: teachers,
+          start: start,
+          end: end,
+          canceled: canceled,
+          matiere: matiere,
+          codeMatiere: codeMatiere,
+          id: (await getLessonID(start, end, matiere)).toString());
       lessons.add(parsedLesson);
     });
 

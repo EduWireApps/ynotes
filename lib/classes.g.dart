@@ -89,13 +89,14 @@ class HomeworkAdapter extends TypeAdapter<Homework> {
       (fields[10] as List)?.cast<Document>(),
       (fields[11] as List)?.cast<Document>(),
       fields[12] as String,
+      fields[13] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, Homework obj) {
     writer
-      ..writeByte(13)
+      ..writeByte(14)
       ..writeByte(0)
       ..write(obj.matiere)
       ..writeByte(1)
@@ -121,7 +122,9 @@ class HomeworkAdapter extends TypeAdapter<Homework> {
       ..writeByte(11)
       ..write(obj.documentsContenuDeSeance)
       ..writeByte(12)
-      ..write(obj.nomProf);
+      ..write(obj.nomProf)
+      ..writeByte(13)
+      ..write(obj.loaded);
   }
 
   @override
@@ -200,8 +203,8 @@ class GradeAdapter extends TypeAdapter<Grade> {
       noteSur: fields[8] as String,
       moyenneClasse: fields[9] as String,
       typeDevoir: fields[10] as String,
-      date: fields[11] as DateTime,
-      dateSaisie: fields[12] as DateTime,
+      date: fields[16] as DateTime,
+      dateSaisie: fields[15] as DateTime,
       nonSignificatif: fields[13] as bool,
       nomPeriode: fields[14] as String,
     );
@@ -233,9 +236,9 @@ class GradeAdapter extends TypeAdapter<Grade> {
       ..write(obj.moyenneClasse)
       ..writeByte(10)
       ..write(obj.typeDevoir)
-      ..writeByte(11)
+      ..writeByte(16)
       ..write(obj.date)
-      ..writeByte(12)
+      ..writeByte(15)
       ..write(obj.dateSaisie)
       ..writeByte(13)
       ..write(obj.nonSignificatif)
@@ -649,6 +652,7 @@ Homework _$HomeworkFromJson(Map<String, dynamic> json) {
         .map((e) => Document.fromJson(e as Map<String, dynamic>))
         .toList(),
     json['nomProf'] as String,
+    json['loaded'] as bool,
   );
 }
 
@@ -666,6 +670,7 @@ Map<String, dynamic> _$HomeworkToJson(Homework instance) => <String, dynamic>{
       'documents': instance.documents,
       'documentsContenuDeSeance': instance.documentsContenuDeSeance,
       'nomProf': instance.nomProf,
+      'loaded': instance.loaded,
     };
 
 Document _$DocumentFromJson(Map<String, dynamic> json) {

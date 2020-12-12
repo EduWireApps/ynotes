@@ -13,6 +13,7 @@ import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:showcaseview/showcaseview.dart';
+import 'package:stacked/stacked.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:ynotes/UI/animations/FadeAnimation.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
@@ -25,6 +26,7 @@ import 'package:ynotes/UI/screens/summary/summaryPageWidgets/summaryPageSettings
 import 'package:ynotes/UI/screens/summary/summaryPageWidgets/chart.dart';
 import 'package:ynotes/apis/utils.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/models/homework/controller.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/utils/themeUtils.dart';
 
@@ -86,7 +88,6 @@ class SummaryPageState extends State<SummaryPage> {
         : (_) => {
               initTransparentLogin().then((var f) {
                 if (firstStart == true) {
-                  refreshLocalHomeworkList();
                   refreshLocalGradesList();
                   firstStart = false;
                 }
@@ -95,7 +96,8 @@ class SummaryPageState extends State<SummaryPage> {
   }
 
   void triggerSettings() {
-    summarySettingsController.animateToPage(summarySettingsController.page == 1 ? 0 : 1, duration: Duration(milliseconds: 300), curve: Curves.ease);
+    summarySettingsController.animateToPage(summarySettingsController.page == 1 ? 0 : 1,
+        duration: Duration(milliseconds: 300), curve: Curves.ease);
   }
 
   initTransparentLogin() async {
@@ -188,9 +190,18 @@ class SummaryPageState extends State<SummaryPage> {
                                           future: disciplinesListFuture,
                                           builder: (context, snapshot) {
                                             if (snapshot.hasData) {
-                                              return SummaryChart(getAllGrades(snapshot.data));
+                                              List<Grade> grades = List();
+                                              try {
+                                                var temp = getAllGrades(snapshot.data);
+                                                grades = temp;
+                                              } catch (e) {
+                                                print("Error while printing " + e.toString());
+                                              }
+                                              return SummaryChart(grades);
                                             } else {
-                                              return SpinKitThreeBounce(color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4);
+                                              return SpinKitThreeBounce(
+                                                  color: Theme.of(context).primaryColorDark,
+                                                  size: screenSize.size.width / 5 * 0.4);
                                             }
                                           }))
                                 ],
@@ -198,13 +209,21 @@ class SummaryPageState extends State<SummaryPage> {
                             ))),
                     //Third division (quick marks)
                     Container(
-                      margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.2, top: screenSize.size.height / 10 * 0.1),
+                      margin: EdgeInsets.only(
+                          left: screenSize.size.width / 5 * 0.2, top: screenSize.size.height / 10 * 0.1),
                       child: FutureBuilder(
                           future: disciplinesListFuture,
                           initialData: null,
                           builder: (context, snapshot) {
+                            List<Grade> grades = List();
+                            try {
+                              var temp = getAllGrades(snapshot.data);
+                              grades = temp;
+                            } catch (e) {
+                              print(e.toString());
+                            }
                             return QuickGrades(
-                              grades: getAllGrades(snapshot.data),
+                              grades: grades,
                               callback: widget.switchPage,
                               refreshCallback: refreshLocalGradesList,
                             );
@@ -256,7 +275,8 @@ class SummaryPageState extends State<SummaryPage> {
                                             Text(
                                               "A faire",
                                               textAlign: TextAlign.center,
-                                              style: TextStyle(fontFamily: "Asap", fontSize: 18, color: ThemeUtils.textColor()),
+                                              style: TextStyle(
+                                                  fontFamily: "Asap", fontSize: 18, color: ThemeUtils.textColor()),
                                             ),
                                           ],
                                         ),
@@ -264,89 +284,99 @@ class SummaryPageState extends State<SummaryPage> {
                                   Align(
                                     alignment: Alignment.bottomCenter,
                                     child: Container(
-                                      margin: EdgeInsets.only(bottom: (screenSize.size.height / 10 * 8.8) / 10 * 0.2, top: screenSize.size.height / 10 * 0.1),
-                                      height: (screenSize.size.height / 10 * 8.8) / 10 * 4.4,
+                                      margin: EdgeInsets.only(
+                                          bottom: (screenSize.size.height / 10 * 8.8) / 10 * 0.2,
+                                          top: screenSize.size.height / 10 * 0.1),
+                                      height: (screenSize.size.height / 10 * 8.8) / 10 * 4.5,
                                       child: RefreshIndicator(
                                         onRefresh: refreshLocalHomeworkList,
                                         child: CupertinoScrollbar(
-                                          child: FutureBuilder<List<Homework>>(
-                                              future: homeworkListFuture,
-                                              builder: (context, snapshot) {
-                                                if (snapshot.hasData) {
-                                                  if (snapshot.data.length != 0) {
-                                                    return ListView.builder(
-                                                        itemCount: snapshot.data.length,
-                                                        padding: const EdgeInsets.only(left: 20.0, right: 20.0),
-                                                        itemBuilder: (context, index) {
-                                                          return FutureBuilder(
-                                                            initialData: 0,
-                                                            future: getColor(snapshot.data[index].codeMatiere),
-                                                            builder: (context, color) => Column(
-                                                              children: <Widget>[
-                                                                if (index == 0 || snapshot.data[index - 1].date != snapshot.data[index].date)
-                                                                  Row(children: <Widget>[
-                                                                    Expanded(
-                                                                      child: new Container(
-                                                                          margin: const EdgeInsets.only(left: 10.0, right: 20.0),
-                                                                          child: Divider(
-                                                                            color: ThemeUtils.textColor(),
-                                                                            height: 36,
-                                                                          )),
-                                                                    ),
-                                                                    Text(
-                                                                      DateFormat("EEEE d MMMM", "fr_FR").format(snapshot.data[index].date).toString(),
-                                                                      style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
-                                                                    ),
-                                                                    Expanded(
-                                                                      child: Container(
-                                                                          margin: const EdgeInsets.only(left: 20.0, right: 10.0),
-                                                                          child: Divider(
-                                                                            color: ThemeUtils.textColor(),
-                                                                            height: 36,
-                                                                          )),
-                                                                    ),
-                                                                  ]),
-                                                                HomeworkTicket(snapshot.data[index], Color(color.data), widget.switchPage, refreshCallback),
-                                                              ],
-                                                            ),
-                                                          );
-                                                        });
-                                                  } else {
-                                                    return FittedBox(
-                                                      child: Column(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        children: <Widget>[
-                                                          Container(
-                                                            height: (screenSize.size.height / 10 * 8.8) / 10 * 1.5,
-                                                            child: Image(fit: BoxFit.fitWidth, image: AssetImage('assets/images/noHomework.png')),
-                                                          ),
-                                                          Text(
-                                                            "Pas de devoirs à l'horizon... \non se détend ?",
-                                                            textAlign: TextAlign.center,
-                                                            style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
-                                                          ),
-                                                          FlatButton(
-                                                            onPressed: () {
-                                                              //Reload list
-                                                              refreshLocalHomeworkList();
-                                                            },
-                                                            child: snapshot.connectionState != ConnectionState.waiting
-                                                                ? Text("Recharger",
+                                          child: ViewModelBuilder.reactive(
+                                              viewModelBuilder: () => HomeworkController(localApi),
+                                              builder: (context, HomeworkController model, child) {
+                                                if (model.getHomework != null && model.getHomework.length != 0) {
+                                                  return ListView.builder(
+                                                      itemCount: model.getHomework.length,
+                                                      padding: EdgeInsets.only(
+                                                          left: screenSize.size.width / 5 * 0.1,
+                                                          right: screenSize.size.width / 5 * 0.1),
+                                                      itemBuilder: (context, index) {
+                                                        return FutureBuilder(
+                                                          initialData: 0,
+                                                          future: getColor(model.getHomework[index].codeMatiere),
+                                                          builder: (context, color) => Column(
+                                                            children: <Widget>[
+                                                              if (index == 0 ||
+                                                                  model.getHomework[index - 1].date !=
+                                                                      model.getHomework[index].date)
+                                                                Row(children: <Widget>[
+                                                                  Expanded(
+                                                                    child: new Container(
+                                                                        margin: const EdgeInsets.only(
+                                                                            left: 10.0, right: 20.0),
+                                                                        child: Divider(
+                                                                          color: ThemeUtils.textColor(),
+                                                                          height: 36,
+                                                                        )),
+                                                                  ),
+                                                                  Text(
+                                                                    DateFormat("EEEE d MMMM", "fr_FR")
+                                                                        .format(model.getHomework[index].date)
+                                                                        .toString(),
                                                                     style: TextStyle(
-                                                                      fontFamily: "Asap",
-                                                                      color: ThemeUtils.textColor(),
-                                                                    ))
-                                                                : FittedBox(child: SpinKitThreeBounce(color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4)),
-                                                            shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(18.0), side: BorderSide(color: Theme.of(context).primaryColorDark)),
+                                                                        color: ThemeUtils.textColor(),
+                                                                        fontFamily: "Asap"),
+                                                                  ),
+                                                                  Expanded(
+                                                                    child: Container(
+                                                                        margin: const EdgeInsets.only(
+                                                                            left: 20.0, right: 10.0),
+                                                                        child: Divider(
+                                                                          color: ThemeUtils.textColor(),
+                                                                          height: 36,
+                                                                        )),
+                                                                  ),
+                                                                ]),
+                                                              HomeworkTicket(
+                                                                  model.getHomework[index],
+                                                                  Color(color.data),
+                                                                  widget.switchPage,
+                                                                  refreshCallback),
+                                                            ],
                                                           ),
-                                                        ],
-                                                      ),
-                                                    );
-                                                  }
+                                                        );
+                                                      });
                                                 } else {
-                                                  return SpinKitFadingFour(
-                                                    color: Theme.of(context).primaryColorDark,
-                                                    size: screenSize.size.width / 5 * 0.5,
+                                                  return FittedBox(
+                                                    child: Column(
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      children: <Widget>[
+                                                        Container(
+                                                          height: (screenSize.size.height / 10 * 8.8) / 10 * 1.5,
+                                                          child: Image(
+                                                              fit: BoxFit.fitWidth,
+                                                              image: AssetImage('assets/images/noHomework.png')),
+                                                        ),
+                                                        Text(
+                                                          "Pas de devoirs à l'horizon... \non se détend ?",
+                                                          textAlign: TextAlign.center,
+                                                          style: TextStyle(
+                                                              fontFamily: "Asap",
+                                                              color: ThemeUtils.textColor(),
+                                                              fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
+                                                        ),
+                                                        FlatButton(
+                                                            onPressed: () async {
+                                                              //Reload list
+                                                              await model.refresh(force: true);
+                                                            },
+                                                            child: Text("Recharger",
+                                                                style: TextStyle(
+                                                                  fontFamily: "Asap",
+                                                                  color: ThemeUtils.textColor(),
+                                                                )))
+                                                      ],
+                                                    ),
                                                   );
                                                 }
                                               }),
@@ -361,31 +391,12 @@ class SummaryPageState extends State<SummaryPage> {
                         ),
                       ),
                     ),
-                
                   ],
                 ),
               );
             }),
           )),
     );
-  }
-
-  List<charts.Series<GaugeSegment, String>> _getDoneTasks(int donePercent) {
-    final data = [
-      new GaugeSegment('Done', donePercent, Color(0xffA6F38B)),
-      new GaugeSegment('NotDone', 100 - donePercent, Color(0xffDC6A46)),
-    ];
-
-    return [
-      new charts.Series<GaugeSegment, String>(
-        id: 'ToDoGauge',
-        domainFn: (GaugeSegment segment, _) => segment.segment,
-        measureFn: (GaugeSegment segment, _) => segment.size,
-        colorFn: (GaugeSegment segment, __) => charts.ColorUtil.fromDartColor(segment.color),
-        strokeWidthPxFn: (GaugeSegment segment, _) => 0.0,
-        data: data,
-      ),
-    ];
   }
 }
 
@@ -407,21 +418,23 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
     return Container(
-      margin: EdgeInsets.only(bottom: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
+      margin: EdgeInsets.only(bottom: (screenSize.size.height / 10 * 8.8) / 10 * 0.1),
       child: Material(
         color: widget.color,
-        borderRadius: BorderRadius.circular(39),
+        borderRadius: BorderRadius.circular(8),
         child: InkWell(
-          borderRadius: BorderRadius.circular(39),
+          borderRadius: BorderRadius.circular(8),
           onTap: () {
             widget.pageSwitcher(4);
           },
-          onLongPress: () async {
-            await CustomDialogs.showHomeworkDetailsDialog(context, this.widget._homework);
-            setState(() {});
-          },
+          onLongPress: !widget._homework.loaded
+              ? null
+              : () async {
+                  await CustomDialogs.showHomeworkDetailsDialog(context, this.widget._homework);
+                  setState(() {});
+                },
           child: Container(
-            width: screenSize.size.width / 5 * 4,
+            width: screenSize.size.width / 5 * 4.3,
             height: (screenSize.size.height / 10 * 8.8) / 10 * 0.8,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(39),
@@ -456,16 +469,38 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Container(width: screenSize.size.width / 5 * 2.8, child: Text(widget._homework.matiere, textScaleFactor: 1.0, textAlign: TextAlign.left, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 14, fontFamily: "Asap", fontWeight: FontWeight.bold))),
                       Container(
-                        width: screenSize.size.width / 5 * 2.8,
-                        child: AutoSizeText(
-                          parse(widget._homework.contenu).documentElement.text,
-                          style: TextStyle(fontFamily: "Asap"),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      )
+                          width: screenSize.size.width / 5 * 2.8,
+                          child: Row(
+                            children: [
+                              Container(
+                                width: screenSize.size.width / 5 * 2.4,
+                                child: AutoSizeText(widget._homework.matiere,
+                                    textScaleFactor: 1.0,
+                                    textAlign: TextAlign.left,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(fontSize: 14, fontFamily: "Asap", fontWeight: FontWeight.bold)),
+                              ),
+                              if (!widget._homework.loaded)
+                                Container(
+                                    width: screenSize.size.width / 5 * 0.4,
+                                    child: FittedBox(
+                                      child: SpinKitThreeBounce(
+                                        color: darken(widget.color),
+                                      ),
+                                    )),
+                            ],
+                          )),
+                      if (widget._homework.loaded)
+                        Container(
+                          width: screenSize.size.width / 5 * 2.8,
+                          child: AutoSizeText(
+                            parse(widget._homework.contenu ?? "").documentElement.text,
+                            style: TextStyle(fontFamily: "Asap"),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        )
                     ],
                   ),
                 )
@@ -527,7 +562,8 @@ Future<List<Homework>> getReducedListHomework() async {
       var date = element.date;
 
       //ensure that the list doesn't contain the pinned homework
-      if (date.difference(now).inDays < reduce && date.isAfter(DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now())))) {
+      if (date.difference(now).inDays < reduce &&
+          date.isAfter(DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now())))) {
         listToReturn.add(element);
       }
     });
