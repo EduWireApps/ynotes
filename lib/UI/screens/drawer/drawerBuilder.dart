@@ -79,7 +79,11 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
   getRelatedAction(ReceivedNotification receivedNotification) async {
     if (receivedNotification.channelKey == "newmail" && receivedNotification.toMap()["buttonKeyPressed"] == "REPLY") {
       CustomDialogs.writeModalBottomSheet(context,
-          defaultListRecipients: [Recipient(receivedNotification.payload["name"], receivedNotification.payload["surname"], receivedNotification.payload["id"], receivedNotification.payload["isTeacher"] == "true", null)], defaultSubject: receivedNotification.payload["subject"]);
+          defaultListRecipients: [
+            Recipient(receivedNotification.payload["name"], receivedNotification.payload["surname"],
+                receivedNotification.payload["id"], receivedNotification.payload["isTeacher"] == "true", null)
+          ],
+          defaultSubject: receivedNotification.payload["subject"]);
       return;
     }
 
@@ -92,11 +96,13 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
       drawerPageViewController.jumpToPage(3);
       return;
     }
-    if (receivedNotification.channelKey == "persisnotif" && receivedNotification.toMap()["buttonKeyPressed"] == "REFRESH") {
+    if (receivedNotification.channelKey == "persisnotif" &&
+        receivedNotification.toMap()["buttonKeyPressed"] == "REFRESH") {
       await LocalNotification.setOnGoingNotification();
       return;
     }
-    if (receivedNotification.channelKey == "persisnotif" && receivedNotification.toMap()["buttonKeyPressed"] == "KILL") {
+    if (receivedNotification.channelKey == "persisnotif" &&
+        receivedNotification.toMap()["buttonKeyPressed"] == "KILL") {
       await setSetting("agendaOnGoingNotification", false);
       await LocalNotification.cancelOnGoingNotification();
       return;
@@ -106,8 +112,16 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
   @override
   void initState() {
     super.initState();
-    AwesomeNotifications().initialize(
-        null, [NotificationChannel(channelKey: 'alarm', defaultPrivacy: NotificationPrivacy.Private, channelName: 'Alarmes', importance: NotificationImportance.High, channelDescription: "Alarmes et rappels de l'application yNotes", defaultColor: Color(0xFF9D50DD), ledColor: Colors.white)]);
+    AwesomeNotifications().initialize(null, [
+      NotificationChannel(
+          channelKey: 'alarm',
+          defaultPrivacy: NotificationPrivacy.Private,
+          channelName: 'Alarmes',
+          importance: NotificationImportance.High,
+          channelDescription: "Alarmes et rappels de l'application yNotes",
+          defaultColor: Color(0xFF9D50DD),
+          ledColor: Colors.white)
+    ]);
     try {
       AwesomeNotifications().actionStream.listen((receivedNotification) async {
         await getRelatedAction(receivedNotification);
@@ -123,7 +137,8 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
     showTransparentLoginStatus = new Tween(
       begin: 1.0,
       end: 0.0,
-    ).animate(new CurvedAnimation(parent: showTransparentLoginStatusController, curve: Interval(0.1, 1.0, curve: Curves.fastOutSlowIn)));
+    ).animate(new CurvedAnimation(
+        parent: showTransparentLoginStatusController, curve: Interval(0.1, 1.0, curve: Curves.fastOutSlowIn)));
     initPlatformState();
 
     _overlayEntry = OverlayEntry(
@@ -135,7 +150,8 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
     quickMenuButtonAnimation = new Tween(
       begin: 1.0,
       end: 1.3,
-    ).animate(new CurvedAnimation(parent: quickMenuAnimationController, curve: Curves.easeIn, reverseCurve: Curves.easeOut));
+    ).animate(
+        new CurvedAnimation(parent: quickMenuAnimationController, curve: Curves.easeIn, reverseCurve: Curves.easeOut));
 
     if (firstStart == true) {
       firstStart = false;
@@ -170,7 +186,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
   }
 
   void connectionChanged(dynamic hasConnection) {
-    print("connected");
+    print("Connection changed");
     setState(() {
       isOffline = !hasConnection;
     });
@@ -240,7 +256,8 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                                     if ([0, 1, 4].contains(value))
                                       FlatButton(
                                         color: Colors.transparent,
-                                        child: Icon(MdiIcons.wrenchOutline, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                        child: Icon(MdiIcons.wrenchOutline,
+                                            color: isDarkModeEnabled ? Colors.white : Colors.black),
                                         onPressed: () {
                                           switch (value) {
                                             case 1:
@@ -271,21 +288,24 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                                   ));
                             }),
                       ),
-                      body: PageView(physics: NeverScrollableScrollPhysics(), controller: drawerPageViewController, children: [
-                        SummaryPage(
-                          switchPage: _switchPage,
-                          key: summaryPage,
-                        ),
-                        AgendaPage(key: agendaPage),
-                        DownloadsExplorer(),
-                        SingleChildScrollView(physics: NeverScrollableScrollPhysics(), child: GradesPage()),
-                        HomeworkPage(
-                          key: homeworkPage,
-                        ),
-                        MailPage(),
-                        CloudPage(),
-                        PollsAndInfoPage()
-                      ]),
+                      body: PageView(
+                          physics: NeverScrollableScrollPhysics(),
+                          controller: drawerPageViewController,
+                          children: [
+                            SummaryPage(
+                              switchPage: _switchPage,
+                              key: summaryPage,
+                            ),
+                            AgendaPage(key: agendaPage),
+                            DownloadsExplorer(),
+                            SingleChildScrollView(physics: NeverScrollableScrollPhysics(), child: GradesPage()),
+                            HomeworkPage(
+                              key: homeworkPage,
+                            ),
+                            MailPage(),
+                            CloudPage(),
+                            PollsAndInfoPage()
+                          ]),
                     ),
                   ],
                 ),
@@ -318,7 +338,10 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                           child: Opacity(
                             opacity: 0.8,
                             child: Container(
-                              margin: EdgeInsets.only(left: screenSize.size.width / 5 * 1.0, right: screenSize.size.width / 5 * 1, top: screenSize.size.height / 10 * 0.1),
+                              margin: EdgeInsets.only(
+                                  left: screenSize.size.width / 5 * 1.0,
+                                  right: screenSize.size.width / 5 * 1,
+                                  top: screenSize.size.height / 10 * 0.1),
                               height: screenSize.size.height / 10 * 0.55,
                               decoration: BoxDecoration(
                                 color: case2(model.actualState, {
@@ -363,7 +386,8 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                                         children: <Widget>[
                                           Text(
                                             model.details,
-                                            style: TextStyle(fontFamily: "Asap", color: Theme.of(context).primaryColorDark),
+                                            style: TextStyle(
+                                                fontFamily: "Asap", color: Theme.of(context).primaryColorDark),
                                           ),
                                           SizedBox(
                                             width: screenSize.size.width / 5 * 0.1,
@@ -418,7 +442,8 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
       var initializationSettingsIOS = new IOSInitializationSettings();
       var initializationSettings = new InitializationSettings(initializationSettingsAndroid, initializationSettingsIOS);
       flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
-      flutterLocalNotificationsPlugin.initialize(initializationSettings, onSelectNotification: BackgroundService.onSelectNotification);
+      flutterLocalNotificationsPlugin.initialize(initializationSettings,
+          onSelectNotification: BackgroundService.onSelectNotification);
 //Ensure that grades notification are enabled and battery saver disabled
       if (await getSetting("notificationNewGrade") && !await getSetting("batterySaver")) {
         if (await mainTestNewGrades()) {

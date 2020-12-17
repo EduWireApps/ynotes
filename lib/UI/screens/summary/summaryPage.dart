@@ -18,6 +18,7 @@ import 'package:visibility_detector/visibility_detector.dart';
 import 'package:ynotes/UI/animations/FadeAnimation.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/UI/components/hiddenSettings.dart';
+import 'package:ynotes/UI/components/showcaseTooltip.dart';
 import 'package:ynotes/UI/screens/drawer/drawerBuilderWidgets/drawer.dart';
 import 'package:ynotes/UI/screens/grades/gradesPage.dart';
 import 'package:ynotes/UI/screens/homework/homeworkPage.dart';
@@ -46,7 +47,10 @@ Future donePercentFuture;
 int oldGauge = 0;
 Future allGrades;
 bool firstStart = true;
-GlobalKey _one = GlobalKey();
+
+//Global keys used in showcase
+GlobalKey _gradeChartGB = GlobalKey();
+GlobalKey _quickGradeGB = GlobalKey();
 
 class SummaryPageState extends State<SummaryPage> {
   double actualPage;
@@ -55,8 +59,6 @@ class SummaryPageState extends State<SummaryPage> {
   bool done2 = false;
   double offset;
 
-  int _slider = 1;
-  List items = [1, 2, 3, 4, 5];
   PageController summarySettingsController = PageController(initialPage: 1);
   setGauge() async {
     var tempGauge = await getHomeworkDonePercent();
@@ -83,6 +85,7 @@ class SummaryPageState extends State<SummaryPage> {
       donePercentFuture = getHomeworkDonePercent();
     });
     setGauge();
+
     SchedulerBinding.instance.addPostFrameCallback(!mounted
         ? null
         : (_) => {
@@ -142,6 +145,13 @@ class SummaryPageState extends State<SummaryPage> {
     }
   }
 
+  showShowCaseDialog(BuildContext _context) async {
+    if ((!await getSetting("summaryShowCase"))) {
+      ShowCaseWidget.of(_context).startShowCase([_gradeChartGB, _quickGradeGB]);
+      await setSetting("summaryShowCase", true);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
@@ -157,7 +167,10 @@ class SummaryPageState extends State<SummaryPage> {
           controller: summarySettingsController,
           settingsWidget: SummaryPageSettings(),
           child: ShowCaseWidget(
-            builder: Builder(builder: (context) {
+            builder: Builder(builder: (context2) {
+              //Start showcase for this page
+
+              showShowCaseDialog(context2);
               return Container(
                 height: screenSize.size.height,
                 child: Column(
@@ -197,7 +210,17 @@ class SummaryPageState extends State<SummaryPage> {
                                               } catch (e) {
                                                 print("Error while printing " + e.toString());
                                               }
-                                              return SummaryChart(grades);
+                                              return Showcase.withWidget(
+                                                  height: screenSize.size.height / 10 * 2.5,
+                                                  width: screenSize.size.width / 5 * 4.5,
+                                                  container: ShowCaseToolTip(
+                                                    title: "Courbe de notes",
+                                                    desc: "Gardez votre doigt appuyé pour afficher vos notes",
+                                                  ),
+                                                  showcaseBackgroundColor: Theme.of(context).primaryColorDark,
+                                                  shapeBorder: RoundedRectangleBorder(),
+                                                  key: _gradeChartGB,
+                                                  child: SummaryChart(grades));
                                             } else {
                                               return SpinKitThreeBounce(
                                                   color: Theme.of(context).primaryColorDark,
@@ -208,26 +231,42 @@ class SummaryPageState extends State<SummaryPage> {
                               ),
                             ))),
                     //Third division (quick marks)
-                    Container(
-                      margin: EdgeInsets.only(
-                          left: screenSize.size.width / 5 * 0.2, top: screenSize.size.height / 10 * 0.1),
-                      child: FutureBuilder(
-                          future: disciplinesListFuture,
-                          initialData: null,
-                          builder: (context, snapshot) {
-                            List<Grade> grades = List();
-                            try {
-                              var temp = getAllGrades(snapshot.data);
-                              grades = temp;
-                            } catch (e) {
-                              print(e.toString());
-                            }
-                            return QuickGrades(
-                              grades: grades,
-                              callback: widget.switchPage,
-                              refreshCallback: refreshLocalGradesList,
-                            );
-                          }),
+                    Showcase.withWidget(
+                      height: screenSize.size.height / 10 * 2.5,
+                      width: screenSize.size.width / 5 * 4.5,
+                      container: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ShowCaseToolTip(
+                            title: "Notes rapides",
+                            desc: "Gardez votre doigt appuyé pour partager une note",
+                          ),
+                        ],
+                      ),
+                      showcaseBackgroundColor: Theme.of(context).primaryColorDark,
+                      shapeBorder: RoundedRectangleBorder(),
+                      key: _quickGradeGB,
+                      child: Container(
+                        margin: EdgeInsets.only(
+                            left: screenSize.size.width / 5 * 0.2, top: screenSize.size.height / 10 * 0.1),
+                        child: FutureBuilder(
+                            future: disciplinesListFuture,
+                            initialData: null,
+                            builder: (context, snapshot) {
+                              List<Grade> grades = List();
+                              try {
+                                var temp = getAllGrades(snapshot.data);
+                                grades = temp;
+                              } catch (e) {
+                                print(e.toString());
+                              }
+                              return QuickGrades(
+                                grades: grades,
+                                callback: widget.switchPage,
+                                refreshCallback: refreshLocalGradesList,
+                              );
+                            }),
+                      ),
                     ),
 
                     Card(
@@ -341,7 +380,8 @@ class SummaryPageState extends State<SummaryPage> {
                                                                   model.getHomework[index],
                                                                   Color(color.data),
                                                                   widget.switchPage,
-                                                                  refreshCallback),
+                                                                  refreshCallback,
+                                                                  model.isFetching && !model.getHomework[index].loaded),
                                                             ],
                                                           ),
                                                         );
@@ -405,9 +445,9 @@ class HomeworkTicket extends StatefulWidget {
   final Homework _homework;
   final Color color;
   final Function refreshCallback;
-
+  final bool load;
   final Function pageSwitcher;
-  const HomeworkTicket(this._homework, this.color, this.pageSwitcher, this.refreshCallback);
+  const HomeworkTicket(this._homework, this.color, this.pageSwitcher, this.refreshCallback, this.load);
   State<StatefulWidget> createState() {
     return _HomeworkTicketState();
   }
@@ -481,7 +521,7 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(fontSize: 14, fontFamily: "Asap", fontWeight: FontWeight.bold)),
                               ),
-                              if (!widget._homework.loaded)
+                              if (widget.load)
                                 Container(
                                     width: screenSize.size.width / 5 * 0.4,
                                     child: FittedBox(

@@ -29,7 +29,7 @@ dependencies:
   circular_check_box: ^1.0.1
   shimmer: ^1.0.1
   badges: ^1.1.0
-  intl: ^0.16.0
+  intl: ^0.16.1
   stack: ^0.1.3
   flutter_colorpicker: ^0.3.2
   flutter_material_color_picker: ^1.0.5
@@ -96,7 +96,7 @@ dependencies:
   flutter_file_dialog: ^0.0.5
 dependency_overrides:
   analyzer: ^0.40.4
-
+  intl: ^0.16.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

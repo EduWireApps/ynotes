@@ -9,9 +9,12 @@ import 'package:marquee/marquee.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:showcaseview/showcase.dart';
+import 'package:showcaseview/showcase_widget.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/UI/components/modalBottomSheets/disciplinesModalBottomSheet.dart';
 import 'package:ynotes/UI/components/modalBottomSheets/gradesModalBottomSheet.dart';
+import 'package:ynotes/UI/components/showcaseTooltip.dart';
 import 'package:ynotes/classes.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/shared_preferences.dart';
@@ -37,6 +40,9 @@ Future disciplinesListFuture;
 int initialIndexGradesOffset = 0;
 List specialties;
 List<Period> periods;
+
+//Global keys used in showcase
+GlobalKey _gradeGroupGB = GlobalKey();
 
 class _GradesPageState extends State<GradesPage> {
   ItemScrollController gradesItemScrollController = ItemScrollController();
@@ -108,7 +114,8 @@ class _GradesPageState extends State<GradesPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   Container(
-                    margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1, right: screenSize.size.width / 5 * 0.1),
+                    margin:
+                        EdgeInsets.only(left: screenSize.size.width / 5 * 0.1, right: screenSize.size.width / 5 * 0.1),
                     height: screenSize.size.height / 10 * 0.8,
                     decoration: BoxDecoration(),
                     child: Material(
@@ -134,7 +141,11 @@ class _GradesPageState extends State<GradesPage> {
                                 fit: BoxFit.fitWidth,
                                 child: Text(
                                   "Mes spécialités",
-                                  style: TextStyle(fontSize: screenSize.size.width / 5 * 0.3, fontWeight: FontWeight.w500, fontFamily: "Asap", color: Colors.white),
+                                  style: TextStyle(
+                                      fontSize: screenSize.size.width / 5 * 0.3,
+                                      fontWeight: FontWeight.w500,
+                                      fontFamily: "Asap",
+                                      color: Colors.white),
                                 ),
                               ),
                             )
@@ -144,7 +155,8 @@ class _GradesPageState extends State<GradesPage> {
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1, right: screenSize.size.width / 5 * 0.1),
+                    margin:
+                        EdgeInsets.only(left: screenSize.size.width / 5 * 0.1, right: screenSize.size.width / 5 * 0.1),
                     height: screenSize.size.height / 10 * 0.8,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(30)),
@@ -173,7 +185,11 @@ class _GradesPageState extends State<GradesPage> {
                               margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.2),
                               child: Text(
                                 "Sciences",
-                                style: TextStyle(fontSize: screenSize.size.width / 5 * 0.3, fontWeight: FontWeight.w500, fontFamily: "Asap", color: Colors.white),
+                                style: TextStyle(
+                                    fontSize: screenSize.size.width / 5 * 0.3,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: "Asap",
+                                    color: Colors.white),
                               ),
                             )
                           ],
@@ -182,7 +198,8 @@ class _GradesPageState extends State<GradesPage> {
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1, right: screenSize.size.width / 5 * 0.1),
+                    margin:
+                        EdgeInsets.only(left: screenSize.size.width / 5 * 0.1, right: screenSize.size.width / 5 * 0.1),
                     height: screenSize.size.height / 10 * 0.8,
                     decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(30))),
                     child: Material(
@@ -209,7 +226,11 @@ class _GradesPageState extends State<GradesPage> {
                               margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.2),
                               child: Text(
                                 "Littérature",
-                                style: TextStyle(fontSize: screenSize.size.width / 5 * 0.3, fontWeight: FontWeight.w500, fontFamily: "Asap", color: Colors.white),
+                                style: TextStyle(
+                                    fontSize: screenSize.size.width / 5 * 0.3,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: "Asap",
+                                    color: Colors.white),
                               ),
                             )
                           ],
@@ -218,7 +239,8 @@ class _GradesPageState extends State<GradesPage> {
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1, right: screenSize.size.width / 5 * 0.1),
+                    margin:
+                        EdgeInsets.only(left: screenSize.size.width / 5 * 0.1, right: screenSize.size.width / 5 * 0.1),
                     height: screenSize.size.height / 10 * 0.8,
                     decoration: BoxDecoration(),
                     child: Material(
@@ -245,7 +267,11 @@ class _GradesPageState extends State<GradesPage> {
                               margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.2),
                               child: Text(
                                 "Aucun filtre",
-                                style: TextStyle(fontSize: screenSize.size.width / 5 * 0.3, fontWeight: FontWeight.w500, fontFamily: "Asap", color: ThemeUtils.textColor()),
+                                style: TextStyle(
+                                    fontSize: screenSize.size.width / 5 * 0.3,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: "Asap",
+                                    color: ThemeUtils.textColor()),
                               ),
                             )
                           ],
@@ -271,7 +297,10 @@ class _GradesPageState extends State<GradesPage> {
         f.gradesList.forEach((grade) {
           if (!grade.nonSignificatif && !grade.letters) {
             _counter += double.parse(grade.coef);
-            _average += double.parse(grade.valeur.replaceAll(',', '.')) * 20 / double.parse(grade.noteSur.replaceAll(',', '.')) * double.parse(grade.coef.replaceAll(',', '.'));
+            _average += double.parse(grade.valeur.replaceAll(',', '.')) *
+                20 /
+                double.parse(grade.noteSur.replaceAll(',', '.')) *
+                double.parse(grade.coef.replaceAll(',', '.'));
           }
         });
         _average = _average / _counter;
@@ -360,7 +389,8 @@ class _GradesPageState extends State<GradesPage> {
             List<String> blackList = ["SPORT"];
             if (f.periode == periode &&
                 codeMatiere.any((test) {
-                  if (f.nomDiscipline.contains(test) && !blackList.any((element) => f.nomDiscipline.contains(element))) {
+                  if (f.nomDiscipline.contains(test) &&
+                      !blackList.any((element) => f.nomDiscipline.contains(element))) {
                     return true;
                   } else {
                     return false;
@@ -390,6 +420,13 @@ class _GradesPageState extends State<GradesPage> {
     });
     setAverage(toReturn);
     return toReturn;
+  }
+
+  showShowCaseDialog(BuildContext _context) async {
+    if ((!await getSetting("gradesShowCase"))) {
+      ShowCaseWidget.of(_context).startShowCase([_gradeGroupGB]);
+      await setSetting("gradesShowCase", true);
+    }
   }
 
   ///Start building grades box from here
@@ -440,7 +477,10 @@ class _GradesPageState extends State<GradesPage> {
                               child: FutureBuilder<List<Period>>(
                                   future: localApi.getPeriods(),
                                   builder: (context, snapshot) {
-                                    return (snapshot.data == null || !snapshot.hasData || periodeToUse == "" || snapshot.data.length == 0)
+                                    return (snapshot.data == null ||
+                                            !snapshot.hasData ||
+                                            periodeToUse == "" ||
+                                            snapshot.data.length == 0)
                                         ? Container(
                                             child: Text(
                                               "Pas de periode",
@@ -451,20 +491,25 @@ class _GradesPageState extends State<GradesPage> {
                                             child: DropdownButton<String>(
                                               value: periodeToUse,
                                               iconSize: 0.0,
-                                              style: TextStyle(fontSize: 18, fontFamily: "Asap", color: ThemeUtils.textColor()),
+                                              style: TextStyle(
+                                                  fontSize: 18, fontFamily: "Asap", color: ThemeUtils.textColor()),
                                               onChanged: (String newValue) {
                                                 setState(() {
                                                   periodeToUse = newValue;
                                                 });
                                               },
                                               focusColor: Theme.of(context).primaryColor,
-                                              items: snapshot.data.toSet().map<DropdownMenuItem<String>>((Period period) {
+                                              items:
+                                                  snapshot.data.toSet().map<DropdownMenuItem<String>>((Period period) {
                                                 return DropdownMenuItem<String>(
                                                   value: period != null ? period.name : "-",
                                                   child: Text(
                                                     period != null ? period.name : "-",
                                                     textAlign: TextAlign.center,
-                                                    style: TextStyle(fontSize: 18, fontFamily: "Asap", color: ThemeUtils.textColor()),
+                                                    style: TextStyle(
+                                                        fontSize: 18,
+                                                        fontFamily: "Asap",
+                                                        color: ThemeUtils.textColor()),
                                                   ),
                                                 );
                                               }).toList(),
@@ -517,103 +562,105 @@ class _GradesPageState extends State<GradesPage> {
               ///Grades container
 
               RefreshIndicator(
-                onRefresh: refreshLocalGradeList,
-                child: Container(
-                  width: screenSize.size.width / 5 * 4.7,
-                  padding: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
-                  height: screenSize.size.height / 10 * 6.7,
-                  margin: EdgeInsets.only(top: 0),
-                  decoration: BoxDecoration(
-                      border: Border.all(width: 0.000000, color: Colors.transparent),
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(15),
-                        bottomRight: Radius.circular(15),
-                      ),
-                      color: Theme.of(context).primaryColor),
-                  child: ClipRRect(
-                      borderRadius: BorderRadius.circular(0),
-                      child: FutureBuilder<void>(
-                          future: disciplinesListFuture,
-                          builder: (BuildContext context, AsyncSnapshot snapshot) {
-                            if (snapshot.hasData) {
-                              if (getDisciplinesForPeriod(snapshot.data, periodeToUse, filter).any((element) {
-                                return (element.gradesList.length > 0);
-                              })) {
-                                return ListView.builder(
-                                    physics: AlwaysScrollableScrollPhysics(),
-                                    itemCount: getDisciplinesForPeriod(snapshot.data, periodeToUse, filter).length,
-                                    padding: EdgeInsets.symmetric(vertical: screenSize.size.width / 5 * 0.1, horizontal: screenSize.size.width / 5 * 0.05),
-                                    itemBuilder: (BuildContext context, int index) {
-                                      return GradesGroup(disciplinevar: getDisciplinesForPeriod(snapshot.data, periodeToUse, filter)[index]);
-                                    });
-                              } else {
+                  onRefresh: refreshLocalGradeList,
+                  child: Container(
+                      width: screenSize.size.width / 5 * 4.7,
+                      padding: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
+                      height: screenSize.size.height / 10 * 6.7,
+                      margin: EdgeInsets.only(top: 0),
+                      decoration: BoxDecoration(
+                          border: Border.all(width: 0.000000, color: Colors.transparent),
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(15),
+                            bottomRight: Radius.circular(15),
+                          ),
+                          color: Theme.of(context).primaryColor),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(0),
+                        child: FutureBuilder<void>(
+                            future: disciplinesListFuture,
+                            builder: (BuildContext context, AsyncSnapshot snapshot) {
+                              if (snapshot.hasData) {
+                                if (getDisciplinesForPeriod(snapshot.data, periodeToUse, filter).any((element) {
+                                  return (element.gradesList.length > 0);
+                                })) {
+                                  return ListView.builder(
+                                      physics: AlwaysScrollableScrollPhysics(),
+                                      itemCount: getDisciplinesForPeriod(snapshot.data, periodeToUse, filter).length,
+                                      padding: EdgeInsets.symmetric(
+                                          vertical: screenSize.size.width / 5 * 0.1,
+                                          horizontal: screenSize.size.width / 5 * 0.05),
+                                      itemBuilder: (BuildContext context, int index) {
+                                        return GradesGroup(
+                                            disciplinevar:
+                                                getDisciplinesForPeriod(snapshot.data, periodeToUse, filter)[index]);
+                                      });
+                                } else {
+                                  return Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: <Widget>[
+                                      Image(
+                                          image: AssetImage('assets/images/book.png'),
+                                          width: screenSize.size.width / 5 * 4),
+                                      Container(
+                                        margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.5),
+                                        child: AutoSizeText("Pas de notes pour cette periode.",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor())),
+                                      ),
+                                      FlatButton(
+                                        onPressed: () {
+                                          //Reload list
+                                          refreshLocalGradeList();
+                                        },
+                                        child: snapshot.connectionState != ConnectionState.waiting
+                                            ? Text("Recharger",
+                                                style: TextStyle(
+                                                    fontFamily: "Asap",
+                                                    color: ThemeUtils.textColor(),
+                                                    fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2))
+                                            : FittedBox(
+                                                child: SpinKitThreeBounce(
+                                                    color: Theme.of(context).primaryColorDark,
+                                                    size: screenSize.size.width / 5 * 0.4)),
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: new BorderRadius.circular(18.0),
+                                            side: BorderSide(color: Theme.of(context).primaryColorDark)),
+                                      )
+                                    ],
+                                  );
+                                }
+                              }
+                              if (snapshot.hasError) {
                                 return Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
-                                    Image(image: AssetImage('assets/images/book.png'), width: screenSize.size.width / 5 * 4),
+                                    Image(
+                                      image: AssetImage('assets/images/totor.png'),
+                                      width: screenSize.size.width / 5 * 3.5,
+                                    ),
                                     Container(
                                       margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.5),
-                                      child: AutoSizeText("Pas de notes pour cette periode.", textAlign: TextAlign.center, style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor())),
+                                      child: AutoSizeText("Hum... on dirait que tout ne s'est pas passé comme prévu.",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontFamily: "Asap",
+                                            color: ThemeUtils.textColor(),
+                                          )),
                                     ),
-                                    FlatButton(
-                                      onPressed: () {
-                                        //Reload list
-                                        refreshLocalGradeList();
-                                      },
-                                      child: snapshot.connectionState != ConnectionState.waiting
-                                          ? Text("Recharger", style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2))
-                                          : FittedBox(child: SpinKitThreeBounce(color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4)),
-                                      shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(18.0), side: BorderSide(color: Theme.of(context).primaryColorDark)),
-                                    )
                                   ],
                                 );
+                              } else {
+                                //Loading group
+                                return ListView.builder(
+                                    itemCount: 5,
+                                    padding: EdgeInsets.all(screenSize.size.width / 5 * 0.3),
+                                    itemBuilder: (BuildContext context, int index) {
+                                      return GradesGroup();
+                                    });
                               }
-                            }
-                            if (snapshot.hasError) {
-                              return Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Image(
-                                    image: AssetImage('assets/images/totor.png'),
-                                    width: screenSize.size.width / 5 * 3.5,
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.5),
-                                    child: AutoSizeText("Hum... on dirait que tout ne s'est pas passé comme prévu.",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontFamily: "Asap",
-                                          color: ThemeUtils.textColor(),
-                                        )),
-                                  ),
-                                  FlatButton(
-                                    onPressed: () {
-                                      //Reload list
-                                      refreshLocalGradeList();
-                                    },
-                                    child: snapshot.connectionState != ConnectionState.waiting
-                                        ? Text("Recharger",
-                                            style: TextStyle(
-                                              fontFamily: "Asap",
-                                              color: ThemeUtils.textColor(),
-                                            ))
-                                        : FittedBox(child: SpinKitThreeBounce(color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4)),
-                                    shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(18.0), side: BorderSide(color: Theme.of(context).primaryColorDark)),
-                                  )
-                                ],
-                              );
-                            } else {
-                              //Loading group
-                              return ListView.builder(
-                                  itemCount: 5,
-                                  padding: EdgeInsets.all(screenSize.size.width / 5 * 0.3),
-                                  itemBuilder: (BuildContext context, int index) {
-                                    return GradesGroup();
-                                  });
-                            }
-                          })),
-                ),
-              ),
+                            }),
+                      )))
             ],
           ),
         ),
@@ -637,7 +684,8 @@ class _GradesPageState extends State<GradesPage> {
                       if (snapshot.hasData) {
                         if (snapshot.data != null) {
                           try {
-                            getLastDiscipline = snapshot.data.lastWhere((disciplinesList) => disciplinesList.periode == periodeToUse);
+                            getLastDiscipline =
+                                snapshot.data.lastWhere((disciplinesList) => disciplinesList.periode == periodeToUse);
                           } catch (exception) {}
 
                           //If everything is ok, show stuff
@@ -677,14 +725,29 @@ class _GradesPageState extends State<GradesPage> {
                                                       mainAxisAlignment: MainAxisAlignment.center,
                                                       crossAxisAlignment: CrossAxisAlignment.center,
                                                       children: <Widget>[
-                                                        Text("Moyenne de la classe :", style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: (screenSize.size.width / 5) * 0.18)),
+                                                        Text("Moyenne de la classe :",
+                                                            style: TextStyle(
+                                                                fontFamily: "Asap",
+                                                                color: ThemeUtils.textColor(),
+                                                                fontSize: (screenSize.size.width / 5) * 0.18)),
                                                         Container(
-                                                          margin: EdgeInsets.only(left: (screenSize.size.width / 5) * 0.1),
-                                                          decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Color(0xff2C2C2C)),
-                                                          padding: EdgeInsets.symmetric(horizontal: (screenSize.size.width / 5) * 0.1, vertical: (screenSize.size.width / 5) * 0.08),
+                                                          margin:
+                                                              EdgeInsets.only(left: (screenSize.size.width / 5) * 0.1),
+                                                          decoration: BoxDecoration(
+                                                              borderRadius: BorderRadius.all(Radius.circular(15)),
+                                                              color: Color(0xff2C2C2C)),
+                                                          padding: EdgeInsets.symmetric(
+                                                              horizontal: (screenSize.size.width / 5) * 0.1,
+                                                              vertical: (screenSize.size.width / 5) * 0.08),
                                                           child: Text(
-                                                            (getLastDiscipline != null && getLastDiscipline.moyenneGeneraleClasse != null ? getLastDiscipline.moyenneGeneraleClasse : "-"),
-                                                            style: TextStyle(fontFamily: "Asap", color: Colors.white, fontSize: (screenSize.size.width / 5) * 0.18),
+                                                            (getLastDiscipline != null &&
+                                                                    getLastDiscipline.moyenneGeneraleClasse != null
+                                                                ? getLastDiscipline.moyenneGeneraleClasse
+                                                                : "-"),
+                                                            style: TextStyle(
+                                                                fontFamily: "Asap",
+                                                                color: Colors.white,
+                                                                fontSize: (screenSize.size.width / 5) * 0.18),
                                                           ),
                                                         )
                                                       ],
@@ -694,14 +757,26 @@ class _GradesPageState extends State<GradesPage> {
                                                       mainAxisAlignment: MainAxisAlignment.center,
                                                       crossAxisAlignment: CrossAxisAlignment.center,
                                                       children: <Widget>[
-                                                        Text("Meilleure moyenne:", style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: (screenSize.size.width / 5) * 0.18)),
+                                                        Text("Meilleure moyenne:",
+                                                            style: TextStyle(
+                                                                fontFamily: "Asap",
+                                                                color: ThemeUtils.textColor(),
+                                                                fontSize: (screenSize.size.width / 5) * 0.18)),
                                                         Container(
-                                                          margin: EdgeInsets.only(left: (screenSize.size.width / 5) * 0.1),
-                                                          decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(15)), color: Color(0xff2C2C2C)),
-                                                          padding: EdgeInsets.symmetric(horizontal: (screenSize.size.width / 5) * 0.1, vertical: (screenSize.size.width / 5) * 0.08),
+                                                          margin:
+                                                              EdgeInsets.only(left: (screenSize.size.width / 5) * 0.1),
+                                                          decoration: BoxDecoration(
+                                                              borderRadius: BorderRadius.all(Radius.circular(15)),
+                                                              color: Color(0xff2C2C2C)),
+                                                          padding: EdgeInsets.symmetric(
+                                                              horizontal: (screenSize.size.width / 5) * 0.1,
+                                                              vertical: (screenSize.size.width / 5) * 0.08),
                                                           child: Text(
                                                             getBestAverage(getLastDiscipline),
-                                                            style: TextStyle(fontFamily: "Asap", color: Colors.white, fontSize: (screenSize.size.width / 5) * 0.18),
+                                                            style: TextStyle(
+                                                                fontFamily: "Asap",
+                                                                color: Colors.white,
+                                                                fontSize: (screenSize.size.width / 5) * 0.18),
                                                           ),
                                                         )
                                                       ],
@@ -711,8 +786,17 @@ class _GradesPageState extends State<GradesPage> {
                                                       mainAxisAlignment: MainAxisAlignment.center,
                                                       crossAxisAlignment: CrossAxisAlignment.center,
                                                       children: <Widget>[
-                                                        Text("Moyenne du filtre ", style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: (screenSize.size.width / 5) * 0.2)),
-                                                        Text(filter, style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: ThemeUtils.textColor(), fontSize: (screenSize.size.width / 5) * 0.2)),
+                                                        Text("Moyenne du filtre ",
+                                                            style: TextStyle(
+                                                                fontFamily: "Asap",
+                                                                color: ThemeUtils.textColor(),
+                                                                fontSize: (screenSize.size.width / 5) * 0.2)),
+                                                        Text(filter,
+                                                            style: TextStyle(
+                                                                fontFamily: "Asap",
+                                                                fontWeight: FontWeight.bold,
+                                                                color: ThemeUtils.textColor(),
+                                                                fontSize: (screenSize.size.width / 5) * 0.2)),
                                                       ],
                                                     )
                                                 ],
@@ -747,8 +831,13 @@ class _GradesPageState extends State<GradesPage> {
                                   child: Center(
                                     child: FittedBox(
                                       child: Text(
-                                        (average.toString() != null && !average.isNaN ? average.toStringAsFixed(2) : "-"),
-                                        style: TextStyle(color: Colors.black, fontFamily: "Asap", fontSize: (screenSize.size.width / 5) * 0.35),
+                                        (average.toString() != null && !average.isNaN
+                                            ? average.toStringAsFixed(2)
+                                            : "-"),
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontFamily: "Asap",
+                                            fontSize: (screenSize.size.width / 5) * 0.35),
                                         textAlign: TextAlign.center,
                                       ),
                                     ),
@@ -878,17 +967,24 @@ class _GradesGroupState extends State<GradesGroup> {
                                       capitalizedNomDiscipline,
                                       overflow: TextOverflow.ellipsis,
                                       textAlign: TextAlign.left,
-                                      style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w600, fontSize: screenSize.size.height / 10 * 0.15),
+                                      style: TextStyle(
+                                          fontFamily: "Asap",
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: screenSize.size.height / 10 * 0.15),
                                     ),
                                   ),
                                   if (nomsProfesseurs != null && nomsProfesseurs.length > 15)
                                     Container(
                                         margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.3),
-                                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.5)),
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.5)),
                                         width: screenSize.size.width / 5 * 2,
                                         height: screenSize.size.height / 10 * 0.3,
                                         child: ClipRRect(
-                                          child: Marquee(text: nomsProfesseurs, style: TextStyle(fontFamily: "Asap", fontSize: screenSize.size.height / 10 * 0.15)),
+                                          child: Marquee(
+                                              text: nomsProfesseurs,
+                                              style: TextStyle(
+                                                  fontFamily: "Asap", fontSize: screenSize.size.height / 10 * 0.15)),
                                         )),
                                   if (nomsProfesseurs != null && nomsProfesseurs.length <= 15)
                                     Container(
@@ -897,7 +993,9 @@ class _GradesGroupState extends State<GradesGroup> {
                                         width: screenSize.size.width / 5 * 2,
                                         child: ClipRRect(
                                           borderRadius: BorderRadius.circular(0),
-                                          child: Text(nomsProfesseurs, style: TextStyle(fontFamily: "Asap", fontSize: screenSize.size.height / 10 * 0.2)),
+                                          child: Text(nomsProfesseurs,
+                                              style: TextStyle(
+                                                  fontFamily: "Asap", fontSize: screenSize.size.height / 10 * 0.2)),
                                         )),
                                 ],
                               ),
@@ -910,10 +1008,13 @@ class _GradesGroupState extends State<GradesGroup> {
                                 baseColor: Color(0xff5D6469),
                                 highlightColor: Color(0xff8D9499),
                                 child: Container(
-                                  margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.3, bottom: screenSize.size.width / 5 * 0.2),
+                                  margin: EdgeInsets.only(
+                                      left: screenSize.size.width / 5 * 0.3, bottom: screenSize.size.width / 5 * 0.2),
                                   width: screenSize.size.width / 5 * 1.5,
                                   height: (screenSize.size.height / 10 * 8.8) / 10 * 0.3,
-                                  decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: Theme.of(context).primaryColorDark),
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      color: Theme.of(context).primaryColorDark),
                                 )),
                           ),
                       ]),
@@ -1029,7 +1130,8 @@ class _GradesGroupState extends State<GradesGroup> {
             itemCount: (localList != null ? localList.length : 1),
             controller: marksColumnController,
             scrollDirection: Axis.horizontal,
-            padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.2, vertical: (screenSize.size.height / 10 * 8.8) / 10 * 0.15),
+            padding: EdgeInsets.symmetric(
+                horizontal: screenSize.size.width / 5 * 0.2, vertical: (screenSize.size.height / 10 * 8.8) / 10 * 0.15),
             itemBuilder: (BuildContext context, int index) {
               DateTime now = DateTime.now();
               String formattedDate = DateFormat('yyyy-MM-dd').format(now);
@@ -1047,16 +1149,26 @@ class _GradesGroupState extends State<GradesGroup> {
               return Stack(
                 children: <Widget>[
                   Container(
-                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(13), border: Border.all(color: (getGradesForDiscipline(sousMatiereIndex, periodeToUse) == null) ? Colors.transparent : Colors.black, width: 1)),
-                    margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1, right: screenSize.size.width / 5 * 0.1),
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(13),
+                        border: Border.all(
+                            color: (getGradesForDiscipline(sousMatiereIndex, periodeToUse) == null)
+                                ? Colors.transparent
+                                : Colors.black,
+                            width: 1)),
+                    margin:
+                        EdgeInsets.only(left: screenSize.size.width / 5 * 0.1, right: screenSize.size.width / 5 * 0.1),
                     child: Material(
-                      color: (getGradesForDiscipline(sousMatiereIndex, periodeToUse) == null) ? Colors.transparent : colorGroup,
+                      color: (getGradesForDiscipline(sousMatiereIndex, periodeToUse) == null)
+                          ? Colors.transparent
+                          : colorGroup,
                       borderRadius: BorderRadius.all(Radius.circular(11)),
                       child: InkWell(
                         borderRadius: BorderRadius.all(Radius.circular(11)),
                         splashColor: colorGroup,
                         onTap: () {
-                          gradesModalBottomSheet(context, localList[index], widget.disciplinevar, callback, this.widget);
+                          gradesModalBottomSheet(
+                              context, localList[index], widget.disciplinevar, callback, this.widget);
                         },
                         onLongPress: () {
                           print("ok");
@@ -1074,18 +1186,36 @@ class _GradesGroupState extends State<GradesGroup> {
                                     children: <Widget>[
                                       //Grades
                                       Container(
-                                        padding: EdgeInsets.symmetric(vertical: (screenSize.size.height / 10 * 8.8) / 10 * 0.05),
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: (screenSize.size.height / 10 * 8.8) / 10 * 0.05),
                                         child: AutoSizeText.rich(
                                           //MARK
                                           TextSpan(
-                                            text: (localList[index].nonSignificatif ? "(" + localList[index].valeur : localList[index].valeur),
-                                            style: TextStyle(color: Colors.black, fontFamily: "Asap", fontWeight: FontWeight.bold, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.3),
+                                            text: (localList[index].nonSignificatif
+                                                ? "(" + localList[index].valeur
+                                                : localList[index].valeur),
+                                            style: TextStyle(
+                                                color: Colors.black,
+                                                fontFamily: "Asap",
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.3),
                                             children: <TextSpan>[
                                               if (localList[index].noteSur != "20")
 
                                                 //MARK ON
-                                                TextSpan(text: '/' + localList[index].noteSur, style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2)),
-                                              if (localList[index].nonSignificatif == true) TextSpan(text: ")", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.3)),
+                                                TextSpan(
+                                                    text: '/' + localList[index].noteSur,
+                                                    style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2)),
+                                              if (localList[index].nonSignificatif == true)
+                                                TextSpan(
+                                                    text: ")",
+                                                    style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.3)),
                                             ],
                                           ),
                                         ),
@@ -1105,7 +1235,8 @@ class _GradesGroupState extends State<GradesGroup> {
                                                 child: AutoSizeText(
                                               localList[index].coef,
                                               textAlign: TextAlign.center,
-                                              style: TextStyle(fontFamily: "Asap", color: Colors.white, fontWeight: FontWeight.bold),
+                                              style: TextStyle(
+                                                  fontFamily: "Asap", color: Colors.white, fontWeight: FontWeight.bold),
                                             ))),
                                     ],
                                   ),
@@ -1117,7 +1248,9 @@ class _GradesGroupState extends State<GradesGroup> {
                                     child: Container(
                                       width: screenSize.size.width / 5 * 3.2,
                                       height: (screenSize.size.height / 10 * 8.8) / 10 * 0.8,
-                                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.5), color: Theme.of(context).primaryColorDark),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.5),
+                                          color: Theme.of(context).primaryColorDark),
                                     )),
                             ],
                           ),

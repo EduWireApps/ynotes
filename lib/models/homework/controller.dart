@@ -10,6 +10,7 @@ class HomeworkController extends ChangeNotifier {
   List<Homework> _old = List();
   List<Homework> unloadedHW = List<Homework>();
   API _api;
+  bool isFetching = false;
 
   get getHomework => _old;
 
@@ -25,11 +26,15 @@ class HomeworkController extends ChangeNotifier {
       notifyListeners();
     }
     await prepareOld(_old);
+    isFetching = false;
+    notifyListeners();
   }
 
   //Load all events
   void loadAll() async {
     try {
+      isFetching = true;
+      notifyListeners();
       await Future.forEach(unloadedHW, (Homework hw) async {
         await _api.getHomeworkFor(hw.date);
         try {
@@ -39,7 +44,12 @@ class HomeworkController extends ChangeNotifier {
 
         notifyListeners();
       });
-    } catch (e) {}
+      isFetching = false;
+      notifyListeners();
+    } catch (e) {
+      isFetching = false;
+      notifyListeners();
+    }
   }
 
   void prepareOld(List<Homework> oldHW) async {
@@ -57,6 +67,5 @@ class HomeworkController extends ChangeNotifier {
   HomeworkController(this.api) {
     _api = api;
     refresh();
-    refresh(force: true);
   }
 }

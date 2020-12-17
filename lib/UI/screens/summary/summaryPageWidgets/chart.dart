@@ -3,7 +3,6 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/classes.dart';
-import 'package:ynotes/utils/themeUtils.dart';
 
 class SummaryChart extends StatefulWidget {
   final List<Grade> lastGrades;
@@ -23,6 +22,9 @@ class _SummaryChartState extends State<SummaryChart> {
     if (widget.lastGrades != null) {
       _grades.addAll(widget.lastGrades);
       _grades.sort((a, b) => a.dateSaisie.compareTo(b.dateSaisie));
+      if (_grades.length > 10) {
+        _grades = _grades.sublist(_grades.length - 10, _grades.length);
+      }
     }
   }
 
@@ -94,7 +96,7 @@ class _SummaryChartState extends State<SummaryChart> {
     return LineChartData(
       clipData: FlClipData.horizontal(),
       backgroundColor: Colors.transparent,
-      lineTouchData: LineTouchData(enabled: false),
+      lineTouchData: LineTouchData(enabled: true),
       gridData: FlGridData(
         show: false,
       ),

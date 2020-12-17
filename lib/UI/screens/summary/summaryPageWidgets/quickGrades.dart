@@ -95,7 +95,7 @@ class _QuickGradesState extends State<QuickGrades> {
             textAlign: TextAlign.left,
           ),
           Text(
-            grade.date != null ? df.format(grade.date) : "",
+            grade.date != null ? df.format(grade.dateSaisie) : "",
             style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
             textAlign: TextAlign.left,
           )
