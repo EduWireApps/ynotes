@@ -15,7 +15,7 @@ description: yNotes application de gestion de vie scolaire
 version: 0.9.0+9
 
 environment:
-  sdk: ">=2.2.2 <3.0.0"
+  sdk: '>=2.10.0 <3.0.0'
 
 dependencies:
   flutter:
@@ -87,7 +87,8 @@ dependencies:
   html_editor: ^1.0.1
   popup_menu: ^1.0.5
   floating_action_bubble: ^1.1.2
-  katex_flutter: ^4.0.1
+  catex: ^0.0.1+7
+  flutter_tex: ^3.6.7+10
   fl_chart: ^0.12.0
   wiredash:
     git:
@@ -97,6 +98,7 @@ dependencies:
 dependency_overrides:
   analyzer: ^0.40.4
   intl: ^0.16.1
+  webview_flutter: ^1.0.3
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -218,94 +218,92 @@ class _AgendaGridState extends State<AgendaGrid> {
       width: screenSize.size.width / 5 * 4.9,
       height: _events.any((element) => element.wholeDay) ? screenSize.size.height / 10 * 0.7 : 0,
       child: Container(
-        child: Container(
-          width: screenSize.size.width / 5 * 4.5,
-          child: ListView.builder(
-              padding: EdgeInsets.symmetric(
-                vertical: screenSize.size.height / 10 * 0.1,
-              ),
-              itemCount: _events.where((element) => element.wholeDay).length,
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (ctxt, index) {
-                return Container(
-                  margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.2),
-                  child: FutureBuilder(
-                      initialData: 0,
-                      future: getRelatedColor(_events.where((element) => element.wholeDay).toList()[index]),
-                      builder: (context, snapshot) {
-                        return Material(
-                          color: Color(snapshot.data),
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
-                          child: InkWell(
-                            onLongPress: () async {
-                              var _event = _events.where((element) => element.wholeDay).toList()[index];
-                              if (_event.isLesson) {
-                                //Getting color before
-                                _event.color = await getColor(_event.lesson.codeMatiere);
-                              }
-                              var temp = await agendaEventEdit(context, true, defaultDate: _event.start, customEvent: _event);
+        width: screenSize.size.width / 5 * 4.5,
+        child: ListView.builder(
+            padding: EdgeInsets.symmetric(
+              vertical: screenSize.size.height / 10 * 0.1,
+            ),
+            itemCount: _events.where((element) => element.wholeDay).length,
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (ctxt, index) {
+              return Container(
+                margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.2),
+                child: FutureBuilder(
+                    initialData: 0,
+                    future: getRelatedColor(_events.where((element) => element.wholeDay).toList()[index]),
+                    builder: (context, snapshot) {
+                      return Material(
+                        color: Color(snapshot.data),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
+                        child: InkWell(
+                          onLongPress: () async {
+                            var _event = _events.where((element) => element.wholeDay).toList()[index];
+                            if (_event.isLesson) {
+                              //Getting color before
+                              _event.color = await getColor(_event.lesson.codeMatiere);
+                            }
+                            var temp = await agendaEventEdit(context, true, defaultDate: _event.start, customEvent: _event);
 
-                              if (temp != null) {
-                                if (temp != "removed") {
-                                  if (temp != null) {
-                                    if (temp.recurrenceScheme != null && temp.recurrenceScheme != "0") {
-                                      await offline.agendaEvents.addAgendaEvent(temp, temp.recurrenceScheme);
+                            if (temp != null) {
+                              if (temp != "removed") {
+                                if (temp != null) {
+                                  if (temp.recurrenceScheme != null && temp.recurrenceScheme != "0") {
+                                    await offline.agendaEvents.addAgendaEvent(temp, temp.recurrenceScheme);
 
-                                      setState(() {
-                                        _event = temp;
-                                      });
-                                    } else {
-                                      await offline.agendaEvents.addAgendaEvent(temp, await get_week(temp.start));
+                                    setState(() {
+                                      _event = temp;
+                                    });
+                                  } else {
+                                    await offline.agendaEvents.addAgendaEvent(temp, await get_week(temp.start));
 
-                                      setState(() {
-                                        _event = temp;
-                                      });
-                                    }
-                                    await LocalNotification.scheduleAgendaReminders(temp);
+                                    setState(() {
+                                      _event = temp;
+                                    });
                                   }
-                                } else {
-                                  await offline.reminders.removeAll(_event.id);
-                                  await LocalNotification.cancelNotification(_event.id.hashCode);
+                                  await LocalNotification.scheduleAgendaReminders(temp);
                                 }
-                                await refreshAgendaFuture();
-                                widget.setStateCallback();
-                              }
-                            },
-                            onTap: () async {
-                              var _event = _events.where((element) => element.wholeDay).toList()[index];
-
-                              if (_event.isLesson) {
-                                _event.color = await getColor(_event.lesson.codeMatiere);
-                                await lessonDetails(context, _event);
-                                await refreshAgendaFuture();
-                                print("ok");
                               } else {
-                                await lessonDetails(context, _event);
-                                await refreshAgendaFuture();
-                                widget.setStateCallback();
+                                await offline.reminders.removeAll(_event.id);
+                                await LocalNotification.cancelNotification(_event.id.hashCode);
                               }
-                            },
-                            borderRadius: BorderRadius.circular(11),
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: screenSize.size.width / 5 * 0.12,
-                                vertical: screenSize.size.height / 10 * 0.1,
-                              ),
-                              child: Center(
-                                child: FittedBox(
-                                  child: Text(
-                                    (_events.where((element) => element.wholeDay).toList()[index].name != null && _events.where((element) => element.wholeDay).toList()[index].name != "") ? _events.where((element) => element.wholeDay).toList()[index].name : "(sans nom)",
-                                    style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-                                  ),
+                              await refreshAgendaFuture();
+                              widget.setStateCallback();
+                            }
+                          },
+                          onTap: () async {
+                            var _event = _events.where((element) => element.wholeDay).toList()[index];
+
+                            if (_event.isLesson) {
+                              _event.color = await getColor(_event.lesson.codeMatiere);
+                              await lessonDetails(context, _event);
+                              await refreshAgendaFuture();
+                              print("ok");
+                            } else {
+                              await lessonDetails(context, _event);
+                              await refreshAgendaFuture();
+                              widget.setStateCallback();
+                            }
+                          },
+                          borderRadius: BorderRadius.circular(11),
+                          child: Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: screenSize.size.width / 5 * 0.12,
+                              vertical: screenSize.size.height / 10 * 0.1,
+                            ),
+                            child: Center(
+                              child: FittedBox(
+                                child: Text(
+                                  (_events.where((element) => element.wholeDay).toList()[index].name != null && _events.where((element) => element.wholeDay).toList()[index].name != "") ? _events.where((element) => element.wholeDay).toList()[index].name : "(sans nom)",
+                                  style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                                 ),
                               ),
                             ),
                           ),
-                        );
-                      }),
-                );
-              }),
-        ),
+                        ),
+                      );
+                    }),
+              );
+            }),
       ),
     );
   }

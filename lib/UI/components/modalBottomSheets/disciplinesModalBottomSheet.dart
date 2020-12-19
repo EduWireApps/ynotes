@@ -38,7 +38,8 @@ void disciplineModalBottomSheet(context, Discipline discipline, Function callbac
                       children: <Widget>[
                         Container(
                           margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.05),
-                          decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(25)), color: colorGroup),
+                          decoration:
+                              BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(25)), color: colorGroup),
                           padding: EdgeInsets.all(5),
                           child: FittedBox(
                             child: Text(
@@ -106,7 +107,8 @@ void disciplineModalBottomSheet(context, Discipline discipline, Function callbac
                           SizedBox(
                             height: (screenSize.size.height / 3) / 25,
                           ),
-                        if (discipline.moyenneMin != null) buildKeyValuesInfo(context, "Moyenne la plus basse", [discipline.moyenneMin]),
+                        if (discipline.moyenneMin != null)
+                          buildKeyValuesInfo(context, "Moyenne la plus basse", [discipline.moyenneMin]),
                       ],
                     ),
                   ),

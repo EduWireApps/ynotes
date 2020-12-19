@@ -45,8 +45,21 @@ class Homework extends HiveObject {
   final String nomProf;
   @HiveField(13)
   final bool loaded;
-  Homework(this.matiere, this.codeMatiere, this.id, this.contenu, this.contenuDeSeance, this.date, this.datePost,
-      this.done, this.rendreEnLigne, this.interrogation, this.documents, this.documentsContenuDeSeance, this.nomProf, this.loaded);
+  Homework(
+      this.matiere,
+      this.codeMatiere,
+      this.id,
+      this.contenu,
+      this.contenuDeSeance,
+      this.date,
+      this.datePost,
+      this.done,
+      this.rendreEnLigne,
+      this.interrogation,
+      this.documents,
+      this.documentsContenuDeSeance,
+      this.nomProf,
+      this.loaded);
   factory Homework.fromJson(Map<String, dynamic> json) => _$HomeworkFromJson(json);
   Map<String, dynamic> toJson() => _$HomeworkToJson(this);
 }
@@ -517,7 +530,9 @@ abstract class API {
   ///Get the dates of next homework (deprecated)
   Future<List<DateTime>> getDatesNextHomework();
 
-  ///Get the list of all the next homework (sent by specifics API)
+  ///Get the list of all the next homework (sent by specifics API).
+  ///
+  ///Caution : `EcoleDirecte` api returns a list of unloaded homework
   Future<List<Homework>> getNextHomework({bool forceReload});
 
   ///Get the list of homework only for a specific day (time travel feature)

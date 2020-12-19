@@ -12,6 +12,7 @@ import 'package:html/parser.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:provider/provider.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:stacked/stacked.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -28,12 +29,12 @@ import 'package:ynotes/UI/screens/summary/summaryPageWidgets/summaryPageSettings
 import 'package:ynotes/UI/screens/summary/summaryPageWidgets/chart.dart';
 import 'package:ynotes/apis/utils.dart';
 import 'package:ynotes/classes.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/models/homework/controller.dart';
+import 'package:ynotes/models/homework/utils.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/utils/themeUtils.dart';
-
-
 
 class QuickHomework extends StatefulWidget {
   final Function switchPage;
@@ -46,27 +47,38 @@ class QuickHomework extends StatefulWidget {
 class _QuickHomeworkState extends State<QuickHomework> {
   Future donePercentFuture;
   int oldGauge = 0;
+
   setGauge() async {
-    var tempGauge = await getHomeworkDonePercent();
+    var tempGauge = await HomeworkUtils.getHomeworkDonePercent();
     setState(() {
       oldGauge = tempGauge ?? 0;
     });
   }
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    //init homework
+    hwcontroller.refresh(force: true);
+
+    //set gauge
+    setState(() {
+      donePercentFuture = HomeworkUtils.getHomeworkDonePercent();
+    });
+  }
+
   void refreshCallback() {
     setState(() {
-      donePercentFuture = getHomeworkDonePercent();
+      donePercentFuture = HomeworkUtils.getHomeworkDonePercent();
     });
   }
 
   @override
   Future<void> refreshLocalHomeworkList() async {
+    await hwcontroller.refresh(force: true);
     setState(() {
-      homeworkListFuture = localApi.getNextHomework(forceReload: true);
-    });
-    var realHW = await homeworkListFuture;
-    setState(() {
-      donePercentFuture = getHomeworkDonePercent();
+      donePercentFuture = HomeworkUtils.getHomeworkDonePercent();
     });
   }
 
@@ -80,7 +92,7 @@ class _QuickHomeworkState extends State<QuickHomework> {
       child: Container(
         margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
         width: screenSize.size.width / 5 * 4.5,
-        height: (screenSize.size.height / 10 * 8.8) / 10 * 5.6,
+        height: screenSize.size.height / 10 * 5.3,
         child: ClipRRect(
           borderRadius: BorderRadius.all(Radius.circular(12)),
           child: PageView(
@@ -95,6 +107,7 @@ class _QuickHomeworkState extends State<QuickHomework> {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
+                            //gauge
                             Container(
                                 width: screenSize.size.width / 5 * 0.5,
                                 height: screenSize.size.width / 5 * 0.5,
@@ -122,104 +135,118 @@ class _QuickHomeworkState extends State<QuickHomework> {
                           ],
                         ),
                       )),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      margin: EdgeInsets.only(
-                          bottom: (screenSize.size.height / 10 * 8.8) / 10 * 0.2,
-                          top: screenSize.size.height / 10 * 0.1),
-                      height: (screenSize.size.height / 10 * 8.8) / 10 * 4.5,
-                      child: RefreshIndicator(
-                        onRefresh: refreshLocalHomeworkList,
-                        child: CupertinoScrollbar(
-                          child: ViewModelBuilder.reactive(
-                              viewModelBuilder: () => HomeworkController(localApi),
-                              builder: (context, HomeworkController model, child) {
-                                if (model.getHomework != null && model.getHomework.length != 0) {
-                                  return ListView.builder(
-                                      itemCount: model.getHomework.length,
-                                      padding: EdgeInsets.only(
-                                          left: screenSize.size.width / 5 * 0.1,
-                                          right: screenSize.size.width / 5 * 0.1),
-                                      itemBuilder: (context, index) {
-                                        return FutureBuilder(
-                                          initialData: 0,
-                                          future: getColor(model.getHomework[index].codeMatiere),
-                                          builder: (context, color) => Column(
+
+                  //homework part
+                  StreamBuilder<Object>(
+                      stream: null,
+                      builder: (context, snapshot) {
+                        return Align(
+                          alignment: Alignment.topCenter,
+                          child: Container(
+                            margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.56),
+                            height: screenSize.size.height / 10 * 5.1,
+                            child: RefreshIndicator(
+                              onRefresh: refreshLocalHomeworkList,
+                              child: CupertinoScrollbar(
+                                child: ChangeNotifierProvider<HomeworkController>.value(
+                                  value: hwcontroller,
+                                  child: Consumer<HomeworkController>(
+                                    builder: (context, model, child) {
+                                      if (model.getHomework != null && model.getHomework.length != 0) {
+                                        return ListView.builder(
+                                            itemCount: model.getHomework.length,
+                                            padding: EdgeInsets.only(
+                                                left: screenSize.size.width / 5 * 0.1,
+                                                right: screenSize.size.width / 5 * 0.1),
+                                            itemBuilder: (context, index) {
+                                              return FutureBuilder(
+                                                initialData: 0,
+                                                future: getColor(model.getHomework[index].codeMatiere),
+                                                builder: (context, color) => Column(
+                                                  children: <Widget>[
+                                                    if (index == 0 ||
+                                                        model.getHomework[index - 1].date !=
+                                                            model.getHomework[index].date)
+                                                      Row(children: <Widget>[
+                                                        Expanded(
+                                                          child: new Container(
+                                                              margin: const EdgeInsets.only(left: 10.0, right: 20.0),
+                                                              child: Divider(
+                                                                color: ThemeUtils.textColor(),
+                                                                height: 36,
+                                                              )),
+                                                        ),
+                                                        Text(
+                                                          DateFormat("EEEE d MMMM", "fr_FR")
+                                                              .format(hwcontroller.getHomework[index].date)
+                                                              .toString(),
+                                                          style: TextStyle(
+                                                              color: ThemeUtils.textColor(), fontFamily: "Asap"),
+                                                        ),
+                                                        Expanded(
+                                                          child: Container(
+                                                              margin: const EdgeInsets.only(left: 20.0, right: 10.0),
+                                                              child: Divider(
+                                                                color: ThemeUtils.textColor(),
+                                                                height: 36,
+                                                              )),
+                                                        ),
+                                                      ]),
+                                                    HomeworkTicket(
+                                                        model.getHomework[index],
+                                                        Color(color.data),
+                                                        widget.switchPage,
+                                                        refreshCallback,
+                                                        model.isFetching && !model.getHomework[index].loaded),
+                                                  ],
+                                                ),
+                                              );
+                                            });
+                                      } else {
+                                        return FittedBox(
+                                          child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
                                             children: <Widget>[
-                                              if (index == 0 ||
-                                                  model.getHomework[index - 1].date != model.getHomework[index].date)
-                                                Row(children: <Widget>[
-                                                  Expanded(
-                                                    child: new Container(
-                                                        margin: const EdgeInsets.only(left: 10.0, right: 20.0),
-                                                        child: Divider(
-                                                          color: ThemeUtils.textColor(),
-                                                          height: 36,
-                                                        )),
-                                                  ),
-                                                  Text(
-                                                    DateFormat("EEEE d MMMM", "fr_FR")
-                                                        .format(model.getHomework[index].date)
-                                                        .toString(),
-                                                    style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
-                                                  ),
-                                                  Expanded(
-                                                    child: Container(
-                                                        margin: const EdgeInsets.only(left: 20.0, right: 10.0),
-                                                        child: Divider(
-                                                          color: ThemeUtils.textColor(),
-                                                          height: 36,
-                                                        )),
-                                                  ),
-                                                ]),
-                                              HomeworkTicket(
-                                                  model.getHomework[index],
-                                                  Color(color.data),
-                                                  widget.switchPage,
-                                                  refreshCallback,
-                                                  model.isFetching && !model.getHomework[index].loaded),
+                                              Container(
+                                                height: (screenSize.size.height / 10 * 8.8) / 10 * 1.5,
+                                                child: Image(
+                                                    fit: BoxFit.fitWidth,
+                                                    image: AssetImage('assets/images/noHomework.png')),
+                                              ),
+                                              Text(
+                                                "Pas de devoirs à l'horizon... \non se détend ?",
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                    fontFamily: "Asap",
+                                                    color: ThemeUtils.textColor(),
+                                                    fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
+                                              ),
+                                              FlatButton(
+                                                  onPressed: () async {
+                                                    await model.refresh(force: true);
+                                                  },
+                                                  child: !model.isFetching
+                                                      ? Text("Recharger",
+                                                          style: TextStyle(
+                                                            fontFamily: "Asap",
+                                                            color: ThemeUtils.textColor(),
+                                                          ))
+                                                      : FittedBox(
+                                                          child: SpinKitThreeBounce(
+                                                              color: Theme.of(context).primaryColorDark,
+                                                              size: screenSize.size.width / 5 * 0.4))),
                                             ],
                                           ),
                                         );
-                                      });
-                                } else {
-                                  return FittedBox(
-                                    child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        Container(
-                                          height: (screenSize.size.height / 10 * 8.8) / 10 * 1.5,
-                                          child: Image(
-                                              fit: BoxFit.fitWidth, image: AssetImage('assets/images/noHomework.png')),
-                                        ),
-                                        Text(
-                                          "Pas de devoirs à l'horizon... \non se détend ?",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              fontFamily: "Asap",
-                                              color: ThemeUtils.textColor(),
-                                              fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
-                                        ),
-                                        FlatButton(
-                                            onPressed: () async {
-                                              //Reload list
-                                              await model.refresh(force: true);
-                                            },
-                                            child: Text("Recharger",
-                                                style: TextStyle(
-                                                  fontFamily: "Asap",
-                                                  color: ThemeUtils.textColor(),
-                                                )))
-                                      ],
-                                    ),
-                                  );
-                                }
-                              }),
-                        ),
-                      ),
-                    ),
-                  ),
+                                      }
+                                    },
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      })
                 ],
               ),
             ],
@@ -284,12 +311,8 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
                           value: done,
                           materialTapTargetSize: MaterialTapTargetSize.padded,
                           onChanged: (bool x) async {
-                            setState(() {
-                              done = !done;
-                              donePercentFuture = getHomeworkDonePercent();
-                              widget.refreshCallback();
-                            });
-                            offline.doneHomework.setHWCompletion(widget._homework.id, x);
+                            widget.refreshCallback();
+                            await offline.doneHomework.setHWCompletion(widget._homework.id, x);
                           },
                         );
                       }),
@@ -343,56 +366,4 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
   }
 }
 
-//utils
-
-//Homework done percent
-Future<int> getHomeworkDonePercent() async {
-  List list = await getReducedListHomework();
-  if (list != null) {
-    //Number of elements in list
-    int total = list.length;
-    if (total == 0) {
-      return 100;
-    } else {
-      int done = 0;
-
-      await Future.forEach(list, (element) async {
-        bool isDone = await offline.doneHomework.getHWCompletion(element.id);
-        if (isDone) {
-          done++;
-        }
-      });
-      print(done);
-      int percent = (done * 100 / total).round();
-
-      return percent;
-    }
-  } else {
-    return 100;
-  }
-}
-
-Future<List<Homework>> getReducedListHomework() async {
-  int reduce = await getIntSetting("summaryQuickHomework");
-  if (reduce == 11) {
-    reduce = 770;
-  }
-  List<Homework> localList = await localApi.getNextHomework();
-  if (localList != null) {
-    List<Homework> listToReturn = List<Homework>();
-    localList.forEach((element) {
-      var now = DateTime.now();
-      var date = element.date;
-
-      //ensure that the list doesn't contain the pinned homework
-      if (date.difference(now).inDays < reduce &&
-          date.isAfter(DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now())))) {
-        listToReturn.add(element);
-      }
-    });
-    print(listToReturn.length);
-    return listToReturn;
-  } else {
-    return null;
-  }
-}
+/**/

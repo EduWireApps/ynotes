@@ -31,6 +31,22 @@ import 'notifications.dart';
 
 var uuid = Uuid();
 
+extension HexColor on Color {
+  /// String is in the format "aabbcc" or "ffaabbcc" with an optional leading "#".
+  static Color fromHex(String hexString) {
+    final buffer = StringBuffer();
+    if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
+    buffer.write(hexString.replaceFirst('#', ''));
+    return Color(int.parse(buffer.toString(), radix: 16));
+  }
+
+  /// Prefixes a hash sign if [leadingHashSign] is set to `true` (default is `true`).
+  String toCSSColor({bool leadingHashSign = true}) => 
+      '${red.toRadixString(16).padLeft(2, '0')}'
+      '${green.toRadixString(16).padLeft(2, '0')}'
+      '${blue.toRadixString(16).padLeft(2, '0')}';
+}
+
 //login manager
 TransparentLogin tlogin = TransparentLogin();
 
@@ -47,7 +63,8 @@ void backgroundFetchHeadlessTask(String taskId) async {
   var initializationSettingsIOS = new IOSInitializationSettings();
   var initializationSettings = new InitializationSettings(initializationSettingsAndroid, initializationSettingsIOS);
   flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
-  flutterLocalNotificationsPlugin.initialize(initializationSettings, onSelectNotification: BackgroundService.onSelectNotification);
+  flutterLocalNotificationsPlugin.initialize(initializationSettings,
+      onSelectNotification: BackgroundService.onSelectNotification);
   if (!await getSetting("batterySaver")) {
     await BackgroundService.refreshHomework();
   }
@@ -163,11 +180,14 @@ Future main() async {
   var initializationSettingsIOS = new IOSInitializationSettings();
   var initializationSettings = new InitializationSettings(initializationSettingsAndroid, initializationSettingsIOS);
   flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
-  flutterLocalNotificationsPlugin.initialize(initializationSettings, onSelectNotification: BackgroundService.onSelectNotification);
+  flutterLocalNotificationsPlugin.initialize(initializationSettings,
+      onSelectNotification: BackgroundService.onSelectNotification);
 
   //Init offline data
   await offline.init();
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(systemNavigationBarColor: isDarkModeEnabled ? Color(0xff414141) : Color(0xffF3F3F3), statusBarColor: Colors.transparent));
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+      systemNavigationBarColor: isDarkModeEnabled ? Color(0xff414141) : Color(0xffF3F3F3),
+      statusBarColor: Colors.transparent));
   ConnectionStatusSingleton connectionStatus = ConnectionStatusSingleton.getInstance();
   connectionStatus.initialize();
   runZoned<Future<Null>>(() async {

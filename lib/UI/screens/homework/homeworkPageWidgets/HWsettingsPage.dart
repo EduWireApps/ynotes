@@ -53,10 +53,13 @@ class _HomeworkSettingPageState extends State<HomeworkSettingPage> {
               )),
           SwitchListTile(
             value: boolSettings["isExpandedByDefault"],
-            title: Text("Étendre les devoirs", style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.25)),
+            title: Text("Étendre les devoirs",
+                style: TextStyle(
+                    fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.25)),
             subtitle: Text(
               "Afficher les détails des devoirs par défaut.",
-              style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.2),
+              style: TextStyle(
+                  fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.2),
             ),
             onChanged: (value) async {
               setState(() {
@@ -74,75 +77,4 @@ class _HomeworkSettingPageState extends State<HomeworkSettingPage> {
       ),
     );
   }
-
-  /*Widget build(BuildContext context) {
-    MediaQueryData screenSize = MediaQuery.of(context);
-    return Container(
-      child: Column(
-        children: <Widget>[
-          Text(
-            "Paramètres des devoirs",
-            style: TextStyle(
-              fontSize: screenSize.size.height / 10 * 0.3,
-              fontFamily: "Asap",
-              color: ThemeUtils.textColor(),
-            ),
-          ),
-          SizedBox(
-            height: screenSize.size.height / 10 * 0.3,
-          ),
-          FutureBuilder(
-              future:   boolSettings["isExpandedByDefault"] ,
-              initialData: false,
-              builder: (context, snapshot) {
-                return SwitchListTile(
-                  value:   boolSettings["isExpandedByDefault"] ,
-                  title: Text("Étendre les devoirs",
-                      style: TextStyle(
-                          fontFamily: "Asap",
-                          color: ThemeUtils.textColor(),
-                          fontSize: screenSize.size.height / 10 * 0.25)),
-                  subtitle: Text(
-                    "Afficher les détails des devoirs par défaut.",
-                    style: TextStyle(
-                        fontFamily: "Asap",
-                        color: ThemeUtils.textColor(),
-                        fontSize: screenSize.size.height / 10 * 0.2),
-                  ),
-                  onChanged: (value) {
-                    setState(() {
-                boolSettings["isExpandedByDefault"] = value;
-              });
-
-              await setSetting("isExpandedByDefault", value);
-                  },
-                  secondary: Icon(
-                    MdiIcons.arrowExpand,
-                    color: ThemeUtils.textColor(),
-                  ),
-                );
-              }),
-          Container(
-            margin: EdgeInsets.only(top: screenSize.size.width / 5 * 0.2),
-            height: (screenSize.size.height / 10 * 8.8) / 10 * 0.75,
-            width: screenSize.size.width / 5 * 2,
-            child: RaisedButton(
-              color: Theme.of(context).primaryColorDark,
-              shape: RoundedRectangleBorder(
-                borderRadius: new BorderRadius.circular(18.0),
-              ),
-              onPressed: () {
-                widget.animateToPage(1);
-              },
-              child: Text(
-                "Retour",
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 18, fontFamily: "Asap", color:isDarkModeEnabled?Colors.white:Colors.black),
-              ),
-            ),
-          )
-        ],
-      ),
-    );
-  }*/
 }

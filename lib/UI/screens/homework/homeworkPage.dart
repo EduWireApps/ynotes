@@ -9,7 +9,8 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:share/share.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/UI/components/hiddenSettings.dart';
-import 'package:ynotes/UI/screens/homework/homeworkPageWidgets/HWsecondPage.dart';
+import 'package:ynotes/UI/screens/homework/homeworkPageWidgets/HWlistPage.dart';
+import 'package:ynotes/UI/screens/homework/homeworkPageWidgets/HWsingleDayPage.dart';
 import 'package:ynotes/UI/screens/summary/summaryPage.dart';
 import 'package:ynotes/apis/utils.dart';
 import 'package:ynotes/classes.dart';
@@ -17,7 +18,6 @@ import 'package:ynotes/main.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/utils/themeUtils.dart';
 
-import 'homeworkPageWidgets/HWfirstPage.dart';
 import 'homeworkPageWidgets/HWsettingsPage.dart';
 
 Future<List<Homework>> homeworkListFuture;
@@ -57,7 +57,8 @@ class HomeworkPageState extends State<HomeworkPage> {
 
   PageController agendaSettingsController = PageController(initialPage: 1);
   void triggerSettings() {
-    agendaSettingsController.animateToPage(agendaSettingsController.page == 1 ? 0 : 1, duration: Duration(milliseconds: 300), curve: Curves.ease);
+    agendaSettingsController.animateToPage(agendaSettingsController.page == 1 ? 0 : 1,
+        duration: Duration(milliseconds: 300), curve: Curves.ease);
   }
 
   getPinnedStateDayToUse() async {
@@ -147,7 +148,9 @@ class HomeworkPageState extends State<HomeworkPage> {
                     data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
                     child: Container(
                       width: screenSize.size.width / 5 * 4.7,
-                      padding: EdgeInsets.only(top: (screenSize.size.height / 10 * 8.8) / 10 * 0.1, bottom: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
+                      padding: EdgeInsets.only(
+                          top: (screenSize.size.height / 10 * 8.8) / 10 * 0.1,
+                          bottom: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.only(
                             bottomLeft: Radius.circular(15),
@@ -227,7 +230,8 @@ class HomeworkPageState extends State<HomeworkPage> {
                                     getPinnedStateDayToUse();
                                   });
 
-                                  _pageControllerHW.animateToPage(2, duration: Duration(milliseconds: 200), curve: Curves.easeIn);
+                                  _pageControllerHW.animateToPage(2,
+                                      duration: Duration(milliseconds: 200), curve: Curves.easeIn);
                                 }
                               },
                               child: Container(
@@ -387,5 +391,3 @@ getWeeksRelation(int index, List<Homework> list) {
     print(error);
   }
 }
-
-

@@ -170,12 +170,12 @@ packages:
     source: hosted
     version: "1.0.1"
   catex:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: catex
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.1+6"
+    version: "0.0.1+7"
   characters:
     dependency: transitive
     description:
@@ -548,6 +548,13 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_tex:
+    dependency: "direct main"
+    description:
+      name: flutter_tex
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.6.7+10"
   flutter_web_plugins:
     dependency: transitive
     description: flutter
@@ -700,13 +707,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.5.0"
-  katex_flutter:
-    dependency: "direct main"
-    description:
-      name: katex_flutter
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "4.0.2+26"
   logging:
     dependency: transitive
     description:
@@ -1350,12 +1350,19 @@ packages:
     source: hosted
     version: "1.1.0"
   webview_flutter:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       name: webview_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.24"
+    version: "1.0.7"
+  webview_flutter_plus:
+    dependency: transitive
+    description:
+      name: webview_flutter_plus
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.1+10"
   win32:
     dependency: transitive
     description:
@@ -1401,5 +1408,5 @@ packages:
     source: hosted
     version: "0.12.0"
 sdks:
-  dart: ">=2.10.0-110 <2.11.0"
+  dart: ">=2.10.0 <2.11.0"
   flutter: ">=1.20.0 <2.0.0"

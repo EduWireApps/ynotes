@@ -73,7 +73,6 @@ class SummaryPageState extends State<SummaryPage> {
         offset = _pageControllerSummaryPage.offset;
       });
     });
-    homeworkListFuture = localApi.getNextHomework();
     disciplinesListFuture = localApi.getGrades();
 
     SchedulerBinding.instance.addPostFrameCallback(!mounted
@@ -134,6 +133,7 @@ class SummaryPageState extends State<SummaryPage> {
         onVisibilityChanged: (visibilityInfo) {
           //Ensure that page is visible
           var visiblePercentage = visibilityInfo.visibleFraction * 100;
+          print(visiblePercentage);
           if (visiblePercentage == 100) {
             showShowCaseDialog(context2);
           }

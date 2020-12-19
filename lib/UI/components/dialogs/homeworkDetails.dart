@@ -94,7 +94,9 @@ class _DialogHomeworkState extends State<DialogHomework> {
               margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
               width: screenSize.size.width / 5 * 4.5,
               padding: EdgeInsets.all(screenSize.size.height / 10 * 0.2),
-              decoration: BoxDecoration(color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15)),
+              decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor,
+                  borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15)),
               child: Material(
                 color: Colors.transparent,
                 child: SingleChildScrollView(
@@ -118,46 +120,19 @@ class _DialogHomeworkState extends State<DialogHomework> {
                       margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
                       width: screenSize.size.width / 5 * 4.5,
                       padding: EdgeInsets.all(screenSize.size.height / 10 * 0.2),
-                      decoration: BoxDecoration(color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15)),
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor,
+                          borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15)),
                       child: Column(
                         children: [
                           Text(
                             this.widget.hw.matiere,
                             textAlign: TextAlign.left,
-                            style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.grey.shade200 : Colors.black54, fontSize: screenSize.size.height / 10 * 0.25),
+                            style: TextStyle(
+                                fontFamily: "Asap",
+                                color: isDarkModeEnabled ? Colors.grey.shade200 : Colors.black54,
+                                fontSize: screenSize.size.height / 10 * 0.25),
                           ),
-                          FutureBuilder(
-                              future: offline.doneHomework.getHWCompletion(widget.hw.id ?? ''),
-                              initialData: false,
-                              builder: (context, snapshot) {
-                                bool done = snapshot.data;
-                                return Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    CircularCheckBox(
-                                      activeColor: Colors.blue,
-                                      inactiveColor: Colors.green,
-                                      value: done,
-                                      materialTapTargetSize: MaterialTapTargetSize.padded,
-                                      onChanged: (bool x) async {
-                                        setState(() {
-                                          done = !done;
-                                          donePercentFuture = getHomeworkDonePercent();
-                                        });
-
-                                        offline.doneHomework.setHWCompletion(widget.hw.id, x);
-                                      },
-                                    ),
-                                    Text(
-                                      "J'ai fait ce devoir",
-                                      style: TextStyle(
-                                        fontFamily: "Asap",
-                                        color: ThemeUtils.textColor(),
-                                      ),
-                                    )
-                                  ],
-                                );
-                              }),
                         ],
                       )),
                 );

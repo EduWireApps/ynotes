@@ -34,7 +34,14 @@ final storage = new FlutterSecureStorage();
 
 class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMixin {
   //Settings
-  var boolSettings = {"nightmode": false, "batterySaver": false, "notificationNewMail": false, "notificationNewGrade": false, "lighteningOverride": false, "shakeToReport": false};
+  var boolSettings = {
+    "nightmode": false,
+    "batterySaver": false,
+    "notificationNewMail": false,
+    "notificationNewGrade": false,
+    "lighteningOverride": false,
+    "shakeToReport": false
+  };
 
   AnimationController leftToRightAnimation;
   AnimationController rightToLeftAnimation;
@@ -109,7 +116,9 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                 SettingsTile(
                   title: 'Compte actuellement connecté',
                   titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-                  subtitleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
+                  subtitleTextStyle: TextStyle(
+                      fontFamily: "Asap",
+                      color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
                   subtitle: '${actualUser.length > 0 ? actualUser : "Invité"}',
                   leading: Icon(MdiIcons.account, color: ThemeUtils.textColor()),
                   onTap: () {},
@@ -133,7 +142,9 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                 SettingsTile.switchTile(
                   title: 'Mode nuit',
                   titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-                  subtitleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
+                  subtitleTextStyle: TextStyle(
+                      fontFamily: "Asap",
+                      color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
                   leading: Icon(MdiIcons.themeLightDark, color: ThemeUtils.textColor()),
                   switchValue: boolSettings["nightmode"],
                   onToggle: (value) async {
@@ -152,7 +163,9 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     fontFamily: "Asap",
                     color: ThemeUtils.textColor(),
                   ),
-                  subtitleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
+                  subtitleTextStyle: TextStyle(
+                      fontFamily: "Asap",
+                      color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
                   leading: Icon(MdiIcons.batteryHeart, color: ThemeUtils.textColor()),
                   switchValue: boolSettings["batterySaver"],
                   onToggle: (value) async {
@@ -172,16 +185,22 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                   title: 'Notification de nouveau mail',
                   enabled: !boolSettings["batterySaver"],
                   titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-                  subtitleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
+                  subtitleTextStyle: TextStyle(
+                      fontFamily: "Asap",
+                      color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
                   switchValue: boolSettings["notificationNewMail"],
                   onToggle: (bool value) async {
-                    if ((await Permission.ignoreBatteryOptimizations.isGranted)) {
+                    if (value == false || (await Permission.ignoreBatteryOptimizations.isGranted)) {
                       setState(() {
                         boolSettings["notificationNewMail"] = value;
                       });
                       await setSetting("notificationNewMail", value);
                     } else {
-                      if (await CustomDialogs.showAuthorizationsDialog(context, "la configuration d'optimisation de batterie", "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ?? false) {
+                      if (await CustomDialogs.showAuthorizationsDialog(
+                              context,
+                              "la configuration d'optimisation de batterie",
+                              "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ??
+                          false) {
                         if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
                           setState(() {
                             boolSettings["notificationNewMail"] = value;
@@ -196,16 +215,22 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                   title: 'Notification de nouvelle note',
                   enabled: !boolSettings["batterySaver"],
                   titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-                  subtitleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
+                  subtitleTextStyle: TextStyle(
+                      fontFamily: "Asap",
+                      color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
                   switchValue: boolSettings["notificationNewGrade"],
                   onToggle: (bool value) async {
-                    if ((await Permission.ignoreBatteryOptimizations.isGranted)) {
+                    if (value == false || (await Permission.ignoreBatteryOptimizations.isGranted)) {
                       setState(() {
                         boolSettings["notificationNewGrade"] = value;
                       });
                       await setSetting("notificationNewGrade", value);
                     } else {
-                      if (await CustomDialogs.showAuthorizationsDialog(context, "la configuration d'optimisation de batterie", "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ?? false) {
+                      if (await CustomDialogs.showAuthorizationsDialog(
+                              context,
+                              "la configuration d'optimisation de batterie",
+                              "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ??
+                          false) {
                         if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
                           setState(() {
                             boolSettings["notificationNewGrade"] = value;
@@ -224,7 +249,9 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                 SettingsTile(
                   title: 'Choisir mes spécialités',
                   titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-                  subtitleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
+                  subtitleTextStyle: TextStyle(
+                      fontFamily: "Asap",
+                      color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
                   leading: Icon(MdiIcons.formatListBulleted, color: ThemeUtils.textColor()),
                   onTap: () {
                     CustomDialogs.showSpecialtiesChoice(context);
@@ -242,7 +269,9 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     Navigator.of(context).push(router(LogsPage()));
                   },
                   titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-                  subtitleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
+                  subtitleTextStyle: TextStyle(
+                      fontFamily: "Asap",
+                      color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
                 ),
                 SettingsTile(
                   title: 'Signaler un bug',
@@ -252,7 +281,9 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     Wiredash.of(context).show();
                   },
                   titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-                  subtitleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
+                  subtitleTextStyle: TextStyle(
+                      fontFamily: "Asap",
+                      color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
                 ),
                 /*SettingsTile.switchTile(
                   title: 'Secouer pour signaler',
@@ -280,30 +311,40 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     Navigator.of(context).push(router(ExportPage()));
                   },
                   titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-                  subtitleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
+                  subtitleTextStyle: TextStyle(
+                      fontFamily: "Asap",
+                      color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
                 ),
                 SettingsTile(
                   title: 'Réinitialiser le tutoriel',
                   leading: Icon(MdiIcons.restore, color: ThemeUtils.textColor()),
                   onTap: () async {
-                    if (await CustomDialogs.showConfirmationDialog(context, null, alternativeText: "Etes-vous sûr de vouloir réinitialiser le tutoriel ?", alternativeButtonConfirmText: "confirmer")) {
+                    if (await CustomDialogs.showConfirmationDialog(context, null,
+                        alternativeText: "Etes-vous sûr de vouloir réinitialiser le tutoriel ?",
+                        alternativeButtonConfirmText: "confirmer")) {
                       await HelpDialog.resetEveryHelpDialog();
                     }
                     HelpDialog.resetEveryHelpDialog();
                   },
                   titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-                  subtitleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
+                  subtitleTextStyle: TextStyle(
+                      fontFamily: "Asap",
+                      color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
                 ),
                 SettingsTile(
                   title: 'Supprimer les données hors ligne',
                   leading: Icon(MdiIcons.deleteAlert, color: ThemeUtils.textColor()),
                   onTap: () async {
-                    if (await CustomDialogs.showConfirmationDialog(context, null, alternativeText: "Etes-vous sûr de vouloir supprimer les données hors ligne ? (irréversible)")) {
+                    if (await CustomDialogs.showConfirmationDialog(context, null,
+                        alternativeText:
+                            "Etes-vous sûr de vouloir supprimer les données hors ligne ? (irréversible)")) {
                       await offline.clearAll();
                     }
                   },
                   titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-                  subtitleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
+                  subtitleTextStyle: TextStyle(
+                      fontFamily: "Asap",
+                      color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
                 ),
                 SettingsTile(
                   title: 'Note de mise à jour',
@@ -312,7 +353,9 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     CustomDialogs.showUpdateNoteDialog(context);
                   },
                   titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-                  subtitleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
+                  subtitleTextStyle: TextStyle(
+                      fontFamily: "Asap",
+                      color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
                 ),
                 SettingsTile(
                   title: 'A propos de cette application',
@@ -327,11 +370,15 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                           width: screenSize.size.width / 5 * 0.7,
                         ),
                         applicationName: "yNotes",
-                        applicationVersion: packageInfo.version + "+" + packageInfo.buildNumber + " T" + Tests.testVersion ?? "",
-                        applicationLegalese: "Developpé avec amour en France.\nAPI Pronote adaptée à l'aide de l'API pronotepy développée par Bain sous licence MIT.\nJe remercie la participation des bêta testeurs et des développeurs ayant participé au développement de l'application.");
+                        applicationVersion:
+                            packageInfo.version + "+" + packageInfo.buildNumber + " T" + Tests.testVersion ?? "",
+                        applicationLegalese:
+                            "Developpé avec amour en France.\nAPI Pronote adaptée à l'aide de l'API pronotepy développée par Bain sous licence MIT.\nJe remercie la participation des bêta testeurs et des développeurs ayant participé au développement de l'application.");
                   },
                   titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-                  subtitleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
+                  subtitleTextStyle: TextStyle(
+                      fontFamily: "Asap",
+                      color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
                 ),
                 if (!kReleaseMode)
                   SettingsTile(
@@ -343,7 +390,9 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                       await LocalNotification.showNewMailNotification(mail, content);
                     },
                     titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-                    subtitleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
+                    subtitleTextStyle: TextStyle(
+                        fontFamily: "Asap",
+                        color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
                   ),
               ],
             ),

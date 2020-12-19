@@ -100,7 +100,7 @@ class EcoleDirecteMethod {
 
   static nextHomework() async {
     await EcoleDirecteMethod.testToken();
-    List<DateTime> localDTList = await homeworkDates();
+
     List<Homework> homeworkList = List<Homework>();
     String rootUrl = 'https://api.ecoledirecte.com/v3/Eleves/';
     String method = "cahierdetexte.awp?verbe=get&";
@@ -108,6 +108,18 @@ class EcoleDirecteMethod {
     homeworkList = await request(
         data, rootUrl, method, EcoleDirecteConverter.unloadedHomework, "UHomework request returned an error:");
     await offline.homework.updateHomework(homeworkList);
+    List<DateTime> pinnedDates = await offline.pinnedHomework.getPinnedHomeworkDates();
+    
+    //Add pinned content
+    await Future.wait(pinnedDates.map((element) async {
+      List<Homework> pinnedHomework = await homeworkFor(element);
+      pinnedHomework.removeWhere((pinnedHWElement) => element.day != pinnedHWElement.date.day);
+      pinnedHomework.forEach((pinned) {
+        if (!homeworkList.any((hw) => hw.id == pinned.id)) {
+          homeworkList.add(pinned);
+        }
+      });
+    }));
     return homeworkList;
   }
 
