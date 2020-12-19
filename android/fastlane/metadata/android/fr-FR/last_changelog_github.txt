@@ -1,1 +1,4 @@
-Minor bug fixes.
+EcoleDirecte 
+Fixes for the new grades notification.
+Global UI fixes.
+Add a short showcase on the summary page (test).

@@ -6,6 +6,7 @@ import 'package:highlight_text/highlight_text.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:share/share.dart';
 import 'package:ynotes/UI/screens/summary/summaryPage.dart';
+import 'package:ynotes/UI/screens/summary/summaryPageWidgets/quickHomework.dart';
 import 'package:ynotes/apis/utils.dart';
 import 'package:ynotes/classes.dart';
 import 'package:ynotes/main.dart';

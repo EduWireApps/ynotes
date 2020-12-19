@@ -13,7 +13,7 @@ class HomeworkController extends ChangeNotifier {
   bool isFetching = false;
 
   get getHomework => _old;
-
+  
   refresh({bool force = false, refreshFromOffline = false}) async {
     //ED
     if (refreshFromOffline) {
