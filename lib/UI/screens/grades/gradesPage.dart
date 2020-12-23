@@ -16,6 +16,7 @@ import 'package:ynotes/UI/components/modalBottomSheets/disciplinesModalBottomShe
 import 'package:ynotes/UI/components/modalBottomSheets/gradesModalBottomSheet.dart';
 import 'package:ynotes/UI/components/showcaseTooltip.dart';
 import 'package:ynotes/classes.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/shared_preferences.dart';
 import 'package:ynotes/usefulMethods.dart';
@@ -36,7 +37,6 @@ String periodeToUse = "";
 String filter = "all";
 //If true, show a carousel
 bool firstStart = true;
-Future disciplinesListFuture;
 int initialIndexGradesOffset = 0;
 List specialties;
 List<Period> periods;
@@ -70,7 +70,6 @@ class _GradesPageState extends State<GradesPage> {
   @override
   Future<void> refreshLocalGradeList() async {
     setState(() {
-      allGradesOld = null;
       disciplinesListFuture = localApi.getGrades(forceReload: true);
     });
     var realdisciplinesListFuture = await disciplinesListFuture;

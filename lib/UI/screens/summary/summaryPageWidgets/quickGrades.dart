@@ -1,24 +1,39 @@
 import 'dart:math';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
+import 'package:ynotes/UI/screens/grades/gradesPage.dart';
 import 'package:ynotes/apis/Pronote.dart';
 import 'package:ynotes/classes.dart';
+import 'package:ynotes/globals.dart';
+import 'package:ynotes/main.dart';
+import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/utils/themeUtils.dart';
 
 class QuickGrades extends StatefulWidget {
   final List<Grade> grades;
   final Function callback;
   final Function refreshCallback;
-  const QuickGrades({Key key, this.grades, this.callback, this.refreshCallback})
-      : super(key: key);
+  const QuickGrades({Key key, this.grades, this.callback, this.refreshCallback}) : super(key: key);
   @override
   _QuickGradesState createState() => _QuickGradesState();
 }
 
 class _QuickGradesState extends State<QuickGrades> {
+  Future<void> refreshLocalGradesList() async {
+    print("refresh");
+    setState(() {
+      disciplinesListFuture = localApi.getGrades(forceReload: true);
+    });
+    var realGL = await disciplinesListFuture;
+    _refreshController.refreshCompleted();
+  }
+
+  RefreshController _refreshController = RefreshController(initialRefresh: false);
   Widget buildGradeCircle(Grade grade) {
     var screenSize = MediaQuery.of(context);
     return Container(
@@ -44,16 +59,14 @@ class _QuickGradesState extends State<QuickGrades> {
                     style: TextStyle(
                         color: (ThemeUtils.textColor()),
                         fontWeight: FontWeight.normal,
-                        fontSize:
-                            (screenSize.size.height / 10 * 8.8) / 10 * 0.4)),
+                        fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.4)),
               if (grade.nonSignificatif == true)
                 TextSpan(
                     text: ")",
                     style: TextStyle(
                         color: (ThemeUtils.textColor()),
                         fontWeight: FontWeight.normal,
-                        fontSize:
-                            (screenSize.size.height / 10 * 8.8) / 10 * 0.5)),
+                        fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.5)),
             ],
           ),
         ),
@@ -80,18 +93,14 @@ class _QuickGradesState extends State<QuickGrades> {
             children: [
               Text(
                 grade.libelleMatiere ?? "",
-                style: TextStyle(
-                    color: ThemeUtils.textColor(), fontFamily: "Asap"),
+                style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
                 textAlign: TextAlign.left,
               )
             ],
           ),
           Text(
             grade.devoir ?? "",
-            style: TextStyle(
-                color: ThemeUtils.textColor(),
-                fontFamily: "Asap",
-                fontWeight: FontWeight.bold),
+            style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontWeight: FontWeight.bold),
             textAlign: TextAlign.left,
           ),
           Text(
@@ -120,15 +129,28 @@ class _QuickGradesState extends State<QuickGrades> {
     } else {
       return Container(
         height: screenSize.size.height / 10 * 1.2,
-        child: RefreshIndicator(
-          onRefresh: widget.refreshCallback,
+        child: SmartRefresher(
+          onRefresh: refreshLocalGradesList,
+          enablePullDown: true,
+          controller: _refreshController,
+          scrollDirection: Axis.horizontal,
+          cacheExtent: screenSize.size.width / 5 * 1.8,
+          header: ClassicHeader(
+            height: screenSize.size.width / 5 * 1.8,
+            textStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+            refreshingText: "Chargement...",
+            completeText: "Terminé !",
+            failedText: "Une erreur a eu lieu...",
+            releaseText: "Lacher pour rafraichir",
+            idleText: "Tirer pour rafraichir",
+            completeIcon: Icon(Icons.done, color: Colors.green),
+          ),
           child: ListView.builder(
               itemCount: widget.grades.length,
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) {
                 return Card(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(11)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
                   color: Theme.of(context).primaryColor,
                   child: Material(
                     borderRadius: BorderRadius.circular(11),
@@ -136,16 +158,14 @@ class _QuickGradesState extends State<QuickGrades> {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(11),
                       onLongPress: () {
-                        CustomDialogs.showShareGradeDialog(
-                            context, widget.grades[index]);
+                        CustomDialogs.showShareGradeDialog(context, widget.grades[index]);
                       },
                       onTap: () {
                         widget.callback(3);
                       },
                       child: Container(
                         padding: EdgeInsets.symmetric(
-                            horizontal: screenSize.size.width / 5 * 0.1,
-                            vertical: screenSize.size.height / 10 * 0.1),
+                            horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.height / 10 * 0.1),
                         height: screenSize.size.height / 10 * 0.5,
                         child: buildGradeItem(widget.grades[index]),
                       ),

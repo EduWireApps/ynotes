@@ -18,7 +18,7 @@ class ExportPage extends StatefulWidget {
 
 class _ExportPageState extends State<ExportPage> {
   bool exportPinnedHomework = false;
-  bool exportReminders = false;
+  bool exportEvents = false;
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
@@ -65,13 +65,13 @@ class _ExportPageState extends State<ExportPage> {
                 }),
             SwitchListTile(
                 title: Text(
-                  "Exporter mes rappels",
+                  "Exporter mes évènements (agenda et rappels)",
                   style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                 ),
-                value: exportReminders,
+                value: exportEvents,
                 onChanged: (newValue) {
                   setState(() {
-                    exportReminders = newValue;
+                    exportEvents = newValue;
                   });
                 }),
             Row(
@@ -100,6 +100,22 @@ class _ExportPageState extends State<ExportPage> {
                         Map dates = jsonDecode(decoded["pinnedHomework"]);
                         await HiveBackUpManager(offline.pinnedHomeworkBox, dataToImport: dates).import();
                       }
+
+                      //Try to import lessons
+                      if (decoded["lessons"] != null && jsonDecode(decoded["reminders"]) != null) {
+                        print("Importing lessons");
+                        Map lessons = jsonDecode(decoded["lessons"]);
+                        await HiveBackUpManager(offline.pinnedHomeworkBox, dataToImport: lessons, subBoxName: "lessons")
+                            .import();
+                      }
+                      //Try to import agenda events
+                      if (decoded["agendaEvents"] != null && jsonDecode(decoded["agendaEvents"]) != null) {
+                        print("Importing agenda events");
+                        Map agendaEvents = jsonDecode(decoded["agendaEvents"]);
+                        await HiveBackUpManager(offline.pinnedHomeworkBox,
+                                dataToImport: agendaEvents, subBoxName: "agendaEvents")
+                            .import();
+                      }
                       //Try to import reminders
                       if (decoded["reminders"] != null && jsonDecode(decoded["reminders"]) != null) {
                         print("Importing reminders");
@@ -107,7 +123,8 @@ class _ExportPageState extends State<ExportPage> {
                         jsonDecode(decoded["reminders"]).forEach((e) {
                           reminders.add(AgendaReminder.fromJson(e));
                         });
-                        await HiveBackUpManager(offline.offlineBox, subBoxName: "reminders", dataToImport: reminders).import();
+                        await HiveBackUpManager(offline.offlineBox, subBoxName: "reminders", dataToImport: reminders)
+                            .import();
                       }
                     }
                   },
@@ -122,7 +139,7 @@ class _ExportPageState extends State<ExportPage> {
                 RaisedButton(
                   color: Colors.blue,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
-                  onPressed: (exportPinnedHomework || exportReminders)
+                  onPressed: (exportPinnedHomework || exportEvents)
                       ? () async {
                           Map json = Map();
                           if (exportPinnedHomework) {
@@ -130,7 +147,10 @@ class _ExportPageState extends State<ExportPage> {
                             json["homework"] = HiveBackUpManager(offline.offlineBox, subBoxName: "homework").export();
                           }
 
-                          if (exportReminders) {
+                          if (exportEvents) {
+                            json["lessons"] = HiveBackUpManager(offline.offlineBox, subBoxName: "lessons").export();
+                            json["agendaEvents"] =
+                                HiveBackUpManager(offline.offlineBox, subBoxName: "agendaEvents").export();
                             json["reminders"] = HiveBackUpManager(offline.offlineBox, subBoxName: "reminders").export();
                           }
                           //Write save file

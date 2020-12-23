@@ -618,8 +618,7 @@ abstract class API {
         if (recurringEvent.start != null && recurringEvent.end != null) {
           recurringEvent.start =
               DateTime(date.year, date.month, date.day, recurringEvent.start.hour, recurringEvent.start.minute);
-          recurringEvent.end =
-              DateTime(date.year, date.month, date.day, recurringEvent.end.hour, recurringEvent.end.minute);
+          recurringEvent.end = DateTime(date.year, date.month, date.day, recurringEvent.end.hour, recurringEvent.end.minute);
         }
       });
 

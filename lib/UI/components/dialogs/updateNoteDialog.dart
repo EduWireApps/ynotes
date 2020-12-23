@@ -36,7 +36,7 @@ class _UpdateNoteDialogState extends State<UpdateNoteDialog> {
     return AlertDialog(
       insetPadding: EdgeInsets.zero,
       contentPadding: EdgeInsets.all(0.0),
-      backgroundColor: darken(Theme.of(context).primaryColorDark, forceAmount: 0.01),
+      backgroundColor: ThemeUtils.darken(Theme.of(context).primaryColorDark, forceAmount: 0.01),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0))),
       content: Container(
         width: screenSize.size.width / 5 * 4.7,
@@ -61,7 +61,7 @@ class _UpdateNoteDialogState extends State<UpdateNoteDialog> {
                 height: MediaQuery.of(context).size.height / 10 * 5.3,
                 child: Markdown(
                     selectable: true,
-                    data: markdown??"",
+                    data: markdown ?? "",
                     styleSheet: MarkdownStyleSheet(
                       p: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                       listBullet: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),

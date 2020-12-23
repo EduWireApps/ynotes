@@ -80,10 +80,14 @@ _buildEventChoiceButton(BuildContext context, String content, Color color, IconD
   return Container(
     margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.1),
     decoration: BoxDecoration(
-      borderRadius: BorderRadius.only(topLeft: Radius.circular(18), topRight: Radius.circular(18), bottomLeft: Radius.circular(18), bottomRight: Radius.circular(18)),
+      borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(18),
+          topRight: Radius.circular(18),
+          bottomLeft: Radius.circular(18),
+          bottomRight: Radius.circular(18)),
       boxShadow: [
         BoxShadow(
-          color: darken(Theme.of(context).primaryColor).withOpacity(0.8),
+          color: ThemeUtils.darken(Theme.of(context).primaryColor).withOpacity(0.8),
           spreadRadius: 0.2,
           blurRadius: 5,
           offset: Offset(0, 3), // changes position of shadow
@@ -94,14 +98,14 @@ _buildEventChoiceButton(BuildContext context, String content, Color color, IconD
       borderRadius: BorderRadius.circular(18),
       child: Material(
         child: InkWell(
-          splashColor: darken(color),
+          splashColor: ThemeUtils.darken(color),
           onTap: () async {},
           child: Container(
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment(1.4, 0.0), // 10% of the width, so there are ten blinds.
-                  colors: [darken(color, forceAmount: 0.3), color], // whitish to gray
+                  colors: [ThemeUtils.darken(color, forceAmount: 0.3), color], // whitish to gray
                   tileMode: TileMode.repeated, // repeats the gradient over the canvas
                 ),
               ),
@@ -118,12 +122,14 @@ _buildEventChoiceButton(BuildContext context, String content, Color color, IconD
                             alignment: Alignment.centerLeft,
                             child: Icon(
                               icon,
-                              color: darken(color, forceAmount: 0.8).withOpacity(0.2),
+                              color: ThemeUtils.darken(color, forceAmount: 0.8).withOpacity(0.2),
                               size: screenSize.size.width / 5 * 1.2,
                             ))),
                   ),
                   Center(
-                    child: AutoSizeText(content, style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w300, fontSize: 28), textAlign: TextAlign.center),
+                    child: AutoSizeText(content,
+                        style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w300, fontSize: 28),
+                        textAlign: TextAlign.center),
                   ),
                 ],
               )),

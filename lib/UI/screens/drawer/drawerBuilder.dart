@@ -29,6 +29,7 @@ import 'package:ynotes/main.dart';
 import 'package:ynotes/models.dart';
 import 'package:ynotes/notifications.dart';
 import 'package:ynotes/usefulMethods.dart';
+import 'package:ynotes/utils/themeUtils.dart';
 
 import 'drawerBuilderWidgets/drawer.dart';
 
@@ -112,6 +113,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
   @override
   void initState() {
     super.initState();
+
     AwesomeNotifications().initialize(null, [
       NotificationChannel(
           channelKey: 'alarm',
@@ -139,7 +141,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
       end: 0.0,
     ).animate(new CurvedAnimation(
         parent: showTransparentLoginStatusController, curve: Interval(0.1, 1.0, curve: Curves.fastOutSlowIn)));
-    initPlatformState();
+    initBackgroundTask();
 
     _overlayEntry = OverlayEntry(
       builder: (BuildContext context) => QuickMenu(removeQuickMenu),
@@ -234,7 +236,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                   )),
             ),
           ),
-          backgroundColor: darken(Theme.of(context).backgroundColor, forceAmount: 0.05),
+          backgroundColor: ThemeUtils.darken(Theme.of(context).backgroundColor, forceAmount: 0.05),
           body: Stack(
             children: <Widget>[
               ClipRRect(
@@ -250,7 +252,9 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                             builder: (context, value, child) {
                               return AppBar(
                                   shadowColor: Colors.transparent,
-                                  backgroundColor: Theme.of(context).primaryColorLight,
+                                  backgroundColor: isDarkModeEnabled
+                                      ? Theme.of(context).primaryColorLight
+                                      : Theme.of(context).primaryColorDark,
                                   title: Text(entries[value]["menuName"]),
                                   actions: [
                                     if ([0, 1, 4].contains(value))
@@ -339,10 +343,10 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                             opacity: 0.8,
                             child: Container(
                               margin: EdgeInsets.only(
-                                  left: screenSize.size.width / 5 * 1.0,
-                                  right: screenSize.size.width / 5 * 1,
-                                  top: screenSize.size.height / 10 * 0.1),
-                              height: screenSize.size.height / 10 * 0.55,
+                                  left: screenSize.size.width / 5 * 2.25, top: screenSize.size.height / 10 * 0.1),
+                              height: screenSize.size.width / 5 * 0.5,
+                              width: screenSize.size.width / 5 * 0.5,
+                              padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
                               decoration: BoxDecoration(
                                 color: case2(model.actualState, {
                                   loginStatus.loggedIn: Colors.green,
@@ -350,7 +354,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                                   loginStatus.error: Colors.red.shade500,
                                   loginStatus.offline: Colors.orange,
                                 }),
-                                borderRadius: BorderRadius.all(Radius.circular(11)),
+                                borderRadius: BorderRadius.all(Radius.circular(1000)),
                               ),
                               child: FittedBox(
                                 child: Row(
@@ -360,19 +364,27 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                                       model.actualState,
                                       {
                                         loginStatus.loggedOff: SpinKitThreeBounce(
-                                          size: screenSize.size.width / 5 * 0.4,
+                                          size: screenSize.size.width / 5 * 0.3,
                                           color: Theme.of(context).primaryColorDark,
                                         ),
                                         loginStatus.offline: Icon(
                                           MdiIcons.networkStrengthOff,
+                                          size: screenSize.size.width / 5 * 0.3,
                                           color: Theme.of(context).primaryColorDark,
                                         ),
-                                        loginStatus.error: Icon(
-                                          MdiIcons.exclamation,
-                                          color: Theme.of(context).primaryColorDark,
+                                        loginStatus.error: GestureDetector(
+                                          onTap: () async {
+                                            await model.login();
+                                          },
+                                          child: Icon(
+                                            MdiIcons.exclamation,
+                                            size: screenSize.size.width / 5 * 0.3,
+                                            color: Theme.of(context).primaryColorDark,
+                                          ),
                                         ),
                                         loginStatus.loggedIn: Icon(
                                           MdiIcons.check,
+                                          size: screenSize.size.width / 5 * 0.3,
                                           color: Theme.of(context).primaryColorDark,
                                         )
                                       },
@@ -381,7 +393,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                                         color: Theme.of(context).primaryColorDark,
                                       ),
                                     ),
-                                    FittedBox(
+                                    /*FittedBox(
                                       child: Row(
                                         children: <Widget>[
                                           Text(
@@ -404,7 +416,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                                             ),
                                         ],
                                       ),
-                                    )
+                                    )*/
                                   ],
                                 ),
                               ),
@@ -419,10 +431,8 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
     );
   }
 
-  Future<void> initPlatformState() async {
-    bool saveBattery = await getSetting("batterySaver");
-    // Configure BackgroundFetch.
-    BackgroundFetch.configure(
+  Future<void> initBackgroundTask() async {
+    /* BackgroundFetch.configure(
         BackgroundFetchConfig(
           minimumFetchInterval: 15,
           forceAlarmManager: false,
@@ -436,7 +446,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
           requiredNetworkType: NetworkType.NONE,
         ), (String taskId) async {
       // This is the fetch-event callback.
-
+/*
       print("Starting the headless closed bakground task");
       var initializationSettingsAndroid = new AndroidInitializationSettings('newgradeicon');
       var initializationSettingsIOS = new IOSInitializationSettings();
@@ -471,14 +481,14 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
       } else {
         print("On going notification disabled");
       }
-      BackgroundFetch.finish(taskId);
     }).then((int status) {
-      print('[BackgroundFetch] configure success: $status');
+      print('[BackgroundFetch] configure success: $status');*/
+      BackgroundFetch.finish(taskId);
     });
     // If the widget was removed from the tree while the asynchronous platform
     // message was in flight, we want to discard the reply rather than calling
     // setState to update our non-existent appearance.
-    if (!mounted) return;
+    if (!mounted) return;*/
   }
 
   _switchPage(int index) {

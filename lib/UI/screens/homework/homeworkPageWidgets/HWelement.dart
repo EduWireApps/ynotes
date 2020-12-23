@@ -135,8 +135,8 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                             if (this.widget.homeworkForThisDay.loaded)
                               Container(
                                 color: isDarkModeEnabled
-                                    ? darken(Theme.of(context).primaryColorDark, forceAmount: 0.1)
-                                    : darken(Theme.of(context).primaryColor, forceAmount: 0.03),
+                                    ? ThemeUtils.darken(Theme.of(context).primaryColorDark, forceAmount: 0.1)
+                                    : ThemeUtils.darken(Theme.of(context).primaryColor, forceAmount: 0.03),
                                 width: screenSize.size.width / 5 * 4.5,
                                 height: isExpanded ? null : 0,
                                 child: Container(
@@ -193,7 +193,7 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                                 child: TeXView(
                                               child: TeXViewDocument(element.text,
                                                   style: TeXViewStyle.fromCSS(
-                                                      """background-color: #${(isDarkModeEnabled ? darken(Theme.of(context).primaryColorDark, forceAmount: 0.1) : darken(Theme.of(context).primaryColor, forceAmount: 0.03)).toCSSColor()}; color: #${ThemeUtils.textColor().toCSSColor()}""")),
+                                                      """background-color: #${(isDarkModeEnabled ? ThemeUtils.darken(Theme.of(context).primaryColorDark, forceAmount: 0.1) : ThemeUtils.darken(Theme.of(context).primaryColor, forceAmount: 0.03)).toCSSColor()}; color: #${ThemeUtils.textColor().toCSSColor()}""")),
                                             ));
                                           } catch (e) {
                                             return Container();
@@ -302,7 +302,7 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                                         child: Container(
                                                           height: screenSize.size.height / 10 * 0.5,
                                                           decoration: BoxDecoration(
-                                                              color: darken(Color(0xff5FA9DA)),
+                                                              color: ThemeUtils.darken(Color(0xff5FA9DA)),
                                                               borderRadius: BorderRadius.circular(50)),
                                                           child: ViewModelBuilder<DownloadModel>.reactive(
                                                               viewModelBuilder: () => DownloadModel(),

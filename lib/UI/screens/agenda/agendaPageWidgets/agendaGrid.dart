@@ -10,6 +10,7 @@ import 'package:ynotes/UI/screens/agenda/agendaPageWidgets/agendaElement.dart';
 import 'package:ynotes/UI/screens/agenda/agendaPageWidgets/spaceAgenda.dart';
 import 'package:ynotes/apis/utils.dart';
 import 'package:ynotes/classes.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/notifications.dart';
 import 'package:ynotes/utils/themeUtils.dart';
@@ -57,7 +58,8 @@ class _AgendaGridState extends State<AgendaGrid> {
 
     for (AgendaEvent ev in _events) {
       if (!ev.wholeDay) {
-        if (lastEventEnding != null && (ev.start.isAfter(lastEventEnding) || ev.start.isAtSameMomentAs(lastEventEnding))) {
+        if (lastEventEnding != null &&
+            (ev.start.isAfter(lastEventEnding) || ev.start.isAtSameMomentAs(lastEventEnding))) {
           packEvents(columns);
           columns.clear();
           lastEventEnding = null;
@@ -210,7 +212,9 @@ class _AgendaGridState extends State<AgendaGrid> {
     return AnimatedContainer(
       duration: Duration(milliseconds: 250),
       decoration: BoxDecoration(
-          color: widget.afterSchool ? darken(ThemeUtils.spaceColor(), forceAmount:0.01).withOpacity(0.9) : Theme.of(context).primaryColorDark.withOpacity(0.9),
+          color: widget.afterSchool
+              ? ThemeUtils.darken(ThemeUtils.spaceColor(), forceAmount: 0.01).withOpacity(0.9)
+              : Theme.of(context).primaryColorDark.withOpacity(0.9),
           borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(5),
             bottomRight: Radius.circular(5),
@@ -242,7 +246,8 @@ class _AgendaGridState extends State<AgendaGrid> {
                               //Getting color before
                               _event.color = await getColor(_event.lesson.codeMatiere);
                             }
-                            var temp = await agendaEventEdit(context, true, defaultDate: _event.start, customEvent: _event);
+                            var temp =
+                                await agendaEventEdit(context, true, defaultDate: _event.start, customEvent: _event);
 
                             if (temp != null) {
                               if (temp != "removed") {
@@ -293,7 +298,10 @@ class _AgendaGridState extends State<AgendaGrid> {
                             child: Center(
                               child: FittedBox(
                                 child: Text(
-                                  (_events.where((element) => element.wholeDay).toList()[index].name != null && _events.where((element) => element.wholeDay).toList()[index].name != "") ? _events.where((element) => element.wholeDay).toList()[index].name : "(sans nom)",
+                                  (_events.where((element) => element.wholeDay).toList()[index].name != null &&
+                                          _events.where((element) => element.wholeDay).toList()[index].name != "")
+                                      ? _events.where((element) => element.wholeDay).toList()[index].name
+                                      : "(sans nom)",
                                   style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                                 ),
                               ),
@@ -337,9 +345,13 @@ class _AgendaGridState extends State<AgendaGrid> {
                 child: Stack(
                   children: [
                     Container(
-                      padding: EdgeInsets.only(top: screenSize.size.height / 10 * (_events.any((element) => element.wholeDay) ? 0.8 : 0)),
+                      padding: EdgeInsets.only(
+                          top: screenSize.size.height / 10 * (_events.any((element) => element.wholeDay) ? 0.8 : 0)),
                       child: Column(
-                        children: List.generate(((_getEndHour(_events).hour - _getStartHour(_events).hour)) < 0 ? 0 : ((_getEndHour(_events).hour - _getStartHour(_events).hour)), (int index) {
+                        children: List.generate(
+                            ((_getEndHour(_events).hour - _getStartHour(_events).hour)) < 0
+                                ? 0
+                                : ((_getEndHour(_events).hour - _getStartHour(_events).hour)), (int index) {
                           if (index != 0) {
                             return GestureDetector(
                               onTapUp: (_) {
@@ -377,10 +389,13 @@ class _AgendaGridState extends State<AgendaGrid> {
                       ),
                     ),
                     for (AgendaEvent i in _events)
-                      if (!i.wholeDay && _getPosition(_getStartHour(_events), i) != null && (this.widget.afterSchool ? !i.isLesson : true))
+                      if (!i.wholeDay &&
+                          _getPosition(_getStartHour(_events), i) != null &&
+                          (this.widget.afterSchool ? !i.isLesson : true))
                         Positioned(
                           left: screenSize.size.width / 5 * 0.2,
-                          top: _getPosition(_getStartHour(_events), i) + screenSize.size.height / 10 * (_events.any((element) => element.wholeDay) ? 0.8 : 0),
+                          top: _getPosition(_getStartHour(_events), i) +
+                              screenSize.size.height / 10 * (_events.any((element) => element.wholeDay) ? 0.8 : 0),
                           child: AgendaElement(
                             i,
                             defaultGridHeight * _scaleFactor * i.end.difference(i.start).inMinutes / 60,
@@ -392,7 +407,8 @@ class _AgendaGridState extends State<AgendaGrid> {
                     if (_getStartHour(_events) != null && CalendarTime(agendaDate).isToday)
                       AnimatedPositioned(
                         duration: Duration(milliseconds: 500),
-                        top: _getBarPosition(_getStartHour(_events)) + screenSize.size.height / 10 * (_events.any((element) => element.wholeDay) ? 0.8 : 0),
+                        top: _getBarPosition(_getStartHour(_events)) +
+                            screenSize.size.height / 10 * (_events.any((element) => element.wholeDay) ? 0.8 : 0),
                         child: Row(
                           children: [
                             Container(

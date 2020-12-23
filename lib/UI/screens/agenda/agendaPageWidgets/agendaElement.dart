@@ -9,10 +9,11 @@ import 'package:ynotes/UI/screens/agenda/agendaPageWidgets/spaceAgenda.dart';
 import 'package:ynotes/apis/EcoleDirecte.dart';
 import 'package:ynotes/apis/utils.dart';
 import 'package:ynotes/classes.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/main.dart';
-import 'package:ynotes/models/agenda/values.dart';
 import 'package:ynotes/notifications.dart';
 import 'package:ynotes/usefulMethods.dart';
+import 'package:ynotes/utils/themeUtils.dart';
 
 class AgendaElement extends StatefulWidget {
   AgendaEvent event;
@@ -79,12 +80,23 @@ class _AgendaElementState extends State<AgendaElement> {
                 final f = new DateFormat('H:mm');
                 return Container(
                   decoration: BoxDecoration(boxShadow: [
-                    BoxShadow(offset: const Offset(3.0, 3.0), blurRadius: 5.0, spreadRadius: 0.1, color: Colors.black.withOpacity(0.1)),
+                    BoxShadow(
+                        offset: const Offset(3.0, 3.0),
+                        blurRadius: 5.0,
+                        spreadRadius: 0.1,
+                        color: Colors.black.withOpacity(0.1)),
                   ]),
-                  margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.1, left: screenSize.size.width / 5 * this.widget.position),
+                  margin: EdgeInsets.only(
+                      bottom: screenSize.size.height / 10 * 0.1,
+                      left: screenSize.size.width / 5 * this.widget.position),
                   child: Material(
-                    borderRadius:
-                        BorderRadius.only(topLeft: Radius.circular(5), topRight: Radius.circular(5), bottomLeft: Radius.circular(screenSize.size.height / 10 * (this.widget.height - 0.2) > 0 ? 0 : 5), bottomRight: Radius.circular(screenSize.size.height / 10 * (this.widget.height - 0.2) > 0 ? 0 : 5)),
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(5),
+                        topRight: Radius.circular(5),
+                        bottomLeft:
+                            Radius.circular(screenSize.size.height / 10 * (this.widget.height - 0.2) > 0 ? 0 : 5),
+                        bottomRight:
+                            Radius.circular(screenSize.size.height / 10 * (this.widget.height - 0.2) > 0 ? 0 : 5)),
                     color: color,
                     child: InkWell(
                       borderRadius: BorderRadius.only(topLeft: Radius.circular(5), topRight: Radius.circular(5)),
@@ -94,7 +106,8 @@ class _AgendaElementState extends State<AgendaElement> {
                           //Getting color before
                           _event.color = await getColor(this.widget.event.lesson.codeMatiere);
                         }
-                        var temp = await agendaEventEdit(context, true, defaultDate: this.widget.event.start, customEvent: _event);
+                        var temp = await agendaEventEdit(context, true,
+                            defaultDate: this.widget.event.start, customEvent: _event);
 
                         if (temp != null) {
                           if (temp != "removed") {
@@ -140,8 +153,9 @@ class _AgendaElementState extends State<AgendaElement> {
                           if ((screenSize.size.height / 10 * (this.widget.height - 0.2)) > 0)
                             Container(
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.only(topLeft: Radius.circular(5), topRight: Radius.circular(5)),
-                                color: darken(color),
+                                borderRadius:
+                                    BorderRadius.only(topLeft: Radius.circular(5), topRight: Radius.circular(5)),
+                                color: ThemeUtils.darken(color),
                               ),
                               height: screenSize.size.height / 10 * 0.2,
                               width: screenSize.size.width / 5 * this.widget.width,
@@ -151,7 +165,9 @@ class _AgendaElementState extends State<AgendaElement> {
                           Container(
                               key: ValueKey<bool>(buttons),
                               width: screenSize.size.width / 5 * this.widget.width,
-                              height: (screenSize.size.height / 10 * (this.widget.height - 0.2)) > 0 ? (screenSize.size.height / 10 * (this.widget.height - 0.2)) : screenSize.size.height / 10 * 0.2,
+                              height: (screenSize.size.height / 10 * (this.widget.height - 0.2)) > 0
+                                  ? (screenSize.size.height / 10 * (this.widget.height - 0.2))
+                                  : screenSize.size.height / 10 * 0.2,
                               child: Stack(
                                 children: [
                                   AnimatedOpacity(
@@ -168,7 +184,9 @@ class _AgendaElementState extends State<AgendaElement> {
                                   ),
                                   Container(
                                       width: screenSize.size.width / 5 * 4.2,
-                                      padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.3, vertical: screenSize.size.height / 10 * 0.1),
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: screenSize.size.width / 5 * 0.3,
+                                          vertical: screenSize.size.height / 10 * 0.1),
                                       child: Wrap(
                                         spacing: screenSize.size.width / 5 * 3.2,
                                         children: [
@@ -182,10 +200,17 @@ class _AgendaElementState extends State<AgendaElement> {
                                                 textAlign: TextAlign.left,
                                                 minFontSize: 12,
                                               ),
-                                              if (this.widget.event.alarm != null && this.widget.event.alarm != alarmType.none) Container(width: screenSize.size.width / 5 * 0.3, child: FittedBox(child: Icon(Icons.notifications_active_outlined))),
+                                              if (this.widget.event.alarm != null &&
+                                                  this.widget.event.alarm != alarmType.none)
+                                                Container(
+                                                    width: screenSize.size.width / 5 * 0.3,
+                                                    child: FittedBox(child: Icon(Icons.notifications_active_outlined))),
                                             ],
                                           ),
-                                          if (this.widget.event.isLesson && widget.event.lesson.teachers != null && widget.event.lesson.teachers.length > 0 && widget.event.lesson.teachers[0] != "")
+                                          if (this.widget.event.isLesson &&
+                                              widget.event.lesson.teachers != null &&
+                                              widget.event.lesson.teachers.length > 0 &&
+                                              widget.event.lesson.teachers[0] != "")
                                             Wrap(children: [
                                               AutoSizeText(
                                                 widget.event.lesson.teachers[0],
@@ -199,7 +224,9 @@ class _AgendaElementState extends State<AgendaElement> {
                                             spacing: screenSize.size.width / 5 * 0.1,
                                             children: [
                                               AutoSizeText(
-                                                f.format(widget.event.start) + " - " + f.format(widget.event.end).toString(),
+                                                f.format(widget.event.start) +
+                                                    " - " +
+                                                    f.format(widget.event.end).toString(),
                                                 style: TextStyle(
                                                   fontFamily: "Asap",
                                                   fontWeight: FontWeight.w200,

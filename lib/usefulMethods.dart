@@ -110,32 +110,7 @@ setIntSetting(String setting, int value) async {
   prefs.setInt(setting, value);
 }
 
-///Make the selected color darker
-Color darken(Color color, {double forceAmount}) {
-  double amount = 0.05;
-  var ColorTest = TinyColor(color);
-  //Test if the color is not too light
-  if (forceAmount == null) {
-    if (ColorTest.isLight()) {
-      amount = 0.2;
-    }
-    //Test if the color is something like yellow
-    if (ColorTest.getLuminance() > 0.5) {
-      amount = 0.2;
-    }
-    if (ColorTest.getLuminance() < 0.5) {
-      amount = 0.18;
-    }
-  } else {
-    amount = forceAmount;
-  }
-  assert(amount >= 0 && amount <= 1);
 
-  final hsl = HSLColor.fromColor(color);
-  final hslDark = hsl.withLightness((hsl.lightness - amount).clamp(0.0, 1.0));
-
-  return hslDark.toColor();
-}
 
 //Connectivity  classs
 
@@ -201,7 +176,6 @@ class ConnectionStatusSingleton {
   }
 }
 
-List<Grade> allGradesOld;
 //Get only grades as a list
 List<Grade> getAllGrades(List<Discipline> list, {bool overrideLimit = false}) {
   if (localApi != null) {

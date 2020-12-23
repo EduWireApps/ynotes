@@ -58,27 +58,24 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             if (widget.event.name != null)
-              ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: screenSize.size.width * 0.8),
-                child: FittedBox(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.05),
-                        decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(25)), color: widget.event.realColor),
-                        padding: EdgeInsets.all(5),
-                        child: FittedBox(
-                          child: Text(
-                            widget.event.name != "" && widget.event.name != null ? widget.event.name : "(sans nom)",
-                            style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w700),
-                            textAlign: TextAlign.center,
-                          ),
+              FittedBox(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.05),
+                      decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(25)), color: widget.event.realColor),
+                      padding: EdgeInsets.all(5),
+                      child: FittedBox(
+                        child: Text(
+                          widget.event.name != "" && widget.event.name != null ? widget.event.name : "(sans nom)",
+                          style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w700),
+                          textAlign: TextAlign.center,
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             SizedBox(
@@ -193,6 +190,7 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                         },
                         child: Card(
                             margin: EdgeInsets.only(right: screenSize.size.width / 5 * 0.05),
+                            
                             color: Theme.of(context).primaryColorDark,
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
                             child: Container(

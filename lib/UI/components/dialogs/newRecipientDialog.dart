@@ -23,8 +23,9 @@ class _NewRecipientDialogState extends State<NewRecipientDialog> {
     var screenSize = MediaQuery.of(context);
     return AlertDialog(
       insetPadding: EdgeInsets.zero,
-      contentPadding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.2, vertical: screenSize.size.height / 10 * 0.1),
-      backgroundColor: darken(Theme.of(context).primaryColorDark, forceAmount: 0.01),
+      contentPadding: EdgeInsets.symmetric(
+          horizontal: screenSize.size.width / 5 * 0.2, vertical: screenSize.size.height / 10 * 0.1),
+      backgroundColor: ThemeUtils.darken(Theme.of(context).primaryColorDark, forceAmount: 0.01),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0))),
       content: Container(
         width: screenSize.size.width / 5 * 3.2,
@@ -35,7 +36,10 @@ class _NewRecipientDialogState extends State<NewRecipientDialog> {
             GestureDetector(
               onTap: () {
                 if (nameController.text != "" && surnameController.text != '' && idController.text != "") {
-                  Navigator.pop(context, Recipient(nameController.text, surnameController.text, idController.text, isTeacher, disciplineController.text));
+                  Navigator.pop(
+                      context,
+                      Recipient(nameController.text, surnameController.text, idController.text, isTeacher,
+                          disciplineController.text));
                 } else {
                   CustomDialogs.showAnyDialog(context, "Entrez un nom, un prénom et un ID");
                 }
@@ -47,21 +51,31 @@ class _NewRecipientDialogState extends State<NewRecipientDialog> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Container(margin: EdgeInsets.only(top: screenSize.size.width / 5 * 0.2), height: (screenSize.size.height / 10 * 8.8) / 10 * 0.75, width: screenSize.size.width / 5 * 2, child: Icon(MdiIcons.check, color: ThemeUtils.textColor())),
+                    Container(
+                        margin: EdgeInsets.only(top: screenSize.size.width / 5 * 0.2),
+                        height: (screenSize.size.height / 10 * 8.8) / 10 * 0.75,
+                        width: screenSize.size.width / 5 * 2,
+                        child: Icon(MdiIcons.check, color: ThemeUtils.textColor())),
                   ],
                 ),
               ),
             ),
             Text(
               "Contact personnalisé",
-              style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor().withOpacity(0.5), fontSize: screenSize.size.width / 5 * 0.35),
+              style: TextStyle(
+                  fontFamily: "Asap",
+                  color: ThemeUtils.textColor().withOpacity(0.5),
+                  fontSize: screenSize.size.width / 5 * 0.35),
               textAlign: TextAlign.center,
             ),
             SwitchListTile(
                 contentPadding: EdgeInsets.zero,
                 title: Text(
                   'Professeur',
-                  style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor().withOpacity(0.8), fontSize: screenSize.size.width / 5 * 0.25),
+                  style: TextStyle(
+                      fontFamily: "Asap",
+                      color: ThemeUtils.textColor().withOpacity(0.8),
+                      fontSize: screenSize.size.width / 5 * 0.25),
                 ),
                 value: isTeacher,
                 onChanged: (nValue) {
@@ -74,11 +88,15 @@ class _NewRecipientDialogState extends State<NewRecipientDialog> {
               height: screenSize.size.height / 10 * 0.6,
               child: TextField(
                 controller: nameController,
-                style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.width / 5 * 0.35),
+                style: TextStyle(
+                    fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.width / 5 * 0.35),
                 decoration: new InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Prénom',
-                  labelStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.5) : Colors.black.withOpacity(0.5), fontSize: screenSize.size.width / 5 * 0.35),
+                  labelStyle: TextStyle(
+                      fontFamily: "Asap",
+                      color: isDarkModeEnabled ? Colors.white.withOpacity(0.5) : Colors.black.withOpacity(0.5),
+                      fontSize: screenSize.size.width / 5 * 0.35),
                 ),
               ),
             ),
@@ -87,11 +105,15 @@ class _NewRecipientDialogState extends State<NewRecipientDialog> {
               height: screenSize.size.height / 10 * 0.6,
               child: TextField(
                 controller: surnameController,
-                style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.width / 5 * 0.35),
+                style: TextStyle(
+                    fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.width / 5 * 0.35),
                 decoration: new InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Nom de famille',
-                  labelStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor().withOpacity(0.5), fontSize: screenSize.size.width / 5 * 0.35),
+                  labelStyle: TextStyle(
+                      fontFamily: "Asap",
+                      color: ThemeUtils.textColor().withOpacity(0.5),
+                      fontSize: screenSize.size.width / 5 * 0.35),
                 ),
               ),
             ),
@@ -100,11 +122,15 @@ class _NewRecipientDialogState extends State<NewRecipientDialog> {
               height: screenSize.size.height / 10 * 0.6,
               child: TextField(
                 controller: disciplineController,
-                style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.width / 5 * 0.35),
+                style: TextStyle(
+                    fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.width / 5 * 0.35),
                 decoration: new InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Matière',
-                  labelStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor().withOpacity(0.5), fontSize: screenSize.size.width / 5 * 0.35),
+                  labelStyle: TextStyle(
+                      fontFamily: "Asap",
+                      color: ThemeUtils.textColor().withOpacity(0.5),
+                      fontSize: screenSize.size.width / 5 * 0.35),
                 ),
               ),
             ),
@@ -113,11 +139,15 @@ class _NewRecipientDialogState extends State<NewRecipientDialog> {
               height: screenSize.size.height / 10 * 0.6,
               child: TextField(
                 controller: idController,
-                style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.width / 5 * 0.35),
+                style: TextStyle(
+                    fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.width / 5 * 0.35),
                 decoration: new InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Identifiant unique',
-                  labelStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor().withOpacity(0.5), fontSize: screenSize.size.width / 5 * 0.35),
+                  labelStyle: TextStyle(
+                      fontFamily: "Asap",
+                      color: ThemeUtils.textColor().withOpacity(0.5),
+                      fontSize: screenSize.size.width / 5 * 0.35),
                 ),
               ),
             )

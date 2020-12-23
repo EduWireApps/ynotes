@@ -108,7 +108,6 @@ class _MailPageState extends State<MailPage> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
@@ -166,7 +165,8 @@ class _MailPageState extends State<MailPage> {
                                           child: Text(
                                             value,
                                             textAlign: TextAlign.center,
-                                            style: TextStyle(fontSize: 18, fontFamily: "Asap", color: ThemeUtils.textColor()),
+                                            style: TextStyle(
+                                                fontSize: 18, fontFamily: "Asap", color: ThemeUtils.textColor()),
                                           ),
                                         );
                                       }).toList(),
@@ -187,7 +187,8 @@ class _MailPageState extends State<MailPage> {
                                       onTap: () {
                                         setState(() {
                                           int index = sortValue.values.indexOf(actualSort);
-                                          actualSort = sortValue.values[index + (index == sortValue.values.length - 1 ? -2 : 1)];
+                                          actualSort =
+                                              sortValue.values[index + (index == sortValue.values.length - 1 ? -2 : 1)];
                                         });
                                       },
                                       borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
@@ -229,7 +230,8 @@ class _MailPageState extends State<MailPage> {
                                           MdiIcons.networkStrengthOff,
                                           color: ThemeUtils.textColor(),
                                         ),
-                                        Text("Les mails ne sont pas encore lisibles hors ligne...", style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asapê"))
+                                        Text("Les mails ne sont pas encore lisibles hors ligne...",
+                                            style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asapê"))
                                       ],
                                     ),
                                   );
@@ -249,7 +251,9 @@ class _MailPageState extends State<MailPage> {
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               children: <Widget>[
                                                 Material(
-                                                  color: localList[index].read ? Theme.of(context).primaryColor : darken(Theme.of(context).primaryColor),
+                                                  color: localList[index].read
+                                                      ? Theme.of(context).primaryColor
+                                                      : ThemeUtils.darken(Theme.of(context).primaryColor),
                                                   child: InkWell(
                                                     onTap: () {
                                                       mailModalBottomSheet(context, localList[index], index: index);
@@ -259,14 +263,16 @@ class _MailPageState extends State<MailPage> {
                                                       child: Row(
                                                         children: <Widget>[
                                                           Container(
-                                                            margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.2),
+                                                            margin:
+                                                                EdgeInsets.only(left: screenSize.size.width / 5 * 0.2),
                                                             child: Icon(
                                                               MdiIcons.account,
                                                               color: ThemeUtils.textColor(),
                                                             ),
                                                           ),
                                                           Container(
-                                                            margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.4),
+                                                            margin:
+                                                                EdgeInsets.only(left: screenSize.size.width / 5 * 0.4),
                                                             width: screenSize.size.width / 5 * 4,
                                                             child: Column(
                                                               mainAxisAlignment: MainAxisAlignment.start,
@@ -290,7 +296,9 @@ class _MailPageState extends State<MailPage> {
                                                                   style: TextStyle(
                                                                     fontFamily: "Asap",
                                                                     fontSize: screenSize.size.height / 10 * 0.2,
-                                                                    color: isDarkModeEnabled ? Colors.white60 : Colors.black87,
+                                                                    color: isDarkModeEnabled
+                                                                        ? Colors.white60
+                                                                        : Colors.black87,
                                                                   ),
                                                                   overflow: TextOverflow.ellipsis,
                                                                 ),
@@ -302,14 +310,18 @@ class _MailPageState extends State<MailPage> {
                                                                       style: TextStyle(
                                                                         fontFamily: "Asap",
                                                                         fontSize: screenSize.size.height / 10 * 0.2,
-                                                                        color: isDarkModeEnabled ? Colors.white38 : Colors.black38,
+                                                                        color: isDarkModeEnabled
+                                                                            ? Colors.white38
+                                                                            : Colors.black38,
                                                                       ),
                                                                       overflow: TextOverflow.ellipsis,
                                                                     ),
                                                                     if (localList[index].files.length > 0)
                                                                       Icon(
                                                                         MdiIcons.attachment,
-                                                                        color: isDarkModeEnabled ? Colors.white38 : Colors.black38,
+                                                                        color: isDarkModeEnabled
+                                                                            ? Colors.white38
+                                                                            : Colors.black38,
                                                                       )
                                                                   ],
                                                                 )
@@ -354,8 +366,13 @@ class _MailPageState extends State<MailPage> {
                                                     fontFamily: "Asap",
                                                     color: ThemeUtils.textColor(),
                                                   ))
-                                              : FittedBox(child: SpinKitThreeBounce(color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4)),
-                                          shape: RoundedRectangleBorder(borderRadius: new BorderRadius.circular(18.0), side: BorderSide(color: Theme.of(context).primaryColorDark)),
+                                              : FittedBox(
+                                                  child: SpinKitThreeBounce(
+                                                      color: Theme.of(context).primaryColorDark,
+                                                      size: screenSize.size.width / 5 * 0.4)),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius: new BorderRadius.circular(18.0),
+                                              side: BorderSide(color: Theme.of(context).primaryColorDark)),
                                         ),
                                       ],
                                     ),
@@ -378,7 +395,8 @@ class _MailPageState extends State<MailPage> {
           Align(
             alignment: Alignment.bottomRight,
             child: Container(
-              margin: EdgeInsets.only(right: screenSize.size.width / 5 * 0.1, bottom: screenSize.size.height / 10 * 0.4),
+              margin:
+                  EdgeInsets.only(right: screenSize.size.width / 5 * 0.1, bottom: screenSize.size.height / 10 * 0.4),
               child: _buildFloatingButton(context),
             ),
           ),
@@ -388,15 +406,15 @@ class _MailPageState extends State<MailPage> {
   }
 }
 
-  void mailModalBottomSheet(context, Mail mail, {int index}) {
-    showModalBottomSheet(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
-        ),
-        backgroundColor: Theme.of(context).primaryColor,
-        context: context,
-        isScrollControlled: true,
-        builder: (BuildContext bc) {
-          return ReadMailBottomSheet(mail, index);
-        });
-  }
+void mailModalBottomSheet(context, Mail mail, {int index}) {
+  showModalBottomSheet(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+      ),
+      backgroundColor: Theme.of(context).primaryColor,
+      context: context,
+      isScrollControlled: true,
+      builder: (BuildContext bc) {
+        return ReadMailBottomSheet(mail, index);
+      });
+}

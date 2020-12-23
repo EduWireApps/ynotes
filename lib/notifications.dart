@@ -25,7 +25,13 @@ class LocalNotification {
   static Future<void> scheduleAgendaReminders(AgendaEvent event) async {
     try {
       AwesomeNotifications().initialize(null, [
-        NotificationChannel(icon: 'resource://drawable/calendar', channelKey: 'alarm', channelName: 'Alarmes', channelDescription: 'Alarmes', defaultColor: ThemeUtils.spaceColor(), ledColor: Colors.white),
+        NotificationChannel(
+            icon: 'resource://drawable/calendar',
+            channelKey: 'alarm',
+            channelName: 'Alarmes',
+            channelDescription: 'Alarmes',
+            defaultColor: ThemeUtils.spaceColor(),
+            ledColor: Colors.white),
       ]);
 
       //Unschedule existing
@@ -50,7 +56,14 @@ class LocalNotification {
         }
         String time = DateFormat("HH:mm").format(event.start);
         await AwesomeNotifications().createNotification(
-            content: NotificationContent(id: event.id.hashCode, channelKey: 'alarm', title: (event.name ?? "(Sans titre)") + " à time", body: event.description, notificationLayout: parse(event.description).documentElement.text.length < 49 ? NotificationLayout.Default : NotificationLayout.BigText),
+            content: NotificationContent(
+                id: event.id.hashCode,
+                channelKey: 'alarm',
+                title: (event.name ?? "(Sans titre)") + " à time",
+                body: event.description,
+                notificationLayout: parse(event.description).documentElement.text.length < 49
+                    ? NotificationLayout.Default
+                    : NotificationLayout.BigText),
             schedule: NotificationSchedule(preciseSchedules: [event.start.subtract(delay).toUtc()]));
         print("Scheduled an alarm" + event.start.subtract(delay).toString() + " " + event.id.hashCode.toString());
       }
@@ -59,10 +72,40 @@ class LocalNotification {
     }
   }
 
+  static showDebugNotification() async {
+    await AwesomeNotifications().initialize(null, [
+      NotificationChannel(
+          channelKey: 'debug',
+          defaultPrivacy: NotificationPrivacy.Public,
+          channelShowBadge: true,
+          channelName: 'Notification de déboguage',
+          importance: NotificationImportance.High,
+          channelDescription: "Notification à usage de développement",
+          defaultColor: ThemeUtils.spaceColor(),
+          ledColor: Colors.white)
+    ]);
+
+    AwesomeNotifications().createNotification(
+        content: NotificationContent(
+      id: 0,
+      channelKey: 'debug',
+      title: 'Debug notification.',
+      body: "Hi, I'm a debug notification.",
+    ));
+  }
+
   static showNewMailNotification(Mail mail, String content) async {
     await AwesomeNotifications().initialize('resource://drawable/mail', [
       NotificationChannel(
-          channelKey: 'newmail', defaultPrivacy: NotificationPrivacy.Public, channelShowBadge: true, channelName: 'Nouveau mail', importance: NotificationImportance.High, groupKey: "mailsGroup", channelDescription: "Nouveau mail", defaultColor: ThemeUtils.spaceColor(), ledColor: Colors.white)
+          channelKey: 'newmail',
+          defaultPrivacy: NotificationPrivacy.Public,
+          channelShowBadge: true,
+          channelName: 'Nouveau mail',
+          importance: NotificationImportance.High,
+          groupKey: "mailsGroup",
+          channelDescription: "Nouveau mail",
+          defaultColor: ThemeUtils.spaceColor(),
+          ledColor: Colors.white)
     ]);
 
     AwesomeNotifications().createNotification(
@@ -73,16 +116,31 @@ class LocalNotification {
           title: 'Nouveau mail de ${mail.from["prenom"]}',
           summary: content,
           body: content,
-          payload: {"name": mail.from["prenom"], "surname": mail.from["nom"], "id": mail.id.toString(), "isTeacher": (mail.from["type"] == "P").toString(), "subject": mail.subject}),
+          payload: {
+            "name": mail.from["prenom"],
+            "surname": mail.from["nom"],
+            "id": mail.id.toString(),
+            "isTeacher": (mail.from["type"] == "P").toString(),
+            "subject": mail.subject
+          }),
       actionButtons: [
-        NotificationActionButton(key: "REPLY", label: "Répondre", autoCancel: true, buttonType: ActionButtonType.Default),
+        NotificationActionButton(
+            key: "REPLY", label: "Répondre", autoCancel: true, buttonType: ActionButtonType.Default),
       ],
     );
   }
 
   static showNewGradeNotification() async {
-    await AwesomeNotifications().initialize('resource://drawable/newgradeicon',
-        [NotificationChannel(channelKey: 'newgrade', defaultPrivacy: NotificationPrivacy.Public, channelName: 'Nouvelle note', importance: NotificationImportance.High, channelDescription: "Nouvelles notes", defaultColor: ThemeUtils.spaceColor(), ledColor: Colors.white)]);
+    await AwesomeNotifications().initialize('resource://drawable/newgradeicon', [
+      NotificationChannel(
+          channelKey: 'newgrade',
+          defaultPrivacy: NotificationPrivacy.Public,
+          channelName: 'Nouvelle note',
+          importance: NotificationImportance.High,
+          channelDescription: "Nouvelles notes",
+          defaultColor: ThemeUtils.spaceColor(),
+          ledColor: Colors.white)
+    ]);
 
     AwesomeNotifications().createNotification(
       content: NotificationContent(
@@ -95,8 +153,16 @@ class LocalNotification {
   }
 
   static Future<void> scheduleReminders(AgendaEvent event) async {
-    await AwesomeNotifications().initialize(
-        'resource://drawable/clock', [NotificationChannel(channelKey: 'reminder', defaultPrivacy: NotificationPrivacy.Public, channelShowBadge: true, channelName: 'Rappel pour un évènement', importance: NotificationImportance.High, defaultColor: ThemeUtils.spaceColor(), ledColor: Colors.white)]);
+    await AwesomeNotifications().initialize('resource://drawable/clock', [
+      NotificationChannel(
+          channelKey: 'reminder',
+          defaultPrivacy: NotificationPrivacy.Public,
+          channelShowBadge: true,
+          channelName: 'Rappel pour un évènement',
+          importance: NotificationImportance.High,
+          defaultColor: ThemeUtils.spaceColor(),
+          ledColor: Colors.white)
+    ]);
     List<AgendaReminder> reminders = await offline.reminders.getReminders(event.lesson.id);
     await Future.forEach(reminders, (AgendaReminder rmd) async {
       //Unschedule existing
@@ -125,7 +191,13 @@ class LocalNotification {
         print(text);
 
         await AwesomeNotifications().createNotification(
-            content: NotificationContent(id: rmd.id.hashCode, channelKey: 'reminder', title: "Rappel d'évènement", body: text, notificationLayout: event.description.length < 49 ? NotificationLayout.Default : NotificationLayout.BigText),
+            content: NotificationContent(
+                id: rmd.id.hashCode,
+                channelKey: 'reminder',
+                title: "Rappel d'évènement",
+                body: text,
+                notificationLayout:
+                    event.description.length < 49 ? NotificationLayout.Default : NotificationLayout.BigText),
             schedule: NotificationSchedule(preciseSchedules: [event.start.subtract(delay).toUtc()]));
       }
     });
@@ -176,8 +248,10 @@ class LocalNotification {
             autoCancel: false,
           ),
           actionButtons: [
-            NotificationActionButton(key: "REFRESH", label: "Actualiser", autoCancel: false, buttonType: ActionButtonType.KeepOnTop),
-            NotificationActionButton(key: "KILL", label: "Désactiver", autoCancel: true, buttonType: ActionButtonType.Default),
+            NotificationActionButton(
+                key: "REFRESH", label: "Actualiser", autoCancel: false, buttonType: ActionButtonType.KeepOnTop),
+            NotificationActionButton(
+                key: "KILL", label: "Désactiver", autoCancel: true, buttonType: ActionButtonType.Default),
           ],
         );
       } catch (e) {
@@ -251,7 +325,8 @@ class LocalNotification {
       if (!dontShowActual) {
         if (await getSetting("enableDNDWhenOnGoingNotifEnabled")) {
           if (await FlutterDnd.isNotificationPolicyAccessGranted) {
-            await FlutterDnd.setInterruptionFilter(FlutterDnd.INTERRUPTION_FILTER_NONE); // Turn on DND - All notifications are suppressed.
+            await FlutterDnd.setInterruptionFilter(
+                FlutterDnd.INTERRUPTION_FILTER_NONE); // Turn on DND - All notifications are suppressed.
           } else {
             await logFile("Couldn't enabled DND");
           }
@@ -263,14 +338,19 @@ class LocalNotification {
       await Future.forEach(lessons, (Lesson lesson) async {
         if (lesson.start.isAfter(date)) {
           try {
-            if (await AndroidAlarmManager.oneShotAt(lesson.start.subtract(Duration(minutes: minutes)), lesson.start.hashCode, callback, allowWhileIdle: true, rescheduleOnReboot: true)) print("scheduled " + lesson.start.hashCode.toString() + " $minutes minutes before.");
+            if (await AndroidAlarmManager.oneShotAt(
+                lesson.start.subtract(Duration(minutes: minutes)), lesson.start.hashCode, callback,
+                allowWhileIdle: true, rescheduleOnReboot: true))
+              print("scheduled " + lesson.start.hashCode.toString() + " $minutes minutes before.");
           } catch (e) {
             print("failed " + e.toString());
           }
         }
       });
       try {
-        if (await AndroidAlarmManager.oneShotAt(lessons.last.end.subtract(Duration(minutes: minutes)), lessons.last.end.hashCode, callback, allowWhileIdle: true, rescheduleOnReboot: true)) print("Scheduled last lesson");
+        if (await AndroidAlarmManager.oneShotAt(
+            lessons.last.end.subtract(Duration(minutes: minutes)), lessons.last.end.hashCode, callback,
+            allowWhileIdle: true, rescheduleOnReboot: true)) print("Scheduled last lesson");
       } catch (e) {}
       print("Success !");
     }
@@ -293,7 +373,8 @@ class LocalNotification {
     var initializationSettingsIOS = new IOSInitializationSettings();
     var initializationSettings = new InitializationSettings(initializationSettingsAndroid, initializationSettingsIOS);
     flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
-    flutterLocalNotificationsPlugin.initialize(initializationSettings, onSelectNotification: BackgroundService.onSelectNotification);
+    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+        onSelectNotification: BackgroundService.onSelectNotification);
     await getChosenParser();
     API api = APIManager();
     //Login creds
@@ -349,7 +430,8 @@ class LocalNotification {
     if (nextLesson != null && nextLesson.start.isAfter(DateTime.now())) {
       if (await getSetting("enableDNDWhenOnGoingNotifEnabled")) {
         if (await FlutterDnd.isNotificationPolicyAccessGranted) {
-          await FlutterDnd.setInterruptionFilter(FlutterDnd.INTERRUPTION_FILTER_NONE); // Turn on DND - All notifications are suppressed.
+          await FlutterDnd.setInterruptionFilter(
+              FlutterDnd.INTERRUPTION_FILTER_NONE); // Turn on DND - All notifications are suppressed.
         } else {
           await logFile("Couldn't enabled DND");
         }
@@ -370,7 +452,8 @@ class LocalNotification {
     }
     //Logs for tests
     if (lesson != null) {
-      await logFile("Persistant notification next lesson callback triggered for the lesson ${lesson.codeMatiere} ${lesson.room}");
+      await logFile(
+          "Persistant notification next lesson callback triggered for the lesson ${lesson.codeMatiere} ${lesson.room}");
     } else {
       await logFile("Persistant notification next lesson callback triggered : you are in break.");
     }

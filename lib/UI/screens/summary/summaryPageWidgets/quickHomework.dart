@@ -339,7 +339,7 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
                                     width: screenSize.size.width / 5 * 0.4,
                                     child: FittedBox(
                                       child: SpinKitThreeBounce(
-                                        color: darken(widget.color),
+                                        color: ThemeUtils.darken(widget.color),
                                       ),
                                     )),
                             ],

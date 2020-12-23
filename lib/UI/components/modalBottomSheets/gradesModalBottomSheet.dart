@@ -86,17 +86,28 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                             child: Text(
                               widget.grade.valeur != null ? widget.grade.valeur : "-",
                               textAlign: TextAlign.center,
-                              style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontWeight: FontWeight.w600, fontSize: (screenSize.size.width / 5) * 0.3),
+                              style: TextStyle(
+                                  color: ThemeUtils.textColor(),
+                                  fontFamily: "Asap",
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: (screenSize.size.width / 5) * 0.3),
                             ),
                           ),
                           Container(
                             padding: EdgeInsets.symmetric(horizontal: (screenSize.size.width / 5) * 0.4),
-                            child: Divider(height: (screenSize.size.height / 3) / 75, thickness: (screenSize.size.height / 3) / 75, color: ThemeUtils.textColor()),
+                            child: Divider(
+                                height: (screenSize.size.height / 3) / 75,
+                                thickness: (screenSize.size.height / 3) / 75,
+                                color: ThemeUtils.textColor()),
                           ),
                           FittedBox(
                             child: Text(
                               widget.grade.noteSur != null ? widget.grade.noteSur : "-",
-                              style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontWeight: FontWeight.w600, fontSize: (screenSize.size.width / 5) * 0.3),
+                              style: TextStyle(
+                                  color: ThemeUtils.textColor(),
+                                  fontFamily: "Asap",
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: (screenSize.size.width / 5) * 0.3),
                             ),
                           ),
                         ],
@@ -129,7 +140,8 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                                 borderRadius: BorderRadius.circular(15),
                                 child: Container(
                                   padding: EdgeInsets.all(5),
-                                  child: Text(widget.discipline.nomDiscipline, style: TextStyle(fontFamily: "Asap", fontSize: 15, fontWeight: FontWeight.w100)),
+                                  child: Text(widget.discipline.nomDiscipline,
+                                      style: TextStyle(fontFamily: "Asap", fontSize: 15, fontWeight: FontWeight.w100)),
                                 ),
                               ),
                             ),
@@ -138,7 +150,8 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                               child: AutoSizeText(
                                 widget.grade.devoir != null ? widget.grade.devoir : "-",
                                 minFontSize: 18,
-                                style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: ThemeUtils.textColor()),
+                                style: TextStyle(
+                                    fontFamily: "Asap", fontWeight: FontWeight.bold, color: ThemeUtils.textColor()),
                                 textAlign: TextAlign.center,
                               ),
                             ),
@@ -151,7 +164,7 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                     alignment: Alignment.bottomCenter,
                     child: Container(
                       child: Card(
-                        color: darken(Theme.of(context).primaryColorDark, forceAmount: 0.05),
+                        color: ThemeUtils.darken(Theme.of(context).primaryColorDark, forceAmount: 0.05),
                         margin: EdgeInsets.only(top: (screenSize.size.height / 10) * 1.6),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
                         child: Container(
@@ -162,18 +175,26 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                buildKeyValuesInfo(context, "Moyenne de la classe :", [widget.grade.moyenneClasse != "" && widget.grade.moyenneClasse != null ? widget.grade.moyenneClasse : "-"]),
+                                buildKeyValuesInfo(context, "Moyenne de la classe :", [
+                                  widget.grade.moyenneClasse != "" && widget.grade.moyenneClasse != null
+                                      ? widget.grade.moyenneClasse
+                                      : "-"
+                                ]),
                                 SizedBox(
                                   height: (screenSize.size.height / 3) / 25,
                                 ),
-                                buildKeyValuesInfo(context, "Type de devoir :", [widget.grade.typeDevoir != null ? widget.grade.typeDevoir : "-"]),
+                                buildKeyValuesInfo(context, "Type de devoir :",
+                                    [widget.grade.typeDevoir != null ? widget.grade.typeDevoir : "-"]),
                                 SizedBox(
                                   height: (screenSize.size.height / 3) / 25,
                                 ),
                                 GestureDetector(
                                   onTap: () {},
-                                  child: buildKeyValuesInfo(context, "Date du devoir :",
-                                      [widget.grade.date != null ? DateFormat("dd MMMM yyyy", "fr_FR").format(widget.grade.date) : "-"]),
+                                  child: buildKeyValuesInfo(context, "Date du devoir :", [
+                                    widget.grade.date != null
+                                        ? DateFormat("dd MMMM yyyy", "fr_FR").format(widget.grade.date)
+                                        : "-"
+                                  ]),
                                 )
                               ],
                             ),
@@ -193,12 +214,13 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
               },
               child: Card(
                   margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
-                  color: darken(Theme.of(context).primaryColorDark, forceAmount: 0.05),
+                  color: ThemeUtils.darken(Theme.of(context).primaryColorDark, forceAmount: 0.05),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
                   child: Container(
                     width: screenSize.size.width / 5 * 4.5,
                     height: screenSize.size.height / 10 * 0.6,
-                    padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.2, vertical: screenSize.size.height / 10 * 0.1),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: screenSize.size.width / 5 * 0.2, vertical: screenSize.size.height / 10 * 0.1),
                     child: FittedBox(
                       child: Wrap(
                         direction: Axis.horizontal,
@@ -251,7 +273,11 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                                 children: [
                                   Text(
                                     "SpaceStats",
-                                    style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), textBaseline: TextBaseline.ideographic, fontWeight: FontWeight.bold),
+                                    style: TextStyle(
+                                        fontFamily: "Asap",
+                                        color: ThemeUtils.textColor(),
+                                        textBaseline: TextBaseline.ideographic,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ],
                               ),
@@ -264,13 +290,14 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
             ),
             Card(
                 margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
-                color: darken(Theme.of(context).primaryColorDark, forceAmount: 0.05),
+                color: ThemeUtils.darken(Theme.of(context).primaryColorDark, forceAmount: 0.05),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
                 child: AnimatedContainer(
                   duration: Duration(milliseconds: 250),
                   width: screenSize.size.width / 5 * 4.5,
                   height: screenSize.size.height / 10 * (open ? 5 : 0),
-                  padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.2, vertical: screenSize.size.height / 10 * 0.1),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: screenSize.size.width / 5 * 0.2, vertical: screenSize.size.height / 10 * 0.1),
                   child: FittedBox(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -312,7 +339,10 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                               children: [
                                 Text(
                                   "SpaceStats sera implémenté prochainement.",
-                                  style: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white : Colors.grey, textBaseline: TextBaseline.ideographic),
+                                  style: TextStyle(
+                                      fontFamily: "Asap",
+                                      color: isDarkModeEnabled ? Colors.white : Colors.grey,
+                                      textBaseline: TextBaseline.ideographic),
                                 ),
                               ],
                             ),

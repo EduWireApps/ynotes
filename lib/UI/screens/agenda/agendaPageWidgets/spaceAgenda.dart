@@ -7,9 +7,9 @@ import 'package:ynotes/UI/screens/agenda/agendaPage.dart';
 import 'package:ynotes/UI/screens/agenda/agendaPageWidgets/agendaGrid.dart';
 import 'package:ynotes/UI/screens/agenda/agendaPageWidgets/buttons.dart';
 import 'package:ynotes/classes.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/models/agenda/addEvent.dart';
-import 'package:ynotes/models/agenda/values.dart';
 import 'package:ynotes/utils/themeUtils.dart';
 
 class SpaceAgenda extends StatefulWidget {
@@ -17,7 +17,7 @@ class SpaceAgenda extends StatefulWidget {
   _SpaceAgendaState createState() => _SpaceAgendaState();
 }
 
-Future spaceAgendaFuture;
+
 
 bool extended = false;
 

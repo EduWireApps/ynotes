@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 
@@ -19,15 +20,21 @@ class HiveBackUpManager {
       var data;
       if (subBoxName != null) {
         data = map[subBoxName];
+        if (data.runtimeType.toString().contains("LinkedHashMap")) {
+          data = Map<dynamic, dynamic>.from(data);
+          
+        }
+        print(data);
       } else {
         data = map;
       }
+
       //Encoded JSON
       String encoded = jsonEncode(data);
 
       return encoded;
     } catch (e) {
-      throw "Failed to export a box " + e.toString();
+      throw "Failed to export a box :" + e.toString();
     }
   }
 

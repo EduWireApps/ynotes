@@ -27,6 +27,7 @@ import 'package:ynotes/UI/screens/summary/summaryPageWidgets/quickHomework.dart'
 import 'package:ynotes/UI/screens/summary/summaryPageWidgets/summaryPageSettings.dart';
 import 'package:ynotes/UI/screens/summary/summaryPageWidgets/chart.dart';
 import 'package:ynotes/apis/utils.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/models/homework/controller.dart';
 import 'package:ynotes/usefulMethods.dart';
@@ -96,10 +97,10 @@ class SummaryPageState extends State<SummaryPage> {
     await tlogin.init();
   }
 
-  @override
+
   Future<void> refreshLocalGradesList() async {
+    print("refresh");
     setState(() {
-      allGradesOld = null;
       disciplinesListFuture = localApi.getGrades(forceReload: true);
     });
     var realGL = await disciplinesListFuture;

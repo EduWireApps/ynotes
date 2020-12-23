@@ -12,6 +12,7 @@ import 'package:ynotes/UI/screens/agenda/agendaPageWidgets/buttons.dart';
 import 'package:ynotes/UI/screens/agenda/agendaPageWidgets/spaceAgenda.dart';
 import 'package:ynotes/apis/EcoleDirecte.dart';
 import 'package:ynotes/classes.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/models/agenda/addEvent.dart';
 import 'package:ynotes/utils/fileUtils.dart';
@@ -23,7 +24,6 @@ class Agenda extends StatefulWidget {
   _AgendaState createState() => _AgendaState();
 }
 
-Future agendaFuture;
 
 bool extended = false;
 

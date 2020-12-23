@@ -12,6 +12,7 @@ import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:wiredash/wiredash.dart';
+import 'package:workmanager/workmanager.dart';
 import 'package:ynotes/UI/screens/carousel/carousel.dart';
 import 'package:ynotes/UI/screens/drawer/drawerBuilder.dart';
 import 'package:ynotes/UI/screens/loading/loadingPage.dart';
@@ -31,22 +32,6 @@ import 'notifications.dart';
 
 var uuid = Uuid();
 
-extension HexColor on Color {
-  /// String is in the format "aabbcc" or "ffaabbcc" with an optional leading "#".
-  static Color fromHex(String hexString) {
-    final buffer = StringBuffer();
-    if (hexString.length == 6 || hexString.length == 7) buffer.write('ff');
-    buffer.write(hexString.replaceFirst('#', ''));
-    return Color(int.parse(buffer.toString(), radix: 16));
-  }
-
-  /// Prefixes a hash sign if [leadingHashSign] is set to `true` (default is `true`).
-  String toCSSColor({bool leadingHashSign = true}) => 
-      '${red.toRadixString(16).padLeft(2, '0')}'
-      '${green.toRadixString(16).padLeft(2, '0')}'
-      '${blue.toRadixString(16).padLeft(2, '0')}';
-}
-
 //login manager
 TransparentLogin tlogin = TransparentLogin();
 
@@ -55,49 +40,6 @@ Offline offline = Offline();
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 final logger = loader();
-
-//Background task when when app is closed
-void backgroundFetchHeadlessTask(String taskId) async {
-  print("Starting the headless closed bakground task");
-  var initializationSettingsAndroid = new AndroidInitializationSettings('newgradeicon');
-  var initializationSettingsIOS = new IOSInitializationSettings();
-  var initializationSettings = new InitializationSettings(initializationSettingsAndroid, initializationSettingsIOS);
-  flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
-  flutterLocalNotificationsPlugin.initialize(initializationSettings,
-      onSelectNotification: BackgroundService.onSelectNotification);
-  if (!await getSetting("batterySaver")) {
-    await BackgroundService.refreshHomework();
-  }
-//Ensure that grades notification are enabled and battery saver disabled
-  if (await getSetting("notificationNewGrade") && !await getSetting("batterySaver")) {
-    logFile("New grade test triggered");
-    if (await mainTestNewGrades()) {
-      await BackgroundService.showNotificationNewGrade();
-    } else {
-      print("Nothing updated");
-    }
-  } else {
-    print("New grade notification disabled");
-  }
-  if (await getSetting("notificationNewMail") && !await getSetting("batterySaver")) {
-    Mail mail = await mainTestNewMails();
-    if (mail != null) {
-      String content = await readMail(mail.id, mail.read);
-      await LocalNotification.showNewMailNotification(mail, content);
-    } else {
-      print("Nothing updated");
-    }
-  } else {
-    print("New mail notification disabled");
-  }
-  if (await getSetting("agendaOnGoingNotification")) {
-    print("Setting On going notification");
-    await LocalNotification.setOnGoingNotification(dontShowActual: true);
-  } else {
-    print("On going notification disabled");
-  }
-  BackgroundFetch.finish(taskId);
-}
 
 mainTestNewGrades() async {
   try {
@@ -171,9 +113,15 @@ mainTestNewMails() async {
 }
 
 Future main() async {
-//Init the local notifications
   WidgetsFlutterBinding.ensureInitialized();
-  BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
+//Register work manager
+  await Workmanager.initialize(callbackDispatcher, // The top level function, aka callbackDispatcher
+      isInDebugMode:
+          true // If enabled it will post a notification whenever the task is running. Handy for debugging tasks
+      );
+  await Workmanager.registerPeriodicTask("test", "testTask");
+  //BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
+  //Init the local notifications
   var initializationSettingsAndroid = new AndroidInitializationSettings(
     'newgradeicon',
   );
@@ -200,10 +148,6 @@ Future main() async {
       ),
     );
   });
-
-  if (Platform.isAndroid) {
-    await AndroidAlarmManager.initialize();
-  }
 }
 
 class HomeApp extends StatelessWidget {

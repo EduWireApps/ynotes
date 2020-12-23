@@ -1,4 +1,5 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -14,9 +15,11 @@ import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/UI/screens/settings/sub_pages/exportPage.dart';
 import 'package:ynotes/UI/screens/settings/sub_pages/logsPage.dart';
 import 'package:ynotes/apis/EcoleDirecte.dart';
+import 'package:ynotes/background.dart';
 import 'package:ynotes/classes.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/notifications.dart';
+import 'package:ynotes/platform.dart';
 import 'package:ynotes/utils/themeUtils.dart';
 
 import '../../../tests.dart';
@@ -241,6 +244,48 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     }
                   },
                 ),
+                SettingsTile(
+                  title: 'Je ne reçois pas de notifications',
+                  leading: Icon(MdiIcons.bellAlert, color: ThemeUtils.textColor()),
+                  onTap: () async {
+                    //Check battery optimization setting
+                    if (!await Permission.ignoreBatteryOptimizations.isGranted &&
+                            await CustomDialogs.showAuthorizationsDialog(
+                                context,
+                                "la configuration d'optimisation de batterie",
+                                "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ??
+                        false) {
+                      await Permission.ignoreBatteryOptimizations.request().isGranted;
+                    }
+                    await AndroidPlatformChannel.openAutoStartSettings();
+                    print("ok");
+                    Flushbar(
+                      flushbarPosition: FlushbarPosition.BOTTOM,
+                      backgroundColor: Colors.orange.shade200,
+                      isDismissible: true,
+                      margin: EdgeInsets.all(8),
+                      messageText: Text(
+                        "Toujours pas de notifications ?",
+                        style: TextStyle(fontFamily: "Asap"),
+                      ),
+                      mainButton: FlatButton(
+                        onPressed: () {
+                          const url = 'https://ynotes.fr/help/notifications';
+                          launchURL(url);
+                        },
+                        child: Text(
+                          "Aide liée aux notifications",
+                          style: TextStyle(color: Colors.blue, fontFamily: "Asap"),
+                        ),
+                      ),
+                      borderRadius: 8,
+                    )..show(context);
+                  },
+                  titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                  subtitleTextStyle: TextStyle(
+                      fontFamily: "Asap",
+                      color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
+                ),
               ],
             ),
             SettingsSection(
@@ -384,11 +429,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                   SettingsTile(
                     title: 'Bouton magique',
                     leading: Icon(MdiIcons.testTube, color: ThemeUtils.textColor()),
-                    onTap: () async {
-                      Mail mail = await mainTestNewMails();
-                      String content = await readMail(mail.id, mail.read);
-                      await LocalNotification.showNewMailNotification(mail, content);
-                    },
+                    onTap: () async {},
                     titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                     subtitleTextStyle: TextStyle(
                         fontFamily: "Asap",

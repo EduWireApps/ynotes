@@ -16,10 +16,8 @@ class AuthorizationsDialog extends StatefulWidget {
 }
 
 class _AuthorizationsDialogState extends State<AuthorizationsDialog> {
-  
   @override
   Widget build(BuildContext context) {
-
     MediaQueryData screenSize;
     screenSize = MediaQuery.of(context);
     return AlertDialog(
@@ -45,7 +43,7 @@ class _AuthorizationsDialogState extends State<AuthorizationsDialog> {
                       margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: darken(Theme.of(context).primaryColorDark, forceAmount: 0.12),
+                        color: ThemeUtils.darken(Theme.of(context).primaryColorDark, forceAmount: 0.12),
                       ),
                       padding: EdgeInsets.all(screenSize.size.height / 10 * 0.1),
                       child: Transform.rotate(
@@ -76,7 +74,8 @@ class _AuthorizationsDialogState extends State<AuthorizationsDialog> {
                   ),
                   Container(
                     margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
-                    decoration: BoxDecoration(color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(11)),
+                    decoration:
+                        BoxDecoration(color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(11)),
                     width: screenSize.size.width / 5 * 4.4,
                     child: AutoSizeText.rich(
                       TextSpan(

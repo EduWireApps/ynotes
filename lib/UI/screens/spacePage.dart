@@ -129,7 +129,7 @@ class _SpacePageState extends State<SpacePage> with TickerProviderStateMixin {
                           ),
                           CupertinoSlidingSegmentedControl(
                               thumbColor: Theme.of(context).primaryColor,
-                              backgroundColor: darken(Theme.of(context).primaryColorDark),
+                              backgroundColor: ThemeUtils.darken(Theme.of(context).primaryColorDark),
                               groupValue: segmentedControlGroupValue,
                               children: spaceTabs,
                               onValueChanged: (int i) {
