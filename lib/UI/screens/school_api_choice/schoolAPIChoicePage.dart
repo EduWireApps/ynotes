@@ -79,7 +79,8 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
                   children: <Widget>[
                     Text(
                       "Pour commencer...",
-                      style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w300, fontSize: screenSize.size.height / 10 * 0.4),
+                      style: TextStyle(
+                          fontFamily: "Asap", fontWeight: FontWeight.w300, fontSize: screenSize.size.height / 10 * 0.4),
                       textAlign: TextAlign.center,
                     ),
                     Text(
@@ -119,11 +120,21 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
                                 Container(
                                   padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width / 10 * 0.1),
                                   margin: EdgeInsets.only(right: MediaQuery.of(context).size.width / 10 * 0.2),
-                                  child: Image(width: MediaQuery.of(context).size.width / 5 * 0.6, height: MediaQuery.of(context).size.width / 5 * 0.4, fit: BoxFit.fill, image: AssetImage('assets/images/EcoleDirecte/EcoleDirecteIcon.png')),
+                                  child: Image(
+                                      width: MediaQuery.of(context).size.width / 5 * 0.6,
+                                      height: MediaQuery.of(context).size.width / 5 * 0.4,
+                                      fit: BoxFit.fill,
+                                      image: AssetImage('assets/images/EcoleDirecte/EcoleDirecteIcon.png')),
                                 ),
                                 Container(
                                     width: screenSize.size.width / 5 * 3,
-                                    child: FittedBox(child: Text("Ecole Directe", textAlign: TextAlign.center, style: TextStyle(fontFamily: "Asap", fontSize: screenSize.size.height / 10 * 0.4, color: Colors.white)))),
+                                    child: FittedBox(
+                                        child: Text("Ecole Directe",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontFamily: "Asap",
+                                                fontSize: screenSize.size.height / 10 * 0.4,
+                                                color: Colors.white)))),
                               ],
                             ),
                           ),
@@ -147,7 +158,7 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
                         child: InkWell(
                           onTap: () {
                             //CustomDialogs.showUnimplementedSnackBar(context);
-                             setState(() {
+                            setState(() {
                               chosenAnimation1Controller.reverse();
                               chosen = 1;
                               chosenAnimation2Controller.forward();
@@ -163,10 +174,21 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
                                 Container(
                                   padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width / 10 * 0.1),
                                   margin: EdgeInsets.only(right: MediaQuery.of(context).size.width / 10 * 0.2),
-                                  child: Image(width: MediaQuery.of(context).size.width / 5 * 0.5, height: screenSize.size.width / 5 * 0.5, fit: BoxFit.fitHeight, image: AssetImage('assets/images/Pronote/PronoteIcon.png')),
+                                  child: Image(
+                                      width: MediaQuery.of(context).size.width / 5 * 0.5,
+                                      height: screenSize.size.width / 5 * 0.5,
+                                      fit: BoxFit.fitHeight,
+                                      image: AssetImage('assets/images/Pronote/PronoteIcon.png')),
                                 ),
                                 Container(
-                                    width: screenSize.size.width / 5 * 3, child: FittedBox(child: Text("Pronote", textAlign: TextAlign.center, style: TextStyle(fontFamily: "Asap", fontSize: screenSize.size.height / 10 * 0.4, color: Colors.white)))),
+                                    width: screenSize.size.width / 5 * 3,
+                                    child: FittedBox(
+                                        child: Text("Pronote",
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontFamily: "Asap",
+                                                fontSize: screenSize.size.height / 10 * 0.4,
+                                                color: Colors.white)))),
                               ],
                             ),
                           ),
@@ -191,7 +213,7 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
                             });
                             Navigator.of(context).pushReplacement(router(LoginPage()));
                           },
-                    child:  Text('Connexion', style: TextStyle(fontSize: screenSize.size.width / 5 * 0.2)),
+                    child: Text('Connexion', style: TextStyle(fontSize: screenSize.size.width / 5 * 0.2)),
                   ),
                 )
               ],

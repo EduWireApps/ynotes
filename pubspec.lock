@@ -365,6 +365,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.2.5"
+  expandable:
+    dependency: "direct main"
+    description:
+      name: expandable
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.1.4"
   ext_storage:
     dependency: "direct main"
     description:
@@ -447,13 +454,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_colorpicker:
-    dependency: "direct main"
-    description:
-      name: flutter_colorpicker
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.3.4"
   flutter_dnd:
     dependency: "direct main"
     description:
@@ -501,13 +501,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.5.1"
-  flutter_material_color_picker:
-    dependency: "direct main"
-    description:
-      name: flutter_material_color_picker
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.5"
   flutter_phoenix:
     dependency: "direct main"
     description:
@@ -1022,6 +1015,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.24.1"
+  sa_v1_migration:
+    dependency: transitive
+    description:
+      name: sa_v1_migration
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.1.2"
   scrollable_positioned_list:
     dependency: "direct main"
     description:
@@ -1130,10 +1130,12 @@ packages:
   simple_animations:
     dependency: "direct main"
     description:
-      name: simple_animations
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.3.12"
+      path: "."
+      ref: master
+      resolved-ref: "36f86eca2f3abc2f3e557cec518e7f3dc8677afc"
+      url: "https://github.com/felixblaschke/simple_animations"
+    source: git
+    version: "2.4.2"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -1202,6 +1204,20 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.1.0-nullsafety.1"
+  supercharged:
+    dependency: transitive
+    description:
+      name: supercharged
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.12.0"
+  supercharged_dart:
+    dependency: transitive
+    description:
+      name: supercharged_dart
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.4.0"
   term_glyph:
     dependency: transitive
     description:

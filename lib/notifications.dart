@@ -89,8 +89,9 @@ class LocalNotification {
         content: NotificationContent(
       id: 0,
       channelKey: 'debug',
-      title: 'Debug notification.',
-      body: "Hi, I'm a debug notification.",
+      title: 'Notification de test',
+      notificationLayout: NotificationLayout.BigText,
+      body: "Si vous voyez cette notification, alors yNotes est bien autorisé à vous envoyer des notifications.",
     ));
   }
 

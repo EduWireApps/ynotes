@@ -35,4 +35,19 @@ class DoneHomeworkOffline extends Offline {
       return false;
     }
   }
+
+  Future<int> getDoneHWNumber() async {
+    try {
+      final dir = await FolderAppUtil.getDirectory();
+      Hive.init("${dir.path}/offline");
+      if (homeworkDoneBox == null || !homeworkDoneBox.isOpen) {
+        homeworkDoneBox = await Hive.openBox("doneHomework");
+      }
+      return homeworkDoneBox.keys.length;
+    } catch (e) {
+      print("Error during the getHomeworkDoneProcess $e");
+
+      return 0;
+    }
+  }
 }

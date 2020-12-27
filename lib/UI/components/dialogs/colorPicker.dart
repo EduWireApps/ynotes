@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_colorpicker/flutter_colorpicker.dart';
+import 'package:ynotes/UI/components/color_picker/flutter_colorpicker.dart';
 
 class CustomColorPicker extends StatefulWidget {
   final Color defaultColor;

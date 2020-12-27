@@ -3,6 +3,7 @@ import 'package:hive/hive.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/shared_preferences.dart';
 import 'package:ynotes/apis/EcoleDirecte.dart';
 import 'package:ynotes/apis/Pronote.dart';

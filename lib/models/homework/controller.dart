@@ -31,7 +31,7 @@ class HomeworkController extends ChangeNotifier {
     isFetching = false;
     notifyListeners();
   }
-
+  
   //Load all events
   void loadAll() async {
     try {
@@ -56,7 +56,8 @@ class HomeworkController extends ChangeNotifier {
 
   void prepareOld(List<Homework> oldHW) async {
     oldHW.forEach((element) {
-      if (!element.loaded && !unloadedHW.contains(element)) {
+      //remove duplicates
+      if (!element.loaded && !unloadedHW.any((unloadedelement) => unloadedelement.contenu==element.contenu && unloadedelement.codeMatiere==element.codeMatiere)) {
         //Add element at the end of the task
         try {
           unloadedHW.add(element);

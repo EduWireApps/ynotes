@@ -31,12 +31,13 @@ dependencies:
   badges: ^1.1.0
   intl: ^0.16.1
   stack: ^0.1.3
-  flutter_colorpicker: ^0.3.2
-  flutter_material_color_picker: ^1.0.5
   tinycolor: ^1.0.2
   flutter_spinkit: ^4.1.2
   material_design_icons_flutter: ^3.4.5045
-  simple_animations: ^1.3.11
+  simple_animations:
+    git:
+      url: https://github.com/felixblaschke/simple_animations
+      ref: master
   provider: ^4.3.2+2
   flutter_widget_from_html_core: ^0.5.1+4
   path_provider: ^1.6.11
@@ -91,6 +92,7 @@ dependencies:
   catex: ^0.0.1+7
   flutter_tex: ^3.6.7+10
   fl_chart: ^0.12.0
+  expandable: ^4.1.4
   wiredash:
     git:
       url: https://github.com/wiredashio/wiredash-sdk

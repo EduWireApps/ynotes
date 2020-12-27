@@ -257,11 +257,19 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                         false) {
                       await Permission.ignoreBatteryOptimizations.request().isGranted;
                     }
-                    await AndroidPlatformChannel.openAutoStartSettings();
-                    print("ok");
+
+                    if (await CustomDialogs.showAuthorizationsDialog(
+                            context,
+                            "la liste blanche de lancement en arrière plan / démarrage",
+                            "Pouvoir lancer yNotes au démarrage de l'appareil et ainsi régulièrement rafraichir en arrière plan.") ??
+                        false) {
+                      await AndroidPlatformChannel.openAutoStartSettings();
+                    }
+                    await LocalNotification.showDebugNotification();
                     Flushbar(
                       flushbarPosition: FlushbarPosition.BOTTOM,
                       backgroundColor: Colors.orange.shade200,
+                      duration: Duration(seconds: 10),
                       isDismissible: true,
                       margin: EdgeInsets.all(8),
                       messageText: Text(
@@ -330,20 +338,6 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                       fontFamily: "Asap",
                       color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
                 ),
-                /*SettingsTile.switchTile(
-                  title: 'Secouer pour signaler',
-            
-                  titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-                  subtitleTextStyle: TextStyle(fontFamily: "Asap", color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
-                  switchValue: boolSettings["shakeToReport"],
-                  onToggle: (bool value) async {
-                    setState(() {
-                      boolSettings["shakeToReport"] = value;
-                    });
-
-                    await setSetting("shakeToReport", value);
-                  },
-                ),*/
               ],
             ),
             SettingsSection(
@@ -429,7 +423,9 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                   SettingsTile(
                     title: 'Bouton magique',
                     leading: Icon(MdiIcons.testTube, color: ThemeUtils.textColor()),
-                    onTap: () async {},
+                    onTap: () async {
+                      await backgroundFetchHeadlessTask("");
+                    },
                     titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                     subtitleTextStyle: TextStyle(
                         fontFamily: "Asap",

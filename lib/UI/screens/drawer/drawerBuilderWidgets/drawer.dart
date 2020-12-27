@@ -29,6 +29,10 @@ List<Map> entries = [
     "menuName": "Devoirs",
     "icon": MdiIcons.calendarCheck,
   },
+  {
+    "menuName": "Statistiques",
+    "icon": MdiIcons.chartBar,
+  },
   {"menuName": "Messagerie", "icon": MdiIcons.mail, "relatedApi": 0},
   {"menuName": "Cloud", "icon": MdiIcons.cloud, "relatedApi": 0},
   {"menuName": "Sondages", "icon": MdiIcons.poll, "relatedApi": 1},
@@ -116,14 +120,18 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           valueListenable: widget._notifier,
                           builder: (context, value, child) {
                             return Material(
-                              borderRadius: BorderRadius.only(topRight: Radius.circular(11), bottomRight: Radius.circular(11)),
-                              color: (entries.indexOf(entry) == value) ? Theme.of(context).backgroundColor : Colors.transparent,
+                              borderRadius:
+                                  BorderRadius.only(topRight: Radius.circular(11), bottomRight: Radius.circular(11)),
+                              color: (entries.indexOf(entry) == value)
+                                  ? Theme.of(context).backgroundColor
+                                  : Colors.transparent,
                               child: InkWell(
                                 splashFactory: InkRipple.splashFactory,
                                 onTap: () {
                                   widget.drawerPageViewController.jumpToPage(entries.indexOf(entry));
                                 },
-                                borderRadius: BorderRadius.only(topRight: Radius.circular(11), bottomRight: Radius.circular(11)),
+                                borderRadius:
+                                    BorderRadius.only(topRight: Radius.circular(11), bottomRight: Radius.circular(11)),
                                 child: Container(
                                   margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
                                   width: screenSize.size.width / 5 * 3.4,
@@ -139,7 +147,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                       SizedBox(
                                         width: screenSize.size.width / 5 * 0.1,
                                       ),
-                                      Text(entry["menuName"], style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.width / 5 * 0.3)),
+                                      Text(entry["menuName"],
+                                          style: TextStyle(
+                                              fontFamily: "Asap",
+                                              color: ThemeUtils.textColor(),
+                                              fontSize: screenSize.size.width / 5 * 0.3)),
                                     ],
                                   ),
                                 ),
@@ -180,7 +192,11 @@ class _CustomDrawerState extends State<CustomDrawer> {
                       SizedBox(
                         width: screenSize.size.width / 5 * 0.1,
                       ),
-                      Text("Préférences", style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.width / 5 * 0.3)),
+                      Text("Préférences",
+                          style: TextStyle(
+                              fontFamily: "Asap",
+                              color: ThemeUtils.textColor(),
+                              fontSize: screenSize.size.width / 5 * 0.3)),
                     ],
                   ),
                 ),

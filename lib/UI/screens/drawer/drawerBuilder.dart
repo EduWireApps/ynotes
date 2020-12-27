@@ -21,6 +21,7 @@ import 'package:ynotes/UI/screens/grades/gradesPage.dart';
 import 'package:ynotes/UI/screens/homework/homeworkPage.dart';
 import 'package:ynotes/UI/screens/mail/mailPage.dart';
 import 'package:ynotes/UI/screens/polls/pollsPage.dart';
+import 'package:ynotes/UI/screens/statspage/statspage.dart';
 import 'package:ynotes/UI/screens/summary/summaryPage.dart';
 import 'package:ynotes/apis/EcoleDirecte.dart';
 import 'package:ynotes/background.dart';
@@ -240,91 +241,77 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
           body: Stack(
             children: <Widget>[
               ClipRRect(
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    Scaffold(
-                      backgroundColor: Theme.of(context).backgroundColor,
-                      appBar: PreferredSize(
-                        preferredSize: Size.fromHeight(screenSize.size.height / 10 * 0.7),
-                        child: ValueListenableBuilder(
-                            valueListenable: _notifier,
-                            builder: (context, value, child) {
-                              return AppBar(
-                                  shadowColor: Colors.transparent,
-                                  backgroundColor: isDarkModeEnabled
-                                      ? Theme.of(context).primaryColorLight
-                                      : Theme.of(context).primaryColorDark,
-                                  title: Text(entries[value]["menuName"]),
-                                  actions: [
-                                    if ([0, 1, 4].contains(value))
-                                      FlatButton(
-                                        color: Colors.transparent,
-                                        child: Icon(MdiIcons.wrenchOutline,
-                                            color: isDarkModeEnabled ? Colors.white : Colors.black),
-                                        onPressed: () {
-                                          switch (value) {
-                                            case 1:
-                                              {
-                                                agendaPage.currentState.triggerSettings();
-                                              }
-                                              break;
-                                            case 0:
-                                              {
-                                                summaryPage.currentState.triggerSettings();
-                                              }
-                                              break;
-                                            case 4:
-                                              {
-                                                homeworkPage.currentState.triggerSettings();
-                                              }
-                                              break;
-                                          }
-                                        },
-                                      )
-                                  ],
-                                  leading: FlatButton(
+                child: Scaffold(
+                  backgroundColor: Theme.of(context).backgroundColor,
+                  appBar: PreferredSize(
+                    preferredSize: Size.fromHeight(screenSize.size.height / 10 * 0.7),
+                    child: ValueListenableBuilder(
+                        valueListenable: _notifier,
+                        builder: (context, value, child) {
+                          return AppBar(
+                              shadowColor: Colors.transparent,
+                              backgroundColor: isDarkModeEnabled
+                                  ? Theme.of(context).primaryColorLight
+                                  : Theme.of(context).primaryColorDark,
+                              title: Text(entries[value]["menuName"]),
+                              actions: [
+                                if ([0, 1, 4].contains(value))
+                                  FlatButton(
                                     color: Colors.transparent,
-                                    child: Icon(MdiIcons.menu, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                    child: Icon(MdiIcons.wrenchOutline,
+                                        color: isDarkModeEnabled ? Colors.white : Colors.black),
                                     onPressed: () {
-                                      _drawerKey.currentState.openDrawer();
+                                      switch (value) {
+                                        case 1:
+                                          {
+                                            agendaPage.currentState.triggerSettings();
+                                          }
+                                          break;
+                                        case 0:
+                                          {
+                                            summaryPage.currentState.triggerSettings();
+                                          }
+                                          break;
+                                        case 4:
+                                          {
+                                            homeworkPage.currentState.triggerSettings();
+                                          }
+                                          break;
+                                      }
                                     },
-                                  ));
-                            }),
-                      ),
-                      body: PageView(
-                          physics: NeverScrollableScrollPhysics(),
-                          controller: drawerPageViewController,
-                          children: [
-                            SummaryPage(
-                              switchPage: _switchPage,
-                              key: summaryPage,
-                            ),
-                            AgendaPage(key: agendaPage),
-                            DownloadsExplorer(),
-                            SingleChildScrollView(physics: NeverScrollableScrollPhysics(), child: GradesPage()),
-                            HomeworkPage(
-                              key: homeworkPage,
-                            ),
-                            MailPage(),
-                            CloudPage(),
-                            PollsAndInfoPage()
-                          ]),
-                    ),
-                  ],
+                                  )
+                              ],
+                              leading: FlatButton(
+                                color: Colors.transparent,
+                                child: Icon(MdiIcons.menu, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                onPressed: () {
+                                  _drawerKey.currentState.openDrawer();
+                                },
+                              ));
+                        }),
+                  ),
+                  body: PageView(
+                      physics: NeverScrollableScrollPhysics(),
+                      controller: drawerPageViewController,
+                      children: [
+                        SummaryPage(
+                          switchPage: _switchPage,
+                          key: summaryPage,
+                        ),
+                        AgendaPage(key: agendaPage),
+                        DownloadsExplorer(),
+                        SingleChildScrollView(physics: NeverScrollableScrollPhysics(), child: GradesPage()),
+                        HomeworkPage(
+                          key: homeworkPage,
+                        ),
+                        StatsPage(),
+                        MailPage(),
+                        CloudPage(),
+                        PollsAndInfoPage()
+                      ]),
                 ),
               ),
 
-              if (isQuickMenuShown)
-                Positioned(
-                  top: screenSize.size.height / 10 * 0.1,
-                  child: AnimatedContainer(
-                    duration: Duration(milliseconds: 800),
-                    color: isQuickMenuShown ? Colors.black.withOpacity(0.5) : Colors.black.withOpacity(0),
-                    height: MediaQuery.of(context).size.height,
-                    width: MediaQuery.of(context).size.width,
-                  ),
-                ),
               //Transparent login panel
               ChangeNotifierProvider.value(
                 value: tlogin,
@@ -393,30 +380,6 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                                         color: Theme.of(context).primaryColorDark,
                                       ),
                                     ),
-                                    /*FittedBox(
-                                      child: Row(
-                                        children: <Widget>[
-                                          Text(
-                                            model.details,
-                                            style: TextStyle(
-                                                fontFamily: "Asap", color: Theme.of(context).primaryColorDark),
-                                          ),
-                                          SizedBox(
-                                            width: screenSize.size.width / 5 * 0.1,
-                                          ),
-                                          if (model.actualState == loginStatus.error)
-                                            GestureDetector(
-                                              onTap: () async {
-                                                await model.login();
-                                              },
-                                              child: Text(
-                                                "Réessayer",
-                                                style: TextStyle(fontFamily: "Asap", color: Colors.blue.shade50),
-                                              ),
-                                            ),
-                                        ],
-                                      ),
-                                    )*/
                                   ],
                                 ),
                               ),

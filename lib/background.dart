@@ -8,6 +8,7 @@ import 'package:ynotes/UI/screens/settings/sub_pages/logsPage.dart';
 import 'package:ynotes/apis/EcoleDirecte.dart';
 import 'package:ynotes/apis/Pronote.dart';
 import 'package:ynotes/classes.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/notifications.dart';
 import 'package:ynotes/usefulMethods.dart';
@@ -69,51 +70,46 @@ class BackgroundService {
 void backgroundFetchHeadlessTask(String a) async {
   print("Starting the headless closed bakground task");
   await LocalNotification.showDebugNotification();
-  var initializationSettingsAndroid = new AndroidInitializationSettings('newgradeicon');
-  var initializationSettingsIOS = new IOSInitializationSettings();
-  var initializationSettings = new InitializationSettings(initializationSettingsAndroid, initializationSettingsIOS);
-  flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
-  flutterLocalNotificationsPlugin.initialize(initializationSettings,
-      onSelectNotification: BackgroundService.onSelectNotification);
-  if (!await getSetting("batterySaver")) {
-    await BackgroundService.refreshHomework();
-  }
+  try {
 //Ensure that grades notification are enabled and battery saver disabled
-  if (await getSetting("notificationNewGrade") && !await getSetting("batterySaver")) {
-    logFile("New grade test triggered");
-    if (await mainTestNewGrades()) {
-      await LocalNotification.showNewGradeNotification();
+    if (await getSetting("notificationNewGrade") && !await getSetting("batterySaver")) {
+      logFile("New grade test triggered");
+      if (await mainTestNewGrades()) {
+        await LocalNotification.showNewGradeNotification();
+      } else {
+        print("Nothing updated");
+      }
     } else {
-      print("Nothing updated");
+      print("New grade notification disabled");
     }
-  } else {
-    print("New grade notification disabled");
-  }
-  if (await getSetting("notificationNewMail") && !await getSetting("batterySaver")) {
-    Mail mail = await mainTestNewMails();
-    if (mail != null) {
-      String content = await readMail(mail.id, mail.read);
-      await LocalNotification.showNewMailNotification(mail, content);
+    if (await getSetting("notificationNewMail") && !await getSetting("batterySaver")) {
+      Mail mail = await mainTestNewMails();
+      if (mail != null) {
+        String content = await readMail(mail.id, mail.read);
+        await LocalNotification.showNewMailNotification(mail, content);
+      } else {
+        print("Nothing updated");
+      }
     } else {
-      print("Nothing updated");
+      print("New mail notification disabled");
     }
-  } else {
-    print("New mail notification disabled");
+    if (await getSetting("agendaOnGoingNotification")) {
+      print("Setting On going notification");
+      await LocalNotification.setOnGoingNotification(dontShowActual: true);
+    } else {
+      print("On going notification disabled");
+    }
+    await logFile("Background fetch occured.");
+  } catch (e) {
+    await logFile("An error occured during the background fetch : " + e.toString());
   }
-  if (await getSetting("agendaOnGoingNotification")) {
-    print("Setting On going notification");
-    await LocalNotification.setOnGoingNotification(dontShowActual: true);
-  } else {
-    print("On going notification disabled");
-  }
-  await logFile("Background fetch occured.");
   //BackgroundFetch.finish("");
 }
 
 void callbackDispatcher() async {
   Workmanager.executeTask((task, inputData) async {
     print("Called background fetch."); //simpleTask will be emitted here.
-    backgroundFetchHeadlessTask("");
+    await backgroundFetchHeadlessTask("");
     return Future.value(true);
   });
 }

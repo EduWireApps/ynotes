@@ -39,7 +39,6 @@ API localApi = APIManager();
 Offline offline = Offline();
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
-final logger = loader();
 
 mainTestNewGrades() async {
   try {
@@ -174,7 +173,6 @@ class HomeApp extends StatelessWidget {
         supportedLocales: [
           const Locale('en'), // English (could be useless ?)
           const Locale('fr'), //French
-
           // ... other locales the app supports
         ],
         debugShowCheckedModeBanner: false,

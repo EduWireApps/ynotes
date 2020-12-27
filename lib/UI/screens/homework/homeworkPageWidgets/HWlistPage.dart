@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -35,7 +36,7 @@ class _HomeworkFirstPageState extends State<HomeworkFirstPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    hwcontroller.refresh();
+    SchedulerBinding.instance.addPostFrameCallback((_) => mounted ? hwcontroller.refresh() : null);
   }
 
   void reloadDates() async {

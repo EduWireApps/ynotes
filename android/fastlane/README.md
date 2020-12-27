@@ -35,6 +35,11 @@ fastlane test
 fastlane githubrelease
 ```
 
+### local_test
+```
+fastlane local_test
+```
+
 
 ----
 
