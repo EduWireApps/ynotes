@@ -42,9 +42,6 @@ int initialIndexGradesOffset = 0;
 List specialties;
 List<Period> periods;
 
-//Global keys used in showcase
-GlobalKey _gradeGroupGB = GlobalKey();
-
 class _GradesPageState extends State<GradesPage> {
   ItemScrollController gradesItemScrollController = ItemScrollController();
   void initState() {
@@ -424,7 +421,6 @@ class _GradesPageState extends State<GradesPage> {
 
   showShowCaseDialog(BuildContext _context) async {
     if ((!await getSetting("gradesShowCase"))) {
-      ShowCaseWidget.of(_context).startShowCase([_gradeGroupGB]);
       await setSetting("gradesShowCase", true);
     }
   }
