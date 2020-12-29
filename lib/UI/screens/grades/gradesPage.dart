@@ -18,6 +18,7 @@ import 'package:ynotes/UI/components/showcaseTooltip.dart';
 import 'package:ynotes/classes.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/models/stats/gradesStats.dart';
 import 'package:ynotes/shared_preferences.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/utils/themeUtils.dart';
@@ -1106,11 +1107,11 @@ class _GradesGroupState extends State<GradesGroup> {
     }
 
     bool canShow = false;
-    List<Grade> localList = getGradesForDiscipline(sousMatiereIndex, periodeToUse);
-    if (localList == null) {
+    List<Grade> gradesForSelectedDiscipline = getGradesForDiscipline(sousMatiereIndex, periodeToUse);
+    if (gradesForSelectedDiscipline == null) {
       canShow = false;
     } else {
-      if (localList.length > 2) canShow = true;
+      if (gradesForSelectedDiscipline.length > 2) canShow = true;
     }
 
     Color colorGroup;
@@ -1126,7 +1127,7 @@ class _GradesGroupState extends State<GradesGroup> {
     return Container(
         height: (screenSize.size.height / 10 * 8.8) / 10 * 0.8,
         child: ListView.builder(
-            itemCount: (localList != null ? localList.length : 1),
+            itemCount: (gradesForSelectedDiscipline != null ? gradesForSelectedDiscipline.length : 1),
             controller: marksColumnController,
             scrollDirection: Axis.horizontal,
             padding: EdgeInsets.symmetric(
@@ -1134,13 +1135,13 @@ class _GradesGroupState extends State<GradesGroup> {
             itemBuilder: (BuildContext context, int index) {
               DateTime now = DateTime.now();
               String formattedDate = DateFormat('yyyy-MM-dd').format(now);
-              if (localList != null && localList.length != null) {
+              if (gradesForSelectedDiscipline != null && gradesForSelectedDiscipline.length != null) {
                 try {
                   if (marksColumnController != null && marksColumnController.hasClients) {
                     // marksColumnController.animateTo(localList.length * screenSize.size.width / 5 * 1.2, duration: new Duration(microseconds: 5), curve: Curves.ease);
                   }
                 } catch (e) {}
-                if (localList[index].dateSaisie == formattedDate) {
+                if (gradesForSelectedDiscipline[index].dateSaisie == formattedDate) {
                   newGrades = true;
                 }
               }
@@ -1165,18 +1166,20 @@ class _GradesGroupState extends State<GradesGroup> {
                       child: InkWell(
                         borderRadius: BorderRadius.all(Radius.circular(11)),
                         splashColor: colorGroup,
-                        onTap: () {
-                          gradesModalBottomSheet(
-                              context, localList[index], widget.disciplinevar, callback, this.widget);
+                        onTap: () async {
+                          GradesStats stats =
+                              GradesStats(gradesForSelectedDiscipline[index], getAllGrades(await localApi.getGrades()));
+                          gradesModalBottomSheet(context, gradesForSelectedDiscipline[index], stats,
+                              widget.disciplinevar, callback, this.widget);
                         },
                         onLongPress: () {
                           print("ok");
-                          CustomDialogs.showShareGradeDialog(context, localList[index]);
+                          CustomDialogs.showShareGradeDialog(context, gradesForSelectedDiscipline[index]);
                         },
                         child: ClipRRect(
                           child: Stack(
                             children: <Widget>[
-                              if (localList != null)
+                              if (gradesForSelectedDiscipline != null)
                                 //Grade box
                                 Container(
                                   padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.2),
@@ -1190,25 +1193,25 @@ class _GradesGroupState extends State<GradesGroup> {
                                         child: AutoSizeText.rich(
                                           //MARK
                                           TextSpan(
-                                            text: (localList[index].nonSignificatif
-                                                ? "(" + localList[index].valeur
-                                                : localList[index].valeur),
+                                            text: (gradesForSelectedDiscipline[index].nonSignificatif
+                                                ? "(" + gradesForSelectedDiscipline[index].valeur
+                                                : gradesForSelectedDiscipline[index].valeur),
                                             style: TextStyle(
                                                 color: Colors.black,
                                                 fontFamily: "Asap",
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.3),
                                             children: <TextSpan>[
-                                              if (localList[index].noteSur != "20")
+                                              if (gradesForSelectedDiscipline[index].noteSur != "20")
 
                                                 //MARK ON
                                                 TextSpan(
-                                                    text: '/' + localList[index].noteSur,
+                                                    text: '/' + gradesForSelectedDiscipline[index].noteSur,
                                                     style: TextStyle(
                                                         color: Colors.black,
                                                         fontWeight: FontWeight.bold,
                                                         fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2)),
-                                              if (localList[index].nonSignificatif == true)
+                                              if (gradesForSelectedDiscipline[index].nonSignificatif == true)
                                                 TextSpan(
                                                     text: ")",
                                                     style: TextStyle(
@@ -1220,7 +1223,7 @@ class _GradesGroupState extends State<GradesGroup> {
                                         ),
                                       ),
                                       //COEFF
-                                      if (localList[index].coef != "1")
+                                      if (gradesForSelectedDiscipline[index].coef != "1")
                                         Container(
                                             padding: EdgeInsets.all(screenSize.size.width / 5 * 0.03),
                                             margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.05),
@@ -1232,7 +1235,7 @@ class _GradesGroupState extends State<GradesGroup> {
                                             ),
                                             child: FittedBox(
                                                 child: AutoSizeText(
-                                              localList[index].coef,
+                                              gradesForSelectedDiscipline[index].coef,
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
                                                   fontFamily: "Asap", color: Colors.white, fontWeight: FontWeight.bold),
@@ -1257,8 +1260,8 @@ class _GradesGroupState extends State<GradesGroup> {
                       ),
                     ),
                   ),
-                  if (localList != null)
-                    if (localList[index].dateSaisie == formattedDate)
+                  if (gradesForSelectedDiscipline != null)
+                    if (gradesForSelectedDiscipline[index].dateSaisie == formattedDate)
                       Positioned(
                         right: screenSize.size.width / 5 * 0.06,
                         top: screenSize.size.height / 15 * 0.01,

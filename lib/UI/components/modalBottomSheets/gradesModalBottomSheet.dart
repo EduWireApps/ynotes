@@ -4,12 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ynotes/UI/components/modalBottomSheets/disciplinesModalBottomSheet.dart';
 import 'package:ynotes/UI/components/modalBottomSheets/keyValues.dart';
+import 'package:ynotes/models/stats/gradesStats.dart';
 import 'package:ynotes/utils/themeUtils.dart';
 
 import '../../../classes.dart';
 import '../../../usefulMethods.dart';
 
-void gradesModalBottomSheet(context, Grade grade, Discipline discipline, Function callback, var widget) {
+void gradesModalBottomSheet(
+  context,
+  Grade grade,
+  GradesStats stats,
+  Discipline discipline,
+  Function callback,
+  var widget,
+) {
   MediaQueryData screenSize = MediaQuery.of(context);
 
   showModalBottomSheet(
@@ -22,6 +30,7 @@ void gradesModalBottomSheet(context, Grade grade, Discipline discipline, Functio
       builder: (BuildContext bc) {
         return GradesModalBottomSheetContainer(
           grade: grade,
+          stats: stats,
           discipline: discipline,
           callback: callback,
         );
@@ -32,11 +41,13 @@ class GradesModalBottomSheetContainer extends StatefulWidget {
   const GradesModalBottomSheetContainer({
     Key key,
     this.grade,
+    this.stats,
     this.discipline,
     this.callback,
   }) : super(key: key);
 
   final Grade grade;
+  final GradesStats stats;
   final Discipline discipline;
   final Function callback;
 
@@ -337,13 +348,11 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text(
-                                  "SpaceStats sera implémenté prochainement.",
-                                  style: TextStyle(
-                                      fontFamily: "Asap",
-                                      color: isDarkModeEnabled ? Colors.white : Colors.grey,
-                                      textBaseline: TextBaseline.ideographic),
-                                ),
+                                buildKeyValuesInfo(context, "Augmentation de la moyenne :", [
+                                  widget.stats.calculateAverageImpact() != null
+                                      ? widget.stats.calculateAverageImpact().toStringAsPrecision(2)
+                                      : "Non"
+                                ]),
                               ],
                             ),
                           ),
