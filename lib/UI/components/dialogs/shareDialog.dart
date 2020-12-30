@@ -32,7 +32,7 @@ class _ShareBoxState extends State<ShareBox> {
   Future<Uint8List> _capturePng() async {
     try {
       RenderRepaintBoundary boundary = _globalKey.currentContext.findRenderObject();
-      ui.Image image = await boundary.toImage(pixelRatio: 3.0);
+      ui.Image image = await boundary.toImage(pixelRatio: 2.0);
       ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
       var pngBytes = byteData.buffer.asUint8List();
       final directory = (await getExternalStorageDirectory()).path;
@@ -40,7 +40,8 @@ class _ShareBoxState extends State<ShareBox> {
       imgFile.writeAsBytes(pngBytes);
 
       final RenderBox box = context.findRenderObject();
-      Share.shareFiles(['$directory/screenshot.png'], subject: '', text: '', sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
+      Share.shareFiles(['$directory/screenshot.png'],
+          subject: '', text: '', sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
       setState(() {});
       return pngBytes;
     } catch (e) {
@@ -48,6 +49,7 @@ class _ShareBoxState extends State<ShareBox> {
     }
   }
 
+  TextEditingController _label = TextEditingController(text: "");
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize;
@@ -90,40 +92,71 @@ class _ShareBoxState extends State<ShareBox> {
                                       ),
                                       width: screenSize.size.width / 5 * 5,
                                       height: screenSize.size.height / 10 * 0.5,
-                                      decoration: BoxDecoration(borderRadius: BorderRadius.only(topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)), color: Color(snapshot.data)));
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.only(
+                                              topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
+                                          color: Color(snapshot.data)));
                                 }),
                             Container(
                               width: screenSize.size.width / 5 * 5,
                               height: screenSize.size.height / 10 * 2,
-                              decoration: BoxDecoration(borderRadius: BorderRadius.only(bottomLeft: Radius.circular(15.0), bottomRight: Radius.circular(15.0)), color: Theme.of(context).primaryColor),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(15.0), bottomRight: Radius.circular(15.0)),
+                                  color: Theme.of(context).primaryColor),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
-                                  Text(widget.grade.date!=null?("Note du " + DateFormat("dd MMMM yyyy", "fr_FR").format(widget.grade.date)):"",
+                                  Text(
+                                      widget.grade.date != null
+                                          ? ("Note du " + DateFormat("dd MMMM yyyy", "fr_FR").format(widget.grade.date))
+                                          : "",
                                       style: TextStyle(
                                         fontFamily: "Asap",
                                         color: ThemeUtils.textColor(),
                                       )),
-                                  Text(widget.grade.devoir, style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontWeight: FontWeight.bold), textAlign: TextAlign.center),
+                                  Text(widget.grade.devoir,
+                                      style: TextStyle(
+                                          fontFamily: "Asap",
+                                          color: ThemeUtils.textColor(),
+                                          fontWeight: FontWeight.bold),
+                                      textAlign: TextAlign.center),
                                   SizedBox(
                                     height: screenSize.size.height / 10 * 0.2,
                                   ),
-                                  Text("Ma note :", style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontWeight: FontWeight.w300, fontSize: screenSize.size.height / 10 * 0.2), textAlign: TextAlign.center),
+                                  Text("Ma note :",
+                                      style: TextStyle(
+                                          fontFamily: "Asap",
+                                          color: ThemeUtils.textColor(),
+                                          fontWeight: FontWeight.w300,
+                                          fontSize: screenSize.size.height / 10 * 0.2),
+                                      textAlign: TextAlign.center),
                                   Container(
                                     width: screenSize.size.width / 5 * 2,
                                     height: screenSize.size.height / 10 * 0.6,
-                                    decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(50)), color: Theme.of(context).primaryColorDark),
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.all(Radius.circular(50)),
+                                        color: Theme.of(context).primaryColorDark),
                                     child: Center(
                                       child: AutoSizeText.rich(
                                         //MARK
                                         TextSpan(
                                           text: widget.grade.valeur,
-                                          style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontWeight: FontWeight.bold, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.3),
+                                          style: TextStyle(
+                                              color: ThemeUtils.textColor(),
+                                              fontFamily: "Asap",
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.3),
                                           children: <TextSpan>[
                                             if (widget.grade.noteSur != "20")
 
                                               //MARK ON
-                                              TextSpan(text: '/' + widget.grade.noteSur, style: TextStyle(color: ThemeUtils.textColor(), fontWeight: FontWeight.bold, fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2)),
+                                              TextSpan(
+                                                  text: '/' + widget.grade.noteSur,
+                                                  style: TextStyle(
+                                                      color: ThemeUtils.textColor(),
+                                                      fontWeight: FontWeight.bold,
+                                                      fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2)),
                                           ],
                                         ),
                                       ),

@@ -13,7 +13,7 @@ import 'package:showcaseview/showcase.dart';
 import 'package:showcaseview/showcase_widget.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/UI/components/modalBottomSheets/disciplinesModalBottomSheet.dart';
-import 'package:ynotes/UI/components/modalBottomSheets/gradesModalBottomSheet.dart';
+import 'package:ynotes/UI/components/modalBottomSheets/gradesModalBottomSheet/gradesModalBottomSheet.dart';
 import 'package:ynotes/UI/components/showcaseTooltip.dart';
 import 'package:ynotes/classes.dart';
 import 'package:ynotes/globals.dart';
@@ -1163,8 +1163,8 @@ class _GradesGroupState extends State<GradesGroup> {
                         borderRadius: BorderRadius.all(Radius.circular(11)),
                         splashColor: colorGroup,
                         onTap: () async {
-                          GradesStats stats =
-                              GradesStats(gradesForSelectedDiscipline[index], getAllGrades(await localApi.getGrades()));
+                          GradesStats stats = GradesStats(gradesForSelectedDiscipline[index],
+                              getAllGrades(await localApi.getGrades(), overrideLimit: true));
                           gradesModalBottomSheet(context, gradesForSelectedDiscipline[index], stats,
                               widget.disciplinevar, callback, this.widget);
                         },

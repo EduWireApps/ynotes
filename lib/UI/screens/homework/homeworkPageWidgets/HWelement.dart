@@ -492,14 +492,16 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                         ),
                                         width: screenSize.size.width / 5 * 4.5,
                                         height: screenSize.size.height / 10 * 0.4,
-                                        child: Center(
-                                            child: AnimatedBuilder(
-                                                animation: _rotationAnimation,
-                                                builder: (context, snapshot) {
-                                                  return Transform.rotate(
-                                                      angle: pi * 3 * _rotationAnimation.value,
-                                                      child: Icon(Icons.expand_more));
-                                                }))))),
+                                        child: widget.homeworkForThisDay.loaded
+                                            ? Center(
+                                                child: AnimatedBuilder(
+                                                    animation: _rotationAnimation,
+                                                    builder: (context, snapshot) {
+                                                      return Transform.rotate(
+                                                          angle: pi * 3 * _rotationAnimation.value,
+                                                          child: Icon(Icons.expand_more));
+                                                    }))
+                                            : Icon(MdiIcons.dotsHorizontal)))),
                           ],
                         ),
                       )),

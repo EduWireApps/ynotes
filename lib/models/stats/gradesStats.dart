@@ -7,7 +7,7 @@ class GradesStats {
   GradesStats(this.grade, this.allGrades);
 
   ///returns a double (positive or negative)
-  ///this represents the the increase or decrease of the **discipline average** for this period
+  ///this represents the the increase or decrease of the **discipline average** for this period when receiving the grade
   double calculateAverageImpact() {
     //remove not concerned grades
 
@@ -41,7 +41,6 @@ class GradesStats {
       //At selected grade
       else {
         //Calculate before average
-        print("RAW BEFORE AVERAGE " + beforeAverage.toString());
         beforeAverage = beforeAverage / coeffCounter;
 
         if (!_grade.nonSignificatif && !_grade.letters) {
@@ -54,16 +53,89 @@ class GradesStats {
           afterAverage = afterAverage / coeffCounter;
         }
       }
-
       //Returns the difference
     });
-    print("Counter " + coeffCounter.toString());
-    print("Before average " + beforeAverage.toString());
-    print("After average " + afterAverage.toString());
+    if (afterAverage - beforeAverage == null || (afterAverage - beforeAverage).isNaN) {
+      return afterAverage;
+    }
     return (afterAverage - beforeAverage);
   }
 
   ///returns a double (positive or negative)
-  ///this represents the the increase or decrease of the **global average** for this period
-  double calculateGlobalImpact() {}
+  ///this represents the the increase or decrease of the **global average** for this period when receiving the grade
+  double calculateGlobalAverageImpact() {
+    List<Grade> _periodGradesWithGrade = List();
+    List<Grade> _periodGradesWithoutGrade = List();
+
+    _periodGradesWithGrade.addAll(this.allGrades);
+    //remove other periods grades
+    _periodGradesWithGrade.removeWhere((_grade) => _grade.codePeriode != this.grade.codePeriode);
+    _periodGradesWithGrade = _periodGradesWithGrade.reversed.toList();
+    //get this grade index
+    int gradeIndex = _periodGradesWithGrade
+        .indexWhere((_grade) => _grade.devoir == this.grade.devoir && _grade.date == this.grade.date);
+    //remove next items
+    _periodGradesWithGrade = _periodGradesWithGrade.sublist(0, gradeIndex + 1);
+    _periodGradesWithoutGrade.addAll(_periodGradesWithGrade);
+    _periodGradesWithoutGrade.removeLast();
+
+    return (_calculateGlobalAverage(_periodGradesWithGrade) - _calculateGlobalAverage(_periodGradesWithoutGrade));
+  }
+
+  ///returns a double (positive or negative)
+  ///this represents the the increase or decrease of the **global average** for this period with and without the grade
+  double calculateGlobalAverageImpactOverall() {
+    List<Grade> _periodGradesWithGrade = List();
+    List<Grade> _periodGradesWithoutGrade = List();
+
+    _periodGradesWithGrade.addAll(this.allGrades);
+    //remove other periods grades
+    _periodGradesWithGrade.removeWhere((_grade) => _grade.codePeriode != this.grade.codePeriode);
+    _periodGradesWithGrade = _periodGradesWithGrade.reversed.toList();
+    //get this grade index
+    int gradeIndex = _periodGradesWithGrade
+        .indexWhere((_grade) => _grade.devoir == this.grade.devoir && _grade.date == this.grade.date);
+    _periodGradesWithoutGrade.addAll(_periodGradesWithGrade);
+    //remove grade
+    _periodGradesWithoutGrade
+        .removeWhere((_grade) => _grade.devoir == this.grade.devoir && _grade.date == this.grade.date);
+
+    return (_calculateGlobalAverage(_periodGradesWithGrade) - _calculateGlobalAverage(_periodGradesWithoutGrade));
+  }
+
+  double _calculateGlobalAverage(List<Grade> grades) {
+    Map<dynamic, List<Grade>> gradesSortedByDisciplines = Map();
+    List<double> averages = List();
+
+    grades.forEach((grade) {
+      //ensure that grade can be used
+      if (!grade.nonSignificatif && !grade.letters) {
+        if (gradesSortedByDisciplines[grade.codeMatiere] == null) {
+          gradesSortedByDisciplines[grade.codeMatiere] = List();
+        }
+        gradesSortedByDisciplines[grade.codeMatiere].add(grade);
+      }
+    });
+    gradesSortedByDisciplines.keys.forEach((key) {
+      double average = 0.0;
+      double counter = 0.0;
+      gradesSortedByDisciplines[key].forEach((_grade) {
+        try {
+          average += double.parse(_grade.valeur.replaceAll(',', '.')) *
+              20 /
+              double.parse(_grade.noteSur.replaceAll(',', '.')) *
+              double.parse(_grade.coef.replaceAll(',', '.'));
+          counter += double.parse(_grade.coef);
+        } catch (e) {}
+      });
+      average = average / counter;
+      averages.add(average);
+      //add average to list
+    });
+    if (averages.length != 0) {
+      return (averages.reduce((a, b) => a + b) / averages.length);
+    } else {
+      return 0.0;
+    }
+  }
 }

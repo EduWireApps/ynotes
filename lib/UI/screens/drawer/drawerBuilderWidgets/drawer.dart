@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -11,6 +12,7 @@ import 'package:ynotes/utils/themeUtils.dart';
 
 ///Apps
 ///`relatedApi` should be set to null if both APIs can use it
+///-1 is only shown in debug mode
 List<Map> entries = [
   {
     "menuName": "Résumé",
@@ -29,10 +31,7 @@ List<Map> entries = [
     "menuName": "Devoirs",
     "icon": MdiIcons.calendarCheck,
   },
-  {
-    "menuName": "Statistiques",
-    "icon": MdiIcons.chartBar,
-  },
+  {"menuName": "Statistiques", "icon": MdiIcons.chartBar, "relatedApi": -1},
   {"menuName": "Messagerie", "icon": MdiIcons.mail, "relatedApi": 0},
   {"menuName": "Cloud", "icon": MdiIcons.cloud, "relatedApi": 0},
   {"menuName": "Sondages", "icon": MdiIcons.poll, "relatedApi": 1},
@@ -112,7 +111,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 ),
               ),
               for (var entry in entries)
-                if (entry["relatedApi"] == null || entry["relatedApi"] == chosenParser)
+                if (entry["relatedApi"] == null ||
+                    entry["relatedApi"] == chosenParser ||
+                    (entry["relatedApi"] == -1 && !kReleaseMode))
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

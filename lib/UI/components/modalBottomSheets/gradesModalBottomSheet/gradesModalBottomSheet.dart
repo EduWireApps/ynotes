@@ -3,12 +3,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ynotes/UI/components/modalBottomSheets/disciplinesModalBottomSheet.dart';
+import 'package:ynotes/UI/components/modalBottomSheets/gradesModalBottomSheet/stats.dart';
 import 'package:ynotes/UI/components/modalBottomSheets/keyValues.dart';
 import 'package:ynotes/models/stats/gradesStats.dart';
 import 'package:ynotes/utils/themeUtils.dart';
 
-import '../../../classes.dart';
-import '../../../usefulMethods.dart';
+import '../../../../classes.dart';
+import '../../../../usefulMethods.dart';
 
 void gradesModalBottomSheet(
   context,
@@ -309,53 +310,53 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                   height: screenSize.size.height / 10 * (open ? 5 : 0),
                   padding: EdgeInsets.symmetric(
                       horizontal: screenSize.size.width / 5 * 0.2, vertical: screenSize.size.height / 10 * 0.1),
-                  child: FittedBox(
+                  child: SingleChildScrollView(
                     child: Column(
+                      mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        //Plus button
-
-                        Container(
-                          width: screenSize.size.width / 5 * 0.4,
-                          height: screenSize.size.width / 5 * 0.4,
-                          child: FittedBox(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  width: screenSize.size.width / 5 * 0.3,
-                                  height: screenSize.size.width / 5 * 0.3,
-                                  padding: EdgeInsets.all(
-                                    screenSize.size.width / 5 * 0.05,
-                                  ),
-                                  child: FittedBox(
-                                    child: new Icon(
-                                      Icons.bar_chart,
-                                      color: isDarkModeEnabled ? Colors.white : Colors.grey,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                        Tooltip(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(11), color: Theme.of(context).primaryColorLight),
+                          margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.7),
+                          message:
+                              "Indique le nombre de points d'impact sur la moyenne de la matière au moment de l'obtention de cette note.",
+                          textStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                          child: ImpactStat(
+                            impact: widget.stats.calculateAverageImpact(),
+                            label: "points de moyenne pour la matière (à l'obtention).",
                           ),
                         ),
-                        SizedBox(width: screenSize.size.width / 5 * 0.1),
-                        Container(
-                          height: screenSize.size.height / 10 * 0.2,
-                          child: FittedBox(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                buildKeyValuesInfo(context, "Augmentation de la moyenne :", [
-                                  widget.stats.calculateAverageImpact() != null
-                                      ? widget.stats.calculateAverageImpact().toStringAsPrecision(2)
-                                      : "Non"
-                                ]),
-                              ],
-                            ),
+                        SizedBox(height: screenSize.size.height / 10 * 0.1),
+                        Tooltip(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(11), color: Theme.of(context).primaryColorLight),
+                          margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.7),
+                          message:
+                              "Indique le nombre de points d'impact sur la moyenne générale au moment de l'obtention de cette note.",
+                          textStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                          child: ImpactStat(
+                            impact: widget.stats.calculateGlobalAverageImpact(),
+                            label: "points de moyenne générale (à l'obtention).",
                           ),
+                        ),
+                        SizedBox(height: screenSize.size.height / 10 * 0.1),
+                        Tooltip(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(11), color: Theme.of(context).primaryColorLight),
+                          margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.7),
+                          message: "Indique le nombre de points d'impact sur la moyenne générale avec ou sans la note.",
+                          textStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                          child: ImpactStat(
+                            impact: widget.stats.calculateGlobalAverageImpactOverall(),
+                            label: "points de moyenne générale (tout le temps).",
+                          ),
+                        ),
+                        SizedBox(height: screenSize.size.height / 10 * 0.1),
+                        Text(
+                          "A venir...",
+                          style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor().withOpacity(0.5)),
                         )
                       ],
                     ),
