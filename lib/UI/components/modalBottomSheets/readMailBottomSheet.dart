@@ -14,7 +14,7 @@ import 'package:ynotes/utils/fileUtils.dart';
 import 'package:ynotes/apis/EcoleDirecte.dart';
 import 'package:ynotes/classes.dart';
 import 'package:ynotes/utils/themeUtils.dart';
-
+import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
 import '../../../models.dart';
 import '../../../usefulMethods.dart';
 
@@ -31,12 +31,14 @@ class ReadMailBottomSheet extends StatefulWidget {
 class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
   bool monochromatic = false;
   DateFormat format = DateFormat("dd-MM-yyyy HH:hh");
-  getMonochromaticColors(String html) {
+
+  //Get monochromatic colors or not
+  htmlColors(String html) {
     if (!monochromatic) {
       return html;
     }
     String color = isDarkModeEnabled ? "white" : "black";
-    String finalHTML = html.replaceAll("color", "taratata");
+    String finalHTML = html.replaceAll("color", color);
     return finalHTML;
   }
 
@@ -191,7 +193,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                       Padding(
                                         padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
                                         child: HtmlWidget(
-                                          getMonochromaticColors(snapshot.data),
+                                          htmlColors(snapshot.data),
                                           hyperlinkColor: Colors.blue.shade300,
                                           onTapUrl: (url) async {
                                             if (await canLaunch(url)) {
@@ -252,26 +254,6 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                                               child: Row(
                                                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                                 children: <Widget>[
-                                                                  if ((this.widget.mail.files[index].libelle)
-                                                                      .contains("pdf"))
-                                                                    IconButton(
-                                                                      icon: Icon(
-                                                                        MdiIcons.eyeOutline,
-                                                                        color: Colors.white,
-                                                                      ),
-                                                                      onPressed: () async {
-                                                                        String url = (await localApi.downloadRequest(
-                                                                                this.widget.mail.files[index]))
-                                                                            .url
-                                                                            .toString();
-                                                                      },
-                                                                    ),
-                                                                  if ((this.widget.mail.files[index].libelle)
-                                                                      .contains("pdf"))
-                                                                    VerticalDivider(
-                                                                      width: 2,
-                                                                      color: Color(0xff5FA9DA),
-                                                                    ),
                                                                   ViewModelBuilder<DownloadModel>.reactive(
                                                                       viewModelBuilder: () => DownloadModel(),
                                                                       builder: (context, model, child) {
@@ -280,7 +262,8 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                                                                 this.widget.mail.files[index].libelle),
                                                                             initialData: false,
                                                                             builder: (context, snapshot) {
-                                                                              if (snapshot.data == false) {
+                                                                              if (snapshot.data == false ||
+                                                                                  model.isDownloading) {
                                                                                 if (model.isDownloading) {
                                                                                   /// If download is in progress or connecting
                                                                                   if (model.downloadProgress == null ||
@@ -320,12 +303,8 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                                                                   ///Download is ended
                                                                                   else {
                                                                                     return Container(
-                                                                                        child: IconButton(
-                                                                                      icon: Icon(
-                                                                                        MdiIcons.check,
-                                                                                        color: Colors.green,
-                                                                                      ),
-                                                                                      onPressed: () async {
+                                                                                        child: InkWell(
+                                                                                      onTap: () async {
                                                                                         FileAppUtil.openFile(
                                                                                             this
                                                                                                 .widget
@@ -334,6 +313,23 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                                                                                 .libelle,
                                                                                             usingFileName: true);
                                                                                       },
+                                                                                      //Force download
+                                                                                      onLongPress: () async {
+                                                                                        print("ok");
+                                                                                        await model.download(this
+                                                                                            .widget
+                                                                                            .mail
+                                                                                            .files[index]);
+                                                                                      },
+                                                                                      child: Container(
+                                                                                        width: screenSize.size.width /
+                                                                                            5 *
+                                                                                            0.6,
+                                                                                        child: Icon(
+                                                                                          MdiIcons.check,
+                                                                                          color: Colors.green,
+                                                                                        ),
+                                                                                      ),
                                                                                     ));
                                                                                   }
                                                                                 }
@@ -358,12 +354,8 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                                                               ///If file already exists
                                                                               else {
                                                                                 return Container(
-                                                                                    child: IconButton(
-                                                                                  icon: Icon(
-                                                                                    MdiIcons.check,
-                                                                                    color: Colors.green,
-                                                                                  ),
-                                                                                  onPressed: () async {
+                                                                                    child: InkWell(
+                                                                                  onTap: () async {
                                                                                     FileAppUtil.openFile(
                                                                                         this
                                                                                             .widget
@@ -372,6 +364,20 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                                                                             .libelle,
                                                                                         usingFileName: true);
                                                                                   },
+                                                                                  //Force download
+                                                                                  onLongPress: () async {
+                                                                                    print("ok");
+                                                                                    await model.download(
+                                                                                        this.widget.mail.files[index]);
+                                                                                  },
+                                                                                  child: Container(
+                                                                                    width:
+                                                                                        screenSize.size.width / 5 * 0.6,
+                                                                                    child: Icon(
+                                                                                      MdiIcons.check,
+                                                                                      color: Colors.green,
+                                                                                    ),
+                                                                                  ),
                                                                                 ));
                                                                               }
                                                                             });

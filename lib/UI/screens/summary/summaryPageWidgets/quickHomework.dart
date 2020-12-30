@@ -203,39 +203,48 @@ class _QuickHomeworkState extends State<QuickHomework> {
                                               );
                                             });
                                       } else {
-                                        return FittedBox(
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: <Widget>[
-                                              Container(
-                                                height: (screenSize.size.height / 10 * 8.8) / 10 * 1.5,
-                                                child: Image(
-                                                    fit: BoxFit.fitWidth,
-                                                    image: AssetImage('assets/images/noHomework.png')),
-                                              ),
-                                              Text(
-                                                "Pas de devoirs à l'horizon... \non se détend ?",
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                    fontFamily: "Asap",
-                                                    color: ThemeUtils.textColor(),
-                                                    fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
-                                              ),
-                                              FlatButton(
-                                                  onPressed: () async {
-                                                    await model.refresh(force: true);
-                                                  },
-                                                  child: !model.isFetching
-                                                      ? Text("Recharger",
-                                                          style: TextStyle(
-                                                            fontFamily: "Asap",
+                                        return Center(
+                                          child: FittedBox(
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              children: <Widget>[
+                                                Container(
+                                                  height: (screenSize.size.height / 10 * 8.8) / 10 * 1.5,
+                                                  child: Image(
+                                                      fit: BoxFit.fitWidth,
+                                                      image: AssetImage('assets/images/noHomework.png')),
+                                                ),
+                                                Text(
+                                                  "Pas de devoirs à l'horizon... \non se détend ?",
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                      fontFamily: "Asap",
+                                                      color: ThemeUtils.textColor(),
+                                                      fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
+                                                ),
+                                                FlatButton(
+                                                    textColor: ThemeUtils.textColor(),
+                                                    onPressed: () async {
+                                                      await model.refresh(force: true);
+                                                    },
+                                                    shape: RoundedRectangleBorder(
+                                                        side: BorderSide(
                                                             color: ThemeUtils.textColor(),
-                                                          ))
-                                                      : FittedBox(
-                                                          child: SpinKitThreeBounce(
-                                                              color: Theme.of(context).primaryColorDark,
-                                                              size: screenSize.size.width / 5 * 0.4))),
-                                            ],
+                                                            width: 0.2,
+                                                            style: BorderStyle.solid),
+                                                        borderRadius: BorderRadius.circular(50)),
+                                                    child: !model.isFetching
+                                                        ? Text("Recharger",
+                                                            style: TextStyle(
+                                                              fontFamily: "Asap",
+                                                              color: ThemeUtils.textColor(),
+                                                            ))
+                                                        : FittedBox(
+                                                            child: SpinKitThreeBounce(
+                                                                color: Theme.of(context).primaryColorDark,
+                                                                size: screenSize.size.width / 5 * 0.4))),
+                                              ],
+                                            ),
                                           ),
                                         );
                                       }

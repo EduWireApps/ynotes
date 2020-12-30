@@ -98,6 +98,8 @@ dependencies:
       url: https://github.com/wiredashio/wiredash-sdk
       ref: master
   flutter_file_dialog: ^0.0.5
+  advance_pdf_viewer: ^1.2.1+2
+
 dependency_overrides:
   analyzer: ^0.40.4
   intl: ^0.16.1
