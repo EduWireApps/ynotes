@@ -114,12 +114,8 @@ mainTestNewMails() async {
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
 //Register work manager
-  await Workmanager.initialize(callbackDispatcher, // The top level function, aka callbackDispatcher
-      isInDebugMode:
-          false // If enabled it will post a notification whenever the task is running. Handy for debugging tasks
-      );
-  await Workmanager.registerPeriodicTask("test", "testTask");
-  //BackgroundFetch.registerHeadlessTask(backgroundFetchHeadlessTask);
+  await Workmanager.initialize(callbackDispatcher);
+  await Workmanager.registerPeriodicTask("background", "backgroundFetcher");
   //Init the local notifications
   var initializationSettingsAndroid = new AndroidInitializationSettings(
     'newgradeicon',

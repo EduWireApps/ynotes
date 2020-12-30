@@ -69,7 +69,7 @@ class BackgroundService {
 //Background task when when app is closed
 void backgroundFetchHeadlessTask(String a) async {
   print("Starting the headless closed bakground task");
-  await LocalNotification.showDebugNotification();
+  //await LocalNotification.showDebugNotification();
   try {
 //Ensure that grades notification are enabled and battery saver disabled
     if (await getSetting("notificationNewGrade") && !await getSetting("batterySaver")) {
