@@ -55,6 +55,8 @@ class GradesStats {
       }
       //Returns the difference
     });
+    print(beforeAverage);
+    print(afterAverage);
     if (afterAverage - beforeAverage == null || (afterAverage - beforeAverage).isNaN) {
       return afterAverage;
     }
@@ -77,7 +79,9 @@ class GradesStats {
     //remove next items
     _periodGradesWithGrade = _periodGradesWithGrade.sublist(0, gradeIndex + 1);
     _periodGradesWithoutGrade.addAll(_periodGradesWithGrade);
-    _periodGradesWithoutGrade.removeLast();
+    if (_periodGradesWithoutGrade.length > 0) {
+      _periodGradesWithoutGrade.removeLast();
+    }
 
     return (_calculateGlobalAverage(_periodGradesWithGrade) - _calculateGlobalAverage(_periodGradesWithoutGrade));
   }
