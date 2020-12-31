@@ -19,6 +19,7 @@ class GradesStats {
     _sortedGrades.removeWhere(
         (_grade) => _grade.codeMatiere != this.grade.codeMatiere || _grade.codePeriode != this.grade.codePeriode);
     _sortedGrades = _sortedGrades.reversed.toList();
+
     int gradeIndex =
         _sortedGrades.indexWhere((_grade) => _grade.devoir == this.grade.devoir && _grade.date == this.grade.date);
     //remove next items
@@ -26,7 +27,7 @@ class GradesStats {
     double beforeAverage = 0.0;
     double afterAverage = 0.0;
     double coeffCounter = 0.0;
-
+    print(gradeIndex);
     _sortedGrades.forEach((_grade) {
       //Before selected grade
       if (_grade.devoir != this.grade.devoir || _grade.dateSaisie != this.grade.dateSaisie) {
@@ -55,8 +56,6 @@ class GradesStats {
       }
       //Returns the difference
     });
-    print(beforeAverage);
-    print(afterAverage);
     if (afterAverage - beforeAverage == null || (afterAverage - beforeAverage).isNaN) {
       return afterAverage;
     }

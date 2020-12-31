@@ -108,8 +108,6 @@ setIntSetting(String setting, int value) async {
   prefs.setInt(setting, value);
 }
 
-
-
 //Connectivity  classs
 
 class ConnectionStatusSingleton {
@@ -175,7 +173,7 @@ class ConnectionStatusSingleton {
 }
 
 //Get only grades as a list
-List<Grade> getAllGrades(List<Discipline> list, {bool overrideLimit = false}) {
+List<Grade> getAllGrades(List<Discipline> list, {bool overrideLimit = false, bool sortByWritingDate = true}) {
   if (localApi != null) {
     List<Grade> listToReturn = List();
     if (list != null) {
@@ -194,8 +192,10 @@ List<Grade> getAllGrades(List<Discipline> list, {bool overrideLimit = false}) {
       listToReturn = listToReturn.toSet().toList();
       if (listToReturn != null) {
         //sort grades
-        listToReturn.sort(
-            (a, b) => (a.dateSaisie != null && b.dateSaisie != null) ? (a.dateSaisie.compareTo(b.dateSaisie)) : 1);
+        if (sortByWritingDate) {
+          listToReturn.sort(
+              (a, b) => (a.dateSaisie != null && b.dateSaisie != null) ? (a.dateSaisie.compareTo(b.dateSaisie)) : 1);
+        }
 
         //remove duplicates
         listToReturn = listToReturn.toSet().toList();

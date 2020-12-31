@@ -1054,7 +1054,7 @@ class _GradesGroupState extends State<GradesGroup> {
                                   color: ThemeUtils.textColor(),
                                 ),
                               )),
-                      gradesColumn(0),
+                      gradesList(0),
                       if (widget.disciplinevar != null)
                         if (widget.disciplinevar.codeSousMatiere.length > 0) Divider(thickness: 2),
                       if (widget.disciplinevar != null)
@@ -1065,7 +1065,7 @@ class _GradesGroupState extends State<GradesGroup> {
                                 color: ThemeUtils.textColor(),
                               )),
                       if (widget.disciplinevar != null)
-                        if (widget.disciplinevar.codeSousMatiere.length > 0) gradesColumn(1),
+                        if (widget.disciplinevar.codeSousMatiere.length > 0) gradesList(1),
                     ],
                   ),
                 )),
@@ -1097,7 +1097,7 @@ class _GradesGroupState extends State<GradesGroup> {
   }
 
   //MARKS COLUMN
-  gradesColumn(int sousMatiereIndex) {
+  gradesList(int sousMatiereIndex) {
     void callback() {
       setState(() {});
     }
@@ -1164,7 +1164,7 @@ class _GradesGroupState extends State<GradesGroup> {
                         splashColor: colorGroup,
                         onTap: () async {
                           GradesStats stats = GradesStats(gradesForSelectedDiscipline[index],
-                              getAllGrades(await localApi.getGrades(), overrideLimit: true));
+                              getAllGrades(await localApi.getGrades(), overrideLimit: true, sortByWritingDate: false));
                           gradesModalBottomSheet(context, gradesForSelectedDiscipline[index], stats,
                               widget.disciplinevar, callback, this.widget);
                         },
