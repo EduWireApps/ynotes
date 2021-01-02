@@ -11,6 +11,7 @@ import 'package:html/parser.dart';
 import 'package:intl/intl.dart';
 import 'package:ynotes/classes.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/offline/offline.dart';
 import 'package:ynotes/shared_preferences.dart';
 import 'package:ynotes/usefulMethods.dart';
 
@@ -59,7 +60,7 @@ class LocalNotification {
             content: NotificationContent(
                 id: event.id.hashCode,
                 channelKey: 'alarm',
-                title: (event.name ?? "(Sans titre)") + " à time",
+                title: (event.name ?? "(Sans titre)") + " à $time",
                 body: event.description,
                 notificationLayout: parse(event.description).documentElement.text.length < 49
                     ? NotificationLayout.Default
@@ -376,8 +377,10 @@ class LocalNotification {
     flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
     flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onSelectNotification: BackgroundService.onSelectNotification);
-    await getChosenParser();
-    API api = APIManager(offline);
+    await getChosenParser(); 
+    //Lock offline data
+    Offline _offline = Offline(locked: true);
+    API api = APIManager(_offline);
     //Login creds
     String u = await ReadStorage("username");
     String p = await ReadStorage("password");
