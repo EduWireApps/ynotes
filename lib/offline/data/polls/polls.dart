@@ -19,16 +19,18 @@ class PollsOffline extends Offline {
 
   ///Update existing polls (clear old data) with passed data
   update(List<PollInfo> newData) async {
-    print("Update offline polls (length : ${newData.length})");
-    try {
-      if (!offlineBox.isOpen) {
-        offlineBox = await Hive.openBox("offlineData");
+    if (!locked) {
+      print("Update offline polls (length : ${newData.length})");
+      try {
+        if (!offlineBox.isOpen) {
+          offlineBox = await Hive.openBox("offlineData");
+        }
+        await offlineBox.delete("polls");
+        await offlineBox.put("polls", newData);
+        await refreshData();
+      } catch (e) {
+        print("Error while updating polls " + e.toString());
       }
-      await offlineBox.delete("polls");
-      await offlineBox.put("polls", newData);
-      await refreshData();
-    } catch (e) {
-      print("Error while updating polls " + e.toString());
     }
   }
 }

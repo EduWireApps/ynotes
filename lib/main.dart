@@ -34,40 +34,34 @@ var uuid = Uuid();
 
 //login manager
 TransparentLogin tlogin = TransparentLogin();
-
-API localApi = APIManager();
 Offline offline = Offline();
+API localApi = APIManager(offline);
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
 mainTestNewGrades() async {
   try {
+    //Get the old number of mails
+    var oldGradesLength = await getIntSetting("gradesNumber");
     //Getting the offline count of grades
+    //instanciate an offline controller read only
+    Offline _offline = Offline(locked: true);
+    API backgroundFetchApi = APIManager(_offline);
 
-    List<Grade> listOfflineGrades = getAllGrades(await offline.disciplines.getDisciplines(), overrideLimit: true);
-
-    print("Offline length is ${listOfflineGrades.length}");
+    print("Old grades length is ${oldGradesLength}");
     //Getting the online count of grades
     await getChosenParser();
     List<Grade> listOnlineGrades = List<Grade>();
-    if (chosenParser == 0) {
-      listOnlineGrades = getAllGrades(await EcoleDirecteMethod.grades(), overrideLimit: true);
-    }
-
-    if (chosenParser == 1) {
-      print("Getting grades from Pronote");
-      API api = APIPronote();
-      //Login creds
-      String u = await ReadStorage("username");
-      String p = await ReadStorage("password");
-      String url = await ReadStorage("pronoteurl");
-      String cas = await ReadStorage("pronotecas");
-      await api.login(u, p, url: url, cas: cas);
-      listOnlineGrades = getAllGrades(await api.getGrades(), overrideLimit: true);
-    }
+    //Login creds
+    String u = await ReadStorage("username");
+    String p = await ReadStorage("password");
+    String url = await ReadStorage("pronoteurl");
+    String cas = await ReadStorage("pronotecas");
+    await backgroundFetchApi.login(u, p, url: url, cas: cas);
+    listOnlineGrades = getAllGrades(await backgroundFetchApi.getGrades(forceReload: true), overrideLimit: true);
 
     print("Online length is ${listOnlineGrades.length}");
-    if (listOfflineGrades.length != 0 && listOfflineGrades.length < listOnlineGrades.length) {
+    if (oldGradesLength != null && oldGradesLength != 0 && oldGradesLength < listOnlineGrades.length) {
       return true;
     } else {
       return false;

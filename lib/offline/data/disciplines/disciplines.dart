@@ -22,16 +22,18 @@ class DisciplinesOffline extends Offline {
 
   ///Update existing disciplines (clear old data) with passed data
   updateDisciplines(List<Discipline> newData) async {
-    try {
-      if (offlineBox == null || !offlineBox.isOpen) {
-        offlineBox = await Hive.openBox("offlineData");
+    if (!locked) {
+      try {
+        if (offlineBox == null || !offlineBox.isOpen) {
+          offlineBox = await Hive.openBox("offlineData");
+        }
+        print("Updating disciplines");
+        await offlineBox.delete("disciplines");
+        await offlineBox.put("disciplines", newData);
+        await refreshData();
+      } catch (e) {
+        print("Error while updating disciplines " + e);
       }
-      print("Updating disciplines");
-      await offlineBox.delete("disciplines");
-      await offlineBox.put("disciplines", newData);
-      await refreshData();
-    } catch (e) {
-      print("Error while updating disciplines " + e);
     }
   }
 

@@ -23,68 +23,74 @@ class RemindersOffline extends Offline {
 
   ///Update existing reminders (clear old data) with passed data
   void updateReminders(AgendaReminder newData) async {
-    print("Update reminders");
-    try {
-      if (!offlineBox.isOpen) {
-        offlineBox = await Hive.openBox("offlineData");
+    if (!locked) {
+      print("Update reminders");
+      try {
+        if (!offlineBox.isOpen) {
+          offlineBox = await Hive.openBox("offlineData");
+        }
+        var old = await offlineBox.get("reminders");
+        List<AgendaReminder> offline = List();
+        if (old != null) {
+          offline = old.cast<AgendaReminder>();
+        }
+        if (offline != null) {
+          offline.removeWhere((a) => a.id == newData.id);
+        }
+        offline.add(newData);
+        print(offline);
+        await offlineBox.put("reminders", offline);
+        await refreshData();
+        print("Updated reminders");
+      } catch (e) {
+        print("Error while updating reminder " + e.toString());
       }
-      var old = await offlineBox.get("reminders");
-      List<AgendaReminder> offline = List();
-      if (old != null) {
-        offline = old.cast<AgendaReminder>();
-      }
-      if (offline != null) {
-        offline.removeWhere((a) => a.id == newData.id);
-      }
-      offline.add(newData);
-      print(offline);
-      await offlineBox.put("reminders", offline);
-      await refreshData();
-      print("Updated reminders");
-    } catch (e) {
-      print("Error while updating reminder " + e.toString());
     }
   }
 
   ///Remove all reminders associated with the give `lessonId`
   removeAll(String lessonId) async {
-    try {
-      if (!offlineBox.isOpen) {
-        offlineBox = await Hive.openBox("offlineData");
+    if (!locked) {
+      try {
+        if (!offlineBox.isOpen) {
+          offlineBox = await Hive.openBox("offlineData");
+        }
+        var old = await offlineBox.get("reminders");
+        List<AgendaReminder> offline = List();
+        if (old != null) {
+          offline = old.cast<AgendaReminder>();
+        }
+        if (offline != null) {
+          offline.removeWhere((element) => element.lessonID == lessonId);
+        }
+        await offlineBox.put("reminders", offline);
+        await refreshData();
+      } catch (e) {
+        print("Error while removing reminder " + e.toString());
       }
-      var old = await offlineBox.get("reminders");
-      List<AgendaReminder> offline = List();
-      if (old != null) {
-        offline = old.cast<AgendaReminder>();
-      }
-      if (offline != null) {
-        offline.removeWhere((element) => element.lessonID == lessonId);
-      }
-      await offlineBox.put("reminders", offline);
-      await refreshData();
-    } catch (e) {
-      print("Error while removing reminder " + e.toString());
     }
   }
 
   ///Remove a reminder with its `id`
   void remove(String id) async {
-    try {
-      if (!offlineBox.isOpen) {
-        offlineBox = await Hive.openBox("offlineData");
+    if (!locked) {
+      try {
+        if (!offlineBox.isOpen) {
+          offlineBox = await Hive.openBox("offlineData");
+        }
+        var old = await offlineBox.get("reminders");
+        List<AgendaReminder> offline = List();
+        if (old != null) {
+          offline = old.cast<AgendaReminder>();
+        }
+        if (offline != null) {
+          offline.removeWhere((a) => a.id == id);
+        }
+        await offlineBox.put("reminders", offline);
+        await refreshData();
+      } catch (e) {
+        print("Error while removing reminder " + e.toString());
       }
-      var old = await offlineBox.get("reminders");
-      List<AgendaReminder> offline = List();
-      if (old != null) {
-        offline = old.cast<AgendaReminder>();
-      }
-      if (offline != null) {
-        offline.removeWhere((a) => a.id == id);
-      }
-      await offlineBox.put("reminders", offline);
-      await refreshData();
-    } catch (e) {
-      print("Error while removing reminder " + e.toString());
     }
   }
 }

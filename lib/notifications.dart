@@ -145,11 +145,11 @@ class LocalNotification {
 
     AwesomeNotifications().createNotification(
       content: NotificationContent(
-        id: 0,
-        channelKey: 'newgrade',
-        title: 'Vous avez une ou plusieurs nouvelles notes !',
-        summary: "Tapez pour consulter",
-      ),
+          id: 0,
+          channelKey: 'newgrade',
+          title: 'Vous avez une ou plusieurs nouvelles notes !',
+          summary: "Tapez pour consulter",
+          showWhen: false),
     );
   }
 
@@ -274,7 +274,7 @@ class LocalNotification {
     var connectivityResult = await (Connectivity().checkConnectivity());
     List<Lesson> lessons = List();
     await getChosenParser();
-    API api = APIManager();
+    API api = APIManager(offline);
     //Login creds
     String u = await ReadStorage("username");
     String p = await ReadStorage("password");
@@ -377,7 +377,7 @@ class LocalNotification {
     flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onSelectNotification: BackgroundService.onSelectNotification);
     await getChosenParser();
-    API api = APIManager();
+    API api = APIManager(offline);
     //Login creds
     String u = await ReadStorage("username");
     String p = await ReadStorage("password");

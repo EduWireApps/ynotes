@@ -62,42 +62,12 @@ class AgendaEventsOffline extends Offline {
 
   ///Remove an agenda event with a given `id` and at a given `week`
   removeAgendaEvent(String id, var fetchID) async {
-    try {
-      if (!offlineBox.isOpen) {
-        offlineBox = await Hive.openBox("offlineData");
-      }
-
-      Map<dynamic, dynamic> timeTable = Map();
-      var offline = await offlineBox.get("agendaEvents");
-      List<AgendaEvent> events = List();
-      if (offline != null) {
-        timeTable = Map<dynamic, dynamic>.from(await offlineBox.get("agendaEvents"));
-      }
-      if (timeTable == null) {
-        timeTable = Map();
-      } else {
-        if (timeTable[fetchID] != null) {
-          events.addAll(timeTable[fetchID].cast<AgendaEvent>());
-          events.removeWhere((element) => element.id == id);
-          print("Removed offline agenda event (fetchID : $fetchID, id: $id)");
+    if (!locked) {
+      try {
+        if (!offlineBox.isOpen) {
+          offlineBox = await Hive.openBox("offlineData");
         }
-      }
-      //Update the timetable
-      timeTable.update(fetchID, (value) => events, ifAbsent: () => events);
-      await offlineBox.put("agendaEvents", timeTable);
-      await refreshData();
-    } catch (e) {
-      print("Error while removing offline agenda events " + e.toString());
-    }
-  }
 
-  ///Update existing agenda events with passed data
-  addAgendaEvent(AgendaEvent newData, var id) async {
-    try {
-      if (!offlineBox.isOpen) {
-        offlineBox = await Hive.openBox("offlineData");
-      }
-      if (newData != null) {
         Map<dynamic, dynamic> timeTable = Map();
         var offline = await offlineBox.get("agendaEvents");
         List<AgendaEvent> events = List();
@@ -107,20 +77,54 @@ class AgendaEventsOffline extends Offline {
         if (timeTable == null) {
           timeTable = Map();
         } else {
-          if (timeTable[id] != null) {
-            events.addAll(timeTable[id].cast<AgendaEvent>());
-            events.removeWhere((element) => element.id == newData.id);
+          if (timeTable[fetchID] != null) {
+            events.addAll(timeTable[fetchID].cast<AgendaEvent>());
+            events.removeWhere((element) => element.id == id);
+            print("Removed offline agenda event (fetchID : $fetchID, id: $id)");
           }
         }
-        events.add(newData);
         //Update the timetable
-        timeTable.update(id, (value) => events, ifAbsent: () => events);
+        timeTable.update(fetchID, (value) => events, ifAbsent: () => events);
         await offlineBox.put("agendaEvents", timeTable);
         await refreshData();
+      } catch (e) {
+        print("Error while removing offline agenda events " + e.toString());
       }
-      print("Update offline agenda events (id : $id)");
-    } catch (e) {
-      print("Error while updating offline agenda events " + e.toString());
+    }
+  }
+
+  ///Update existing agenda events with passed data
+  addAgendaEvent(AgendaEvent newData, var id) async {
+    if (!locked) {
+      try {
+        if (!offlineBox.isOpen) {
+          offlineBox = await Hive.openBox("offlineData");
+        }
+        if (newData != null) {
+          Map<dynamic, dynamic> timeTable = Map();
+          var offline = await offlineBox.get("agendaEvents");
+          List<AgendaEvent> events = List();
+          if (offline != null) {
+            timeTable = Map<dynamic, dynamic>.from(await offlineBox.get("agendaEvents"));
+          }
+          if (timeTable == null) {
+            timeTable = Map();
+          } else {
+            if (timeTable[id] != null) {
+              events.addAll(timeTable[id].cast<AgendaEvent>());
+              events.removeWhere((element) => element.id == newData.id);
+            }
+          }
+          events.add(newData);
+          //Update the timetable
+          timeTable.update(id, (value) => events, ifAbsent: () => events);
+          await offlineBox.put("agendaEvents", timeTable);
+          await refreshData();
+        }
+        print("Update offline agenda events (id : $id)");
+      } catch (e) {
+        print("Error while updating offline agenda events " + e.toString());
+      }
     }
   }
 }

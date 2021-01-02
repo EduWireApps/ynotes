@@ -5,13 +5,15 @@ import 'package:ynotes/offline/offline.dart';
 class PinnedHomeworkOffline extends Offline {
   ///Set a homework date as pinned (or not)
   void set(String date, bool value) async {
-    if (pinnedHomeworkBox == null || !pinnedHomeworkBox.isOpen) {
-      pinnedHomeworkBox = await Hive.openBox("pinnedHomework");
-    }
-    try {
-      pinnedHomeworkBox.put(date, value);
-    } catch (e) {
-      print("Error during the setPinnedHomeworkDateProcess $e");
+    if (!locked) {
+      if (pinnedHomeworkBox == null || !pinnedHomeworkBox.isOpen) {
+        pinnedHomeworkBox = await Hive.openBox("pinnedHomework");
+      }
+      try {
+        pinnedHomeworkBox.put(date, value);
+      } catch (e) {
+        print("Error during the setPinnedHomeworkDateProcess $e");
+      }
     }
   }
 

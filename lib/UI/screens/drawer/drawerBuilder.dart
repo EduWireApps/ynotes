@@ -52,7 +52,6 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
   //Boolean
   bool isChanging = false;
 
-  API apiecoledirecte = APIEcoleDirecte();
   bool firstStart = true;
   AnimationController quickMenuAnimationController;
 

@@ -66,7 +66,9 @@ class EcoleDirecteMethod {
 
     await offline.disciplines.updateDisciplines(disciplinesList);
     createStack();
-
+    if (disciplinesList != null) {
+      await setIntSetting("gradesNumber",getAllGrades(disciplinesList).length);
+    }
     return disciplinesList;
   }
 
@@ -109,7 +111,7 @@ class EcoleDirecteMethod {
         data, rootUrl, method, EcoleDirecteConverter.unloadedHomework, "UHomework request returned an error:");
     await offline.homework.updateHomework(homeworkList);
     List<DateTime> pinnedDates = await offline.pinnedHomework.getPinnedHomeworkDates();
-    
+
     //Add pinned content
     await Future.wait(pinnedDates.map((element) async {
       List<Homework> pinnedHomework = await homeworkFor(element);

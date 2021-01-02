@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:alice/alice.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:ynotes/offline/offline.dart';
 import 'package:ynotes/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:stack/stack.dart' as sta;
@@ -46,6 +47,8 @@ List<String> colorList = ["#f07aa0", "#17d0c9", "#a3f7bf", "#cecece", "#ffa41b",
 
 ///The ecole directe api extended from the apiManager.dart API class
 class APIEcoleDirecte extends API {
+  APIEcoleDirecte(Offline offlineController) : super(offlineController);
+
   @override
   // TODO: implement listApp
   List<App> get listApp => [App("Messagerie", MdiIcons.mail, route: "mail"), App("Cloud", Icons.cloud, route: "cloud")];

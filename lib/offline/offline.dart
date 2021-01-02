@@ -22,6 +22,9 @@ import '../classes.dart';
 ///An offline class to deal with the `hivedb` package
 ///used to store offline data and stored values such as agenda events
 class Offline {
+  //To use in isolate in order to read only
+  final bool locked;
+
   //Return disciplines + grades
   List<Discipline> disciplinesData;
   //Return homework
@@ -54,6 +57,8 @@ class Offline {
   PollsOffline polls;
 
   RecipientsOffline recipients;
+
+  Offline({this.locked = false});
 
   //Called when instanciated
   init() async {
@@ -135,13 +140,13 @@ class Offline {
   //Clear all databases
   clearAll() async {
     try {
-      if (offlineBox==null||!offlineBox.isOpen) {
+      if (offlineBox == null || !offlineBox.isOpen) {
         offlineBox = await Hive.openBox("offlineData");
       }
-      if (homeworkDoneBox==null||!homeworkDoneBox.isOpen) {
+      if (homeworkDoneBox == null || !homeworkDoneBox.isOpen) {
         homeworkDoneBox = await Hive.openBox("doneHomework");
       }
-      if (pinnedHomeworkBox==null||!pinnedHomeworkBox.isOpen) {
+      if (pinnedHomeworkBox == null || !pinnedHomeworkBox.isOpen) {
         pinnedHomeworkBox = await Hive.openBox('pinnedHomework');
       }
       await offlineBox.deleteFromDisk();

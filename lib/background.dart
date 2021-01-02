@@ -46,24 +46,7 @@ class BackgroundService {
     }
   }
 
-  static refreshHomework() async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    await getChosenParser();
-    API api = APIManager();
-    //Login creds
-    String u = await ReadStorage("username");
-    String p = await ReadStorage("password");
-    String url = await ReadStorage("pronoteurl");
-    String cas = await ReadStorage("pronotecas");
-    if (connectivityResult != ConnectivityResult.none) {
-      try {
-        await api.login(u, p, url: url, cas: cas);
-        await api.getNextHomework(forceReload: true);
-      } catch (e) {
-        print("Error while fetching homework in background " + e.toString());
-      }
-    }
-  }
+  
 }
 
 //Background task when when app is closed

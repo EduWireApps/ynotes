@@ -4,6 +4,7 @@ import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:ynotes/globals.dart';
+import 'package:ynotes/offline/offline.dart';
 import 'package:ynotes/shared_preferences.dart';
 import 'package:ynotes/apis/EcoleDirecte.dart';
 import 'package:ynotes/apis/Pronote.dart';
@@ -517,6 +518,9 @@ class Period {
 
 abstract class API {
   bool loggedIn = false;
+  final Offline offlineController;
+
+  API(this.offlineController);
 
   ///Connect to the API
   ///Should return a connection status
@@ -619,7 +623,8 @@ abstract class API {
         if (recurringEvent.start != null && recurringEvent.end != null) {
           recurringEvent.start =
               DateTime(date.year, date.month, date.day, recurringEvent.start.hour, recurringEvent.start.minute);
-          recurringEvent.end = DateTime(date.year, date.month, date.day, recurringEvent.end.hour, recurringEvent.end.minute);
+          recurringEvent.end =
+              DateTime(date.year, date.month, date.day, recurringEvent.end.hour, recurringEvent.end.minute);
         }
       });
 
@@ -633,15 +638,15 @@ abstract class API {
 }
 
 //Return the good API (will be extended to Pronote)
-APIManager() {
+APIManager(Offline _offline) {
   //The parser list index corresponding to the user choice
 
   switch (chosenParser) {
     case 0:
-      return APIEcoleDirecte();
+      return APIEcoleDirecte(_offline);
 
     case 1:
-      return APIPronote();
+      return APIPronote(_offline);
   }
 }
 
