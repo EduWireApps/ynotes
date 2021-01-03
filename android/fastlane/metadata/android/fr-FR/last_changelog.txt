@@ -1,3 +1,2 @@
-Mise à jour de corrections de bugs.
-Réagencement des onglets du tiroir.
-Correction d'un problème du partage de fichiers.
+Introduction de SpaceStats ! Consultez des données statistiques supplémentaires concernant vos notes.
+Cette mise à jour contient également de très nombreux correctifs, consultez la note de mise à jour pour en savoir plus.

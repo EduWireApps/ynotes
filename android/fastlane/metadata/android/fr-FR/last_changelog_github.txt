@@ -1,3 +1,4 @@
 Important bug fixes :
 * Fix the background fetch, it should no longer break offline data
 * Fix statistics : discipline average impact could be wrong in some cases
+* Add lowest and highest grade

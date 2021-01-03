@@ -43,10 +43,18 @@ lane :beta do
   continue = prompt(
   text: "Do you really want to push to BETA ? Please check that every files (including changelog) are ready.",
   boolean: true)
-  #Copy changelog
+  linux = prompt(
+  text: "Are you currently using Linux ?",
+  boolean: true)
+  command = "type"
+  #Use linux cat command instead of type
+  if linux
+    command = "cat"
+  end
   if continue
+    #Copy changelog
     Dir.chdir "metadata/android/fr-FR" do
-      sh("type last_changelog.txt >> changelogs/#{build_number}.txt")
+      sh("#{command} last_changelog.txt >> changelogs/#{build_number}.txt")
     end
     Dir.chdir "../.." do
       sh("flutter", "packages", "get")

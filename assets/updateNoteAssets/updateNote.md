@@ -1,6 +1,7 @@
 ## Note de correctif 0.9.0+131
 - Début de l'introduction de SpaceStats :
   - De nouvelles statistiques pour vos notes ! Appuyez sur une note puis ouvrez SpaceStats pour accéder à 3 nouvelles statistiques utiles
+- Ajout des notes de classe la plus haute et la plus basse
 - Correction de la notification de nouvelle note
 - Résolution d'un problème qui corrompait les données hors-ligne
 
