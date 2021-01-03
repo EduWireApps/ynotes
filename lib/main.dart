@@ -46,7 +46,7 @@ mainTestNewGrades() async {
     //Getting the offline count of grades
     //instanciate an offline controller read only
     Offline _offline = Offline(locked: true);
-    _offline.init();
+    await _offline.init();
     await getChosenParser();
     API backgroundFetchApi = APIManager(_offline);
 
