@@ -130,8 +130,15 @@ class Grade {
   @HiveField(14)
   //E.G : Trimestre 1
   final String nomPeriode;
+
+  @HiveField(17)
+  final String max;
+  @HiveField(18)
+  final String min;
   Grade(
-      {this.devoir,
+      {this.max,
+      this.min,
+      this.devoir,
       this.codePeriode,
       this.codeMatiere,
       this.codeSousMatiere,
@@ -149,6 +156,8 @@ class Grade {
 
   factory Grade.fromEcoleDirecteJson(Map<String, dynamic> json, String nomPeriode) {
     return Grade(
+        min: json["minClasse"],
+        max: json["maxClasse"],
         devoir: json['devoir'],
         codePeriode: json['codePeriode'],
         nomPeriode: nomPeriode,

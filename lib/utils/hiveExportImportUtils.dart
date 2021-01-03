@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 import 'package:hive/hive.dart';
+import 'package:ynotes/apis/Pronote/PronoteCas.dart';
 
 import '../main.dart';
 import 'fileUtils.dart';
@@ -15,16 +16,16 @@ class HiveBackUpManager {
   HiveBackUpManager(this.box, {this.subBoxName, this.dataToImport});
   export() {
     try {
+      print("Exporting data");
       //getting map
       Map map = this.box.toMap();
       var data;
       if (subBoxName != null) {
         data = map[subBoxName];
+        print(data.runtimeType.toString());
         if (data.runtimeType.toString().contains("LinkedHashMap")) {
           data = Map<dynamic, dynamic>.from(data);
-          
         }
-        print(data);
       } else {
         data = map;
       }

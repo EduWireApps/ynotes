@@ -1,4 +1,3 @@
-In this version :
-* __Introducing **SpaceStats**__ : three new statistics has been added to the grades detail bottom sheet. I let you discover them by yourself (hold for indications).
-* __So many fixes__, including the enhanced homework viewer (for EcoleDirecte users only) on the main page, LaTex compatibility, grades values on the grades evolution chart (hold to show) and so on...
-* __There is still some bugs__ (some I know some I don't), but I release this update to avoid developing an application of which I don't know the flaws.
+Important bug fixes :
+* Fix the background fetch, it should no longer break offline data
+* Fix statistics : discipline average impact could be wrong in some cases

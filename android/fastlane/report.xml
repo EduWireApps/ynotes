@@ -5,17 +5,27 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.002339204">
+      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.000703317">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="1: number_of_commits" time="0.015572254">
+      <testcase classname="fastlane.lanes" name="1: number_of_commits" time="0.009148286">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="2: flutter build apk --build-number\=127 --split-per-abi" time="51.157303475">
+      <testcase classname="fastlane.lanes" name="2: flutter build apk --build-number\=129 --split-per-abi" time="13.877457164">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="3: adb install /home/jsonlines/Documents/ynotes/build/app/outputs/apk/release/app-arm64-v8a-release.apk" time="2.078806119">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="4: adb shell am start -n fr.ynotes/.MainActivity" time="0.10052022">
         
       </testcase>
     

@@ -45,8 +45,6 @@ class BackgroundService {
       print(payload);
     }
   }
-
-  
 }
 
 //Background task when when app is closed
@@ -66,6 +64,8 @@ void backgroundFetchHeadlessTask(String a) async {
       print("New grade notification disabled");
     }
     if (await getSetting("notificationNewMail") && !await getSetting("batterySaver")) {
+      logFile("New mail test triggered");
+
       Mail mail = await mainTestNewMails();
       if (mail != null) {
         String content = await readMail(mail.id, mail.read);

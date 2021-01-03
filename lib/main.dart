@@ -46,11 +46,13 @@ mainTestNewGrades() async {
     //Getting the offline count of grades
     //instanciate an offline controller read only
     Offline _offline = Offline(locked: true);
+    _offline.init();
+    await getChosenParser();
     API backgroundFetchApi = APIManager(_offline);
 
     print("Old grades length is ${oldGradesLength}");
     //Getting the online count of grades
-    await getChosenParser();
+
     List<Grade> listOnlineGrades = List<Grade>();
     //Login creds
     String u = await ReadStorage("username");
@@ -67,8 +69,8 @@ mainTestNewGrades() async {
       return false;
     }
   } catch (e) {
-    print(e);
-    return null;
+    await logFile("An error occured during the new grades test : " + e.toString());
+    return false;
   }
 }
 

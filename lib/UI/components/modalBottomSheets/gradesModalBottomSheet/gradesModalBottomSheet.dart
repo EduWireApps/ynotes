@@ -183,32 +183,48 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                           height: screenSize.size.height / 10 * 1.4,
                           padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
                           width: screenSize.size.width / 5 * 4.5,
-                          child: FittedBox(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                buildKeyValuesInfo(context, "Moyenne de la classe :", [
-                                  widget.grade.moyenneClasse != "" && widget.grade.moyenneClasse != null
-                                      ? widget.grade.moyenneClasse
-                                      : "-"
-                                ]),
-                                SizedBox(
-                                  height: (screenSize.size.height / 3) / 25,
-                                ),
-                                buildKeyValuesInfo(context, "Type de devoir :",
-                                    [widget.grade.typeDevoir != null ? widget.grade.typeDevoir : "-"]),
-                                SizedBox(
-                                  height: (screenSize.size.height / 3) / 25,
-                                ),
-                                GestureDetector(
-                                  onTap: () {},
-                                  child: buildKeyValuesInfo(context, "Date du devoir :", [
-                                    widget.grade.date != null
-                                        ? DateFormat("dd MMMM yyyy", "fr_FR").format(widget.grade.date)
+                          child: CupertinoScrollbar(
+                            child: SingleChildScrollView(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  buildKeyValuesInfo(context, "Moyenne de la classe :", [
+                                    widget.grade.moyenneClasse != "" && widget.grade.moyenneClasse != null
+                                        ? widget.grade.moyenneClasse
                                         : "-"
                                   ]),
-                                )
-                              ],
+                                  if (widget.grade.max != "" && widget.grade.max != null)
+                                    SizedBox(
+                                      height: (screenSize.size.height / 3) / 25,
+                                    ),
+                                  if (widget.grade.max != "" && widget.grade.max != null)
+                                    buildKeyValuesInfo(context, "Note la plus haute",
+                                        [widget.grade.max != "" && widget.grade.max != null ? widget.grade.max : "-"]),
+                                  if (widget.grade.max != "" && widget.grade.max != null)
+                                    SizedBox(
+                                      height: (screenSize.size.height / 3) / 25,
+                                    ),
+                                  if (widget.grade.max != "" && widget.grade.max != null)
+                                    buildKeyValuesInfo(context, "Note la plus basse",
+                                        [widget.grade.min != "" && widget.grade.min != null ? widget.grade.min : "-"]),
+                                  SizedBox(
+                                    height: (screenSize.size.height / 3) / 25,
+                                  ),
+                                  buildKeyValuesInfo(context, "Type de devoir :",
+                                      [widget.grade.typeDevoir != null ? widget.grade.typeDevoir : "-"]),
+                                  SizedBox(
+                                    height: (screenSize.size.height / 3) / 25,
+                                  ),
+                                  GestureDetector(
+                                    onTap: () {},
+                                    child: buildKeyValuesInfo(context, "Date du devoir :", [
+                                      widget.grade.date != null
+                                          ? DateFormat("dd MMMM yyyy", "fr_FR").format(widget.grade.date)
+                                          : "-"
+                                    ]),
+                                  )
+                                ],
+                              ),
                             ),
                           ),
                         ),

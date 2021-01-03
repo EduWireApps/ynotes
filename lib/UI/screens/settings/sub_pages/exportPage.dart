@@ -65,7 +65,7 @@ class _ExportPageState extends State<ExportPage> {
                 }),
             SwitchListTile(
                 title: Text(
-                  "Exporter mes évènements (agenda et rappels)",
+                  "Exporter mes évènements (rappels)",
                   style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                 ),
                 value: exportEvents,
@@ -82,7 +82,6 @@ class _ExportPageState extends State<ExportPage> {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
                   onPressed: () async {
                     String data = await HiveBackUpManager(null).getBackUpFileData();
-
                     Map decoded = jsonDecode(data);
                     if (decoded != null) {
                       //Try to import pinned homework

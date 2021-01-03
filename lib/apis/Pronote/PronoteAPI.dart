@@ -1082,6 +1082,8 @@ class PronotePeriod {
           letters: element["note"]["V"].contains("|"),
           coef: element["coefficient"].toString(),
           noteSur: element["bareme"]["V"],
+          min: this.gradeTranslate(element["noteMin"]["V"]),
+          max: this.gradeTranslate(element["noteMax"]["V"]),
           moyenneClasse: this.gradeTranslate(element["moyenne"]["V"]),
           date: DateFormat("dd/MM/yyyy").parse(element["date"]["V"]),
           nonSignificatif: this.gradeTranslate(element["note"]["V"]) == "NonNote" ? true : false,

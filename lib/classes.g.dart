@@ -192,6 +192,8 @@ class GradeAdapter extends TypeAdapter<Grade> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Grade(
+      max: fields[17] as String,
+      min: fields[18] as String,
       devoir: fields[0] as String,
       codePeriode: fields[1] as String,
       codeMatiere: fields[2] as String,
@@ -213,7 +215,7 @@ class GradeAdapter extends TypeAdapter<Grade> {
   @override
   void write(BinaryWriter writer, Grade obj) {
     writer
-      ..writeByte(15)
+      ..writeByte(17)
       ..writeByte(0)
       ..write(obj.devoir)
       ..writeByte(1)
@@ -243,7 +245,11 @@ class GradeAdapter extends TypeAdapter<Grade> {
       ..writeByte(13)
       ..write(obj.nonSignificatif)
       ..writeByte(14)
-      ..write(obj.nomPeriode);
+      ..write(obj.nomPeriode)
+      ..writeByte(17)
+      ..write(obj.max)
+      ..writeByte(18)
+      ..write(obj.min);
   }
 
   @override

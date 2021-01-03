@@ -26,8 +26,10 @@ import 'package:ynotes/UI/screens/summary/summaryPage.dart';
 import 'package:ynotes/apis/EcoleDirecte.dart';
 import 'package:ynotes/background.dart';
 import 'package:ynotes/classes.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/models.dart';
+import 'package:ynotes/models/homework/controller.dart';
 import 'package:ynotes/notifications.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/utils/themeUtils.dart';
@@ -113,7 +115,8 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
   @override
   void initState() {
     super.initState();
-
+    //Init hw controller
+    hwcontroller = HomeworkController(localApi);
     AwesomeNotifications().initialize(null, [
       NotificationChannel(
           channelKey: 'alarm',

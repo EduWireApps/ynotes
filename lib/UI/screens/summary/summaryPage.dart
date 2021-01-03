@@ -111,9 +111,9 @@ class SummaryPageState extends State<SummaryPage> {
   }
 
   showUpdateNote() async {
-    if ((!await getSetting("updateNote0.9"))) {
+    if ((!await getSetting("updateNote0.9+rev1"))) {
       await CustomDialogs.showUpdateNoteDialog(context);
-      await setSetting("updateNote0.9", true);
+      await setSetting("updateNote0.9+rev1", true);
     }
   }
 
@@ -133,6 +133,9 @@ class SummaryPageState extends State<SummaryPage> {
       onVisibilityChanged: (visibilityInfo) {
         //Ensure that page is visible
         var visiblePercentage = visibilityInfo.visibleFraction * 100;
+        if (visiblePercentage == 100) {
+          showUpdateNote();
+        }
       },
       child: HiddenSettings(
           controller: summarySettingsController,
