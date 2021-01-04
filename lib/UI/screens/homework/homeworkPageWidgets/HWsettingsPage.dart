@@ -31,6 +31,11 @@ class _HomeworkSettingPageState extends State<HomeworkSettingPage> {
     });
   }
 
+  initState() {
+    super.initState();
+    getSettings();
+  }
+
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);

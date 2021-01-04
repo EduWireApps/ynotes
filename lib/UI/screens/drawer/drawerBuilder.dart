@@ -260,7 +260,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                                 if ([0, 1, 4].contains(value))
                                   FlatButton(
                                     color: Colors.transparent,
-                                    child: Icon(MdiIcons.wrenchOutline,
+                                    child: Icon(MdiIcons.wrench,
                                         color: isDarkModeEnabled ? Colors.white : Colors.black),
                                     onPressed: () {
                                       switch (value) {

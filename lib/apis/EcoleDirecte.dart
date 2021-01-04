@@ -121,13 +121,13 @@ class APIEcoleDirecte extends API {
 
   @override
   Future<List<Period>> getPeriods() async {
-    return await EcoleDirecteMethod.fetchAnyData(EcoleDirecteMethod.periods, offline.disciplines.getPeriods);
+    return await EcoleDirecteMethod.fetchAnyData(EcoleDirecteMethod.periods, offlineController.disciplines.getPeriods);
   }
 
   @override
 //Getting grades
   Future<List<Discipline>> getGrades({bool forceReload}) async {
-    return await EcoleDirecteMethod.fetchAnyData(EcoleDirecteMethod.grades, offline.disciplines.getDisciplines, forceFetch: forceReload ?? false);
+    return await EcoleDirecteMethod.fetchAnyData(EcoleDirecteMethod.grades, offlineController.disciplines.getDisciplines, forceFetch: forceReload ?? false);
   }
 
   Future<List<DateTime>> getDatesNextHomework() async {
@@ -136,7 +136,7 @@ class APIEcoleDirecte extends API {
 
 //Get dates of the the next homework (based on the EcoleDirecte API)
   Future<List<Homework>> getNextHomework({bool forceReload}) async {
-    return await EcoleDirecteMethod.fetchAnyData(EcoleDirecteMethod.nextHomework, offline.homework.getHomework, forceFetch: forceReload ?? false);
+    return await EcoleDirecteMethod.fetchAnyData(EcoleDirecteMethod.nextHomework, offlineController.homework.getHomework, forceFetch: forceReload ?? false);
   }
 
 //Get homeworks for a specific date
@@ -180,7 +180,7 @@ class APIEcoleDirecte extends API {
       case "mailRecipients":
         {
           print("Returing mail recipients");
-          return (await EcoleDirecteMethod.fetchAnyData(EcoleDirecteMethod.recipients, offline.recipients.getRecipients));
+          return (await EcoleDirecteMethod.fetchAnyData(EcoleDirecteMethod.recipients, offlineController.recipients.getRecipients));
         }
         break;
     }
@@ -218,7 +218,7 @@ class APIEcoleDirecte extends API {
       List<Lesson> toReturn;
       var connectivityResult = await (Connectivity().checkConnectivity());
       //get lessons from offline storage
-      var offlineLesson = await offline.lessons.get(week);
+      var offlineLesson = await offlineController.lessons.get(week);
       if (offlineLesson != null) {
         //Important init to return
         toReturn = List();
@@ -235,7 +235,7 @@ class APIEcoleDirecte extends API {
           print("Getting next lessons from online");
           List<Lesson> onlineLessons = await EcoleDirecteMethod.lessons(dateToUse, week);
 
-          await offline.lessons.updateLessons(onlineLessons, week);
+          await offlineController.lessons.updateLessons(onlineLessons, week);
 
           toReturn = onlineLessons;
         } catch (e) {

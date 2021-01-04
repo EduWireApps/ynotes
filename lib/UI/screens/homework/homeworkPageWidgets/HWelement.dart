@@ -132,6 +132,26 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                   ),
                                 ),
                               ),
+                           /* Container(
+                              width: screenSize.size.width / 5 * 4.5,
+                              child: Container(
+                                color: isDarkModeEnabled
+                                    ? ThemeUtils.darken(Theme.of(context).primaryColorDark, forceAmount: 0.1)
+                                    : ThemeUtils.darken(Theme.of(context).primaryColor, forceAmount: 0.03),
+                                height: screenSize.size.height / 10 * 0.5,
+                                width: screenSize.size.width / 5 * 4.5,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: <Widget>[
+                                    IconButton(
+                                      icon: Icon(MdiIcons.eye, color: Colors.white),
+                                      onPressed: () {},
+                                    ),
+                                    Text("")
+                                  ],
+                                ),
+                              ),
+                            ),*/
                             if (this.widget.homeworkForThisDay.loaded)
                               Container(
                                 color: isDarkModeEnabled

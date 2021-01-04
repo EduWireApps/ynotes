@@ -1164,7 +1164,7 @@ class _GradesGroupState extends State<GradesGroup> {
                         splashColor: colorGroup,
                         onTap: () async {
                           GradesStats stats = GradesStats(gradesForSelectedDiscipline[index],
-                              getAllGrades(await localApi.getGrades(), overrideLimit: true, sortByWritingDate: false));
+                          getAllGrades(await localApi.getGrades(), overrideLimit: true, sortByWritingDate: false));
                           gradesModalBottomSheet(context, gradesForSelectedDiscipline[index], stats,
                               widget.disciplinevar, callback, this.widget);
                         },

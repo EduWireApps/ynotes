@@ -3,6 +3,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/classes.dart';
+import 'dart:math';
 
 class SummaryChart extends StatefulWidget {
   final List<Grade> lastGrades;
@@ -25,6 +26,28 @@ class _SummaryChartState extends State<SummaryChart> {
       if (_grades.length > 10) {
         _grades = _grades.sublist(_grades.length - 10, _grades.length);
       }
+    }
+  }
+
+  getMax() {
+    List<double> values = _grades.map((e) => double.tryParse(e.valeur.replaceAll(",", "."))).toList();
+    //Reduce values size
+    values = values.sublist(0, (_grades.length > 10 ? 10 : _grades.length));
+    if (values != null && values.length > 0) {
+      return values.reduce(max) ?? 20;
+    } else {
+      return 20;
+    }
+  }
+
+  getMin() {
+    List<double> values = _grades.map((e) => double.tryParse(e.valeur.replaceAll(",", "."))).toList();
+    //Reduce values size
+    values = values.sublist(0, (_grades.length > 10 ? 10 : _grades.length));
+    if (values != null && values.length > 0) {
+      return values.reduce(min) ?? 0;
+    } else {
+      return 0;
     }
   }
 
@@ -111,12 +134,14 @@ class _SummaryChartState extends State<SummaryChart> {
             fontSize: 15,
           ),
           getTitles: (value) {
-            switch (value.toInt()) {
-              case 0:
-                return '0';
+            double max = getMax();
+            double min = getMin();
 
-              case 20:
-                return '20';
+            if (value == max.roundToDouble()) {
+              return max.toStringAsFixed(0);
+            }
+            if (value == min.roundToDouble()) {
+              return min.toStringAsFixed(0);
             }
             return '';
           },
@@ -128,8 +153,8 @@ class _SummaryChartState extends State<SummaryChart> {
       borderData: FlBorderData(show: false, border: Border.all(color: const Color(0xff37434d), width: 1)),
       minX: 0,
       maxX: (_grades.length > 10 ? 10 : _grades.length).toDouble(),
-      minY: 0,
-      maxY: 20,
+      minY: getMin() > 0 ? getMin() - 1 : getMin(),
+      maxY: getMax() + 1,
       lineBarsData: [
         LineChartBarData(
           spots: List.generate(
