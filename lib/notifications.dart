@@ -106,7 +106,6 @@ class LocalNotification {
           importance: NotificationImportance.High,
           groupKey: "mailsGroup",
           channelDescription: "Nouveau mail",
-          defaultColor: ThemeUtils.spaceColor(),
           ledColor: Colors.white)
     ]);
 
@@ -115,8 +114,8 @@ class LocalNotification {
           id: int.parse(mail.id),
           notificationLayout: parse(content).documentElement.text.length < 49 ? null : NotificationLayout.BigText,
           channelKey: 'newmail',
-          title: 'Nouveau mail de ${mail.from["prenom"]}',
-          summary: content,
+          title: 'Nouveau mail de ${mail.from["name"]}',
+          summary: 'Nouveau mail de ${mail.from["name"]}',
           body: content,
           payload: {
             "name": mail.from["prenom"],
@@ -377,7 +376,7 @@ class LocalNotification {
     flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
     flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onSelectNotification: BackgroundService.onSelectNotification);
-    await getChosenParser(); 
+    await getChosenParser();
     //Lock offline data
     Offline _offline = Offline(locked: true);
     API api = APIManager(_offline);

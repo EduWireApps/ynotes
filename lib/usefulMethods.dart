@@ -105,7 +105,7 @@ Future<int> getIntSetting(String setting) async {
 
 setIntSetting(String setting, int value) async {
   final prefs = await SharedPreferences.getInstance();
-  prefs.setInt(setting, value);
+  await prefs.setInt(setting, value);
 }
 
 //Connectivity  classs

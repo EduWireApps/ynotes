@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:background_fetch/background_fetch.dart';
 import 'package:connectivity/connectivity.dart';
@@ -11,6 +12,7 @@ import 'package:ynotes/classes.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/notifications.dart';
+import 'package:ynotes/shared_preferences.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 //The main class for everything done in background
@@ -47,8 +49,9 @@ class BackgroundService {
   }
 }
 
+
 //Background task when when app is closed
-void backgroundFetchHeadlessTask(String a) async {
+Future<void> backgroundFetchHeadlessTask(String a) async {
   print("Starting the headless closed bakground task");
   //await LocalNotification.showDebugNotification();
   try {
@@ -89,7 +92,7 @@ void backgroundFetchHeadlessTask(String a) async {
   //BackgroundFetch.finish("");
 }
 
-void callbackDispatcher() async {
+Future<void> callbackDispatcher() async {
   Workmanager.executeTask((task, inputData) async {
     print("Called background fetch."); //simpleTask will be emitted here.
     await backgroundFetchHeadlessTask("");

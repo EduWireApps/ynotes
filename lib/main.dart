@@ -23,6 +23,7 @@ import 'package:ynotes/offline/offline.dart';
 import 'package:ynotes/apis/EcoleDirecte.dart';
 import 'package:ynotes/apis/EcoleDirecte/ecoleDirecteMethods.dart';
 import 'package:ynotes/apis/Pronote.dart';
+import 'package:ynotes/shared_preferences.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 import 'UI/screens/settings/sub_pages/logsPage.dart';
@@ -64,6 +65,8 @@ mainTestNewGrades() async {
 
     print("Online length is ${listOnlineGrades.length}");
     if (oldGradesLength != null && oldGradesLength != 0 && oldGradesLength < listOnlineGrades.length) {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setInt("gradesNumber", listOnlineGrades.length);
       return true;
     } else {
       return false;

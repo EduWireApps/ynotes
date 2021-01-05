@@ -30,7 +30,10 @@ class _SummaryChartState extends State<SummaryChart> {
   }
 
   getMax() {
-    List<double> values = _grades.map((e) => double.tryParse(e.valeur.replaceAll(",", "."))).toList();
+    List<double> values = _grades
+        .map((grade) =>
+            double.parse(grade.valeur.replaceAll(',', '.')) * 20 / double.parse(grade.noteSur.replaceAll(',', '.')))
+        .toList();
     //Reduce values size
     values = values.sublist(0, (_grades.length > 10 ? 10 : _grades.length));
     if (values != null && values.length > 0) {
@@ -41,7 +44,10 @@ class _SummaryChartState extends State<SummaryChart> {
   }
 
   getMin() {
-    List<double> values = _grades.map((e) => double.tryParse(e.valeur.replaceAll(",", "."))).toList();
+    List<double> values = _grades
+        .map((grade) =>
+            double.parse(grade.valeur.replaceAll(',', '.')) * 20 / double.parse(grade.noteSur.replaceAll(',', '.')))
+        .toList();
     //Reduce values size
     values = values.sublist(0, (_grades.length > 10 ? 10 : _grades.length));
     if (values != null && values.length > 0) {

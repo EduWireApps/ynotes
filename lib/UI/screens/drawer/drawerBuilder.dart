@@ -12,6 +12,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:workmanager/workmanager.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/UI/components/quickMenu.dart';
 import 'package:ynotes/UI/screens/agenda/agendaPage.dart';
@@ -260,8 +261,8 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                                 if ([0, 1, 4].contains(value))
                                   FlatButton(
                                     color: Colors.transparent,
-                                    child: Icon(MdiIcons.wrench,
-                                        color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                    child:
+                                        Icon(MdiIcons.wrench, color: isDarkModeEnabled ? Colors.white : Colors.black),
                                     onPressed: () {
                                       switch (value) {
                                         case 1:
@@ -397,63 +398,9 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
   }
 
   Future<void> initBackgroundTask() async {
-    /* BackgroundFetch.configure(
-        BackgroundFetchConfig(
-          minimumFetchInterval: 15,
-          forceAlarmManager: false,
-          stopOnTerminate: false,
-          startOnBoot: true,
-          enableHeadless: true,
-          requiresBatteryNotLow: false,
-          requiresCharging: false,
-          requiresStorageNotLow: false,
-          requiresDeviceIdle: false,
-          requiredNetworkType: NetworkType.NONE,
-        ), (String taskId) async {
-      // This is the fetch-event callback.
-/*
-      print("Starting the headless closed bakground task");
-      var initializationSettingsAndroid = new AndroidInitializationSettings('newgradeicon');
-      var initializationSettingsIOS = new IOSInitializationSettings();
-      var initializationSettings = new InitializationSettings(initializationSettingsAndroid, initializationSettingsIOS);
-      flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
-      flutterLocalNotificationsPlugin.initialize(initializationSettings,
-          onSelectNotification: BackgroundService.onSelectNotification);
-//Ensure that grades notification are enabled and battery saver disabled
-      if (await getSetting("notificationNewGrade") && !await getSetting("batterySaver")) {
-        if (await mainTestNewGrades()) {
-          BackgroundService.showNotificationNewGrade();
-        } else {
-          print("Nothing updated");
-        }
-      } else {
-        print("New grade notification disabled");
-      }
-      if (await getSetting("notificationNewMail") && !await getSetting("batterySaver")) {
-        Mail mail = await mainTestNewMails();
-        if (mail != null) {
-          String content = await readMail(mail.id, mail.read);
-          await LocalNotification.showNewMailNotification(mail, content);
-        } else {
-          print("Nothing updated");
-        }
-      } else {
-        print("New mail notification disabled");
-      }
-      if (await getSetting("agendaOnGoingNotification")) {
-        print("Setting On going notification");
-        await LocalNotification.setOnGoingNotification(dontShowActual: true);
-      } else {
-        print("On going notification disabled");
-      }
-    }).then((int status) {
-      print('[BackgroundFetch] configure success: $status');*/
-      BackgroundFetch.finish(taskId);
-    });
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;*/
+    //Register work manager
+    await Workmanager.initialize(callbackDispatcher);
+    await Workmanager.registerPeriodicTask("background", "backgroundFetcher");
   }
 
   _switchPage(int index) {

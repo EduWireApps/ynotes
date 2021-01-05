@@ -11,6 +11,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:wiredash/wiredash.dart';
+import 'package:workmanager/workmanager.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/UI/screens/settings/sub_pages/exportPage.dart';
 import 'package:ynotes/UI/screens/settings/sub_pages/logsPage.dart';
@@ -424,7 +425,10 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     title: 'Bouton magique',
                     leading: Icon(MdiIcons.testTube, color: ThemeUtils.textColor()),
                     onTap: () async {
-                      await backgroundFetchHeadlessTask("");
+                      //await setIntSetting("gradesNumber", 35);
+                      //print((await getIntSetting("gradesNumber")));
+                      //await setIntSetting("gradesNumber", 35);
+                      await LocalNotification.showNewMailNotification((await getMails()).first,"fff");
                     },
                     titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                     subtitleTextStyle: TextStyle(
