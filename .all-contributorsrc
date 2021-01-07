@@ -25,6 +25,16 @@
         "bug",
         "ideas"
       ]
+    },
+    {
+      "login": "bain3",
+      "name": "bain3",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/31798786?v=4",
+      "profile": "http://bain.cz",
+      "contributions": [
+        "ideas",
+        "plugin"
+      ]
     }
   ],
   "contributorsPerLine": 7,
