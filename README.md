@@ -1,6 +1,6 @@
 # yNotes
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 <img src="https://github.com/ModernChocolate/ynotes/blob/master/screenshots/brandLarge.png" width="800">
 
@@ -118,6 +118,7 @@ Je tiens à remercier chaque autre personne ne figurant pas dans cette section p
 <table>
   <tr>
     <td align="center"><a href="http://taokann.one"><img src="https://avatars1.githubusercontent.com/u/38343089?v=4?s=100" width="100px;" alt=""/><br /><sub><b>taokann.one</b></sub></a><br /><a href="https://github.com/ModernChocolate/ynotes/issues?q=author%3Ataokann" title="Bug reports">🐛</a> <a href="#ideas-taokann" title="Ideas, Planning, & Feedback">🤔</a> <a href="#userTesting-taokann" title="User Testing">📓</a></td>
+    <td align="center"><a href="https://florian-lefebvre.dev"><img src="https://avatars1.githubusercontent.com/u/69633530?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Florian LEFEBVRE</b></sub></a><br /><a href="https://github.com/ModernChocolate/ynotes/issues?q=author%3Aflorian-lefebvre" title="Bug reports">🐛</a> <a href="#ideas-florian-lefebvre" title="Ideas, Planning, & Feedback">🤔</a></td>
   </tr>
 </table>
 
