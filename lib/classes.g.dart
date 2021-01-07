@@ -288,13 +288,16 @@ class DisciplineAdapter extends TypeAdapter<Discipline> {
       nomDiscipline: fields[5] as String,
       periode: fields[11] as String,
       color: fields[13] as int,
+      rangDiscipline: fields[14] as int,
+      effectifClasse: fields[15] as String,
+      rangGeneral: fields[16] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, Discipline obj) {
     writer
-      ..writeByte(14)
+      ..writeByte(17)
       ..writeByte(0)
       ..write(obj.moyenneGenerale)
       ..writeByte(1)
@@ -322,7 +325,13 @@ class DisciplineAdapter extends TypeAdapter<Discipline> {
       ..writeByte(12)
       ..write(obj.gradesList)
       ..writeByte(13)
-      ..write(obj.color);
+      ..write(obj.color)
+      ..writeByte(14)
+      ..write(obj.rangDiscipline)
+      ..writeByte(15)
+      ..write(obj.effectifClasse)
+      ..writeByte(16)
+      ..write(obj.rangGeneral);
   }
 
   @override

@@ -18,12 +18,14 @@ class EcoleDirecteConverter {
     Map from = mailData["from"] ?? "";
     String subject = mailData["subject"] ?? "";
     String date = mailData["date"];
-    
 
     String loadedContent = "";
-    List<Map<String, dynamic>> filesData = mailData["files"].cast<Map<String, dynamic>>();
+    List<Map<String, dynamic>> filesData =
+        mailData["files"].cast<Map<String, dynamic>>();
     List<Document> files = documents(filesData);
-    Mail mail = Mail(id, messageType, isMailRead, idClasseur, from, subject, date, to: to, files: files);
+    Mail mail = Mail(
+        id, messageType, isMailRead, idClasseur, from, subject, date,
+        to: to, files: files);
     return mail;
   }
 
@@ -32,6 +34,7 @@ class EcoleDirecteConverter {
     List<Discipline> disciplinesList = List();
     List periodes = disciplinesData['data']['periodes'];
     List gradesData = disciplinesData['data']['notes'];
+    Map<String, dynamic> settings = disciplinesData['data']['parametrage'];
 
     periodes.forEach((periodeElement) {
       Color color = Colors.green;
@@ -53,8 +56,14 @@ class EcoleDirecteConverter {
               periode: periodeElement["periode"],
               moyenneG: periodeElement["ensembleMatieres"]["moyenneGenerale"],
               bmoyenneClasse: periodeElement["ensembleMatieres"]["moyenneMax"],
-              moyenneClasse: periodeElement["ensembleMatieres"]["moyenneClasse"],
-              color: Colors.blue));
+              moyenneClasse: periodeElement["ensembleMatieres"]
+                  ["moyenneClasse"],
+              color: Colors.blue,
+              showrank: settings["moyenneRang"] ? true : false,
+              effectifClasse: periodeElement["ensembleMatieres"]["effectif"],
+              rangGeneral: settings["moyenneRang"]
+                  ? periodeElement["ensembleMatieres"]["rang"]
+                  : null));
         }
         //Sub discipline
         else {
@@ -78,7 +87,8 @@ class EcoleDirecteConverter {
             if (element["codeMatiere"] == discipline.codeMatiere &&
                 element["codePeriode"] == periodeElement["idPeriode"]) {
               String nomPeriode = periodeElement["periode"];
-              localGradesList.add(Grade.fromEcoleDirecteJson(element, nomPeriode));
+              localGradesList
+                  .add(Grade.fromEcoleDirecteJson(element, nomPeriode));
             }
           });
 
@@ -124,8 +134,21 @@ class EcoleDirecteConverter {
         bool rendreEnLigne = mappedHomework["rendreEnLigne"] == "true";
         bool interrogation = mappedHomework["interrogation"] == "true";
 
-        unloadedHWList.add(Homework(matiere, codeMatiere, id, null, null, date, null, done, rendreEnLigne,
-            interrogation, null, null, null, loaded));
+        unloadedHWList.add(Homework(
+            matiere,
+            codeMatiere,
+            id,
+            null,
+            null,
+            date,
+            null,
+            done,
+            rendreEnLigne,
+            interrogation,
+            null,
+            null,
+            null,
+            loaded));
       });
     });
     return unloadedHWList;
@@ -164,8 +187,9 @@ class EcoleDirecteConverter {
         String codeMatiere = homework['codeMatiere'];
         String id = homework['id'].toString();
 
-        decodedContent = decodedContent
-            .replaceAllMapped(new RegExp(r'(>|\s)+(https?.+?)(<|\s)', multiLine: true, caseSensitive: false), (match) {
+        decodedContent = decodedContent.replaceAllMapped(
+            new RegExp(r'(>|\s)+(https?.+?)(<|\s)',
+                multiLine: true, caseSensitive: false), (match) {
           return '${match.group(1)}<a href="${match.group(2)}">${match.group(2)}</a>${match.group(3)}';
         });
 
@@ -197,7 +221,8 @@ class EcoleDirecteConverter {
     await Future.forEach(lessonData["data"], (lesson) async {
       String room = lesson["salle"].toString();
       List<String> teachers = [lesson["prof"]];
-      DateTime start = DateFormat("yyyy-MM-dd HH:mm").parse(lesson["start_date"]);
+      DateTime start =
+          DateFormat("yyyy-MM-dd HH:mm").parse(lesson["start_date"]);
       DateTime end = DateFormat("yyyy-MM-dd HH:mm").parse(lesson["end_date"]);
       bool canceled = lesson["isAnnule"] == true;
       String matiere = lesson["matiere"];

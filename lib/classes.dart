@@ -62,7 +62,8 @@ class Homework extends HiveObject {
       this.documentsContenuDeSeance,
       this.nomProf,
       this.loaded);
-  factory Homework.fromJson(Map<String, dynamic> json) => _$HomeworkFromJson(json);
+  factory Homework.fromJson(Map<String, dynamic> json) =>
+      _$HomeworkFromJson(json);
   Map<String, dynamic> toJson() => _$HomeworkToJson(this);
 }
 
@@ -79,7 +80,8 @@ class Document {
   @HiveField(3)
   final int length;
   Document(this.libelle, this.id, this.type, this.length);
-  factory Document.fromJson(Map<String, dynamic> json) => _$DocumentFromJson(json);
+  factory Document.fromJson(Map<String, dynamic> json) =>
+      _$DocumentFromJson(json);
   Map<String, dynamic> toJson() => _$DocumentToJson(this);
 }
 
@@ -154,7 +156,8 @@ class Grade {
       this.nonSignificatif,
       this.nomPeriode});
 
-  factory Grade.fromEcoleDirecteJson(Map<String, dynamic> json, String nomPeriode) {
+  factory Grade.fromEcoleDirecteJson(
+      Map<String, dynamic> json, String nomPeriode) {
     return Grade(
         min: json["minClasse"],
         max: json["maxClasse"],
@@ -207,6 +210,12 @@ class Discipline {
   List<Grade> gradesList;
   @HiveField(13)
   int color;
+  @HiveField(14)
+  final int rangDiscipline;
+  @HiveField(15)
+  final String effectifClasse;
+  @HiveField(16)
+  final String rangGeneral;
   Discipline(
       {this.gradesList,
       this.moyenneGeneralClasseMax,
@@ -221,7 +230,10 @@ class Discipline {
       this.professeurs,
       this.nomDiscipline,
       this.periode,
-      this.color});
+      this.color,
+      this.rangDiscipline,
+      this.effectifClasse,
+      this.rangGeneral});
 
   set setcolor(Color newcolor) {
     color = newcolor.value;
@@ -240,7 +252,10 @@ class Discipline {
       @required String moyenneG,
       @required String bmoyenneClasse,
       @required String moyenneClasse,
-      @required Color color}) {
+      @required Color color,
+      bool showrank = false,
+      String effectifClasse = "0",
+      String rangGeneral = "0"}) {
     return Discipline(
       codeSousMatiere: [],
       codeMatiere: json['codeMatiere'],
@@ -255,6 +270,9 @@ class Discipline {
       moyenneGenerale: moyenneG,
       moyenneGeneralClasseMax: bmoyenneClasse,
       moyenneGeneraleClasse: moyenneClasse,
+      rangDiscipline: showrank ? json["rang"] : null,
+      effectifClasse: effectifClasse,
+      rangGeneral: rangGeneral,
     );
   }
 }
@@ -274,7 +292,8 @@ class Mail {
   final String date;
   final String content;
   final List<Document> files;
-  Mail(this.id, this.mtype, this.read, this.idClasseur, this.from, this.subject, this.date,
+  Mail(this.id, this.mtype, this.read, this.idClasseur, this.from, this.subject,
+      this.date,
       {this.content, this.to, this.files});
 }
 
@@ -362,7 +381,8 @@ class PollInfo {
   @HiveField(7)
   final Map data;
 
-  PollInfo(this.auteur, this.datedebut, this.questions, this.read, this.title, this.id, this.documents, this.data);
+  PollInfo(this.auteur, this.datedebut, this.questions, this.read, this.title,
+      this.id, this.documents, this.data);
 }
 
 @JsonSerializable(nullable: false)
@@ -385,8 +405,10 @@ class AgendaReminder {
     return Color(tagColor);
   }
 
-  AgendaReminder(this.lessonID, this.name, this.alarm, this.id, {this.description, this.tagColor});
-  factory AgendaReminder.fromJson(Map<String, dynamic> json) => _$AgendaReminderFromJson(json);
+  AgendaReminder(this.lessonID, this.name, this.alarm, this.id,
+      {this.description, this.tagColor});
+  factory AgendaReminder.fromJson(Map<String, dynamic> json) =>
+      _$AgendaReminderFromJson(json);
   Map<String, dynamic> toJson() => _$AgendaReminderToJson(this);
 }
 
@@ -460,8 +482,8 @@ class AgendaEvent {
       if (lesson.start.hour == 0 && lesson.end.hour == 0) {
         wholeDay = true;
       }
-      events.add(AgendaEvent(
-          lesson.start, lesson.end, lesson.matiere, lesson.room, null, null, lesson.canceled, lesson.id, null,
+      events.add(AgendaEvent(lesson.start, lesson.end, lesson.matiere,
+          lesson.room, null, null, lesson.canceled, lesson.id, null,
           isLesson: true, lesson: lesson, wholeDay: wholeDay));
     }
     return events;
@@ -471,8 +493,8 @@ class AgendaEvent {
     return Color(color);
   }
 
-  AgendaEvent(
-      this.start, this.end, this.name, this.location, this.left, this.height, this.canceled, this.id, this.width,
+  AgendaEvent(this.start, this.end, this.name, this.location, this.left,
+      this.height, this.canceled, this.id, this.width,
       {this.wholeDay = true,
       this.isLesson = false,
       this.lesson,
@@ -481,7 +503,8 @@ class AgendaEvent {
       this.alarm,
       this.color,
       this.recurrenceScheme});
-  factory AgendaEvent.fromJson(Map<String, dynamic> json) => _$AgendaEventFromJson(json);
+  factory AgendaEvent.fromJson(Map<String, dynamic> json) =>
+      _$AgendaEventFromJson(json);
   Map<String, dynamic> toJson() => _$AgendaEventToJson(this);
 }
 
@@ -515,7 +538,8 @@ class CloudItem {
   final String id;
   final String date;
 
-  CloudItem(this.title, this.type, this.author, this.isMainFolder, this.date, {this.isMemberOf, this.id});
+  CloudItem(this.title, this.type, this.author, this.isMainFolder, this.date,
+      {this.isMemberOf, this.id});
 }
 
 class Period {
@@ -568,10 +592,12 @@ abstract class API {
   Future app(String appname, {String args, String action, CloudItem folder});
 
   ///All events
-  Future getEvents(DateTime date, bool afterSchool, {bool forceReload = false}) async {
+  Future getEvents(DateTime date, bool afterSchool,
+      {bool forceReload = false}) async {
     List<AgendaEvent> events = List<AgendaEvent>();
     List<AgendaEvent> extracurricularEvents = List<AgendaEvent>();
-    List<Lesson> lessons = await localApi.getNextLessons(date, forceReload: forceReload);
+    List<Lesson> lessons =
+        await localApi.getNextLessons(date, forceReload: forceReload);
     int week = await get_week(date);
     //Add lessons for this day
     if (lessons != null) {
@@ -596,7 +622,8 @@ abstract class API {
         }
         //merge
         for (AgendaEvent extracurricularEvent in extracurricularEvents) {
-          events.removeWhere((element) => element.id == extracurricularEvent.id);
+          events
+              .removeWhere((element) => element.id == extracurricularEvent.id);
         }
       }
     } else {
@@ -615,7 +642,8 @@ abstract class API {
         }
         //merge
         for (AgendaEvent extracurricularEvent in extracurricularEvents) {
-          events.removeWhere((element) => element.id == extracurricularEvent.id);
+          events
+              .removeWhere((element) => element.id == extracurricularEvent.id);
         }
       }
     }
@@ -625,15 +653,16 @@ abstract class API {
     RecurringEventSchemes recurr = RecurringEventSchemes();
     recurr.date = date;
     recurr.week = week;
-    var recurringEvents = await offline.agendaEvents.getAgendaEvents(week, selector: recurr.testRequest);
+    var recurringEvents = await offline.agendaEvents
+        .getAgendaEvents(week, selector: recurr.testRequest);
     if (recurringEvents != null && recurringEvents.length != 0) {
       recurringEvents.forEach((recurringEvent) {
         events.removeWhere((element) => element.id == recurringEvent.id);
         if (recurringEvent.start != null && recurringEvent.end != null) {
-          recurringEvent.start =
-              DateTime(date.year, date.month, date.day, recurringEvent.start.hour, recurringEvent.start.minute);
-          recurringEvent.end =
-              DateTime(date.year, date.month, date.day, recurringEvent.end.hour, recurringEvent.end.minute);
+          recurringEvent.start = DateTime(date.year, date.month, date.day,
+              recurringEvent.start.hour, recurringEvent.start.minute);
+          recurringEvent.end = DateTime(date.year, date.month, date.day,
+              recurringEvent.end.hour, recurringEvent.end.minute);
         }
       });
 
