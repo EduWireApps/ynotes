@@ -1,0 +1,26 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "taokann",
+      "name": "taokann.one",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/38343089?v=4",
+      "profile": "http://taokann.one",
+      "contributions": [
+        "bug",
+        "ideas",
+        "userTesting"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "ynotes",
+  "projectOwner": "ModernChocolate",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
