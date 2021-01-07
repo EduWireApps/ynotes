@@ -108,9 +108,8 @@ On y distingue les animations, (utilisant le moteur de rendu *Flare*, qui diffè
 * Merci aux développeurs et bêta testeurs qui ont aidé à participer au projet en me suggérant des fonctionnalités et en montrant des bugs que je n'aurai sûrement jamais remarqués
 * L'API Pronote est un portage de [pronotepy](https://github.com/bain3/pronotepy), développée par [bain](https://github.com/bain3) que je remercie énormément pour ses explications et sa disponibilité :)
 
-## Contributeurs
+## Contributeurs ✨
 
-La liste des principaux participants à l'application ✨
 Je tiens à remercier chaque autre personne ne figurant pas dans cette section pour avoir testé yNotes, collaboré d'une manière ou d'une autre pour la création de l'application et m'avoir donné des idées pour l'améliorer.
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
