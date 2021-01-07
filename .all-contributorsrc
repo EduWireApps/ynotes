@@ -1,0 +1,46 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "taokann",
+      "name": "taokann.one",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/38343089?v=4",
+      "profile": "http://taokann.one",
+      "contributions": [
+        "bug",
+        "ideas",
+        "userTesting"
+      ]
+    },
+    {
+      "login": "florian-lefebvre",
+      "name": "Florian LEFEBVRE",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/69633530?v=4",
+      "profile": "https://florian-lefebvre.dev",
+      "contributions": [
+        "bug",
+        "ideas"
+      ]
+    },
+    {
+      "login": "bain3",
+      "name": "bain3",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/31798786?v=4",
+      "profile": "http://bain.cz",
+      "contributions": [
+        "ideas",
+        "plugin"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "ynotes",
+  "projectOwner": "ModernChocolate",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}

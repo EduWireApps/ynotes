@@ -1,4 +1,7 @@
 # yNotes
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-3-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 <img src="https://github.com/ModernChocolate/ynotes/blob/master/screenshots/brandLarge.png" width="800">
 
 yNotes est un gestionnaire de notes, d'emploi du temps et de devoirs qui vous permet d'accéder à toutes vos informations scolaires dans une interface moderne et intuitive. L'application actuelle est basée sur les APIs des sites **École Directe** et **Pronote**. Je travaille actuellement dur pour adapter l'application à d'autres "applications scolaires". 
@@ -104,3 +107,23 @@ On y distingue les animations, (utilisant le moteur de rendu *Flare*, qui diffè
 ### Mentions spéciales
 * Merci aux développeurs et bêta testeurs qui ont aidé à participer au projet en me suggérant des fonctionnalités et en montrant des bugs que je n'aurai sûrement jamais remarqués
 * L'API Pronote est un portage de [pronotepy](https://github.com/bain3/pronotepy), développée par [bain](https://github.com/bain3) que je remercie énormément pour ses explications et sa disponibilité :)
+
+## Contributeurs
+
+La liste des principaux participants à l'application ✨
+Je tiens à remercier chaque autre personne ne figurant pas dans cette section pour avoir testé yNotes, collaboré d'une manière ou d'une autre pour la création de l'application et m'avoir donné des idées pour l'améliorer.
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="http://taokann.one"><img src="https://avatars1.githubusercontent.com/u/38343089?v=4?s=100" width="100px;" alt=""/><br /><sub><b>taokann.one</b></sub></a><br /><a href="https://github.com/ModernChocolate/ynotes/issues?q=author%3Ataokann" title="Bug reports">🐛</a> <a href="#ideas-taokann" title="Ideas, Planning, & Feedback">🤔</a> <a href="#userTesting-taokann" title="User Testing">📓</a></td>
+    <td align="center"><a href="https://florian-lefebvre.dev"><img src="https://avatars1.githubusercontent.com/u/69633530?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Florian LEFEBVRE</b></sub></a><br /><a href="https://github.com/ModernChocolate/ynotes/issues?q=author%3Aflorian-lefebvre" title="Bug reports">🐛</a> <a href="#ideas-florian-lefebvre" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="http://bain.cz"><img src="https://avatars0.githubusercontent.com/u/31798786?v=4?s=100" width="100px;" alt=""/><br /><sub><b>bain3</b></sub></a><br /><a href="#ideas-bain3" title="Ideas, Planning, & Feedback">🤔</a> <a href="#plugin-bain3" title="Plugin/utility libraries">🔌</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
