@@ -44,6 +44,16 @@
       "contributions": [
         "ideas"
       ]
+    },
+    {
+      "login": "GENERATION2GEEK",
+      "name": "Vincent Moucadeau",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/33123296?v=4",
+      "profile": "https://github.com/GENERATION2GEEK",
+      "contributions": [
+        "code",
+        "userTesting"
+      ]
     }
   ],
   "contributorsPerLine": 7,
