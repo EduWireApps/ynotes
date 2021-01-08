@@ -86,11 +86,7 @@ class _GradesPageState extends State<GradesPage> {
   getActualPeriode() async {
     List<Discipline> list = await localApi.getGrades();
     try {
-      periodeToUse = list
-          .lastWhere((list) => list.gradesList.length > 0)
-          .gradesList
-          .last
-          .nomPeriode;
+      periodeToUse = list.lastWhere((list) => list.gradesList.length > 0).gradesList.last.nomPeriode;
     } catch (e) {
       if (periods != null && periods.length > 0) {
         periodeToUse = periods.last.name;
@@ -107,8 +103,7 @@ class _GradesPageState extends State<GradesPage> {
         builder: (BuildContext context) {
           return AlertDialog(
             backgroundColor: Theme.of(context).primaryColor,
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(15.0))),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0))),
             contentPadding: EdgeInsets.only(top: 10.0),
             content: Container(
               height: screenSize.size.height / 10 * 4,
@@ -116,9 +111,8 @@ class _GradesPageState extends State<GradesPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
                   Container(
-                    margin: EdgeInsets.only(
-                        left: screenSize.size.width / 5 * 0.1,
-                        right: screenSize.size.width / 5 * 0.1),
+                    margin:
+                        EdgeInsets.only(left: screenSize.size.width / 5 * 0.1, right: screenSize.size.width / 5 * 0.1),
                     height: screenSize.size.height / 10 * 0.8,
                     decoration: BoxDecoration(),
                     child: Material(
@@ -135,8 +129,7 @@ class _GradesPageState extends State<GradesPage> {
                         child: Row(
                           children: <Widget>[
                             Image(
-                              image:
-                                  AssetImage('assets/images/space/space.png'),
+                              image: AssetImage('assets/images/space/space.png'),
                               width: screenSize.size.width / 5 * 0.8,
                             ),
                             Container(
@@ -159,9 +152,8 @@ class _GradesPageState extends State<GradesPage> {
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.only(
-                        left: screenSize.size.width / 5 * 0.1,
-                        right: screenSize.size.width / 5 * 0.1),
+                    margin:
+                        EdgeInsets.only(left: screenSize.size.width / 5 * 0.1, right: screenSize.size.width / 5 * 0.1),
                     height: screenSize.size.height / 10 * 0.8,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(30)),
@@ -180,16 +172,14 @@ class _GradesPageState extends State<GradesPage> {
                         child: Row(
                           children: <Widget>[
                             Container(
-                                margin: EdgeInsets.only(
-                                    left: screenSize.size.width / 5 * 0.1),
+                                margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
                                 child: Icon(
                                   MdiIcons.atomVariant,
                                   size: screenSize.size.width / 5 * 0.5,
                                   color: Colors.white,
                                 )),
                             Container(
-                              margin: EdgeInsets.only(
-                                  left: screenSize.size.width / 5 * 0.2),
+                              margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.2),
                               child: Text(
                                 "Sciences",
                                 style: TextStyle(
@@ -205,12 +195,10 @@ class _GradesPageState extends State<GradesPage> {
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.only(
-                        left: screenSize.size.width / 5 * 0.1,
-                        right: screenSize.size.width / 5 * 0.1),
+                    margin:
+                        EdgeInsets.only(left: screenSize.size.width / 5 * 0.1, right: screenSize.size.width / 5 * 0.1),
                     height: screenSize.size.height / 10 * 0.8,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(30))),
+                    decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(30))),
                     child: Material(
                       color: Color(0xff6C4273),
                       borderRadius: BorderRadius.all(Radius.circular(30)),
@@ -225,16 +213,14 @@ class _GradesPageState extends State<GradesPage> {
                         child: Row(
                           children: <Widget>[
                             Container(
-                                margin: EdgeInsets.only(
-                                    left: screenSize.size.width / 5 * 0.1),
+                                margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
                                 child: Icon(
                                   MdiIcons.bookOpenVariant,
                                   size: screenSize.size.width / 5 * 0.5,
                                   color: Colors.white,
                                 )),
                             Container(
-                              margin: EdgeInsets.only(
-                                  left: screenSize.size.width / 5 * 0.2),
+                              margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.2),
                               child: Text(
                                 "Littérature",
                                 style: TextStyle(
@@ -250,9 +236,8 @@ class _GradesPageState extends State<GradesPage> {
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.only(
-                        left: screenSize.size.width / 5 * 0.1,
-                        right: screenSize.size.width / 5 * 0.1),
+                    margin:
+                        EdgeInsets.only(left: screenSize.size.width / 5 * 0.1, right: screenSize.size.width / 5 * 0.1),
                     height: screenSize.size.height / 10 * 0.8,
                     decoration: BoxDecoration(),
                     child: Material(
@@ -269,16 +254,14 @@ class _GradesPageState extends State<GradesPage> {
                         child: Row(
                           children: <Widget>[
                             Container(
-                                margin: EdgeInsets.only(
-                                    left: screenSize.size.width / 5 * 0.1),
+                                margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
                                 child: Icon(
                                   MdiIcons.borderNoneVariant,
                                   size: screenSize.size.width / 5 * 0.5,
                                   color: ThemeUtils.textColor(),
                                 )),
                             Container(
-                              margin: EdgeInsets.only(
-                                  left: screenSize.size.width / 5 * 0.2),
+                              margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.2),
                               child: Text(
                                 "Aucun filtre",
                                 style: TextStyle(
@@ -333,10 +316,8 @@ class _GradesPageState extends State<GradesPage> {
   }
 
   getBestAverage(Discipline lastDiscipline) {
-    if (lastDiscipline != null &&
-        lastDiscipline.moyenneGeneralClasseMax != null) {
-      double value = double.tryParse(
-          lastDiscipline.moyenneGeneralClasseMax.replaceAll(",", "."));
+    if (lastDiscipline != null && lastDiscipline.moyenneGeneralClasseMax != null) {
+      double value = double.tryParse(lastDiscipline.moyenneGeneralClasseMax.replaceAll(",", "."));
       if (value != null) {
         return value >= average ? value.toString() : average.toStringAsFixed(2);
       } else {
@@ -348,8 +329,7 @@ class _GradesPageState extends State<GradesPage> {
   }
 
   ///Get the corresponding disciplines and responding to the filter chosen
-  List<Discipline> getDisciplinesForPeriod(
-      List<Discipline> list, periode, String sortBy) {
+  List<Discipline> getDisciplinesForPeriod(List<Discipline> list, periode, String sortBy) {
     List<Discipline> toReturn = new List<Discipline>();
     list.forEach((f) {
       switch (sortBy) {
@@ -373,14 +353,7 @@ class _GradesPageState extends State<GradesPage> {
               toReturn.add(f);
             }
           } else {
-            List<String> codeMatiere = [
-              "FRANCAIS",
-              "ANGLAIS",
-              "ESPAGNOL",
-              "ALLEMAND",
-              "HISTOIRE",
-              "PHILO"
-            ];
+            List<String> codeMatiere = ["FRANCAIS", "ANGLAIS", "ESPAGNOL", "ALLEMAND", "HISTOIRE", "PHILO"];
 
             if (f.periode == periode &&
                 codeMatiere.any((test) {
@@ -409,20 +382,12 @@ class _GradesPageState extends State<GradesPage> {
               toReturn.add(f);
             }
           } else {
-            List<String> codeMatiere = [
-              "SVT",
-              "MATH",
-              "PHY",
-              "PHYSIQUE",
-              "SCI",
-              "BIO"
-            ];
+            List<String> codeMatiere = ["SVT", "MATH", "PHY", "PHYSIQUE", "SCI", "BIO"];
             List<String> blackList = ["SPORT"];
             if (f.periode == periode &&
                 codeMatiere.any((test) {
                   if (f.nomDiscipline.contains(test) &&
-                      !blackList.any(
-                          (element) => f.nomDiscipline.contains(element))) {
+                      !blackList.any((element) => f.nomDiscipline.contains(element))) {
                     return true;
                   } else {
                     return false;
@@ -469,8 +434,7 @@ class _GradesPageState extends State<GradesPage> {
     ///Button container
     return Container(
       height: screenSize.size.height,
-      child:
-          Column(mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
+      child: Column(mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
         Card(
           margin: EdgeInsets.zero,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
@@ -478,14 +442,11 @@ class _GradesPageState extends State<GradesPage> {
           child: Column(
             children: [
               Container(
-                padding: EdgeInsets.only(
-                    top: (screenSize.size.height / 10 * 8.8) / 10 * 1 / 6),
+                padding: EdgeInsets.only(top: (screenSize.size.height / 10 * 8.8) / 10 * 1 / 6),
                 height: screenSize.size.height / 10 * 0.7,
                 width: screenSize.size.width,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(15),
-                      topRight: Radius.circular(15)),
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
                   border: Border.all(width: 0.00000, color: Colors.transparent),
                 ),
                 child: Row(
@@ -494,11 +455,9 @@ class _GradesPageState extends State<GradesPage> {
                     Container(
                       height: screenSize.size.height / 10 * 9,
                       width: (screenSize.size.width / 5) * 2.2,
-                      padding: EdgeInsets.symmetric(
-                          horizontal: (screenSize.size.width / 5) * 0.4),
+                      padding: EdgeInsets.symmetric(horizontal: (screenSize.size.width / 5) * 0.4),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(
-                            screenSize.size.width / 5 * 0.15),
+                        borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                         color: Theme.of(context).primaryColorDark,
                       ),
                       child: FittedBox(
@@ -521,10 +480,7 @@ class _GradesPageState extends State<GradesPage> {
                                         ? Container(
                                             child: Text(
                                               "Pas de periode",
-                                              style: TextStyle(
-                                                  fontFamily: "Asap",
-                                                  color:
-                                                      ThemeUtils.textColor()),
+                                              style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                                             ),
                                           )
                                         : DropdownButtonHideUnderline(
@@ -532,34 +488,24 @@ class _GradesPageState extends State<GradesPage> {
                                               value: periodeToUse,
                                               iconSize: 0.0,
                                               style: TextStyle(
-                                                  fontSize: 18,
-                                                  fontFamily: "Asap",
-                                                  color:
-                                                      ThemeUtils.textColor()),
+                                                  fontSize: 18, fontFamily: "Asap", color: ThemeUtils.textColor()),
                                               onChanged: (String newValue) {
                                                 setState(() {
                                                   periodeToUse = newValue;
                                                 });
                                               },
-                                              focusColor: Theme.of(context)
-                                                  .primaryColor,
-                                              items: snapshot.data.toSet().map<
-                                                      DropdownMenuItem<String>>(
-                                                  (Period period) {
+                                              focusColor: Theme.of(context).primaryColor,
+                                              items:
+                                                  snapshot.data.toSet().map<DropdownMenuItem<String>>((Period period) {
                                                 return DropdownMenuItem<String>(
-                                                  value: period != null
-                                                      ? period.name
-                                                      : "-",
+                                                  value: period != null ? period.name : "-",
                                                   child: Text(
-                                                    period != null
-                                                        ? period.name
-                                                        : "-",
+                                                    period != null ? period.name : "-",
                                                     textAlign: TextAlign.center,
                                                     style: TextStyle(
                                                         fontSize: 18,
                                                         fontFamily: "Asap",
-                                                        color: ThemeUtils
-                                                            .textColor()),
+                                                        color: ThemeUtils.textColor()),
                                                   ),
                                                 );
                                               }).toList(),
@@ -572,24 +518,18 @@ class _GradesPageState extends State<GradesPage> {
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.only(
-                          left: (screenSize.size.height / 10 * 8.8) / 10 * 0.1),
+                      margin: EdgeInsets.only(left: (screenSize.size.height / 10 * 8.8) / 10 * 0.1),
                       child: Material(
                         color: Theme.of(context).primaryColorDark,
-                        borderRadius: BorderRadius.circular(
-                            screenSize.size.width / 5 * 0.15),
+                        borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                         child: InkWell(
-                          borderRadius: BorderRadius.circular(
-                              screenSize.size.width / 5 * 0.15),
+                          borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                           onTap: () {
                             openSortBox();
                           },
                           child: Container(
-                              height: (screenSize.size.height / 10 * 8.8) /
-                                  10 *
-                                  0.6,
-                              padding: EdgeInsets.all(
-                                  screenSize.size.width / 5 * 0.1),
+                              height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
+                              padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
                               child: FittedBox(
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
@@ -621,13 +561,11 @@ class _GradesPageState extends State<GradesPage> {
                   onRefresh: refreshLocalGradeList,
                   child: Container(
                       width: screenSize.size.width / 5 * 4.7,
-                      padding: EdgeInsets.only(
-                          top: screenSize.size.height / 10 * 0.1),
+                      padding: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
                       height: screenSize.size.height / 10 * 6.7,
                       margin: EdgeInsets.only(top: 0),
                       decoration: BoxDecoration(
-                          border: Border.all(
-                              width: 0.000000, color: Colors.transparent),
+                          border: Border.all(width: 0.000000, color: Colors.transparent),
                           borderRadius: BorderRadius.only(
                             bottomLeft: Radius.circular(15),
                             bottomRight: Radius.circular(15),
@@ -637,87 +575,53 @@ class _GradesPageState extends State<GradesPage> {
                         borderRadius: BorderRadius.circular(0),
                         child: FutureBuilder<void>(
                             future: disciplinesListFuture,
-                            builder:
-                                (BuildContext context, AsyncSnapshot snapshot) {
+                            builder: (BuildContext context, AsyncSnapshot snapshot) {
                               if (snapshot.hasData) {
-                                if (getDisciplinesForPeriod(
-                                        snapshot.data, periodeToUse, filter)
-                                    .any((element) {
+                                if (getDisciplinesForPeriod(snapshot.data, periodeToUse, filter).any((element) {
                                   return (element.gradesList.length > 0);
                                 })) {
                                   return ListView.builder(
                                       physics: AlwaysScrollableScrollPhysics(),
-                                      itemCount: getDisciplinesForPeriod(
-                                              snapshot.data,
-                                              periodeToUse,
-                                              filter)
-                                          .length,
+                                      itemCount: getDisciplinesForPeriod(snapshot.data, periodeToUse, filter).length,
                                       padding: EdgeInsets.symmetric(
-                                          vertical:
-                                              screenSize.size.width / 5 * 0.1,
-                                          horizontal:
-                                              screenSize.size.width / 5 * 0.05),
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
+                                          vertical: screenSize.size.width / 5 * 0.1,
+                                          horizontal: screenSize.size.width / 5 * 0.05),
+                                      itemBuilder: (BuildContext context, int index) {
                                         return GradesGroup(
                                             disciplinevar:
-                                                getDisciplinesForPeriod(
-                                                    snapshot.data,
-                                                    periodeToUse,
-                                                    filter)[index]);
+                                                getDisciplinesForPeriod(snapshot.data, periodeToUse, filter)[index]);
                                       });
                                 } else {
                                   return Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                       Image(
-                                          image: AssetImage(
-                                              'assets/images/book.png'),
+                                          image: AssetImage('assets/images/book.png'),
                                           width: screenSize.size.width / 5 * 4),
                                       Container(
-                                        margin: EdgeInsets.symmetric(
-                                            horizontal: screenSize.size.width /
-                                                5 *
-                                                0.5),
-                                        child: AutoSizeText(
-                                            "Pas de notes pour cette periode.",
+                                        margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.5),
+                                        child: AutoSizeText("Pas de notes pour cette periode.",
                                             textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                fontFamily: "Asap",
-                                                color: ThemeUtils.textColor())),
+                                            style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor())),
                                       ),
                                       FlatButton(
                                         onPressed: () {
                                           //Reload list
                                           refreshLocalGradeList();
                                         },
-                                        child: snapshot.connectionState !=
-                                                ConnectionState.waiting
+                                        child: snapshot.connectionState != ConnectionState.waiting
                                             ? Text("Recharger",
                                                 style: TextStyle(
                                                     fontFamily: "Asap",
-                                                    color:
-                                                        ThemeUtils.textColor(),
-                                                    fontSize: (screenSize
-                                                                .size.height /
-                                                            10 *
-                                                            8.8) /
-                                                        10 *
-                                                        0.2))
+                                                    color: ThemeUtils.textColor(),
+                                                    fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2))
                                             : FittedBox(
                                                 child: SpinKitThreeBounce(
-                                                    color: Theme.of(context)
-                                                        .primaryColorDark,
-                                                    size:
-                                                        screenSize.size.width /
-                                                            5 *
-                                                            0.4)),
+                                                    color: Theme.of(context).primaryColorDark,
+                                                    size: screenSize.size.width / 5 * 0.4)),
                                         shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                new BorderRadius.circular(18.0),
-                                            side: BorderSide(
-                                                color: Theme.of(context)
-                                                    .primaryColorDark)),
+                                            borderRadius: new BorderRadius.circular(18.0),
+                                            side: BorderSide(color: Theme.of(context).primaryColorDark)),
                                       )
                                     ],
                                   );
@@ -728,16 +632,12 @@ class _GradesPageState extends State<GradesPage> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
                                     Image(
-                                      image:
-                                          AssetImage('assets/images/totor.png'),
+                                      image: AssetImage('assets/images/totor.png'),
                                       width: screenSize.size.width / 5 * 3.5,
                                     ),
                                     Container(
-                                      margin: EdgeInsets.symmetric(
-                                          horizontal:
-                                              screenSize.size.width / 5 * 0.5),
-                                      child: AutoSizeText(
-                                          "Hum... on dirait que tout ne s'est pas passé comme prévu.",
+                                      margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.5),
+                                      child: AutoSizeText("Hum... on dirait que tout ne s'est pas passé comme prévu.",
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                             fontFamily: "Asap",
@@ -750,10 +650,8 @@ class _GradesPageState extends State<GradesPage> {
                                 //Loading group
                                 return ListView.builder(
                                     itemCount: 5,
-                                    padding: EdgeInsets.all(
-                                        screenSize.size.width / 5 * 0.3),
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
+                                    padding: EdgeInsets.all(screenSize.size.width / 5 * 0.3),
+                                    itemBuilder: (BuildContext context, int index) {
                                       return GradesGroup();
                                     });
                               }
@@ -782,9 +680,8 @@ class _GradesPageState extends State<GradesPage> {
                       if (snapshot.hasData) {
                         if (snapshot.data != null) {
                           try {
-                            getLastDiscipline = snapshot.data.lastWhere(
-                                (disciplinesList) =>
-                                    disciplinesList.periode == periodeToUse);
+                            getLastDiscipline =
+                                snapshot.data.lastWhere((disciplinesList) => disciplinesList.periode == periodeToUse);
                           } catch (exception) {}
 
                           //If everything is ok, show stuff
@@ -793,9 +690,7 @@ class _GradesPageState extends State<GradesPage> {
                               Align(
                                 alignment: Alignment.center,
                                 child: Container(
-                                  height: (screenSize.size.height / 10 * 8.8) /
-                                      10 *
-                                      1.15,
+                                  height: (screenSize.size.height / 10 * 8.8) / 10 * 1.15,
                                   width: screenSize.size.width / 5 * 4,
                                   decoration: BoxDecoration(
                                     boxShadow: <BoxShadow>[
@@ -810,268 +705,128 @@ class _GradesPageState extends State<GradesPage> {
                                   ),
                                   child: FittedBox(
                                     child: Container(
-                                      height:
-                                          (screenSize.size.height / 10 * 8.8) /
-                                              10 *
-                                              1.15,
+                                      height: (screenSize.size.height / 10 * 8.8) / 10 * 1.15,
                                       width: screenSize.size.width / 5 * 3.3,
                                       child: FittedBox(
                                         child: Stack(
                                           children: <Widget>[
                                             Container(
-                                              margin: EdgeInsets.only(
-                                                  left: (screenSize.size.width /
-                                                          5) *
-                                                      2),
+                                              margin: EdgeInsets.only(left: (screenSize.size.width / 5) * 2),
                                               child: Column(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceEvenly,
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.end,
+                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                crossAxisAlignment: CrossAxisAlignment.end,
                                                 children: <Widget>[
                                                   if (filter == "all")
                                                     Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .center,
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
                                                       children: <Widget>[
-                                                        Text(
-                                                            "Moyenne de la classe :",
+                                                        Text("Moyenne de la classe :",
                                                             style: TextStyle(
-                                                                fontFamily:
-                                                                    "Asap",
-                                                                color: ThemeUtils
-                                                                    .textColor(),
-                                                                fontSize: (screenSize
-                                                                            .size
-                                                                            .width /
-                                                                        5) *
-                                                                    0.18)),
+                                                                fontFamily: "Asap",
+                                                                color: ThemeUtils.textColor(),
+                                                                fontSize: (screenSize.size.width / 5) * 0.18)),
                                                         Container(
-                                                          margin: EdgeInsets.only(
-                                                              left: (screenSize
-                                                                          .size
-                                                                          .width /
-                                                                      5) *
-                                                                  0.1),
+                                                          margin:
+                                                              EdgeInsets.only(left: (screenSize.size.width / 5) * 0.1),
                                                           decoration: BoxDecoration(
-                                                              borderRadius: BorderRadius
-                                                                  .all(Radius
-                                                                      .circular(
-                                                                          15)),
-                                                              color: Color(
-                                                                  0xff2C2C2C)),
+                                                              borderRadius: BorderRadius.all(Radius.circular(15)),
+                                                              color: Color(0xff2C2C2C)),
                                                           padding: EdgeInsets.symmetric(
-                                                              horizontal: (screenSize
-                                                                          .size
-                                                                          .width /
-                                                                      5) *
-                                                                  0.1,
-                                                              vertical: (screenSize
-                                                                          .size
-                                                                          .width /
-                                                                      5) *
-                                                                  0.08),
+                                                              horizontal: (screenSize.size.width / 5) * 0.1,
+                                                              vertical: (screenSize.size.width / 5) * 0.08),
                                                           child: Text(
-                                                            (getLastDiscipline !=
-                                                                        null &&
-                                                                    getLastDiscipline
-                                                                            .moyenneGeneraleClasse !=
-                                                                        null
-                                                                ? getLastDiscipline
-                                                                    .moyenneGeneraleClasse
+                                                            (getLastDiscipline != null &&
+                                                                    getLastDiscipline.moyenneGeneraleClasse != null
+                                                                ? getLastDiscipline.moyenneGeneraleClasse
                                                                 : "-"),
                                                             style: TextStyle(
-                                                                fontFamily:
-                                                                    "Asap",
-                                                                color: Colors
-                                                                    .white,
-                                                                fontSize: (screenSize
-                                                                            .size
-                                                                            .width /
-                                                                        5) *
-                                                                    0.18),
+                                                                fontFamily: "Asap",
+                                                                color: Colors.white,
+                                                                fontSize: (screenSize.size.width / 5) * 0.18),
                                                           ),
                                                         )
                                                       ],
                                                     ),
                                                   if (filter == "all")
                                                     Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .center,
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
                                                       children: <Widget>[
-                                                        Text(
-                                                            "Meilleure moyenne :",
+                                                        Text("Meilleure moyenne :",
                                                             style: TextStyle(
-                                                                fontFamily:
-                                                                    "Asap",
-                                                                color: ThemeUtils
-                                                                    .textColor(),
-                                                                fontSize: (screenSize
-                                                                            .size
-                                                                            .width /
-                                                                        5) *
-                                                                    0.18)),
+                                                                fontFamily: "Asap",
+                                                                color: ThemeUtils.textColor(),
+                                                                fontSize: (screenSize.size.width / 5) * 0.18)),
                                                         Container(
-                                                          margin: EdgeInsets.only(
-                                                              left: (screenSize
-                                                                          .size
-                                                                          .width /
-                                                                      5) *
-                                                                  0.1),
+                                                          margin:
+                                                              EdgeInsets.only(left: (screenSize.size.width / 5) * 0.1),
                                                           decoration: BoxDecoration(
-                                                              borderRadius: BorderRadius
-                                                                  .all(Radius
-                                                                      .circular(
-                                                                          15)),
-                                                              color: Color(
-                                                                  0xff2C2C2C)),
+                                                              borderRadius: BorderRadius.all(Radius.circular(15)),
+                                                              color: Color(0xff2C2C2C)),
                                                           padding: EdgeInsets.symmetric(
-                                                              horizontal: (screenSize
-                                                                          .size
-                                                                          .width /
-                                                                      5) *
-                                                                  0.1,
-                                                              vertical: (screenSize
-                                                                          .size
-                                                                          .width /
-                                                                      5) *
-                                                                  0.08),
+                                                              horizontal: (screenSize.size.width / 5) * 0.1,
+                                                              vertical: (screenSize.size.width / 5) * 0.08),
                                                           child: Text(
-                                                            getBestAverage(
-                                                                getLastDiscipline),
+                                                            getBestAverage(getLastDiscipline),
                                                             style: TextStyle(
-                                                                fontFamily:
-                                                                    "Asap",
-                                                                color: Colors
-                                                                    .white,
-                                                                fontSize: (screenSize
-                                                                            .size
-                                                                            .width /
-                                                                        5) *
-                                                                    0.18),
+                                                                fontFamily: "Asap",
+                                                                color: Colors.white,
+                                                                fontSize: (screenSize.size.width / 5) * 0.18),
                                                           ),
                                                         )
                                                       ],
                                                     ),
-                                                  if (getLastDiscipline
-                                                              .rangGeneral !=
-                                                          null &&
-                                                      filter == "all")
+                                                  if (getLastDiscipline.rangGeneral != null && filter == "all")
                                                     Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .center,
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
                                                       children: <Widget>[
                                                         Text("Rang :",
                                                             style: TextStyle(
-                                                                fontFamily:
-                                                                    "Asap",
-                                                                color: ThemeUtils
-                                                                    .textColor(),
-                                                                fontSize: (screenSize
-                                                                            .size
-                                                                            .width /
-                                                                        5) *
-                                                                    0.18)),
+                                                                fontFamily: "Asap",
+                                                                color: ThemeUtils.textColor(),
+                                                                fontSize: (screenSize.size.width / 5) * 0.18)),
                                                         Container(
-                                                          margin: EdgeInsets.only(
-                                                              left: (screenSize
-                                                                          .size
-                                                                          .width /
-                                                                      5) *
-                                                                  0.1),
+                                                          margin:
+                                                              EdgeInsets.only(left: (screenSize.size.width / 5) * 0.1),
                                                           decoration: BoxDecoration(
-                                                              borderRadius: BorderRadius
-                                                                  .all(Radius
-                                                                      .circular(
-                                                                          15)),
-                                                              color: Color(
-                                                                  0xff2C2C2C)),
+                                                              borderRadius: BorderRadius.all(Radius.circular(15)),
+                                                              color: Color(0xff2C2C2C)),
                                                           padding: EdgeInsets.symmetric(
-                                                              horizontal: (screenSize
-                                                                          .size
-                                                                          .width /
-                                                                      5) *
-                                                                  0.1,
-                                                              vertical: (screenSize
-                                                                          .size
-                                                                          .width /
-                                                                      5) *
-                                                                  0.08),
+                                                              horizontal: (screenSize.size.width / 5) * 0.1,
+                                                              vertical: (screenSize.size.width / 5) * 0.08),
                                                           child: Text(
-                                                            (getLastDiscipline
-                                                                            .rangGeneral !=
-                                                                        null &&
-                                                                    getLastDiscipline
-                                                                            .effectifClasse !=
-                                                                        null)
-                                                                ? getLastDiscipline
-                                                                        .rangGeneral +
+                                                            (getLastDiscipline.rangGeneral != null &&
+                                                                    getLastDiscipline.effectifClasse != null)
+                                                                ? getLastDiscipline.rangGeneral +
                                                                     "/" +
-                                                                    getLastDiscipline
-                                                                        .effectifClasse
+                                                                    getLastDiscipline.effectifClasse
                                                                 : "- / -",
                                                             style: TextStyle(
-                                                                fontFamily:
-                                                                    "Asap",
-                                                                color: Colors
-                                                                    .white,
-                                                                fontSize: (screenSize
-                                                                            .size
-                                                                            .width /
-                                                                        5) *
-                                                                    0.18),
+                                                                fontFamily: "Asap",
+                                                                color: Colors.white,
+                                                                fontSize: (screenSize.size.width / 5) * 0.18),
                                                           ),
                                                         )
                                                       ],
                                                     ),
                                                   if (filter != "all")
                                                     Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .center,
+                                                      mainAxisAlignment: MainAxisAlignment.center,
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
                                                       children: <Widget>[
-                                                        Text(
-                                                            "Moyenne du filtre ",
+                                                        Text("Moyenne du filtre ",
                                                             style: TextStyle(
-                                                                fontFamily:
-                                                                    "Asap",
-                                                                color: ThemeUtils
-                                                                    .textColor(),
-                                                                fontSize: (screenSize
-                                                                            .size
-                                                                            .width /
-                                                                        5) *
-                                                                    0.2)),
+                                                                fontFamily: "Asap",
+                                                                color: ThemeUtils.textColor(),
+                                                                fontSize: (screenSize.size.width / 5) * 0.2)),
                                                         Text(filter,
                                                             style: TextStyle(
-                                                                fontFamily:
-                                                                    "Asap",
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                color: ThemeUtils
-                                                                    .textColor(),
-                                                                fontSize: (screenSize
-                                                                            .size
-                                                                            .width /
-                                                                        5) *
-                                                                    0.2)),
+                                                                fontFamily: "Asap",
+                                                                fontWeight: FontWeight.bold,
+                                                                color: ThemeUtils.textColor(),
+                                                                fontSize: (screenSize.size.width / 5) * 0.2)),
                                                       ],
                                                     )
                                                 ],
@@ -1088,16 +843,11 @@ class _GradesPageState extends State<GradesPage> {
                               //Circle with the moyenneGenerale
                               Positioned(
                                 left: screenSize.size.width / 6 * 0.015,
-                                top: (screenSize.size.height / 10 * 8.8) /
-                                    10 *
-                                    0.2,
+                                top: (screenSize.size.height / 10 * 8.8) / 10 * 0.2,
                                 child: Container(
-                                  padding: EdgeInsets.all(
-                                      screenSize.size.height / 10 * 0.3),
+                                  padding: EdgeInsets.all(screenSize.size.height / 10 * 0.3),
                                   width: screenSize.size.width / 5 * 1.5,
-                                  height: (screenSize.size.height / 10 * 8.8) /
-                                      10 *
-                                      1.4,
+                                  height: (screenSize.size.height / 10 * 8.8) / 10 * 1.4,
                                   decoration: BoxDecoration(
                                       shape: BoxShape.circle,
                                       boxShadow: <BoxShadow>[
@@ -1107,22 +857,17 @@ class _GradesPageState extends State<GradesPage> {
                                           offset: Offset(0, 2.67),
                                         ),
                                       ],
-                                      color: (filter == "all"
-                                          ? Colors.white
-                                          : Colors.green)),
+                                      color: (filter == "all" ? Colors.white : Colors.green)),
                                   child: Center(
                                     child: FittedBox(
                                       child: Text(
-                                        (average.toString() != null &&
-                                                !average.isNaN
+                                        (average.toString() != null && !average.isNaN
                                             ? average.toStringAsFixed(2)
                                             : "-"),
                                         style: TextStyle(
                                             color: Colors.black,
                                             fontFamily: "Asap",
-                                            fontSize:
-                                                (screenSize.size.width / 5) *
-                                                    0.35),
+                                            fontSize: (screenSize.size.width / 5) * 0.35),
                                         textAlign: TextAlign.center,
                                       ),
                                     ),
@@ -1195,8 +940,7 @@ class _GradesGroupState extends State<GradesGroup> {
       capitalizedNomDiscipline = null;
     } else {
       String nomDiscipline = widget.disciplinevar.nomDiscipline.toLowerCase();
-      capitalizedNomDiscipline =
-          "${nomDiscipline[0].toUpperCase()}${nomDiscipline.substring(1)}";
+      capitalizedNomDiscipline = "${nomDiscipline[0].toUpperCase()}${nomDiscipline.substring(1)}";
       if (widget.disciplinevar.color != null) {
         colorGroup = Color(widget.disciplinevar.color);
       }
@@ -1223,36 +967,27 @@ class _GradesGroupState extends State<GradesGroup> {
             child: Container(
               margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.0005),
               child: Material(
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(15),
-                    topRight: Radius.circular(15)),
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
                 color: colorGroup,
                 child: InkWell(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(15),
-                      topRight: Radius.circular(15)),
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
                   onTap: () {
                     if (widget.disciplinevar != null) {
-                      disciplineModalBottomSheet(
-                          context, widget.disciplinevar, callback, this.widget);
+                      disciplineModalBottomSheet(context, widget.disciplinevar, callback, this.widget);
                     }
                   },
                   child: Container(
-                    decoration: BoxDecoration(
-                        border:
-                            Border.all(width: 0.0, color: Colors.transparent)),
+                    decoration: BoxDecoration(border: Border.all(width: 0.0, color: Colors.transparent)),
                     width: screenSize.size.width / 5 * 4.5,
                     height: (screenSize.size.height / 10 * 8.8) / 10 * 0.75,
                     child: Center(
                       child: Stack(children: <Widget>[
-                        if (widget.disciplinevar != null &&
-                            capitalizedNomDiscipline != null)
+                        if (widget.disciplinevar != null && capitalizedNomDiscipline != null)
                           Positioned(
                             left: screenSize.size.width / 5 * 0.15,
                             top: screenSize.size.height / 10 * 0.1,
                             child: Container(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: screenSize.size.width / 5 * 0.1),
+                              padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1265,57 +1000,32 @@ class _GradesGroupState extends State<GradesGroup> {
                                       style: TextStyle(
                                           fontFamily: "Asap",
                                           fontWeight: FontWeight.w600,
-                                          fontSize: screenSize.size.height /
-                                              10 *
-                                              0.15),
+                                          fontSize: screenSize.size.height / 10 * 0.15),
                                     ),
                                   ),
-                                  if (nomsProfesseurs != null &&
-                                      nomsProfesseurs.length > 15)
+                                  if (nomsProfesseurs != null && nomsProfesseurs.length > 15)
                                     Container(
-                                        margin: EdgeInsets.only(
-                                            left: screenSize.size.width /
-                                                5 *
-                                                0.3),
+                                        margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.3),
                                         decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(
-                                                screenSize.size.width /
-                                                    5 *
-                                                    0.5)),
+                                            borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.5)),
                                         width: screenSize.size.width / 5 * 2,
-                                        height:
-                                            screenSize.size.height / 10 * 0.3,
+                                        height: screenSize.size.height / 10 * 0.3,
                                         child: ClipRRect(
                                           child: Marquee(
                                               text: nomsProfesseurs,
                                               style: TextStyle(
-                                                  fontFamily: "Asap",
-                                                  fontSize:
-                                                      screenSize.size.height /
-                                                          10 *
-                                                          0.15)),
+                                                  fontFamily: "Asap", fontSize: screenSize.size.height / 10 * 0.15)),
                                         )),
-                                  if (nomsProfesseurs != null &&
-                                      nomsProfesseurs.length <= 15)
+                                  if (nomsProfesseurs != null && nomsProfesseurs.length <= 15)
                                     Container(
-                                        margin: EdgeInsets.only(
-                                            left: screenSize.size.width /
-                                                5 *
-                                                0.3),
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(0)),
+                                        margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.3),
+                                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(0)),
                                         width: screenSize.size.width / 5 * 2,
                                         child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(0),
+                                          borderRadius: BorderRadius.circular(0),
                                           child: Text(nomsProfesseurs,
                                               style: TextStyle(
-                                                  fontFamily: "Asap",
-                                                  fontSize:
-                                                      screenSize.size.height /
-                                                          10 *
-                                                          0.2)),
+                                                  fontFamily: "Asap", fontSize: screenSize.size.height / 10 * 0.2)),
                                         )),
                                 ],
                               ),
@@ -1329,16 +1039,12 @@ class _GradesGroupState extends State<GradesGroup> {
                                 highlightColor: Color(0xff8D9499),
                                 child: Container(
                                   margin: EdgeInsets.only(
-                                      left: screenSize.size.width / 5 * 0.3,
-                                      bottom: screenSize.size.width / 5 * 0.2),
+                                      left: screenSize.size.width / 5 * 0.3, bottom: screenSize.size.width / 5 * 0.2),
                                   width: screenSize.size.width / 5 * 1.5,
-                                  height: (screenSize.size.height / 10 * 8.8) /
-                                      10 *
-                                      0.3,
+                                  height: (screenSize.size.height / 10 * 8.8) / 10 * 0.3,
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(8),
-                                      color:
-                                          Theme.of(context).primaryColorDark),
+                                      color: Theme.of(context).primaryColorDark),
                                 )),
                           ),
                       ]),
@@ -1353,12 +1059,10 @@ class _GradesGroupState extends State<GradesGroup> {
           Align(
             alignment: Alignment.bottomLeft,
             child: Container(
-                margin: EdgeInsets.only(
-                    top: (screenSize.size.height / 10 * 8.8) / 10 * 0.55),
+                margin: EdgeInsets.only(top: (screenSize.size.height / 10 * 8.8) / 10 * 0.55),
                 width: screenSize.size.width / 5 * 4.5,
                 decoration: BoxDecoration(
-                  color:
-                      isDarkModeEnabled ? Color(0xff333333) : Color(0xffE2E2E2),
+                  color: isDarkModeEnabled ? Color(0xff333333) : Color(0xffE2E2E2),
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(15),
                     bottomRight: Radius.circular(15),
@@ -1386,8 +1090,7 @@ class _GradesGroupState extends State<GradesGroup> {
                               )),
                       gradesList(0),
                       if (widget.disciplinevar != null)
-                        if (widget.disciplinevar.codeSousMatiere.length > 0)
-                          Divider(thickness: 2),
+                        if (widget.disciplinevar.codeSousMatiere.length > 0) Divider(thickness: 2),
                       if (widget.disciplinevar != null)
                         if (widget.disciplinevar.codeSousMatiere.length > 0)
                           Text("Oral",
@@ -1396,8 +1099,7 @@ class _GradesGroupState extends State<GradesGroup> {
                                 color: ThemeUtils.textColor(),
                               )),
                       if (widget.disciplinevar != null)
-                        if (widget.disciplinevar.codeSousMatiere.length > 0)
-                          gradesList(1),
+                        if (widget.disciplinevar.codeSousMatiere.length > 0) gradesList(1),
                     ],
                   ),
                 )),
@@ -1407,16 +1109,14 @@ class _GradesGroupState extends State<GradesGroup> {
     );
   }
 
-  List<Grade> getGradesForDiscipline(
-      int sousMatiereIndex, String chosenPeriode) {
+  List<Grade> getGradesForDiscipline(int sousMatiereIndex, String chosenPeriode) {
     List<Grade> toReturn = List();
 
     if (widget.disciplinevar != null) {
       widget.disciplinevar.gradesList.forEach((element) {
         if (element.nomPeriode == periodeToUse) {
           if (widget.disciplinevar.codeSousMatiere.length > 1) {
-            if (element.codeSousMatiere ==
-                widget.disciplinevar.codeSousMatiere[sousMatiereIndex]) {
+            if (element.codeSousMatiere == widget.disciplinevar.codeSousMatiere[sousMatiereIndex]) {
               toReturn.add(element);
             }
           } else {
@@ -1437,8 +1137,7 @@ class _GradesGroupState extends State<GradesGroup> {
     }
 
     bool canShow = false;
-    List<Grade> gradesForSelectedDiscipline =
-        getGradesForDiscipline(sousMatiereIndex, periodeToUse);
+    List<Grade> gradesForSelectedDiscipline = getGradesForDiscipline(sousMatiereIndex, periodeToUse);
     if (gradesForSelectedDiscipline == null) {
       canShow = false;
     } else {
@@ -1458,27 +1157,21 @@ class _GradesGroupState extends State<GradesGroup> {
     return Container(
         height: (screenSize.size.height / 10 * 8.8) / 10 * 0.8,
         child: ListView.builder(
-            itemCount: (gradesForSelectedDiscipline != null
-                ? gradesForSelectedDiscipline.length
-                : 1),
+            itemCount: (gradesForSelectedDiscipline != null ? gradesForSelectedDiscipline.length : 1),
             controller: marksColumnController,
             scrollDirection: Axis.horizontal,
             padding: EdgeInsets.symmetric(
-                horizontal: screenSize.size.width / 5 * 0.2,
-                vertical: (screenSize.size.height / 10 * 8.8) / 10 * 0.15),
+                horizontal: screenSize.size.width / 5 * 0.2, vertical: (screenSize.size.height / 10 * 8.8) / 10 * 0.15),
             itemBuilder: (BuildContext context, int index) {
               DateTime now = DateTime.now();
               String formattedDate = DateFormat('yyyy-MM-dd').format(now);
-              if (gradesForSelectedDiscipline != null &&
-                  gradesForSelectedDiscipline.length != null) {
+              if (gradesForSelectedDiscipline != null && gradesForSelectedDiscipline.length != null) {
                 try {
-                  if (marksColumnController != null &&
-                      marksColumnController.hasClients) {
+                  if (marksColumnController != null && marksColumnController.hasClients) {
                     // marksColumnController.animateTo(localList.length * screenSize.size.width / 5 * 1.2, duration: new Duration(microseconds: 5), curve: Curves.ease);
                   }
                 } catch (e) {}
-                if (gradesForSelectedDiscipline[index].dateSaisie ==
-                    formattedDate) {
+                if (gradesForSelectedDiscipline[index].dateSaisie == formattedDate) {
                   newGrades = true;
                 }
               }
@@ -1489,19 +1182,14 @@ class _GradesGroupState extends State<GradesGroup> {
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(13),
                         border: Border.all(
-                            color: (getGradesForDiscipline(
-                                        sousMatiereIndex, periodeToUse) ==
-                                    null)
+                            color: (getGradesForDiscipline(sousMatiereIndex, periodeToUse) == null)
                                 ? Colors.transparent
                                 : Colors.black,
                             width: 1)),
-                    margin: EdgeInsets.only(
-                        left: screenSize.size.width / 5 * 0.1,
-                        right: screenSize.size.width / 5 * 0.1),
+                    margin:
+                        EdgeInsets.only(left: screenSize.size.width / 5 * 0.1, right: screenSize.size.width / 5 * 0.1),
                     child: Material(
-                      color: (getGradesForDiscipline(
-                                  sousMatiereIndex, periodeToUse) ==
-                              null)
+                      color: (getGradesForDiscipline(sousMatiereIndex, periodeToUse) == null)
                           ? Colors.transparent
                           : colorGroup,
                       borderRadius: BorderRadius.all(Radius.circular(11)),
@@ -1509,23 +1197,14 @@ class _GradesGroupState extends State<GradesGroup> {
                         borderRadius: BorderRadius.all(Radius.circular(11)),
                         splashColor: colorGroup,
                         onTap: () async {
-                          GradesStats stats = GradesStats(
-                              gradesForSelectedDiscipline[index],
-                              getAllGrades(await localApi.getGrades(),
-                                  overrideLimit: true,
-                                  sortByWritingDate: false));
-                          gradesModalBottomSheet(
-                              context,
-                              gradesForSelectedDiscipline[index],
-                              stats,
-                              widget.disciplinevar,
-                              callback,
-                              this.widget);
+                          GradesStats stats = GradesStats(gradesForSelectedDiscipline[index],
+                              getAllGrades(await localApi.getGrades(), overrideLimit: true, sortByWritingDate: false));
+                          gradesModalBottomSheet(context, gradesForSelectedDiscipline[index], stats,
+                              widget.disciplinevar, callback, this.widget);
                         },
                         onLongPress: () {
                           print("ok");
-                          CustomDialogs.showShareGradeDialog(
-                              context, gradesForSelectedDiscipline[index]);
+                          CustomDialogs.showShareGradeDialog(context, gradesForSelectedDiscipline[index]);
                         },
                         child: ClipRRect(
                           child: Stack(
@@ -1533,141 +1212,77 @@ class _GradesGroupState extends State<GradesGroup> {
                               if (gradesForSelectedDiscipline != null)
                                 //Grade box
                                 Container(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal:
-                                          screenSize.size.width / 5 * 0.2),
+                                  padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.2),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                       //Grades
                                       Container(
                                         padding: EdgeInsets.symmetric(
-                                            vertical: (screenSize.size.height /
-                                                    10 *
-                                                    8.8) /
-                                                10 *
-                                                0.05),
+                                            vertical: (screenSize.size.height / 10 * 8.8) / 10 * 0.05),
                                         child: AutoSizeText.rich(
                                           //MARK
                                           TextSpan(
-                                            text: (gradesForSelectedDiscipline[
-                                                        index]
-                                                    .nonSignificatif
-                                                ? "(" +
-                                                    gradesForSelectedDiscipline[
-                                                            index]
-                                                        .valeur
-                                                : gradesForSelectedDiscipline[
-                                                        index]
-                                                    .valeur),
+                                            text: (gradesForSelectedDiscipline[index].nonSignificatif
+                                                ? "(" + gradesForSelectedDiscipline[index].valeur
+                                                : gradesForSelectedDiscipline[index].valeur),
                                             style: TextStyle(
                                                 color: Colors.black,
                                                 fontFamily: "Asap",
                                                 fontWeight: FontWeight.bold,
-                                                fontSize:
-                                                    (screenSize.size.height /
-                                                            10 *
-                                                            8.8) /
-                                                        10 *
-                                                        0.3),
+                                                fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.3),
                                             children: <TextSpan>[
-                                              if (gradesForSelectedDiscipline[
-                                                          index]
-                                                      .noteSur !=
-                                                  "20")
+                                              if (gradesForSelectedDiscipline[index].noteSur != "20")
 
                                                 //MARK ON
                                                 TextSpan(
-                                                    text: '/' +
-                                                        gradesForSelectedDiscipline[
-                                                                index]
-                                                            .noteSur,
+                                                    text: '/' + gradesForSelectedDiscipline[index].noteSur,
                                                     style: TextStyle(
                                                         color: Colors.black,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: (screenSize
-                                                                    .size
-                                                                    .height /
-                                                                10 *
-                                                                8.8) /
-                                                            10 *
-                                                            0.2)),
-                                              if (gradesForSelectedDiscipline[
-                                                          index]
-                                                      .nonSignificatif ==
-                                                  true)
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2)),
+                                              if (gradesForSelectedDiscipline[index].nonSignificatif == true)
                                                 TextSpan(
                                                     text: ")",
                                                     style: TextStyle(
                                                         color: Colors.black,
-                                                        fontWeight:
-                                                            FontWeight.bold,
-                                                        fontSize: (screenSize
-                                                                    .size
-                                                                    .height /
-                                                                10 *
-                                                                8.8) /
-                                                            10 *
-                                                            0.3)),
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.3)),
                                             ],
                                           ),
                                         ),
                                       ),
                                       //COEFF
-                                      if (gradesForSelectedDiscipline[index]
-                                              .coef !=
-                                          "1")
+                                      if (gradesForSelectedDiscipline[index].coef != "1")
                                         Container(
-                                            padding: EdgeInsets.all(
-                                                screenSize.size.width /
-                                                    5 *
-                                                    0.03),
-                                            margin: EdgeInsets.only(
-                                                left: screenSize.size.width /
-                                                    5 *
-                                                    0.05),
-                                            width: screenSize.size.width /
-                                                5 *
-                                                0.25,
-                                            height: screenSize.size.width /
-                                                5 *
-                                                0.25,
+                                            padding: EdgeInsets.all(screenSize.size.width / 5 * 0.03),
+                                            margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.05),
+                                            width: screenSize.size.width / 5 * 0.25,
+                                            height: screenSize.size.width / 5 * 0.25,
                                             decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.all(
-                                                  Radius.circular(50)),
+                                              borderRadius: BorderRadius.all(Radius.circular(50)),
                                               color: Colors.grey.shade600,
                                             ),
                                             child: FittedBox(
                                                 child: AutoSizeText(
-                                              gradesForSelectedDiscipline[index]
-                                                  .coef,
+                                              gradesForSelectedDiscipline[index].coef,
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
-                                                  fontFamily: "Asap",
-                                                  color: Colors.white,
-                                                  fontWeight: FontWeight.bold),
+                                                  fontFamily: "Asap", color: Colors.white, fontWeight: FontWeight.bold),
                                             ))),
                                     ],
                                   ),
                                 ),
-                              if (getGradesForDiscipline(
-                                      sousMatiereIndex, periodeToUse) ==
-                                  null)
+                              if (getGradesForDiscipline(sousMatiereIndex, periodeToUse) == null)
                                 Shimmer.fromColors(
                                     baseColor: Color(0xff5D6469),
                                     highlightColor: Color(0xff8D9499),
                                     child: Container(
                                       width: screenSize.size.width / 5 * 3.2,
-                                      height:
-                                          (screenSize.size.height / 10 * 8.8) /
-                                              10 *
-                                              0.8,
+                                      height: (screenSize.size.height / 10 * 8.8) / 10 * 0.8,
                                       decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(
-                                              screenSize.size.width / 5 * 0.5),
-                                          color: Theme.of(context)
-                                              .primaryColorDark),
+                                          borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.5),
+                                          color: Theme.of(context).primaryColorDark),
                                     )),
                             ],
                           ),
@@ -1676,8 +1291,7 @@ class _GradesGroupState extends State<GradesGroup> {
                     ),
                   ),
                   if (gradesForSelectedDiscipline != null)
-                    if (gradesForSelectedDiscipline[index].dateSaisie ==
-                        formattedDate)
+                    if (gradesForSelectedDiscipline[index].dateSaisie == formattedDate)
                       Positioned(
                         right: screenSize.size.width / 5 * 0.06,
                         top: screenSize.size.height / 15 * 0.01,
