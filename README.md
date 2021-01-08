@@ -1,6 +1,6 @@
 # yNotes
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-4-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 <img src="https://github.com/ModernChocolate/ynotes/blob/master/screenshots/brandLarge.png" width="800">
 
@@ -120,6 +120,7 @@ Je tiens à remercier chaque autre personne ne figurant pas dans cette section p
     <td align="center"><a href="https://florian-lefebvre.dev"><img src="https://avatars1.githubusercontent.com/u/69633530?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Florian LEFEBVRE</b></sub></a><br /><a href="https://github.com/ModernChocolate/ynotes/issues?q=author%3Aflorian-lefebvre" title="Bug reports">🐛</a> <a href="#ideas-florian-lefebvre" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="http://bain.cz"><img src="https://avatars0.githubusercontent.com/u/31798786?v=4?s=100" width="100px;" alt=""/><br /><sub><b>bain3</b></sub></a><br /><a href="#ideas-bain3" title="Ideas, Planning, & Feedback">🤔</a> <a href="#plugin-bain3" title="Plugin/utility libraries">🔌</a></td>
     <td align="center"><a href="https://github.com/ShiyukiNeko"><img src="https://avatars3.githubusercontent.com/u/47981502?v=4?s=100" width="100px;" alt=""/><br /><sub><b>ShiyukiNeko</b></sub></a><br /><a href="#ideas-ShiyukiNeko" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/GENERATION2GEEK"><img src="https://avatars3.githubusercontent.com/u/33123296?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Vincent Moucadeau</b></sub></a><br /><a href="https://github.com/ModernChocolate/ynotes/commits?author=GENERATION2GEEK" title="Code">💻</a> <a href="#userTesting-GENERATION2GEEK" title="User Testing">📓</a></td>
   </tr>
 </table>
 
