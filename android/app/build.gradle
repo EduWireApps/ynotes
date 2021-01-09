@@ -55,6 +55,15 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
+    flavorDimensions "app"
+    productFlavors {
+        dev {
+            dimension "app"
+            applicationId "fr.ynotes.debug"
+            versionCode 1
+            versionName "1.0"
+        }
+    }
   signingConfigs {
        release {
            keyAlias keystoreProperties['keyAlias']

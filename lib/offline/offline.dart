@@ -59,9 +59,11 @@ class Offline {
   RecipientsOffline recipients;
 
   Offline({this.locked = false});
-
+  var counter = 0;
   //Called when instanciated
   init() async {
+    counter++;
+    print("CALLED $counter times");
     //Register adapters once
     try {
       Hive.registerAdapter(GradeAdapter());
