@@ -5,6 +5,8 @@ import 'package:ynotes/offline/offline.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 class LessonsOffline extends Offline {
+  LessonsOffline(bool locked) : super(locked);
+
   Future<List<Lesson>> get(int week) async {
     try {
       if (lessonsData != null && lessonsData[week] != null) {

@@ -1,3 +1,5 @@
+import 'dart:isolate';
+
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
@@ -425,10 +427,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     title: 'Bouton magique',
                     leading: Icon(MdiIcons.testTube, color: ThemeUtils.textColor()),
                     onTap: () async {
-                      //await setIntSetting("gradesNumber", 35);
-                      //print((await getIntSetting("gradesNumber")));
-                      //await setIntSetting("gradesNumber", 35);
-                      await LocalNotification.showNewMailNotification((await getMails()).first,"fff");
+                      await setIntSetting("gradesNumber", 5);
                     },
                     titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                     subtitleTextStyle: TextStyle(

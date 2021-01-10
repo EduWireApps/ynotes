@@ -3,6 +3,8 @@ import 'package:ynotes/classes.dart';
 import 'package:ynotes/offline/offline.dart';
 
 class RemindersOffline extends Offline {
+  RemindersOffline(bool locked) : super(locked);
+
   Future<List<AgendaReminder>> getReminders(String idLesson) async {
     try {
       if (remindersData != null) {

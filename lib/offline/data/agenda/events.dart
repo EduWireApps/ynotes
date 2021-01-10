@@ -4,6 +4,8 @@ import 'package:ynotes/offline/offline.dart';
 import 'package:ynotes/offline/offline.dart';
 
 class AgendaEventsOffline extends Offline {
+  AgendaEventsOffline(bool locked) : super(locked);
+
   Future<List<AgendaEvent>> getAgendaEvents(int week, {var selector}) async {
     try {
       if (selector == null) {

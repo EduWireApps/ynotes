@@ -256,7 +256,6 @@ class _RenderSwitch extends RenderToggleable {
   HorizontalDragGestureRecognizer _drag;
 
   void _handleDragStart(DragStartDetails details) {
-    print("b");
     if (isInteractive) reactionController.forward();
   }
 

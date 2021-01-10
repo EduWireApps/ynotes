@@ -4,19 +4,23 @@ import 'package:ynotes/offline/offline.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 class DisciplinesOffline extends Offline {
+  DisciplinesOffline(bool locked) : super(locked);
+
   //Used to get disciplines, from db or locally
   Future<List<Discipline>> getDisciplines() async {
-    try {
-      if (disciplinesData != null) {
-        await refreshData();
-        return disciplinesData;
-      } else {
-        await refreshData();
-        return disciplinesData;
+    if (!locked) {
+      try {
+        if (disciplinesData != null) {
+          await refreshData();
+          return disciplinesData;
+        } else {
+          await refreshData();
+          return disciplinesData;
+        }
+      } catch (e) {
+        print("Error while returning disciplines" + e.toString());
+        return null;
       }
-    } catch (e) {
-      print("Error while returning disciplines" + e.toString());
-      return null;
     }
   }
 

@@ -93,6 +93,7 @@ dependencies:
   flutter_tex: ^3.6.7+10
   fl_chart: ^0.12.0
   expandable: ^4.1.4
+
   wiredash:
     git:
       url: https://github.com/wiredashio/wiredash-sdk
@@ -193,6 +194,5 @@ flutter:
     - assets/appico/
     - assets/appico/foreground.png
     - assets/gifs/
-    - assets/lessons.json
     - assets/TOS_fr.txt
     - assets/updateNoteAssets/

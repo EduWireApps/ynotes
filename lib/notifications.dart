@@ -370,15 +370,9 @@ class LocalNotification {
   static Future<void> callback() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     List<Lesson> lessons = List();
-    var initializationSettingsAndroid = new AndroidInitializationSettings('newgradeicon');
-    var initializationSettingsIOS = new IOSInitializationSettings();
-    var initializationSettings = new InitializationSettings(initializationSettingsAndroid, initializationSettingsIOS);
-    flutterLocalNotificationsPlugin = new FlutterLocalNotificationsPlugin();
-    flutterLocalNotificationsPlugin.initialize(initializationSettings,
-        onSelectNotification: BackgroundService.onSelectNotification);
     await getChosenParser();
     //Lock offline data
-    Offline _offline = Offline(locked: true);
+    Offline _offline = Offline(true);
     API api = APIManager(_offline);
     //Login creds
     String u = await ReadStorage("username");

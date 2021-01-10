@@ -4,6 +4,8 @@ import 'package:ynotes/offline/offline.dart';
 import 'package:ynotes/utils/fileUtils.dart';
 
 class DoneHomeworkOffline extends Offline {
+  DoneHomeworkOffline(bool locked) : super(locked);
+
   setHWCompletion(String id, bool state) async {
     if (!locked) {
       print("Setting done hw");

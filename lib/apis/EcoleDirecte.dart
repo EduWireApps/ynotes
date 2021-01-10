@@ -43,7 +43,20 @@ class HexColor extends Color {
 String token;
 
 final storage = new FlutterSecureStorage();
-List<String> colorList = ["#f07aa0", "#17d0c9", "#a3f7bf", "#cecece", "#ffa41b", "#ff5151", "#b967e1", "#8a7ca7", "#f18867", "#ffc0da", "#739832", "#8ac6d1"];
+List<String> colorList = [
+  "#f07aa0",
+  "#17d0c9",
+  "#a3f7bf",
+  "#cecece",
+  "#ffa41b",
+  "#ff5151",
+  "#b967e1",
+  "#8a7ca7",
+  "#f18867",
+  "#ffc0da",
+  "#739832",
+  "#8ac6d1"
+];
 
 ///The ecole directe api extended from the apiManager.dart API class
 class APIEcoleDirecte extends API {
@@ -127,7 +140,9 @@ class APIEcoleDirecte extends API {
   @override
 //Getting grades
   Future<List<Discipline>> getGrades({bool forceReload}) async {
-    return await EcoleDirecteMethod.fetchAnyData(EcoleDirecteMethod.grades, offlineController.disciplines.getDisciplines, forceFetch: forceReload ?? false);
+    return await EcoleDirecteMethod.fetchAnyData(
+        EcoleDirecteMethod.grades, offlineController.disciplines.getDisciplines,
+        forceFetch: forceReload ?? false, isOfflineLocked: this.offlineController.locked);
   }
 
   Future<List<DateTime>> getDatesNextHomework() async {
@@ -136,7 +151,9 @@ class APIEcoleDirecte extends API {
 
 //Get dates of the the next homework (based on the EcoleDirecte API)
   Future<List<Homework>> getNextHomework({bool forceReload}) async {
-    return await EcoleDirecteMethod.fetchAnyData(EcoleDirecteMethod.nextHomework, offlineController.homework.getHomework, forceFetch: forceReload ?? false);
+    return await EcoleDirecteMethod.fetchAnyData(
+        EcoleDirecteMethod.nextHomework, offlineController.homework.getHomework,
+        forceFetch: forceReload ?? false);
   }
 
 //Get homeworks for a specific date
@@ -180,7 +197,8 @@ class APIEcoleDirecte extends API {
       case "mailRecipients":
         {
           print("Returing mail recipients");
-          return (await EcoleDirecteMethod.fetchAnyData(EcoleDirecteMethod.recipients, offlineController.recipients.getRecipients));
+          return (await EcoleDirecteMethod.fetchAnyData(
+              EcoleDirecteMethod.recipients, offlineController.recipients.getRecipients));
         }
         break;
     }
@@ -225,7 +243,9 @@ class APIEcoleDirecte extends API {
 
         toReturn.addAll(offlineLesson);
         //filter lessons
-        toReturn.removeWhere((lesson) => DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) != DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)));
+        toReturn.removeWhere((lesson) =>
+            DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) !=
+            DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)));
       } else {
         toReturn = null;
       }
@@ -244,7 +264,11 @@ class APIEcoleDirecte extends API {
       }
 
       toReturn.sort((a, b) => a.start.compareTo(b.start));
-      return toReturn.where((lesson) => DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) == DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse))).toList();
+      return toReturn
+          .where((lesson) =>
+              DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) ==
+              DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)))
+          .toList();
     } catch (e) {
       print("Error while getting next lessons " + e.toString());
     }

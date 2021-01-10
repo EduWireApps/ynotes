@@ -145,7 +145,6 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
       end: 0.0,
     ).animate(new CurvedAnimation(
         parent: showTransparentLoginStatusController, curve: Interval(0.1, 1.0, curve: Curves.fastOutSlowIn)));
-    initBackgroundTask();
 
     _overlayEntry = OverlayEntry(
       builder: (BuildContext context) => QuickMenu(removeQuickMenu),
@@ -397,11 +396,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
     );
   }
 
-  Future<void> initBackgroundTask() async {
-    //Register work manager
-    await Workmanager.initialize(callbackDispatcher);
-    await Workmanager.registerPeriodicTask("background", "backgroundFetcher");
-  }
+  
 
   _switchPage(int index) {
     _scrollTo(index);

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:ynotes/offline/data/agenda/events.dart';
 import 'package:ynotes/offline/data/agenda/reminders.dart';
@@ -58,84 +59,92 @@ class Offline {
 
   RecipientsOffline recipients;
 
-  Offline({this.locked = false});
-  var counter = 0;
+  Offline(this.locked);
+  //Called on dispose
+  void dispose() async {
+    await Hive.close();
+  }
+
   //Called when instanciated
   init() async {
-    counter++;
-    print("CALLED $counter times");
-    //Register adapters once
-    try {
-      Hive.registerAdapter(GradeAdapter());
-      Hive.registerAdapter(DisciplineAdapter());
-      Hive.registerAdapter(DocumentAdapter());
-      Hive.registerAdapter(HomeworkAdapter());
-      Hive.registerAdapter(LessonAdapter());
-      Hive.registerAdapter(PollInfoAdapter());
-      Hive.registerAdapter(AgendaReminderAdapter());
-      Hive.registerAdapter(AgendaEventAdapter());
-      Hive.registerAdapter(RecipientAdapter());
-      Hive.registerAdapter(alarmTypeAdapter());
-    } catch (e) {
-      print("Error " + e.toString());
+    if (!locked) {
+      //Register adapters once
+      try {
+        Hive.registerAdapter(GradeAdapter());
+        Hive.registerAdapter(DisciplineAdapter());
+        Hive.registerAdapter(DocumentAdapter());
+        Hive.registerAdapter(HomeworkAdapter());
+        Hive.registerAdapter(LessonAdapter());
+        Hive.registerAdapter(PollInfoAdapter());
+        Hive.registerAdapter(AgendaReminderAdapter());
+        Hive.registerAdapter(AgendaEventAdapter());
+        Hive.registerAdapter(RecipientAdapter());
+        Hive.registerAdapter(alarmTypeAdapter());
+      } catch (e) {
+        print("Error " + e.toString());
+      }
+      var dir = await FolderAppUtil.getDirectory();
+      try {
+        await Hive.initFlutter();
+        offlineBox = await Hive.openBox("offlineData");
+        homeworkDoneBox = await Hive.openBox('doneHomework');
+        pinnedHomeworkBox = await Hive.openBox('pinnedHomework');
+      } catch (e) {
+        print(e);
+      }
     }
-    final dir = await FolderAppUtil.getDirectory();
-    try {
-      Hive.init("${dir.path}/offline");
-      offlineBox = await Hive.openBox("offlineData");
-      homeworkDoneBox = await Hive.openBox('doneHomework');
-      pinnedHomeworkBox = await Hive.openBox('pinnedHomework');
-    } catch (e) {}
-    homework = HomeworkOffline();
-    doneHomework = DoneHomeworkOffline();
-    pinnedHomework = PinnedHomeworkOffline();
-    agendaEvents = AgendaEventsOffline();
-    reminders = RemindersOffline();
-    lessons = LessonsOffline();
-    disciplines = DisciplinesOffline();
-    polls = PollsOffline();
-    recipients = RecipientsOffline();
+    homework = HomeworkOffline(this.locked);
+    doneHomework = DoneHomeworkOffline(this.locked);
+    pinnedHomework = PinnedHomeworkOffline(this.locked);
+    agendaEvents = AgendaEventsOffline(this.locked);
+    reminders = RemindersOffline(this.locked);
+    lessons = LessonsOffline(this.locked);
+    disciplines = DisciplinesOffline(this.locked);
+    polls = PollsOffline(this.locked);
+    recipients = RecipientsOffline(this.locked);
   }
 
   //Refresh lists when needed
   refreshData() async {
     print("Refreshing offline");
-    try {
-      if (offlineBox == null || !offlineBox.isOpen) {
-        offlineBox = await Hive.openBox("offlineData");
+    if (!locked) {
+      try {
+        if (offlineBox == null || !offlineBox.isOpen) {
+          offlineBox = await Hive.openBox("offlineData");
+        }
+        //Get data and cast it
+        var offlineLessonsData = await offlineBox.get("lessons");
+        var offlineDisciplinesData = await offlineBox.get("disciplines");
+        var offlinehomeworkData = await offlineBox.get("homework");
+        var offlinePollsData = await offlineBox.get("polls");
+        var offlineRemindersData = await offlineBox.get("reminders");
+        var offlineAgendaEventsData = await offlineBox.get("agendaEvents");
+        var offlineRecipientsData = await offlineBox.get("recipients");
+        //ensure that fetched data isn't null and if not, add it to the final value
+        if (offlineLessonsData != null) {
+          this.lessonsData = Map<dynamic, dynamic>.from(offlineLessonsData);
+        }
+        if (offlineDisciplinesData != null) {
+          this.disciplinesData = offlineDisciplinesData.cast<Discipline>();
+        }
+        if (offlinehomeworkData != null) {
+          this.homeworkData = offlinehomeworkData.cast<Homework>();
+        }
+        if (offlinePollsData != null) {
+          this.pollsData = offlinePollsData.cast<PollInfo>();
+        }
+        if (offlineRemindersData != null) {
+          this.remindersData = offlineRemindersData.cast<AgendaReminder>();
+        }
+        if (offlineAgendaEventsData != null) {
+          this.agendaEventsData = Map<dynamic, dynamic>.from(offlineAgendaEventsData);
+        }
+        if (offlineRecipientsData != null) {
+          this.recipientsData = offlineRecipientsData.cast<Recipient>();
+        }
+      } catch (e) {
+        print("Error while refreshing " + e.toString());
       }
-      //Get data and cast it
-      var offlineLessonsData = await offlineBox.get("lessons");
-      var offlineDisciplinesData = await offlineBox.get("disciplines");
-      var offlinehomeworkData = await offlineBox.get("homework");
-      var offlinePollsData = await offlineBox.get("polls");
-      var offlineRemindersData = await offlineBox.get("reminders");
-      var offlineAgendaEventsData = await offlineBox.get("agendaEvents");
-      var offlineRecipientsData = await offlineBox.get("recipients");
-      //ensure that fetched data isn't null and if not, add it to the final value
-      if (offlineLessonsData != null) {
-        this.lessonsData = Map<dynamic, dynamic>.from(offlineLessonsData);
-      }
-      if (offlineDisciplinesData != null) {
-        this.disciplinesData = offlineDisciplinesData.cast<Discipline>();
-      }
-      if (offlinehomeworkData != null) {
-        this.homeworkData = offlinehomeworkData.cast<Homework>();
-      }
-      if (offlinePollsData != null) {
-        this.pollsData = offlinePollsData.cast<PollInfo>();
-      }
-      if (offlineRemindersData != null) {
-        this.remindersData = offlineRemindersData.cast<AgendaReminder>();
-      }
-      if (offlineAgendaEventsData != null) {
-        this.agendaEventsData = Map<dynamic, dynamic>.from(offlineAgendaEventsData);
-      }
-      if (offlineRecipientsData != null) {
-        this.recipientsData = offlineRecipientsData.cast<Recipient>();
-      }
-    } catch (e) {
-      print("Error while refreshing " + e.toString());
     }
   }
 
