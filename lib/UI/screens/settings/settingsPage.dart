@@ -427,7 +427,8 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     title: 'Bouton magique',
                     leading: Icon(MdiIcons.testTube, color: ThemeUtils.textColor()),
                     onTap: () async {
-                      print(ThemeUtils().primaryColor);
+                      var a = await localApi.getNextHomework();
+                      print(a.last.loaded);
                     },
                     titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                     subtitleTextStyle: TextStyle(

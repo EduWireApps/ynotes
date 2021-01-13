@@ -61,7 +61,8 @@ class HomeworkController extends ChangeNotifier {
       //remove duplicates
       if (!element.loaded &&
           !unloadedHW.any((unloadedelement) =>
-              unloadedelement.rawContent == element.rawContent && unloadedelement.disciplineCode == element.disciplineCode)) {
+              unloadedelement.rawContent == element.rawContent &&
+              unloadedelement.disciplineCode == element.disciplineCode)) {
         //Add element at the end of the task
         try {
           unloadedHW.add(element);
