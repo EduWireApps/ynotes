@@ -125,7 +125,7 @@ lane :local_test do
 
   rescue # if can't install ynotes
       sh("adb", "uninstall", "fr.ynotes")
-      sh("adb", "install", "build/app/outputs/outputs/flutter-apk/app-arm64-v8a-prod-release.apk")
+      sh("adb", "install", "build/app/outputs/flutter-apk/app-arm64-v8a-prod-release.apk")
       sh("adb shell am start -n fr.ynotes/.MainActivity")
   end
   
