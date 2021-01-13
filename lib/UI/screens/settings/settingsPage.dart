@@ -268,7 +268,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                         false) {
                       await AndroidPlatformChannel.openAutoStartSettings();
                     }
-                    await LocalNotification.showDebugNotification();
+                    await AppNotification.showDebugNotification();
                     Flushbar(
                       flushbarPosition: FlushbarPosition.BOTTOM,
                       backgroundColor: Colors.orange.shade200,
@@ -427,7 +427,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     title: 'Bouton magique',
                     leading: Icon(MdiIcons.testTube, color: ThemeUtils.textColor()),
                     onTap: () async {
-                      await setIntSetting("gradesNumber", 5);
+                      print(ThemeUtils().primaryColor);
                     },
                     titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                     subtitleTextStyle: TextStyle(

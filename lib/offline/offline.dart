@@ -22,6 +22,8 @@ import '../classes.dart';
 
 ///An offline class to deal with the `hivedb` package
 ///used to store offline data and stored values such as agenda events
+///The "locked" boolean avoid database unwanted modifications on another thread
+///Unlock it on another thread/isolate could `definitely break the user database, so please be cautious`.
 class Offline {
   //To use in isolate in order to read only
   final bool locked;

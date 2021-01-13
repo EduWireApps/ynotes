@@ -63,9 +63,9 @@ class EcoleDirecteConverter {
         else {
           try {
             disciplinesList[disciplinesList.lastIndexWhere((disciplinesList) =>
-                    disciplinesList.codeMatiere == rawData['codeMatiere'] &&
-                    disciplinesList.periode == periodeElement["periode"])]
-                .codeSousMatiere
+                    disciplinesList.disciplineCode == rawData['codeMatiere'] &&
+                    disciplinesList.period == periodeElement["periode"])]
+                .subdisciplineCode
                 .add(rawData['codeSousMatiere']);
           } catch (e) {
             print(e);
@@ -74,11 +74,11 @@ class EcoleDirecteConverter {
       });
       //Retrieve related grades for each discipline
       disciplinesList.forEach((discipline) {
-        if (discipline.periode == periodeElement["periode"]) {
+        if (discipline.period == periodeElement["periode"]) {
           final List<Grade> localGradesList = List<Grade>();
 
           gradesData.forEach((element) {
-            if (element["codeMatiere"] == discipline.codeMatiere &&
+            if (element["codeMatiere"] == discipline.disciplineCode &&
                 element["codePeriode"] == periodeElement["idPeriode"]) {
               String nomPeriode = periodeElement["periode"];
               localGradesList.add(Grade.fromEcoleDirecteJson(element, nomPeriode));
@@ -211,8 +211,8 @@ class EcoleDirecteConverter {
           start: start,
           end: end,
           canceled: canceled,
-          matiere: matiere,
-          codeMatiere: codeMatiere,
+          discipline: matiere,
+          disciplineCode: codeMatiere,
           id: (await getLessonID(start, end, matiere)).toString());
       lessons.add(parsedLesson);
     });

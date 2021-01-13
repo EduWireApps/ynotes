@@ -30,7 +30,7 @@ class BackgroundService {
       if (await getSetting("notificationNewGrade") && !await getSetting("batterySaver")) {
         logFile("New grade test triggered");
         if (await testNewGrades()) {
-          await LocalNotification.showNewGradeNotification();
+          await AppNotification.showNewGradeNotification();
         } else {
           print("Nothing updated");
         }
@@ -43,7 +43,7 @@ class BackgroundService {
         Mail mail = await testNewMails();
         if (mail != null) {
           String content = await readMail(mail.id, mail.read);
-          await LocalNotification.showNewMailNotification(mail, content);
+          await AppNotification.showNewMailNotification(mail, content);
         } else {
           print("Nothing updated");
         }
@@ -52,7 +52,7 @@ class BackgroundService {
       }
       if (await getSetting("agendaOnGoingNotification")) {
         print("Setting On going notification");
-        await LocalNotification.setOnGoingNotification(dontShowActual: true);
+        await AppNotification.setOnGoingNotification(dontShowActual: true);
       } else {
         print("On going notification disabled");
       }
@@ -63,6 +63,7 @@ class BackgroundService {
     //BackgroundFetch.finish("");
   }
 
+  ///Returns true if there are new grades
   static testNewGrades() async {
     try {
       //Get the old number of mails
@@ -71,7 +72,7 @@ class BackgroundService {
       //instanciate an offline controller read only
       Offline _offline = Offline(true);
       await _offline.init();
-      await getChosenParser();
+      await reloadChosenApi();
       API backgroundFetchApi = APIManager(_offline);
 
       print("Old grades length is ${oldGradesLength}");
@@ -100,6 +101,7 @@ class BackgroundService {
     }
   }
 
+  ///Returns true if there are new mails
   static testNewMails() async {
     try {
       //Get the old number of mails
@@ -107,8 +109,8 @@ class BackgroundService {
       print("Old length is $oldMailLength");
       //Get new mails
       List<Mail> mails = await getMails();
+      //filter mails by type
       mails.retainWhere((element) => element.mtype == "received");
-
       mails.sort((a, b) {
         DateTime datea = DateTime.parse(a.date);
         DateTime dateb = DateTime.parse(b.date);
@@ -120,16 +122,19 @@ class BackgroundService {
       print("New length is ${newMailLength}");
       if (oldMailLength != 0) {
         if (oldMailLength < (newMailLength != null ? newMailLength : 0)) {
+          //Manually set the new mail number
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setInt("mailNumber", newMailLength);
           return mails.last;
         } else {
-          return null;
+          return false;
         }
       } else {
-        return null;
+        return false;
       }
     } catch (e) {
       print("Erreur dans la verification de nouveaux mails hors ligne " + e.toString());
-      return null;
+      return false;
     }
   }
 

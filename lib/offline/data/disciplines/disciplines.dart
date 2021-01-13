@@ -49,9 +49,9 @@ class DisciplinesOffline extends Offline {
       List<Grade> grades = getAllGrades(disciplines, overrideLimit: true);
 
       grades.forEach((grade) {
-        if (!listPeriods.any((period) => period.name == grade.nomPeriode && period.id == grade.codePeriode)) {
-          if (grade.nomPeriode != null && grade.nomPeriode != "") {
-            listPeriods.add(Period(grade.nomPeriode, grade.codePeriode));
+        if (!listPeriods.any((period) => period.name == grade.periodName && period.id == grade.periodCode)) {
+          if (grade.periodName != null && grade.periodName != "") {
+            listPeriods.add(Period(grade.periodName, grade.periodCode));
           } else {}
         }
       });

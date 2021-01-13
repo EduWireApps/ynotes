@@ -2,7 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:tinycolor/tinycolor.dart';
 import 'package:ynotes/usefulMethods.dart';
 
+
 class ThemeUtils {
+  Map themeColors = {
+    "light": {"primaryColor": Colors.red},
+    "dark": {"primaryColor": Colors.red}
+  };
+//Theme utils colors
+  primaryColor() => themeColors["light"]["primaryColor"];
+
   static Color spaceColor() => Color(0xff282246);
   static Color textColor({bool revert = false}) {
     if (revert) {
@@ -11,6 +19,8 @@ class ThemeUtils {
       return isDarkModeEnabled ? Colors.white : Colors.black;
     }
   }
+
+  Color test() => Colors.blue;
 
   ///Make the selected color darker
   static Color darken(Color color, {double forceAmount}) {

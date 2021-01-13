@@ -29,7 +29,7 @@ class _LoadingPageState extends State<LoadingPage> {
 
   tryToConnect() async {
     await Future.delayed(const Duration(milliseconds: 500), () => "1");
-    await getChosenParser();
+    await reloadChosenApi();
     String u = await ReadStorage("username");
     String p = await ReadStorage("password");
     String url = await ReadStorage("pronoteurl");

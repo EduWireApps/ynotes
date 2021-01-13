@@ -5,17 +5,17 @@ class GradesUtils {
   average(List<Discipline> disciplineList, String period) {
     double average = 0;
     List<double> averages = List();
-    disciplineList.where((i) => i.periode == period).forEach((f) {
+    disciplineList.where((i) => i.period == period).forEach((f) {
       try {
         double _average = 0.0;
         double _counter = 0;
         f.gradesList.forEach((grade) {
-          if (!grade.nonSignificatif && !grade.letters) {
-            _counter += double.parse(grade.coef);
-            _average += double.parse(grade.valeur.replaceAll(',', '.')) *
+          if (!grade.notSignificant && !grade.letters) {
+            _counter += double.parse(grade.coefficient);
+            _average += double.parse(grade.value.replaceAll(',', '.')) *
                 20 /
-                double.parse(grade.noteSur.replaceAll(',', '.')) *
-                double.parse(grade.coef.replaceAll(',', '.'));
+                double.parse(grade.scale.replaceAll(',', '.')) *
+                double.parse(grade.coefficient.replaceAll(',', '.'));
           }
         });
         _average = _average / _counter;

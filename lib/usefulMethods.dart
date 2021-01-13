@@ -194,7 +194,7 @@ List<Grade> getAllGrades(List<Discipline> list, {bool overrideLimit = false, boo
         //sort grades
         if (sortByWritingDate) {
           listToReturn.sort(
-              (a, b) => (a.dateSaisie != null && b.dateSaisie != null) ? (a.dateSaisie.compareTo(b.dateSaisie)) : 1);
+              (a, b) => (a.entryDate != null && b.entryDate != null) ? (a.entryDate.compareTo(b.entryDate)) : 1);
         }
 
         //remove duplicates
@@ -237,7 +237,7 @@ List<Discipline> specialities = List<Discipline>();
 Future<List<Discipline>> refreshDisciplinesListColors(List<Discipline> list) async {
   List<Discipline> newList = List<Discipline>();
   list.forEach((f) async {
-    f.color = await getColor(f.codeMatiere);
+    f.color = await getColor(f.disciplineCode);
     newList.add(f);
   });
   return newList;
@@ -265,7 +265,7 @@ exitApp() async {
 }
 
 specialtiesSelectionAvailable() async {
-  await getChosenParser();
+  await reloadChosenApi();
   return [false];
   if (chosenParser == 0) {
     SharedPreferences preferences = await SharedPreferences.getInstance();

@@ -88,28 +88,28 @@ class APIPronote extends API {
           var z = 0;
           grades.forEach((element) {
             if (listDisciplines.every((listDisciplineEl) =>
-                listDisciplineEl.nomDiscipline != element.libelleMatiere ||
-                listDisciplineEl.periode != element.nomPeriode)) {
+                listDisciplineEl.disciplineName != element.disciplineName ||
+                listDisciplineEl.period != element.periodName)) {
               listDisciplines.add(Discipline(
-                  codeMatiere: element.codeMatiere,
-                  codeSousMatiere: List(),
-                  nomDiscipline: element.libelleMatiere,
-                  periode: element.nomPeriode,
+                  disciplineCode: element.disciplineCode,
+                  subdisciplineCode: List(),
+                  disciplineName: element.disciplineName,
+                  period: element.periodName,
                   gradesList: List(),
-                  professeurs: List(),
-                  moyenne: averages[z][0],
-                  moyenneMax: averages[z][1],
-                  moyenneMin: averages[z][2],
-                  moyenneClasse: element.moyenneClasse,
-                  moyenneGeneraleClasse: periods[i].moyenneGeneraleClasse,
-                  moyenneGenerale: periods[i].moyenneGenerale));
+                  teachers: List(),
+                  average: averages[z][0],
+                  maxClassAverage: averages[z][1],
+                  minClassAverage: averages[z][2],
+                  classAverage: element.classAverage,
+                  classGeneralAverage: periods[i].classGeneralAverage,
+                  generalAverage: periods[i].generalAverage));
             }
             z++;
           });
         }
         this.gradesList = null;
         listDisciplines.forEach((element) {
-          element.gradesList.addAll(grades.where((grade) => grade.libelleMatiere == element.nomDiscipline));
+          element.gradesList.addAll(grades.where((grade) => grade.disciplineName == element.disciplineName));
         });
         int index = 0;
         listDisciplines = await refreshDisciplinesListColors(listDisciplines);
@@ -500,8 +500,8 @@ class APIPronote extends API {
       List<Discipline> disciplines = await offline.disciplines.getDisciplines();
       List<Grade> grades = getAllGrades(disciplines, overrideLimit: true);
       grades.forEach((grade) {
-        if (!listPeriods.any((period) => period.name == grade.nomPeriode && period.id == grade.codePeriode)) {
-          listPeriods.add(Period(grade.nomPeriode, grade.codePeriode));
+        if (!listPeriods.any((period) => period.name == grade.periodName && period.id == grade.periodCode)) {
+          listPeriods.add(Period(grade.periodName, grade.periodCode));
         }
       });
 
@@ -574,27 +574,27 @@ class APIPronote extends API {
           var z = 0;
           grades.forEach((element) {
             if (listDisciplines.every((listDisciplineEl) =>
-                listDisciplineEl.nomDiscipline != element.libelleMatiere ||
-                listDisciplineEl.periode != element.nomPeriode)) {
+                listDisciplineEl.disciplineName != element.disciplineName ||
+                listDisciplineEl.period != element.periodName)) {
               listDisciplines.add(Discipline(
-                  codeMatiere: element.codeMatiere,
-                  codeSousMatiere: List(),
-                  nomDiscipline: element.libelleMatiere,
-                  periode: element.nomPeriode,
+                  disciplineCode: element.disciplineCode,
+                  subdisciplineCode: List(),
+                  disciplineName: element.disciplineName,
+                  period: element.periodName,
                   gradesList: List(),
-                  professeurs: List(),
-                  moyenne: averages[z][0],
-                  moyenneMax: averages[z][1],
-                  moyenneClasse: element.moyenneClasse,
-                  moyenneGeneraleClasse: periods[i].moyenneGeneraleClasse,
-                  moyenneGenerale: periods[i].moyenneGenerale));
+                  teachers: List(),
+                  average: averages[z][0],
+                  maxClassAverage: averages[z][1],
+                  classAverage: element.classAverage,
+                  classGeneralAverage: periods[i].classGeneralAverage,
+                  generalAverage: periods[i].generalAverage));
             }
             z++;
           });
         }
 
         listDisciplines.forEach((element) {
-          element.gradesList.addAll(grades.where((grade) => grade.libelleMatiere == element.nomDiscipline));
+          element.gradesList.addAll(grades.where((grade) => grade.disciplineName == element.disciplineName));
         });
         int index = 0;
         listDisciplines = await refreshDisciplinesListColors(listDisciplines);

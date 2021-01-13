@@ -64,7 +64,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   tryToConnect() async {
-    await getChosenParser();
+    await reloadChosenApi();
 
     String u = await ReadStorage("username");
     String p = await ReadStorage("password");
@@ -577,7 +577,7 @@ class _LoginPageState extends State<LoginPage> {
                                                                   color: Colors.green,
                                                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
                                                                   onPressed: () async {
-                                                                    await getChosenParser();
+                                                                    await reloadChosenApi();
 
                                                                     //Actions when pressing the ok button
                                                                     if (_username.text != "" && (chosenParser == 1 ? _url.text != null : true) && _password.text != null) {

@@ -236,7 +236,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                                               width: screenSize.size.width / 5 * 2.8,
                                                               child: ClipRRect(
                                                                 child: Marquee(
-                                                                    text: this.widget.mail.files[index].libelle,
+                                                                    text: this.widget.mail.files[index].documentName,
                                                                     blankSpace: screenSize.size.width / 5 * 0.2,
                                                                     style: TextStyle(
                                                                         fontFamily: "Asap", color: Colors.white)),
@@ -259,7 +259,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                                                       builder: (context, model, child) {
                                                                         return FutureBuilder(
                                                                             future: model.fileExists(
-                                                                                this.widget.mail.files[index].libelle),
+                                                                                this.widget.mail.files[index].documentName),
                                                                             initialData: false,
                                                                             builder: (context, snapshot) {
                                                                               if (snapshot.data == false ||
@@ -310,7 +310,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                                                                                 .widget
                                                                                                 .mail
                                                                                                 .files[index]
-                                                                                                .libelle,
+                                                                                                .documentName,
                                                                                             usingFileName: true);
                                                                                       },
                                                                                       //Force download
@@ -361,7 +361,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                                                                             .widget
                                                                                             .mail
                                                                                             .files[index]
-                                                                                            .libelle,
+                                                                                            .documentName,
                                                                                         usingFileName: true);
                                                                                   },
                                                                                   //Force download

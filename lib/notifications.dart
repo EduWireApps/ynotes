@@ -22,7 +22,8 @@ import 'background.dart';
 import 'utils/fileUtils.dart';
 import 'utils/themeUtils.dart';
 
-class LocalNotification {
+///The notifications class
+class AppNotification {
   static Future<void> scheduleAgendaReminders(AgendaEvent event) async {
     try {
       AwesomeNotifications().initialize(null, [
@@ -72,7 +73,7 @@ class LocalNotification {
       print(e);
     }
   }
-
+  ///Shows a debug notification, useful for development purposes
   static showDebugNotification() async {
     await AwesomeNotifications().initialize(null, [
       NotificationChannel(
@@ -222,9 +223,9 @@ class LocalNotification {
 
       String defaultSentence = "";
       if (lesson != null) {
-        defaultSentence = 'Vous êtes en <b>${lesson.matiere}</b> dans la salle <b>${lesson.room}</b>';
+        defaultSentence = 'Vous êtes en <b>${lesson.discipline}</b> dans la salle <b>${lesson.room}</b>';
         if (lesson.room == null || lesson.room == "") {
-          defaultSentence = "Vous êtes en ${lesson.matiere}";
+          defaultSentence = "Vous êtes en ${lesson.discipline}";
         }
       } else {
         defaultSentence = "Vous êtes en pause";
@@ -273,7 +274,7 @@ class LocalNotification {
     print("Setting on going notification");
     var connectivityResult = await (Connectivity().checkConnectivity());
     List<Lesson> lessons = List();
-    await getChosenParser();
+    await reloadChosenApi();
     API api = APIManager(offline);
     //Login creds
     String u = await ReadStorage("username");
@@ -370,7 +371,7 @@ class LocalNotification {
   static Future<void> callback() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     List<Lesson> lessons = List();
-    await getChosenParser();
+    await reloadChosenApi();
     //Lock offline data
     Offline _offline = Offline(true);
     API api = APIManager(_offline);
@@ -450,7 +451,7 @@ class LocalNotification {
     //Logs for tests
     if (lesson != null) {
       await logFile(
-          "Persistant notification next lesson callback triggered for the lesson ${lesson.codeMatiere} ${lesson.room}");
+          "Persistant notification next lesson callback triggered for the lesson ${lesson.disciplineCode} ${lesson.room}");
     } else {
       await logFile("Persistant notification next lesson callback triggered : you are in break.");
     }

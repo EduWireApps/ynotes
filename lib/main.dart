@@ -16,11 +16,8 @@ import 'package:ynotes/background.dart';
 import 'package:ynotes/classes.dart';
 import 'package:ynotes/models.dart';
 import 'package:ynotes/offline/offline.dart';
-import 'package:ynotes/apis/EcoleDirecte.dart';
-import 'package:ynotes/shared_preferences.dart';
 import 'package:ynotes/usefulMethods.dart';
 
-import 'UI/screens/settings/sub_pages/logsPage.dart';
 import 'UI/screens/school_api_choice/schoolAPIChoicePage.dart';
 import 'utils/themeUtils.dart';
 
@@ -32,32 +29,32 @@ Offline offline;
 API localApi;
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
-void dispose() {
-  offline.dispose();
-}
 
+///The app main class
 Future main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await initPlatformState();
 
-  await getChosenParser();
+  WidgetsFlutterBinding.ensureInitialized();
+  await initBackgroundTask();
+  
+  //Load api
+  await reloadChosenApi();
   offline = Offline(false);
   localApi = APIManager(offline);
   tlogin = TransparentLogin();
 
   //Init offline data
   await offline.init();
-  wm.Workmanager.cancelAll();
-  /* await Workmanager.cancelByUniqueName("background");
-  //Register work manager
-  await Workmanager.initialize(callbackDispatcher);
-  await Workmanager.registerPeriodicTask("background", "backgroundFetcher"); */
-  //Init the local notifications
 
+  //Cancel the old task manager (will be removed after migration)
+  wm.Workmanager.cancelAll();
+
+  //Set system notification bar color
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       systemNavigationBarColor: isDarkModeEnabled ? Color(0xff414141) : Color(0xffF3F3F3),
       statusBarColor: Colors.transparent));
   ConnectionStatusSingleton connectionStatus = ConnectionStatusSingleton.getInstance();
+
+  //Load connection status
   connectionStatus.initialize();
   runZoned<Future<Null>>(() async {
     runApp(
@@ -72,7 +69,7 @@ Future main() async {
 }
 
 //Init background fetch
-Future<void> initPlatformState() async {
+Future<void> initBackgroundTask() async {
   // Configure BackgroundFetch.
   await BackgroundFetch.configure(
       BackgroundFetchConfig(
@@ -95,6 +92,7 @@ class HomeApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     final themeNotifier = Provider.of<AppStateNotifier>(context);
     return Wiredash(
       projectId: "ynotes-giw0qs2",

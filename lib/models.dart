@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
+import 'package:ynotes/models/homework/controller.dart';
 import 'package:ynotes/utils/fileUtils.dart';
 import 'package:ynotes/apis/EcoleDirecte.dart';
 import 'package:ynotes/apis/Pronote.dart';
@@ -12,6 +13,7 @@ import 'package:ynotes/main.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 import 'classes.dart';
+
 
 ///Class download to notify view when download is ended
 class DownloadModel extends ChangeNotifier {
@@ -48,7 +50,7 @@ class DownloadModel extends ChangeNotifier {
   download(Document document) async {
     _isDownloading = true;
     _progress = null;
-    String filename = document.libelle;
+    String filename = document.documentName;
     notifyListeners();
     Request request = await localApi.downloadRequest(document);
     //Make a response client
@@ -94,7 +96,7 @@ class DownloadModel extends ChangeNotifier {
 
 enum loginStatus { loggedIn, loggedOff, offline, error }
 
-//the transparent login manager
+///Login change notifier
 class TransparentLogin extends ChangeNotifier {
   //Login state
   var _actualState = loginStatus.loggedOff;
@@ -133,6 +135,7 @@ class TransparentLogin extends ChangeNotifier {
     }
   }
 
+//on connection change
   void connectionChanged(dynamic hasConnection) async {
     if (hasConnection != true) {
       _actualState = loginStatus.offline;
@@ -151,7 +154,7 @@ class TransparentLogin extends ChangeNotifier {
       _actualState = loginStatus.loggedOff;
       _details = "Connexion à l'API...";
       notifyListeners();
-      await getChosenParser();
+      await reloadChosenApi();
       String u = await ReadStorage("username");
       String p = await ReadStorage("password");
       String url = await ReadStorage("pronoteurl");

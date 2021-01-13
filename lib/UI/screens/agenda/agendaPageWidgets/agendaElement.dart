@@ -47,7 +47,7 @@ class _AgendaElementState extends State<AgendaElement> {
     if (this.widget.event != null && this.widget.event.name != null && this.widget.event.name != "") {
       return "${widget.event.name[0].toUpperCase()}${widget.event.name.substring(1).toLowerCase()}";
     } else if (this.widget.event.name != "") {
-      return "${widget.event.lesson.matiere[0].toUpperCase()}${widget.event.lesson.matiere.substring(1).toLowerCase()}";
+      return "${widget.event.lesson.discipline[0].toUpperCase()}${widget.event.lesson.discipline.substring(1).toLowerCase()}";
     } else {
       return "(sans nom)";
     }
@@ -57,7 +57,7 @@ class _AgendaElementState extends State<AgendaElement> {
     if (this.widget.event != null && this.widget.event.color != null) {
       return this.widget.event.color;
     } else {
-      return await getColor(this.widget.event.lesson.codeMatiere);
+      return await getColor(this.widget.event.lesson.disciplineCode);
     }
   }
 
@@ -104,7 +104,7 @@ class _AgendaElementState extends State<AgendaElement> {
                         var _event = this.widget.event;
                         if (_event.isLesson) {
                           //Getting color before
-                          _event.color = await getColor(this.widget.event.lesson.codeMatiere);
+                          _event.color = await getColor(this.widget.event.lesson.disciplineCode);
                         }
                         var temp = await agendaEventEdit(context, true,
                             defaultDate: this.widget.event.start, customEvent: _event);
@@ -125,11 +125,11 @@ class _AgendaElementState extends State<AgendaElement> {
                                   this.widget.event = temp;
                                 });
                               }
-                              await LocalNotification.scheduleAgendaReminders(temp);
+                              await AppNotification.scheduleAgendaReminders(temp);
                             }
                           } else {
                             await offline.reminders.removeAll(_event.id);
-                            await LocalNotification.cancelNotification(_event.id.hashCode);
+                            await AppNotification.cancelNotification(_event.id.hashCode);
                           }
                           await refreshAgendaFuture();
                           widget.setStateCallback();
@@ -138,7 +138,7 @@ class _AgendaElementState extends State<AgendaElement> {
                       onTap: () async {
                         if (this.widget.event.isLesson) {
                           var _event = this.widget.event;
-                          _event.color = await getColor(this.widget.event.lesson.codeMatiere);
+                          _event.color = await getColor(this.widget.event.lesson.disciplineCode);
                           await lessonDetails(context, _event);
                           await refreshAgendaFuture();
                           print("ok");

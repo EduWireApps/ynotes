@@ -41,7 +41,7 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
   }
 
   getLocalChosen() async {
-    await getChosenParser();
+    await reloadChosenApi();
     setState(() {
       chosen = chosenParser;
     });
@@ -207,7 +207,7 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
                         ? null
                         : () async {
                             await setChosenParser(chosen);
-                            await getChosenParser();
+                            await reloadChosenApi();
                             setState(() {
                               localApi = APIManager(offline);
                             });

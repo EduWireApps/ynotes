@@ -98,7 +98,7 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                             children: <Widget>[
                               FittedBox(
                                 child: Text(
-                                  widget.grade.valeur != null ? widget.grade.valeur : "-",
+                                  widget.grade.value != null ? widget.grade.value : "-",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       color: ThemeUtils.textColor(),
@@ -116,7 +116,7 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                               ),
                               FittedBox(
                                 child: Text(
-                                  widget.grade.noteSur != null ? widget.grade.noteSur : "-",
+                                  widget.grade.scale != null ? widget.grade.scale : "-",
                                   style: TextStyle(
                                       color: ThemeUtils.textColor(),
                                       fontFamily: "Asap",
@@ -154,7 +154,7 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                                     borderRadius: BorderRadius.circular(15),
                                     child: Container(
                                       padding: EdgeInsets.all(5),
-                                      child: Text(widget.discipline.nomDiscipline,
+                                      child: Text(widget.discipline.disciplineName,
                                           style:
                                               TextStyle(fontFamily: "Asap", fontSize: 15, fontWeight: FontWeight.w100)),
                                     ),
@@ -163,7 +163,7 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                                 Container(
                                   width: (screenSize.size.width / 5) * 3,
                                   child: AutoSizeText(
-                                    widget.grade.devoir != null ? widget.grade.devoir : "-",
+                                    widget.grade.testName != null ? widget.grade.testName : "-",
                                     minFontSize: 18,
                                     style: TextStyle(
                                         fontFamily: "Asap", fontWeight: FontWeight.bold, color: ThemeUtils.textColor()),
@@ -189,8 +189,8 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           buildKeyValuesInfo(context, "Moyenne de la classe :", [
-                            widget.grade.moyenneClasse != "" && widget.grade.moyenneClasse != null
-                                ? widget.grade.moyenneClasse
+                            widget.grade.classAverage != "" && widget.grade.classAverage != null
+                                ? widget.grade.classAverage
                                 : "-"
                           ]),
                           if (widget.grade.max != "" && widget.grade.max != null)
@@ -211,7 +211,7 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                             height: (screenSize.size.height / 3) / 25,
                           ),
                           buildKeyValuesInfo(context, "Type de devoir :",
-                              [widget.grade.typeDevoir != null ? widget.grade.typeDevoir : "-"]),
+                              [widget.grade.testType != null ? widget.grade.testType : "-"]),
                           SizedBox(
                             height: (screenSize.size.height / 3) / 25,
                           ),

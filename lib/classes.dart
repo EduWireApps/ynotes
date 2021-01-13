@@ -15,55 +15,55 @@ import 'package:ynotes/usefulMethods.dart';
 
 part 'classes.g.dart';
 
-//Class of a piece homework
+///Class of a piece of homework
 @JsonSerializable(nullable: false)
 @HiveType(typeId: 0)
 class Homework extends HiveObject {
   @HiveField(0)
-  final String matiere;
+  final String discipline;
   @HiveField(1)
-  final String codeMatiere;
+  final String disciplineCode;
   @HiveField(2)
   final String id;
   @HiveField(3)
-  final String contenu;
+  final String rawContent;
   @HiveField(4)
-  String contenuDeSeance;
+  String sessionRawContent;
   @HiveField(5)
   DateTime date;
   @HiveField(6)
-  final DateTime datePost;
+  final DateTime entryDate;
   @HiveField(7)
   final bool done;
   @HiveField(8)
-  final bool rendreEnLigne;
+  final bool toReturn;
   @HiveField(9)
-  final bool interrogation;
+  final bool isATest;
   @HiveField(10)
   final List<Document> documents;
   @HiveField(11)
-  final List<Document> documentsContenuDeSeance;
+  final List<Document> sessionDocuments;
   @HiveField(12)
-  final String nomProf;
+  final String teacherName;
+  //Useful for Ecole Directe users
   @HiveField(13)
   final bool loaded;
   Homework(
-      this.matiere,
-      this.codeMatiere,
+      this.discipline,
+      this.disciplineCode,
       this.id,
-      this.contenu,
-      this.contenuDeSeance,
+      this.rawContent,
+      this.sessionRawContent,
       this.date,
-      this.datePost,
+      this.entryDate,
       this.done,
-      this.rendreEnLigne,
-      this.interrogation,
+      this.toReturn,
+      this.isATest,
       this.documents,
-      this.documentsContenuDeSeance,
-      this.nomProf,
+      this.sessionDocuments,
+      this.teacherName,
       this.loaded);
-  factory Homework.fromJson(Map<String, dynamic> json) =>
-      _$HomeworkFromJson(json);
+  factory Homework.fromJson(Map<String, dynamic> json) => _$HomeworkFromJson(json);
   Map<String, dynamic> toJson() => _$HomeworkToJson(this);
 }
 
@@ -72,16 +72,15 @@ class Homework extends HiveObject {
 @HiveType(typeId: 1)
 class Document {
   @HiveField(0)
-  final String libelle;
+  final String documentName;
   @HiveField(1)
   final String id;
   @HiveField(2)
   final String type;
   @HiveField(3)
   final int length;
-  Document(this.libelle, this.id, this.type, this.length);
-  factory Document.fromJson(Map<String, dynamic> json) =>
-      _$DocumentFromJson(json);
+  Document(this.documentName, this.id, this.type, this.length);
+  factory Document.fromJson(Map<String, dynamic> json) => _$DocumentFromJson(json);
   Map<String, dynamic> toJson() => _$DocumentToJson(this);
 }
 
@@ -90,48 +89,48 @@ class Document {
 class Grade {
   //E.G : "génétique"
   @HiveField(0)
-  final String devoir;
+  final String testName;
   //E.G : "A001"
   @HiveField(1)
-  final String codePeriode;
+  final String periodCode;
   //E.G : "SVT"
   @HiveField(2)
-  final String codeMatiere;
+  final String disciplineCode;
   //E.G : "ECR"
   @HiveField(3)
-  final String codeSousMatiere;
+  final String subdisciplineCode;
   //E.G : "Français"
   @HiveField(4)
-  final String libelleMatiere;
+  final String disciplineName;
   //E.G : true (affichage en lettres)
   @HiveField(5)
   final bool letters;
   //E.G : "18"
   @HiveField(6)
-  final String valeur;
+  final String value;
   //E.G : "1"
   @HiveField(7)
-  final String coef;
+  final String coefficient;
   //E.G : "10" (affichage en lettres)
   @HiveField(8)
-  final String noteSur;
+  final String scale;
   //E.G : "" (affichage en lettres)
   @HiveField(9)
-  final String moyenneClasse;
+  final String classAverage;
   //E.G : "Devoir sur table"
   @HiveField(10)
-  final String typeDevoir;
+  final String testType;
   //E.G : 16/02
   @HiveField(16)
   final DateTime date;
   //E.G : 16/02
   @HiveField(15)
-  final DateTime dateSaisie;
+  final DateTime entryDate;
   @HiveField(13)
-  final bool nonSignificatif;
+  final bool notSignificant;
   @HiveField(14)
   //E.G : Trimestre 1
-  final String nomPeriode;
+  final String periodName;
 
   @HiveField(17)
   final String max;
@@ -140,42 +139,41 @@ class Grade {
   Grade(
       {this.max,
       this.min,
-      this.devoir,
-      this.codePeriode,
-      this.codeMatiere,
-      this.codeSousMatiere,
-      this.libelleMatiere,
+      this.testName,
+      this.periodCode,
+      this.disciplineCode,
+      this.subdisciplineCode,
+      this.disciplineName,
       this.letters,
-      this.valeur,
-      this.coef,
-      this.noteSur,
-      this.moyenneClasse,
-      this.typeDevoir,
+      this.value,
+      this.coefficient,
+      this.scale,
+      this.classAverage,
+      this.testType,
       this.date,
-      this.dateSaisie,
-      this.nonSignificatif,
-      this.nomPeriode});
+      this.entryDate,
+      this.notSignificant,
+      this.periodName});
 
-  factory Grade.fromEcoleDirecteJson(
-      Map<String, dynamic> json, String nomPeriode) {
+  factory Grade.fromEcoleDirecteJson(Map<String, dynamic> json, String nomPeriode) {
     return Grade(
         min: json["minClasse"],
         max: json["maxClasse"],
-        devoir: json['devoir'],
-        codePeriode: json['codePeriode'],
-        nomPeriode: nomPeriode,
-        codeMatiere: json['codeMatiere'],
-        codeSousMatiere: json['codeSousMatiere'],
-        libelleMatiere: json['libelleMatiere'],
+        testName: json['devoir'],
+        periodCode: json['codePeriode'],
+        periodName: nomPeriode,
+        disciplineCode: json['codeMatiere'],
+        subdisciplineCode: json['codeSousMatiere'],
+        disciplineName: json['libelleMatiere'],
         letters: json['enLettre'],
-        valeur: json['valeur'],
-        coef: json['coef'],
-        noteSur: json['noteSur'],
-        moyenneClasse: json['moyenneClasse'],
-        typeDevoir: json['typeDevoir'],
+        value: json['valeur'],
+        coefficient: json['coef'],
+        scale: json['noteSur'],
+        classAverage: json['moyenneClasse'],
+        testType: json['typeDevoir'],
         date: DateTime.parse(json['date']),
-        dateSaisie: DateTime.parse(json['dateSaisie']),
-        nonSignificatif: json['nonSignificatif']);
+        entryDate: DateTime.parse(json['dateSaisie']),
+        notSignificant: json['nonSignificatif']);
   }
 }
 
@@ -183,57 +181,57 @@ class Grade {
 //Discipline class
 class Discipline {
   @HiveField(0)
-  final String moyenneGenerale;
+  final String generalAverage;
   @HiveField(1)
-  final String moyenneGeneralClasseMax;
+  final String maxClassGeneralAverage;
   @HiveField(2)
-  final String moyenneGeneraleClasse;
+  final String classGeneralAverage;
   @HiveField(3)
-  final String codeMatiere;
+  final String disciplineCode;
   @HiveField(4)
-  final List<String> codeSousMatiere;
+  final List<String> subdisciplineCode;
   @HiveField(5)
-  final String nomDiscipline;
+  final String disciplineName;
   @HiveField(6)
-  final String moyenne;
+  final String average;
   @HiveField(7)
-  final String moyenneClasse;
+  final String classAverage;
   @HiveField(8)
-  final String moyenneMin;
+  final String minClassAverage;
   @HiveField(9)
-  final String moyenneMax;
+  final String maxClassAverage;
   @HiveField(10)
-  final List<String> professeurs;
+  final List<String> teachers;
   @HiveField(11)
-  final String periode;
+  final String period;
   @HiveField(12)
   List<Grade> gradesList;
   @HiveField(13)
   int color;
   @HiveField(14)
-  final int rangDiscipline;
+  final int disciplineRank;
   @HiveField(15)
-  final String effectifClasse;
+  final String classNumber;
   @HiveField(16)
-  final String rangGeneral;
+  final String generalRank;
   Discipline(
       {this.gradesList,
-      this.moyenneGeneralClasseMax,
-      this.moyenneGeneraleClasse,
-      this.moyenneGenerale,
-      this.moyenneClasse,
-      this.moyenneMin,
-      this.moyenneMax,
-      this.codeMatiere,
-      this.codeSousMatiere,
-      this.moyenne,
-      this.professeurs,
-      this.nomDiscipline,
-      this.periode,
+      this.maxClassGeneralAverage,
+      this.classGeneralAverage,
+      this.generalAverage,
+      this.classAverage,
+      this.minClassAverage,
+      this.maxClassAverage,
+      this.disciplineCode,
+      this.subdisciplineCode,
+      this.average,
+      this.teachers,
+      this.disciplineName,
+      this.period,
       this.color,
-      this.rangDiscipline,
-      this.effectifClasse,
-      this.rangGeneral});
+      this.disciplineRank,
+      this.classNumber,
+      this.generalRank});
 
   set setcolor(Color newcolor) {
     color = newcolor.value;
@@ -257,22 +255,22 @@ class Discipline {
       String effectifClasse = "0",
       String rangGeneral = "0"}) {
     return Discipline(
-      codeSousMatiere: [],
-      codeMatiere: json['codeMatiere'],
-      nomDiscipline: json['discipline'],
-      moyenne: json['moyenne'],
-      moyenneClasse: json['moyenneClasse'],
-      moyenneMin: json['moyenneMin'],
-      moyenneMax: json['moyenneMax'],
-      professeurs: profs,
-      periode: periode,
+      subdisciplineCode: [],
+      disciplineCode: json['codeMatiere'],
+      disciplineName: json['discipline'],
+      average: json['moyenne'],
+      classAverage: json['moyenneClasse'],
+      minClassAverage: json['moyenneMin'],
+      maxClassAverage: json['moyenneMax'],
+      teachers: profs,
+      period: periode,
       color: color.value,
-      moyenneGenerale: moyenneG,
-      moyenneGeneralClasseMax: bmoyenneClasse,
-      moyenneGeneraleClasse: moyenneClasse,
-      rangDiscipline: showrank ? json["rang"] : null,
-      effectifClasse: effectifClasse,
-      rangGeneral: rangGeneral,
+      generalAverage: moyenneG,
+      maxClassGeneralAverage: bmoyenneClasse,
+      classGeneralAverage: moyenneClasse,
+      disciplineRank: showrank ? json["rang"] : null,
+      classNumber: effectifClasse,
+      generalRank: rangGeneral,
     );
   }
 }
@@ -292,8 +290,7 @@ class Mail {
   final String date;
   final String content;
   final List<Document> files;
-  Mail(this.id, this.mtype, this.read, this.idClasseur, this.from, this.subject,
-      this.date,
+  Mail(this.id, this.mtype, this.read, this.idClasseur, this.from, this.subject, this.date,
       {this.content, this.to, this.files});
 }
 
@@ -327,9 +324,9 @@ class Lesson {
   @HiveField(8)
   final String content;
   @HiveField(9)
-  final String matiere;
+  final String discipline;
   @HiveField(10)
-  final String codeMatiere;
+  final String disciplineCode;
   @HiveField(11)
   final String id;
 
@@ -342,8 +339,8 @@ class Lesson {
     this.status,
     this.groups,
     this.content,
-    this.matiere,
-    this.codeMatiere,
+    this.discipline,
+    this.disciplineCode,
     this.end,
     this.id,
   });
@@ -381,8 +378,7 @@ class PollInfo {
   @HiveField(7)
   final Map data;
 
-  PollInfo(this.auteur, this.datedebut, this.questions, this.read, this.title,
-      this.id, this.documents, this.data);
+  PollInfo(this.auteur, this.datedebut, this.questions, this.read, this.title, this.id, this.documents, this.data);
 }
 
 @JsonSerializable(nullable: false)
@@ -405,10 +401,8 @@ class AgendaReminder {
     return Color(tagColor);
   }
 
-  AgendaReminder(this.lessonID, this.name, this.alarm, this.id,
-      {this.description, this.tagColor});
-  factory AgendaReminder.fromJson(Map<String, dynamic> json) =>
-      _$AgendaReminderFromJson(json);
+  AgendaReminder(this.lessonID, this.name, this.alarm, this.id, {this.description, this.tagColor});
+  factory AgendaReminder.fromJson(Map<String, dynamic> json) => _$AgendaReminderFromJson(json);
   Map<String, dynamic> toJson() => _$AgendaReminderToJson(this);
 }
 
@@ -482,8 +476,8 @@ class AgendaEvent {
       if (lesson.start.hour == 0 && lesson.end.hour == 0) {
         wholeDay = true;
       }
-      events.add(AgendaEvent(lesson.start, lesson.end, lesson.matiere,
-          lesson.room, null, null, lesson.canceled, lesson.id, null,
+      events.add(AgendaEvent(
+          lesson.start, lesson.end, lesson.discipline, lesson.room, null, null, lesson.canceled, lesson.id, null,
           isLesson: true, lesson: lesson, wholeDay: wholeDay));
     }
     return events;
@@ -493,8 +487,8 @@ class AgendaEvent {
     return Color(color);
   }
 
-  AgendaEvent(this.start, this.end, this.name, this.location, this.left,
-      this.height, this.canceled, this.id, this.width,
+  AgendaEvent(
+      this.start, this.end, this.name, this.location, this.left, this.height, this.canceled, this.id, this.width,
       {this.wholeDay = true,
       this.isLesson = false,
       this.lesson,
@@ -503,8 +497,7 @@ class AgendaEvent {
       this.alarm,
       this.color,
       this.recurrenceScheme});
-  factory AgendaEvent.fromJson(Map<String, dynamic> json) =>
-      _$AgendaEventFromJson(json);
+  factory AgendaEvent.fromJson(Map<String, dynamic> json) => _$AgendaEventFromJson(json);
   Map<String, dynamic> toJson() => _$AgendaEventToJson(this);
 }
 
@@ -538,8 +531,7 @@ class CloudItem {
   final String id;
   final String date;
 
-  CloudItem(this.title, this.type, this.author, this.isMainFolder, this.date,
-      {this.isMemberOf, this.id});
+  CloudItem(this.title, this.type, this.author, this.isMainFolder, this.date, {this.isMemberOf, this.id});
 }
 
 class Period {
@@ -592,12 +584,10 @@ abstract class API {
   Future app(String appname, {String args, String action, CloudItem folder});
 
   ///All events
-  Future getEvents(DateTime date, bool afterSchool,
-      {bool forceReload = false}) async {
+  Future getEvents(DateTime date, bool afterSchool, {bool forceReload = false}) async {
     List<AgendaEvent> events = List<AgendaEvent>();
     List<AgendaEvent> extracurricularEvents = List<AgendaEvent>();
-    List<Lesson> lessons =
-        await localApi.getNextLessons(date, forceReload: forceReload);
+    List<Lesson> lessons = await localApi.getNextLessons(date, forceReload: forceReload);
     int week = await get_week(date);
     //Add lessons for this day
     if (lessons != null) {
@@ -622,8 +612,7 @@ abstract class API {
         }
         //merge
         for (AgendaEvent extracurricularEvent in extracurricularEvents) {
-          events
-              .removeWhere((element) => element.id == extracurricularEvent.id);
+          events.removeWhere((element) => element.id == extracurricularEvent.id);
         }
       }
     } else {
@@ -642,8 +631,7 @@ abstract class API {
         }
         //merge
         for (AgendaEvent extracurricularEvent in extracurricularEvents) {
-          events
-              .removeWhere((element) => element.id == extracurricularEvent.id);
+          events.removeWhere((element) => element.id == extracurricularEvent.id);
         }
       }
     }
@@ -653,16 +641,15 @@ abstract class API {
     RecurringEventSchemes recurr = RecurringEventSchemes();
     recurr.date = date;
     recurr.week = week;
-    var recurringEvents = await offline.agendaEvents
-        .getAgendaEvents(week, selector: recurr.testRequest);
+    var recurringEvents = await offline.agendaEvents.getAgendaEvents(week, selector: recurr.testRequest);
     if (recurringEvents != null && recurringEvents.length != 0) {
       recurringEvents.forEach((recurringEvent) {
         events.removeWhere((element) => element.id == recurringEvent.id);
         if (recurringEvent.start != null && recurringEvent.end != null) {
-          recurringEvent.start = DateTime(date.year, date.month, date.day,
-              recurringEvent.start.hour, recurringEvent.start.minute);
-          recurringEvent.end = DateTime(date.year, date.month, date.day,
-              recurringEvent.end.hour, recurringEvent.end.minute);
+          recurringEvent.start =
+              DateTime(date.year, date.month, date.day, recurringEvent.start.hour, recurringEvent.start.minute);
+          recurringEvent.end =
+              DateTime(date.year, date.month, date.day, recurringEvent.end.hour, recurringEvent.end.minute);
         }
       });
 
@@ -688,7 +675,7 @@ APIManager(Offline _offline) {
   }
 }
 
-getChosenParser() async {
+reloadChosenApi() async {
   final prefs = await SharedPreferences.getInstance();
   chosenParser = prefs.getInt('chosenParser') ?? null;
 }

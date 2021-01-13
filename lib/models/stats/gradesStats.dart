@@ -17,11 +17,11 @@ class GradesStats {
     //Remove unconcerned grades
 
     _sortedGrades.removeWhere(
-        (_grade) => _grade.codeMatiere != this.grade.codeMatiere || _grade.codePeriode != this.grade.codePeriode);
+        (_grade) => _grade.disciplineCode != this.grade.disciplineCode || _grade.periodCode != this.grade.periodCode);
     _sortedGrades = _sortedGrades.reversed.toList();
 
     int gradeIndex =
-        _sortedGrades.indexWhere((_grade) => _grade.devoir == this.grade.devoir && _grade.date == this.grade.date);
+        _sortedGrades.indexWhere((_grade) => _grade.testName == this.grade.testName && _grade.date == this.grade.date);
     //remove next items
     _sortedGrades = _sortedGrades.sublist(0, gradeIndex + 1);
     double beforeAverage = 0.0;
@@ -30,13 +30,13 @@ class GradesStats {
     print(gradeIndex);
     _sortedGrades.forEach((_grade) {
       //Before selected grade
-      if (_grade.devoir != this.grade.devoir || _grade.dateSaisie != this.grade.dateSaisie) {
-        if (!_grade.nonSignificatif && !_grade.letters) {
+      if (_grade.testName != this.grade.testName || _grade.entryDate != this.grade.entryDate) {
+        if (!_grade.notSignificant && !_grade.letters) {
           double gradeOver20 =
-              double.parse(_grade.valeur.replaceAll(',', '.')) * 20 / double.parse(_grade.noteSur.replaceAll(',', '.'));
-          beforeAverage += gradeOver20 * double.parse(_grade.coef.replaceAll(',', '.'));
-          afterAverage += gradeOver20 * double.parse(_grade.coef.replaceAll(',', '.'));
-          coeffCounter += double.tryParse(_grade.coef.replaceAll(',', '.'));
+              double.parse(_grade.value.replaceAll(',', '.')) * 20 / double.parse(_grade.scale.replaceAll(',', '.'));
+          beforeAverage += gradeOver20 * double.parse(_grade.coefficient.replaceAll(',', '.'));
+          afterAverage += gradeOver20 * double.parse(_grade.coefficient.replaceAll(',', '.'));
+          coeffCounter += double.tryParse(_grade.coefficient.replaceAll(',', '.'));
         }
       }
       //At selected grade
@@ -44,11 +44,11 @@ class GradesStats {
         //Calculate before average
         beforeAverage = beforeAverage / coeffCounter;
 
-        if (!_grade.nonSignificatif && !_grade.letters) {
+        if (!_grade.notSignificant && !_grade.letters) {
           double gradeOver20 =
-              double.parse(_grade.valeur.replaceAll(',', '.')) * 20 / double.parse(_grade.noteSur.replaceAll(',', '.'));
-          afterAverage += gradeOver20 * double.parse(_grade.coef.replaceAll(',', '.'));
-          coeffCounter += double.tryParse(_grade.coef.replaceAll(',', '.'));
+              double.parse(_grade.value.replaceAll(',', '.')) * 20 / double.parse(_grade.scale.replaceAll(',', '.'));
+          afterAverage += gradeOver20 * double.parse(_grade.coefficient.replaceAll(',', '.'));
+          coeffCounter += double.tryParse(_grade.coefficient.replaceAll(',', '.'));
           //Calculate before average
 
           afterAverage = afterAverage / coeffCounter;
@@ -70,11 +70,11 @@ class GradesStats {
 
     _periodGradesWithGrade.addAll(this.allGrades);
     //remove other periods grades
-    _periodGradesWithGrade.removeWhere((_grade) => _grade.codePeriode != this.grade.codePeriode);
+    _periodGradesWithGrade.removeWhere((_grade) => _grade.periodCode != this.grade.periodCode);
     _periodGradesWithGrade = _periodGradesWithGrade.reversed.toList();
     //get this grade index
     int gradeIndex = _periodGradesWithGrade
-        .indexWhere((_grade) => _grade.devoir == this.grade.devoir && _grade.date == this.grade.date);
+        .indexWhere((_grade) => _grade.testName == this.grade.testName && _grade.date == this.grade.date);
     //remove next items
     _periodGradesWithGrade = _periodGradesWithGrade.sublist(0, gradeIndex + 1);
     _periodGradesWithoutGrade.addAll(_periodGradesWithGrade);
@@ -93,15 +93,15 @@ class GradesStats {
 
     _periodGradesWithGrade.addAll(this.allGrades);
     //remove other periods grades
-    _periodGradesWithGrade.removeWhere((_grade) => _grade.codePeriode != this.grade.codePeriode);
+    _periodGradesWithGrade.removeWhere((_grade) => _grade.periodCode != this.grade.periodCode);
     _periodGradesWithGrade = _periodGradesWithGrade.reversed.toList();
     //get this grade index
     int gradeIndex = _periodGradesWithGrade
-        .indexWhere((_grade) => _grade.devoir == this.grade.devoir && _grade.date == this.grade.date);
+        .indexWhere((_grade) => _grade.testName == this.grade.testName && _grade.date == this.grade.date);
     _periodGradesWithoutGrade.addAll(_periodGradesWithGrade);
     //remove grade
     _periodGradesWithoutGrade
-        .removeWhere((_grade) => _grade.devoir == this.grade.devoir && _grade.date == this.grade.date);
+        .removeWhere((_grade) => _grade.testName == this.grade.testName && _grade.date == this.grade.date);
 
     return (_calculateGlobalAverage(_periodGradesWithGrade) - _calculateGlobalAverage(_periodGradesWithoutGrade));
   }
@@ -112,11 +112,11 @@ class GradesStats {
 
     grades.forEach((grade) {
       //ensure that grade can be used
-      if (!grade.nonSignificatif && !grade.letters) {
-        if (gradesSortedByDisciplines[grade.codeMatiere] == null) {
-          gradesSortedByDisciplines[grade.codeMatiere] = List();
+      if (!grade.notSignificant && !grade.letters) {
+        if (gradesSortedByDisciplines[grade.disciplineCode] == null) {
+          gradesSortedByDisciplines[grade.disciplineCode] = List();
         }
-        gradesSortedByDisciplines[grade.codeMatiere].add(grade);
+        gradesSortedByDisciplines[grade.disciplineCode].add(grade);
       }
     });
     gradesSortedByDisciplines.keys.forEach((key) {
@@ -124,11 +124,11 @@ class GradesStats {
       double counter = 0.0;
       gradesSortedByDisciplines[key].forEach((_grade) {
         try {
-          average += double.parse(_grade.valeur.replaceAll(',', '.')) *
+          average += double.parse(_grade.value.replaceAll(',', '.')) *
               20 /
-              double.parse(_grade.noteSur.replaceAll(',', '.')) *
-              double.parse(_grade.coef.replaceAll(',', '.'));
-          counter += double.parse(_grade.coef);
+              double.parse(_grade.scale.replaceAll(',', '.')) *
+              double.parse(_grade.coefficient.replaceAll(',', '.'));
+          counter += double.parse(_grade.coefficient);
         } catch (e) {}
       });
       average = average / counter;

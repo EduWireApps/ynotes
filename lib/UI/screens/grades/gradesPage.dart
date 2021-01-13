@@ -86,7 +86,7 @@ class _GradesPageState extends State<GradesPage> {
   getActualPeriode() async {
     List<Discipline> list = await localApi.getGrades();
     try {
-      periodeToUse = list.lastWhere((list) => list.gradesList.length > 0).gradesList.last.nomPeriode;
+      periodeToUse = list.lastWhere((list) => list.gradesList.length > 0).gradesList.last.periodName;
     } catch (e) {
       if (periods != null && periods.length > 0) {
         periodeToUse = periods.last.name;
@@ -287,17 +287,17 @@ class _GradesPageState extends State<GradesPage> {
   void setAverage(List<Discipline> disciplineList) {
     average = 0;
     List<double> averages = List();
-    disciplineList.where((i) => i.periode == periodeToUse).forEach((f) {
+    disciplineList.where((i) => i.period == periodeToUse).forEach((f) {
       try {
         double _average = 0.0;
         double _counter = 0;
         f.gradesList.forEach((grade) {
-          if (!grade.nonSignificatif && !grade.letters) {
-            _counter += double.parse(grade.coef);
-            _average += double.parse(grade.valeur.replaceAll(',', '.')) *
+          if (!grade.notSignificant && !grade.letters) {
+            _counter += double.parse(grade.coefficient);
+            _average += double.parse(grade.value.replaceAll(',', '.')) *
                 20 /
-                double.parse(grade.noteSur.replaceAll(',', '.')) *
-                double.parse(grade.coef.replaceAll(',', '.'));
+                double.parse(grade.scale.replaceAll(',', '.')) *
+                double.parse(grade.coefficient.replaceAll(',', '.'));
           }
         });
         _average = _average / _counter;
@@ -316,8 +316,8 @@ class _GradesPageState extends State<GradesPage> {
   }
 
   getBestAverage(Discipline lastDiscipline) {
-    if (lastDiscipline != null && lastDiscipline.moyenneGeneralClasseMax != null) {
-      double value = double.tryParse(lastDiscipline.moyenneGeneralClasseMax.replaceAll(",", "."));
+    if (lastDiscipline != null && lastDiscipline.maxClassGeneralAverage != null) {
+      double value = double.tryParse(lastDiscipline.maxClassGeneralAverage.replaceAll(",", "."));
       if (value != null) {
         return value >= average ? value.toString() : average.toStringAsFixed(2);
       } else {
@@ -334,7 +334,7 @@ class _GradesPageState extends State<GradesPage> {
     list.forEach((f) {
       switch (sortBy) {
         case "all":
-          if (f.periode == periode) {
+          if (f.period == periode) {
             toReturn.add(f);
           }
           break;
@@ -342,9 +342,9 @@ class _GradesPageState extends State<GradesPage> {
           if (chosenParser == 0) {
             List<String> codeMatiere = ["FRANC", "HI-GE", "AGL1", "ESP2"];
 
-            if (f.periode == periode &&
+            if (f.period == periode &&
                 codeMatiere.any((test) {
-                  if (test == f.codeMatiere) {
+                  if (test == f.disciplineCode) {
                     return true;
                   } else {
                     return false;
@@ -355,9 +355,9 @@ class _GradesPageState extends State<GradesPage> {
           } else {
             List<String> codeMatiere = ["FRANCAIS", "ANGLAIS", "ESPAGNOL", "ALLEMAND", "HISTOIRE", "PHILO"];
 
-            if (f.periode == periode &&
+            if (f.period == periode &&
                 codeMatiere.any((test) {
-                  if (f.nomDiscipline.contains(test)) {
+                  if (f.disciplineName.contains(test)) {
                     return true;
                   } else {
                     return false;
@@ -371,9 +371,9 @@ class _GradesPageState extends State<GradesPage> {
         case "sciences":
           if (chosenParser == 0) {
             List<String> codeMatiere = ["SVT", "MATHS", "G-SCI", "PH-CH"];
-            if (f.periode == periode &&
+            if (f.period == periode &&
                 codeMatiere.any((test) {
-                  if (test == f.codeMatiere) {
+                  if (test == f.disciplineCode) {
                     return true;
                   } else {
                     return false;
@@ -384,10 +384,10 @@ class _GradesPageState extends State<GradesPage> {
           } else {
             List<String> codeMatiere = ["SVT", "MATH", "PHY", "PHYSIQUE", "SCI", "BIO"];
             List<String> blackList = ["SPORT"];
-            if (f.periode == periode &&
+            if (f.period == periode &&
                 codeMatiere.any((test) {
-                  if (f.nomDiscipline.contains(test) &&
-                      !blackList.any((element) => f.nomDiscipline.contains(element))) {
+                  if (f.disciplineName.contains(test) &&
+                      !blackList.any((element) => f.disciplineName.contains(element))) {
                     return true;
                   } else {
                     return false;
@@ -399,9 +399,9 @@ class _GradesPageState extends State<GradesPage> {
           break;
         case "spécialités":
           if (specialties != null) {
-            if (f.periode == periode &&
+            if (f.period == periode &&
                 specialties.any((test) {
-                  if (test == f.nomDiscipline) {
+                  if (test == f.disciplineName) {
                     return true;
                   } else {
                     return false;
@@ -681,7 +681,7 @@ class _GradesPageState extends State<GradesPage> {
                         if (snapshot.data != null) {
                           try {
                             getLastDiscipline =
-                                snapshot.data.lastWhere((disciplinesList) => disciplinesList.periode == periodeToUse);
+                                snapshot.data.lastWhere((disciplinesList) => disciplinesList.period == periodeToUse);
                           } catch (exception) {}
 
                           //If everything is ok, show stuff
@@ -737,8 +737,8 @@ class _GradesPageState extends State<GradesPage> {
                                                               vertical: (screenSize.size.width / 5) * 0.08),
                                                           child: Text(
                                                             (getLastDiscipline != null &&
-                                                                    getLastDiscipline.moyenneGeneraleClasse != null
-                                                                ? getLastDiscipline.moyenneGeneraleClasse
+                                                                    getLastDiscipline.classGeneralAverage != null
+                                                                ? getLastDiscipline.classGeneralAverage
                                                                 : "-"),
                                                             style: TextStyle(
                                                                 fontFamily: "Asap",
@@ -777,7 +777,7 @@ class _GradesPageState extends State<GradesPage> {
                                                         )
                                                       ],
                                                     ),
-                                                  if (getLastDiscipline.rangGeneral != null && filter == "all")
+                                                  if (getLastDiscipline.generalRank != null && filter == "all")
                                                     Row(
                                                       mainAxisAlignment: MainAxisAlignment.center,
                                                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -797,11 +797,11 @@ class _GradesPageState extends State<GradesPage> {
                                                               horizontal: (screenSize.size.width / 5) * 0.1,
                                                               vertical: (screenSize.size.width / 5) * 0.08),
                                                           child: Text(
-                                                            (getLastDiscipline.rangGeneral != null &&
-                                                                    getLastDiscipline.effectifClasse != null)
-                                                                ? getLastDiscipline.rangGeneral +
+                                                            (getLastDiscipline.generalRank != null &&
+                                                                    getLastDiscipline.classNumber != null)
+                                                                ? getLastDiscipline.generalRank +
                                                                     "/" +
-                                                                    getLastDiscipline.effectifClasse
+                                                                    getLastDiscipline.classNumber
                                                                 : "- / -",
                                                             style: TextStyle(
                                                                 fontFamily: "Asap",
@@ -939,16 +939,16 @@ class _GradesGroupState extends State<GradesGroup> {
       nomsProfesseurs = null;
       capitalizedNomDiscipline = null;
     } else {
-      String nomDiscipline = widget.disciplinevar.nomDiscipline.toLowerCase();
+      String nomDiscipline = widget.disciplinevar.disciplineName.toLowerCase();
       capitalizedNomDiscipline = "${nomDiscipline[0].toUpperCase()}${nomDiscipline.substring(1)}";
       if (widget.disciplinevar.color != null) {
         colorGroup = Color(widget.disciplinevar.color);
       }
-      if (widget.disciplinevar.professeurs.length > 0) {
-        nomsProfesseurs = widget.disciplinevar.professeurs[0];
+      if (widget.disciplinevar.teachers.length > 0) {
+        nomsProfesseurs = widget.disciplinevar.teachers[0];
         if (nomsProfesseurs != null) {
-          widget.disciplinevar.professeurs.forEach((element) {
-            if (widget.disciplinevar.professeurs.indexOf(element) > 0) {
+          widget.disciplinevar.teachers.forEach((element) {
+            if (widget.disciplinevar.teachers.indexOf(element) > 0) {
               nomsProfesseurs += " - " + element + " - ";
             }
           });
@@ -1078,7 +1078,7 @@ class _GradesGroupState extends State<GradesGroup> {
                   child: Column(
                     children: <Widget>[
                       if (widget.disciplinevar != null)
-                        if (widget.disciplinevar.codeSousMatiere.length > 0)
+                        if (widget.disciplinevar.subdisciplineCode.length > 0)
                           Container(
                               margin: EdgeInsets.only(top: 5),
                               child: Text(
@@ -1090,16 +1090,16 @@ class _GradesGroupState extends State<GradesGroup> {
                               )),
                       gradesList(0),
                       if (widget.disciplinevar != null)
-                        if (widget.disciplinevar.codeSousMatiere.length > 0) Divider(thickness: 2),
+                        if (widget.disciplinevar.subdisciplineCode.length > 0) Divider(thickness: 2),
                       if (widget.disciplinevar != null)
-                        if (widget.disciplinevar.codeSousMatiere.length > 0)
+                        if (widget.disciplinevar.subdisciplineCode.length > 0)
                           Text("Oral",
                               style: TextStyle(
                                 fontFamily: "Asap",
                                 color: ThemeUtils.textColor(),
                               )),
                       if (widget.disciplinevar != null)
-                        if (widget.disciplinevar.codeSousMatiere.length > 0) gradesList(1),
+                        if (widget.disciplinevar.subdisciplineCode.length > 0) gradesList(1),
                     ],
                   ),
                 )),
@@ -1114,9 +1114,9 @@ class _GradesGroupState extends State<GradesGroup> {
 
     if (widget.disciplinevar != null) {
       widget.disciplinevar.gradesList.forEach((element) {
-        if (element.nomPeriode == periodeToUse) {
-          if (widget.disciplinevar.codeSousMatiere.length > 1) {
-            if (element.codeSousMatiere == widget.disciplinevar.codeSousMatiere[sousMatiereIndex]) {
+        if (element.periodName == periodeToUse) {
+          if (widget.disciplinevar.subdisciplineCode.length > 1) {
+            if (element.subdisciplineCode == widget.disciplinevar.subdisciplineCode[sousMatiereIndex]) {
               toReturn.add(element);
             }
           } else {
@@ -1171,7 +1171,7 @@ class _GradesGroupState extends State<GradesGroup> {
                     // marksColumnController.animateTo(localList.length * screenSize.size.width / 5 * 1.2, duration: new Duration(microseconds: 5), curve: Curves.ease);
                   }
                 } catch (e) {}
-                if (gradesForSelectedDiscipline[index].dateSaisie == formattedDate) {
+                if (gradesForSelectedDiscipline[index].entryDate == formattedDate) {
                   newGrades = true;
                 }
               }
@@ -1223,25 +1223,25 @@ class _GradesGroupState extends State<GradesGroup> {
                                         child: AutoSizeText.rich(
                                           //MARK
                                           TextSpan(
-                                            text: (gradesForSelectedDiscipline[index].nonSignificatif
-                                                ? "(" + gradesForSelectedDiscipline[index].valeur
-                                                : gradesForSelectedDiscipline[index].valeur),
+                                            text: (gradesForSelectedDiscipline[index].notSignificant
+                                                ? "(" + gradesForSelectedDiscipline[index].value
+                                                : gradesForSelectedDiscipline[index].value),
                                             style: TextStyle(
                                                 color: Colors.black,
                                                 fontFamily: "Asap",
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.3),
                                             children: <TextSpan>[
-                                              if (gradesForSelectedDiscipline[index].noteSur != "20")
+                                              if (gradesForSelectedDiscipline[index].scale != "20")
 
                                                 //MARK ON
                                                 TextSpan(
-                                                    text: '/' + gradesForSelectedDiscipline[index].noteSur,
+                                                    text: '/' + gradesForSelectedDiscipline[index].scale,
                                                     style: TextStyle(
                                                         color: Colors.black,
                                                         fontWeight: FontWeight.bold,
                                                         fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2)),
-                                              if (gradesForSelectedDiscipline[index].nonSignificatif == true)
+                                              if (gradesForSelectedDiscipline[index].notSignificant == true)
                                                 TextSpan(
                                                     text: ")",
                                                     style: TextStyle(
@@ -1253,7 +1253,7 @@ class _GradesGroupState extends State<GradesGroup> {
                                         ),
                                       ),
                                       //COEFF
-                                      if (gradesForSelectedDiscipline[index].coef != "1")
+                                      if (gradesForSelectedDiscipline[index].coefficient != "1")
                                         Container(
                                             padding: EdgeInsets.all(screenSize.size.width / 5 * 0.03),
                                             margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.05),
@@ -1265,7 +1265,7 @@ class _GradesGroupState extends State<GradesGroup> {
                                             ),
                                             child: FittedBox(
                                                 child: AutoSizeText(
-                                              gradesForSelectedDiscipline[index].coef,
+                                              gradesForSelectedDiscipline[index].coefficient,
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
                                                   fontFamily: "Asap", color: Colors.white, fontWeight: FontWeight.bold),
@@ -1291,7 +1291,7 @@ class _GradesGroupState extends State<GradesGroup> {
                     ),
                   ),
                   if (gradesForSelectedDiscipline != null)
-                    if (gradesForSelectedDiscipline[index].dateSaisie == formattedDate)
+                    if (gradesForSelectedDiscipline[index].entryDate == formattedDate)
                       Positioned(
                         right: screenSize.size.width / 5 * 0.06,
                         top: screenSize.size.height / 15 * 0.01,

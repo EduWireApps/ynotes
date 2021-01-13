@@ -58,8 +58,8 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               snapshot.data.forEach((element) {
-                if (!disciplines.contains(element.nomDiscipline)) {
-                  disciplines.add(element.nomDiscipline);
+                if (!disciplines.contains(element.disciplineName)) {
+                  disciplines.add(element.disciplineName);
                 }
               });
 

@@ -102,13 +102,13 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
     }
     if (receivedNotification.channelKey == "persisnotif" &&
         receivedNotification.toMap()["buttonKeyPressed"] == "REFRESH") {
-      await LocalNotification.setOnGoingNotification();
+      await AppNotification.setOnGoingNotification();
       return;
     }
     if (receivedNotification.channelKey == "persisnotif" &&
         receivedNotification.toMap()["buttonKeyPressed"] == "KILL") {
       await setSetting("agendaOnGoingNotification", false);
-      await LocalNotification.cancelOnGoingNotification();
+      await AppNotification.cancelOnGoingNotification();
       return;
     }
   }

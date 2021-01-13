@@ -1,10 +1,8 @@
-import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 import 'package:hive/hive.dart';
-import 'package:ynotes/apis/Pronote/PronoteCas.dart';
 
 import '../main.dart';
 import 'fileUtils.dart';
