@@ -120,13 +120,17 @@ lane :local_test do
   end
   begin  
     #Edit this part if you need to install another APK
-      sh("adb", "install", "build/app/outputs/flutter-apk/app-arm64-v8a-prod-release.apk")
-      sh("adb shell am start -n fr.ynotes/.MainActivity")
+      Dir.chdir "../.." do
+        sh("adb", "install", "build/app/outputs/flutter-apk/app-arm64-v8a-prod-release.apk")
+        sh("adb shell am start -n fr.ynotes/.MainActivity")
+      end 
 
   rescue # if can't install ynotes
-      sh("adb", "uninstall", "fr.ynotes")
-      sh("adb", "install", "build/app/outputs/flutter-apk/app-arm64-v8a-prod-release.apk")
-      sh("adb shell am start -n fr.ynotes/.MainActivity")
+      Dir.chdir "../.." do
+        sh("adb", "uninstall", "fr.ynotes")
+        sh("adb", "install", "build/app/outputs/flutter-apk/app-arm64-v8a-prod-release.apk")
+        sh("adb shell am start -n fr.ynotes/.MainActivity")
+      end
   end
   
 end 

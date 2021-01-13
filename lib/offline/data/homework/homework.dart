@@ -45,6 +45,7 @@ class HomeworkOffline extends Offline {
       } catch (e) {
         print("Error while updating homework " + e.toString());
       }
+      
     }
   }
 
