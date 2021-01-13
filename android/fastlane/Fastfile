@@ -59,11 +59,11 @@ lane :beta do
     Dir.chdir "../.." do
       sh("flutter", "packages", "get")
       sh("flutter", "clean")
-      sh("flutter", "build", "appbundle","--build-number=#{build_number}")
-      sh("flutter", "build", "apk","--build-number=#{build_number}", "--split-per-abi")
+      sh("flutter", "build", "appbundle","--build-number=#{build_number}","--flavor", "prod",)
+      sh("flutter", "build", "apk","--build-number=#{build_number}", "--split-per-abi","--flavor", "prod",)
 
     end
-    upload_to_play_store(track: 'beta', aab: '../build/app/outputs/bundle/release/app-release.aab', package_name: "fr.ynotes")
+    upload_to_play_store(track: 'beta', aab: '../build/app/outputs/bundle/prodRelease/app-prod-release.aab ', package_name: "fr.ynotes")
   end
 
 end
@@ -82,11 +82,11 @@ lane :internal do
     Dir.chdir "../.." do
       sh("flutter", "packages", "get")
       sh("flutter", "clean")
-      sh("flutter", "build", "appbundle","--build-number=#{build_number}")
-      sh("flutter", "build", "apk","--build-number=#{build_number}", "--split-per-abi")
+      sh("flutter", "build", "appbundle","--build-number=#{build_number}","--flavor", "prod",)
+      sh("flutter", "build", "apk","--build-number=#{build_number}", "--split-per-abi","--flavor", "prod",)
 
     end
-    upload_to_play_store(track: 'internal', aab: '../build/app/outputs/bundle/release/app-release.aab', package_name: "fr.ynotes")
+    upload_to_play_store(track: 'internal', aab: '../build/app/outputs/bundle/prodRelease/app-prod-release.aab ', package_name: "fr.ynotes")
   end
 
 end
@@ -98,7 +98,7 @@ lane :githubrelease do
   build_number = number_of_commits()
   version = flutter_version()["version_name"]
   Dir.chdir "../.." do
-    sh("flutter", "build", "apk", "--release","--build-number=#{build_number}", "--split-per-abi")
+    sh("flutter", "build", "apk", "--release","--build-number=#{build_number}", "--split-per-abi","--flavor", "prod",)
   end
   github_release = set_github_release(
     repository_name: "ModernChocolate/ynotes",
@@ -108,7 +108,7 @@ lane :githubrelease do
     description: (File.read("metadata/android/fr-FR/last_changelog_github.txt") rescue "No changelog provided."),
     commitish: "master",
     is_prerelease: true,
-    upload_assets: ["../build/app/outputs/apk/release/app-arm64-v8a-release.apk", "../build/app/outputs/apk/release/app-armeabi-v7a-release.apk", "../build/app/outputs/apk/release/app-x86_64-release.apk"]
+    upload_assets: ["../build/app/outputs/flutter-apk/app-arm64-v8a-prod-release.apk", "../build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk", "../build/app/outputs/flutter-apk/app-x86_64-release.apk"]
   )
 end
 
@@ -116,15 +116,15 @@ lane :local_test do
   build_number = number_of_commits()
   Dir.chdir "../.." do
       sh("flutter","clean")
-      sh("flutter", "build", "apk", "--release","--build-number=#{build_number}", "--split-per-abi")
+      sh("flutter", "build", "apk", "--flavor", "prod", "--release","--build-number=#{build_number}", "--split-per-abi")
   end
   begin  
-      sh("adb", "install", "/home/jsonlines/Documents/ynotes/build/app/outputs/apk/release/app-arm64-v8a-release.apk")
+      sh("adb", "install", "build/app/outputs/flutter-apk/app-arm64-v8a-release.apk")
       sh("adb shell am start -n fr.ynotes/.MainActivity")
 
   rescue # if can't install ynotes
       sh("adb", "uninstall", "fr.ynotes")
-      sh("adb", "install", "/home/jsonlines/Documents/ynotes/build/app/outputs/apk/release/app-arm64-v8a-release.apk")
+      sh("adb", "install", "build/app/outputs/flutter-apk/app-arm64-v8a-release.apk")
       sh("adb shell am start -n fr.ynotes/.MainActivity")
   end
   

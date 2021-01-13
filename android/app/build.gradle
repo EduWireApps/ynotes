@@ -63,8 +63,8 @@ android {
             versionCode flutterVersionCode.toInteger()
             versionName flutterVersionName
         }
-        dev {
-            dimension "prod"
+        prod {
+            dimension "app"
             applicationId "fr.ynotes"
             versionCode flutterVersionCode.toInteger()
             versionName flutterVersionName
@@ -83,6 +83,18 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.release
+        }
+    }
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            def assembleTaskName = "assemble${variant.name.capitalize()}"
+            if (rootProject.childProjects['flutter']!=null && tasks.findByName(assembleTaskName)) {
+                def linkAPKTask = tasks.create(name: "linkFlutterApk${variant.name.capitalize()}").doLast {
+                    //soft link apk to flutter module build dir build/host
+                    ant.symlink(resource: new File(rootProject.projectDir.path+'/app/build'), link: new File(rootProject.childProjects['flutter'].projectDir.parentFile.parent+'/build/host'))
+                }
+                tasks[assembleTaskName].finalizedBy = [linkAPKTask]
+            }
         }
     }
   
