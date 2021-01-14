@@ -516,6 +516,21 @@ class Recipient {
   Recipient(this.name, this.surname, this.id, this.isTeacher, this.discipline);
 }
 
+@HiveType(typeId: 10)
+class SchoolLifeObj {
+  @HiveField(0)
+  final String libelle;
+  @HiveField(1)
+  final String displayDate;
+  @HiveField(2)
+  final String motif;
+  @HiveField(3)
+  final String type;
+  @HiveField(4)
+  final bool isJustified;
+  SchoolLifeObj(this.libelle, this.displayDate, this.motif, this.type, this.isJustified);
+}
+
 class CloudItem {
   //E.G "test.txt"
   final String title;

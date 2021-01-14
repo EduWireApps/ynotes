@@ -337,8 +337,6 @@ class EcoleDirecteMethod {
 //Returns the suitable function according to connection state
   static fetchAnyData(dynamic onlineFetch, dynamic offlineFetch,
       {bool forceFetch = false, isOfflineLocked = false}) async {
-
-
     //Test connection status
     var connectivityResult = await (Connectivity().checkConnectivity());
     //Offline
@@ -370,4 +368,6 @@ class EcoleDirecteMethod {
   static getNextSunday(DateTime date) {
     return date.subtract(Duration(days: date.weekday - 1)).add(Duration(days: 6));
   }
+
+  // static getSchoolLife() async {}
 }
