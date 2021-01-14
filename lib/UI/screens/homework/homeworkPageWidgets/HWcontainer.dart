@@ -103,7 +103,7 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
             Material(
               color: Theme.of(context).primaryColorDark,
               borderRadius: BorderRadius.all(
-                Radius.circular(15),
+                Radius.circular(11),
               ),
               child: InkWell(
                 onLongPress: () {
@@ -118,13 +118,13 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
                   }
                 },
                 borderRadius: BorderRadius.all(
-                  Radius.circular(15),
+                  Radius.circular(11),
                 ),
                 child: Container(
                   width: screenSize.size.width / 5 * 5,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(
-                      Radius.circular(15),
+                      Radius.circular(11),
                     ),
                   ),
                   padding: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),

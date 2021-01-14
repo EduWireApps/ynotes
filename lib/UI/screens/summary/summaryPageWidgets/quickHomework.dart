@@ -31,6 +31,7 @@ import 'package:ynotes/apis/utils.dart';
 import 'package:ynotes/classes.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/models.dart';
 import 'package:ynotes/models/homework/controller.dart';
 import 'package:ynotes/models/homework/utils.dart';
 import 'package:ynotes/usefulMethods.dart';
@@ -161,7 +162,7 @@ class _QuickHomeworkState extends State<QuickHomework> {
                                             itemBuilder: (context, index) {
                                               return FutureBuilder(
                                                 initialData: 0,
-                                                future: getColor(model.getHomework[index].codeMatiere),
+                                                future: getColor(model.getHomework[index].disciplineCode),
                                                 builder: (context, color) => Column(
                                                   children: <Widget>[
                                                     if (index == 0 ||
@@ -337,7 +338,7 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
                             children: [
                               Container(
                                 width: screenSize.size.width / 5 * 2.4,
-                                child: AutoSizeText(widget._homework.matiere,
+                                child: AutoSizeText(widget._homework.discipline,
                                     textScaleFactor: 1.0,
                                     textAlign: TextAlign.left,
                                     overflow: TextOverflow.ellipsis,
@@ -357,7 +358,7 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
                         Container(
                           width: screenSize.size.width / 5 * 2.8,
                           child: AutoSizeText(
-                            parse(widget._homework.contenu ?? "").documentElement.text,
+                            parse(widget._homework.rawContent ?? "").documentElement.text,
                             style: TextStyle(fontFamily: "Asap"),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,

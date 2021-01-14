@@ -45,22 +45,22 @@ class _QuickGradesState extends State<QuickGrades> {
         child: AutoSizeText.rich(
           //MARK
           TextSpan(
-            text: (grade.nonSignificatif ? "(" + grade.valeur : grade.valeur),
+            text: (grade.notSignificant ? "(" + grade.value : grade.value),
             style: TextStyle(
                 color: (ThemeUtils.textColor()),
                 fontFamily: "Asap",
                 fontWeight: FontWeight.normal,
                 fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.5),
             children: <TextSpan>[
-              if (grade.noteSur != "20")
+              if (grade.scale != "20")
                 //MARK ON
                 TextSpan(
-                    text: '/' + grade.noteSur,
+                    text: '/' + grade.scale,
                     style: TextStyle(
                         color: (ThemeUtils.textColor()),
                         fontWeight: FontWeight.normal,
                         fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.4)),
-              if (grade.nonSignificatif == true)
+              if (grade.notSignificant == true)
                 TextSpan(
                     text: ")",
                     style: TextStyle(
@@ -92,19 +92,19 @@ class _QuickGradesState extends State<QuickGrades> {
             spacing: screenSize.size.width / 5 * 0.1,
             children: [
               Text(
-                grade.libelleMatiere ?? "",
+                grade.disciplineName ?? "",
                 style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
                 textAlign: TextAlign.left,
               )
             ],
           ),
           Text(
-            grade.devoir ?? "",
+            grade.testName ?? "",
             style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontWeight: FontWeight.bold),
             textAlign: TextAlign.left,
           ),
           Text(
-            grade.date != null ? df.format(grade.dateSaisie) : "",
+            grade.date != null ? df.format(grade.entryDate) : "",
             style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
             textAlign: TextAlign.left,
           )

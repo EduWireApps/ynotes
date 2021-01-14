@@ -22,7 +22,7 @@ class _SummaryChartState extends State<SummaryChart> {
     super.initState();
     if (widget.lastGrades != null) {
       _grades.addAll(widget.lastGrades);
-      _grades.sort((a, b) => a.dateSaisie.compareTo(b.dateSaisie));
+      _grades.sort((a, b) => a.entryDate.compareTo(b.entryDate));
       if (_grades.length > 10) {
         _grades = _grades.sublist(_grades.length - 10, _grades.length);
       }
@@ -32,7 +32,7 @@ class _SummaryChartState extends State<SummaryChart> {
   getMax() {
     List<double> values = _grades
         .map((grade) =>
-            double.parse(grade.valeur.replaceAll(',', '.')) * 20 / double.parse(grade.noteSur.replaceAll(',', '.')))
+            double.parse(grade.value.replaceAll(',', '.')) * 20 / double.parse(grade.scale.replaceAll(',', '.')))
         .toList();
     //Reduce values size
     values = values.sublist(0, (_grades.length > 10 ? 10 : _grades.length));
@@ -46,7 +46,7 @@ class _SummaryChartState extends State<SummaryChart> {
   getMin() {
     List<double> values = _grades
         .map((grade) =>
-            double.parse(grade.valeur.replaceAll(',', '.')) * 20 / double.parse(grade.noteSur.replaceAll(',', '.')))
+            double.parse(grade.value.replaceAll(',', '.')) * 20 / double.parse(grade.scale.replaceAll(',', '.')))
         .toList();
     //Reduce values size
     values = values.sublist(0, (_grades.length > 10 ? 10 : _grades.length));
@@ -60,9 +60,9 @@ class _SummaryChartState extends State<SummaryChart> {
   toDouble(Grade grade) {
     double toReturn;
     if (!grade.letters) {
-      toReturn = (double.tryParse(grade.valeur.replaceAll(",", ".")) *
+      toReturn = (double.tryParse(grade.value.replaceAll(",", ".")) *
           20 /
-          double.tryParse(grade.noteSur.replaceAll(",", ".")));
+          double.tryParse(grade.scale.replaceAll(",", ".")));
       return toReturn;
     }
   }

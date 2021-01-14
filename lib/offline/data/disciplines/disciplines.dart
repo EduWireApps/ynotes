@@ -4,19 +4,23 @@ import 'package:ynotes/offline/offline.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 class DisciplinesOffline extends Offline {
+  DisciplinesOffline(bool locked) : super(locked);
+
   //Used to get disciplines, from db or locally
   Future<List<Discipline>> getDisciplines() async {
-    try {
-      if (disciplinesData != null) {
-        await refreshData();
-        return disciplinesData;
-      } else {
-        await refreshData();
-        return disciplinesData;
+    if (!locked) {
+      try {
+        if (disciplinesData != null) {
+          await refreshData();
+          return disciplinesData;
+        } else {
+          await refreshData();
+          return disciplinesData;
+        }
+      } catch (e) {
+        print("Error while returning disciplines" + e.toString());
+        return null;
       }
-    } catch (e) {
-      print("Error while returning disciplines" + e.toString());
-      return null;
     }
   }
 
@@ -45,9 +49,9 @@ class DisciplinesOffline extends Offline {
       List<Grade> grades = getAllGrades(disciplines, overrideLimit: true);
 
       grades.forEach((grade) {
-        if (!listPeriods.any((period) => period.name == grade.nomPeriode && period.id == grade.codePeriode)) {
-          if (grade.nomPeriode != null && grade.nomPeriode != "") {
-            listPeriods.add(Period(grade.nomPeriode, grade.codePeriode));
+        if (!listPeriods.any((period) => period.name == grade.periodName && period.id == grade.periodCode)) {
+          if (grade.periodName != null && grade.periodName != "") {
+            listPeriods.add(Period(grade.periodName, grade.periodCode));
           } else {}
         }
       });

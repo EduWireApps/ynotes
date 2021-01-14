@@ -3,6 +3,8 @@ import 'package:ynotes/classes.dart';
 import 'package:ynotes/offline/offline.dart';
 
 class PollsOffline extends Offline {
+  PollsOffline(bool locked) : super(locked);
+
   Future<List<PollInfo>> get() async {
     try {
       if (pollsData != null) {

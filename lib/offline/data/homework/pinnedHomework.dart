@@ -3,6 +3,8 @@ import 'package:intl/intl.dart';
 import 'package:ynotes/offline/offline.dart';
 
 class PinnedHomeworkOffline extends Offline {
+  PinnedHomeworkOffline(bool locked) : super(locked);
+
   ///Set a homework date as pinned (or not)
   void set(String date, bool value) async {
     if (!locked) {

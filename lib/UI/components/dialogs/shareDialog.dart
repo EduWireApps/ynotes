@@ -81,12 +81,12 @@ class _ShareBoxState extends State<ShareBox> {
                           Column(mainAxisSize: MainAxisSize.max, children: <Widget>[
                             FutureBuilder(
                                 initialData: 0,
-                                future: getColor(widget.grade.codeMatiere),
+                                future: getColor(widget.grade.disciplineCode),
                                 builder: (context, snapshot) {
                                   return Container(
                                       child: Center(
                                         child: Text(
-                                          widget.grade.libelleMatiere,
+                                          widget.grade.disciplineName,
                                           style: TextStyle(fontFamily: "Asap", color: Colors.black),
                                         ),
                                       ),
@@ -115,7 +115,7 @@ class _ShareBoxState extends State<ShareBox> {
                                         fontFamily: "Asap",
                                         color: ThemeUtils.textColor(),
                                       )),
-                                  Text(widget.grade.devoir,
+                                  Text(widget.grade.testName,
                                       style: TextStyle(
                                           fontFamily: "Asap",
                                           color: ThemeUtils.textColor(),
@@ -141,18 +141,18 @@ class _ShareBoxState extends State<ShareBox> {
                                       child: AutoSizeText.rich(
                                         //MARK
                                         TextSpan(
-                                          text: widget.grade.valeur,
+                                          text: widget.grade.value,
                                           style: TextStyle(
                                               color: ThemeUtils.textColor(),
                                               fontFamily: "Asap",
                                               fontWeight: FontWeight.bold,
                                               fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.3),
                                           children: <TextSpan>[
-                                            if (widget.grade.noteSur != "20")
+                                            if (widget.grade.scale != "20")
 
                                               //MARK ON
                                               TextSpan(
-                                                  text: '/' + widget.grade.noteSur,
+                                                  text: '/' + widget.grade.scale,
                                                   style: TextStyle(
                                                       color: ThemeUtils.textColor(),
                                                       fontWeight: FontWeight.bold,

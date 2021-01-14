@@ -92,7 +92,7 @@ class _AgendaState extends State<Agenda> {
   _buildActualLesson(BuildContext context, Lesson lesson) {
     MediaQueryData screenSize = MediaQuery.of(context);
     return FutureBuilder(
-        future: getColor(lesson.codeMatiere),
+        future: getColor(lesson.disciplineCode),
         initialData: 0,
         builder: (context, snapshot) {
           Color color = Color(snapshot.data);
@@ -119,7 +119,7 @@ class _AgendaState extends State<Agenda> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
-                                lesson.matiere,
+                                lesson.discipline,
                                 style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w800),
                                 maxLines: 4,
                                 textAlign: TextAlign.center,

@@ -67,7 +67,7 @@ class EcoleDirecteMethod {
     await offline.disciplines.updateDisciplines(disciplinesList);
     createStack();
     if (disciplinesList != null) {
-      await setIntSetting("gradesNumber",getAllGrades(disciplinesList).length);
+      await setIntSetting("gradesNumber", getAllGrades(disciplinesList).length);
     }
     return disciplinesList;
   }
@@ -335,13 +335,16 @@ class EcoleDirecteMethod {
   }
 
 //Returns the suitable function according to connection state
-  static fetchAnyData(dynamic onlineFetch, dynamic offlineFetch, {bool forceFetch = false}) async {
+  static fetchAnyData(dynamic onlineFetch, dynamic offlineFetch,
+      {bool forceFetch = false, isOfflineLocked = false}) async {
+
+
     //Test connection status
     var connectivityResult = await (Connectivity().checkConnectivity());
     //Offline
-    if (connectivityResult == ConnectivityResult.none) {
+    if (connectivityResult == ConnectivityResult.none && !isOfflineLocked) {
       return await offlineFetch();
-    } else if (forceFetch) {
+    } else if (forceFetch && !isOfflineLocked) {
       try {
         return await onlineFetch();
       } catch (e) {
@@ -349,7 +352,10 @@ class EcoleDirecteMethod {
       }
     } else {
       //Offline data;
-      var data = await offlineFetch();
+      var data;
+      if (!isOfflineLocked) {
+        data = await offlineFetch();
+      }
       if (data == null) {
         data = await onlineFetch();
       }

@@ -44,7 +44,7 @@ void disciplineModalBottomSheet(context, Discipline discipline, Function callbac
                           padding: EdgeInsets.all(5),
                           child: FittedBox(
                             child: Text(
-                              discipline.nomDiscipline,
+                              discipline.disciplineName,
                               style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w700),
                               textAlign: TextAlign.center,
                             ),
@@ -68,7 +68,7 @@ void disciplineModalBottomSheet(context, Discipline discipline, Function callbac
                                       String test = color.toString();
                                       String finalColor = "#" + test.toString().substring(10, test.length - 1);
                                       final prefs = await SharedPreferences.getInstance();
-                                      await prefs.setString(discipline.codeMatiere, finalColor);
+                                      await prefs.setString(discipline.disciplineCode, finalColor);
                                       discipline.setcolor = color;
                                       //Call set state
                                       callback();
@@ -93,28 +93,28 @@ void disciplineModalBottomSheet(context, Discipline discipline, Function callbac
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      buildKeyValuesInfo(context, "Votre moyenne", [discipline.moyenne]),
+                      buildKeyValuesInfo(context, "Votre moyenne", [discipline.average]),
                       SizedBox(
                         height: (screenSize.size.height / 3) / 25,
                       ),
-                      buildKeyValuesInfo(context, "Moyenne de la classe", [discipline.moyenneClasse]),
+                      buildKeyValuesInfo(context, "Moyenne de la classe", [discipline.classAverage]),
                       SizedBox(
                         height: (screenSize.size.height / 3) / 25,
                       ),
-                      buildKeyValuesInfo(context, "Moyenne la plus élevée", [discipline.moyenneMax]),
-                      if (discipline.moyenneMin != null)
+                      buildKeyValuesInfo(context, "Moyenne la plus élevée", [discipline.maxClassAverage]),
+                      if (discipline.minClassAverage != null)
                         SizedBox(
                           height: (screenSize.size.height / 3) / 25,
                         ),
-                      if (discipline.moyenneMin != null)
-                        buildKeyValuesInfo(context, "Moyenne la plus basse", [discipline.moyenneMin]),
-                      if (discipline.rangDiscipline != null)
+                      if (discipline.minClassAverage != null)
+                        buildKeyValuesInfo(context, "Moyenne la plus basse", [discipline.minClassAverage]),
+                      if (discipline.disciplineRank != null)
                       SizedBox(
                         height: (screenSize.size.height / 3) / 25,
                       ),
-                      if (discipline.rangDiscipline != null)
+                      if (discipline.disciplineRank != null)
                       buildKeyValuesInfo(context, "Rang",
-                          [discipline.rangDiscipline.toString() + "/" + discipline.effectifClasse.toString()]),
+                          [discipline.disciplineRank.toString() + "/" + discipline.classNumber.toString()]),
                       SizedBox(
                         height: (screenSize.size.height / 3) / 25,
                       ),

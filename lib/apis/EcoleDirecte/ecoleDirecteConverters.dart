@@ -63,9 +63,9 @@ class EcoleDirecteConverter {
         else {
           try {
             disciplinesList[disciplinesList.lastIndexWhere((disciplinesList) =>
-                    disciplinesList.codeMatiere == rawData['codeMatiere'] &&
-                    disciplinesList.periode == periodeElement["periode"])]
-                .codeSousMatiere
+                    disciplinesList.disciplineCode == rawData['codeMatiere'] &&
+                    disciplinesList.period == periodeElement["periode"])]
+                .subdisciplineCode
                 .add(rawData['codeSousMatiere']);
           } catch (e) {
             print(e);
@@ -74,11 +74,11 @@ class EcoleDirecteConverter {
       });
       //Retrieve related grades for each discipline
       disciplinesList.forEach((discipline) {
-        if (discipline.periode == periodeElement["periode"]) {
+        if (discipline.period == periodeElement["periode"]) {
           final List<Grade> localGradesList = List<Grade>();
 
           gradesData.forEach((element) {
-            if (element["codeMatiere"] == discipline.codeMatiere &&
+            if (element["codeMatiere"] == discipline.disciplineCode &&
                 element["codePeriode"] == periodeElement["idPeriode"]) {
               String nomPeriode = periodeElement["periode"];
               localGradesList.add(Grade.fromEcoleDirecteJson(element, nomPeriode));
@@ -138,58 +138,62 @@ class EcoleDirecteConverter {
     List rawData = hwData['data']['matieres'];
     List<Homework> homeworkList = List();
     rawData.forEach((homework) {
-      if (homework['aFaire'] != null) {
-        String encodedContent = "";
-        String aFaireEncoded = "";
-        bool rendreEnLigne = false;
-        bool interrogation = false;
-        List<Document> documentsAFaire = List<Document>();
-        List<Document> documentsContenuDeCours = List<Document>();
-        encodedContent = homework['aFaire']['contenu'];
-        rendreEnLigne = homework['aFaire']['rendreEnLigne'];
-        aFaireEncoded = homework['contenuDeSeance']['contenu'];
-        var docs = homework['aFaire']['documents'];
-        if (docs != null) {
-          documentsAFaire = documents(docs);
-        }
-        var docsContenu = homework['contenuDeSeance']['documents'];
-        if (docsContenu != null) {
-          docsContenu.forEach((e) {
-            documentsContenuDeCours = documents(docsContenu);
+      try {
+        if (homework['aFaire'] != null) {
+          String encodedContent = "";
+          String aFaireEncoded = "";
+          bool rendreEnLigne = false;
+          bool interrogation = false;
+          List<Document> documentsAFaire = List<Document>();
+          List<Document> documentsContenuDeCours = List<Document>();
+          encodedContent = homework['aFaire']['contenu'];
+          rendreEnLigne = homework['aFaire']['rendreEnLigne'];
+          aFaireEncoded = homework['aFaire']['contenuDeSeance']['contenu'];
+          var docs = homework['aFaire']['documents'];
+          if (docs != null) {
+            documentsAFaire = documents(docs);
+          }
+          var docsContenu = homework['aFaire']['contenuDeSeance']['documents'];
+          if (docsContenu != null) {
+            docsContenu.forEach((e) {
+              documentsContenuDeCours = documents(docsContenu);
+            });
+          }
+          interrogation = homework['interrogation'];
+          String decodedContent = "";
+          String decodedContenuDeSeance = "";
+          decodedContent = utf8.decode(base64.decode(encodedContent));
+          decodedContenuDeSeance = utf8.decode(base64.decode(aFaireEncoded));
+          String matiere = homework['matiere'];
+          String codeMatiere = homework['codeMatiere'];
+          String id = homework['id'].toString();
+
+          decodedContent = decodedContent.replaceAllMapped(
+              new RegExp(r'(>|\s)+(https?.+?)(<|\s)', multiLine: true, caseSensitive: false), (match) {
+            return '${match.group(1)}<a href="${match.group(2)}">${match.group(2)}</a>${match.group(3)}';
           });
+
+          DateTime editingDate = DateTime.parse(homework['aFaire']['donneLe']);
+          bool done = homework['aFaire']['effectue'] == 'true';
+          String teacherName = homework['nomProf'];
+          homeworkList.add(new Homework(
+              matiere,
+              codeMatiere,
+              id,
+              decodedContent,
+              decodedContenuDeSeance,
+              null,
+              editingDate,
+              done,
+              rendreEnLigne,
+              interrogation,
+              documentsAFaire,
+              documentsContenuDeCours,
+              teacherName,
+              true));
         }
-        interrogation = homework['interrogation'];
-        String decodedContent = "";
-        String decodedContenuDeSeance = "";
-        decodedContent = utf8.decode(base64.decode(encodedContent));
-        decodedContenuDeSeance = utf8.decode(base64.decode(aFaireEncoded));
-        String matiere = homework['matiere'];
-        String codeMatiere = homework['codeMatiere'];
-        String id = homework['id'].toString();
-
-        decodedContent = decodedContent
-            .replaceAllMapped(new RegExp(r'(>|\s)+(https?.+?)(<|\s)', multiLine: true, caseSensitive: false), (match) {
-          return '${match.group(1)}<a href="${match.group(2)}">${match.group(2)}</a>${match.group(3)}';
-        });
-
-        DateTime editingDate = DateTime.parse(homework['aFaire']['donneLe']);
-        bool done = homework['aFaire']['effectue'] == 'true';
-        String teacherName = homework['nomProf'];
-        homeworkList.add(new Homework(
-            matiere,
-            codeMatiere,
-            id,
-            decodedContent,
-            decodedContenuDeSeance,
-            null,
-            editingDate,
-            done,
-            rendreEnLigne,
-            interrogation,
-            documentsAFaire,
-            documentsContenuDeCours,
-            teacherName,
-            true));
+      } catch (e) {
+        print(e.toString());
       }
     });
     return homeworkList;
@@ -211,8 +215,8 @@ class EcoleDirecteConverter {
           start: start,
           end: end,
           canceled: canceled,
-          matiere: matiere,
-          codeMatiere: codeMatiere,
+          discipline: matiere,
+          disciplineCode: codeMatiere,
           id: (await getLessonID(start, end, matiere)).toString());
       lessons.add(parsedLesson);
     });

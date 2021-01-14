@@ -33,7 +33,7 @@ class _DialogHomeworkState extends State<DialogHomework> {
   Widget build(BuildContext context) {
     TextStyle textStyle = TextStyle(backgroundColor: Colors.yellow.shade100);
 
-    var document = parse(segmentedControlIndex == 0 ? widget.hw.contenu : widget.hw.contenuDeSeance);
+    var document = parse(segmentedControlIndex == 0 ? widget.hw.rawContent : widget.hw.sessionRawContent);
 
     String parsedHtml = parse(document.body.text).documentElement.text;
     MediaQueryData screenSize;
@@ -62,7 +62,7 @@ class _DialogHomeworkState extends State<DialogHomework> {
               ),
             ],
           ),
-          if (widget.hw.contenuDeSeance != null && widget.hw.contenuDeSeance != "")
+          if (widget.hw.sessionRawContent != null && widget.hw.sessionRawContent != "")
             Material(
               color: Colors.transparent,
               child: Container(
@@ -110,7 +110,7 @@ class _DialogHomeworkState extends State<DialogHomework> {
             ),
           ),
           FutureBuilder(
-              future: getColor(this.widget.hw.codeMatiere),
+              future: getColor(this.widget.hw.disciplineCode),
               initialData: 0,
               builder: (context, snapshot) {
                 Color color = Color(snapshot.data);
@@ -126,7 +126,7 @@ class _DialogHomeworkState extends State<DialogHomework> {
                       child: Column(
                         children: [
                           Text(
-                            this.widget.hw.matiere,
+                            this.widget.hw.discipline,
                             textAlign: TextAlign.left,
                             style: TextStyle(
                                 fontFamily: "Asap",

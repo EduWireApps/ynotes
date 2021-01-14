@@ -128,9 +128,9 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
                   });
                   await setSetting("agendaOnGoingNotification", value);
                   if (value) {
-                    await LocalNotification.setOnGoingNotification();
+                    await AppNotification.setOnGoingNotification();
                   } else {
-                    await LocalNotification.cancelOnGoingNotification();
+                    await AppNotification.cancelOnGoingNotification();
                   }
                 } else {
                   if (await CustomDialogs.showAuthorizationsDialog(
@@ -144,9 +144,9 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
                       });
                       await setSetting("agendaOnGoingNotification", value);
                       if (value) {
-                        await LocalNotification.setOnGoingNotification();
+                        await AppNotification.setOnGoingNotification();
                       } else {
-                        await LocalNotification.cancelOnGoingNotification();
+                        await AppNotification.cancelOnGoingNotification();
                       }
                     }
                   }

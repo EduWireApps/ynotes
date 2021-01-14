@@ -265,7 +265,7 @@ class Client {
       Map data = {"N": document.id, "G": int.parse(document.type)};
       //Used by pronote to encrypt the data (I don't know why)
       var magic_stuff = this.encryption.aes_encryptFromString(jsonEncode(data));
-      String libelle = Uri.encodeComponent(Uri.encodeComponent(document.libelle));
+      String libelle = Uri.encodeComponent(Uri.encodeComponent(document.documentName));
       String url = this.communication.root_site +
           '/FichiersExternes/' +
           magic_stuff +
@@ -366,9 +366,9 @@ class Client {
     });
     listHW.forEach((homework) {
       try {
-        homework.contenuDeSeance = listCHW
-            .firstWhere((content) => content.codeMatiere == homework.codeMatiere && content.date == homework.date)
-            .contenuDeSeance;
+        homework.sessionRawContent = listCHW
+            .firstWhere((content) => content.disciplineCode == homework.disciplineCode && content.date == homework.date)
+            .sessionRawContent;
       } catch (e) {}
     });
     return listHW;
@@ -578,9 +578,9 @@ class Client {
               duration: duration,
               canceled: canceled,
               status: status,
-              matiere: matiere,
+              discipline: matiere,
               id: id,
-              codeMatiere: codeMatiere));
+              disciplineCode: codeMatiere));
         } catch (e) {
           print("Error while getting lessons " + e.toString());
         }
@@ -1072,23 +1072,23 @@ class PronotePeriod {
     var other = List();
     grades.forEach((element) async {
       list.add(Grade(
-          valeur: this.gradeTranslate(element["note"]["V"]),
-          devoir: element["commentaire"],
-          codePeriode: this.id,
-          nomPeriode: this.name,
-          codeMatiere: element["service"]["V"]["L"].hashCode.toString(),
-          codeSousMatiere: null,
-          libelleMatiere: element["service"]["V"]["L"],
+          value: this.gradeTranslate(element["note"]["V"]),
+          testName: element["commentaire"],
+          periodCode: this.id,
+          periodName: this.name,
+          disciplineCode: element["service"]["V"]["L"].hashCode.toString(),
+          subdisciplineCode: null,
+          disciplineName: element["service"]["V"]["L"],
           letters: element["note"]["V"].contains("|"),
-          coef: element["coefficient"].toString(),
-          noteSur: element["bareme"]["V"],
+          coefficient: element["coefficient"].toString(),
+          scale: element["bareme"]["V"],
           min: this.gradeTranslate(element["noteMin"]["V"]),
           max: this.gradeTranslate(element["noteMax"]["V"]),
-          moyenneClasse: this.gradeTranslate(element["moyenne"]["V"]),
+          classAverage: this.gradeTranslate(element["moyenne"]["V"]),
           date: DateFormat("dd/MM/yyyy").parse(element["date"]["V"]),
-          nonSignificatif: this.gradeTranslate(element["note"]["V"]) == "NonNote" ? true : false,
-          typeDevoir: "Interrogation",
-          dateSaisie: DateFormat("dd/MM/yyyy").parse(element["date"]["V"])));
+          notSignificant: this.gradeTranslate(element["note"]["V"]) == "NonNote" ? true : false,
+          testType: "Interrogation",
+          entryDate: DateFormat("dd/MM/yyyy").parse(element["date"]["V"])));
       other.add(average(response, element["service"]["V"]["L"].hashCode.toString()));
     });
     return [list, other];

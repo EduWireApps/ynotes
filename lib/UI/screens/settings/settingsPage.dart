@@ -1,3 +1,5 @@
+import 'dart:isolate';
+
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
@@ -266,7 +268,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                         false) {
                       await AndroidPlatformChannel.openAutoStartSettings();
                     }
-                    await LocalNotification.showDebugNotification();
+                    await AppNotification.showDebugNotification();
                     Flushbar(
                       flushbarPosition: FlushbarPosition.BOTTOM,
                       backgroundColor: Colors.orange.shade200,
@@ -425,10 +427,8 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     title: 'Bouton magique',
                     leading: Icon(MdiIcons.testTube, color: ThemeUtils.textColor()),
                     onTap: () async {
-                      //await setIntSetting("gradesNumber", 35);
-                      //print((await getIntSetting("gradesNumber")));
-                      //await setIntSetting("gradesNumber", 35);
-                      await LocalNotification.showNewMailNotification((await getMails()).first,"fff");
+                      var a = await localApi.getNextHomework();
+                      print(a.last.loaded);
                     },
                     titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                     subtitleTextStyle: TextStyle(

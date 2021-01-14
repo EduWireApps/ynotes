@@ -8,6 +8,8 @@ import 'package:ynotes/utils/fileUtils.dart';
 import '../../../classes.dart';
 
 class HomeworkOffline extends Offline {
+  HomeworkOffline(bool locked) : super(locked);
+
   ///Update existing offline.homework.get() with passed data
   ///if `add` boolean is set to true passed data is combined with old data
   updateHomework(List<Homework> newData, {bool add = false, forceAdd = false}) async {
@@ -43,6 +45,7 @@ class HomeworkOffline extends Offline {
       } catch (e) {
         print("Error while updating homework " + e.toString());
       }
+      
     }
   }
 

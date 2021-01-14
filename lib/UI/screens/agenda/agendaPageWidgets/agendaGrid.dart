@@ -182,7 +182,7 @@ class _AgendaGridState extends State<AgendaGrid> {
     if (event != null && event.color != null) {
       return event.color;
     } else {
-      return await getColor(event.lesson.codeMatiere);
+      return await getColor(event.lesson.disciplineCode);
     }
   }
 
@@ -244,7 +244,7 @@ class _AgendaGridState extends State<AgendaGrid> {
                             var _event = _events.where((element) => element.wholeDay).toList()[index];
                             if (_event.isLesson) {
                               //Getting color before
-                              _event.color = await getColor(_event.lesson.codeMatiere);
+                              _event.color = await getColor(_event.lesson.disciplineCode);
                             }
                             var temp =
                                 await agendaEventEdit(context, true, defaultDate: _event.start, customEvent: _event);
@@ -265,11 +265,11 @@ class _AgendaGridState extends State<AgendaGrid> {
                                       _event = temp;
                                     });
                                   }
-                                  await LocalNotification.scheduleAgendaReminders(temp);
+                                  await AppNotification.scheduleAgendaReminders(temp);
                                 }
                               } else {
                                 await offline.reminders.removeAll(_event.id);
-                                await LocalNotification.cancelNotification(_event.id.hashCode);
+                                await AppNotification.cancelNotification(_event.id.hashCode);
                               }
                               await refreshAgendaFuture();
                               widget.setStateCallback();
@@ -279,7 +279,7 @@ class _AgendaGridState extends State<AgendaGrid> {
                             var _event = _events.where((element) => element.wholeDay).toList()[index];
 
                             if (_event.isLesson) {
-                              _event.color = await getColor(_event.lesson.codeMatiere);
+                              _event.color = await getColor(_event.lesson.disciplineCode);
                               await lessonDetails(context, _event);
                               await refreshAgendaFuture();
                               print("ok");

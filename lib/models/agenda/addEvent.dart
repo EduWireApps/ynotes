@@ -15,6 +15,6 @@ addEvent(context) async {
     } else {
       await offline.agendaEvents.addAgendaEvent(temp, await get_week(temp.start));
     }
-    await LocalNotification.scheduleAgendaReminders(temp);
+    await AppNotification.scheduleAgendaReminders(temp);
   }
 }

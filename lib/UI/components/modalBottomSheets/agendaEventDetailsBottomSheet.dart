@@ -105,7 +105,7 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                                   }
                                 } else {
                                   await offline.agendaEvents.addAgendaEvent(temp, await get_week(temp.start));
-                                  await LocalNotification.scheduleAgendaReminders(temp);
+                                  await AppNotification.scheduleAgendaReminders(temp);
                                 }
                                 setState(() {
                                   this.widget.event = temp;
@@ -185,7 +185,7 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                               reminders.add(reminder);
                             });
                             offline.reminders.updateReminders(reminder);
-                            await LocalNotification.scheduleReminders(widget.event);
+                            await AppNotification.scheduleReminders(widget.event);
                           }
                         },
                         child: Card(
@@ -216,7 +216,7 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                                               reminders.add(reminder);
                                             });
                                             offline.reminders.updateReminders(reminder);
-                                            await LocalNotification.scheduleReminders(widget.event);
+                                            await AppNotification.scheduleReminders(widget.event);
                                           }
                                         },
                                         child: FittedBox(
@@ -273,7 +273,7 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                           if (reminder != null) {
                             if (reminder.runtimeType.toString().contains("String")) {
                               if (reminder == "removed") {
-                                await LocalNotification.cancelNotification(reminders[index].id.hashCode);
+                                await AppNotification.cancelNotification(reminders[index].id.hashCode);
                                 setState(() {
                                   reminders.removeAt(index);
                                 });
@@ -283,7 +283,7 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                                 reminders.add(reminder);
                               });
                               offline.reminders.updateReminders(reminder);
-                              await LocalNotification.scheduleReminders(widget.event);
+                              await AppNotification.scheduleReminders(widget.event);
                             }
                           }
                         },
@@ -313,7 +313,7 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                                             if (reminder != null) {
                                               if (reminder.runtimeType.toString().contains("String")) {
                                                 if (reminder == "removed") {
-                                                  await LocalNotification.cancelNotification(reminders[index].id.hashCode);
+                                                  await AppNotification.cancelNotification(reminders[index].id.hashCode);
                                                   setState(() {
                                                     reminders.removeAt(index);
                                                   });
@@ -323,7 +323,7 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                                                   reminders.add(reminder);
                                                 });
                                                 offline.reminders.updateReminders(reminder);
-                                                await LocalNotification.scheduleReminders(widget.event);
+                                                await AppNotification.scheduleReminders(widget.event);
                                               }
                                             }
                                           },

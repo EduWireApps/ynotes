@@ -3,6 +3,8 @@ import 'package:ynotes/classes.dart';
 import 'package:ynotes/offline/offline.dart';
 
 class RecipientsOffline extends Offline {
+  RecipientsOffline(bool locked) : super(locked);
+
   Future<List<Recipient>> getRecipients() async {
     try {
       if (recipientsData != null) {

@@ -98,31 +98,31 @@ class HomeworkAdapter extends TypeAdapter<Homework> {
     writer
       ..writeByte(14)
       ..writeByte(0)
-      ..write(obj.matiere)
+      ..write(obj.discipline)
       ..writeByte(1)
-      ..write(obj.codeMatiere)
+      ..write(obj.disciplineCode)
       ..writeByte(2)
       ..write(obj.id)
       ..writeByte(3)
-      ..write(obj.contenu)
+      ..write(obj.rawContent)
       ..writeByte(4)
-      ..write(obj.contenuDeSeance)
+      ..write(obj.sessionRawContent)
       ..writeByte(5)
       ..write(obj.date)
       ..writeByte(6)
-      ..write(obj.datePost)
+      ..write(obj.entryDate)
       ..writeByte(7)
       ..write(obj.done)
       ..writeByte(8)
-      ..write(obj.rendreEnLigne)
+      ..write(obj.toReturn)
       ..writeByte(9)
-      ..write(obj.interrogation)
+      ..write(obj.isATest)
       ..writeByte(10)
       ..write(obj.documents)
       ..writeByte(11)
-      ..write(obj.documentsContenuDeSeance)
+      ..write(obj.sessionDocuments)
       ..writeByte(12)
-      ..write(obj.nomProf)
+      ..write(obj.teacherName)
       ..writeByte(13)
       ..write(obj.loaded);
   }
@@ -161,7 +161,7 @@ class DocumentAdapter extends TypeAdapter<Document> {
     writer
       ..writeByte(4)
       ..writeByte(0)
-      ..write(obj.libelle)
+      ..write(obj.documentName)
       ..writeByte(1)
       ..write(obj.id)
       ..writeByte(2)
@@ -194,21 +194,21 @@ class GradeAdapter extends TypeAdapter<Grade> {
     return Grade(
       max: fields[17] as String,
       min: fields[18] as String,
-      devoir: fields[0] as String,
-      codePeriode: fields[1] as String,
-      codeMatiere: fields[2] as String,
-      codeSousMatiere: fields[3] as String,
-      libelleMatiere: fields[4] as String,
+      testName: fields[0] as String,
+      periodCode: fields[1] as String,
+      disciplineCode: fields[2] as String,
+      subdisciplineCode: fields[3] as String,
+      disciplineName: fields[4] as String,
       letters: fields[5] as bool,
-      valeur: fields[6] as String,
-      coef: fields[7] as String,
-      noteSur: fields[8] as String,
-      moyenneClasse: fields[9] as String,
-      typeDevoir: fields[10] as String,
+      value: fields[6] as String,
+      coefficient: fields[7] as String,
+      scale: fields[8] as String,
+      classAverage: fields[9] as String,
+      testType: fields[10] as String,
       date: fields[16] as DateTime,
-      dateSaisie: fields[15] as DateTime,
-      nonSignificatif: fields[13] as bool,
-      nomPeriode: fields[14] as String,
+      entryDate: fields[15] as DateTime,
+      notSignificant: fields[13] as bool,
+      periodName: fields[14] as String,
     );
   }
 
@@ -217,35 +217,35 @@ class GradeAdapter extends TypeAdapter<Grade> {
     writer
       ..writeByte(17)
       ..writeByte(0)
-      ..write(obj.devoir)
+      ..write(obj.testName)
       ..writeByte(1)
-      ..write(obj.codePeriode)
+      ..write(obj.periodCode)
       ..writeByte(2)
-      ..write(obj.codeMatiere)
+      ..write(obj.disciplineCode)
       ..writeByte(3)
-      ..write(obj.codeSousMatiere)
+      ..write(obj.subdisciplineCode)
       ..writeByte(4)
-      ..write(obj.libelleMatiere)
+      ..write(obj.disciplineName)
       ..writeByte(5)
       ..write(obj.letters)
       ..writeByte(6)
-      ..write(obj.valeur)
+      ..write(obj.value)
       ..writeByte(7)
-      ..write(obj.coef)
+      ..write(obj.coefficient)
       ..writeByte(8)
-      ..write(obj.noteSur)
+      ..write(obj.scale)
       ..writeByte(9)
-      ..write(obj.moyenneClasse)
+      ..write(obj.classAverage)
       ..writeByte(10)
-      ..write(obj.typeDevoir)
+      ..write(obj.testType)
       ..writeByte(16)
       ..write(obj.date)
       ..writeByte(15)
-      ..write(obj.dateSaisie)
+      ..write(obj.entryDate)
       ..writeByte(13)
-      ..write(obj.nonSignificatif)
+      ..write(obj.notSignificant)
       ..writeByte(14)
-      ..write(obj.nomPeriode)
+      ..write(obj.periodName)
       ..writeByte(17)
       ..write(obj.max)
       ..writeByte(18)
@@ -275,22 +275,22 @@ class DisciplineAdapter extends TypeAdapter<Discipline> {
     };
     return Discipline(
       gradesList: (fields[12] as List)?.cast<Grade>(),
-      moyenneGeneralClasseMax: fields[1] as String,
-      moyenneGeneraleClasse: fields[2] as String,
-      moyenneGenerale: fields[0] as String,
-      moyenneClasse: fields[7] as String,
-      moyenneMin: fields[8] as String,
-      moyenneMax: fields[9] as String,
-      codeMatiere: fields[3] as String,
-      codeSousMatiere: (fields[4] as List)?.cast<String>(),
-      moyenne: fields[6] as String,
-      professeurs: (fields[10] as List)?.cast<String>(),
-      nomDiscipline: fields[5] as String,
-      periode: fields[11] as String,
+      maxClassGeneralAverage: fields[1] as String,
+      classGeneralAverage: fields[2] as String,
+      generalAverage: fields[0] as String,
+      classAverage: fields[7] as String,
+      minClassAverage: fields[8] as String,
+      maxClassAverage: fields[9] as String,
+      disciplineCode: fields[3] as String,
+      subdisciplineCode: (fields[4] as List)?.cast<String>(),
+      average: fields[6] as String,
+      teachers: (fields[10] as List)?.cast<String>(),
+      disciplineName: fields[5] as String,
+      period: fields[11] as String,
       color: fields[13] as int,
-      rangDiscipline: fields[14] as int,
-      effectifClasse: fields[15] as String,
-      rangGeneral: fields[16] as String,
+      disciplineRank: fields[14] as int,
+      classNumber: fields[15] as String,
+      generalRank: fields[16] as String,
     );
   }
 
@@ -299,39 +299,39 @@ class DisciplineAdapter extends TypeAdapter<Discipline> {
     writer
       ..writeByte(17)
       ..writeByte(0)
-      ..write(obj.moyenneGenerale)
+      ..write(obj.generalAverage)
       ..writeByte(1)
-      ..write(obj.moyenneGeneralClasseMax)
+      ..write(obj.maxClassGeneralAverage)
       ..writeByte(2)
-      ..write(obj.moyenneGeneraleClasse)
+      ..write(obj.classGeneralAverage)
       ..writeByte(3)
-      ..write(obj.codeMatiere)
+      ..write(obj.disciplineCode)
       ..writeByte(4)
-      ..write(obj.codeSousMatiere)
+      ..write(obj.subdisciplineCode)
       ..writeByte(5)
-      ..write(obj.nomDiscipline)
+      ..write(obj.disciplineName)
       ..writeByte(6)
-      ..write(obj.moyenne)
+      ..write(obj.average)
       ..writeByte(7)
-      ..write(obj.moyenneClasse)
+      ..write(obj.classAverage)
       ..writeByte(8)
-      ..write(obj.moyenneMin)
+      ..write(obj.minClassAverage)
       ..writeByte(9)
-      ..write(obj.moyenneMax)
+      ..write(obj.maxClassAverage)
       ..writeByte(10)
-      ..write(obj.professeurs)
+      ..write(obj.teachers)
       ..writeByte(11)
-      ..write(obj.periode)
+      ..write(obj.period)
       ..writeByte(12)
       ..write(obj.gradesList)
       ..writeByte(13)
       ..write(obj.color)
       ..writeByte(14)
-      ..write(obj.rangDiscipline)
+      ..write(obj.disciplineRank)
       ..writeByte(15)
-      ..write(obj.effectifClasse)
+      ..write(obj.classNumber)
       ..writeByte(16)
-      ..write(obj.rangGeneral);
+      ..write(obj.generalRank);
   }
 
   @override
@@ -364,8 +364,8 @@ class LessonAdapter extends TypeAdapter<Lesson> {
       status: fields[6] as String,
       groups: (fields[7] as List)?.cast<String>(),
       content: fields[8] as String,
-      matiere: fields[9] as String,
-      codeMatiere: fields[10] as String,
+      discipline: fields[9] as String,
+      disciplineCode: fields[10] as String,
       end: fields[3] as DateTime,
       id: fields[11] as String,
     );
@@ -394,9 +394,9 @@ class LessonAdapter extends TypeAdapter<Lesson> {
       ..writeByte(8)
       ..write(obj.content)
       ..writeByte(9)
-      ..write(obj.matiere)
+      ..write(obj.discipline)
       ..writeByte(10)
-      ..write(obj.codeMatiere)
+      ..write(obj.disciplineCode)
       ..writeByte(11)
       ..write(obj.id);
   }
@@ -672,19 +672,19 @@ Homework _$HomeworkFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$HomeworkToJson(Homework instance) => <String, dynamic>{
-      'matiere': instance.matiere,
-      'codeMatiere': instance.codeMatiere,
+      'matiere': instance.discipline,
+      'codeMatiere': instance.disciplineCode,
       'id': instance.id,
-      'contenu': instance.contenu,
-      'contenuDeSeance': instance.contenuDeSeance,
+      'contenu': instance.rawContent,
+      'contenuDeSeance': instance.sessionRawContent,
       'date': instance.date.toIso8601String(),
-      'datePost': instance.datePost.toIso8601String(),
+      'datePost': instance.entryDate.toIso8601String(),
       'done': instance.done,
-      'rendreEnLigne': instance.rendreEnLigne,
-      'interrogation': instance.interrogation,
+      'rendreEnLigne': instance.toReturn,
+      'interrogation': instance.isATest,
       'documents': instance.documents,
-      'documentsContenuDeSeance': instance.documentsContenuDeSeance,
-      'nomProf': instance.nomProf,
+      'documentsContenuDeSeance': instance.sessionDocuments,
+      'nomProf': instance.teacherName,
       'loaded': instance.loaded,
     };
 
@@ -698,7 +698,7 @@ Document _$DocumentFromJson(Map<String, dynamic> json) {
 }
 
 Map<String, dynamic> _$DocumentToJson(Document instance) => <String, dynamic>{
-      'libelle': instance.libelle,
+      'libelle': instance.documentName,
       'id': instance.id,
       'type': instance.type,
       'length': instance.length,
@@ -714,8 +714,8 @@ Lesson _$LessonFromJson(Map<String, dynamic> json) {
     status: json['status'] as String,
     groups: (json['groups'] as List).map((e) => e as String).toList(),
     content: json['content'] as String,
-    matiere: json['matiere'] as String,
-    codeMatiere: json['codeMatiere'] as String,
+    discipline: json['matiere'] as String,
+    disciplineCode: json['codeMatiere'] as String,
     end: DateTime.parse(json['end'] as String),
     id: json['id'] as String,
   );
@@ -731,8 +731,8 @@ Map<String, dynamic> _$LessonToJson(Lesson instance) => <String, dynamic>{
       'status': instance.status,
       'groups': instance.groups,
       'content': instance.content,
-      'matiere': instance.matiere,
-      'codeMatiere': instance.codeMatiere,
+      'matiere': instance.discipline,
+      'codeMatiere': instance.disciplineCode,
       'id': instance.id,
     };
 
