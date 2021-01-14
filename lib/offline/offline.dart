@@ -87,7 +87,7 @@ class Offline {
       }
       var dir = await FolderAppUtil.getDirectory();
       try {
-        await Hive.initFlutter();
+        Hive.init("${dir.path}/offline");
         offlineBox = await Hive.openBox("offlineData");
         homeworkDoneBox = await Hive.openBox('doneHomework');
         pinnedHomeworkBox = await Hive.openBox('pinnedHomework');
