@@ -50,6 +50,57 @@ int _currentIndex = 0;
 bool isQuickMenuShown = false;
 
 class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateMixin {
+  ///Apps
+  ///`relatedApi` should be set to null if both APIs can use it
+  ///-1 is only shown in debug mode
+  List<Map> entries() {
+    return [
+      {
+        "menuName": "Résumé",
+        "icon": MdiIcons.home,
+        "page": SummaryPage(
+          switchPage: _switchPage,
+          key: summaryPage,
+        ),
+        "key": summaryPage
+      },
+      {
+        "menuName": "Notes",
+        "icon": MdiIcons.trophy,
+        "page": SingleChildScrollView(physics: NeverScrollableScrollPhysics(), child: GradesPage()),
+      },
+      {
+        "menuName": "Devoirs",
+        "icon": MdiIcons.calendarCheck,
+        "page": HomeworkPage(
+          key: homeworkPage,
+        ),
+        "key": homeworkPage
+      },
+      {"menuName": "Agenda", "icon": MdiIcons.calendar, "page": AgendaPage(key: agendaPage), "key": agendaPage},
+      {
+        "menuName": "Messagerie",
+        "icon": MdiIcons.mail,
+        "relatedApi": 0,
+        "page": MailPage(),
+      },
+      {"menuName": "Cloud", "icon": MdiIcons.cloud, "relatedApi": 0, "page": CloudPage()},
+      {"menuName": "Sondages", "icon": MdiIcons.poll, "relatedApi": 1, "page": PollsAndInfoPage()},
+      {
+        "menuName": "Fichiers",
+        "icon": MdiIcons.file,
+        "relatedApi": 0,
+        "page": DownloadsExplorer(),
+      },
+      {
+        "menuName": "Statistiques",
+        "icon": MdiIcons.chartBar,
+        "relatedApi": -1,
+        "page": StatsPage(),
+      },
+    ];
+  }
+
   PageController drawerPageViewController;
   ValueNotifier<int> _notifier = ValueNotifier<int>(0);
   //Boolean
@@ -60,9 +111,9 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
 
   Animation<double> quickMenuButtonAnimation;
   StreamSubscription tabBarconnexion;
-  final GlobalKey<AgendaPageState> agendaPage = new GlobalKey();
-  final GlobalKey<SummaryPageState> summaryPage = new GlobalKey();
-  final GlobalKey<HomeworkPageState> homeworkPage = new GlobalKey();
+  GlobalKey<AgendaPageState> agendaPage = new GlobalKey();
+  GlobalKey<SummaryPageState> summaryPage = new GlobalKey();
+  GlobalKey<HomeworkPageState> homeworkPage = new GlobalKey();
   bool isOffline = false;
   OverlayState overlayState;
   OverlayEntry _overlayEntry;
@@ -232,6 +283,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                         valueListenable: _notifier,
                         builder: (context, value, child) {
                           return CustomDrawer(
+                            entries(),
                             notifier: _notifier,
                             drawerPageViewController: drawerPageViewController,
                           );
@@ -255,31 +307,15 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                               backgroundColor: isDarkModeEnabled
                                   ? Theme.of(context).primaryColorLight
                                   : Theme.of(context).primaryColorDark,
-                              title: Text(entries[value]["menuName"]),
+                              title: Text(entries()[value]["menuName"]),
                               actions: [
-                                if ([0, 1, 4].contains(value))
+                                if (entries()[value]["key"] != null)
                                   FlatButton(
                                     color: Colors.transparent,
                                     child:
                                         Icon(MdiIcons.wrench, color: isDarkModeEnabled ? Colors.white : Colors.black),
                                     onPressed: () {
-                                      switch (value) {
-                                        case 1:
-                                          {
-                                            agendaPage.currentState.triggerSettings();
-                                          }
-                                          break;
-                                        case 0:
-                                          {
-                                            summaryPage.currentState.triggerSettings();
-                                          }
-                                          break;
-                                        case 4:
-                                          {
-                                            homeworkPage.currentState.triggerSettings();
-                                          }
-                                          break;
-                                      }
+                                      entries()[value]["key"].currentState.triggerSettings();
                                     },
                                   )
                               ],
@@ -292,25 +328,13 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                               ));
                         }),
                   ),
-                  body: PageView(
-                      physics: NeverScrollableScrollPhysics(),
-                      controller: drawerPageViewController,
-                      children: [
-                        SummaryPage(
-                          switchPage: _switchPage,
-                          key: summaryPage,
-                        ),
-                        AgendaPage(key: agendaPage),
-                        DownloadsExplorer(),
-                        SingleChildScrollView(physics: NeverScrollableScrollPhysics(), child: GradesPage()),
-                        HomeworkPage(
-                          key: homeworkPage,
-                        ),
-                        StatsPage(),
-                        MailPage(),
-                        CloudPage(),
-                        PollsAndInfoPage()
-                      ]),
+                  body: PageView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    controller: drawerPageViewController,
+                    itemBuilder: (context, index) {
+                      return entries()[index]["page"];
+                    },
+                  ),
                 ),
               ),
 
@@ -395,8 +419,6 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
           )),
     );
   }
-
-  
 
   _switchPage(int index) {
     _scrollTo(index);

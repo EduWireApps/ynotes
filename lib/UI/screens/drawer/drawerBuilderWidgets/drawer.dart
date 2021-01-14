@@ -7,38 +7,14 @@ import 'package:provider/provider.dart';
 import 'package:ynotes/UI/components/day_night_switch-master/lib/day_night_switch.dart';
 import 'package:ynotes/UI/screens/drawer/drawerBuilder.dart';
 import 'package:ynotes/UI/screens/settings/settingsPage.dart';
+import 'package:ynotes/UI/screens/summary/summaryPage.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/utils/themeUtils.dart';
 
-///Apps
-///`relatedApi` should be set to null if both APIs can use it
-///-1 is only shown in debug mode
-List<Map> entries = [
-  {
-    "menuName": "Résumé",
-    "icon": MdiIcons.home,
-  },
-  {
-    "menuName": "Agenda",
-    "icon": MdiIcons.calendar,
-  },
-  {"menuName": "Fichiers", "icon": MdiIcons.file, "relatedApi": 0},
-  {
-    "menuName": "Notes",
-    "icon": MdiIcons.trophy,
-  },
-  {
-    "menuName": "Devoirs",
-    "icon": MdiIcons.calendarCheck,
-  },
-  {"menuName": "Statistiques", "icon": MdiIcons.chartBar, "relatedApi": -1},
-  {"menuName": "Messagerie", "icon": MdiIcons.mail, "relatedApi": 0},
-  {"menuName": "Cloud", "icon": MdiIcons.cloud, "relatedApi": 0},
-  {"menuName": "Sondages", "icon": MdiIcons.poll, "relatedApi": 1},
-];
-
 class CustomDrawer extends StatefulWidget {
-  const CustomDrawer({
+  final List entries;
+  const CustomDrawer(
+    this.entries, {
     Key key,
     @required ValueNotifier<int> notifier,
     @required this.drawerPageViewController,
@@ -110,7 +86,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   ),
                 ),
               ),
-              for (var entry in entries)
+              for (var entry in this.widget.entries)
                 if (entry["relatedApi"] == null ||
                     entry["relatedApi"] == chosenParser ||
                     (entry["relatedApi"] == -1 && !kReleaseMode))
@@ -123,13 +99,13 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             return Material(
                               borderRadius:
                                   BorderRadius.only(topRight: Radius.circular(11), bottomRight: Radius.circular(11)),
-                              color: (entries.indexOf(entry) == value)
+                              color: (this.widget.entries.indexOf(entry) == value)
                                   ? Theme.of(context).backgroundColor
                                   : Colors.transparent,
                               child: InkWell(
                                 splashFactory: InkRipple.splashFactory,
                                 onTap: () {
-                                  widget.drawerPageViewController.jumpToPage(entries.indexOf(entry));
+                                  widget.drawerPageViewController.jumpToPage(this.widget.entries.indexOf(entry));
                                 },
                                 borderRadius:
                                     BorderRadius.only(topRight: Radius.circular(11), bottomRight: Radius.circular(11)),
