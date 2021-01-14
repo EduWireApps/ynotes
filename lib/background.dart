@@ -127,14 +127,14 @@ class BackgroundService {
           await prefs.setInt("mailNumber", newMailLength);
           return mails.last;
         } else {
-          return false;
+          return null;
         }
       } else {
-        return false;
+        return null;
       }
     } catch (e) {
       print("Erreur dans la verification de nouveaux mails hors ligne " + e.toString());
-      return false;
+      return null;
     }
   }
 
