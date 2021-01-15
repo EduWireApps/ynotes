@@ -146,6 +146,7 @@ class _QuickGradesState extends State<QuickGrades> {
             completeIcon: Icon(Icons.done, color: Colors.green),
           ),
           child: ListView.builder(
+            
               itemCount: widget.grades.length,
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) {

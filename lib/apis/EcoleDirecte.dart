@@ -201,6 +201,7 @@ class APIEcoleDirecte extends API {
               EcoleDirecteMethod.recipients, offlineController.recipients.getRecipients));
         }
         break;
+        
     }
   }
 

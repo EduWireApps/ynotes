@@ -60,9 +60,8 @@ class _SummaryChartState extends State<SummaryChart> {
   toDouble(Grade grade) {
     double toReturn;
     if (!grade.letters) {
-      toReturn = (double.tryParse(grade.value.replaceAll(",", ".")) *
-          20 /
-          double.tryParse(grade.scale.replaceAll(",", ".")));
+      toReturn =
+          (double.tryParse(grade.value.replaceAll(",", ".")) * 20 / double.tryParse(grade.scale.replaceAll(",", ".")));
       return toReturn;
     }
   }
@@ -80,10 +79,6 @@ class _SummaryChartState extends State<SummaryChart> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    "Evolution des notes :",
-                    style: TextStyle(color: Colors.white, fontFamily: "Asap"),
-                  ),
                   Container(
                     width: screenSize.size.width / 5 * 4.2,
                     height: screenSize.size.height / 10 * 1.34,
@@ -167,8 +162,8 @@ class _SummaryChartState extends State<SummaryChart> {
               _grades.length > 10 ? 10 : _grades.length, (index) => FlSpot(index.toDouble(), toDouble(_grades[index]))),
           isCurved: true,
           colors: [
-            ColorTween(begin: gradientColors[0], end: gradientColors[1]).lerp(0.2),
-            ColorTween(begin: gradientColors[0], end: gradientColors[1]).lerp(0.2),
+            ColorTween(begin: gradientColors[0], end: gradientColors[0]).lerp(0.2),
+            ColorTween(begin: gradientColors[1], end: gradientColors[1]).lerp(0.2),
           ],
           barWidth: 5,
           isStrokeCapRound: true,
@@ -181,7 +176,7 @@ class _SummaryChartState extends State<SummaryChart> {
   }
 
   List<Color> gradientColors = [
-    const Color(0xff23b6e6),
-    const Color(0xff02d39a),
+    const Color(0xff5c66c1),
+    const Color(0xff3a4398),
   ];
 }

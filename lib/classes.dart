@@ -517,7 +517,7 @@ class Recipient {
 }
 
 @HiveType(typeId: 10)
-class SchoolLifeObj {
+class SchoolLifeTicket {
   @HiveField(0)
   final String libelle;
   @HiveField(1)
@@ -528,7 +528,7 @@ class SchoolLifeObj {
   final String type;
   @HiveField(4)
   final bool isJustified;
-  SchoolLifeObj(this.libelle, this.displayDate, this.motif, this.type, this.isJustified);
+  SchoolLifeTicket(this.libelle, this.displayDate, this.motif, this.type, this.isJustified);
 }
 
 class CloudItem {

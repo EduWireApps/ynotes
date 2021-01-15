@@ -278,16 +278,16 @@ class EcoleDirecteConverter {
     return recipients;
   }
 
-  static List<SchoolLifeObj> schoolLife(Map<String, dynamic> schoolLifeData) {
+  static List<SchoolLifeTicket> schoolLife(Map<String, dynamic> schoolLifeData) {
     List rawschoolLife = schoolLifeData['data']['abscencesRetards'];
-    List<SchoolLifeObj> schoolLifeList = List();
+    List<SchoolLifeTicket> schoolLifeList = List();
     rawschoolLife.forEach((element) {
       String libelle = element["libelle"];
       String displayDate = element["displayDate"];
       String motif = element["motif"];
       String type = element["typeElement"];
       bool isJustified = element["justifie"];
-      schoolLifeList.add(SchoolLifeObj(libelle, displayDate, motif, type, isJustified));
+      schoolLifeList.add(SchoolLifeTicket(libelle, displayDate, motif, type, isJustified));
     });
     return schoolLifeList;
   }
