@@ -24,6 +24,7 @@ import 'package:ynotes/UI/screens/mail/mailPage.dart';
 import 'package:ynotes/UI/screens/polls/pollsPage.dart';
 import 'package:ynotes/UI/screens/statspage/statspage.dart';
 import 'package:ynotes/UI/screens/summary/summaryPage.dart';
+import 'package:ynotes/UI/screens/viescolaire/schoolLifePage.dart';
 import 'package:ynotes/apis/EcoleDirecte.dart';
 import 'package:ynotes/background.dart';
 import 'package:ynotes/classes.dart';
@@ -63,6 +64,11 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
           key: summaryPage,
         ),
         "key": summaryPage
+      },
+      {
+        "menuName": "Vie Scolaire",
+        "icon": MdiIcons.stamper,
+        "page": SingleChildScrollView(physics: NeverScrollableScrollPhysics(), child: SchoolLifePage()),
       },
       {
         "menuName": "Notes",
