@@ -268,7 +268,7 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
         child: InkWell(
           borderRadius: BorderRadius.circular(8),
           onTap: () {
-            widget.pageSwitcher(4);
+            widget.pageSwitcher(3);
           },
           onLongPress: !widget._homework.loaded
               ? null

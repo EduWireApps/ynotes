@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ynotes/apis/Pronote/PronoteCas.dart';
 import 'package:ynotes/apis/utils.dart';
+import 'package:ynotes/usefulMethods.dart';
 
 import '../../classes.dart';
 
@@ -34,13 +35,12 @@ class EcoleDirecteConverter {
     Map<String, dynamic> settings = disciplinesData['data']['parametrage'];
 
     periodes.forEach((periodeElement) {
-      Color color = Colors.green;
       //Make a list of grades
 
       List disciplines = periodeElement["ensembleMatieres"]["disciplines"];
       disciplines.forEach((rawData) {
         List profs = rawData['professeurs'];
-        final List<String> teachersNames = List<String>();
+        List<String> teachersNames = List<String>();
 
         profs.forEach((e) {
           teachersNames.add(e["nom"]);
@@ -75,7 +75,7 @@ class EcoleDirecteConverter {
       //Retrieve related grades for each discipline
       disciplinesList.forEach((discipline) {
         if (discipline.period == periodeElement["periode"]) {
-          final List<Grade> localGradesList = List<Grade>();
+          List<Grade> localGradesList = List<Grade>();
 
           gradesData.forEach((element) {
             if (element["codeMatiere"] == discipline.disciplineCode &&
@@ -89,7 +89,6 @@ class EcoleDirecteConverter {
         }
       });
     });
-
     return disciplinesList;
   }
 

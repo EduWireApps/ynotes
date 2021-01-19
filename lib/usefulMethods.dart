@@ -184,17 +184,15 @@ List<Grade> getAllGrades(List<Discipline> list, {bool overrideLimit = false, boo
           }
         });
       });
-      if (localApi.gradesList != null &&
-          localApi.gradesList.length > 0 &&
-          listToReturn.length == localApi.gradesList.length) {
+      if (localApi.gradesList != null && localApi.gradesList.length > 0 && listToReturn == localApi.gradesList) {
         return localApi.gradesList;
       }
       listToReturn = listToReturn.toSet().toList();
       if (listToReturn != null) {
         //sort grades
         if (sortByWritingDate) {
-          listToReturn.sort(
-              (a, b) => (a.entryDate != null && b.entryDate != null) ? (a.entryDate.compareTo(b.entryDate)) : 1);
+          listToReturn
+              .sort((a, b) => (a.entryDate != null && b.entryDate != null) ? (a.entryDate.compareTo(b.entryDate)) : 1);
         }
 
         //remove duplicates
