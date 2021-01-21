@@ -1,35 +1,20 @@
 import 'dart:ui';
 
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:badges/badges.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
-import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:html/parser.dart';
-import 'package:intl/intl.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:showcaseview/showcaseview.dart';
-import 'package:stacked/stacked.dart';
 import 'package:visibility_detector/visibility_detector.dart';
-import 'package:ynotes/UI/animations/FadeAnimation.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/UI/components/hiddenSettings.dart';
-import 'package:ynotes/UI/components/showcaseTooltip.dart';
-import 'package:ynotes/UI/screens/drawer/drawerBuilderWidgets/drawer.dart';
 import 'package:ynotes/UI/screens/grades/gradesPage.dart';
-import 'package:ynotes/UI/screens/homework/homeworkPage.dart';
 import 'package:ynotes/UI/screens/summary/summaryPageWidgets/quickGrades.dart';
 import 'package:ynotes/UI/screens/summary/summaryPageWidgets/quickHomework.dart';
 import 'package:ynotes/UI/screens/summary/summaryPageWidgets/summaryPageSettings.dart';
 import 'package:ynotes/UI/screens/summary/summaryPageWidgets/chart.dart';
-import 'package:ynotes/apis/utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/main.dart';
-import 'package:ynotes/models/homework/controller.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/utils/themeUtils.dart';
 
@@ -54,6 +39,7 @@ GlobalKey _gradeChartGB = GlobalKey();
 GlobalKey _quickGradeGB = GlobalKey();
 
 class SummaryPageState extends State<SummaryPage> {
+
   double actualPage;
   PageController _pageControllerSummaryPage;
   PageController todoSettingsController;
@@ -207,14 +193,9 @@ class SummaryPageState extends State<SummaryPage> {
                                         future: disciplinesListFuture,
                                         builder: (context, snapshot) {
                                           if (snapshot.hasData) {
-                                            List<Grade> grades = List();
-                                            try {
-                                              var temp = getAllGrades(snapshot.data);
-                                              grades = temp;
-                                            } catch (e) {
-                                              print("Error while printing " + e.toString());
-                                            }
-                                            return SummaryChart(grades);
+                                            return SummaryChart(
+                                              getAllGrades(snapshot.data),
+                                            );
                                           } else {
                                             return SpinKitThreeBounce(
                                                 color: Theme.of(context).primaryColorDark,

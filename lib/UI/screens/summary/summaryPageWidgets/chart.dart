@@ -13,20 +13,33 @@ class SummaryChart extends StatefulWidget {
     Key key,
   }) : super(key: key);
   @override
-  _SummaryChartState createState() => _SummaryChartState();
+  SummaryChartState createState() => SummaryChartState();
 }
 
-class _SummaryChartState extends State<SummaryChart> {
+class SummaryChartState extends State<SummaryChart> {
   List<Grade> _grades = List();
-  initState() {
+  void initState() {
     super.initState();
+    initGrades();
+  }
+
+  initGrades() {
     if (widget.lastGrades != null) {
-      _grades.addAll(widget.lastGrades);
-      _grades.sort((a, b) => a.entryDate.compareTo(b.entryDate));
-      if (_grades.length > 10) {
-        _grades = _grades.sublist(_grades.length - 10, _grades.length);
-      }
+      setState(() {
+        _grades.clear();
+        _grades.addAll(widget.lastGrades);
+        _grades.sort((a, b) => a.entryDate.compareTo(b.entryDate));
+        if (_grades.length > 10) {
+          _grades = _grades.sublist(_grades.length - 10, _grades.length);
+        }
+      });
     }
+  }
+
+  @override
+  void didUpdateWidget(SummaryChart old) {
+    super.didUpdateWidget(old);
+    initGrades();
   }
 
   getMax() {
@@ -176,7 +189,7 @@ class _SummaryChartState extends State<SummaryChart> {
   }
 
   List<Color> gradientColors = [
-    const Color(0xff5c66c1),
     const Color(0xff3a4398),
+    const Color(0xff5c66c1),
   ];
 }

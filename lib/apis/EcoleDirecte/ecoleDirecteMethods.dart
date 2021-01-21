@@ -56,7 +56,7 @@ class EcoleDirecteMethod {
     String data = 'data={"token": "$token"}';
     List<Discipline> disciplinesList = await request(
         data, rootUrl, method, EcoleDirecteConverter.disciplines, "Grades request returned an error:",
-        ignoreMethodAndId: true, getRequest: true);
+        ignoreMethodAndId: kDebugMode, getRequest: kDebugMode);
 
     //Update colors;
     disciplinesList = await refreshDisciplinesListColors(disciplinesList);
