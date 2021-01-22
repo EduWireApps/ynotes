@@ -49,14 +49,14 @@ class EcoleDirecteMethod {
   static Future<List<Discipline>> grades() async {
     await EcoleDirecteMethod.testToken();
     String rootUrl = "https://api.ecoledirecte.com/v3/Eleves/";
-    if (kDebugMode) {
+    /*if (kDebugMode) {
       rootUrl = "http://192.168.1.99:3000/posts/1";
-    }
+    }*/
     String method = "notes.awp?verbe=get&";
     String data = 'data={"token": "$token"}';
     List<Discipline> disciplinesList = await request(
         data, rootUrl, method, EcoleDirecteConverter.disciplines, "Grades request returned an error:",
-        ignoreMethodAndId: kDebugMode, getRequest: kDebugMode);
+        /*ignoreMethodAndId: kDebugMode, getRequest: kDebugMode*/);
 
     //Update colors;
     disciplinesList = await refreshDisciplinesListColors(disciplinesList);

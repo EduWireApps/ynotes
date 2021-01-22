@@ -43,12 +43,17 @@ class SummaryChartState extends State<SummaryChart> {
   }
 
   getMax() {
-    List<double> values = _grades
-        .map((grade) =>
-            double.parse(grade.value.replaceAll(',', '.')) * 20 / double.parse(grade.scale.replaceAll(',', '.')))
-        .toList();
+    List<double> values = _grades.map((grade) {
+      double a;
+      try {
+        a = double.tryParse(grade.value.replaceAll(',', '.')) * 20 / double.tryParse(grade.scale.replaceAll(',', '.'));
+        return a;
+      } catch (e) {}
+    }).toList();
     //Reduce values size
     values = values.sublist(0, (_grades.length > 10 ? 10 : _grades.length));
+    values.removeWhere((element) => element == null);
+
     if (values != null && values.length > 0) {
       return values.reduce(max) ?? 20;
     } else {
@@ -57,12 +62,16 @@ class SummaryChartState extends State<SummaryChart> {
   }
 
   getMin() {
-    List<double> values = _grades
-        .map((grade) =>
-            double.parse(grade.value.replaceAll(',', '.')) * 20 / double.parse(grade.scale.replaceAll(',', '.')))
-        .toList();
+    List<double> values = _grades.map((grade) {
+      double a;
+      try {
+        a = double.tryParse(grade.value.replaceAll(',', '.')) * 20 / double.tryParse(grade.scale.replaceAll(',', '.'));
+        return a;
+      } catch (e) {}
+    }).toList();
     //Reduce values size
     values = values.sublist(0, (_grades.length > 10 ? 10 : _grades.length));
+    values.removeWhere((element) => element == null);
     if (values != null && values.length > 0) {
       return values.reduce(min) ?? 0;
     } else {
@@ -73,9 +82,12 @@ class SummaryChartState extends State<SummaryChart> {
   toDouble(Grade grade) {
     double toReturn;
     if (!grade.letters) {
-      toReturn =
-          (double.tryParse(grade.value.replaceAll(",", ".")) * 20 / double.tryParse(grade.scale.replaceAll(",", ".")));
-      return toReturn;
+      try {
+        toReturn = (double.tryParse(grade.value.replaceAll(",", ".")) *
+            20 /
+            double.tryParse(grade.scale.replaceAll(",", ".")));
+        return toReturn;
+      } catch (e) {}
     }
   }
 
@@ -141,6 +153,7 @@ class SummaryChartState extends State<SummaryChart> {
         show: true,
         bottomTitles: SideTitles(showTitles: false),
         leftTitles: SideTitles(
+          interval: 1.0,
           showTitles: true,
           getTextStyles: (value) => const TextStyle(
             color: Color(0xff67727d),
@@ -150,11 +163,10 @@ class SummaryChartState extends State<SummaryChart> {
           getTitles: (value) {
             double max = getMax();
             double min = getMin();
-
-            if (value == max.roundToDouble()) {
+            if (value.roundToDouble() == max.roundToDouble()) {
               return max.toStringAsFixed(0);
             }
-            if (value == min.roundToDouble()) {
+            if (value.roundToDouble() == min.roundToDouble()) {
               return min.toStringAsFixed(0);
             }
             return '';
@@ -168,7 +180,7 @@ class SummaryChartState extends State<SummaryChart> {
       minX: 0,
       maxX: (_grades.length > 10 ? 10 : _grades.length).toDouble(),
       minY: getMin() > 0 ? getMin() - 1 : getMin(),
-      maxY: getMax() + 1,
+      maxY: getMax() + 2,
       lineBarsData: [
         LineChartBarData(
           spots: List.generate(
