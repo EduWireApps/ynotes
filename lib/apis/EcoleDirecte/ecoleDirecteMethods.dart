@@ -8,6 +8,7 @@ import 'package:ynotes/classes.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/apis/EcoleDirecte/ecoleDirecteConverters.dart';
 import 'package:ynotes/apis/Pronote/PronoteCas.dart';
+import 'package:ynotes/offline/offline.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/apis/utils.dart';
 import '../EcoleDirecte.dart';
@@ -46,7 +47,7 @@ class EcoleDirecteMethod {
     return periodsList;
   }
 
-  static Future<List<Discipline>> grades() async {
+  static Future<List<Discipline>> grades(Offline _offlineController) async {
     await EcoleDirecteMethod.testToken();
     String rootUrl = "https://api.ecoledirecte.com/v3/Eleves/";
     /*if (kDebugMode) {
@@ -55,12 +56,17 @@ class EcoleDirecteMethod {
     String method = "notes.awp?verbe=get&";
     String data = 'data={"token": "$token"}';
     List<Discipline> disciplinesList = await request(
-        data, rootUrl, method, EcoleDirecteConverter.disciplines, "Grades request returned an error:",
-        /*ignoreMethodAndId: kDebugMode, getRequest: kDebugMode*/);
+      data,
+      rootUrl,
+      method,
+      EcoleDirecteConverter.disciplines,
+      "Grades request returned an error:",
+      /*ignoreMethodAndId: kDebugMode, getRequest: kDebugMode*/
+    );
 
     //Update colors;
     disciplinesList = await refreshDisciplinesListColors(disciplinesList);
-    await offline.disciplines.updateDisciplines(disciplinesList);
+    await _offlineController.disciplines.updateDisciplines(disciplinesList);
     createStack();
     if (disciplinesList != null) {
       await setIntSetting("gradesNumber", getAllGrades(disciplinesList).length);

@@ -168,7 +168,7 @@ class APIEcoleDirecte extends API {
       List<Grade> listOfflineGrades = getAllGrades(await offline.disciplines.getDisciplines(), overrideLimit: true);
       print("Offline length is ${listOfflineGrades.length}");
       //Getting the online count of grades
-      List<Grade> listOnlineGrades = getAllGrades(await EcoleDirecteMethod.grades(), overrideLimit: true);
+      List<Grade> listOnlineGrades = getAllGrades(await EcoleDirecteMethod.grades(this.offlineController), overrideLimit: true);
       print("Online length is ${listOnlineGrades.length}");
       return (listOfflineGrades.length < listOnlineGrades.length);
     } catch (e) {
