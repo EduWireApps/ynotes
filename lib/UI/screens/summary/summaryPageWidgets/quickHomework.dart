@@ -69,12 +69,14 @@ class _QuickHomeworkState extends State<QuickHomework> {
     var screenSize = MediaQuery.of(context);
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
-      color: Theme.of(context).primaryColor,
+      margin: EdgeInsets.only(top: 0),
+      shadowColor: Colors.transparent,
+      color: Colors.transparent,
       child: Container(
-        margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
+        color: Colors.transparent,
+        margin: EdgeInsets.only(top: 0),
         width: screenSize.size.width / 5 * 4.5,
-        height: screenSize.size.height / 10 * 5.3,
+        height: screenSize.size.height / 10 * 4.6,
         child: ClipRRect(
           borderRadius: BorderRadius.all(Radius.circular(12)),
           child: PageView(
