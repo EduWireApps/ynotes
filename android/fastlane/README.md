@@ -15,24 +15,9 @@ Install _fastlane_ using
 or alternatively using `brew install fastlane`
 
 # Available Actions
-### beta
+### beta_release
 ```
-fastlane beta
-```
-
-### internal
-```
-fastlane internal
-```
-
-### test
-```
-fastlane test
-```
-
-### githubrelease
-```
-fastlane githubrelease
+fastlane beta_release
 ```
 
 ### local_test
