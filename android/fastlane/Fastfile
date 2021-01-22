@@ -37,7 +37,7 @@ platform :android do
   end
 end
 
-lane :beta do
+=begin lane :beta do
   build_number = number_of_commits()
   version = flutter_version()["version_name"]
   continue = prompt(
@@ -110,8 +110,17 @@ lane :githubrelease do
     is_prerelease: true,
     upload_assets: ["../build/app/outputs/flutter-apk/app-arm64-v8a-prod-release.apk", "../build/app/outputs/flutter-apk/app-armeabi-v7a-prod-release.apk", "../build/app/outputs/flutter-apk/app-x86_64-prod-release.apk"]
   )
-end
+=end 
+lane :beta_release do 
+  build_number = number_of_commits()  
+  version = flutter_version()["version_name"]
 
+  Dir.chdir "../.." do
+    sh("git","checkout", "beta-releases")
+    sh("git","merge","--no-ff", "develop")
+    sh("git","tag", "v#{version}+#{build_number}")
+  end
+end
 lane :local_test do
   build_number = number_of_commits()
   Dir.chdir "../.." do
