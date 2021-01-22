@@ -8,6 +8,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:intl/intl.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/classes.dart';
 import 'package:ynotes/main.dart';
@@ -18,12 +19,7 @@ class SchoolLifePage extends StatefulWidget {
   _SchoolLifePageState createState() => _SchoolLifePageState();
 }
 
-List<Mail> localList = List();
-Future mailsListFuture;
-String dossier = "Reçus";
-enum sortValue { date, reversed_date, author }
-List<PollInfo> pollsList = List();
-Future pollsFuture;
+Future schoolLifeFuture;
 
 class _SchoolLifePageState extends State<SchoolLifePage> {
   @override
@@ -33,34 +29,83 @@ class _SchoolLifePageState extends State<SchoolLifePage> {
     // refreshPolls();
   }
 
-  /*
-  Future<void> refreshPolls({bool forced = false}) async {
-    setState(() {
-      pollsFuture = localApi.app("polls", action: "get", args: (forced) ? "forced" : null);
-    });
-    var realFuture = await pollsFuture;
+  Widget buildCircle(SchoolLifeTicket ticket) {
+    IconData icon;
+    if (ticket.type == "absence") {
+      icon = MdiIcons.alert;
+    }
+    return CircleAvatar(
+      child: Icon(icon),
+    );
   }
-  */
+
+  Widget buildTicket(SchoolLifeTicket ticket) {
+    MediaQueryData screenSize = MediaQuery.of(context);
+    return Container(
+      width: screenSize.size.width / 5 * 4.2,
+      child: Card(
+        child: Row(
+          children: [
+            buildCircle(ticket),
+            Column(
+              children: [
+                Text(ticket.libelle),
+                Text(ticket.motif),
+              ],
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildNoTickets() {
+    MediaQueryData screenSize = MediaQuery.of(context);
+
+    return Center(
+      child: Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              MdiIcons.stamper,
+              size: screenSize.size.width / 5 * 1.2,
+              color: ThemeUtils.textColor(),
+            ),
+            Text(
+              "Pas de données.",
+              style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: 20),
+            )
+          ],
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
     return Container(
-      width: screenSize.size.width,
-      height: screenSize.size.height,
-      color: Theme.of(context).backgroundColor,
-      child: Stack(
-        children: [
-          Align(
-            alignment: Alignment.center,
-            child: Container(
-                height: screenSize.size.height / 10 * 8.8,
-                width: (screenSize.size.width / 5) * 4.6,
-                child: Text("Hey")),
-          )
-        ],
-      ),
-    );
+        width: screenSize.size.width,
+        height: screenSize.size.height,
+        color: Theme.of(context).backgroundColor,
+        child: FutureBuilder(
+            future: schoolLifeFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState != ConnectionState.done) {
+                if (snapshot.data != null) {
+                  return buildNoTickets();
+                } else {
+                  return ListView.builder(
+                      itemCount: 5,
+                      itemBuilder: (context, index) {
+                        return buildTicket(SchoolLifeTicket("a", "a", "a", "a", false));
+                      });
+                }
+              } else {
+                return Center(child: SpinKitFadingFour(color: Theme.of(context).primaryColor));
+              }
+            }));
   }
 }
 
