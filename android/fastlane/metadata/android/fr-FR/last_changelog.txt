@@ -1,1 +1,1 @@
-Correction de bugs liés à Pronote.
+Correction de bugs.
