@@ -1,2 +1,1 @@
-Important bug fix :
-* Fix EcoleDirecte homework
+Minor bug fixes 
