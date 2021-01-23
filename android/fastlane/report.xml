@@ -5,47 +5,47 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.000248687">
+      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.000817304">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="1: number_of_commits" time="0.009504392">
+      <testcase classname="fastlane.lanes" name="1: number_of_commits" time="0.013364331">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="2: flutter_version" time="0.005006928">
+      <testcase classname="fastlane.lanes" name="2: flutter_version" time="0.002160345">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="3: prompt" time="5.935586259">
+      <testcase classname="fastlane.lanes" name="3: prompt" time="1.953803063">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="4: prompt" time="1.398554204">
+      <testcase classname="fastlane.lanes" name="4: prompt" time="1.080583075">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="5: cat last_changelog.txt &gt;&gt; changelogs/183.txt" time="0.010809709">
+      <testcase classname="fastlane.lanes" name="5: cat last_changelog.txt &gt; changelogs/184.txt" time="0.005384765">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="6: flutter packages get" time="2.064451125">
+      <testcase classname="fastlane.lanes" name="6: flutter packages get" time="1.949082183">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="7: flutter clean" time="1.048654181">
+      <testcase classname="fastlane.lanes" name="7: flutter clean" time="0.64107344">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="8: flutter build appbundle --build-number\=183 --flavor prod" time="4.006484212">
+      <testcase classname="fastlane.lanes" name="8: flutter build appbundle --build-number\=184 --flavor prod" time="80.288257223">
         
       </testcase>
     

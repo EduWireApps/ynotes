@@ -63,9 +63,14 @@ begin lane :beta do
       sh("flutter", "build", "apk","--build-number=#{build_number}", "--split-per-abi","--flavor", "prod",)
 
     end
-    upload_to_play_store(track: 'beta', aab: 'build/app/outputs/bundle/prodRelease/app-prod-release.aab', package_name: "fr.ynotes")
+    upload_to_play_store(track: 'beta', aab: '../build/app/outputs/bundle/prodRelease/app-prod-release.aab', package_name: "fr.ynotes")
   end
-
+  gh = prompt(
+  text: "Do you want to push to github ?",
+  boolean: true)
+  if gh
+    githubrelease()
+  end
 end
 
 lane :internal do
@@ -86,7 +91,7 @@ lane :internal do
       sh("flutter", "build", "apk","--build-number=#{build_number}", "--split-per-abi","--flavor", "prod",)
 
     end
-    upload_to_play_store(track: 'internal', aab: 'build/app/outputs/bundle/prodRelease/app-prod-release.aab ', package_name: "fr.ynotes")
+    upload_to_play_store(track: 'internal', aab: '../build/app/outputs/bundle/prodRelease/app-prod-release.aab ', package_name: "fr.ynotes")
   end
 
 end
