@@ -4,14 +4,14 @@ import 'package:ynotes/main.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 class HomeworkUtils {
-//Homework done percent
-  static Future<int> getHomeworkDonePercent() async {
+  ///Returns [donePercent, doneLength, length]
+  static Future<List> getHomeworkDonePercent() async {
     List list = await getReducedListHomework();
     if (list != null) {
       //Number of elements in list
       int total = list.length;
       if (total == 0) {
-        return 100;
+        return [100, 0, 0];
       } else {
         int done = 0;
 
@@ -21,13 +21,12 @@ class HomeworkUtils {
             done++;
           }
         });
-        print(done);
         int percent = (done * 100 / total).round();
 
-        return percent;
+        return [percent, done, list.length];
       }
     } else {
-      return 100;
+      return [100, 0, 0];
     }
   }
 

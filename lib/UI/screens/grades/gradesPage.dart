@@ -979,7 +979,7 @@ class _GradesGroupState extends State<GradesGroup> {
                   child: Container(
                     decoration: BoxDecoration(border: Border.all(width: 0.0, color: Colors.transparent)),
                     width: screenSize.size.width / 5 * 4.5,
-                    height: (screenSize.size.height / 10 * 8.8) / 10 * 0.75,
+                    height: (screenSize.size.height / 10 * 8.8) / 10 * 0.72,
                     child: Center(
                       child: Stack(children: <Widget>[
                         if (widget.disciplinevar != null && capitalizedNomDiscipline != null)
@@ -1000,16 +1000,16 @@ class _GradesGroupState extends State<GradesGroup> {
                                       style: TextStyle(
                                           fontFamily: "Asap",
                                           fontWeight: FontWeight.w600,
-                                          fontSize: screenSize.size.height / 10 * 0.15),
+                                          fontSize: screenSize.size.height / 10 * 0.2),
                                     ),
                                   ),
                                   if (nomsProfesseurs != null && nomsProfesseurs.length > 15)
                                     Container(
-                                        margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.3),
+                                        margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
                                         decoration: BoxDecoration(
                                             borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.5)),
                                         width: screenSize.size.width / 5 * 2,
-                                        height: screenSize.size.height / 10 * 0.3,
+                                        height: screenSize.size.height / 10 * 0.2,
                                         child: ClipRRect(
                                           child: Marquee(
                                               text: nomsProfesseurs,
@@ -1060,22 +1060,21 @@ class _GradesGroupState extends State<GradesGroup> {
             alignment: Alignment.bottomLeft,
             child: Container(
                 margin: EdgeInsets.only(top: (screenSize.size.height / 10 * 8.8) / 10 * 0.55),
-                width: screenSize.size.width / 5 * 4.5,
+                width: screenSize.size.width / 5 * 4.51,
                 decoration: BoxDecoration(
                   color: isDarkModeEnabled ? Color(0xff333333) : Color(0xffE2E2E2),
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(15),
                     bottomRight: Radius.circular(15),
-                    topRight: Radius.circular(15),
                   ),
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(15),
                     bottomRight: Radius.circular(15),
-                    topRight: Radius.circular(15),
                   ),
                   child: Column(
+                    mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
                       if (widget.disciplinevar != null)
                         if (widget.disciplinevar.subdisciplineCode.length > 0)
@@ -1130,7 +1129,7 @@ class _GradesGroupState extends State<GradesGroup> {
     }
   }
 
-  //MARKS COLUMN
+  //MARKS LIST VIEW
   gradesList(int sousMatiereIndex) {
     void callback() {
       setState(() {});
@@ -1161,7 +1160,7 @@ class _GradesGroupState extends State<GradesGroup> {
             controller: marksColumnController,
             scrollDirection: Axis.horizontal,
             padding: EdgeInsets.symmetric(
-                horizontal: screenSize.size.width / 5 * 0.2, vertical: (screenSize.size.height / 10 * 8.8) / 10 * 0.15),
+                horizontal: screenSize.size.width / 5 * 0.1, vertical: (screenSize.size.height / 10 * 8.8) / 10 * 0.15),
             itemBuilder: (BuildContext context, int index) {
               DateTime now = DateTime.now();
               String formattedDate = DateFormat('yyyy-MM-dd').format(now);
@@ -1186,8 +1185,8 @@ class _GradesGroupState extends State<GradesGroup> {
                                 ? Colors.transparent
                                 : Colors.black,
                             width: 1)),
-                    margin:
-                        EdgeInsets.only(left: screenSize.size.width / 5 * 0.1, right: screenSize.size.width / 5 * 0.1),
+                    margin: EdgeInsets.only(
+                        left: screenSize.size.width / 5 * 0.025, right: screenSize.size.width / 5 * 0.025),
                     child: Material(
                       color: (getGradesForDiscipline(sousMatiereIndex, periodeToUse) == null)
                           ? Colors.transparent
@@ -1203,7 +1202,6 @@ class _GradesGroupState extends State<GradesGroup> {
                               widget.disciplinevar, callback, this.widget);
                         },
                         onLongPress: () {
-                          print("ok");
                           CustomDialogs.showShareGradeDialog(context, gradesForSelectedDiscipline[index]);
                         },
                         child: ClipRRect(
@@ -1212,14 +1210,14 @@ class _GradesGroupState extends State<GradesGroup> {
                               if (gradesForSelectedDiscipline != null)
                                 //Grade box
                                 Container(
-                                  padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.2),
+                                  padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.12),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                       //Grades
                                       Container(
                                         padding: EdgeInsets.symmetric(
-                                            vertical: (screenSize.size.height / 10 * 8.8) / 10 * 0.05),
+                                            vertical: (screenSize.size.height / 10 * 8.8) / 10 * 0.02),
                                         child: AutoSizeText.rich(
                                           //MARK
                                           TextSpan(

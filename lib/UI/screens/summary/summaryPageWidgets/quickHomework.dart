@@ -28,12 +28,12 @@ class QuickHomework extends StatefulWidget {
 
 class _QuickHomeworkState extends State<QuickHomework> {
   Future donePercentFuture;
-  int oldGauge = 0;
+  List<int> oldGauge = [0, 0, 0];
 
   setGauge() async {
     var tempGauge = await HomeworkUtils.getHomeworkDonePercent();
     setState(() {
-      oldGauge = tempGauge ?? 0;
+      oldGauge = tempGauge ?? [0, 0, 0];
     });
   }
 
@@ -88,31 +88,36 @@ class _QuickHomeworkState extends State<QuickHomework> {
                       alignment: Alignment.topCenter,
                       child: Container(
                         margin: EdgeInsets.only(top: (screenSize.size.height / 10 * 8.8) / 10 * 0.1),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            //gauge
-                            Container(
-                                height: screenSize.size.width / 5 * 0.5,
-                                child: FutureBuilder<int>(
-                                    future: donePercentFuture,
-                                    initialData: oldGauge,
-                                    builder: (context, snapshot) {
-                                      return LinearPercentIndicator(
-                                        center: Text(
-                                          snapshot.data.toString() + "%",
-                                          style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-                                        ),
-                                        width: screenSize.size.width / 5 * 4.1,
-                                        lineHeight: screenSize.size.height / 10 * 0.25,
-                                        percent: (snapshot.data ?? 100) / 100,
+                        child: FutureBuilder<List>(
+                            future: donePercentFuture,
+                            initialData: oldGauge,
+                            builder: (context, snapshot) {
+                              return Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  //gauge
+                                  Container(
+                                    width: screenSize.size.width / 5 * 0.5,
+                                    height: screenSize.size.width / 5 * 0.5,
+                                    child: FittedBox(
+                                      child: CircularPercentIndicator(
+                                        radius: 120,
+                                        lineWidth: screenSize.size.width / 5 * 0.4,
+                                        percent: (snapshot.data[0] ?? 100) / 100,
                                         backgroundColor: Colors.orange.shade400,
                                         animationDuration: 550,
+                                        circularStrokeCap: CircularStrokeCap.round,
                                         progressColor: Colors.green.shade300,
-                                      );
-                                    })),
-                          ],
-                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  Text(
+                                    snapshot.data[1].toString() + "/" + snapshot.data[2].toString(),
+                                    style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                                  )
+                                ],
+                              );
+                            }),
                       )),
 
                   //homework part
@@ -147,28 +152,14 @@ class _QuickHomeworkState extends State<QuickHomework> {
                                                         model.getHomework[index - 1].date !=
                                                             model.getHomework[index].date)
                                                       Row(children: <Widget>[
-                                                        Expanded(
-                                                          child: new Container(
-                                                              margin: const EdgeInsets.only(left: 10.0, right: 20.0),
-                                                              child: Divider(
-                                                                color: ThemeUtils.textColor(),
-                                                                height: 36,
-                                                              )),
-                                                        ),
                                                         Text(
                                                           DateFormat("EEEE d MMMM", "fr_FR")
                                                               .format(hwcontroller.getHomework[index].date)
                                                               .toString(),
                                                           style: TextStyle(
-                                                              color: ThemeUtils.textColor(), fontFamily: "Asap"),
-                                                        ),
-                                                        Expanded(
-                                                          child: Container(
-                                                              margin: const EdgeInsets.only(left: 20.0, right: 10.0),
-                                                              child: Divider(
-                                                                color: ThemeUtils.textColor(),
-                                                                height: 36,
-                                                              )),
+                                                              color: ThemeUtils.textColor(),
+                                                              fontFamily: "Asap",
+                                                              fontSize: 17),
                                                         ),
                                                       ]),
                                                     HomeworkTicket(

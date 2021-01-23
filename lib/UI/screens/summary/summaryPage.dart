@@ -39,7 +39,6 @@ GlobalKey _gradeChartGB = GlobalKey();
 GlobalKey _quickGradeGB = GlobalKey();
 
 class SummaryPageState extends State<SummaryPage> {
-
   double actualPage;
   PageController _pageControllerSummaryPage;
   PageController todoSettingsController;
@@ -115,30 +114,16 @@ class SummaryPageState extends State<SummaryPage> {
 
     return Container(
       height: screenSize.size.height / 10 * 0.35,
-      margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
-      child: Row(children: <Widget>[
-        Container(
-          width: screenSize.size.width / 5 * 0.4,
-          height: screenSize.size.height / 10 * 0.05,
-          decoration: BoxDecoration(color: ThemeUtils.textColor(), borderRadius: BorderRadius.circular(500)),
-          margin: EdgeInsets.only(
-            left: screenSize.size.width / 5 * 0.2,
-            right: screenSize.size.width / 5 * 0.2,
-          ),
-        ),
+      margin: EdgeInsets.only(
+        top: screenSize.size.height / 10 * 0.1,
+        left: screenSize.size.width / 5 * 0.3,
+        bottom: screenSize.size.height / 10 * 0.1,
+      ),
+      child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
         Text(
           text,
           style:
-              TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontSize: 18, fontWeight: FontWeight.w300),
-        ),
-        Expanded(
-          child: Container(
-            height: screenSize.size.height / 10 * 0.05,
-            decoration: BoxDecoration(
-                color: isDarkModeEnabled ? Theme.of(context).primaryColorLight : Theme.of(context).primaryColorDark,
-                borderRadius: BorderRadius.circular(500)),
-            margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.2, right: screenSize.size.width / 5 * 0.2),
-          ),
+              TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontSize: 25, fontWeight: FontWeight.w600),
         ),
       ]),
     );
