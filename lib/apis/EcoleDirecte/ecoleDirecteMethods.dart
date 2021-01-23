@@ -72,7 +72,7 @@ class EcoleDirecteMethod {
     await _offlineController.disciplines.updateDisciplines(disciplinesList);
     createStack();
     if (disciplinesList != null) {
-      await setIntSetting("gradesNumber", getAllGrades(disciplinesList).length);
+      await setIntSetting("gradesNumber", getAllGrades(disciplinesList, overrideLimit: true).length);
     }
     return disciplinesList;
   }

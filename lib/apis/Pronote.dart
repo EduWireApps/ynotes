@@ -54,7 +54,7 @@ class APIPronote extends API {
       }
       toReturn = await refreshDisciplinesListColors(toReturn);
       if (toReturn != null) {
-        await setIntSetting("gradesNumber", getAllGrades(toReturn).length);
+        await setIntSetting("gradesNumber", getAllGrades(toReturn, overrideLimit: true).length);
       }
 
       return toReturn;

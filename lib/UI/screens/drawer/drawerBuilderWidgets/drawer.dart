@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:wiredash/wiredash.dart';
 import 'package:ynotes/UI/components/day_night_switch-master/lib/day_night_switch.dart';
 import 'package:ynotes/UI/screens/drawer/drawerBuilder.dart';
 import 'package:ynotes/UI/screens/settings/settingsPage.dart';
@@ -141,6 +142,46 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     ],
                   ),
             ]),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Container(
+            margin: EdgeInsets.only(bottom: screenSize.size.width / 5 * 0.8),
+            child: Material(
+              borderRadius: BorderRadius.only(topRight: Radius.circular(11), bottomRight: Radius.circular(11)),
+              color: Colors.transparent,
+              child: InkWell(
+                splashFactory: InkRipple.splashFactory,
+                onTap: () {
+                  Wiredash.of(context).show();
+                },
+                borderRadius: BorderRadius.only(topRight: Radius.circular(11), bottomRight: Radius.circular(11)),
+                child: Container(
+                  margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
+                  width: screenSize.size.width / 5 * 3.4,
+                  height: screenSize.size.height / 10 * 0.6,
+                  child: Row(
+                    children: [
+                      SizedBox(width: screenSize.size.width / 5 * 0.1),
+                      Icon(
+                        MdiIcons.forum,
+                        size: screenSize.size.width / 5 * 0.3,
+                        color: ThemeUtils.textColor(),
+                      ),
+                      SizedBox(
+                        width: screenSize.size.width / 5 * 0.1,
+                      ),
+                      Text("Faire un retour",
+                          style: TextStyle(
+                              fontFamily: "Asap",
+                              color: ThemeUtils.textColor(),
+                              fontSize: screenSize.size.width / 5 * 0.3)),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
         Align(
           alignment: Alignment.bottomCenter,
           child: Container(
