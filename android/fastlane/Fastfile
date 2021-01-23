@@ -37,7 +37,7 @@ platform :android do
   end
 end
 
-=begin lane :beta do
+begin lane :beta do
   build_number = number_of_commits()
   version = flutter_version()["version_name"]
   continue = prompt(
@@ -54,7 +54,7 @@ end
   if continue
     #Copy changelog
     Dir.chdir "metadata/android/fr-FR" do
-      sh("#{command} last_changelog.txt >> changelogs/#{build_number}.txt")
+      sh("#{command} last_changelog.txt > changelogs/#{build_number}.txt")
     end
     Dir.chdir "../.." do
       sh("flutter", "packages", "get")
@@ -110,16 +110,6 @@ lane :githubrelease do
     is_prerelease: true,
     upload_assets: ["../build/app/outputs/flutter-apk/app-arm64-v8a-prod-release.apk", "../build/app/outputs/flutter-apk/app-armeabi-v7a-prod-release.apk", "../build/app/outputs/flutter-apk/app-x86_64-prod-release.apk"]
   )
-=end 
-lane :beta_release do 
-  build_number = number_of_commits()  
-  version = flutter_version()["version_name"]
-
-  Dir.chdir "../.." do
-    sh("git","checkout", "beta-releases")
-    sh("git","merge","--no-ff", "develop")
-    sh("git","tag", "v#{version}+#{build_number}")
-  end
 end
 lane :local_test do
   build_number = number_of_commits()
@@ -127,12 +117,11 @@ lane :local_test do
       sh("flutter","clean")
       sh("flutter", "build", "apk", "--flavor", "prod", "--release","--build-number=#{build_number}", "--split-per-abi")
   end
-  begin  
     #Edit this part if you need to install another APK
-      Dir.chdir "../.." do
-        sh("adb", "install", "build/app/outputs/flutter-apk/app-arm64-v8a-prod-release.apk")
-        sh("adb shell am start -n fr.ynotes/.MainActivity")
-      end 
+    Dir.chdir "../.." do
+      sh("adb", "install", "build/app/outputs/flutter-apk/app-arm64-v8a-prod-release.apk")
+      sh("adb shell am start -n fr.ynotes/.MainActivity")
+    end 
 
   rescue # if can't install ynotes
       Dir.chdir "../.." do
@@ -141,5 +130,4 @@ lane :local_test do
         sh("adb shell am start -n fr.ynotes/.MainActivity")
       end
   end
-  
 end 

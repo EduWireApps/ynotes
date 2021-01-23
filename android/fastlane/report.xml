@@ -5,32 +5,47 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.000233105">
+      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.000248687">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="1: number_of_commits" time="0.014077035">
+      <testcase classname="fastlane.lanes" name="1: number_of_commits" time="0.009504392">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="2: flutter_version" time="0.004705194">
+      <testcase classname="fastlane.lanes" name="2: flutter_version" time="0.005006928">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="3: git checkout beta-releases" time="0.008238967">
+      <testcase classname="fastlane.lanes" name="3: prompt" time="5.935586259">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="4: git merge --no-ff develop" time="0.003327091">
+      <testcase classname="fastlane.lanes" name="4: prompt" time="1.398554204">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="5: git tag v0.9.0\+178" time="0.008478019">
+      <testcase classname="fastlane.lanes" name="5: cat last_changelog.txt &gt;&gt; changelogs/183.txt" time="0.010809709">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="6: flutter packages get" time="2.064451125">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="7: flutter clean" time="1.048654181">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="8: flutter build appbundle --build-number\=183 --flavor prod" time="4.006484212">
         
       </testcase>
     
