@@ -157,7 +157,7 @@ class _QuickGradesState extends State<QuickGrades> {
                         CustomDialogs.showShareGradeDialog(context, widget.grades[index]);
                       },
                       onTap: () {
-                        widget.callback(2);
+                        widget.callback(1);
                       },
                       child: Container(
                         padding: EdgeInsets.symmetric(
