@@ -23,6 +23,12 @@ import 'utils/themeUtils.dart';
 
 var uuid = Uuid();
 
+extension StringExtension on String {
+  String capitalize() {
+    return "${this[0].toUpperCase()}${this.substring(1)}";
+  }
+}
+
 //login manager
 TransparentLogin tlogin;
 Offline offline;
@@ -32,10 +38,9 @@ FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
 ///The app main class
 Future main() async {
-
   WidgetsFlutterBinding.ensureInitialized();
   await initBackgroundTask();
-  
+
   //Load api
   await reloadChosenApi();
   offline = Offline(false);
@@ -92,7 +97,6 @@ class HomeApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     final themeNotifier = Provider.of<AppStateNotifier>(context);
     return Wiredash(
       projectId: "ynotes-giw0qs2",

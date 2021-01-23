@@ -31,9 +31,10 @@ class _QuickHomeworkState extends State<QuickHomework> {
   List<int> oldGauge = [0, 0, 0];
 
   setGauge() async {
-    var tempGauge = await HomeworkUtils.getHomeworkDonePercent();
+    List<int> tempGauge = await HomeworkUtils.getHomeworkDonePercent();
     setState(() {
       oldGauge = tempGauge ?? [0, 0, 0];
+      donePercentFuture = HomeworkUtils.getHomeworkDonePercent();
     });
   }
 
@@ -51,9 +52,7 @@ class _QuickHomeworkState extends State<QuickHomework> {
   }
 
   void refreshCallback() {
-    setState(() {
-      donePercentFuture = HomeworkUtils.getHomeworkDonePercent();
-    });
+    setGauge();
   }
 
   @override
@@ -75,10 +74,9 @@ class _QuickHomeworkState extends State<QuickHomework> {
       child: Container(
         color: Colors.transparent,
         margin: EdgeInsets.only(top: 0),
-        width: screenSize.size.width / 5 * 4.5,
+        width: screenSize.size.width,
         height: screenSize.size.height / 10 * 4.6,
         child: ClipRRect(
-          borderRadius: BorderRadius.all(Radius.circular(12)),
           child: PageView(
             physics: NeverScrollableScrollPhysics(),
             children: <Widget>[
@@ -87,33 +85,45 @@ class _QuickHomeworkState extends State<QuickHomework> {
                   Align(
                       alignment: Alignment.topCenter,
                       child: Container(
-                        margin: EdgeInsets.only(top: (screenSize.size.height / 10 * 8.8) / 10 * 0.1),
+                        margin: EdgeInsets.only(
+                            top: (screenSize.size.height / 10 * 8.8) / 10 * 0.1, left: screenSize.size.width / 5 * 0.2),
                         child: FutureBuilder<List>(
                             future: donePercentFuture,
-                            initialData: oldGauge,
+                            initialData: [100,0,0],
                             builder: (context, snapshot) {
-                              return Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   //gauge
-                                  Container(
-                                    width: screenSize.size.width / 5 * 0.5,
-                                    height: screenSize.size.width / 5 * 0.5,
-                                    child: FittedBox(
-                                      child: CircularPercentIndicator(
-                                        radius: 120,
-                                        lineWidth: screenSize.size.width / 5 * 0.4,
-                                        percent: (snapshot.data[0] ?? 100) / 100,
-                                        backgroundColor: Colors.orange.shade400,
-                                        animationDuration: 550,
-                                        circularStrokeCap: CircularStrokeCap.round,
-                                        progressColor: Colors.green.shade300,
-                                      ),
+                                  LinearPercentIndicator(
+                                    widgetIndicator: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                      children: [
+                                        Container(
+                                          width: screenSize.size.width / 5 * 0.3,
+                                          height: screenSize.size.width / 5 * 0.3,
+                                          decoration:
+                                              BoxDecoration(color: Colors.green.shade300, shape: BoxShape.circle),
+                                        ),
+                                      ],
                                     ),
+                                    animation: true,
+                                    linearStrokeCap: LinearStrokeCap.roundAll,
+                                    width: screenSize.size.width / 5 * 4.2,
+                                    lineHeight: screenSize.size.height / 10 * 0.1,
+                                    percent: (snapshot.data[0] ?? 100) / 100,
+                                    backgroundColor: Colors.orange.shade400,
+                                    animationDuration: 550,
+                                    progressColor: Colors.green.shade300,
+                                    padding: EdgeInsets.zero,
                                   ),
                                   Text(
-                                    snapshot.data[1].toString() + "/" + snapshot.data[2].toString(),
+                                    (snapshot.data[1].toString() +
+                                        " devoir(s) fait sur " +
+                                        snapshot.data[2].toString()),
                                     style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                                    textAlign: TextAlign.left,
                                   )
                                 ],
                               );
@@ -155,13 +165,15 @@ class _QuickHomeworkState extends State<QuickHomework> {
                                                         Text(
                                                           DateFormat("EEEE d MMMM", "fr_FR")
                                                               .format(hwcontroller.getHomework[index].date)
-                                                              .toString(),
+                                                              .toString()
+                                                              .capitalize(),
                                                           style: TextStyle(
                                                               color: ThemeUtils.textColor(),
                                                               fontFamily: "Asap",
                                                               fontSize: 17),
                                                         ),
                                                       ]),
+                                                    SizedBox(height: screenSize.size.height / 10 * 0.1),
                                                     HomeworkTicket(
                                                         model.getHomework[index],
                                                         Color(color.data),
