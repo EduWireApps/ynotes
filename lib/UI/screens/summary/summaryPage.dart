@@ -39,7 +39,6 @@ GlobalKey _gradeChartGB = GlobalKey();
 GlobalKey _quickGradeGB = GlobalKey();
 
 class SummaryPageState extends State<SummaryPage> {
-
   double actualPage;
   PageController _pageControllerSummaryPage;
   PageController todoSettingsController;
@@ -194,7 +193,7 @@ class SummaryPageState extends State<SummaryPage> {
                                         builder: (context, snapshot) {
                                           if (snapshot.hasData) {
                                             return SummaryChart(
-                                              getAllGrades(snapshot.data),
+                                              getAllGrades(snapshot.data, overrideLimit: true),
                                             );
                                           } else {
                                             return SpinKitThreeBounce(
