@@ -13,29 +13,47 @@ class SummaryChart extends StatefulWidget {
     Key key,
   }) : super(key: key);
   @override
-  _SummaryChartState createState() => _SummaryChartState();
+  SummaryChartState createState() => SummaryChartState();
 }
 
-class _SummaryChartState extends State<SummaryChart> {
+class SummaryChartState extends State<SummaryChart> {
   List<Grade> _grades = List();
-  initState() {
+  void initState() {
     super.initState();
+    initGrades();
+  }
+
+  initGrades() {
     if (widget.lastGrades != null) {
-      _grades.addAll(widget.lastGrades);
-      _grades.sort((a, b) => a.entryDate.compareTo(b.entryDate));
-      if (_grades.length > 10) {
-        _grades = _grades.sublist(_grades.length - 10, _grades.length);
-      }
+      setState(() {
+        _grades.clear();
+        _grades.addAll(widget.lastGrades);
+        _grades.sort((a, b) => a.entryDate.compareTo(b.entryDate));
+        if (_grades.length > 10) {
+          _grades = _grades.sublist(_grades.length - 10, _grades.length);
+        }
+      });
     }
   }
 
+  @override
+  void didUpdateWidget(SummaryChart old) {
+    super.didUpdateWidget(old);
+    initGrades();
+  }
+
   getMax() {
-    List<double> values = _grades
-        .map((grade) =>
-            double.parse(grade.value.replaceAll(',', '.')) * 20 / double.parse(grade.scale.replaceAll(',', '.')))
-        .toList();
+    List<double> values = _grades.map((grade) {
+      double a;
+      try {
+        a = double.tryParse(grade.value.replaceAll(',', '.')) * 20 / double.tryParse(grade.scale.replaceAll(',', '.'));
+        return a;
+      } catch (e) {}
+    }).toList();
     //Reduce values size
     values = values.sublist(0, (_grades.length > 10 ? 10 : _grades.length));
+    values.removeWhere((element) => element == null);
+
     if (values != null && values.length > 0) {
       return values.reduce(max) ?? 20;
     } else {
@@ -44,12 +62,16 @@ class _SummaryChartState extends State<SummaryChart> {
   }
 
   getMin() {
-    List<double> values = _grades
-        .map((grade) =>
-            double.parse(grade.value.replaceAll(',', '.')) * 20 / double.parse(grade.scale.replaceAll(',', '.')))
-        .toList();
+    List<double> values = _grades.map((grade) {
+      double a;
+      try {
+        a = double.tryParse(grade.value.replaceAll(',', '.')) * 20 / double.tryParse(grade.scale.replaceAll(',', '.'));
+        return a;
+      } catch (e) {}
+    }).toList();
     //Reduce values size
     values = values.sublist(0, (_grades.length > 10 ? 10 : _grades.length));
+    values.removeWhere((element) => element == null);
     if (values != null && values.length > 0) {
       return values.reduce(min) ?? 0;
     } else {
@@ -60,10 +82,12 @@ class _SummaryChartState extends State<SummaryChart> {
   toDouble(Grade grade) {
     double toReturn;
     if (!grade.letters) {
-      toReturn = (double.tryParse(grade.value.replaceAll(",", ".")) *
-          20 /
-          double.tryParse(grade.scale.replaceAll(",", ".")));
-      return toReturn;
+      try {
+        toReturn = (double.tryParse(grade.value.replaceAll(",", ".")) *
+            20 /
+            double.tryParse(grade.scale.replaceAll(",", ".")));
+        return toReturn;
+      } catch (e) {}
     }
   }
 
@@ -80,10 +104,6 @@ class _SummaryChartState extends State<SummaryChart> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    "Evolution des notes :",
-                    style: TextStyle(color: Colors.white, fontFamily: "Asap"),
-                  ),
                   Container(
                     width: screenSize.size.width / 5 * 4.2,
                     height: screenSize.size.height / 10 * 1.34,
@@ -133,6 +153,7 @@ class _SummaryChartState extends State<SummaryChart> {
         show: true,
         bottomTitles: SideTitles(showTitles: false),
         leftTitles: SideTitles(
+          interval: 1.0,
           showTitles: true,
           getTextStyles: (value) => const TextStyle(
             color: Color(0xff67727d),
@@ -142,11 +163,10 @@ class _SummaryChartState extends State<SummaryChart> {
           getTitles: (value) {
             double max = getMax();
             double min = getMin();
-
-            if (value == max.roundToDouble()) {
+            if (value.roundToDouble() == max.roundToDouble()) {
               return max.toStringAsFixed(0);
             }
-            if (value == min.roundToDouble()) {
+            if (value.roundToDouble() == min.roundToDouble()) {
               return min.toStringAsFixed(0);
             }
             return '';
@@ -160,15 +180,15 @@ class _SummaryChartState extends State<SummaryChart> {
       minX: 0,
       maxX: (_grades.length > 10 ? 10 : _grades.length).toDouble(),
       minY: getMin() > 0 ? getMin() - 1 : getMin(),
-      maxY: getMax() + 1,
+      maxY: getMax() + 2,
       lineBarsData: [
         LineChartBarData(
           spots: List.generate(
               _grades.length > 10 ? 10 : _grades.length, (index) => FlSpot(index.toDouble(), toDouble(_grades[index]))),
           isCurved: true,
           colors: [
-            ColorTween(begin: gradientColors[0], end: gradientColors[1]).lerp(0.2),
-            ColorTween(begin: gradientColors[0], end: gradientColors[1]).lerp(0.2),
+            ColorTween(begin: gradientColors[0], end: gradientColors[0]).lerp(0.2),
+            ColorTween(begin: gradientColors[1], end: gradientColors[1]).lerp(0.2),
           ],
           barWidth: 5,
           isStrokeCapRound: true,
@@ -181,7 +201,7 @@ class _SummaryChartState extends State<SummaryChart> {
   }
 
   List<Color> gradientColors = [
-    const Color(0xff23b6e6),
-    const Color(0xff02d39a),
+    const Color(0xff3a4398),
+    const Color(0xff5c66c1),
   ];
 }

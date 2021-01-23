@@ -25,11 +25,7 @@ class QuickGrades extends StatefulWidget {
 
 class _QuickGradesState extends State<QuickGrades> {
   Future<void> refreshLocalGradesList() async {
-    print("refresh");
-    setState(() {
-      disciplinesListFuture = localApi.getGrades(forceReload: true);
-    });
-    var realGL = await disciplinesListFuture;
+    await this.widget.refreshCallback();
     _refreshController.refreshCompleted();
   }
 
@@ -161,7 +157,7 @@ class _QuickGradesState extends State<QuickGrades> {
                         CustomDialogs.showShareGradeDialog(context, widget.grades[index]);
                       },
                       onTap: () {
-                        widget.callback(3);
+                        widget.callback(1);
                       },
                       child: Container(
                         padding: EdgeInsets.symmetric(

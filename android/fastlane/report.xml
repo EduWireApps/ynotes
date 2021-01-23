@@ -5,47 +5,47 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.000247433">
+      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.000817304">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="1: number_of_commits" time="0.013496919">
+      <testcase classname="fastlane.lanes" name="1: number_of_commits" time="0.013364331">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="2: flutter_version" time="0.001695408">
+      <testcase classname="fastlane.lanes" name="2: flutter_version" time="0.002160345">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="3: prompt" time="1.78300048">
+      <testcase classname="fastlane.lanes" name="3: prompt" time="1.953803063">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="4: prompt" time="5.352550902">
+      <testcase classname="fastlane.lanes" name="4: prompt" time="1.080583075">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="5: cat last_changelog.txt &gt; changelogs/184.txt" time="0.005627454">
+      <testcase classname="fastlane.lanes" name="5: cat last_changelog.txt &gt; changelogs/184.txt" time="0.005384765">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="6: flutter packages get" time="1.937448578">
+      <testcase classname="fastlane.lanes" name="6: flutter packages get" time="1.949082183">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="7: flutter clean" time="0.681877051">
+      <testcase classname="fastlane.lanes" name="7: flutter clean" time="0.64107344">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="8: flutter build appbundle --build-number\=184 --flavor prod" time="38.337601455">
+      <testcase classname="fastlane.lanes" name="8: flutter build appbundle --build-number\=184 --flavor prod" time="80.288257223">
         
       </testcase>
     

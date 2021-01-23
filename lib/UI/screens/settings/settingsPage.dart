@@ -1,11 +1,9 @@
-import 'dart:isolate';
+import 'dart:convert';
 
-import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:package_info/package_info.dart';
@@ -13,17 +11,16 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:wiredash/wiredash.dart';
-import 'package:workmanager/workmanager.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/UI/screens/settings/sub_pages/exportPage.dart';
 import 'package:ynotes/UI/screens/settings/sub_pages/logsPage.dart';
-import 'package:ynotes/apis/EcoleDirecte.dart';
-import 'package:ynotes/background.dart';
-import 'package:ynotes/classes.dart';
+import 'package:ynotes/apis/EcoleDirecte/ecoleDirecteConverters.dart';
+import 'package:ynotes/apis/EcoleDirecte/ecoleDirecteMethods.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/notifications.dart';
 import 'package:ynotes/platform.dart';
 import 'package:ynotes/utils/themeUtils.dart';
+import 'package:http/http.dart' as http;
 
 import '../../../tests.dart';
 import '../../../usefulMethods.dart';
@@ -427,8 +424,14 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     title: 'Bouton magique',
                     leading: Icon(MdiIcons.testTube, color: ThemeUtils.textColor()),
                     onTap: () async {
-                      var a = await localApi.getNextHomework();
-                      print(a.last.loaded);
+                      await EcoleDirecteMethod.testToken();
+                      String rootUrl = "http://192.168.1.99:3000/posts/1";
+
+                      var response = await http.get(rootUrl);
+                      Map<String, dynamic> responseData = json.decode(utf8.decode(response.bodyBytes));
+                      print(responseData["data"]["periodes"][0]["idPeriode"]);
+                      var test = EcoleDirecteConverter.disciplines(responseData);
+                      print(getAllGrades(test).first.testName);
                     },
                     titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                     subtitleTextStyle: TextStyle(

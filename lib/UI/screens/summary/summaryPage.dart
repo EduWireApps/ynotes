@@ -1,35 +1,20 @@
 import 'dart:ui';
 
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:badges/badges.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
-import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:html/parser.dart';
-import 'package:intl/intl.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:showcaseview/showcaseview.dart';
-import 'package:stacked/stacked.dart';
 import 'package:visibility_detector/visibility_detector.dart';
-import 'package:ynotes/UI/animations/FadeAnimation.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/UI/components/hiddenSettings.dart';
-import 'package:ynotes/UI/components/showcaseTooltip.dart';
-import 'package:ynotes/UI/screens/drawer/drawerBuilderWidgets/drawer.dart';
 import 'package:ynotes/UI/screens/grades/gradesPage.dart';
-import 'package:ynotes/UI/screens/homework/homeworkPage.dart';
 import 'package:ynotes/UI/screens/summary/summaryPageWidgets/quickGrades.dart';
 import 'package:ynotes/UI/screens/summary/summaryPageWidgets/quickHomework.dart';
 import 'package:ynotes/UI/screens/summary/summaryPageWidgets/summaryPageSettings.dart';
 import 'package:ynotes/UI/screens/summary/summaryPageWidgets/chart.dart';
-import 'package:ynotes/apis/utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/main.dart';
-import 'package:ynotes/models/homework/controller.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/utils/themeUtils.dart';
 
@@ -124,6 +109,40 @@ class SummaryPageState extends State<SummaryPage> {
     }
   }
 
+  Widget separator(BuildContext context, String text) {
+    MediaQueryData screenSize = MediaQuery.of(context);
+
+    return Container(
+      height: screenSize.size.height / 10 * 0.35,
+      margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
+      child: Row(children: <Widget>[
+        Container(
+          width: screenSize.size.width / 5 * 0.4,
+          height: screenSize.size.height / 10 * 0.05,
+          decoration: BoxDecoration(color: ThemeUtils.textColor(), borderRadius: BorderRadius.circular(500)),
+          margin: EdgeInsets.only(
+            left: screenSize.size.width / 5 * 0.2,
+            right: screenSize.size.width / 5 * 0.2,
+          ),
+        ),
+        Text(
+          text,
+          style:
+              TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontSize: 18, fontWeight: FontWeight.w300),
+        ),
+        Expanded(
+          child: Container(
+            height: screenSize.size.height / 10 * 0.05,
+            decoration: BoxDecoration(
+                color: isDarkModeEnabled ? Theme.of(context).primaryColorLight : Theme.of(context).primaryColorDark,
+                borderRadius: BorderRadius.circular(500)),
+            margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.2, right: screenSize.size.width / 5 * 0.2),
+          ),
+        ),
+      ]),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
@@ -141,81 +160,78 @@ class SummaryPageState extends State<SummaryPage> {
           controller: summarySettingsController,
           settingsWidget: SummaryPageSettings(),
           child: Container(
+            color: Colors.transparent,
             height: screenSize.size.height,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                //First division (gauge)
-                Container(
-                    decoration: BoxDecoration(
-                        gradient: LinearGradient(colors: [
-                          Color(0xff2c274c),
-                          Color(0xff46426c),
-                        ]),
-                        border: Border.all(width: 0),
-                        borderRadius: BorderRadius.circular(12)),
-                    margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
-                    child: Card(
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        color: Colors.transparent,
-                        child: Container(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  separator(context, "Notes"),
+                  //First division (gauge)
+                  Container(
+                      decoration: BoxDecoration(
+                          color: Color(0xff2c274c),
+                          border: Border.all(width: 0, color: Colors.transparent),
+                          borderRadius: BorderRadius.circular(12)),
+                      margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
+                      child: Card(
+                          shadowColor: Colors.transparent,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                           color: Colors.transparent,
-                          width: screenSize.size.width / 5 * 4.5,
-                          height: (screenSize.size.height / 10 * 8.8) / 10 * 2,
-                          child: Row(
-                            children: [
-                              Container(
-                                  color: Colors.transparent,
-                                  width: screenSize.size.width / 5 * 4.5,
-                                  child: FutureBuilder(
-                                      future: disciplinesListFuture,
-                                      builder: (context, snapshot) {
-                                        if (snapshot.hasData) {
-                                          List<Grade> grades = List();
-                                          try {
-                                            var temp = getAllGrades(snapshot.data);
-                                            grades = temp;
-                                          } catch (e) {
-                                            print("Error while printing " + e.toString());
+                          child: Container(
+                            color: Colors.transparent,
+                            width: screenSize.size.width / 5 * 4.5,
+                            height: (screenSize.size.height / 10 * 8.8) / 10 * 2,
+                            child: Row(
+                              children: [
+                                Container(
+                                    color: Colors.transparent,
+                                    width: screenSize.size.width / 5 * 4.5,
+                                    child: FutureBuilder(
+                                        future: disciplinesListFuture,
+                                        builder: (context, snapshot) {
+                                          if (snapshot.hasData) {
+                                            return SummaryChart(
+                                              getAllGrades(snapshot.data, overrideLimit: true),
+                                            );
+                                          } else {
+                                            return SpinKitThreeBounce(
+                                                color: Theme.of(context).primaryColorDark,
+                                                size: screenSize.size.width / 5 * 0.4);
                                           }
-                                          return SummaryChart(grades);
-                                        } else {
-                                          return SpinKitThreeBounce(
-                                              color: Theme.of(context).primaryColorDark,
-                                              size: screenSize.size.width / 5 * 0.4);
-                                        }
-                                      }))
-                            ],
-                          ),
-                        ))),
-                //Second division (quick marks)
-                Container(
-                  margin:
-                      EdgeInsets.only(left: screenSize.size.width / 5 * 0.2, top: screenSize.size.height / 10 * 0.1),
-                  child: FutureBuilder(
-                      future: disciplinesListFuture,
-                      initialData: null,
-                      builder: (context, snapshot) {
-                        List<Grade> grades = List();
-                        try {
-                          var temp = getAllGrades(snapshot.data);
-                          grades = temp;
-                        } catch (e) {
-                          print(e.toString());
-                        }
-                        return QuickGrades(
-                          grades: grades,
-                          callback: widget.switchPage,
-                          refreshCallback: refreshLocalGradesList,
-                        );
-                      }),
-                ),
-
-                QuickHomework(
-                  switchPage: widget.switchPage,
-                )
-              ],
+                                        }))
+                              ],
+                            ),
+                          ))),
+                  //Second division (quick marks)
+                  Container(
+                    margin:
+                        EdgeInsets.only(left: screenSize.size.width / 5 * 0.2, top: screenSize.size.height / 10 * 0.1),
+                    child: FutureBuilder(
+                        future: disciplinesListFuture,
+                        initialData: null,
+                        builder: (context, snapshot) {
+                          List<Grade> grades = List();
+                          try {
+                            var temp = getAllGrades(snapshot.data);
+                            grades = temp;
+                          } catch (e) {
+                            print(e.toString());
+                          }
+                          return QuickGrades(
+                            grades: grades,
+                            callback: widget.switchPage,
+                            refreshCallback: refreshLocalGradesList,
+                          );
+                        }),
+                  ),
+                  separator(context, "Devoirs"),
+                  QuickHomework(
+                    switchPage: widget.switchPage,
+                  )
+                ],
+              ),
             ),
           )),
     );

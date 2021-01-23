@@ -24,6 +24,7 @@ import 'package:ynotes/UI/screens/mail/mailPage.dart';
 import 'package:ynotes/UI/screens/polls/pollsPage.dart';
 import 'package:ynotes/UI/screens/statspage/statspage.dart';
 import 'package:ynotes/UI/screens/summary/summaryPage.dart';
+import 'package:ynotes/UI/screens/viescolaire/schoolLifePage.dart';
 import 'package:ynotes/apis/EcoleDirecte.dart';
 import 'package:ynotes/background.dart';
 import 'package:ynotes/classes.dart';
@@ -83,6 +84,12 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
         "icon": MdiIcons.mail,
         "relatedApi": 0,
         "page": MailPage(),
+      },
+      {
+        "menuName": "Vie scolaire",
+        "relatedApi": -1,
+        "icon": MdiIcons.stamper,
+        "page": SingleChildScrollView(physics: NeverScrollableScrollPhysics(), child: SchoolLifePage()),
       },
       {"menuName": "Cloud", "icon": MdiIcons.cloud, "relatedApi": 0, "page": CloudPage()},
       {"menuName": "Sondages", "icon": MdiIcons.poll, "relatedApi": 1, "page": PollsAndInfoPage()},

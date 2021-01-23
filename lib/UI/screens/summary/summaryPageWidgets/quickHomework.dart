@@ -1,40 +1,21 @@
 import 'dart:ui';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:badges/badges.dart';
-import 'package:charts_flutter/flutter.dart' as charts;
 import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:html/parser.dart';
 import 'package:intl/intl.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 import 'package:provider/provider.dart';
-import 'package:showcaseview/showcaseview.dart';
-import 'package:stacked/stacked.dart';
-import 'package:visibility_detector/visibility_detector.dart';
-import 'package:ynotes/UI/animations/FadeAnimation.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
-import 'package:ynotes/UI/components/hiddenSettings.dart';
-import 'package:ynotes/UI/components/showcaseTooltip.dart';
-import 'package:ynotes/UI/screens/drawer/drawerBuilderWidgets/drawer.dart';
-import 'package:ynotes/UI/screens/grades/gradesPage.dart';
-import 'package:ynotes/UI/screens/homework/homeworkPage.dart';
-import 'package:ynotes/UI/screens/summary/summaryPage.dart';
-import 'package:ynotes/UI/screens/summary/summaryPageWidgets/quickGrades.dart';
-import 'package:ynotes/UI/screens/summary/summaryPageWidgets/summaryPageSettings.dart';
-import 'package:ynotes/UI/screens/summary/summaryPageWidgets/chart.dart';
 import 'package:ynotes/apis/utils.dart';
 import 'package:ynotes/classes.dart';
-import 'package:ynotes/globals.dart';
 import 'package:ynotes/main.dart';
-import 'package:ynotes/models.dart';
 import 'package:ynotes/models/homework/controller.dart';
 import 'package:ynotes/models/homework/utils.dart';
-import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/utils/themeUtils.dart';
 
 class QuickHomework extends StatefulWidget {
@@ -88,12 +69,14 @@ class _QuickHomeworkState extends State<QuickHomework> {
     var screenSize = MediaQuery.of(context);
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
-      color: Theme.of(context).primaryColor,
+      margin: EdgeInsets.only(top: 0),
+      shadowColor: Colors.transparent,
+      color: Colors.transparent,
       child: Container(
-        margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
+        color: Colors.transparent,
+        margin: EdgeInsets.only(top: 0),
         width: screenSize.size.width / 5 * 4.5,
-        height: screenSize.size.height / 10 * 5.3,
+        height: screenSize.size.height / 10 * 4.6,
         child: ClipRRect(
           borderRadius: BorderRadius.all(Radius.circular(12)),
           child: PageView(
@@ -110,29 +93,24 @@ class _QuickHomeworkState extends State<QuickHomework> {
                           children: [
                             //gauge
                             Container(
-                                width: screenSize.size.width / 5 * 0.5,
                                 height: screenSize.size.width / 5 * 0.5,
-                                child: FittedBox(
-                                  child: FutureBuilder<int>(
-                                      future: donePercentFuture,
-                                      initialData: oldGauge,
-                                      builder: (context, snapshot) {
-                                        return CircularPercentIndicator(
-                                          radius: 120,
-                                          lineWidth: screenSize.size.width / 5 * 0.4,
-                                          percent: (snapshot.data ?? 100) / 100,
-                                          backgroundColor: Colors.orange.shade400,
-                                          animationDuration: 550,
-                                          circularStrokeCap: CircularStrokeCap.round,
-                                          progressColor: Colors.green.shade300,
-                                        );
-                                      }),
-                                )),
-                            Text(
-                              "A faire",
-                              textAlign: TextAlign.center,
-                              style: TextStyle(fontFamily: "Asap", fontSize: 18, color: ThemeUtils.textColor()),
-                            ),
+                                child: FutureBuilder<int>(
+                                    future: donePercentFuture,
+                                    initialData: oldGauge,
+                                    builder: (context, snapshot) {
+                                      return LinearPercentIndicator(
+                                        center: Text(
+                                          snapshot.data.toString() + "%",
+                                          style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                                        ),
+                                        width: screenSize.size.width / 5 * 4.1,
+                                        lineHeight: screenSize.size.height / 10 * 0.25,
+                                        percent: (snapshot.data ?? 100) / 100,
+                                        backgroundColor: Colors.orange.shade400,
+                                        animationDuration: 550,
+                                        progressColor: Colors.green.shade300,
+                                      );
+                                    })),
                           ],
                         ),
                       )),
@@ -292,7 +270,7 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
         child: InkWell(
           borderRadius: BorderRadius.circular(8),
           onTap: () {
-            widget.pageSwitcher(4);
+            widget.pageSwitcher(2);
           },
           onLongPress: !widget._homework.loaded
               ? null
