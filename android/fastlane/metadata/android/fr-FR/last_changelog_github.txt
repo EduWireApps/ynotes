@@ -1,1 +1,1 @@
-EcoleDirecte grades bug fix
+New grade notification fix.
