@@ -1,1 +1,1 @@
-New grade notification fix.
+Reduces app size.
