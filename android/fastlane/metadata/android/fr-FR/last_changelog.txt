@@ -1,1 +1,2 @@
-Correction d'un bug de notification de nouvelle note.
+Nous investiguons actuellement sur un problème interne. Cette mise à jour vous donne 
+des informations sur le bug en cours de correction. 

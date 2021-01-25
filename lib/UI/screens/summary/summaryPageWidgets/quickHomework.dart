@@ -76,7 +76,7 @@ class _QuickHomeworkState extends State<QuickHomework> {
         color: Colors.transparent,
         margin: EdgeInsets.only(top: 0),
         width: screenSize.size.width / 5 * 4.5,
-        height: screenSize.size.height / 10 * 4.6,
+        height: screenSize.size.height / 10 * 4.1,
         child: ClipRRect(
           borderRadius: BorderRadius.all(Radius.circular(12)),
           child: PageView(
