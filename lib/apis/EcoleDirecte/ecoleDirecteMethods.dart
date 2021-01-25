@@ -69,7 +69,10 @@ class EcoleDirecteMethod {
 
     //Update colors;
     disciplinesList = await refreshDisciplinesListColors(disciplinesList);
-    await _offlineController.disciplines.updateDisciplines(disciplinesList);
+
+    if (!_offlineController.locked) {
+      await _offlineController.disciplines.updateDisciplines(disciplinesList);
+    }
     createStack();
     if (disciplinesList != null) {
       await setIntSetting("gradesNumber", getAllGrades(disciplinesList, overrideLimit: true).length);

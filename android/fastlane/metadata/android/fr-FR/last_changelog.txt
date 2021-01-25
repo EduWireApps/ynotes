@@ -1,1 +1,2 @@
-Réduction de la taille de l'application.
+Nous investiguons actuellement sur un problème interne. Cette mise à jour vous donne 
+des informations sur le bug en cours de correction. 

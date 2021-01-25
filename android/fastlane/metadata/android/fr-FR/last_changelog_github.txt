@@ -1,1 +1,1 @@
-Reduces app size.
+Add a bug warning : we are currently investigating on a database issue.
