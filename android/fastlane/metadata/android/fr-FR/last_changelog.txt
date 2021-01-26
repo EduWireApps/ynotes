@@ -1,1 +1,2 @@
-Correctif important d'un problème faisant que les devoirs EcoleDirecte ne s'affichaient plus.
+Nous investiguons actuellement sur un problème interne. Cette mise à jour vous donne 
+des informations sur le bug en cours de correction. 

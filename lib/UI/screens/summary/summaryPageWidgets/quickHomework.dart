@@ -74,8 +74,8 @@ class _QuickHomeworkState extends State<QuickHomework> {
       child: Container(
         color: Colors.transparent,
         margin: EdgeInsets.only(top: 0),
-        width: screenSize.size.width,
-        height: screenSize.size.height / 10 * 4.6,
+        width: screenSize.size.width / 5 * 4.5,
+        height: screenSize.size.height / 10 * 4.1,
         child: ClipRRect(
           child: PageView(
             physics: NeverScrollableScrollPhysics(),
@@ -273,7 +273,7 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
         child: InkWell(
           borderRadius: BorderRadius.circular(8),
           onTap: () {
-            widget.pageSwitcher(3);
+            widget.pageSwitcher(2);
           },
           onLongPress: !widget._homework.loaded
               ? null

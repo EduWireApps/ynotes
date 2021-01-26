@@ -66,11 +66,6 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
         "key": summaryPage
       },
       {
-        "menuName": "Vie Scolaire",
-        "icon": MdiIcons.stamper,
-        "page": SingleChildScrollView(physics: NeverScrollableScrollPhysics(), child: SchoolLifePage()),
-      },
-      {
         "menuName": "Notes",
         "icon": MdiIcons.trophy,
         "page": SingleChildScrollView(physics: NeverScrollableScrollPhysics(), child: GradesPage()),
@@ -89,6 +84,12 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
         "icon": MdiIcons.mail,
         "relatedApi": 0,
         "page": MailPage(),
+      },
+      {
+        "menuName": "Vie scolaire",
+        "relatedApi": -1,
+        "icon": MdiIcons.stamper,
+        "page": SingleChildScrollView(physics: NeverScrollableScrollPhysics(), child: SchoolLifePage()),
       },
       {"menuName": "Cloud", "icon": MdiIcons.cloud, "relatedApi": 0, "page": CloudPage()},
       {"menuName": "Sondages", "icon": MdiIcons.poll, "relatedApi": 1, "page": PollsAndInfoPage()},
