@@ -53,19 +53,14 @@ class EcoleDirecteMethod {
   Future<List<Discipline>> grades() async {
     await this.testToken();
     String rootUrl = "https://api.ecoledirecte.com/v3/Eleves/";
-    /*if (kDebugMode) {
-      rootUrl = "http://192.168.1.99:3000/posts/1";
-    }*/
+    if (kDebugMode) {
+      rootUrl = "http://192.168.1.99:3000/posts/2";
+    }
     String method = "notes.awp?verbe=get&";
     String data = 'data={"token": "$token"}';
     List<Discipline> disciplinesList = await request(
-      data,
-      rootUrl,
-      method,
-      EcoleDirecteConverter.disciplines,
-      "Grades request returned an error:",
-      /*ignoreMethodAndId: kDebugMode, getRequest: kDebugMode*/
-    );
+        data, rootUrl, method, EcoleDirecteConverter.disciplines, "Grades request returned an error:",
+        ignoreMethodAndId: kDebugMode, getRequest: kDebugMode);
 
     //Update colors;
     disciplinesList = await refreshDisciplinesListColors(disciplinesList);
@@ -322,7 +317,11 @@ class EcoleDirecteMethod {
           responseData['code'] != null &&
           responseData['code'] == 200) {
         var parsedData;
-        parsedData = await converter(responseData);
+        try {
+          parsedData = await converter(responseData);
+        } catch (e) {
+          throw (onErrorBody + " " + e.toString());
+        }
         return parsedData;
       } else {
         throw (onErrorBody + "  Server returned wrong statuscode.");
