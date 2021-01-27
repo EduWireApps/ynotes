@@ -30,7 +30,7 @@ jobs:
       - name: configure gem
         run: gem i bundler -v 1.17.3
       - name: Run Fastlane setup
-        uses: fastlane setup
+        run: fastlane setup
       - name: Run Fastlane
-        uses: fastlane closed_beta
+        run: fastlane closed_beta
        
