@@ -4,7 +4,7 @@ name: CD
 on:
   push:
     branches:
-      - "beta-releases"
+      - beta-releases
 
 jobs:
   # CI
@@ -62,7 +62,6 @@ jobs:
           flutter-version: 1.17.5
       - name: Install Flutter dependencies
         run: flutter pub get
-        run: flutter build apk --release
       - name: Run Fastlane
         uses: maierj/fastlane-action@v1.4.0
         with:
