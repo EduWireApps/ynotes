@@ -4,7 +4,7 @@ name: CD
 on:
   push:
     branches:
-      - beta-releases
+      - deploytests
 
 jobs:
   # CD
@@ -24,7 +24,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v1
         with:
-          flutter-version: 1.17.5
+          flutter-version: 1.22.4
       - name: Install Flutter dependencies
         run: flutter pub get
       - name: Run Fastlane
