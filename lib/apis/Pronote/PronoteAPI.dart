@@ -379,7 +379,7 @@ class Client {
     pattern.allMatches(text).forEach((match) => print(match.group(0)));
   }
 
-  periods() {
+  List<PronotePeriod> periods() {
     print("GETTING PERIODS");
     //printWrapped(this.func_options['donneesSec']['donnees'].toString());
 
@@ -390,7 +390,7 @@ class Client {
       print("ERROR WHILE PARSING JSON " + e.toString());
     }
 
-    List toReturn = List();
+    List<PronotePeriod> toReturn = List();
     json.forEach((j) {
       toReturn.add(PronotePeriod(this, j));
     });

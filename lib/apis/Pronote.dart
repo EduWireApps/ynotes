@@ -73,7 +73,7 @@ class APIPronote extends API {
       print("GETTING GRADES");
       gradeLock = true;
       try {
-        List periods = await localClient.periods();
+        List<PronotePeriod>  periods = await localClient.periods();
 
         List<Grade> grades = List<Grade>();
         List averages = List();
@@ -101,8 +101,8 @@ class APIPronote extends API {
                   maxClassAverage: averages[z][1],
                   minClassAverage: averages[z][2],
                   classAverage: element.classAverage,
-                  classGeneralAverage: periods[i].classGeneralAverage,
-                  generalAverage: periods[i].generalAverage));
+                  classGeneralAverage: periods[i].moyenneGeneraleClasse,
+                  generalAverage: periods[i].moyenneGenerale));
             }
             z++;
           });
