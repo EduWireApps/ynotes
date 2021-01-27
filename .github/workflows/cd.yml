@@ -4,7 +4,7 @@ name: CD
 on:
   push:
     branches:
-      - "beta-releases"
+      - beta-releases
 
 jobs:
   # CI
