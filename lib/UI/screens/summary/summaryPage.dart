@@ -1,9 +1,12 @@
 import 'dart:ui';
 
+import 'package:auto_size_text/auto_size_text.dart';
+import 'package:expandable/expandable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
@@ -39,13 +42,12 @@ GlobalKey _gradeChartGB = GlobalKey();
 GlobalKey _quickGradeGB = GlobalKey();
 
 class SummaryPageState extends State<SummaryPage> {
-
   double actualPage;
   PageController _pageControllerSummaryPage;
   PageController todoSettingsController;
   bool done2 = false;
   double offset;
-
+  ExpandableController alertExpandableDialogController = ExpandableController();
   PageController summarySettingsController = PageController(initialPage: 1);
 
   initState() {
@@ -168,6 +170,153 @@ class SummaryPageState extends State<SummaryPage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
+                  SizedBox(
+                    height: screenSize.size.height / 10 * 0.2,
+                  ),
+                  //Alert box
+                  Container(
+                    width: screenSize.size.width / 5 * 4.8,
+                    child: ExpandablePanel(
+                      hasIcon: false,
+                      controller: alertExpandableDialogController,
+                      header: Container(
+                        width: screenSize.size.width / 5 * 4.8,
+                        padding: EdgeInsets.symmetric(
+                            horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.height / 10 * 0.01),
+                        decoration: BoxDecoration(
+                          color: Colors.orange,
+                          shape: BoxShape.rectangle,
+                          border: Border.all(color: Colors.orange),
+                          borderRadius:
+                              new BorderRadius.only(topLeft: Radius.circular(8), topRight: Radius.circular(8)),
+                          boxShadow: <BoxShadow>[
+                            new BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 10.0,
+                              offset: new Offset(0.0, 10.0),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Icon(
+                              MdiIcons.alert,
+                              color: Colors.white,
+                            ),
+                            SizedBox(
+                              width: screenSize.size.width / 5 * 0.1,
+                            ),
+                            Text(
+                              "Avertissement",
+                              style: TextStyle(
+                                  fontFamily: "Asap", color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                              textAlign: TextAlign.center,
+                            ),
+                            SizedBox(
+                              width: screenSize.size.width / 5 * 0.1,
+                            ),
+                            ValueListenableBuilder(
+                                valueListenable: alertExpandableDialogController,
+                                builder: (context, boolean, widget) {
+                                  return Icon(
+                                    alertExpandableDialogController.expanded
+                                        ? MdiIcons.chevronUp
+                                        : MdiIcons.chevronDown,
+                                    color: Colors.white,
+                                  );
+                                }),
+                          ],
+                        ),
+                      ),
+                      collapsed: Container(
+                          width: screenSize.size.width / 5 * 4.8,
+                          height: screenSize.size.height / 10 * 0.1,
+                          decoration: BoxDecoration(
+                            color: Colors.orange,
+                            shape: BoxShape.rectangle,
+                            borderRadius:
+                                new BorderRadius.only(bottomRight: Radius.circular(8), bottomLeft: Radius.circular(8)),
+                            boxShadow: <BoxShadow>[
+                              new BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 10.0,
+                                offset: new Offset(0.0, 10.0),
+                              ),
+                            ],
+                          )),
+                      expanded: Container(
+                        width: screenSize.size.width / 5 * 4.8,
+                        padding: EdgeInsets.symmetric(
+                            horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.height / 10 * 0.1),
+                        decoration: BoxDecoration(
+                          color: Colors.orange,
+                          border: Border.all(color: Colors.orange),
+                          shape: BoxShape.rectangle,
+                          borderRadius:
+                              new BorderRadius.only(bottomRight: Radius.circular(8), bottomLeft: Radius.circular(8)),
+                          boxShadow: <BoxShadow>[
+                            new BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 10.0,
+                              offset: new Offset(0.0, 10.0),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          children: [
+                            Container(
+                              width: screenSize.size.width / 5 * 4.8,
+                              height: screenSize.size.height / 10 * 0.85,
+                              child: AutoSizeText(
+                                "Nous sommes en pleine résolution d'un bug important qui concerne l'application. Si votre application ne charge plus les devoirs et/ou les notes, merci de cliquer sur en savoir plus.",
+                                style: TextStyle(color: Colors.white),
+                                textAlign: TextAlign.justify,
+                              ),
+                            ),
+                            SizedBox(
+                              height: screenSize.size.height / 10 * 0.05,
+                            ),
+                            Container(
+                              height: screenSize.size.height / 10 * 0.5,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  RaisedButton(
+                                    color: Colors.green,
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
+                                    onPressed: () {
+                                      alertExpandableDialogController.toggle();
+                                    },
+                                    child: Text(
+                                      'Réduire',
+                                      style: TextStyle(color: Colors.white, fontFamily: "Asap"),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: screenSize.size.width / 5 * 0.1,
+                                  ),
+                                  RaisedButton(
+                                    color: Colors.blue,
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
+                                    onPressed: () async {
+                                      await launchURL(
+                                          "https://support.ynotes.fr/divers/mon-application-ne-fonctionne-plus");
+                                    },
+                                    child: Text(
+                                      'En savoir plus',
+                                      style: TextStyle(color: Colors.white, fontFamily: "Asap"),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                   separator(context, "Notes"),
                   //First division (gauge)
                   Container(
@@ -194,7 +343,7 @@ class SummaryPageState extends State<SummaryPage> {
                                         builder: (context, snapshot) {
                                           if (snapshot.hasData) {
                                             return SummaryChart(
-                                              getAllGrades(snapshot.data),
+                                              getAllGrades(snapshot.data, overrideLimit: true),
                                             );
                                           } else {
                                             return SpinKitThreeBounce(

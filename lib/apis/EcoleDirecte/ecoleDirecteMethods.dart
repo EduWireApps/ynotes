@@ -8,13 +8,17 @@ import 'package:ynotes/classes.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/apis/EcoleDirecte/ecoleDirecteConverters.dart';
 import 'package:ynotes/apis/Pronote/PronoteCas.dart';
+import 'package:ynotes/offline/offline.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/apis/utils.dart';
 import '../EcoleDirecte.dart';
 
 class EcoleDirecteMethod {
-  static lessons(DateTime dateToUse, int week) async {
-    await EcoleDirecteMethod.testToken();
+  final Offline _offlineController;
+
+  EcoleDirecteMethod(this._offlineController);
+  lessons(DateTime dateToUse, int week) async {
+    await this.testToken();
     String dateDebut = DateFormat("yyyy/MM/dd").format(getMonday(dateToUse));
 
     String dateFin = DateFormat("yyyy/MM/dd").format(getNextSunday(dateToUse));
@@ -27,8 +31,8 @@ class EcoleDirecteMethod {
     return lessonsList;
   }
 
-  static periods() async {
-    await EcoleDirecteMethod.testToken();
+  periods() async {
+    await this.testToken();
     String data = 'data={"token": "$token"}';
     String rootUrl = "https://api.ecoledirecte.com/v3/Eleves/";
     /*if (kDebugMode) {
@@ -46,30 +50,33 @@ class EcoleDirecteMethod {
     return periodsList;
   }
 
-  static Future<List<Discipline>> grades() async {
-    await EcoleDirecteMethod.testToken();
+  Future<List<Discipline>> grades() async {
+    await this.testToken();
     String rootUrl = "https://api.ecoledirecte.com/v3/Eleves/";
-    /*if (kDebugMode) {
-      rootUrl = "http://192.168.1.99:3000/posts/1";
-    }*/
+    if (kDebugMode) {
+      rootUrl = "http://192.168.1.99:3000/posts/2";
+    }
     String method = "notes.awp?verbe=get&";
     String data = 'data={"token": "$token"}';
     List<Discipline> disciplinesList = await request(
         data, rootUrl, method, EcoleDirecteConverter.disciplines, "Grades request returned an error:",
-        /*ignoreMethodAndId: kDebugMode, getRequest: kDebugMode*/);
+        ignoreMethodAndId: kDebugMode, getRequest: kDebugMode);
 
     //Update colors;
     disciplinesList = await refreshDisciplinesListColors(disciplinesList);
-    await offline.disciplines.updateDisciplines(disciplinesList);
+
+    if (!_offlineController.locked) {
+      await _offlineController.disciplines.updateDisciplines(disciplinesList);
+    }
     createStack();
     if (disciplinesList != null) {
-      await setIntSetting("gradesNumber", getAllGrades(disciplinesList).length);
+      await setIntSetting("gradesNumber", getAllGrades(disciplinesList, overrideLimit: true).length);
     }
     return disciplinesList;
   }
 
-  static homeworkDates() async {
-    await EcoleDirecteMethod.testToken();
+  homeworkDates() async {
+    await this.testToken();
     String rootUrl = 'https://api.ecoledirecte.com/v3/Eleves/';
     String method = "cahierdetexte.awp?verbe=get&";
     String data = 'data={"token": "$token"}';
@@ -96,8 +103,8 @@ class EcoleDirecteMethod {
     return homeworkDates;
   }
 
-  static nextHomework() async {
-    await EcoleDirecteMethod.testToken();
+  nextHomework() async {
+    await this.testToken();
 
     List<Homework> homeworkList = List<Homework>();
     String rootUrl = 'https://api.ecoledirecte.com/v3/Eleves/';
@@ -121,8 +128,8 @@ class EcoleDirecteMethod {
     return homeworkList;
   }
 
-  static Future<List<Homework>> homeworkFor(DateTime date) async {
-    await EcoleDirecteMethod.testToken();
+  Future<List<Homework>> homeworkFor(DateTime date) async {
+    await this.testToken();
     String dateToUse = DateFormat("yyyy-MM-dd").format(date).toString();
     String rootUrl = 'https://api.ecoledirecte.com/v3/Eleves/';
     String method = "cahierdetexte/$dateToUse.awp?verbe=get&";
@@ -136,8 +143,8 @@ class EcoleDirecteMethod {
     return homework;
   }
 
-  static Future<List<CloudItem>> cloudFolders() async {
-    await EcoleDirecteMethod.testToken();
+  Future<List<CloudItem>> cloudFolders() async {
+    await this.testToken();
     String rootUrl = 'https://api.ecoledirecte.com/v3/E/';
     String method = "espacestravail.awp?verbe=get&";
     String data = 'data={"token": "$token"}';
@@ -146,8 +153,8 @@ class EcoleDirecteMethod {
     return cloudFolders;
   }
 
-  static Future<List<Recipient>> recipients() async {
-    await EcoleDirecteMethod.testToken();
+  Future<List<Recipient>> recipients() async {
+    await this.testToken();
     String data = 'data={"token": "$token"}';
     String rootUrl = 'https://api.ecoledirecte.com/v3/messagerie/contacts/professeurs.awp?verbe=get';
     List<Recipient> recipients = await request(
@@ -159,8 +166,18 @@ class EcoleDirecteMethod {
     return recipients;
   }
 
+  Future<List<SchoolLifeTicket>> schoolLife() async {
+    await this.testToken();
+    String rootUrl = 'https://api.ecoledirecte.com/v3/eleves/';
+    String method = "viescolaire.awp?verbe=get&";
+    String data = 'data={"token": "$token"}';
+    List<SchoolLifeTicket> schoolLifeList = await request(
+        data, rootUrl, method, EcoleDirecteConverter.schoolLife, "School Life request returned an error:");
+    return schoolLifeList;
+  }
+
 //Bool value and Token validity tester
-  static testToken() async {
+  testToken() async {
     if (token == "" || token == null) {
       await EcoleDirecteMethod.refreshToken();
       return false;
@@ -226,7 +243,7 @@ class EcoleDirecteMethod {
                     },""";
     });
 
-    await EcoleDirecteMethod.testToken();
+    await EcoleDirecteMethod(offline).testToken();
     String id = await storage.read(key: "userID");
     var url = 'https://api.ecoledirecte.com/v3/eleves/$id/messages.awp?verbe=post';
 
@@ -300,7 +317,11 @@ class EcoleDirecteMethod {
           responseData['code'] != null &&
           responseData['code'] == 200) {
         var parsedData;
-        parsedData = await converter(responseData);
+        try {
+          parsedData = await converter(responseData);
+        } catch (e) {
+          throw (onErrorBody + " " + e.toString());
+        }
         return parsedData;
       } else {
         throw (onErrorBody + "  Server returned wrong statuscode.");

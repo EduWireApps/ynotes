@@ -1,1 +1,1 @@
-Correctif important d'un problème faisant que les devoirs EcoleDirecte ne s'affichaient plus.
+Correction de bugs.
