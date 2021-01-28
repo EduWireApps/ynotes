@@ -17,10 +17,8 @@ jobs:
         run: sh ./.github/scripts/decrypt_android_keys.sh
         env:
           ANDROID_KEYS_SECRET_PASSPHRASE: ${{ secrets.ANDROID_KEYS_SECRET_PASSPHRASE }}
-      - name: Set default env
-        defaults:
-        run:
-            working-directory: android/fastlane
+      - name: Change directory
+        run: cd android/fastlane
       - name: Setup Java
         uses: actions/setup-java@v1
         with:
