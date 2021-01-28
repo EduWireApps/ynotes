@@ -59,4 +59,3 @@ jobs:
       - name: Release to Google Play (beta)
         run: |
           bundle exec fastlane beta 
-        working-directory: android/fastlane

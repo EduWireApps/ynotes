@@ -1,0 +1,1 @@
+Fix EcoleDirecte login bug.

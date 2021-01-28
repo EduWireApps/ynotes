@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="fastlane.lanes">
+    
+    
+    
+      
+      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.000233228">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="1: number_of_commits" time="0.007570071">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="2: flutter_version" time="0.001765329">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="3: prompt" time="1.323948339">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="4: prompt" time="0.599192359">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="5: cat last_changelog.txt &gt; changelogs/187.txt" time="0.006030408">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="6: flutter packages get" time="2.126605662">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="7: flutter clean" time="0.750596944">
+        
+      </testcase>
+    
+      
+      <testcase classname="fastlane.lanes" name="8: flutter build appbundle --build-number\=187 --flavor prod" time="50.872736727">
+        
+      </testcase>
+    
+  </testsuite>
+</testsuites>

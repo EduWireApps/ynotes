@@ -1,0 +1,3 @@
+Mise à jour de corrections de bugs.
+Réagencement des onglets du tiroir.
+Correction d'un problème du partage de fichiers.

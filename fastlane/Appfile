@@ -1,0 +1,2 @@
+json_key_file("service_account_key.json") # Add this
+package_name("fr.ynotes") # e.g. com.krausefx.app

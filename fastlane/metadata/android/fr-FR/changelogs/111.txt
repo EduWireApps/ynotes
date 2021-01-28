@@ -1,0 +1,4 @@
+Mise à jour de fonctionnalités 0.9:
+Cette mise à jour inclut notamment un nouvel agenda, une nouvelle page d'accueil, et de nombreuses améliorations.
+Consultez la note de mise à jour in-app pour en savoir plus !
+Remarque : cette mise à jour contient encore quelques bugs connus dont la correction n'est pas encore terminée.
