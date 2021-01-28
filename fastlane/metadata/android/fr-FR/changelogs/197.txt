@@ -1,1 +1,0 @@
-Correction d'un bug de notification de nouvelle note.

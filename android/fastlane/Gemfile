@@ -1,0 +1,9 @@
+source "https://rubygems.org"
+
+gem "fastlane"
+
+gem 'fastlane-plugin-flutter_version', '~> 1.0'
+
+gem 'dotenv-rails', groups: [:development, :test]
+
+gem 'rest-client'

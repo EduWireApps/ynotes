@@ -5,7 +5,9 @@ on:
   push:
     branches:
       - deploytests
-
+defaults:
+  run:
+    working-directory: android/fastlane
 jobs:
   # CD
   deploy_android:
