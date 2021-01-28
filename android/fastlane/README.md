@@ -20,16 +20,6 @@ or alternatively using `brew install fastlane`
 fastlane beta
 ```
 
-### internal
-```
-fastlane internal
-```
-
-### test
-```
-fastlane test
-```
-
 ### githubrelease
 ```
 fastlane githubrelease
@@ -44,21 +34,11 @@ fastlane local_test
 ----
 
 ## Android
-### android test
+### android gh_actions_beta_release
 ```
-fastlane android test
+fastlane android gh_actions_beta_release
 ```
-Runs all the tests
-### android beta
-```
-fastlane android beta
-```
-Submit a new Beta Build to Crashlytics Beta
-### android deploy
-```
-fastlane android deploy
-```
-Deploy a new version to the Google Play
+Deploy to closed beta track
 
 ----
 
