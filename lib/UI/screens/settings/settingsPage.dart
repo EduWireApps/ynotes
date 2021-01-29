@@ -278,7 +278,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                       ),
                       mainButton: FlatButton(
                         onPressed: () {
-                          const url = 'https://ynotes.fr/help/notifications';
+                          const url = 'https://support.ynotes.fr/divers/notifications';
                           launchURL(url);
                         },
                         child: Text(
