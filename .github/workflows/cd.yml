@@ -39,6 +39,10 @@ jobs:
 
       - name: Install Flutter dependencies
         run: flutter pub get
+      - name: Run analyzer
+          run: flutter analyze
+      - name: Run tests
+          run: flutter test
       - name: Setup Ruby
         uses: actions/setup-ruby@v1
         with:
@@ -52,13 +56,13 @@ jobs:
           restore-keys: ${{ runner.os }}-gems-
       - name: Build Android App Bundle
         run: flutter build appbundle --flavor prod --build-number=$(git rev-list HEAD --count)      
-      - name: Download bundle dependencies
-        run: |
-          gem install bundler:2.0.2
-          bundle config path vendor/bundle
-          bundle install   
-        working-directory: android/fastlane
-      - name: Release to Google Play (beta)
-        run: |
-          bundle exec fastlane beta 
-        working-directory: android/fastlane
+      # - name: Download bundle dependencies
+      #   run: |
+      #     gem install bundler:2.0.2
+      #     bundle config path vendor/bundle
+      #     bundle install   
+      #   working-directory: android/fastlane
+      # - name: Release to Google Play (beta)
+      #   run: |
+      #     bundle exec fastlane beta 
+      #   working-directory: android/fastlane
