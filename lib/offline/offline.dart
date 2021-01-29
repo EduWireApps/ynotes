@@ -109,14 +109,19 @@ class Offline {
 
   safeBoxOpen(String boxName) async {
     try {
-      Box box = await Hive.openBox(boxName);
-      print("Correctly opened box");
+      Box box = await Hive.openBox(boxName).catchError((e) async {
+        await logFile("Error while opening $boxName");
+        throw ("Something bad happened.");
+      });
+      print("Correctly opened $boxName");
       return box;
     } catch (e) {
-      if (boxName.contains("offlineData")) await deleteCorruptedBox(boxName);
-      await init();
-      await logFile("Error while opening $boxName");
       print("Error while opening $boxName");
+      if (boxName.contains("offlineData")) {
+        await deleteCorruptedBox(boxName);
+      }
+      await init();
+
       throw ("Error while opening $boxName");
     }
   }
@@ -125,6 +130,7 @@ class Offline {
   ///Deletes corrupted box
   deleteCorruptedBox(String boxName) async {
     await Hive.deleteBoxFromDisk(boxName);
+    await logFile("Recovered $boxName");
   }
 
   //Refresh lists when needed
