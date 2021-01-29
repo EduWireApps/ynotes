@@ -18,7 +18,7 @@ jobs:
         - uses: subosito/flutter-action@v1
           with:
               flutter-version: '1.22.x' # you can use 1.22
-              channel: 'dev' # optional, default to: 'stable'
+              # optional, default to: 'stable'
         - run: flutter pub get
         - run: flutter build apk
       # - name: Checkout code
