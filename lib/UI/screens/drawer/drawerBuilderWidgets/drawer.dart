@@ -30,6 +30,24 @@ class CustomDrawer extends StatefulWidget {
 }
 
 class _CustomDrawerState extends State<CustomDrawer> {
+  //Settings
+  var boolSettings = {
+    "autoCloseDrawer": false,
+  };
+  void getSettings() async {
+    await Future.forEach(boolSettings.keys, (key) async {
+      var value = await getSetting(key);
+      setState(() {
+        boolSettings[key] = value;
+      });
+    });
+  }
+
+  void initState() {
+    super.initState();
+    getSettings();
+  }
+
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
@@ -106,6 +124,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               child: InkWell(
                                 splashFactory: InkRipple.splashFactory,
                                 onTap: () {
+                                  //Close drawer
+                                  if (boolSettings["autoCloseDrawer"]) {
+                                    Navigator.of(context).pop();
+                                  }
                                   widget.drawerPageViewController.jumpToPage(this.widget.entries.indexOf(entry));
                                 },
                                 borderRadius:

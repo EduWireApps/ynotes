@@ -36,14 +36,15 @@ bool isFirstAvatarSelected;
 final storage = new FlutterSecureStorage();
 
 class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMixin {
-  //Settings
+  //Default settings
   var boolSettings = {
     "nightmode": false,
     "batterySaver": false,
     "notificationNewMail": false,
     "notificationNewGrade": false,
     "lighteningOverride": false,
-    "shakeToReport": false
+    "shakeToReport": false,
+    "autoCloseDrawer": false
   };
 
   AnimationController leftToRightAnimation;
@@ -177,6 +178,26 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     });
 
                     await setSetting("batterySaver", value);
+                  },
+                ),
+                SettingsTile.switchTile(
+                  title: 'Fermeture du menu coulissant',
+                  subtitle: "Fermer le menu coulissant après avoir sélectionné une page",
+                  titleTextStyle: TextStyle(
+                    fontFamily: "Asap",
+                    color: ThemeUtils.textColor(),
+                  ),
+                  subtitleTextStyle: TextStyle(
+                      fontFamily: "Asap",
+                      color: isDarkModeEnabled ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
+                  leading: Icon(MdiIcons.arrowCollapseLeft, color: ThemeUtils.textColor()),
+                  switchValue: boolSettings["autoCloseDrawer"],
+                  onToggle: (value) async {
+                    setState(() {
+                      boolSettings["autoCloseDrawer"] = value;
+                    });
+
+                    await setSetting("autoCloseDrawer", value);
                   },
                 ),
               ],
