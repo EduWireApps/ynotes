@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:ynotes/UI/screens/settings/sub_pages/logsPage.dart';
 import 'package:ynotes/offline/data/agenda/events.dart';
 import 'package:ynotes/offline/data/agenda/reminders.dart';
 import 'package:ynotes/offline/data/agenda/lessons.dart';
@@ -104,6 +105,32 @@ class Offline {
     disciplines = DisciplinesOffline(this.locked);
     polls = PollsOffline(this.locked);
     recipients = RecipientsOffline(this.locked);
+  }
+
+  safeBoxOpen(String boxName) async {
+    try {
+      Box box = await Hive.openBox(boxName).catchError((e) async {
+        await logFile("Error while opening $boxName");
+        throw ("Something bad happened.");
+      });
+      print("Correctly opened $boxName");
+      return box;
+    } catch (e) {
+      print("Error while opening $boxName");
+      if (boxName.contains("offlineData")) {
+        await deleteCorruptedBox(boxName);
+      }
+      await init();
+
+      throw ("Error while opening $boxName");
+    }
+  }
+
+  ///DIRTY FIX
+  ///Deletes corrupted box
+  deleteCorruptedBox(String boxName) async {
+    await Hive.deleteBoxFromDisk(boxName);
+    await logFile("Recovered $boxName");
   }
 
   //Refresh lists when needed
