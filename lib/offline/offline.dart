@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:ynotes/UI/screens/settings/sub_pages/logsPage.dart';
 import 'package:ynotes/offline/data/agenda/events.dart';
 import 'package:ynotes/offline/data/agenda/reminders.dart';
 import 'package:ynotes/offline/data/agenda/lessons.dart';
@@ -89,9 +88,9 @@ class Offline {
       var dir = await FolderAppUtil.getDirectory();
       try {
         Hive.init("${dir.path}/offline");
-        offlineBox = await safeBoxOpen("offlineData");
-        homeworkDoneBox = await safeBoxOpen('doneHomework');
-        pinnedHomeworkBox = await safeBoxOpen('pinnedHomework');
+        offlineBox = await Hive.openBox("offlineData");
+        homeworkDoneBox = await Hive.openBox('doneHomework');
+        pinnedHomeworkBox = await Hive.openBox('pinnedHomework');
       } catch (e) {
         print(e);
       }
@@ -105,26 +104,6 @@ class Offline {
     disciplines = DisciplinesOffline(this.locked);
     polls = PollsOffline(this.locked);
     recipients = RecipientsOffline(this.locked);
-  }
-
-  safeBoxOpen(String boxName) async {
-    try {
-      Box box = await Hive.openBox(boxName);
-      print("Correctly opened box");
-      return box;
-    } catch (e) {
-      if (boxName.contains("offlineData")) await deleteCorruptedBox(boxName);
-      await init();
-      await logFile("Error while opening $boxName");
-      print("Error while opening $boxName");
-      throw ("Error while opening $boxName");
-    }
-  }
-
-  ///DIRTY FIX
-  ///Deletes corrupted box
-  deleteCorruptedBox(String boxName) async {
-    await Hive.deleteBoxFromDisk(boxName);
   }
 
   //Refresh lists when needed
@@ -174,7 +153,50 @@ class Offline {
   //Clear all databases
   clearAll() async {
     try {
-      await Hive.deleteFromDisk();
+      if (offlineBox == null || !offlineBox.isOpen) {
+        offlineBox = await Hive.openBox("offlineData");
+      }
+      if (homeworkDoneBox == null || !homeworkDoneBox.isOpen) {
+        homeworkDoneBox = await Hive.openBox("doneHomework");
+      }
+      if (pinnedHomeworkBox == null || !pinnedHomeworkBox.isOpen) {
+        pinnedHomeworkBox = await Hive.openBox('pinnedHomework');
+      }
+      await offlineBox.deleteFromDisk();
+      await homeworkDoneBox.deleteFromDisk();
+      await pinnedHomeworkBox.deleteFromDisk();
+      /*try {
+        await offlineBox.clear();
+      } catch (e) {
+        print("Fail to clear offline");
+      }
+      try {
+        await homeworkDoneBox.clear();
+      } catch (e) {}
+      try {
+        await pinnedHomeworkBox.clear();
+      } catch (e) {}
+      try {
+        disciplinesData.clear();
+      } catch (e) {
+        print("Fail to clear disciplines " + e.toString());
+      }
+      try {
+        remindersData.clear();
+      } catch (e) {}
+      try {
+        homeworkData.clear();
+      } catch (e) {}
+      try {
+        lessonsData.clear();
+      } catch (e) {}
+      try {
+        pollsData.clear();
+      } catch (e) {}
+      try {
+        agendaEventsData.clear();
+      } catch (e) {}
+      print("Cleared all");*/
     } catch (e) {
       print("Failed to clear all db " + e.toString());
     }
