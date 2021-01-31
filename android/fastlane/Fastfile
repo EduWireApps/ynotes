@@ -26,7 +26,7 @@ platform :android do
       )
       upload_to_play_store(
         track: 'beta',
-        aab: '../build/app/outputs/bundle/release/app-release.aab',
+        aab: '../../build/app/outputs/bundle/release/app-release.aab',
         skip_upload_metadata: true,
         skip_upload_images: true,
         skip_upload_screenshots: true,
@@ -61,7 +61,7 @@ begin lane :beta do
       sh("flutter", "clean")
 
     end
-    upload_to_play_store(track: 'beta', aab: '../build/app/outputs/bundle/prodRelease/app-prod-release.aab', package_name: "fr.ynotes")
+    upload_to_play_store(track: 'beta', aab: '../../build/app/outputs/bundle/prodRelease/app-prod-release.aab', package_name: "fr.ynotes")
   end
   gh = prompt(
   text: "Do you want to push to github ?",
