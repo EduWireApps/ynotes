@@ -26,7 +26,7 @@ platform :android do
       )
       upload_to_play_store(
         track: 'beta',
-        aab: '../../build/app/outputs/bundle/release/app-release.aab',
+        aab: '../build/app/outputs/bundle/release/app-release.aab',
         skip_upload_metadata: true,
         skip_upload_images: true,
         skip_upload_screenshots: true,
@@ -56,8 +56,16 @@ begin lane :beta do
     Dir.chdir "metadata/android/fr-FR" do
       sh("#{command} last_changelog.txt > changelogs/#{build_number}.txt")
     end
-    upload_to_play_store(track: 'beta', aab: '../build/app/outputs/bundle/prodRelease/app-prod-release.aab', package_name: "fr.ynotes")
-  end
+    upload_to_play_store(
+        track: 'beta',
+        aab: '../build/app/outputs/bundle/release/app-release.aab',
+        skip_upload_metadata: true,
+        package_name: 'fr.ynotes'
+        skip_upload_images: true,
+        skip_upload_screenshots: true,
+        release_status: "draft",
+        version_code: flutter_version()["version_code"],
+      )  end
   gh = prompt(
   text: "Do you want to push to github ?",
   boolean: true)
