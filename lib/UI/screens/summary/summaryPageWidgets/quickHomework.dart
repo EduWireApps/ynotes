@@ -84,53 +84,57 @@ class _QuickHomeworkState extends State<QuickHomework> {
                 children: <Widget>[
                   Align(
                       alignment: Alignment.topCenter,
-                      child: Container(
-                        margin: EdgeInsets.only(
-                            top: (screenSize.size.height / 10 * 8.8) / 10 * 0.1, left: screenSize.size.width / 5 * 0.2),
-                        child: FutureBuilder<List>(
-                            future: donePercentFuture,
-                            initialData: [100, 0, 0],
-                            builder: (context, snapshot) {
-                              print(snapshot.data[0]);
-                              return Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  //gauge
-                                  LinearPercentIndicator(
-                                    widgetIndicator: Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.end,
-                                      children: [
-                                        Container(
+                      child: Card(
+                        margin: EdgeInsets.zero,
+                        child: Container(
+                          height: screenSize.size.height / 10 * 0.5,
+                          margin: EdgeInsets.only(
+                              top: (screenSize.size.height / 10 * 8.8) / 10 * 0.1,
+                              left: screenSize.size.width / 5 * 0.2),
+                          child: FutureBuilder<List>(
+                              future: donePercentFuture,
+                              initialData: [100, 0, 0],
+                              builder: (context, snapshot) {
+                                print(snapshot.data[0]);
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    //gauge
+                                    LinearPercentIndicator(
+                                      widgetIndicator: Transform.translate(
+                                        offset: Offset(0, -screenSize.size.height / 10 * 0.025),
+                                        child: Container(
                                           width: screenSize.size.width / 5 * 0.3,
                                           height: screenSize.size.width / 5 * 0.3,
                                           decoration:
                                               BoxDecoration(color: Colors.green.shade300, shape: BoxShape.circle),
                                         ),
-                                      ],
+                                      ),
+                                      animation: true,
+                                      animateFromLastPercent: true,
+                                      linearStrokeCap: LinearStrokeCap.roundAll,
+                                      width: screenSize.size.width / 5 * 4.2,
+                                      lineHeight: screenSize.size.height / 10 * 0.1,
+                                      percent: (snapshot.data[0] ?? 100) / 100,
+                                      backgroundColor: Colors.orange.shade400,
+                                      animationDuration: 550,
+                                      progressColor: Colors.green.shade300,
+                                      padding: EdgeInsets.zero,
                                     ),
-                                    animation: true,
-                                    animateFromLastPercent: true,
-                                    linearStrokeCap: LinearStrokeCap.roundAll,
-                                    width: screenSize.size.width / 5 * 4.2,
-                                    
-                                    lineHeight: screenSize.size.height / 10 * 0.1,
-                                    percent: (snapshot.data[0] ?? 100) / 100,
-                                    backgroundColor: Colors.orange.shade400,
-                                    animationDuration: 550,
-                                    progressColor: Colors.green.shade300,
-                                    padding: EdgeInsets.zero,
-                                  ),
-                                  Text(
-                                    (snapshot.data[1].toString() +
-                                        " devoir(s) fait sur " +
-                                        snapshot.data[2].toString()),
-                                    style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-                                    textAlign: TextAlign.left,
-                                  )
-                                ],
-                              );
-                            }),
+                                    Container(
+                                      margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.15),
+                                      child: Text(
+                                        (snapshot.data[1].toString() +
+                                            " devoir(s) fait sur " +
+                                            snapshot.data[2].toString()),
+                                        style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                                        textAlign: TextAlign.left,
+                                      ),
+                                    )
+                                  ],
+                                );
+                              }),
+                        ),
                       )),
                   Align(
                     alignment: Alignment.topCenter,
