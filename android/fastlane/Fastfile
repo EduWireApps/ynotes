@@ -56,7 +56,7 @@ begin lane :beta do
     Dir.chdir "metadata/android/fr-FR" do
       sh("#{command} last_changelog.txt > changelogs/#{build_number}.txt")
     end
-    upload_to_play_store(track: 'beta', aab: '../../build/app/outputs/bundle/prodRelease/app-prod-release.aab', package_name: "fr.ynotes")
+    upload_to_play_store(track: 'beta', aab: '../build/app/outputs/bundle/prodRelease/app-prod-release.aab', package_name: "fr.ynotes")
   end
   gh = prompt(
   text: "Do you want to push to github ?",
@@ -79,7 +79,7 @@ lane :githubrelease do
     description: (File.read("metadata/android/fr-FR/last_changelog_github.txt") rescue "No changelog provided."),
     commitish: "master",
     is_prerelease: true,
-    upload_assets: ["../../build/app/outputs/flutter-apk/app-arm64-v8a-prod-release.apk", "../../build/app/outputs/flutter-apk/app-armeabi-v7a-prod-release.apk", "../../app/outputs/flutter-apk/app-x86_64-prod-release.apk"]
+    upload_assets: ["../build/app/outputs/flutter-apk/app-arm64-v8a-prod-release.apk", "../build/app/outputs/flutter-apk/app-armeabi-v7a-prod-release.apk", "../app/outputs/flutter-apk/app-x86_64-prod-release.apk"]
   )
 end
 lane :local_test do
