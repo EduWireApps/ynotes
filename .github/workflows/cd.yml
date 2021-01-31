@@ -11,12 +11,10 @@ jobs:
   deploy_android:
     runs-on: ubuntu-latest
     steps:
-      - name: 1
-        run: echo $ls
-      - name: Github commit count
-        run: git rev-list HEAD --count
       - name: Checkout code
         uses: actions/checkout@v2
+      - name: Github commit count
+        run: git rev-list HEAD --count
       - name: Decrypt Android keys
         run: sh ./.github/scripts/decrypt_android_keys.sh
         env:
