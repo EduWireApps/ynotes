@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Github commit count
-        rn: git rev-list HEAD --count
+        run: git rev-list HEAD --count
       - name: Checkout code
         uses: actions/checkout@v2
       - name: Decrypt Android keys
