@@ -11,6 +11,8 @@ jobs:
   deploy_android:
     runs-on: ubuntu-latest
     steps:
+      - name: 1
+        run: ls
       - name: Github commit count
         run: git rev-list HEAD --count
       - name: Checkout code
