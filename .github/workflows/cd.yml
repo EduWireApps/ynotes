@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 1
-        run: ls
+        run: echo $ls
       - name: Github commit count
         run: git rev-list HEAD --count
       - name: Checkout code
