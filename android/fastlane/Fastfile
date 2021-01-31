@@ -59,8 +59,6 @@ begin lane :beta do
     Dir.chdir "../.." do
       sh("flutter", "packages", "get")
       sh("flutter", "clean")
-      sh("flutter", "build", "appbundle","--build-number=#{build_number}","--flavor", "prod",)
-      sh("flutter", "build", "apk","--build-number=#{build_number}", "--split-per-abi","--flavor", "prod",)
 
     end
     upload_to_play_store(track: 'beta', aab: '../build/app/outputs/bundle/prodRelease/app-prod-release.aab', package_name: "fr.ynotes")
@@ -78,9 +76,6 @@ lane :githubrelease do
   
   build_number = number_of_commits()
   version = flutter_version()["version_name"]
-  Dir.chdir "../.." do
-    sh("flutter", "build", "apk", "--release","--build-number=#{build_number}", "--split-per-abi","--flavor", "prod",)
-  end
   github_release = set_github_release(
     repository_name: "ModernChocolate/ynotes",
     api_token: ENV["GITHUB_TOKEN"],
