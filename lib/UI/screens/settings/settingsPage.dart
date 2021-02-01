@@ -471,42 +471,59 @@ showExitDialog(BuildContext context) {
   return showDialog(
     context: context,
     builder: (BuildContext context) {
-      return AlertDialog(
-          elevation: 50,
-          backgroundColor: Theme.of(context).primaryColor,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-          title: Text(
-            "Confirmation",
-            style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-          ),
-          content: Text(
-            "Voulez vous vraiment vous deconnecter ?",
-            style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-          ),
-          actions: [
-            FlatButton(
-              child: const Text(
-                'ANNULER',
-                style: TextStyle(color: Colors.green),
-              ),
-              onPressed: () {
-                Navigator.pop(context, false);
-              },
-            ),
-            FlatButton(
-              child: const Text(
-                'SE DECONNECTER',
-                style: TextStyle(color: Colors.red),
-              ),
-              onPressed: () async {
-                await exitApp();
-                try {
-                  Provider.of<AppStateNotifier>(context, listen: false).updateTheme(false);
-                } catch (e) {}
-                Navigator.of(context).pushReplacement(router(login()));
-              },
-            )
-          ]);
+      return ExitDialogWidget();
     },
   );
+}
+
+class ExitDialogWidget extends StatefulWidget {
+  const ExitDialogWidget({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  _ExitDialogWidgetState createState() => _ExitDialogWidgetState();
+}
+
+class _ExitDialogWidgetState extends State<ExitDialogWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+        elevation: 50,
+        backgroundColor: Theme.of(context).primaryColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+        title: Text(
+          "Confirmation",
+          style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+        ),
+        content: Text(
+          "Voulez vous vraiment vous deconnecter ?",
+          style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+        ),
+        actions: [
+          FlatButton(
+            child: const Text(
+              'ANNULER',
+              style: TextStyle(color: Colors.green),
+            ),
+            onPressed: () {
+              Navigator.pop(context, false);
+            },
+          ),
+          FlatButton(
+            child: const Text(
+              'SE DECONNECTER',
+              style: TextStyle(color: Colors.red),
+            ),
+            onPressed: () async {
+              await exitApp();
+              setState(() {});
+              try {
+                Provider.of<AppStateNotifier>(context, listen: false).updateTheme(false);
+              } catch (e) {}
+              Navigator.of(context).pushReplacement(router(login()));
+            },
+          )
+        ]);
+  }
 }

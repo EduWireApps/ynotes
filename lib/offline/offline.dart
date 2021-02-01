@@ -189,41 +189,11 @@ class Offline {
       if (pinnedHomeworkBox == null || !pinnedHomeworkBox.isOpen) {
         pinnedHomeworkBox = await Hive.openBox('pinnedHomework');
       }
+
       await offlineBox.deleteFromDisk();
       await homeworkDoneBox.deleteFromDisk();
       await pinnedHomeworkBox.deleteFromDisk();
-      /*try {
-        await offlineBox.clear();
-      } catch (e) {
-        print("Fail to clear offline");
-      }
-      try {
-        await homeworkDoneBox.clear();
-      } catch (e) {}
-      try {
-        await pinnedHomeworkBox.clear();
-      } catch (e) {}
-      try {
-        disciplinesData.clear();
-      } catch (e) {
-        print("Fail to clear disciplines " + e.toString());
-      }
-      try {
-        remindersData.clear();
-      } catch (e) {}
-      try {
-        homeworkData.clear();
-      } catch (e) {}
-      try {
-        lessonsData.clear();
-      } catch (e) {}
-      try {
-        pollsData.clear();
-      } catch (e) {}
-      try {
-        agendaEventsData.clear();
-      } catch (e) {}
-      print("Cleared all");*/
+      await this.init();
     } catch (e) {
       print("Failed to clear all db " + e.toString());
     }
