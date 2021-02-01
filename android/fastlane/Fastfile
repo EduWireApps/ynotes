@@ -60,7 +60,7 @@ begin lane :beta do
         track: 'beta',
         aab: '../build/app/outputs/bundle/release/app-release.aab',
         skip_upload_metadata: true,
-        package_name: 'fr.ynotes'
+        package_name: 'fr.ynotes',
         skip_upload_images: true,
         skip_upload_screenshots: true,
         release_status: "draft",
