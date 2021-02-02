@@ -58,7 +58,7 @@ begin lane :beta do
     end
     upload_to_play_store(
         track: 'beta',
-        aab: '../build/app/outputs/bundle/prodRelease/app-release.aab',
+        aab: '../build/app/outputs/bundle/prodRelease/app-prod-release.aab',
         skip_upload_metadata: true,
         package_name: 'fr.ynotes',
         skip_upload_images: true,
