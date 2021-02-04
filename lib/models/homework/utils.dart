@@ -30,12 +30,12 @@ class HomeworkUtils {
     }
   }
 
-  static Future<List<Homework>> getReducedListHomework() async {
+  static Future<List<Homework>> getReducedListHomework({forceReload = false}) async {
     int reduce = await getIntSetting("summaryQuickHomework");
     if (reduce == 11) {
       reduce = 770;
     }
-    List<Homework> localList = await localApi.getNextHomework();
+    List<Homework> localList = await localApi.getNextHomework(forceReload: forceReload);
     if (localList != null) {
       List<Homework> listToReturn = List<Homework>();
       localList.forEach((element) {
@@ -44,7 +44,7 @@ class HomeworkUtils {
 
         //ensure that the list doesn't contain the pinned homework
         if (date.difference(now).inDays < reduce &&
-            date.isAfter(DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now())))) {
+            (!date.isBefore(DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now()))))) {
           listToReturn.add(element);
         }
       });

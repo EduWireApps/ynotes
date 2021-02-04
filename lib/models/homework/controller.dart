@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:ynotes/classes.dart';
 import 'package:ynotes/models/agenda/controller.dart';
+import 'package:ynotes/models/homework/utils.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:stack/stack.dart' as stack;
 
@@ -13,7 +14,7 @@ class HomeworkController extends ChangeNotifier {
   List<Homework> unloadedHW = List<Homework>();
   API _api;
   bool isFetching = false;
-
+  int examsCount = 0;
   List<Homework> get getHomework => _old;
 
   Future<void> refresh({bool force = false, refreshFromOffline = false}) async {
@@ -21,11 +22,11 @@ class HomeworkController extends ChangeNotifier {
     notifyListeners();
     //ED
     if (refreshFromOffline) {
-      _old = await _api.getNextHomework();
+      _old = await HomeworkUtils.getReducedListHomework();
       _old.sort((a, b) => a.date.compareTo(b.date));
       notifyListeners();
     } else {
-      _old = await _api.getNextHomework(forceReload: force);
+      _old = await HomeworkUtils.getReducedListHomework(forceReload: true);
       _old.sort((a, b) => a.date.compareTo(b.date));
       notifyListeners();
     }
@@ -48,9 +49,11 @@ class HomeworkController extends ChangeNotifier {
 
         notifyListeners();
       });
+      prepareExamsCount();
       isFetching = false;
       notifyListeners();
     } catch (e) {
+      prepareExamsCount();
       isFetching = false;
       notifyListeners();
     }
@@ -70,6 +73,17 @@ class HomeworkController extends ChangeNotifier {
       }
     });
     await loadAll();
+  }
+
+  void prepareExamsCount() {
+    List<Homework> hwList = getHomework;
+    if (hwList != null) {
+      examsCount = hwList.where((element) => element.isATest).length;
+      notifyListeners();
+    } else {
+      examsCount = 0;
+      notifyListeners();
+    }
   }
 
   HomeworkController(this.api) {

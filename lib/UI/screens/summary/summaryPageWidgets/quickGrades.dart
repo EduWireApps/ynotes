@@ -35,7 +35,7 @@ class _QuickGradesState extends State<QuickGrades> {
     return Container(
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: Colors.blueGrey,
+        color: Theme.of(context).primaryColorDark,
       ),
       child: FittedBox(
         child: AutoSizeText.rich(
@@ -124,14 +124,15 @@ class _QuickGradesState extends State<QuickGrades> {
       );
     } else {
       return Container(
+        width: screenSize.size.width,
         height: screenSize.size.height / 10 * 1.2,
         child: SmartRefresher(
           onRefresh: refreshLocalGradesList,
           enablePullDown: true,
           controller: _refreshController,
           scrollDirection: Axis.horizontal,
-          cacheExtent: screenSize.size.width / 5 * 1.8,
           header: ClassicHeader(
+            spacing: 0,
             height: screenSize.size.width / 5 * 1.8,
             textStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
             refreshingText: "Chargement...",
@@ -146,6 +147,8 @@ class _QuickGradesState extends State<QuickGrades> {
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) {
                 return Card(
+                  margin:
+                      EdgeInsets.only(right: screenSize.size.width / 5 * 0.1, top: screenSize.size.height / 10 * 0.1),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
                   color: Theme.of(context).primaryColor,
                   child: Material(
