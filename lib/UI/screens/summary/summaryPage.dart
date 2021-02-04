@@ -27,8 +27,8 @@ import '../../../classes.dart';
 ///First page to access quickly to last grades, homework and
 class SummaryPage extends StatefulWidget {
   final Function switchPage;
-
-  const SummaryPage({Key key, this.switchPage}) : super(key: key);
+  final HomeworkController hwcontroller;
+  const SummaryPage({Key key, this.switchPage, @required this.hwcontroller}) : super(key: key);
   State<StatefulWidget> createState() {
     return SummaryPageState();
   }
@@ -42,9 +42,6 @@ bool firstStart = true;
 GlobalKey _gradeChartGB = GlobalKey();
 GlobalKey _quickGradeGB = GlobalKey();
 
-//models
-HomeworkController hwcontroller;
-
 class SummaryPageState extends State<SummaryPage> {
   double actualPage;
   PageController _pageControllerSummaryPage;
@@ -56,7 +53,6 @@ class SummaryPageState extends State<SummaryPage> {
 
   initState() {
     super.initState();
-
     todoSettingsController = new PageController(initialPage: 0);
     initialIndexGradesOffset = 0;
     _pageControllerSummaryPage = PageController();
@@ -222,7 +218,7 @@ class SummaryPageState extends State<SummaryPage> {
                   separator(context, "Devoirs"),
                   QuickHomework(
                     switchPage: widget.switchPage,
-                    hwcontroller: hwcontroller,
+                    hwcontroller: this.widget.hwcontroller,
                   )
                 ],
               ),

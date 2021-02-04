@@ -71,6 +71,7 @@ class Offline {
 
   //Called when instanciated
   init() async {
+    print("Init offline");
     if (!locked) {
       //Register adapters once
       try {
@@ -99,6 +100,10 @@ class Offline {
         print(e);
       }
     }
+    initObjects();
+  }
+
+  initObjects() {
     homework = HomeworkOffline(this.locked);
     doneHomework = DoneHomeworkOffline(this.locked);
     pinnedHomework = PinnedHomeworkOffline(this.locked);

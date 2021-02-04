@@ -4,7 +4,6 @@ import 'package:ynotes/main.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 class HomeworkUtils {
-  ///Returns [donePercent, doneLength, length]
   static Future<List<int>> getHomeworkDonePercent() async {
     List list = await getReducedListHomework();
     if (list != null) {

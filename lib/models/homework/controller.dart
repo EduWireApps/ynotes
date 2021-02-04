@@ -34,6 +34,7 @@ class HomeworkController extends ChangeNotifier {
     notifyListeners();
   }
 
+  ///Returns [donePercent, doneLength, length]
   Future<List<int>> getHomeworkDonePercent() async {
     List list = _old;
     if (list != null) {

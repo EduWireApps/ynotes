@@ -18,7 +18,9 @@ import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/utils/themeUtils.dart';
 
 class HomeworkFirstPage extends StatefulWidget {
-  HomeworkController hwcontroller;
+  final HomeworkController hwcontroller;
+
+  const HomeworkFirstPage({Key key, @required this.hwcontroller}) : super(key: key);
 
   State<StatefulWidget> createState() {
     return _HomeworkFirstPageState();

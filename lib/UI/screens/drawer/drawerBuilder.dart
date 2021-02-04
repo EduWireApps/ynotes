@@ -62,6 +62,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
         "page": SummaryPage(
           switchPage: _switchPage,
           key: summaryPage,
+          hwcontroller: hwcontroller,
         ),
         "key": summaryPage
       },
@@ -75,6 +76,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
         "icon": MdiIcons.calendarCheck,
         "page": HomeworkPage(
           key: homeworkPage,
+          hwController: hwcontroller,
         ),
         "key": homeworkPage
       },
@@ -112,9 +114,10 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
   ValueNotifier<int> _notifier = ValueNotifier<int>(0);
   //Boolean
   bool isChanging = false;
-
   bool firstStart = true;
   AnimationController quickMenuAnimationController;
+//models
+  HomeworkController hwcontroller;
 
   Animation<double> quickMenuButtonAnimation;
   StreamSubscription tabBarconnexion;

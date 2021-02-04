@@ -15,6 +15,7 @@ import 'package:ynotes/UI/screens/summary/summaryPage.dart';
 import 'package:ynotes/apis/utils.dart';
 import 'package:ynotes/classes.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/models/homework/controller.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/utils/themeUtils.dart';
 
@@ -25,7 +26,8 @@ Future<List<Homework>> homeworkListFuture;
 List<Homework> localListHomeworkDateToUse;
 
 class HomeworkPage extends StatefulWidget {
-  HomeworkPage({Key key}) : super(key: key);
+  final HomeworkController hwController;
+  HomeworkPage({Key key, @required this.hwController}) : super(key: key);
   State<StatefulWidget> createState() {
     return HomeworkPageState();
   }
@@ -133,7 +135,9 @@ class HomeworkPageState extends State<HomeworkPage> {
                               physics: NeverScrollableScrollPhysics(),
                               children: <Widget>[
                                 //Second page with homework
-                                HomeworkFirstPage(),
+                                HomeworkFirstPage(
+                                  hwcontroller: this.widget.hwController,
+                                ),
 
                                 //Third page (with homework at a specific date)
                                 HomeworkSecondPage(animateToPage)
