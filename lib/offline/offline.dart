@@ -47,6 +47,7 @@ class Offline {
   Box offlineBox;
   Box homeworkDoneBox;
   Box pinnedHomeworkBox;
+  Box agendaBox;
 
 //Imports
   HomeworkOffline homework;
@@ -90,8 +91,10 @@ class Offline {
       try {
         Hive.init("${dir.path}/offline");
         offlineBox = await safeBoxOpen("offlineData");
+
         homeworkDoneBox = await Hive.openBox('doneHomework');
         pinnedHomeworkBox = await Hive.openBox('pinnedHomework');
+        agendaBox = await Hive.openBox("agenda");
       } catch (e) {
         print(e);
       }
@@ -141,13 +144,16 @@ class Offline {
         if (offlineBox == null || !offlineBox.isOpen) {
           offlineBox = await Hive.openBox("offlineData");
         }
+        if (agendaBox == null || !agendaBox.isOpen) {
+          agendaBox = await Hive.openBox("agenda");
+        }
         //Get data and cast it
-        var offlineLessonsData = await offlineBox.get("lessons");
+        var offlineLessonsData = await agendaBox.get("lessons");
         var offlineDisciplinesData = await offlineBox.get("disciplines");
         var offlinehomeworkData = await offlineBox.get("homework");
         var offlinePollsData = await offlineBox.get("polls");
-        var offlineRemindersData = await offlineBox.get("reminders");
-        var offlineAgendaEventsData = await offlineBox.get("agendaEvents");
+        var offlineRemindersData = await agendaBox.get("reminders");
+        var offlineAgendaEventsData = await agendaBox.get("agendaEvents");
         var offlineRecipientsData = await offlineBox.get("recipients");
         //ensure that fetched data isn't null and if not, add it to the final value
         if (offlineLessonsData != null) {

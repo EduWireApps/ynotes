@@ -28,10 +28,10 @@ class RemindersOffline extends Offline {
     if (!locked) {
       print("Update reminders");
       try {
-        if (!offlineBox.isOpen) {
-          offlineBox = await Hive.openBox("offlineData");
+        if (!agendaBox.isOpen) {
+          agendaBox = await Hive.openBox("agenda");
         }
-        var old = await offlineBox.get("reminders");
+        var old = await agendaBox.get("reminders");
         List<AgendaReminder> offline = List();
         if (old != null) {
           offline = old.cast<AgendaReminder>();
@@ -41,7 +41,7 @@ class RemindersOffline extends Offline {
         }
         offline.add(newData);
         print(offline);
-        await offlineBox.put("reminders", offline);
+        await agendaBox.put("reminders", offline);
         await refreshData();
         print("Updated reminders");
       } catch (e) {
@@ -54,10 +54,10 @@ class RemindersOffline extends Offline {
   removeAll(String lessonId) async {
     if (!locked) {
       try {
-        if (!offlineBox.isOpen) {
-          offlineBox = await Hive.openBox("offlineData");
+        if (!agendaBox.isOpen) {
+          agendaBox = await Hive.openBox("agenda");
         }
-        var old = await offlineBox.get("reminders");
+        var old = await agendaBox.get("reminders");
         List<AgendaReminder> offline = List();
         if (old != null) {
           offline = old.cast<AgendaReminder>();
@@ -65,7 +65,7 @@ class RemindersOffline extends Offline {
         if (offline != null) {
           offline.removeWhere((element) => element.lessonID == lessonId);
         }
-        await offlineBox.put("reminders", offline);
+        await agendaBox.put("reminders", offline);
         await refreshData();
       } catch (e) {
         print("Error while removing reminder " + e.toString());
@@ -77,10 +77,10 @@ class RemindersOffline extends Offline {
   void remove(String id) async {
     if (!locked) {
       try {
-        if (!offlineBox.isOpen) {
-          offlineBox = await Hive.openBox("offlineData");
+        if (!agendaBox.isOpen) {
+          agendaBox = await Hive.openBox("agenda");
         }
-        var old = await offlineBox.get("reminders");
+        var old = await agendaBox.get("reminders");
         List<AgendaReminder> offline = List();
         if (old != null) {
           offline = old.cast<AgendaReminder>();
@@ -88,7 +88,7 @@ class RemindersOffline extends Offline {
         if (offline != null) {
           offline.removeWhere((a) => a.id == id);
         }
-        await offlineBox.put("reminders", offline);
+        await agendaBox.put("reminders", offline);
         await refreshData();
       } catch (e) {
         print("Error while removing reminder " + e.toString());
