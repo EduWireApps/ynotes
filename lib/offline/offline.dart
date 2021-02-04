@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:ynotes/UI/screens/settings/sub_pages/logsPage.dart';
 import 'package:ynotes/offline/data/agenda/events.dart';
 import 'package:ynotes/offline/data/agenda/reminders.dart';
 import 'package:ynotes/offline/data/agenda/lessons.dart';
@@ -106,6 +107,32 @@ class Offline {
     recipients = RecipientsOffline(this.locked);
   }
 
+  safeBoxOpen(String boxName) async {
+    try {
+      Box box = await Hive.openBox(boxName).catchError((e) async {
+        await logFile("Error while opening $boxName");
+        throw ("Something bad happened.");
+      });
+      print("Correctly opened $boxName");
+      return box;
+    } catch (e) {
+      print("Error while opening $boxName");
+      if (boxName.contains("offlineData")) {
+        await deleteCorruptedBox(boxName);
+      }
+      await init();
+
+      throw ("Error while opening $boxName");
+    }
+  }
+
+  ///DIRTY FIX
+  ///Deletes corrupted box
+  deleteCorruptedBox(String boxName) async {
+    await Hive.deleteBoxFromDisk(boxName);
+    await logFile("Recovered $boxName");
+  }
+
   //Refresh lists when needed
   refreshData() async {
     print("Refreshing offline");
@@ -162,41 +189,11 @@ class Offline {
       if (pinnedHomeworkBox == null || !pinnedHomeworkBox.isOpen) {
         pinnedHomeworkBox = await Hive.openBox('pinnedHomework');
       }
+
       await offlineBox.deleteFromDisk();
       await homeworkDoneBox.deleteFromDisk();
       await pinnedHomeworkBox.deleteFromDisk();
-      /*try {
-        await offlineBox.clear();
-      } catch (e) {
-        print("Fail to clear offline");
-      }
-      try {
-        await homeworkDoneBox.clear();
-      } catch (e) {}
-      try {
-        await pinnedHomeworkBox.clear();
-      } catch (e) {}
-      try {
-        disciplinesData.clear();
-      } catch (e) {
-        print("Fail to clear disciplines " + e.toString());
-      }
-      try {
-        remindersData.clear();
-      } catch (e) {}
-      try {
-        homeworkData.clear();
-      } catch (e) {}
-      try {
-        lessonsData.clear();
-      } catch (e) {}
-      try {
-        pollsData.clear();
-      } catch (e) {}
-      try {
-        agendaEventsData.clear();
-      } catch (e) {}
-      print("Cleared all");*/
+      await this.init();
     } catch (e) {
       print("Failed to clear all db " + e.toString());
     }

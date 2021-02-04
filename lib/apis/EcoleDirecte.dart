@@ -77,7 +77,7 @@ class APIEcoleDirecte extends API {
     }
 
     var url = 'https://api.ecoledirecte.com/v3/login.awp';
-    Map<String, String> headers = {"Content-type": "texet/plain"};
+    Map<String, String> headers = {"Content-type": "text/plain"};
     String data = 'data={"identifiant": "$username", "motdepasse": "$password"}';
     //encode Map to JSON
     var body = data;

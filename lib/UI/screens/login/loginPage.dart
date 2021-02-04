@@ -694,7 +694,7 @@ class _LoginPageState extends State<LoginPage> {
                                                                   'PDC',
                                                                   style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: Colors.black),
                                                                 ),
-                                                                onTap: () => launch('https://ynotes.fr/files/legal/PDCYNotes.pdf')),
+                                                                onTap: () => launch('https://ynotes.fr/legal/PDCYNotes.pdf')),
                                                             SizedBox(
                                                               width: screenSize.size.width / 5 * 0.2,
                                                             ),
@@ -703,7 +703,7 @@ class _LoginPageState extends State<LoginPage> {
                                                                   'CGU',
                                                                   style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: Colors.black),
                                                                 ),
-                                                                onTap: () => launch('https://ynotes.fr/files/legal/CGUYNotes.pdf')),
+                                                                onTap: () => launch('https://ynotes.fr/legal/CGUYNotes.pdf')),
                                                           ],
                                                         ),
                                                       ),
