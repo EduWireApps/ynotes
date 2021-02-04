@@ -18,6 +18,7 @@ import 'package:ynotes/UI/screens/summary/summaryPageWidgets/summaryPageSettings
 import 'package:ynotes/UI/screens/summary/summaryPageWidgets/chart.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/models/homework/controller.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/utils/themeUtils.dart';
 
@@ -40,6 +41,9 @@ bool firstStart = true;
 //Global keys used in showcase
 GlobalKey _gradeChartGB = GlobalKey();
 GlobalKey _quickGradeGB = GlobalKey();
+
+//models
+HomeworkController hwcontroller;
 
 class SummaryPageState extends State<SummaryPage> {
   double actualPage;
@@ -218,6 +222,7 @@ class SummaryPageState extends State<SummaryPage> {
                   separator(context, "Devoirs"),
                   QuickHomework(
                     switchPage: widget.switchPage,
+                    hwcontroller: hwcontroller,
                   )
                 ],
               ),

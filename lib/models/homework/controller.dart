@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:ynotes/classes.dart';
+import 'package:ynotes/main.dart';
 import 'package:ynotes/models/agenda/controller.dart';
 import 'package:ynotes/models/homework/utils.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:stack/stack.dart' as stack;
-
-HomeworkController hwcontroller;
 
 class HomeworkController extends ChangeNotifier {
   final api;
@@ -33,6 +32,31 @@ class HomeworkController extends ChangeNotifier {
     await prepareOld(_old);
     isFetching = false;
     notifyListeners();
+  }
+
+  Future<List<int>> getHomeworkDonePercent() async {
+    List list = _old;
+    if (list != null) {
+      //Number of elements in list
+      int total = list.length;
+      if (total == 0) {
+        return [100, 0, 0];
+      } else {
+        int done = 0;
+
+        await Future.forEach(list, (element) async {
+          bool isDone = await offline.doneHomework.getHWCompletion(element.id);
+          if (isDone) {
+            done++;
+          }
+        });
+        int percent = (done * 100 / total).round();
+
+        return [percent, done, list.length];
+      }
+    } else {
+      return [100, 0, 0];
+    }
   }
 
   //Load all events

@@ -12,7 +12,6 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:provider/provider.dart';
-import 'package:ynotes/UI/components/columnGenerator.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/apis/utils.dart';
 import 'package:ynotes/classes.dart';
@@ -24,8 +23,8 @@ import 'package:ynotes/utils/themeUtils.dart';
 
 class QuickHomework extends StatefulWidget {
   final Function switchPage;
-
-  const QuickHomework({Key key, this.switchPage}) : super(key: key);
+  final HomeworkController hwcontroller;
+  const QuickHomework({Key key, this.switchPage, @required this.hwcontroller}) : super(key: key);
   @override
   _QuickHomeworkState createState() => _QuickHomeworkState();
 }
@@ -35,10 +34,10 @@ class _QuickHomeworkState extends State<QuickHomework> {
   List<int> oldGauge = [0, 0, 0];
 
   setGauge() async {
-    List<int> tempGauge = await HomeworkUtils.getHomeworkDonePercent();
+    List<int> tempGauge = await this.widget.hwcontroller.getHomeworkDonePercent();
     setState(() {
       oldGauge = tempGauge ?? [0, 0, 0];
-      donePercentFuture = HomeworkUtils.getHomeworkDonePercent();
+      donePercentFuture = this.widget.hwcontroller.getHomeworkDonePercent();
     });
   }
 
@@ -47,11 +46,7 @@ class _QuickHomeworkState extends State<QuickHomework> {
     // TODO: implement initState
     super.initState();
     //init homework
-    hwcontroller.refresh(force: true);
-    //set gauge
-    setState(() {
-      donePercentFuture = HomeworkUtils.getHomeworkDonePercent();
-    });
+    refreshLocalHomeworkList();
   }
 
   @override
@@ -65,9 +60,9 @@ class _QuickHomeworkState extends State<QuickHomework> {
 
   @override
   Future<void> refreshLocalHomeworkList() async {
-    await hwcontroller.refresh(force: true);
+    await this.widget.hwcontroller.refresh(force: true);
     setState(() {
-      donePercentFuture = HomeworkUtils.getHomeworkDonePercent();
+      donePercentFuture = this.widget.hwcontroller.getHomeworkDonePercent();
     });
   }
 
@@ -83,6 +78,7 @@ class _QuickHomeworkState extends State<QuickHomework> {
         color: Colors.transparent,
         margin: EdgeInsets.only(top: 0),
         width: screenSize.size.width,
+        height: screenSize.size.height / 10 * 4.9,
         child: ClipRRect(
           child: Stack(
             children: <Widget>[
@@ -147,7 +143,7 @@ class _QuickHomeworkState extends State<QuickHomework> {
                                                         fontWeight: FontWeight.bold,
                                                       ),
                                                     ),
-                                                    Text(" fait" + (snapshot.data[1] > 1 ? "s " : " ") + "sur",
+                                                    Text(" fait" + (snapshot.data[1] > 1 ? "s " : " ") + "sur ",
                                                         style: TextStyle(
                                                           fontFamily: "Asap",
                                                           color: ThemeUtils.textColor(),
@@ -191,7 +187,7 @@ class _QuickHomeworkState extends State<QuickHomework> {
                                                   borderRadius: BorderRadius.circular(500),
                                                 )),
                                             ChangeNotifierProvider<HomeworkController>.value(
-                                              value: hwcontroller,
+                                              value: this.widget.hwcontroller,
                                               child: Consumer<HomeworkController>(builder: (context, model, child) {
                                                 return Container(
                                                   margin: EdgeInsets.only(
@@ -231,16 +227,19 @@ class _QuickHomeworkState extends State<QuickHomework> {
                 alignment: Alignment.topCenter,
                 child: Container(
                   margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.8),
+                  height: screenSize.size.height / 10 * 4,
                   child: RefreshIndicator(
                     onRefresh: refreshLocalHomeworkList,
                     child: CupertinoScrollbar(
                       child: ChangeNotifierProvider<HomeworkController>.value(
-                        value: hwcontroller,
+                        value: this.widget.hwcontroller,
                         child: Consumer<HomeworkController>(
                           builder: (context, model, child) {
                             if (model.getHomework != null && model.getHomework.length != 0) {
-                              return ColumnBuilder(
+                              return ListView.builder(
                                   itemCount: model.getHomework.length,
+                                  padding: EdgeInsets.only(
+                                      left: screenSize.size.width / 5 * 0, right: screenSize.size.width / 5 * 0.1),
                                   itemBuilder: (context, index) {
                                     return FutureBuilder(
                                       initialData: 0,
@@ -254,12 +253,12 @@ class _QuickHomeworkState extends State<QuickHomework> {
                                               child: Row(children: <Widget>[
                                                 Text(
                                                   DateFormat("EEEE d", "fr_FR")
-                                                          .format(hwcontroller.getHomework[index].date)
+                                                          .format(this.widget.hwcontroller.getHomework[index].date)
                                                           .toString()
                                                           .capitalize() +
                                                       " " +
                                                       DateFormat("MMMM", "fr_FR")
-                                                          .format(hwcontroller.getHomework[index].date)
+                                                          .format(this.widget.hwcontroller.getHomework[index].date)
                                                           .toString()
                                                           .capitalize(),
                                                   style: TextStyle(
