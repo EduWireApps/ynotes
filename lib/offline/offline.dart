@@ -89,7 +89,7 @@ class Offline {
       var dir = await FolderAppUtil.getDirectory();
       try {
         Hive.init("${dir.path}/offline");
-        offlineBox = await Hive.openBox("offlineData");
+        offlineBox = await safeBoxOpen("offlineData");
         homeworkDoneBox = await Hive.openBox('doneHomework');
         pinnedHomeworkBox = await Hive.openBox('pinnedHomework');
       } catch (e) {
