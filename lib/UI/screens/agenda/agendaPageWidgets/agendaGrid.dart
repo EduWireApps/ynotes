@@ -82,7 +82,7 @@ class _AgendaGridState extends State<AgendaGrid> {
       if (columns.length > 0) {
         packEvents(columns);
       } else {
-        print("ok");
+     
       }
     }
   }
@@ -282,7 +282,6 @@ class _AgendaGridState extends State<AgendaGrid> {
                               _event.color = await getColor(_event.lesson.disciplineCode);
                               await lessonDetails(context, _event);
                               await refreshAgendaFuture();
-                              print("ok");
                             } else {
                               await lessonDetails(context, _event);
                               await refreshAgendaFuture();

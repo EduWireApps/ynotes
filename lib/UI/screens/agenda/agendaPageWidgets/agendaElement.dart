@@ -141,7 +141,6 @@ class _AgendaElementState extends State<AgendaElement> {
                           _event.color = await getColor(this.widget.event.lesson.disciplineCode);
                           await lessonDetails(context, _event);
                           await refreshAgendaFuture();
-                          print("ok");
                         } else {
                           await lessonDetails(context, widget.event);
                           await refreshAgendaFuture();

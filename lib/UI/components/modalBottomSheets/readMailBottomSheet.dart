@@ -315,7 +315,6 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                                                                       },
                                                                                       //Force download
                                                                                       onLongPress: () async {
-                                                                                        print("ok");
                                                                                         await model.download(this
                                                                                             .widget
                                                                                             .mail
@@ -366,7 +365,6 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                                                                   },
                                                                                   //Force download
                                                                                   onLongPress: () async {
-                                                                                    print("ok");
                                                                                     await model.download(
                                                                                         this.widget.mail.files[index]);
                                                                                   },
