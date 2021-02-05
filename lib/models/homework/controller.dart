@@ -17,6 +17,7 @@ class HomeworkController extends ChangeNotifier {
   List<Homework> get getHomework => _old;
 
   Future<void> refresh({bool force = false, refreshFromOffline = false}) async {
+    print("Refreshing homework.");
     isFetching = true;
     notifyListeners();
     //ED
@@ -113,6 +114,5 @@ class HomeworkController extends ChangeNotifier {
 
   HomeworkController(this.api) {
     _api = api;
-    refresh();
   }
 }

@@ -44,11 +44,10 @@ Future main() async {
   //Load api
   await reloadChosenApi();
   offline = Offline(false);
+
+  await offline.init();
   localApi = APIManager(offline);
   tlogin = TransparentLogin();
-
-  //Init offline data
-  await offline.init();
 
   //Cancel the old task manager (will be removed after migration)
   wm.Workmanager.cancelAll();

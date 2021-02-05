@@ -12,6 +12,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:provider/provider.dart';
+import 'package:ynotes/UI/components/columnGenerator.dart';
 import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/apis/utils.dart';
 import 'package:ynotes/classes.dart';
@@ -44,9 +45,7 @@ class _QuickHomeworkState extends State<QuickHomework> {
   @override
   void initState() {
     // TODO: implement initState
-    super.initState();
-    //init homework
-    refreshLocalHomeworkList();
+    super.initState(); //init homewor
   }
 
   @override
@@ -78,7 +77,6 @@ class _QuickHomeworkState extends State<QuickHomework> {
         color: Colors.transparent,
         margin: EdgeInsets.only(top: 0),
         width: screenSize.size.width,
-        height: screenSize.size.height / 10 * 4.9,
         child: ClipRRect(
           child: Stack(
             children: <Widget>[
@@ -227,7 +225,6 @@ class _QuickHomeworkState extends State<QuickHomework> {
                 alignment: Alignment.topCenter,
                 child: Container(
                   margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.8),
-                  height: screenSize.size.height / 10 * 4,
                   child: RefreshIndicator(
                     onRefresh: refreshLocalHomeworkList,
                     child: CupertinoScrollbar(
@@ -236,10 +233,8 @@ class _QuickHomeworkState extends State<QuickHomework> {
                         child: Consumer<HomeworkController>(
                           builder: (context, model, child) {
                             if (model.getHomework != null && model.getHomework.length != 0) {
-                              return ListView.builder(
+                              return ColumnBuilder(
                                   itemCount: model.getHomework.length,
-                                  padding: EdgeInsets.only(
-                                      left: screenSize.size.width / 5 * 0, right: screenSize.size.width / 5 * 0.1),
                                   itemBuilder: (context, index) {
                                     return FutureBuilder(
                                       initialData: 0,

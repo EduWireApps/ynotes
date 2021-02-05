@@ -67,6 +67,7 @@ class Offline {
   //Called on dispose
   void dispose() async {
     await Hive.close();
+    print("Disposed hive");
   }
 
   //Called when instanciated

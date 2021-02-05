@@ -177,8 +177,10 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
   @override
   void initState() {
     super.initState();
+
     //Init hw controller
     hwcontroller = HomeworkController(localApi);
+    hwcontroller.refresh();
     AwesomeNotifications().initialize(null, [
       NotificationChannel(
           channelKey: 'alarm',
@@ -249,6 +251,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
     _notifier?.dispose();
     drawerPageViewController.dispose();
     super.dispose();
+    offline.dispose();
   }
 
   void connectionChanged(dynamic hasConnection) {
