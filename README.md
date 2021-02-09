@@ -93,7 +93,7 @@ La documentation spécifique au développement vous permettant de modifier les l
 Le fichier principal (exécuté en premier) est `/lib/main.dart`
 
 ### Front-end
-Tout le code peut être organisé dans des fichiers .dart, l'UI comme le backend, mais les layouts sont situés dans `/lib/UI`
+Tout le code peut être organisé dans des fichiers .dart, l'ui comme le backend, mais les layouts sont situés dans `/lib/UI`
 décomposés par écrans (screens) et par composants (components).
 
 ### Back-end

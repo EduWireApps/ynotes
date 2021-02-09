@@ -9,17 +9,18 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:wiredash/wiredash.dart';
 import 'package:workmanager/workmanager.dart' as wm;
-import 'package:ynotes/UI/screens/carousel/carousel.dart';
-import 'package:ynotes/UI/screens/drawer/drawerBuilder.dart';
-import 'package:ynotes/UI/screens/loading/loadingPage.dart';
-import 'package:ynotes/background.dart';
-import 'package:ynotes/classes.dart';
-import 'package:ynotes/models.dart';
-import 'package:ynotes/offline/offline.dart';
+import 'package:ynotes/ui/screens/carousel/carousel.dart';
+import 'package:ynotes/ui/screens/drawer/drawerBuilder.dart';
+import 'package:ynotes/ui/screens/loading/loadingPage.dart';
+import 'package:ynotes/core/services/background.dart';
+import 'package:ynotes/core/apis/model.dart';
+import 'package:ynotes/core/apis/utils.dart';
+import 'package:ynotes/core/logic/shared/loginController.dart';
+import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/usefulMethods.dart';
 
-import 'UI/screens/school_api_choice/schoolAPIChoicePage.dart';
-import 'utils/themeUtils.dart';
+import 'ui/screens/school_api_choice/schoolAPIChoicePage.dart';
+import 'core/utils/themeUtils.dart';
 
 var uuid = Uuid();
 
@@ -30,7 +31,7 @@ extension StringExtension on String {
 }
 
 //login manager
-TransparentLogin tlogin;
+LoginController tlogin;
 Offline offline;
 API localApi;
 
@@ -44,10 +45,12 @@ Future main() async {
   //Load api
   await reloadChosenApi();
   offline = Offline(false);
+  localApi = APIManager(offline);
+  tlogin = LoginController();
 
   await offline.init();
   localApi = APIManager(offline);
-  tlogin = TransparentLogin();
+  tlogin = LoginController();
 
   //Cancel the old task manager (will be removed after migration)
   wm.Workmanager.cancelAll();

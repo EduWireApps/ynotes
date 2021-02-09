@@ -1,0 +1,109 @@
+import 'package:flutter/material.dart';
+import 'package:ynotes/core/apis/utils.dart';
+import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/apis/EcoleDirecte.dart';
+import 'package:ynotes/core/apis/Pronote.dart';
+import 'package:ynotes/main.dart';
+import 'package:ynotes/usefulMethods.dart';
+
+enum loginStatus { loggedIn, loggedOff, offline, error }
+
+///Login change notifier
+class LoginController extends ChangeNotifier {
+  //Login state
+  var _actualState = loginStatus.loggedOff;
+  //Login status details
+  String _details = "Déconnecté";
+  //Error logs
+  String _logs = "";
+  var internetConnexion;
+  //getters
+  get actualState => _actualState;
+  set actualState(loginStatus) {
+    _actualState = loginStatus;
+    notifyListeners();
+  }
+
+  get details => _details;
+  set details(details) {
+    _details = details;
+    notifyListeners();
+  }
+
+  init() async {
+    ConnectionStatusSingleton connectionStatus = ConnectionStatusSingleton.getInstance();
+    if (await connectionStatus.checkConnection() == false) {
+      _actualState = loginStatus.offline;
+      _details = "Vous êtes hors ligne";
+      notifyListeners();
+    }
+    internetConnexion = connectionStatus.connectionChange.listen(connectionChanged);
+    if (_actualState != loginStatus.offline && localApi.loggedIn == false) {
+      await login();
+    } else if (localApi.loggedIn) {
+      _details = "Connecté";
+      _actualState = loginStatus.loggedIn;
+      notifyListeners();
+    }
+  }
+
+//on connection change
+  void connectionChanged(dynamic hasConnection) async {
+    if (hasConnection != true) {
+      _actualState = loginStatus.offline;
+      _details = "Vous êtes hors ligne";
+      notifyListeners();
+    } else {
+      _actualState = loginStatus.loggedOff;
+      _details = "Reconnecté";
+      notifyListeners();
+      await login();
+    }
+  }
+
+  login() async {
+    try {
+      _actualState = loginStatus.loggedOff;
+      _details = "Connexion à l'API...";
+      notifyListeners();
+      await reloadChosenApi();
+      String u = await ReadStorage("username");
+      String p = await ReadStorage("password");
+      String url = await ReadStorage("pronoteurl");
+      String cas = await ReadStorage("pronotecas");
+      var z = await storage.read(key: "agreedTermsAndConfiguredApp");
+      if (u != null && p != null && z != null) {
+        await localApi.login(u, p, url: url, cas: cas).then((String value) {
+          if (value == null) {
+            _actualState = loginStatus.loggedOff;
+            _details = "Connexion à l'API...";
+            notifyListeners();
+          }
+          if (value.contains("Bienvenue")) {
+            gradeRefreshRecursive = false;
+            hwRefreshRecursive = false;
+            lessonsRefreshRecursive = false;
+            _details = "Connecté";
+            _actualState = loginStatus.loggedIn;
+            notifyListeners();
+          } else {
+            print("La valeur est :" + value.toString());
+            if (value.contains("IP")) {
+              _details = "Ban temporaire IP !";
+            } else {
+              _details = "Erreur de connexion.";
+            }
+
+            _logs = value.toString();
+            _actualState = loginStatus.error;
+            notifyListeners();
+          }
+        });
+      } else {
+        _details = "Déconnecté";
+        _actualState = loginStatus.loggedOff;
+        notifyListeners();
+      }
+    } catch (e) {}
+  }
+}

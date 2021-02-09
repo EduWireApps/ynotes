@@ -112,7 +112,7 @@ dev_dependencies:
   flutter_launcher_icons: ^0.7.4
   hive_generator: ^0.8.1
   build_runner: ^1.10.3
-  json_serializable: ^3.2.0
+  json_serializable: ^3.5.1
   dependency_validator: ^1.0.0
 flutter_icons:
   ios: true
