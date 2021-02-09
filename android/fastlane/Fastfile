@@ -59,11 +59,7 @@ begin lane :beta do
     upload_to_play_store(
         track: 'beta',
         aab: '../build/app/outputs/bundle/prodRelease/app-prod-release.aab',
-        skip_upload_metadata: true,
         package_name: 'fr.ynotes',
-        skip_upload_images: true,
-        skip_upload_screenshots: true,
-        release_status: "draft",
         version_code: flutter_version()["version_code"],
       )  end
   gh = prompt(
@@ -86,7 +82,6 @@ lane :githubrelease do
     tag_name: "v#{version}+#{build_number}",
     description: (File.read("metadata/android/fr-FR/last_changelog_github.txt") rescue "No changelog provided."),
     is_prerelease: true,
-    is_draft:true,
     upload_assets: ["../build/app/outputs/flutter-apk/app-arm64-v8a-prod-release.apk", "../build/app/outputs/flutter-apk/app-armeabi-v7a-prod-release.apk", "../build/app/outputs/flutter-apk/app-x86_64-prod-release.apk"]
   )
 end
