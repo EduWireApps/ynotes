@@ -7,6 +7,7 @@ import 'package:html/parser.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:share/share.dart';
+import 'package:ynotes/core/logic/homework/controller.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/hiddenSettings.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/HWlistPage.dart';
@@ -15,7 +16,6 @@ import 'package:ynotes/ui/screens/summary/summaryPage.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/main.dart';
-import 'package:ynotes/models/homework/controller.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 
