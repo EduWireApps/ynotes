@@ -1,11 +1,9 @@
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
-import 'package:ynotes/core/apis/EcoleDirecte.dart';
-import 'package:ynotes/core/apis/Pronote.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/offline/offline.dart';
-import 'package:ynotes/core/space/recurringEvents.dart';
+import 'package:ynotes/core/services/space/recurringEvents.dart';
 import 'package:ynotes/main.dart';
 
 abstract class API {
