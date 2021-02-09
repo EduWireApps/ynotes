@@ -56,15 +56,12 @@ begin lane :beta do
     Dir.chdir "metadata/android/fr-FR" do
       sh("#{command} last_changelog.txt > changelogs/#{build_number}.txt")
     end
-    Dir.chdir "../.." do
-      sh("flutter", "packages", "get")
-      sh("flutter", "clean")
-      sh("flutter", "build", "appbundle","--build-number=#{build_number}","--flavor", "prod",)
-      sh("flutter", "build", "apk","--build-number=#{build_number}", "--split-per-abi","--flavor", "prod",)
-
-    end
-    upload_to_play_store(track: 'beta', aab: '../build/app/outputs/bundle/prodRelease/app-prod-release.aab', package_name: "fr.ynotes")
-  end
+    upload_to_play_store(
+        track: 'beta',
+        aab: '../build/app/outputs/bundle/prodRelease/app-prod-release.aab',
+        package_name: 'fr.ynotes',
+        version_code: flutter_version()["version_code"],
+      )  end
   gh = prompt(
   text: "Do you want to push to github ?",
   boolean: true)
@@ -78,20 +75,18 @@ lane :githubrelease do
   
   build_number = number_of_commits()
   version = flutter_version()["version_name"]
-  Dir.chdir "../.." do
-    sh("flutter", "build", "apk", "--release","--build-number=#{build_number}", "--split-per-abi","--flavor", "prod",)
-  end
   github_release = set_github_release(
     repository_name: "ModernChocolate/ynotes",
     api_token: ENV["GITHUB_TOKEN"],
     name: "yNotes #{version}+#{build_number}",
     tag_name: "v#{version}+#{build_number}",
     description: (File.read("metadata/android/fr-FR/last_changelog_github.txt") rescue "No changelog provided."),
-    commitish: "master",
     is_prerelease: true,
     upload_assets: ["../build/app/outputs/flutter-apk/app-arm64-v8a-prod-release.apk", "../build/app/outputs/flutter-apk/app-armeabi-v7a-prod-release.apk", "../build/app/outputs/flutter-apk/app-x86_64-prod-release.apk"]
   )
 end
+
+
 lane :local_test do
   build_number = number_of_commits()
   Dir.chdir "../.." do
