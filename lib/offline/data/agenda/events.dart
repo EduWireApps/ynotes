@@ -66,15 +66,15 @@ class AgendaEventsOffline extends Offline {
   removeAgendaEvent(String id, var fetchID) async {
     if (!locked) {
       try {
-        if (!offlineBox.isOpen) {
-          offlineBox = await Hive.openBox("offlineData");
+        if (!agendaBox.isOpen) {
+          agendaBox = await Hive.openBox("agenda");
         }
 
         Map<dynamic, dynamic> timeTable = Map();
-        var offline = await offlineBox.get("agendaEvents");
+        var offline = await agendaBox.get("agendaEvents");
         List<AgendaEvent> events = List();
         if (offline != null) {
-          timeTable = Map<dynamic, dynamic>.from(await offlineBox.get("agendaEvents"));
+          timeTable = Map<dynamic, dynamic>.from(await agendaBox.get("agendaEvents"));
         }
         if (timeTable == null) {
           timeTable = Map();
@@ -87,7 +87,7 @@ class AgendaEventsOffline extends Offline {
         }
         //Update the timetable
         timeTable.update(fetchID, (value) => events, ifAbsent: () => events);
-        await offlineBox.put("agendaEvents", timeTable);
+        await agendaBox.put("agendaEvents", timeTable);
         await refreshData();
       } catch (e) {
         print("Error while removing offline agenda events " + e.toString());
@@ -99,15 +99,15 @@ class AgendaEventsOffline extends Offline {
   addAgendaEvent(AgendaEvent newData, var id) async {
     if (!locked) {
       try {
-        if (!offlineBox.isOpen) {
-          offlineBox = await Hive.openBox("offlineData");
+        if (!agendaBox.isOpen) {
+          agendaBox = await Hive.openBox("agenda");
         }
         if (newData != null) {
           Map<dynamic, dynamic> timeTable = Map();
-          var offline = await offlineBox.get("agendaEvents");
+          var offline = await agendaBox.get("agendaEvents");
           List<AgendaEvent> events = List();
           if (offline != null) {
-            timeTable = Map<dynamic, dynamic>.from(await offlineBox.get("agendaEvents"));
+            timeTable = Map<dynamic, dynamic>.from(await agendaBox.get("agendaEvents"));
           }
           if (timeTable == null) {
             timeTable = Map();
@@ -120,7 +120,7 @@ class AgendaEventsOffline extends Offline {
           events.add(newData);
           //Update the timetable
           timeTable.update(id, (value) => events, ifAbsent: () => events);
-          await offlineBox.put("agendaEvents", timeTable);
+          await agendaBox.put("agendaEvents", timeTable);
           await refreshData();
         }
         print("Update offline agenda events (id : $id)");

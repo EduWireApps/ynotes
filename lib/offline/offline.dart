@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:ynotes/UI/screens/settings/sub_pages/logsPage.dart';
 import 'package:ynotes/offline/data/agenda/events.dart';
 import 'package:ynotes/offline/data/agenda/reminders.dart';
 import 'package:ynotes/offline/data/agenda/lessons.dart';
@@ -46,6 +47,7 @@ class Offline {
   Box offlineBox;
   Box homeworkDoneBox;
   Box pinnedHomeworkBox;
+  Box agendaBox;
 
 //Imports
   HomeworkOffline homework;
@@ -88,9 +90,11 @@ class Offline {
       var dir = await FolderAppUtil.getDirectory();
       try {
         Hive.init("${dir.path}/offline");
-        offlineBox = await Hive.openBox("offlineData");
+        offlineBox = await safeBoxOpen("offlineData");
+
         homeworkDoneBox = await Hive.openBox('doneHomework');
         pinnedHomeworkBox = await Hive.openBox('pinnedHomework');
+        agendaBox = await Hive.openBox("agenda");
       } catch (e) {
         print(e);
       }
@@ -106,6 +110,32 @@ class Offline {
     recipients = RecipientsOffline(this.locked);
   }
 
+  safeBoxOpen(String boxName) async {
+    try {
+      Box box = await Hive.openBox(boxName).catchError((e) async {
+        await logFile("Error while opening $boxName");
+        throw ("Something bad happened.");
+      });
+      print("Correctly opened $boxName");
+      return box;
+    } catch (e) {
+      print("Error while opening $boxName");
+      if (boxName.contains("offlineData")) {
+        await deleteCorruptedBox(boxName);
+      }
+      await init();
+
+      throw ("Error while opening $boxName");
+    }
+  }
+
+  ///DIRTY FIX
+  ///Deletes corrupted box
+  deleteCorruptedBox(String boxName) async {
+    await Hive.deleteBoxFromDisk(boxName);
+    await logFile("Recovered $boxName");
+  }
+
   //Refresh lists when needed
   refreshData() async {
     print("Refreshing offline");
@@ -114,13 +144,16 @@ class Offline {
         if (offlineBox == null || !offlineBox.isOpen) {
           offlineBox = await Hive.openBox("offlineData");
         }
+        if (agendaBox == null || !agendaBox.isOpen) {
+          agendaBox = await Hive.openBox("agenda");
+        }
         //Get data and cast it
-        var offlineLessonsData = await offlineBox.get("lessons");
+        var offlineLessonsData = await agendaBox.get("lessons");
         var offlineDisciplinesData = await offlineBox.get("disciplines");
         var offlinehomeworkData = await offlineBox.get("homework");
         var offlinePollsData = await offlineBox.get("polls");
-        var offlineRemindersData = await offlineBox.get("reminders");
-        var offlineAgendaEventsData = await offlineBox.get("agendaEvents");
+        var offlineRemindersData = await agendaBox.get("reminders");
+        var offlineAgendaEventsData = await agendaBox.get("agendaEvents");
         var offlineRecipientsData = await offlineBox.get("recipients");
         //ensure that fetched data isn't null and if not, add it to the final value
         if (offlineLessonsData != null) {
@@ -162,41 +195,11 @@ class Offline {
       if (pinnedHomeworkBox == null || !pinnedHomeworkBox.isOpen) {
         pinnedHomeworkBox = await Hive.openBox('pinnedHomework');
       }
+
       await offlineBox.deleteFromDisk();
       await homeworkDoneBox.deleteFromDisk();
       await pinnedHomeworkBox.deleteFromDisk();
-      /*try {
-        await offlineBox.clear();
-      } catch (e) {
-        print("Fail to clear offline");
-      }
-      try {
-        await homeworkDoneBox.clear();
-      } catch (e) {}
-      try {
-        await pinnedHomeworkBox.clear();
-      } catch (e) {}
-      try {
-        disciplinesData.clear();
-      } catch (e) {
-        print("Fail to clear disciplines " + e.toString());
-      }
-      try {
-        remindersData.clear();
-      } catch (e) {}
-      try {
-        homeworkData.clear();
-      } catch (e) {}
-      try {
-        lessonsData.clear();
-      } catch (e) {}
-      try {
-        pollsData.clear();
-      } catch (e) {}
-      try {
-        agendaEventsData.clear();
-      } catch (e) {}
-      print("Cleared all");*/
+      await this.init();
     } catch (e) {
       print("Failed to clear all db " + e.toString());
     }

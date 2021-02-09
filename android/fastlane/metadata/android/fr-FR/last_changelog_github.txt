@@ -1,1 +1,1 @@
-Fix EcoleDirecte login bug.
+This update fixes database issues.

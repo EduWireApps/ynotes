@@ -34,15 +34,15 @@ class LessonsOffline extends Offline {
   updateLessons(List<Lesson> newData, int week) async {
     if (!locked) {
       try {
-        if (!offlineBox.isOpen) {
-          offlineBox = await Hive.openBox("offlineData");
+        if (!agendaBox.isOpen) {
+          agendaBox = await Hive.openBox("agenda");
         }
         if (newData != null) {
           print("Update offline lessons (week : $week, length : ${newData.length})");
           Map<dynamic, dynamic> timeTable = Map();
-          var offline = await offlineBox.get("lessons");
+          var offline = await agendaBox.get("lessons");
           if (offline != null) {
-            timeTable = Map<dynamic, dynamic>.from(await offlineBox.get("lessons"));
+            timeTable = Map<dynamic, dynamic>.from(await agendaBox.get("lessons"));
           }
 
           if (timeTable == null) {
@@ -62,7 +62,7 @@ class LessonsOffline extends Offline {
           }
           //Update the timetable
           timeTable.update(week, (value) => newData, ifAbsent: () => newData);
-          await offlineBox.put("lessons", timeTable);
+          await agendaBox.put("lessons", timeTable);
           await refreshData();
         }
 
