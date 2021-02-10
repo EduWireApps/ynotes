@@ -132,7 +132,7 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                   ),
                                 ),
                               ),
-                           /* Container(
+                            /* Container(
                               width: screenSize.size.width / 5 * 4.5,
                               child: Container(
                                 color: isDarkModeEnabled
@@ -205,29 +205,46 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                           segmentedControlIndex == 0
                                               ? this.widget.homeworkForThisDay.rawContent
                                               : this.widget.homeworkForThisDay.sessionRawContent,
-                                          textStyle: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
+                                          textStyle: TextStyle(
+                                              color: ThemeUtils.textColor(),
+                                              fontFamily: "Asap",
+                                              backgroundColor: Colors.transparent),
+                                          customStylesBuilder: (element) {
+                                            if (element.attributes['style'] != null &&
+                                                element.attributes['style'].contains("background")) {
+                                              element.attributes['style'] = "";
+                                              if (isDarkModeEnabled) {
+                                                return {'background': '#CF7545', 'color': 'white'};
+                                              } else {
+                                                return {'background': '#F9DDA7', 'color': 'black'};
+                                              }
+                                            }
+                                            return null;
+                                          },
+                                          hyperlinkColor: Colors.blueAccent,
                                           customWidgetBuilder: (element) {
-                                        if (element.attributes['class'] == 'math-tex') {
-                                          try {
-                                            return Container(
-                                                child: TeXView(
-                                              child: TeXViewDocument(element.text,
-                                                  style: TeXViewStyle.fromCSS(
-                                                      """background-color: #${(isDarkModeEnabled ? ThemeUtils.darken(Theme.of(context).primaryColorDark, forceAmount: 0.1) : ThemeUtils.darken(Theme.of(context).primaryColor, forceAmount: 0.03)).toCSSColor()}; color: #${ThemeUtils.textColor().toCSSColor()}""")),
-                                            ));
-                                          } catch (e) {
-                                            return Container();
-                                          }
-                                        }
+                                            if (element.attributes['class'] == 'math-tex') {
+                                              try {
+                                                return Container(
+                                                    child: TeXView(
+                                                  child: TeXViewDocument(element.text,
+                                                      style: TeXViewStyle.fromCSS(
+                                                          """background-color: #${(isDarkModeEnabled ? ThemeUtils.darken(Theme.of(context).primaryColorDark, forceAmount: 0.1) : ThemeUtils.darken(Theme.of(context).primaryColor, forceAmount: 0.03)).toCSSColor()}; color: #${ThemeUtils.textColor().toCSSColor()}""")),
+                                                ));
+                                              } catch (e) {
+                                                return Container();
+                                              }
+                                            }
 
-                                        return null;
-                                      }, onTapUrl: (url) async {
-                                        if (await canLaunch(url)) {
-                                          await launch(url);
-                                        } else {
-                                          throw "Unable to launch url";
-                                        }
-                                      }),
+                                            return null;
+                                          },
+                                          onTapUrl: (url) async {
+                                            if (await canLaunch(url)) {
+                                              await launch(url);
+                                            } else {
+                                              throw "Unable to launch url";
+                                            }
+                                          }),
                                     ],
                                   ),
                                 ),
@@ -307,8 +324,8 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                                             child: Marquee(
                                                                 text: (segmentedControlIndex == 0
                                                                         ? widget.homeworkForThisDay.documents
-                                                                        : widget.homeworkForThisDay
-                                                                            .sessionDocuments)[index]
+                                                                        : widget
+                                                                            .homeworkForThisDay.sessionDocuments)[index]
                                                                     .documentName,
                                                                 blankSpace: screenSize.size.width / 5 * 0.2,
                                                                 style:
@@ -381,11 +398,10 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                                                               ),
                                                                               onPressed: () async {
                                                                                 print((segmentedControlIndex == 0
-                                                                                            ? widget.homeworkForThisDay
-                                                                                                .documents
-                                                                                            : widget.homeworkForThisDay
-                                                                                                .sessionDocuments)[
-                                                                                        index]
+                                                                                        ? widget.homeworkForThisDay
+                                                                                            .documents
+                                                                                        : widget.homeworkForThisDay
+                                                                                            .sessionDocuments)[index]
                                                                                     .documentName);
                                                                                 FileAppUtil.openFile(
                                                                                     (segmentedControlIndex == 0
@@ -411,11 +427,10 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                                                             onPressed: () async {
                                                                               await model.download(
                                                                                   (segmentedControlIndex == 0
-                                                                                          ? widget
-                                                                                              .homeworkForThisDay.documents
-                                                                                          : widget.homeworkForThisDay
-                                                                                              .sessionDocuments)[
-                                                                                      index]);
+                                                                                      ? widget
+                                                                                          .homeworkForThisDay.documents
+                                                                                      : widget.homeworkForThisDay
+                                                                                          .sessionDocuments)[index]);
                                                                             },
                                                                           );
                                                                         }
