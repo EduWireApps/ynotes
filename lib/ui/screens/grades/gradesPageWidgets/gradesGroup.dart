@@ -6,15 +6,15 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:marquee/marquee.dart';
 import 'package:shimmer/shimmer.dart';
-import 'package:ynotes/UI/components/dialogs.dart';
-import 'package:ynotes/UI/components/modalBottomSheets/disciplinesModalBottomSheet.dart';
-import 'package:ynotes/UI/components/modalBottomSheets/gradesModalBottomSheet/gradesModalBottomSheet.dart';
-import 'package:ynotes/UI/screens/grades/gradesPage.dart';
-import 'package:ynotes/classes.dart';
+import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/logic/stats/gradesStats.dart';
+import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/main.dart';
-import 'package:ynotes/models/stats/gradesStats.dart';
+import 'package:ynotes/ui/components/dialogs.dart';
+import 'package:ynotes/ui/components/modalBottomSheets/disciplinesModalBottomSheet.dart';
+import 'package:ynotes/ui/components/modalBottomSheets/gradesModalBottomSheet/gradesModalBottomSheet.dart';
+import 'package:ynotes/ui/screens/grades/gradesPage.dart';
 import 'package:ynotes/usefulMethods.dart';
-import 'package:ynotes/utils/themeUtils.dart';
 
 class GradesGroup extends StatefulWidget {
   final Discipline disciplinevar;
