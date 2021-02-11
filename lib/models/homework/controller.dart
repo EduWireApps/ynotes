@@ -10,10 +10,14 @@ import 'package:stack/stack.dart' as stack;
 class HomeworkController extends ChangeNotifier {
   final api;
   List<Homework> _old = List();
+  List _hwCompletion = [100, 0, 0];
   List<Homework> unloadedHW = List<Homework>();
   API _api;
   bool isFetching = false;
   int examsCount = 0;
+
+  ///Returns [donePercent, doneLength, length]
+  List get homeworkCompletion => _hwCompletion;
   List<Homework> get getHomework => _old;
 
   Future<void> refresh({bool force = false, refreshFromOffline = false}) async {
@@ -35,14 +39,21 @@ class HomeworkController extends ChangeNotifier {
     notifyListeners();
   }
 
-  ///Returns [donePercent, doneLength, length]
-  Future<List<int>> getHomeworkDonePercent() async {
-    List list = _old;
+  void getHomeworkDonePercent() async {
+    List<Homework> list = List();
+    if (_old != null) {
+      list.addAll(_old);
+    }
+    //Remove antecedent hw
+    if (list != null) {
+      list.removeWhere((element) => !element.date.isAfter(DateTime.now()));
+    }
     if (list != null) {
       //Number of elements in list
       int total = list.length;
       if (total == 0) {
-        return [100, 0, 0];
+        _hwCompletion = [100, 0, 0];
+        notifyListeners();
       } else {
         int done = 0;
 
@@ -54,10 +65,12 @@ class HomeworkController extends ChangeNotifier {
         });
         int percent = (done * 100 / total).round();
 
-        return [percent, done, list.length];
+        _hwCompletion = [percent, done, list.length];
+        notifyListeners();
       }
     } else {
-      return [100, 0, 0];
+      _hwCompletion = [100, 0, 0];
+      notifyListeners();
     }
   }
 
@@ -76,10 +89,14 @@ class HomeworkController extends ChangeNotifier {
         notifyListeners();
       });
       prepareExamsCount();
+      getHomeworkDonePercent();
+
       isFetching = false;
       notifyListeners();
     } catch (e) {
       prepareExamsCount();
+      getHomeworkDonePercent();
+
       isFetching = false;
       notifyListeners();
     }
