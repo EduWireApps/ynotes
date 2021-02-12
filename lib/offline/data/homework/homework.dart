@@ -16,9 +16,9 @@ class HomeworkOffline extends Offline {
     if (!locked) {
       print("Update offline homwork");
       try {
-        if (!offlineBox.isOpen) {
+        /*if (!offlineBox.isOpen) {
           offlineBox = await Hive.openBox("offlineData");
-        }
+        }*/
         if (add == true && newData != null) {
           List<Homework> oldHW = List();
           if (offlineBox.get("homework") != null) {

@@ -9,6 +9,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:hive/hive.dart';
 import 'package:html/parser.dart';
 import 'package:intl/intl.dart';
+import 'package:ynotes/UI/components/dialogs.dart';
 import 'package:ynotes/classes.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/offline/offline.dart';
@@ -24,6 +25,59 @@ import 'utils/themeUtils.dart';
 
 ///The notifications class
 class AppNotification {
+  static initNotifications(BuildContext context, Function navigatorCallback) async {
+    AwesomeNotifications().initialize(null, [
+      NotificationChannel(
+          channelKey: 'alarm',
+          defaultPrivacy: NotificationPrivacy.Private,
+          channelName: 'Alarmes',
+          importance: NotificationImportance.High,
+          channelDescription: "Alarmes et rappels de l'application yNotes",
+          defaultColor: Color(0xFF9D50DD),
+          ledColor: Colors.white)
+    ]);
+    try {
+      AwesomeNotifications().actionStream.listen((receivedNotification) async {
+        await getRelatedAction(receivedNotification, context, navigatorCallback);
+      });
+    } catch (e) {}
+  }
+
+//Chose which triggered action to use
+  static getRelatedAction(
+      ReceivedNotification receivedNotification, BuildContext context, Function navigatorCallback) async {
+    if (receivedNotification.channelKey == "newmail" && receivedNotification.toMap()["buttonKeyPressed"] == "REPLY") {
+      CustomDialogs.writeModalBottomSheet(context,
+          defaultListRecipients: [
+            Recipient(receivedNotification.payload["name"], receivedNotification.payload["surname"],
+                receivedNotification.payload["id"], receivedNotification.payload["isTeacher"] == "true", null)
+          ],
+          defaultSubject: receivedNotification.payload["subject"]);
+      return;
+    }
+
+    if (receivedNotification.channelKey == "newmail" && receivedNotification.toMap()["buttonKeyPressed"] != null) {
+      navigatorCallback(4);
+      return;
+    }
+
+    if (receivedNotification.channelKey == "newgrade" && receivedNotification.toMap()["buttonKeyPressed"] != null) {
+      navigatorCallback(3);
+      return;
+    }
+    if (receivedNotification.channelKey == "persisnotif" &&
+        receivedNotification.toMap()["buttonKeyPressed"] == "REFRESH") {
+      await AppNotification.setOnGoingNotification();
+      return;
+    }
+    if (receivedNotification.channelKey == "persisnotif" &&
+        receivedNotification.toMap()["buttonKeyPressed"] == "KILL") {
+      await setSetting("agendaOnGoingNotification", false);
+      await AppNotification.cancelOnGoingNotification();
+      return;
+    }
+  }
+
   static Future<void> scheduleAgendaReminders(AgendaEvent event) async {
     try {
       AwesomeNotifications().initialize(null, [
@@ -73,6 +127,7 @@ class AppNotification {
       print(e);
     }
   }
+
   ///Shows a debug notification, useful for development purposes
   static showDebugNotification() async {
     await AwesomeNotifications().initialize(null, [

@@ -93,12 +93,11 @@ class Offline {
       try {
         Hive.init("${dir.path}/offline");
         offlineBox = await safeBoxOpen("offlineData");
-
         homeworkDoneBox = await Hive.openBox('doneHomework');
         pinnedHomeworkBox = await Hive.openBox('pinnedHomework');
         agendaBox = await Hive.openBox("agenda");
       } catch (e) {
-        print(e);
+        print("Issue while opening boxes : " + e.toString());
       }
     }
     initObjects();
@@ -147,12 +146,12 @@ class Offline {
     print("Refreshing offline");
     if (!locked) {
       try {
-        if (offlineBox == null || !offlineBox.isOpen) {
+        /*if (offlineBox == null || !offlineBox.isOpen) {
           offlineBox = await Hive.openBox("offlineData");
         }
         if (agendaBox == null || !agendaBox.isOpen) {
           agendaBox = await Hive.openBox("agenda");
-        }
+        }*/
         //Get data and cast it
         var offlineLessonsData = await agendaBox.get("lessons");
         var offlineDisciplinesData = await offlineBox.get("disciplines");

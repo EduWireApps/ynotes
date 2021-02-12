@@ -28,9 +28,9 @@ class DisciplinesOffline extends Offline {
   updateDisciplines(List<Discipline> newData) async {
     if (!locked) {
       try {
-        if (offlineBox == null || !offlineBox.isOpen) {
+        /*if (offlineBox == null || !offlineBox.isOpen) {
           offlineBox = await Hive.openBox("offlineData");
-        }
+        }*/
         print("Updating disciplines");
         await offlineBox.delete("disciplines");
         await offlineBox.put("disciplines", newData);

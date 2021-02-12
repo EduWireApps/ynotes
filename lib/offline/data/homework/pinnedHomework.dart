@@ -8,9 +8,9 @@ class PinnedHomeworkOffline extends Offline {
   ///Set a homework date as pinned (or not)
   void set(String date, bool value) async {
     if (!locked) {
-      if (pinnedHomeworkBox == null || !pinnedHomeworkBox.isOpen) {
+      /*if (pinnedHomeworkBox == null || !pinnedHomeworkBox.isOpen) {
         pinnedHomeworkBox = await Hive.openBox("pinnedHomework");
-      }
+      }*/
       try {
         pinnedHomeworkBox.put(date, value);
       } catch (e) {
@@ -22,9 +22,9 @@ class PinnedHomeworkOffline extends Offline {
   ///Get pinned homework dates
   getPinnedHomeworkDates() async {
     try {
-      if (pinnedHomeworkBox == null || !pinnedHomeworkBox.isOpen) {
+     /* if (pinnedHomeworkBox == null || !pinnedHomeworkBox.isOpen) {
         pinnedHomeworkBox = await Hive.openBox("pinnedHomework");
-      }
+      }*/
       Map notParsedList = pinnedHomeworkBox.toMap();
       List<DateTime> parsedList = List<DateTime>();
       notParsedList.removeWhere((key, value) => value == false);
@@ -41,9 +41,9 @@ class PinnedHomeworkOffline extends Offline {
   ///Get homework pinned status for a given `date`
   Future<bool> getPinnedHomeworkSingleDate(String date) async {
     try {
-      if (pinnedHomeworkBox == null || !pinnedHomeworkBox.isOpen) {
+     /* if (pinnedHomeworkBox == null || !pinnedHomeworkBox.isOpen) {
         pinnedHomeworkBox = await Hive.openBox("pinnedHomework");
-      }
+      }*/
       bool toReturn = pinnedHomeworkBox.get(date);
 
       //If to return is null return false

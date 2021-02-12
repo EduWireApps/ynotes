@@ -38,17 +38,17 @@ FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
 ///The app main class
 Future main() async {
+  offline = Offline(false);
+  await offline.init();
   WidgetsFlutterBinding.ensureInitialized();
   await initBackgroundTask();
 
   //Load api
   await reloadChosenApi();
-  offline = Offline(false);
 
-  await offline.init();
   localApi = APIManager(offline);
   tlogin = TransparentLogin();
-
+  
   //Cancel the old task manager (will be removed after migration)
   wm.Workmanager.cancelAll();
 

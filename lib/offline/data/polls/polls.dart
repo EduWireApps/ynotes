@@ -24,9 +24,9 @@ class PollsOffline extends Offline {
     if (!locked) {
       print("Update offline polls (length : ${newData.length})");
       try {
-        if (!offlineBox.isOpen) {
+        /* if (!offlineBox.isOpen) {
           offlineBox = await Hive.openBox("offlineData");
-        }
+        }*/
         await offlineBox.delete("polls");
         await offlineBox.put("polls", newData);
         await refreshData();

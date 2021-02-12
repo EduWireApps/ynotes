@@ -10,9 +10,9 @@ class DoneHomeworkOffline extends Offline {
     if (!locked) {
       print("Setting done hw");
       try {
-        if (homeworkDoneBox == null || !homeworkDoneBox.isOpen) {
+        /*if (homeworkDoneBox == null || !homeworkDoneBox.isOpen) {
           homeworkDoneBox = await Hive.openBox("doneHomework");
-        }
+        }*/
 
         await homeworkDoneBox.put(id.toString(), state);
       } catch (e) {
@@ -24,10 +24,10 @@ class DoneHomeworkOffline extends Offline {
   Future<bool> getHWCompletion(String id) async {
     try {
       final dir = await FolderAppUtil.getDirectory();
-      Hive.init("${dir.path}/offline");
+      /*Hive.init("${dir.path}/offline");
       if (homeworkDoneBox == null || !homeworkDoneBox.isOpen) {
         homeworkDoneBox = await Hive.openBox("doneHomework");
-      }
+      }*/
 
       bool toReturn = homeworkDoneBox.get(id.toString());
 
@@ -44,9 +44,9 @@ class DoneHomeworkOffline extends Offline {
     try {
       final dir = await FolderAppUtil.getDirectory();
       Hive.init("${dir.path}/offline");
-      if (homeworkDoneBox == null || !homeworkDoneBox.isOpen) {
+     /* if (homeworkDoneBox == null || !homeworkDoneBox.isOpen) {
         homeworkDoneBox = await Hive.openBox("doneHomework");
-      }
+      }*/
       return homeworkDoneBox.keys.length;
     } catch (e) {
       print("Error during the getHomeworkDoneProcess $e");
