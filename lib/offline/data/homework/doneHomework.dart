@@ -12,8 +12,6 @@ class DoneHomeworkOffline extends Offline {
     if (!locked) {
       print("Setting done hw");
       try {
-       
-
         await parent.homeworkDoneBox.put(id.toString(), state);
       } catch (e) {
         print("Error during the setHomeworkDoneProcess $e");

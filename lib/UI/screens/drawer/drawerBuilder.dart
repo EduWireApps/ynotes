@@ -176,7 +176,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
     // this creates the controller
     drawerPageViewController = PageController(
       initialPage: 0,
-    );
+    )..addListener(_onPageViewUpdate);
     bodyController = AnimationController(vsync: this, duration: drawerAnimationDuration);
 
     showTransparentLoginStatusController = AnimationController(vsync: this, duration: Duration(milliseconds: 450));
@@ -200,6 +200,10 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
     setState(() {
       isOffline = !hasConnection;
     });
+  }
+
+  _onPageViewUpdate() {
+    _notifier?.value = drawerPageViewController.page.round();
   }
 
   bool wiredashShown = false;
