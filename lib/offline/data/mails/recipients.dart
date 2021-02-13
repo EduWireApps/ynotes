@@ -3,15 +3,17 @@ import 'package:ynotes/classes.dart';
 import 'package:ynotes/offline/offline.dart';
 
 class RecipientsOffline extends Offline {
-  RecipientsOffline(bool locked) : super(locked);
-
+  Offline parent;
+  RecipientsOffline(bool locked, Offline _parent) : super(locked) {
+    parent = _parent;
+  }
   Future<List<Recipient>> getRecipients() async {
     try {
-      if (recipientsData != null) {
-        return recipientsData;
+      if (parent.recipientsData != null) {
+        return parent.recipientsData;
       } else {
-        await refreshData();
-        return recipientsData.cast<Recipient>();
+        await parent.refreshData();
+        return parent.recipientsData.cast<Recipient>();
       }
     } catch (e) {
       print("Error while returning recipients " + e.toString());
@@ -24,13 +26,13 @@ class RecipientsOffline extends Offline {
       /*if (!offlineBox.isOpen) {
         offlineBox = await Hive.openBox("offlineData");
       }*/
-      var old = await offlineBox.get("recipients");
+      var old = await parent.offlineBox.get("recipients");
       newData.forEach((recipient) {
         old.removeWhere((a) => a.id == recipient.id);
       });
 
-      await offlineBox.put("recipients", newData);
-      await refreshData();
+      await parent.offlineBox.put("recipients", newData);
+      await parent.refreshData();
     } catch (e) {
       print("Error while updating recipients " + e.toString());
     }

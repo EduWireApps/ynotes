@@ -109,15 +109,15 @@ class Offline {
   }
 
   initObjects() {
-    homework = HomeworkOffline(this.locked);
-    doneHomework = DoneHomeworkOffline(this.locked);
-    pinnedHomework = PinnedHomeworkOffline(this.locked);
-    agendaEvents = AgendaEventsOffline(this.locked);
-    reminders = RemindersOffline(this.locked);
-    lessons = LessonsOffline(this.locked);
-    disciplines = DisciplinesOffline(this.locked);
-    polls = PollsOffline(this.locked);
-    recipients = RecipientsOffline(this.locked);
+    homework = HomeworkOffline(this.locked, this);
+    doneHomework = DoneHomeworkOffline(this.locked, this);
+    pinnedHomework = PinnedHomeworkOffline(this.locked, this);
+    agendaEvents = AgendaEventsOffline(this.locked, this);
+    reminders = RemindersOffline(this.locked, this);
+    lessons = LessonsOffline(this.locked, this);
+    disciplines = DisciplinesOffline(this.locked, this);
+    polls = PollsOffline(this.locked, this);
+    recipients = RecipientsOffline(this.locked, this);
   }
 
   safeBoxOpen(String boxName) async {

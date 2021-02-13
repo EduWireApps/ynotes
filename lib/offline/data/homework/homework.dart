@@ -8,7 +8,10 @@ import 'package:ynotes/utils/fileUtils.dart';
 import '../../../classes.dart';
 
 class HomeworkOffline extends Offline {
-  HomeworkOffline(bool locked) : super(locked);
+  Offline parent;
+  HomeworkOffline(bool locked, Offline _parent) : super(locked) {
+    parent = _parent;
+  }
 
   ///Update existing offline.homework.get() with passed data
   ///if `add` boolean is set to true passed data is combined with old data
@@ -16,12 +19,12 @@ class HomeworkOffline extends Offline {
     if (!locked) {
       print("Update offline homwork");
       try {
-        if (!offlineBox.isOpen) {
-          this.offlineBox = await Hive.openBox("offlineData");
+        if (!parent.offlineBox.isOpen) {
+          parent.offlineBox = await Hive.openBox("offlineData");
         }
         if (add == true && newData != null) {
           List<Homework> oldHW = List();
-          if (this.offlineBox.get("homework") != null) {
+          if (parent.offlineBox.get("homework") != null) {
             oldHW = super.offlineBox.get("homework").cast<Homework>();
           }
 
@@ -37,11 +40,11 @@ class HomeworkOffline extends Offline {
           });
           combinedList = combinedList.toSet().toList();
 
-          await this.offlineBox.put("homework", combinedList);
+          await parent.offlineBox.put("homework", combinedList);
         } else {
-          await this.offlineBox.put("homework", newData);
+          await parent.offlineBox.put("homework", newData);
         }
-        await refreshData();
+        await parent.refreshData();
       } catch (e) {
         print("Error while updating homework " + e.toString());
       }
@@ -51,12 +54,12 @@ class HomeworkOffline extends Offline {
   //Get all homework
   Future<List<Homework>> getHomework() async {
     try {
-      if (homeworkData != null) {
-        return homeworkData;
+      if (parent.homeworkData != null) {
+        return parent.homeworkData;
       } else {
-        await refreshData();
+        await parent.refreshData();
 
-        return homeworkData;
+        return parent.homeworkData;
       }
     } catch (e) {
       print("Error while returning homework " + e.toString());

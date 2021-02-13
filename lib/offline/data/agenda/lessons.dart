@@ -5,19 +5,23 @@ import 'package:ynotes/offline/offline.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 class LessonsOffline extends Offline {
-  LessonsOffline(bool locked) : super(locked);
+  
+  Offline parent;
+  LessonsOffline(bool locked, Offline _parent) : super(locked) {
+    parent = _parent;
+  }
 
   Future<List<Lesson>> get(int week) async {
     try {
-      if (lessonsData != null && lessonsData[week] != null) {
+      if (parent.lessonsData != null && parent.lessonsData[week] != null) {
         List<Lesson> lessons = List();
-        lessons.addAll(lessonsData[week].cast<Lesson>());
+        lessons.addAll(parent.lessonsData[week].cast<Lesson>());
         return lessons;
       } else {
         await refreshData();
-        if (lessonsData[week] != null) {
+        if (parent.lessonsData[week] != null) {
           List<Lesson> lessons = List();
-          lessons.addAll(lessonsData[week].cast<Lesson>());
+          lessons.addAll(parent.lessonsData[week].cast<Lesson>());
           return lessons;
         } else {
           return null;
@@ -34,15 +38,13 @@ class LessonsOffline extends Offline {
   updateLessons(List<Lesson> newData, int week) async {
     if (!locked) {
       try {
-        if (!agendaBox.isOpen) {
-          agendaBox = await Hive.openBox("agenda");
-        }
+       
         if (newData != null) {
           print("Update offline lessons (week : $week, length : ${newData.length})");
           Map<dynamic, dynamic> timeTable = Map();
-          var offline = await agendaBox.get("lessons");
+          var offline = await parent.agendaBox.get("lessons");
           if (offline != null) {
-            timeTable = Map<dynamic, dynamic>.from(await agendaBox.get("lessons"));
+            timeTable = Map<dynamic, dynamic>.from(await parent.agendaBox.get("lessons"));
           }
 
           if (timeTable == null) {
@@ -62,8 +64,8 @@ class LessonsOffline extends Offline {
           }
           //Update the timetable
           timeTable.update(week, (value) => newData, ifAbsent: () => newData);
-          await agendaBox.put("lessons", timeTable);
-          await refreshData();
+          await parent.agendaBox.put("lessons", timeTable);
+          await parent.refreshData();
         }
 
         return true;
