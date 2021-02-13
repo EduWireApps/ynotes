@@ -59,8 +59,13 @@ class EcoleDirecteMethod {
     String method = "notes.awp?verbe=get&";
     String data = 'data={"token": "$token"}';
     List<Discipline> disciplinesList = await request(
-        data, rootUrl, method, EcoleDirecteConverter.disciplines, "Grades request returned an error:",
-        /*ignoreMethodAndId: kDebugMode, getRequest: kDebugMode*/);
+      data,
+      rootUrl,
+      method,
+      EcoleDirecteConverter.disciplines,
+      "Grades request returned an error:",
+      /*ignoreMethodAndId: kDebugMode, getRequest: kDebugMode*/
+    );
 
     //Update colors;
     disciplinesList = await refreshDisciplinesListColors(disciplinesList);

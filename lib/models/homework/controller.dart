@@ -30,13 +30,18 @@ class HomeworkController extends ChangeNotifier {
       _old.sort((a, b) => a.date.compareTo(b.date));
       notifyListeners();
     } else {
-      _old = await HomeworkUtils.getReducedListHomework(forceReload: true);
+      _old = await HomeworkUtils.getReducedListHomework(forceReload: force);
       _old.sort((a, b) => a.date.compareTo(b.date));
       notifyListeners();
     }
+
     await prepareOld(_old);
     isFetching = false;
     notifyListeners();
+    //Reloads lazily
+    if (!force && !refreshFromOffline) {
+      await refresh(force: true);
+    }
   }
 
   void getHomeworkDonePercent() async {

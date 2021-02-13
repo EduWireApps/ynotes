@@ -167,7 +167,6 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
 
   initControllers() async {
     hwcontroller = HomeworkController(localApi);
-    await offline.init();
     await hwcontroller.refresh();
   }
 

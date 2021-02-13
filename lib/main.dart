@@ -41,6 +41,7 @@ Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   offline = Offline(false);
+  await offline.init();
   await initBackgroundTask();
 
   //Load api

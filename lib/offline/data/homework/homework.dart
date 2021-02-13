@@ -19,13 +19,10 @@ class HomeworkOffline extends Offline {
     if (!locked) {
       print("Update offline homwork");
       try {
-        if (!parent.offlineBox.isOpen) {
-          parent.offlineBox = await Hive.openBox("offlineData");
-        }
         if (add == true && newData != null) {
           List<Homework> oldHW = List();
           if (parent.offlineBox.get("homework") != null) {
-            oldHW = super.offlineBox.get("homework").cast<Homework>();
+            oldHW = parent.offlineBox.get("homework").cast<Homework>();
           }
 
           List<Homework> combinedList = List();
@@ -39,7 +36,6 @@ class HomeworkOffline extends Offline {
             }
           });
           combinedList = combinedList.toSet().toList();
-
           await parent.offlineBox.put("homework", combinedList);
         } else {
           await parent.offlineBox.put("homework", newData);

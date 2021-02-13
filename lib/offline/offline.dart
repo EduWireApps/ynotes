@@ -95,7 +95,7 @@ class Offline {
       }
       var dir = await FolderAppUtil.getDirectory();
       try {
-        await Hive.init("${dir.path}/offline");
+        Hive.init("${dir.path}/offline");
         offlineBox = await safeBoxOpen("offlineData");
         homeworkDoneBox = await Hive.openBox('doneHomework');
         pinnedHomeworkBox = await Hive.openBox('pinnedHomework');
@@ -148,8 +148,8 @@ class Offline {
 
   //Refresh lists when needed
   refreshData() async {
-    print("Refreshing offline");
     if (!locked) {
+      print("Refreshing offline");
       try {
         //Get data and cast it
         var offlineLessonsData = await agendaBox.get("lessons");
