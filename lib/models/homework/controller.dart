@@ -38,10 +38,6 @@ class HomeworkController extends ChangeNotifier {
     await prepareOld(_old);
     isFetching = false;
     notifyListeners();
-    //Reloads lazily
-    if (!force && !refreshFromOffline) {
-      await refresh(force: true);
-    }
   }
 
   void getHomeworkDonePercent() async {
