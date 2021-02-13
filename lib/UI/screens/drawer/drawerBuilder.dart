@@ -141,8 +141,8 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
   @override
   void initState() {
     super.initState();
-    //Init hw controller
 
+    //Init hw controller
     if (firstStart == true) {
       firstStart = false;
     }
@@ -150,6 +150,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
     //Mvc init
     initControllers();
     initPageControllers();
+    //Page sys
     ConnectionStatusSingleton connectionStatus = ConnectionStatusSingleton.getInstance();
     tabBarconnexion = connectionStatus.connectionChange.listen(connectionChanged);
     isOffline = !connectionStatus.hasConnection;
@@ -164,9 +165,10 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
     offline.dispose();
   }
 
-  initControllers() {
+  initControllers() async {
     hwcontroller = HomeworkController(localApi);
-    hwcontroller.refresh();
+    await offline.init();
+    await hwcontroller.refresh();
   }
 
   initPageControllers() {

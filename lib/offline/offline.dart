@@ -70,6 +70,10 @@ class Offline {
     print("Disposed hive");
   }
 
+  test() {
+    print(offlineBox);
+  }
+
   //Called when instanciated
   init() async {
     print("Init offline");
@@ -91,11 +95,12 @@ class Offline {
       }
       var dir = await FolderAppUtil.getDirectory();
       try {
-        Hive.init("${dir.path}/offline");
+        await Hive.init("${dir.path}/offline");
         offlineBox = await safeBoxOpen("offlineData");
         homeworkDoneBox = await Hive.openBox('doneHomework');
         pinnedHomeworkBox = await Hive.openBox('pinnedHomework');
         agendaBox = await Hive.openBox("agenda");
+        print("All boxes opened");
       } catch (e) {
         print("Issue while opening boxes : " + e.toString());
       }
@@ -146,12 +151,6 @@ class Offline {
     print("Refreshing offline");
     if (!locked) {
       try {
-        /*if (offlineBox == null || !offlineBox.isOpen) {
-          offlineBox = await Hive.openBox("offlineData");
-        }
-        if (agendaBox == null || !agendaBox.isOpen) {
-          agendaBox = await Hive.openBox("agenda");
-        }*/
         //Get data and cast it
         var offlineLessonsData = await agendaBox.get("lessons");
         var offlineDisciplinesData = await offlineBox.get("disciplines");

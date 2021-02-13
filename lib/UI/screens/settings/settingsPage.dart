@@ -445,14 +445,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     title: 'Bouton magique',
                     leading: Icon(MdiIcons.testTube, color: ThemeUtils.textColor()),
                     onTap: () async {
-                      await EcoleDirecteMethod(offline).testToken();
-                      String rootUrl = "http://192.168.1.99:3000/posts/1";
-
-                      var response = await http.get(rootUrl);
-                      Map<String, dynamic> responseData = json.decode(utf8.decode(response.bodyBytes));
-                      print(responseData["data"]["periodes"][0]["idPeriode"]);
-                      var test = EcoleDirecteConverter.disciplines(responseData);
-                      print(getAllGrades(test).first.testName);
+                      offline.test();
                     },
                     titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                     subtitleTextStyle: TextStyle(
