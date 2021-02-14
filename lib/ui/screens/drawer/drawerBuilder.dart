@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/core/logic/homework/controller.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
@@ -54,10 +55,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
         "menuName": "Résumé",
         "icon": MdiIcons.home,
         "page": SummaryPage(
-          switchPage: _switchPage,
-          key: summaryPage,
-          hwcontroller: hwcontroller,
-        ),
+            switchPage: _switchPage, key: summaryPage, hwcontroller: hwcontroller, gradesController: gradesController),
         "key": summaryPage
       },
       {
@@ -112,6 +110,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
   AnimationController quickMenuAnimationController;
   //controllers
   HomeworkController hwcontroller;
+  GradesController gradesController;
 
   Animation<double> quickMenuButtonAnimation;
   StreamSubscription tabBarconnexion;
@@ -161,9 +160,13 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
 
   initControllers() async {
     hwcontroller = HomeworkController(localApi);
+    gradesController = GradesController(localApi);
+    await gradesController.refresh();
     await hwcontroller.refresh();
-    //Lazy reload
+
+    //Lazy reloads
     await hwcontroller.refresh(force: true);
+    await gradesController.refresh(force: true);
   }
 
   initPageControllers() {

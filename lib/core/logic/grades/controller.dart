@@ -16,7 +16,7 @@ class GradesController extends ChangeNotifier {
   bool isFetching = false;
   bool _isSimulating = false;
   List<String> specialties;
-  String _sorter = "";
+  String _sorter = "all";
 
   GradesSimulator simulator;
   double get average => _average;
@@ -26,6 +26,12 @@ class GradesController extends ChangeNotifier {
     _sorter = newSorter;
     _filterDisciplinesForPeriod();
   }
+
+  set period(String newPeriod) {
+    _period = newPeriod;
+  }
+
+  get period => _period;
 
   get sorter => _sorter;
 
@@ -46,6 +52,7 @@ class GradesController extends ChangeNotifier {
   }
 
   Future<void> refresh({bool force = false, refreshFromOffline = false}) async {
+    print("Refresh grades");
     isFetching = true;
     notifyListeners();
     await _refreshPeriods();
@@ -54,13 +61,20 @@ class GradesController extends ChangeNotifier {
       _old = await _api.getGrades();
       notifyListeners();
     } else {
-      _old = await _api.getGrades(forceReload: true);
+      _old = await _api.getGrades(forceReload: force);
       notifyListeners();
     }
     isFetching = false;
+    _setDefaultPeriod();
     _filterDisciplinesForPeriod();
     await _setListSpecialties();
     notifyListeners();
+  }
+
+  void _setDefaultPeriod() {
+    if (_old != null && _period == "") {
+      _period = _old.lastWhere((list) => list.gradesList.length > 0).gradesList.last.periodName;
+    }
   }
 
   //Get school periods;

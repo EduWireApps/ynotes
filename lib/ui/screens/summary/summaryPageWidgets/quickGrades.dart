@@ -5,6 +5,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
@@ -30,10 +31,11 @@ class _QuickGradesState extends State<QuickGrades> {
     await this.widget.gradesController.refresh(force: true);
   }
 
-  Widget buildGauge(List<Discipline> disciplines, BuildContext context) {
+  Widget buildGauge(BuildContext context, List<Discipline> disciplines, bool fetching) {
     var screenSize = MediaQuery.of(context);
+
     //First division (gauge)
-    Container(
+    return Container(
         decoration: BoxDecoration(
             color: Color(0xff2c274c),
             border: Border.all(width: 0, color: Colors.transparent),
@@ -52,9 +54,9 @@ class _QuickGradesState extends State<QuickGrades> {
                   Container(
                       color: Colors.transparent,
                       width: screenSize.size.width / 5 * 4.5,
-                      child: disciplines != null
+                      child: (disciplines != null)
                           ? SummaryChart(
-                              getAllGrades(disciplines, overrideLimit: true),
+                              getAllGrades(disciplines, overrideLimit: true, sortByWritingDate: true),
                             )
                           : SpinKitThreeBounce(
                               color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4))
@@ -155,44 +157,54 @@ class _QuickGradesState extends State<QuickGrades> {
         ),
       );
     } else {
-      return ListView.builder(
-          itemCount: grades.length,
-          scrollDirection: Axis.horizontal,
-          itemBuilder: (context, index) {
-            return Card(
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
-              color: Theme.of(context).primaryColor,
-              child: Material(
-                borderRadius: BorderRadius.circular(11),
+      return Container(
+        margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
+        height: screenSize.size.height / 10 * 1.2,
+        width: screenSize.size.width,
+        child: ListView.builder(
+            itemCount: grades.length,
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (context, index) {
+              return Card(
+                margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.2, top: screenSize.size.height / 10 * 0.1),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
                 color: Theme.of(context).primaryColor,
-                child: InkWell(
+                child: Material(
                   borderRadius: BorderRadius.circular(11),
-                  onLongPress: () {
-                    CustomDialogs.showShareGradeDialog(context, grades[index]);
-                  },
-                  onTap: () {
-                    widget.switchPage(1);
-                  },
-                  child: Container(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.height / 10 * 0.1),
-                    height: screenSize.size.height / 10 * 0.5,
-                    child: buildGradeItem(grades[index]),
+                  color: Theme.of(context).primaryColor,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(11),
+                    onLongPress: () {
+                      CustomDialogs.showShareGradeDialog(context, grades[index]);
+                    },
+                    onTap: () {
+                      widget.switchPage(1);
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.height / 10 * 0.1),
+                      height: screenSize.size.height / 10 * 0.5,
+                      child: buildGradeItem(grades[index]),
+                    ),
                   ),
                 ),
-              ),
-            );
-          });
-    }
-    @override
-    Widget build(BuildContext context) {
-      return Column(
-        children: [
-          buildGauge(),
-          buildGradesList(context, grades)
-        ],
+              );
+            }),
       );
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider<GradesController>.value(
+      value: widget.gradesController,
+      child: Consumer<GradesController>(builder: (context, model, child) {
+        return Column(children: [
+          buildGauge(context, model.disciplines, model.isFetching),
+          buildGradesList(context, getAllGrades(model.disciplines, overrideLimit: true, sortByWritingDate: true)),
+        ]);
+      }),
+    );
   }
 }
 
