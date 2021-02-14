@@ -33,12 +33,6 @@ class _HomeworkFirstPageState extends State<HomeworkFirstPage> {
     SchedulerBinding.instance.addPostFrameCallback((_) => mounted ? this.widget.hwcontroller.refresh() : null);
   }
 
-  void reloadDates() async {
-    var realHW = await homeworkListFuture;
-    setState(() {
-      dates = getDates(realHW);
-    });
-  }
 
   @override
   Widget build(BuildContext context) {

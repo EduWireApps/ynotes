@@ -31,7 +31,7 @@ class _QuickGradesState extends State<QuickGrades> {
     await this.widget.gradesController.refresh(force: true);
   }
 
-  Widget buildGauge(BuildContext context, List<Discipline> disciplines, bool fetching) {
+  Widget buildCHart(BuildContext context, List<Discipline> disciplines, bool fetching) {
     var screenSize = MediaQuery.of(context);
 
     //First division (gauge)
@@ -54,7 +54,7 @@ class _QuickGradesState extends State<QuickGrades> {
                   Container(
                       color: Colors.transparent,
                       width: screenSize.size.width / 5 * 4.5,
-                      child: (disciplines != null)
+                      child: (disciplines != null && !fetching)
                           ? SummaryChart(
                               getAllGrades(disciplines, overrideLimit: true, sortByWritingDate: true),
                             )
@@ -200,7 +200,7 @@ class _QuickGradesState extends State<QuickGrades> {
       value: widget.gradesController,
       child: Consumer<GradesController>(builder: (context, model, child) {
         return Column(children: [
-          buildGauge(context, model.disciplines, model.isFetching),
+          buildCHart(context, model.disciplines, model.isFetching),
           buildGradesList(context, getAllGrades(model.disciplines, overrideLimit: true, sortByWritingDate: true)),
         ]);
       }),

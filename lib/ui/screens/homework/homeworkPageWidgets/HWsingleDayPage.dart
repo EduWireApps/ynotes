@@ -20,6 +20,7 @@ class HomeworkSecondPage extends StatefulWidget {
 }
 
 class _HomeworkSecondPageState extends State<HomeworkSecondPage> {
+  Future homeworkListFuture;
   Future<void> refreshLocalHomeworkList() async {
     setState(() {
       homeworkListFuture = localApi.getNextHomework(forceReload: true);
