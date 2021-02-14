@@ -8,11 +8,11 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 ///Bottom windows with some infos on the discipline and the possibility to change the discipline color
 void disciplineModalBottomSheet(context, Discipline discipline, Function callback, var widget) {
   Color colorGroup;
-  if (widget.disciplinevar == null) {
+  if (widget.discipline == null) {
     colorGroup = Colors.blueAccent;
   } else {
-    if (widget.disciplinevar.color != null) {
-      colorGroup = Color(widget.disciplinevar.color);
+    if (widget.discipline.color != null) {
+      colorGroup = Color(widget.discipline.color);
     }
   }
   MediaQueryData screenSize = MediaQuery.of(context);

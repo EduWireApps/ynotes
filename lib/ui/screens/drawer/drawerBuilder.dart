@@ -61,7 +61,11 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
       {
         "menuName": "Notes",
         "icon": MdiIcons.trophy,
-        "page": SingleChildScrollView(physics: NeverScrollableScrollPhysics(), child: GradesPage()),
+        "page": SingleChildScrollView(
+            physics: NeverScrollableScrollPhysics(),
+            child: GradesPage(
+              gradesController: gradesController,
+            )),
       },
       {
         "menuName": "Devoirs",

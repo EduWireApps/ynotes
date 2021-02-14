@@ -24,11 +24,12 @@ class GradesController extends ChangeNotifier {
 
   set sorter(String newSorter) {
     _sorter = newSorter;
-    _filterDisciplinesForPeriod();
+    refresh();
   }
 
   set period(String newPeriod) {
     _period = newPeriod;
+    refresh();
   }
 
   get period => _period;
