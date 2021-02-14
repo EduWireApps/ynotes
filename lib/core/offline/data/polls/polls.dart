@@ -3,15 +3,17 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/offline/offline.dart';
 
 class PollsOffline extends Offline {
-  PollsOffline(bool locked) : super(locked);
-
+  Offline parent;
+  PollsOffline(bool locked, Offline _parent) : super(locked) {
+    parent = _parent;
+  }
   Future<List<PollInfo>> get() async {
     try {
       if (pollsData != null) {
-        return pollsData;
+        return parent.pollsData;
       } else {
         await refreshData();
-        return pollsData.cast<PollInfo>();
+        return parent.pollsData.cast<PollInfo>();
       }
     } catch (e) {
       print("Error while returning polls " + e.toString());
@@ -24,12 +26,12 @@ class PollsOffline extends Offline {
     if (!locked) {
       print("Update offline polls (length : ${newData.length})");
       try {
-        if (!offlineBox.isOpen) {
+        /* if (!offlineBox.isOpen) {
           offlineBox = await Hive.openBox("offlineData");
-        }
-        await offlineBox.delete("polls");
-        await offlineBox.put("polls", newData);
-        await refreshData();
+        }*/
+        await parent.offlineBox.delete("polls");
+        await parent.offlineBox.put("polls", newData);
+        await parent.refreshData();
       } catch (e) {
         print("Error while updating polls " + e.toString());
       }

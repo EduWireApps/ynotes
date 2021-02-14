@@ -40,15 +40,14 @@ FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 ///The app main class
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  offline = Offline(false);
+  await offline.init();
   await initBackgroundTask();
 
   //Load api
   await reloadChosenApi();
-  offline = Offline(false);
-  localApi = APIManager(offline);
-  tlogin = LoginController();
 
-  await offline.init();
   localApi = APIManager(offline);
   tlogin = LoginController();
 

@@ -110,7 +110,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
   bool isChanging = false;
   bool firstStart = true;
   AnimationController quickMenuAnimationController;
-//models
+  //controllers
   HomeworkController hwcontroller;
 
   Animation<double> quickMenuButtonAnimation;
@@ -119,8 +119,6 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
   GlobalKey<SummaryPageState> summaryPage = new GlobalKey();
   GlobalKey<HomeworkPageState> homeworkPage = new GlobalKey();
   bool isOffline = false;
-  OverlayState overlayState;
-  OverlayEntry _overlayEntry;
   Animation<double> showLoginControllerStatus;
   AnimationController showLoginControllerStatusController;
   final Duration drawerAnimationDuration = Duration(milliseconds: 150);
@@ -134,62 +132,41 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
   int _previousPage;
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
 
-  //Chose which triggered action to use
-  getRelatedAction(ReceivedNotification receivedNotification) async {
-    if (receivedNotification.channelKey == "newmail" && receivedNotification.toMap()["buttonKeyPressed"] == "REPLY") {
-      CustomDialogs.writeModalBottomSheet(context,
-          defaultListRecipients: [
-            Recipient(receivedNotification.payload["name"], receivedNotification.payload["surname"],
-                receivedNotification.payload["id"], receivedNotification.payload["isTeacher"] == "true", null)
-          ],
-          defaultSubject: receivedNotification.payload["subject"]);
-      return;
-    }
-
-    if (receivedNotification.channelKey == "newmail" && receivedNotification.toMap()["buttonKeyPressed"] != null) {
-      drawerPageViewController.jumpToPage(4);
-      return;
-    }
-
-    if (receivedNotification.channelKey == "newgrade" && receivedNotification.toMap()["buttonKeyPressed"] != null) {
-      drawerPageViewController.jumpToPage(3);
-      return;
-    }
-    if (receivedNotification.channelKey == "persisnotif" &&
-        receivedNotification.toMap()["buttonKeyPressed"] == "REFRESH") {
-      await AppNotification.setOnGoingNotification();
-      return;
-    }
-    if (receivedNotification.channelKey == "persisnotif" &&
-        receivedNotification.toMap()["buttonKeyPressed"] == "KILL") {
-      await setSetting("agendaOnGoingNotification", false);
-      await AppNotification.cancelOnGoingNotification();
-      return;
-    }
-  }
-
   @override
   void initState() {
     super.initState();
 
     //Init hw controller
+    if (firstStart == true) {
+      firstStart = false;
+    }
+    AppNotification.initNotifications(context, _scrollTo);
+    //Mvc init
+    initControllers();
+    initPageControllers();
+    //Page sys
+    ConnectionStatusSingleton connectionStatus = ConnectionStatusSingleton.getInstance();
+    tabBarconnexion = connectionStatus.connectionChange.listen(connectionChanged);
+    isOffline = !connectionStatus.hasConnection;
+    _previousPage = drawerPageViewController.initialPage;
+  }
+
+  @override
+  void dispose() {
+    _notifier?.dispose();
+    drawerPageViewController.dispose();
+    super.dispose();
+    offline.dispose();
+  }
+
+  initControllers() async {
     hwcontroller = HomeworkController(localApi);
-    hwcontroller.refresh();
-    AwesomeNotifications().initialize(null, [
-      NotificationChannel(
-          channelKey: 'alarm',
-          defaultPrivacy: NotificationPrivacy.Private,
-          channelName: 'Alarmes',
-          importance: NotificationImportance.High,
-          channelDescription: "Alarmes et rappels de l'application yNotes",
-          defaultColor: Color(0xFF9D50DD),
-          ledColor: Colors.white)
-    ]);
-    try {
-      AwesomeNotifications().actionStream.listen((receivedNotification) async {
-        await getRelatedAction(receivedNotification);
-      });
-    } catch (e) {}
+    await hwcontroller.refresh();
+    //Lazy reload
+    await hwcontroller.refresh(force: true);
+  }
+
+  initPageControllers() {
     // this creates the controller
     drawerPageViewController = PageController(
       initialPage: 0,
@@ -203,10 +180,6 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
     ).animate(new CurvedAnimation(
         parent: showLoginControllerStatusController, curve: Interval(0.1, 1.0, curve: Curves.fastOutSlowIn)));
 
-    _overlayEntry = OverlayEntry(
-      builder: (BuildContext context) => QuickMenu(removeQuickMenu),
-    );
-
     //Define a controller in order to control  quick menu animation
     quickMenuAnimationController = AnimationController(vsync: this, duration: Duration(milliseconds: 300));
     quickMenuButtonAnimation = new Tween(
@@ -214,38 +187,6 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
       end: 1.3,
     ).animate(
         new CurvedAnimation(parent: quickMenuAnimationController, curve: Curves.easeIn, reverseCurve: Curves.easeOut));
-
-    if (firstStart == true) {
-      firstStart = false;
-    }
-    //removeQuickMenu();
-    ConnectionStatusSingleton connectionStatus = ConnectionStatusSingleton.getInstance();
-    tabBarconnexion = connectionStatus.connectionChange.listen(connectionChanged);
-    isOffline = !connectionStatus.hasConnection;
-    _previousPage = drawerPageViewController.initialPage;
-  }
-
-  _onPageViewUpdate() {
-    _notifier?.value = drawerPageViewController.page.round();
-  }
-
-  void removeQuickMenu() {
-    if (isQuickMenuShown) {
-      if (isQuickMenuShown) {
-        _overlayEntry.remove();
-      }
-      setState(() {
-        isQuickMenuShown = false;
-      });
-    }
-  }
-
-  @override
-  void dispose() {
-    _notifier?.dispose();
-    drawerPageViewController.dispose();
-    super.dispose();
-    offline.dispose();
   }
 
   void connectionChanged(dynamic hasConnection) {
@@ -253,6 +194,10 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
     setState(() {
       isOffline = !hasConnection;
     });
+  }
+
+  _onPageViewUpdate() {
+    _notifier?.value = drawerPageViewController.page.round();
   }
 
   bool wiredashShown = false;
@@ -432,7 +377,6 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
   }
 
   _scrollTo(int index) {
-    print("test");
     // scroll the calculated ammount
     drawerPageViewController.jumpToPage(index);
   }
