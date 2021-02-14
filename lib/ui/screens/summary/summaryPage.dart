@@ -317,42 +317,7 @@ class SummaryPageState extends State<SummaryPage> {
                     ),
                   ),
                   separator(context, "Notes"),
-                  //First division (gauge)
-                  Container(
-                      decoration: BoxDecoration(
-                          color: Color(0xff2c274c),
-                          border: Border.all(width: 0, color: Colors.transparent),
-                          borderRadius: BorderRadius.circular(12)),
-                      margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
-                      child: Card(
-                          shadowColor: Colors.transparent,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                          color: Colors.transparent,
-                          child: Container(
-                            color: Colors.transparent,
-                            width: screenSize.size.width / 5 * 4.5,
-                            height: (screenSize.size.height / 10 * 8.8) / 10 * 2,
-                            child: Row(
-                              children: [
-                                Container(
-                                    color: Colors.transparent,
-                                    width: screenSize.size.width / 5 * 4.5,
-                                    child: FutureBuilder(
-                                        future: disciplinesListFuture,
-                                        builder: (context, snapshot) {
-                                          if (snapshot.hasData) {
-                                            return SummaryChart(
-                                              getAllGrades(snapshot.data, overrideLimit: true),
-                                            );
-                                          } else {
-                                            return SpinKitThreeBounce(
-                                                color: Theme.of(context).primaryColorDark,
-                                                size: screenSize.size.width / 5 * 0.4);
-                                          }
-                                        }))
-                              ],
-                            ),
-                          ))),
+                 
                   //Second division (quick marks)
                   Container(
                     margin:
@@ -369,9 +334,6 @@ class SummaryPageState extends State<SummaryPage> {
                             print(e.toString());
                           }
                           return QuickGrades(
-                            grades: grades,
-                            callback: widget.switchPage,
-                            refreshCallback: refreshLocalGradesList,
                           );
                         }),
                   ),

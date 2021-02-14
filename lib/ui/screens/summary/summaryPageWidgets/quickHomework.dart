@@ -20,7 +20,7 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 
 class QuickHomework extends StatefulWidget {
   final Function switchPage;
-
+  
   const QuickHomework({Key key, this.switchPage}) : super(key: key);
   @override
   _QuickHomeworkState createState() => _QuickHomeworkState();
