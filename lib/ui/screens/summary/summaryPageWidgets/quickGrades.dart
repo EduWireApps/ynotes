@@ -68,7 +68,7 @@ class _QuickGradesState extends State<QuickGrades> {
     return Container(
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: Colors.blueGrey,
+        color: Theme.of(context).primaryColorDark,
       ),
       child: FittedBox(
         child: AutoSizeText.rich(

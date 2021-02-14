@@ -70,65 +70,99 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
                   content: Container(
                       height: screenSize.size.height / 10 * 4,
                       width: screenSize.size.width / 5 * 4,
-                      child: Center(
-                          child: (disciplines.length > 0)
-                              ? ListView.builder(
-                                  itemCount: disciplines.length,
-                                  itemBuilder: (BuildContext context, int index) {
-                                    return Container(
-                                      width: screenSize.size.width / 5 * 4,
-                                      padding: EdgeInsets.symmetric(
-                                        vertical: screenSize.size.height / 10 * 0.2,
-                                      ),
-                                      child: Row(
-                                        children: <Widget>[
-                                          CircularCheckBox(
-                                            inactiveColor: ThemeUtils.textColor(),
-                                            onChanged: (value) {
-                                              if (chosenSpecialties.contains(disciplines[index])) {
+                      child: ShaderMask(
+                        shaderCallback: (Rect rect) {
+                          return LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [Colors.purple, Colors.transparent, Colors.transparent, Colors.purple],
+                            stops: [0.0, 0.15, 0.8, 1.0], // 10% purple, 80% transparent, 10% purple
+                          ).createShader(rect);
+                        },
+                        blendMode: BlendMode.dstOut,
+                        child: Center(
+                            child: (disciplines.length > 0)
+                                ? ListView.builder(
+                                    padding: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.35),
+                                    itemCount: disciplines.length,
+                                    itemBuilder: (BuildContext context, int index) {
+                                      return Material(
+                                        color: Colors.transparent,
+                                        child: InkWell(
+                                          onTap: () {
+                                            if (chosenSpecialties.contains(disciplines[index])) {
+                                              setState(() {
+                                                chosenSpecialties
+                                                    .removeWhere((element) => element == disciplines[index]);
+                                              });
+                                              print(chosenSpecialties);
+                                              setChosenSpecialties();
+                                            } else {
+                                              if (chosenSpecialties.length < 6) {
                                                 setState(() {
-                                                  chosenSpecialties
-                                                      .removeWhere((element) => element == disciplines[index]);
+                                                  chosenSpecialties.add(disciplines[index]);
                                                 });
-                                                print(chosenSpecialties);
                                                 setChosenSpecialties();
-                                              } else {
-                                                if (chosenSpecialties.length < 6) {
-                                                  setState(() {
-                                                    chosenSpecialties.add(disciplines[index]);
-                                                  });
-                                                  setChosenSpecialties();
-                                                }
                                               }
-                                            },
-                                            value: chosenSpecialties.contains(disciplines[index]),
-                                          ),
-                                          Container(
-                                            width: screenSize.size.width / 5 * 3,
-                                            child: AutoSizeText(
-                                              disciplines[index],
-                                              style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                                            }
+                                          },
+                                          child: Container(
+                                            width: screenSize.size.width / 5 * 4,
+                                            padding: EdgeInsets.symmetric(
+                                              vertical: screenSize.size.height / 10 * 0.1,
+                                            ),
+                                            child: Row(
+                                              children: <Widget>[
+                                                CircularCheckBox(
+                                                  inactiveColor: ThemeUtils.textColor(),
+                                                  onChanged: (value) {
+                                                    if (chosenSpecialties.contains(disciplines[index])) {
+                                                      setState(() {
+                                                        chosenSpecialties
+                                                            .removeWhere((element) => element == disciplines[index]);
+                                                      });
+                                                      print(chosenSpecialties);
+                                                      setChosenSpecialties();
+                                                    } else {
+                                                      if (chosenSpecialties.length < 6) {
+                                                        setState(() {
+                                                          chosenSpecialties.add(disciplines[index]);
+                                                        });
+                                                        setChosenSpecialties();
+                                                      }
+                                                    }
+                                                  },
+                                                  value: chosenSpecialties.contains(disciplines[index]),
+                                                ),
+                                                Container(
+                                                  width: screenSize.size.width / 5 * 3,
+                                                  child: AutoSizeText(
+                                                    disciplines[index],
+                                                    style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                                                  ),
+                                                ),
+                                              ],
                                             ),
                                           ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                )
-                              : Container(
-                                  padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.5),
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(MdiIcons.information, color: ThemeUtils.textColor()),
-                                      AutoSizeText(
-                                        "Pas assez de données pour générer votre liste de spécialités.",
-                                        style: TextStyle(fontFamily: "Asap"),
-                                        textAlign: TextAlign.center,
-                                      )
-                                    ],
-                                  ),
-                                ))));
+                                        ),
+                                      );
+                                    },
+                                  )
+                                : Container(
+                                    padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.5),
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(MdiIcons.information, color: ThemeUtils.textColor()),
+                                        AutoSizeText(
+                                          "Pas assez de données pour générer votre liste de spécialités.",
+                                          style: TextStyle(fontFamily: "Asap"),
+                                          textAlign: TextAlign.center,
+                                        )
+                                      ],
+                                    ),
+                                  )),
+                      )));
             } else {
               return SpinKitFadingFour(
                 color: Theme.of(context).primaryColorDark,

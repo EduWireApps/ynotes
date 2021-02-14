@@ -7,6 +7,7 @@ import 'package:html/parser.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:share/share.dart';
+import 'package:ynotes/core/logic/homework/controller.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/hiddenSettings.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/HWlistPage.dart';
@@ -25,7 +26,8 @@ Future<List<Homework>> homeworkListFuture;
 List<Homework> localListHomeworkDateToUse;
 
 class HomeworkPage extends StatefulWidget {
-  HomeworkPage({Key key}) : super(key: key);
+  final HomeworkController hwController;
+  HomeworkPage({Key key, @required this.hwController}) : super(key: key);
   State<StatefulWidget> createState() {
     return HomeworkPageState();
   }
@@ -133,7 +135,9 @@ class HomeworkPageState extends State<HomeworkPage> {
                               physics: NeverScrollableScrollPhysics(),
                               children: <Widget>[
                                 //Second page with homework
-                                HomeworkFirstPage(),
+                                HomeworkFirstPage(
+                                  hwcontroller: this.widget.hwController,
+                                ),
 
                                 //Third page (with homework at a specific date)
                                 HomeworkSecondPage(animateToPage)

@@ -24,6 +24,12 @@ import 'core/utils/themeUtils.dart';
 
 var uuid = Uuid();
 
+extension StringExtension on String {
+  String capitalize() {
+    return "${this[0].toUpperCase()}${this.substring(1)}";
+  }
+}
+
 //login manager
 LoginController tlogin;
 Offline offline;
@@ -34,16 +40,16 @@ FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 ///The app main class
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  offline = Offline(false);
+  await offline.init();
   await initBackgroundTask();
 
   //Load api
   await reloadChosenApi();
-  offline = Offline(false);
+
   localApi = APIManager(offline);
   tlogin = LoginController();
-
-  //Init offline data
-  await offline.init();
 
   //Cancel the old task manager (will be removed after migration)
   wm.Workmanager.cancelAll();

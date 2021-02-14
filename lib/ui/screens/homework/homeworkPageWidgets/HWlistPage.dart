@@ -8,6 +8,10 @@ import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/HWcontainer.dart'
 import 'package:ynotes/core/utils/themeUtils.dart';
 
 class HomeworkFirstPage extends StatefulWidget {
+  final HomeworkController hwcontroller;
+
+  const HomeworkFirstPage({Key key, @required this.hwcontroller}) : super(key: key);
+
   State<StatefulWidget> createState() {
     return _HomeworkFirstPageState();
   }
@@ -15,7 +19,7 @@ class HomeworkFirstPage extends StatefulWidget {
 
 class _HomeworkFirstPageState extends State<HomeworkFirstPage> {
   Future<void> refreshLocalHomeworkList() async {
-    await hwcontroller.refresh(force: true);
+    await this.widget.hwcontroller.refresh(force: true);
   }
 
   void callback() {
@@ -26,7 +30,7 @@ class _HomeworkFirstPageState extends State<HomeworkFirstPage> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    SchedulerBinding.instance.addPostFrameCallback((_) => mounted ? hwcontroller.refresh() : null);
+    SchedulerBinding.instance.addPostFrameCallback((_) => mounted ? this.widget.hwcontroller.refresh() : null);
   }
 
   void reloadDates() async {
@@ -40,7 +44,7 @@ class _HomeworkFirstPageState extends State<HomeworkFirstPage> {
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
     return ChangeNotifierProvider<HomeworkController>.value(
-        value: hwcontroller,
+        value: this.widget.hwcontroller,
         child: Consumer<HomeworkController>(builder: (context, model, child) {
           return RefreshIndicator(
               onRefresh: refreshLocalHomeworkList,

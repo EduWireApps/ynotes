@@ -4,14 +4,13 @@ import 'package:ynotes/main.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 class HomeworkUtils {
-//Homework done percent
-  static Future<int> getHomeworkDonePercent() async {
+  static Future<List<int>> getHomeworkDonePercent() async {
     List list = await getReducedListHomework();
     if (list != null) {
       //Number of elements in list
       int total = list.length;
       if (total == 0) {
-        return 100;
+        return [100, 0, 0];
       } else {
         int done = 0;
 
@@ -21,22 +20,21 @@ class HomeworkUtils {
             done++;
           }
         });
-        print(done);
         int percent = (done * 100 / total).round();
 
-        return percent;
+        return [percent, done, list.length];
       }
     } else {
-      return 100;
+      return [100, 0, 0];
     }
   }
 
-  static Future<List<Homework>> getReducedListHomework() async {
+  static Future<List<Homework>> getReducedListHomework({forceReload = false}) async {
     int reduce = await getIntSetting("summaryQuickHomework");
     if (reduce == 11) {
       reduce = 770;
     }
-    List<Homework> localList = await localApi.getNextHomework();
+    List<Homework> localList = await localApi.getNextHomework(forceReload: forceReload);
     if (localList != null) {
       List<Homework> listToReturn = List<Homework>();
       localList.forEach((element) {
@@ -45,7 +43,7 @@ class HomeworkUtils {
 
         //ensure that the list doesn't contain the pinned homework
         if (date.difference(now).inDays < reduce &&
-            date.isAfter(DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now())))) {
+            (!date.isBefore(DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now()))))) {
           listToReturn.add(element);
         }
       });

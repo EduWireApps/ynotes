@@ -93,7 +93,8 @@ dependencies:
   flutter_tex: ^3.6.7+10
   fl_chart: ^0.12.0
   expandable: ^4.1.4
-
+  liquid_progress_indicator: ^0.3.2
+    
   wiredash:
     git:
       url: https://github.com/wiredashio/wiredash-sdk

@@ -4,34 +4,37 @@ import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/offline/offline.dart';
 
 class AgendaEventsOffline extends Offline {
-  AgendaEventsOffline(bool locked) : super(locked);
+  Offline parent;
+  AgendaEventsOffline(bool locked, Offline _parent) : super(locked) {
+    parent = _parent;
+  }
 
   Future<List<AgendaEvent>> getAgendaEvents(int week, {var selector}) async {
     try {
       if (selector == null) {
-        if (agendaEventsData != null && agendaEventsData[week] != null) {
+        if (parent.agendaEventsData != null && parent.agendaEventsData[week] != null) {
           List<AgendaEvent> agendaEvents = List();
-          agendaEvents.addAll(agendaEventsData[week].cast<AgendaEvent>());
+          agendaEvents.addAll(parent.agendaEventsData[week].cast<AgendaEvent>());
           return agendaEvents;
         } else {
-          await refreshData();
-          if (agendaEventsData != null && agendaEventsData[week] != null) {
+          await parent.refreshData();
+          if (parent.agendaEventsData != null && parent.agendaEventsData[week] != null) {
             List<AgendaEvent> agendaEvents = List();
-            agendaEvents.addAll(agendaEventsData[week].cast<AgendaEvent>());
+            agendaEvents.addAll(parent.agendaEventsData[week].cast<AgendaEvent>());
             return agendaEvents;
           } else {
             return null;
           }
         }
       } else {
-        if (agendaEventsData != null) {
-          var values = agendaEventsData.keys;
+        if (parent.agendaEventsData != null) {
+          var values = parent.agendaEventsData.keys;
           var selectedValues = values.where(await selector);
           if (selectedValues != null) {
             List<AgendaEvent> agendaEvents = List();
 
             selectedValues.forEach((element) {
-              agendaEvents.addAll(agendaEventsData[element].cast<AgendaEvent>());
+              agendaEvents.addAll(parent.agendaEventsData[element].cast<AgendaEvent>());
               print(agendaEvents);
             });
             return agendaEvents;
@@ -39,15 +42,15 @@ class AgendaEventsOffline extends Offline {
             return null;
           }
         } else {
-          await refreshData();
-          if (agendaEventsData != null) {
-            var values = agendaEventsData.keys;
+          await parent.refreshData();
+          if (parent.agendaEventsData != null) {
+            var values = parent.agendaEventsData.keys;
             var selectedValues = values.where(await selector);
             if (selectedValues != null) {
               List<AgendaEvent> agendaEvents = List();
 
               selectedValues.forEach((element) {
-                agendaEvents.addAll(agendaEventsData[element].cast<AgendaEvent>());
+                agendaEvents.addAll(parent.agendaEventsData[element].cast<AgendaEvent>());
               });
               return agendaEvents;
             }
@@ -66,15 +69,12 @@ class AgendaEventsOffline extends Offline {
   removeAgendaEvent(String id, var fetchID) async {
     if (!locked) {
       try {
-        if (!agendaBox.isOpen) {
-          agendaBox = await Hive.openBox("agenda");
-        }
 
         Map<dynamic, dynamic> timeTable = Map();
-        var offline = await agendaBox.get("agendaEvents");
+        var offline = await parent.agendaBox.get("agendaEvents");
         List<AgendaEvent> events = List();
         if (offline != null) {
-          timeTable = Map<dynamic, dynamic>.from(await agendaBox.get("agendaEvents"));
+          timeTable = Map<dynamic, dynamic>.from(await parent.agendaBox.get("agendaEvents"));
         }
         if (timeTable == null) {
           timeTable = Map();
@@ -87,8 +87,8 @@ class AgendaEventsOffline extends Offline {
         }
         //Update the timetable
         timeTable.update(fetchID, (value) => events, ifAbsent: () => events);
-        await agendaBox.put("agendaEvents", timeTable);
-        await refreshData();
+        await parent.agendaBox.put("agendaEvents", timeTable);
+        await parent.refreshData();
       } catch (e) {
         print("Error while removing offline agenda events " + e.toString());
       }
@@ -99,15 +99,13 @@ class AgendaEventsOffline extends Offline {
   addAgendaEvent(AgendaEvent newData, var id) async {
     if (!locked) {
       try {
-        if (!agendaBox.isOpen) {
-          agendaBox = await Hive.openBox("agenda");
-        }
+
         if (newData != null) {
           Map<dynamic, dynamic> timeTable = Map();
-          var offline = await agendaBox.get("agendaEvents");
+          var offline = await parent.agendaBox.get("agendaEvents");
           List<AgendaEvent> events = List();
           if (offline != null) {
-            timeTable = Map<dynamic, dynamic>.from(await agendaBox.get("agendaEvents"));
+            timeTable = Map<dynamic, dynamic>.from(await parent.agendaBox.get("agendaEvents"));
           }
           if (timeTable == null) {
             timeTable = Map();
@@ -120,8 +118,8 @@ class AgendaEventsOffline extends Offline {
           events.add(newData);
           //Update the timetable
           timeTable.update(id, (value) => events, ifAbsent: () => events);
-          await agendaBox.put("agendaEvents", timeTable);
-          await refreshData();
+          await parent.agendaBox.put("agendaEvents", timeTable);
+          await parent.refreshData();
         }
         print("Update offline agenda events (id : $id)");
       } catch (e) {

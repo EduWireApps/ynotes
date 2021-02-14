@@ -63,49 +63,83 @@ class _MultipleChoicesDialogState extends State<MultipleChoicesDialog> {
               Container(
                 height: screenSize.size.height / 10 * 3.5,
                 width: screenSize.size.width / 5 * 4,
-                child: ListView.builder(
-                  itemCount: widget.choices.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return Container(
-                      width: screenSize.size.width / 5 * 4,
-                      padding: EdgeInsets.symmetric(
-                        vertical: screenSize.size.height / 10 * 0.2,
-                      ),
-                      child: Row(
-                        children: <Widget>[
-                          CircularCheckBox(
-                            inactiveColor: ThemeUtils.textColor(),
-                            onChanged: (value) {
-                              if (widget.singleChoice) {
-                                indexsSelected.clear();
+                child: ShaderMask(
+                  shaderCallback: (Rect rect) {
+                    return LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [Colors.purple, Colors.transparent, Colors.transparent, Colors.purple],
+                      stops: [0.0, 0.1, 0.9, 1.0], // 10% purple, 80% transparent, 10% purple
+                    ).createShader(rect);
+                  },
+                  blendMode: BlendMode.dstOut,
+                  child: ListView.builder(
+                    itemCount: widget.choices.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: () {
+                            if (widget.singleChoice) {
+                              indexsSelected.clear();
+                              setState(() {
+                                indexsSelected.add(index);
+                              });
+                            } else {
+                              if (indexsSelected.contains(index)) {
+                                setState(() {
+                                  indexsSelected.removeWhere((element) => element == index);
+                                });
+                              } else {
                                 setState(() {
                                   indexsSelected.add(index);
                                 });
-                              } else {
-                                if (indexsSelected.contains(index)) {
-                                  setState(() {
-                                    indexsSelected.removeWhere((element) => element == index);
-                                  });
-                                } else {
-                                  setState(() {
-                                    indexsSelected.add(index);
-                                  });
-                                }
                               }
-                            },
-                            value: indexsSelected.contains(index),
-                          ),
-                          Container(
-                            width: screenSize.size.width / 5 * 3,
-                            child: AutoSizeText(
-                              widget.choices[index].toString(),
-                              style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                            }
+                          },
+                          child: Container(
+                            width: screenSize.size.width / 5 * 4,
+                            padding: EdgeInsets.symmetric(
+                              vertical: screenSize.size.height / 10 * 0.2,
+                            ),
+                            child: Row(
+                              children: <Widget>[
+                                CircularCheckBox(
+                                  inactiveColor: ThemeUtils.textColor(),
+                                  onChanged: (value) {
+                                    if (widget.singleChoice) {
+                                      indexsSelected.clear();
+                                      setState(() {
+                                        indexsSelected.add(index);
+                                      });
+                                    } else {
+                                      if (indexsSelected.contains(index)) {
+                                        setState(() {
+                                          indexsSelected.removeWhere((element) => element == index);
+                                        });
+                                      } else {
+                                        setState(() {
+                                          indexsSelected.add(index);
+                                        });
+                                      }
+                                    }
+                                  },
+                                  value: indexsSelected.contains(index),
+                                ),
+                                Container(
+                                  width: screenSize.size.width / 5 * 3,
+                                  child: AutoSizeText(
+                                    widget.choices[index].toString(),
+                                    style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ],
-                      ),
-                    );
-                  },
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
             ],

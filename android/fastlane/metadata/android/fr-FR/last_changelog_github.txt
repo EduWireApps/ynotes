@@ -1,1 +1,1 @@
-This update fixes database issues.
+Bug fixes.

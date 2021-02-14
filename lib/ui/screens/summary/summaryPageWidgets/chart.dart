@@ -86,7 +86,7 @@ class SummaryChartState extends State<SummaryChart> {
         toReturn = (double.tryParse(grade.value.replaceAll(",", ".")) *
             20 /
             double.tryParse(grade.scale.replaceAll(",", ".")));
-        return double.parse(toReturn.toStringAsFixed(1));
+        return double.parse(toReturn.toStringAsFixed(2));
       } catch (e) {}
     }
   }
