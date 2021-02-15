@@ -152,24 +152,29 @@ class Grade {
   final String max;
   @HiveField(18)
   final String min;
-  Grade(
-      {this.max,
-      this.min,
-      this.testName,
-      this.periodCode,
-      this.disciplineCode,
-      this.subdisciplineCode,
-      this.disciplineName,
-      this.letters,
-      this.value,
-      this.coefficient,
-      this.scale,
-      this.classAverage,
-      this.testType,
-      this.date,
-      this.entryDate,
-      this.notSignificant,
-      this.periodName});
+  //Used for simulator
+  @HiveField(19)
+  final bool simulated;
+  Grade({
+    this.max,
+    this.min,
+    this.testName,
+    this.periodCode,
+    this.disciplineCode,
+    this.subdisciplineCode,
+    this.disciplineName,
+    this.letters,
+    this.value,
+    this.coefficient,
+    this.scale,
+    this.classAverage,
+    this.testType,
+    this.date,
+    this.entryDate,
+    this.notSignificant,
+    this.periodName,
+    this.simulated = false,
+  });
 
   factory Grade.fromEcoleDirecteJson(Map<String, dynamic> json, String nomPeriode) {
     return Grade(
@@ -189,7 +194,8 @@ class Grade {
         testType: json['typeDevoir'],
         date: DateTime.parse(json['date']),
         entryDate: DateTime.parse(json['dateSaisie']),
-        notSignificant: json['nonSignificatif']);
+        notSignificant: json['nonSignificatif'],
+        simulated: false);
   }
 }
 

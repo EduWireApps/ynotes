@@ -116,13 +116,14 @@ class GradeAdapter extends TypeAdapter<Grade> {
       entryDate: fields[15] as DateTime,
       notSignificant: fields[13] as bool,
       periodName: fields[14] as String,
+      simulated: fields[19] as bool,
     );
   }
 
   @override
   void write(BinaryWriter writer, Grade obj) {
     writer
-      ..writeByte(17)
+      ..writeByte(18)
       ..writeByte(0)
       ..write(obj.testName)
       ..writeByte(1)
@@ -156,7 +157,9 @@ class GradeAdapter extends TypeAdapter<Grade> {
       ..writeByte(17)
       ..write(obj.max)
       ..writeByte(18)
-      ..write(obj.min);
+      ..write(obj.min)
+      ..writeByte(19)
+      ..write(obj.simulated);
   }
 
   @override

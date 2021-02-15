@@ -41,6 +41,7 @@ class GradesController extends ChangeNotifier {
   set isSimulating(bool newState) {
     _isSimulating = newState;
     simulator = GradesSimulator(_old, notifyListeners);
+    refresh();
     notifyListeners();
   }
 

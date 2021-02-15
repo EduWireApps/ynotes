@@ -37,7 +37,6 @@ bool newGrades = false;
 bool firstStart = true;
 int initialIndexGradesOffset = 0;
 List specialties;
-List<Period> periods;
 
 class _GradesPageState extends State<GradesPage> {
   ItemScrollController gradesItemScrollController = ItemScrollController();
@@ -356,6 +355,33 @@ class _GradesPageState extends State<GradesPage> {
                             ),
                           ),
                         ),
+                        Container(
+                          margin: EdgeInsets.only(left: (screenSize.size.height / 10 * 8.8) / 10 * 0.1),
+                          child: Material(
+                            color: model.isSimulating ? Colors.blue : Theme.of(context).primaryColorDark,
+                            borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                              onTap: () {
+                                model.isSimulating = !model.isSimulating;
+                              },
+                              child: Container(
+                                  height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
+                                  padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
+                                  child: FittedBox(
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Icon(
+                                          MdiIcons.flask,
+                                          color: ThemeUtils.textColor(),
+                                        ),
+                                      ],
+                                    ),
+                                  )),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -389,7 +415,7 @@ class _GradesPageState extends State<GradesPage> {
                                           horizontal: screenSize.size.width / 5 * 0.05),
                                       itemBuilder: (BuildContext context, int index) {
                                         return GradesGroup(
-                                            discipline: model.disciplines[index], periodName: model.period);
+                                            discipline: model.disciplines[index], gradesController: model);
                                       });
                                 } else {
                                   return Column(
@@ -453,7 +479,7 @@ class _GradesPageState extends State<GradesPage> {
                                     padding: EdgeInsets.all(screenSize.size.width / 5 * 0.3),
                                     itemBuilder: (BuildContext context, int index) {
                                       return GradesGroup(
-                                        periodName: model.period,
+                                        gradesController: model,
                                         discipline: null,
                                       );
                                     });
@@ -475,236 +501,230 @@ class _GradesPageState extends State<GradesPage> {
                 height: (screenSize.size.height / 10 * 8.8) / 10 * 1.8,
                 child: ClipRRect(
                     borderRadius: BorderRadius.circular(15),
-                    child: FutureBuilder<void>(
-                        future: disciplinesListFuture,
-                        builder: (BuildContext context, AsyncSnapshot snapshot) {
-                          List<Discipline> disciplineList;
-                          Discipline getLastDiscipline;
-                          if (snapshot.hasData) {
-                            if (snapshot.data != null) {
-                              try {
-                                getLastDiscipline = snapshot.data
-                                    .lastWhere((disciplinesList) => disciplinesList.period == model.period);
-                              } catch (exception) {}
+                    child: Consumer<GradesController>(builder: (context, model, child) {
+                      Discipline lastDiscipline;
+                      if (model.disciplines != null) {
+                        try {
+                          lastDiscipline =
+                              model.disciplines.lastWhere((disciplinesList) => disciplinesList.period == model.period);
+                        } catch (exception) {}
 
-                              //If everything is ok, show stuff
-                              return Stack(
-                                children: <Widget>[
-                                  Align(
-                                    alignment: Alignment.center,
-                                    child: Container(
-                                      height: (screenSize.size.height / 10 * 8.8) / 10 * 1.15,
-                                      width: screenSize.size.width / 5 * 4,
-                                      decoration: BoxDecoration(
-                                        boxShadow: <BoxShadow>[
-                                          BoxShadow(
-                                            blurRadius: 2.67,
-                                            color: Colors.black.withOpacity(0.2),
-                                            offset: Offset(0, 2.67),
-                                          ),
-                                        ],
-                                        color: Theme.of(context).primaryColorDark,
-                                        borderRadius: BorderRadius.circular(15),
-                                      ),
-                                      child: FittedBox(
-                                        child: Container(
-                                          height: (screenSize.size.height / 10 * 8.8) / 10 * 1.15,
-                                          width: screenSize.size.width / 5 * 3.3,
-                                          child: FittedBox(
-                                            child: Stack(
+                        //If everything is ok, show stuff
+                        return Stack(
+                          children: <Widget>[
+                            Align(
+                              alignment: Alignment.center,
+                              child: Container(
+                                height: (screenSize.size.height / 10 * 8.8) / 10 * 1.15,
+                                width: screenSize.size.width / 5 * 4,
+                                decoration: BoxDecoration(
+                                  boxShadow: <BoxShadow>[
+                                    BoxShadow(
+                                      blurRadius: 2.67,
+                                      color: Colors.black.withOpacity(0.2),
+                                      offset: Offset(0, 2.67),
+                                    ),
+                                  ],
+                                  color: Theme.of(context).primaryColorDark,
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                child: FittedBox(
+                                  child: Container(
+                                    height: (screenSize.size.height / 10 * 8.8) / 10 * 1.15,
+                                    width: screenSize.size.width / 5 * 3.3,
+                                    child: FittedBox(
+                                      child: Stack(
+                                        children: <Widget>[
+                                          Container(
+                                            margin: EdgeInsets.only(left: (screenSize.size.width / 5) * 2),
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                              crossAxisAlignment: CrossAxisAlignment.end,
                                               children: <Widget>[
-                                                Container(
-                                                  margin: EdgeInsets.only(left: (screenSize.size.width / 5) * 2),
-                                                  child: Column(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                                if (model.sorter == "all")
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
                                                     children: <Widget>[
-                                                      if (model.sorter == "all")
-                                                        Row(
-                                                          mainAxisAlignment: MainAxisAlignment.center,
-                                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                                          children: <Widget>[
-                                                            Text("Moyenne de la classe :",
-                                                                style: TextStyle(
-                                                                    fontFamily: "Asap",
-                                                                    color: ThemeUtils.textColor(),
-                                                                    fontSize: (screenSize.size.width / 5) * 0.18)),
-                                                            Container(
-                                                              margin: EdgeInsets.only(
-                                                                  left: (screenSize.size.width / 5) * 0.1),
-                                                              decoration: BoxDecoration(
-                                                                  borderRadius: BorderRadius.all(Radius.circular(15)),
-                                                                  color: Color(0xff2C2C2C)),
-                                                              padding: EdgeInsets.symmetric(
-                                                                  horizontal: (screenSize.size.width / 5) * 0.1,
-                                                                  vertical: (screenSize.size.width / 5) * 0.08),
-                                                              child: Text(
-                                                                (getLastDiscipline != null &&
-                                                                        getLastDiscipline.classGeneralAverage != null
-                                                                    ? getLastDiscipline.classGeneralAverage
-                                                                    : "-"),
-                                                                style: TextStyle(
-                                                                    fontFamily: "Asap",
-                                                                    color: Colors.white,
-                                                                    fontSize: (screenSize.size.width / 5) * 0.18),
-                                                              ),
-                                                            )
-                                                          ],
+                                                      Text("Moyenne de la classe :",
+                                                          style: TextStyle(
+                                                              fontFamily: "Asap",
+                                                              color: ThemeUtils.textColor(),
+                                                              fontSize: (screenSize.size.width / 5) * 0.18)),
+                                                      Container(
+                                                        margin:
+                                                            EdgeInsets.only(left: (screenSize.size.width / 5) * 0.1),
+                                                        decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.all(Radius.circular(15)),
+                                                            color: Color(0xff2C2C2C)),
+                                                        padding: EdgeInsets.symmetric(
+                                                            horizontal: (screenSize.size.width / 5) * 0.1,
+                                                            vertical: (screenSize.size.width / 5) * 0.08),
+                                                        child: Text(
+                                                          (lastDiscipline != null &&
+                                                                  lastDiscipline.classGeneralAverage != null
+                                                              ? lastDiscipline.classGeneralAverage
+                                                              : "-"),
+                                                          style: TextStyle(
+                                                              fontFamily: "Asap",
+                                                              color: Colors.white,
+                                                              fontSize: (screenSize.size.width / 5) * 0.18),
                                                         ),
-                                                      if (model.sorter == "all")
-                                                        Row(
-                                                          mainAxisAlignment: MainAxisAlignment.center,
-                                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                                          children: <Widget>[
-                                                            Text("Meilleure moyenne :",
-                                                                style: TextStyle(
-                                                                    fontFamily: "Asap",
-                                                                    color: ThemeUtils.textColor(),
-                                                                    fontSize: (screenSize.size.width / 5) * 0.18)),
-                                                            Container(
-                                                              margin: EdgeInsets.only(
-                                                                  left: (screenSize.size.width / 5) * 0.1),
-                                                              decoration: BoxDecoration(
-                                                                  borderRadius: BorderRadius.all(Radius.circular(15)),
-                                                                  color: Color(0xff2C2C2C)),
-                                                              padding: EdgeInsets.symmetric(
-                                                                  horizontal: (screenSize.size.width / 5) * 0.1,
-                                                                  vertical: (screenSize.size.width / 5) * 0.08),
-                                                              child: Text(
-                                                                model.bestAverage,
-                                                                style: TextStyle(
-                                                                    fontFamily: "Asap",
-                                                                    color: Colors.white,
-                                                                    fontSize: (screenSize.size.width / 5) * 0.18),
-                                                              ),
-                                                            )
-                                                          ],
-                                                        ),
-                                                      if (getLastDiscipline.generalRank != null &&
-                                                          model.sorter == "all")
-                                                        Row(
-                                                          mainAxisAlignment: MainAxisAlignment.center,
-                                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                                          children: <Widget>[
-                                                            Text("Rang :",
-                                                                style: TextStyle(
-                                                                    fontFamily: "Asap",
-                                                                    color: ThemeUtils.textColor(),
-                                                                    fontSize: (screenSize.size.width / 5) * 0.18)),
-                                                            Container(
-                                                              margin: EdgeInsets.only(
-                                                                  left: (screenSize.size.width / 5) * 0.1),
-                                                              decoration: BoxDecoration(
-                                                                  borderRadius: BorderRadius.all(Radius.circular(15)),
-                                                                  color: Color(0xff2C2C2C)),
-                                                              padding: EdgeInsets.symmetric(
-                                                                  horizontal: (screenSize.size.width / 5) * 0.1,
-                                                                  vertical: (screenSize.size.width / 5) * 0.08),
-                                                              child: Text(
-                                                                (getLastDiscipline.generalRank != null &&
-                                                                        getLastDiscipline.classNumber != null)
-                                                                    ? getLastDiscipline.generalRank +
-                                                                        "/" +
-                                                                        getLastDiscipline.classNumber
-                                                                    : "- / -",
-                                                                style: TextStyle(
-                                                                    fontFamily: "Asap",
-                                                                    color: Colors.white,
-                                                                    fontSize: (screenSize.size.width / 5) * 0.18),
-                                                              ),
-                                                            )
-                                                          ],
-                                                        ),
-                                                      if (model.sorter != "all")
-                                                        Row(
-                                                          mainAxisAlignment: MainAxisAlignment.center,
-                                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                                          children: <Widget>[
-                                                            Text("Moyenne du filtre ",
-                                                                style: TextStyle(
-                                                                    fontFamily: "Asap",
-                                                                    color: ThemeUtils.textColor(),
-                                                                    fontSize: (screenSize.size.width / 5) * 0.2)),
-                                                            Text(model.sorter,
-                                                                style: TextStyle(
-                                                                    fontFamily: "Asap",
-                                                                    fontWeight: FontWeight.bold,
-                                                                    color: ThemeUtils.textColor(),
-                                                                    fontSize: (screenSize.size.width / 5) * 0.2)),
-                                                          ],
-                                                        )
+                                                      )
                                                     ],
                                                   ),
-                                                )
+                                                if (model.sorter == "all")
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    children: <Widget>[
+                                                      Text("Meilleure moyenne :",
+                                                          style: TextStyle(
+                                                              fontFamily: "Asap",
+                                                              color: ThemeUtils.textColor(),
+                                                              fontSize: (screenSize.size.width / 5) * 0.18)),
+                                                      Container(
+                                                        margin:
+                                                            EdgeInsets.only(left: (screenSize.size.width / 5) * 0.1),
+                                                        decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.all(Radius.circular(15)),
+                                                            color: Color(0xff2C2C2C)),
+                                                        padding: EdgeInsets.symmetric(
+                                                            horizontal: (screenSize.size.width / 5) * 0.1,
+                                                            vertical: (screenSize.size.width / 5) * 0.08),
+                                                        child: Text(
+                                                          model.bestAverage,
+                                                          style: TextStyle(
+                                                              fontFamily: "Asap",
+                                                              color: Colors.white,
+                                                              fontSize: (screenSize.size.width / 5) * 0.18),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                if (lastDiscipline != null &&
+                                                    lastDiscipline.generalRank != null &&
+                                                    model.sorter == "all")
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    children: <Widget>[
+                                                      Text("Rang :",
+                                                          style: TextStyle(
+                                                              fontFamily: "Asap",
+                                                              color: ThemeUtils.textColor(),
+                                                              fontSize: (screenSize.size.width / 5) * 0.18)),
+                                                      Container(
+                                                        margin:
+                                                            EdgeInsets.only(left: (screenSize.size.width / 5) * 0.1),
+                                                        decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.all(Radius.circular(15)),
+                                                            color: Color(0xff2C2C2C)),
+                                                        padding: EdgeInsets.symmetric(
+                                                            horizontal: (screenSize.size.width / 5) * 0.1,
+                                                            vertical: (screenSize.size.width / 5) * 0.08),
+                                                        child: Text(
+                                                          (lastDiscipline.generalRank != null &&
+                                                                  lastDiscipline.classNumber != null)
+                                                              ? lastDiscipline.generalRank +
+                                                                  "/" +
+                                                                  lastDiscipline.classNumber
+                                                              : "- / -",
+                                                          style: TextStyle(
+                                                              fontFamily: "Asap",
+                                                              color: Colors.white,
+                                                              fontSize: (screenSize.size.width / 5) * 0.18),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                if (model.sorter != "all")
+                                                  Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    children: <Widget>[
+                                                      Text("Moyenne du filtre ",
+                                                          style: TextStyle(
+                                                              fontFamily: "Asap",
+                                                              color: ThemeUtils.textColor(),
+                                                              fontSize: (screenSize.size.width / 5) * 0.2)),
+                                                      Text(model.sorter,
+                                                          style: TextStyle(
+                                                              fontFamily: "Asap",
+                                                              fontWeight: FontWeight.bold,
+                                                              color: ThemeUtils.textColor(),
+                                                              fontSize: (screenSize.size.width / 5) * 0.2)),
+                                                    ],
+                                                  )
                                               ],
                                             ),
-                                          ),
-                                        ),
+                                          )
+                                        ],
                                       ),
                                     ),
                                   ),
-
-                                  //Circle with the moyenneGenerale
-                                  Positioned(
-                                    left: screenSize.size.width / 6 * 0.015,
-                                    top: (screenSize.size.height / 10 * 8.8) / 10 * 0.2,
-                                    child: Container(
-                                      padding: EdgeInsets.all(screenSize.size.height / 10 * 0.3),
-                                      width: screenSize.size.width / 5 * 1.5,
-                                      height: (screenSize.size.height / 10 * 8.8) / 10 * 1.4,
-                                      decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          boxShadow: <BoxShadow>[
-                                            BoxShadow(
-                                              blurRadius: 2.67,
-                                              color: Colors.black.withOpacity(0.2),
-                                              offset: Offset(0, 2.67),
-                                            ),
-                                          ],
-                                          color: (model.sorter == "all" ? Colors.white : Colors.green)),
-                                      child: Center(
-                                        child: FittedBox(
-                                          child: Text(
-                                            (model.average.toString() != null && !model.average.isNaN
-                                                ? model.average.toStringAsFixed(2)
-                                                : "-"),
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontFamily: "Asap",
-                                                fontSize: (screenSize.size.width / 5) * 0.35),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              );
-                            }
-
-                            return Container();
-                          }
-
-                          //To do if it can't get the data
-                          if (snapshot.hasError) {
-                            return Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                Icon(
-                                  Icons.error,
-                                  color: ThemeUtils.textColor(),
-                                  size: screenSize.size.width / 8,
                                 ),
-                              ],
-                            );
-                          } else {
-                            return SpinKitFadingFour(
-                              color: Theme.of(context).primaryColorDark,
-                              size: screenSize.size.width / 5 * 0.7,
-                            );
-                          }
-                        })),
+                              ),
+                            ),
+
+                            //Circle with the moyenneGenerale
+                            Positioned(
+                              left: screenSize.size.width / 6 * 0.015,
+                              top: (screenSize.size.height / 10 * 8.8) / 10 * 0.2,
+                              child: Container(
+                                padding: EdgeInsets.all(screenSize.size.height / 10 * 0.3),
+                                width: screenSize.size.width / 5 * 1.5,
+                                height: (screenSize.size.height / 10 * 8.8) / 10 * 1.4,
+                                decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    boxShadow: <BoxShadow>[
+                                      BoxShadow(
+                                        blurRadius: 2.67,
+                                        color: Colors.black.withOpacity(0.2),
+                                        offset: Offset(0, 2.67),
+                                      ),
+                                    ],
+                                    color: (model.sorter == "all" ? Colors.white : Colors.green)),
+                                child: Center(
+                                  child: FittedBox(
+                                    child: Text(
+                                      (model.average.toString() != null && !model.average.isNaN
+                                          ? model.average.toStringAsFixed(2)
+                                          : "-"),
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontFamily: "Asap",
+                                          fontSize: (screenSize.size.width / 5) * 0.35),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      }
+
+                      //To do if it can't get the data
+                      if (model.average == null) {
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Icon(
+                              Icons.error,
+                              color: ThemeUtils.textColor(),
+                              size: screenSize.size.width / 8,
+                            ),
+                          ],
+                        );
+                      } else {
+                        return SpinKitFadingFour(
+                          color: Theme.of(context).primaryColorDark,
+                          size: screenSize.size.width / 5 * 0.7,
+                        );
+                      }
+                    })),
               ),
             ),
           ]),

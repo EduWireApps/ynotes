@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:marquee/marquee.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/stats/gradesStats.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
@@ -17,8 +18,8 @@ import 'package:ynotes/usefulMethods.dart';
 
 class GradesGroup extends StatefulWidget {
   final Discipline discipline;
-  final String periodName;
-  const GradesGroup({this.discipline, this.periodName});
+  final GradesController gradesController;
+  const GradesGroup({this.discipline, this.gradesController});
 
   State<StatefulWidget> createState() {
     return _GradesGroupState();
@@ -190,7 +191,7 @@ class _GradesGroupState extends State<GradesGroup> {
                                   color: ThemeUtils.textColor(),
                                 ),
                               )),
-                      gradesList(0, widget.periodName),
+                      gradesList(0, widget.gradesController.period),
                       if (widget.discipline != null)
                         if (widget.discipline.subdisciplineCode.length > 0) Divider(thickness: 2),
                       if (widget.discipline != null)
@@ -201,7 +202,8 @@ class _GradesGroupState extends State<GradesGroup> {
                                 color: ThemeUtils.textColor(),
                               )),
                       if (widget.discipline != null)
-                        if (widget.discipline.subdisciplineCode.length > 0) gradesList(1, widget.periodName),
+                        if (widget.discipline.subdisciplineCode.length > 0)
+                          gradesList(1, widget.gradesController.period),
                     ],
                   ),
                 )),
@@ -285,7 +287,7 @@ class _GradesGroupState extends State<GradesGroup> {
                 children: <Widget>[
                   Container(
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(13),
+                        borderRadius: BorderRadius.circular(11),
                         border: Border.all(
                             color: (getGradesForDiscipline(sousMatiereIndex, periodName) == null)
                                 ? Colors.transparent
@@ -296,16 +298,19 @@ class _GradesGroupState extends State<GradesGroup> {
                     child: Material(
                       color: (getGradesForDiscipline(sousMatiereIndex, periodName) == null)
                           ? Colors.transparent
-                          : colorGroup,
+                          : ((gradesForSelectedDiscipline[index].simulated != null &&
+                                  gradesForSelectedDiscipline[index].simulated)
+                              ? Colors.blue.withOpacity(0.7)
+                              : colorGroup),
                       borderRadius: BorderRadius.all(Radius.circular(11)),
                       child: InkWell(
                         borderRadius: BorderRadius.all(Radius.circular(11)),
                         splashColor: colorGroup,
                         onTap: () async {
-                          GradesStats stats = GradesStats(gradesForSelectedDiscipline[index],
+                          /*GradesStats stats = GradesStats(gradesForSelectedDiscipline[index],
                               getAllGrades(await localApi.getGrades(), overrideLimit: true, sortByWritingDate: false));
                           gradesModalBottomSheet(context, gradesForSelectedDiscipline[index], stats, widget.discipline,
-                              callback, this.widget);
+                              callback, this.widget);*/
                         },
                         onLongPress: () {
                           CustomDialogs.showShareGradeDialog(context, gradesForSelectedDiscipline[index]);
