@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 
 class CustomButtons {
-  Widget materialButton(BuildContext context, double width, double height, Function onTap,
-      {IconData icon, String label, Color backgroundColor}) {
+  static Widget materialButton(BuildContext context, double width, double height, Function onTap,
+      {IconData icon, String label, Color backgroundColor, Color textColor}) {
     var screenSize = MediaQuery.of(context);
     return Container(
       width: width,
@@ -31,7 +31,7 @@ class CustomButtons {
                         label ?? "",
                         style: TextStyle(
                           fontFamily: "Asap",
-                          color: ThemeUtils.textColor(),
+                          color: textColor ?? ThemeUtils.textColor(),
                         ),
                       ),
                   ],
