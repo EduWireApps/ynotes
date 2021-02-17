@@ -10,6 +10,7 @@ class GradesController extends ChangeNotifier {
   API _api;
   List<Period> _schoolPeriods;
   List<Discipline> _old = List();
+  List<Discipline> _disciplines = List();
   String _period = "";
   double _average = 0.0;
   String _bestAverage;
@@ -39,18 +40,33 @@ class GradesController extends ChangeNotifier {
   get isSimulating => _isSimulating;
 
   set isSimulating(bool newState) {
+    if (newState && _disciplines != null) {
+      print("yo");
+      _old.clear();
+      _old.addAll(_disciplines);
+      simulator = GradesSimulator(_disciplines, simulatorCallback);
+    } else if (_old != null) {
+      print("restoring");
+      _disciplines.clear();
+      _disciplines.addAll(_old);
+    }
+
     _isSimulating = newState;
-    simulator = GradesSimulator(_old, refresh);
     refresh();
     notifyListeners();
   }
 
-  List<Discipline> get disciplines => _isSimulating ? simulator.disciplines : _old;
+  List<Discipline> get disciplines => isSimulating ? simulator.disciplines : _disciplines;
 
   List<Period> get periods => _schoolPeriods;
 
   GradesController(this.api) {
     _api = api;
+  }
+
+  simulatorCallback() {
+    _setAverage();
+    notifyListeners();
   }
 
   Future<void> refresh({bool force = false, refreshFromOffline = false}) async {
@@ -63,10 +79,10 @@ class GradesController extends ChangeNotifier {
     await _refreshPeriods();
     //ED
     if (refreshFromOffline) {
-      _old = await _api.getGrades();
+      _disciplines = await _api.getGrades();
       notifyListeners();
     } else {
-      _old = await _api.getGrades(forceReload: force);
+      _disciplines = await _api.getGrades(forceReload: force);
       notifyListeners();
     }
     isFetching = false;
@@ -237,7 +253,7 @@ class GradesController extends ChangeNotifier {
     });
     _setAverage();
     _setBestAverage();
-    _old = toReturn;
+    _disciplines = toReturn;
     notifyListeners();
   }
 }
@@ -262,11 +278,19 @@ class GradesSimulator {
   List<Discipline> get disciplines => _simulatedDisciplines;
 
   GradesSimulator(this.defaultDisciplines, this.callback) {
+    if (defaultDisciplines != null) {
+      _defaultDisciplines = List();
+      _defaultDisciplines.addAll(defaultDisciplines);
+    }
+
     reset();
   }
 
   void reset() {
-    _defaultDisciplines = this.defaultDisciplines;
+    if (_defaultDisciplines != null) {
+      _simulatedDisciplines = List();
+      _simulatedDisciplines.addAll(_defaultDisciplines);
+    }
     _addedGrades.clear();
     _removedGrades.clear();
     merge();
@@ -291,7 +315,8 @@ class GradesSimulator {
   void merge() {
     if (defaultDisciplines != null) {
       print("Merging ...");
-      _simulatedDisciplines = defaultDisciplines;
+      _simulatedDisciplines = List();
+      _simulatedDisciplines.addAll(_defaultDisciplines);
       _simulatedDisciplines.forEach((discipline) {
         discipline.gradesList.removeWhere((_grade) => _removedGrades.contains(_grade));
         if (_addedGrades.any((_grade) =>

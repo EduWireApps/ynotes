@@ -252,10 +252,15 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
                       simulated: true,
                       notSignificant: false,
                       letters: false,
+                      subdisciplineCode:
+                          (disciplineChoice.subdisciplineCode != null && disciplineChoice.subdisciplineCode.length > 0)
+                              ? disciplineChoice.subdisciplineCode[0]
+                              : null,
                       coefficient: gradeWeight.toString(),
                       periodName: disciplineChoice.period,
                       periodCode: widget.gradesController.periods
                           .firstWhere((period) => period.name == disciplineChoice.period)
+                          .id
                           .toString(),
                       disciplineName: disciplineChoice.disciplineName,
                       disciplineCode: disciplineChoice.disciplineCode);
