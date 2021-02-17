@@ -42,8 +42,7 @@ class HomeworkUtils {
         var date = element.date;
 
         //ensure that the list doesn't contain the pinned homework
-        if (date.difference(now).inDays < reduce &&
-            (!date.isBefore(DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now()))))) {
+        if (date.difference(now).inDays < reduce) {
           listToReturn.add(element);
         }
       });

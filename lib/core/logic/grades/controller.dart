@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/services/shared_preferences.dart';
-import 'package:ynotes/ui/screens/summary/summaryPageWidgets/summaryPageSettings.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 ///To use to collect grades in a view
@@ -11,7 +10,6 @@ class GradesController extends ChangeNotifier {
   API _api;
   List<Period> _schoolPeriods;
   List<Discipline> _old = List();
-  List<Discipline> _disciplines = List();
   String _period = "";
   double _average = 0.0;
   String _bestAverage;
@@ -41,23 +39,12 @@ class GradesController extends ChangeNotifier {
   get isSimulating => _isSimulating;
 
   set isSimulating(bool newState) {
-    if (newState && _disciplines != null) {
-      print("yo");
-      _old.clear();
-      _old.addAll(_disciplines);
-      simulator = GradesSimulator(_disciplines, simulatorCallback);
-    } else if (_old != null) {
-      print("restoring");
-      _disciplines.clear();
-      _disciplines.addAll(_old);
-    }
-
     _isSimulating = newState;
-    refresh();
+    simulator = GradesSimulator(_old, notifyListeners);
     notifyListeners();
   }
 
-  List<Discipline> get disciplines => isSimulating ? simulator.disciplines : _disciplines;
+  get disciplines => _isSimulating ? simulator.disciplines : _old;
 
   List<Period> get periods => _schoolPeriods;
 
@@ -65,38 +52,29 @@ class GradesController extends ChangeNotifier {
     _api = api;
   }
 
-  simulatorCallback() {
-    _setAverage();
-    notifyListeners();
-  }
-
   Future<void> refresh({bool force = false, refreshFromOffline = false}) async {
     print("Refresh grades");
-    if (isSimulating && force) {
-      isSimulating = false;
-    }
     isFetching = true;
     notifyListeners();
     await _refreshPeriods();
     //ED
     if (refreshFromOffline) {
-      _disciplines = await _api.getGrades();
+      _old = await _api.getGrades();
       notifyListeners();
     } else {
-      _disciplines = await _api.getGrades(forceReload: force);
+      _old = await _api.getGrades(forceReload: force);
       notifyListeners();
     }
     isFetching = false;
     _setDefaultPeriod();
     _filterDisciplinesForPeriod();
     await _setListSpecialties();
-
     notifyListeners();
   }
 
   void _setDefaultPeriod() {
-    if (disciplines != null && _period == "") {
-      _period = disciplines.lastWhere((list) => list.gradesList.length > 0).gradesList.last.periodName;
+    if (_old != null && _period == "") {
+      _period = _old.lastWhere((list) => list.gradesList.length > 0).gradesList.last.periodName;
     }
   }
 
@@ -109,8 +87,7 @@ class GradesController extends ChangeNotifier {
   void _setAverage() {
     _average = 0;
     List<double> averages = List();
-    double sum = 0.0;
-    disciplines.where((i) => i.period == _period).forEach((f) {
+    _old.where((i) => i.period == _period).forEach((f) {
       try {
         double _average = 0.0;
         double _counter = 0;
@@ -125,10 +102,15 @@ class GradesController extends ChangeNotifier {
         });
         _average = _average / _counter;
         if (_average != null && !_average.isNaN) {
-          averages.add(_average * double.tryParse(f.weight) ?? 1);
-          sum += double.tryParse(f.weight) ?? 1;
+          averages.add(_average);
         }
       } catch (e) {}
+    });
+    double sum = 0.0;
+    averages.forEach((element) {
+      if (element != null && !element.isNaN) {
+        sum += element;
+      }
     });
     _average = sum / averages.length;
     notifyListeners();
@@ -136,8 +118,8 @@ class GradesController extends ChangeNotifier {
 
   void _setBestAverage() {
     try {
-      if (disciplines.last != null && disciplines.last.maxClassGeneralAverage != null) {
-        double value = double.tryParse(disciplines.last.maxClassGeneralAverage.replaceAll(",", "."));
+      if (_old.last != null && _old.last.maxClassGeneralAverage != null) {
+        double value = double.tryParse(_old.last.maxClassGeneralAverage.replaceAll(",", "."));
         if (value != null) {
           _bestAverage = value >= average ? value.toString() : average.toStringAsFixed(2);
         } else {
@@ -164,7 +146,7 @@ class GradesController extends ChangeNotifier {
   ///Get the corresponding disciplines and responding to the filter chosen
   void _filterDisciplinesForPeriod() {
     List<Discipline> toReturn = new List<Discipline>();
-    disciplines.forEach((f) {
+    _old.forEach((f) {
       switch (_sorter) {
         case "all":
           if (f.period == _period) {
@@ -250,7 +232,7 @@ class GradesController extends ChangeNotifier {
     });
     _setAverage();
     _setBestAverage();
-    _disciplines = toReturn;
+    _old = toReturn;
     notifyListeners();
   }
 }
@@ -275,19 +257,11 @@ class GradesSimulator {
   List<Discipline> get disciplines => _simulatedDisciplines;
 
   GradesSimulator(this.defaultDisciplines, this.callback) {
-    if (defaultDisciplines != null) {
-      _defaultDisciplines = List();
-      _defaultDisciplines.addAll(defaultDisciplines);
-    }
-
     reset();
   }
 
   void reset() {
-    if (_defaultDisciplines != null) {
-      _simulatedDisciplines = List();
-      _simulatedDisciplines.addAll(_defaultDisciplines);
-    }
+    _defaultDisciplines = this.defaultDisciplines;
     _addedGrades.clear();
     _removedGrades.clear();
     merge();
@@ -296,7 +270,6 @@ class GradesSimulator {
   void add(Grade _grade) {
     _removedGrades.removeWhere((grade) => grade == _grade);
     _addedGrades.add(_grade);
-    print(_addedGrades);
     merge();
   }
 
@@ -311,17 +284,13 @@ class GradesSimulator {
 
   void merge() {
     if (defaultDisciplines != null) {
-      print("Merging ...");
-      _simulatedDisciplines = List();
-      _simulatedDisciplines.addAll(_defaultDisciplines);
+      _simulatedDisciplines = defaultDisciplines;
       _simulatedDisciplines.forEach((discipline) {
         discipline.gradesList.removeWhere((_grade) => _removedGrades.contains(_grade));
-        if (_addedGrades.any((_grade) =>
-            _grade.periodName == discipline.period &&
-            _grade.disciplineCode == discipline.disciplineCode &&
-            !_simulatedDisciplines.contains(_grade))) {
+        if (_addedGrades.any(
+            (_grade) => _grade.periodCode == discipline.period && _grade.disciplineCode == discipline.disciplineCode)) {
           discipline.gradesList.addAll(_addedGrades.where((_grade) =>
-              _grade.periodName == discipline.period && _grade.disciplineCode == discipline.disciplineCode));
+              _grade.periodCode == discipline.period && _grade.disciplineCode == discipline.disciplineCode));
         }
       });
     }

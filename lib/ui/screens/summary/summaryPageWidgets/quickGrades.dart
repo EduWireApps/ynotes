@@ -3,33 +3,68 @@ import 'dart:math';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
+import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/screens/grades/gradesPage.dart';
 import 'package:ynotes/core/apis/Pronote.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/ui/screens/summary/summaryPageWidgets/chart.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 
 class QuickGrades extends StatefulWidget {
-  final List<Grade> grades;
-  final Function callback;
-  final Function refreshCallback;
-  const QuickGrades({Key key, this.grades, this.callback, this.refreshCallback}) : super(key: key);
+  final Function switchPage;
+  final GradesController gradesController;
+  const QuickGrades({Key key, this.gradesController, this.switchPage}) : super(key: key);
   @override
   _QuickGradesState createState() => _QuickGradesState();
 }
 
 class _QuickGradesState extends State<QuickGrades> {
-  Future<void> refreshLocalGradesList() async {
-    await this.widget.refreshCallback();
-    _refreshController.refreshCompleted();
+  Future<void> forceRefreshModel() async {
+    await this.widget.gradesController.refresh(force: true);
   }
 
-  RefreshController _refreshController = RefreshController(initialRefresh: false);
+  Widget buildCHart(BuildContext context, List<Discipline> disciplines, bool fetching) {
+    var screenSize = MediaQuery.of(context);
+
+    //First division (gauge)
+    return Container(
+        decoration: BoxDecoration(
+            color: Color(0xff2c274c),
+            border: Border.all(width: 0, color: Colors.transparent),
+            borderRadius: BorderRadius.circular(12)),
+        margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
+        child: Card(
+            shadowColor: Colors.transparent,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            color: Colors.transparent,
+            child: Container(
+              color: Colors.transparent,
+              width: screenSize.size.width / 5 * 4.5,
+              height: (screenSize.size.height / 10 * 8.8) / 10 * 2,
+              child: Row(
+                children: [
+                  Container(
+                      color: Colors.transparent,
+                      width: screenSize.size.width / 5 * 4.5,
+                      child: (disciplines != null && !fetching)
+                          ? SummaryChart(
+                              getAllGrades(disciplines, overrideLimit: true, sortByWritingDate: true),
+                            )
+                          : SpinKitThreeBounce(
+                              color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4))
+                ],
+              ),
+            )));
+  }
+
   Widget buildGradeCircle(Grade grade) {
     var screenSize = MediaQuery.of(context);
     return Container(
@@ -109,10 +144,9 @@ class _QuickGradesState extends State<QuickGrades> {
     ]);
   }
 
-  @override
-  Widget build(BuildContext context) {
+  buildGradesList(BuildContext context, List<Grade> grades) {
     var screenSize = MediaQuery.of(context);
-    if (widget.grades == null || widget.grades.length == 0) {
+    if (grades == null || grades.length == 0) {
       return Container(
         height: screenSize.size.height / 10 * 1.2,
         child: Center(
@@ -124,57 +158,53 @@ class _QuickGradesState extends State<QuickGrades> {
       );
     } else {
       return Container(
-        width: screenSize.size.width,
+        margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
         height: screenSize.size.height / 10 * 1.2,
-        child: SmartRefresher(
-          onRefresh: refreshLocalGradesList,
-          enablePullDown: true,
-          controller: _refreshController,
-          scrollDirection: Axis.horizontal,
-          header: ClassicHeader(
-            spacing: 0,
-            height: screenSize.size.width / 5 * 1.8,
-            textStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-            refreshingText: "Chargement...",
-            completeText: "Terminé !",
-            failedText: "Une erreur a eu lieu...",
-            releaseText: "Lacher pour rafraichir",
-            idleText: "Tirer pour rafraichir",
-            completeIcon: Icon(Icons.done, color: Colors.green),
-          ),
-          child: ListView.builder(
-              itemCount: widget.grades.length,
-              scrollDirection: Axis.horizontal,
-              itemBuilder: (context, index) {
-                return Card(
-                  margin:
-                      EdgeInsets.only(right: screenSize.size.width / 5 * 0.1, top: screenSize.size.height / 10 * 0.1),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
+        width: screenSize.size.width,
+        child: ListView.builder(
+            itemCount: grades.length,
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (context, index) {
+              return Card(
+                margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.2, top: screenSize.size.height / 10 * 0.1),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
+                color: Theme.of(context).primaryColor,
+                child: Material(
+                  borderRadius: BorderRadius.circular(11),
                   color: Theme.of(context).primaryColor,
-                  child: Material(
+                  child: InkWell(
                     borderRadius: BorderRadius.circular(11),
-                    color: Theme.of(context).primaryColor,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(11),
-                      onLongPress: () {
-                        CustomDialogs.showShareGradeDialog(context, widget.grades[index]);
-                      },
-                      onTap: () {
-                        widget.callback(1);
-                      },
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.height / 10 * 0.1),
-                        height: screenSize.size.height / 10 * 0.5,
-                        child: buildGradeItem(widget.grades[index]),
-                      ),
+                    onLongPress: () {
+                      CustomDialogs.showShareGradeDialog(context, grades[index]);
+                    },
+                    onTap: () {
+                      widget.switchPage(1);
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.height / 10 * 0.1),
+                      height: screenSize.size.height / 10 * 0.5,
+                      child: buildGradeItem(grades[index]),
                     ),
                   ),
-                );
-              }),
-        ),
+                ),
+              );
+            }),
       );
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider<GradesController>.value(
+      value: widget.gradesController,
+      child: Consumer<GradesController>(builder: (context, model, child) {
+        return Column(children: [
+          buildCHart(context, model.disciplines, model.isFetching),
+          buildGradesList(context, getAllGrades(model.disciplines, overrideLimit: true, sortByWritingDate: true)),
+        ]);
+      }),
+    );
   }
 }
 
