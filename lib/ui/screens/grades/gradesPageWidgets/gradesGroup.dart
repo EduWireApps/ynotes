@@ -230,7 +230,6 @@ class _GradesGroupState extends State<GradesGroup> {
       });
       return toReturn;
     } else {
-      print("null");
       return null;
     }
   }

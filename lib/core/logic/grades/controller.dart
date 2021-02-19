@@ -9,8 +9,9 @@ class GradesController extends ChangeNotifier {
   final api;
   API _api;
   List<Period> _schoolPeriods;
-  List<Discipline> _old = List();
   List<Discipline> _disciplines = List();
+  List<Discipline> z = List();
+
   String _period = "";
   double _average = 0.0;
   String _bestAverage;
@@ -19,7 +20,6 @@ class GradesController extends ChangeNotifier {
   List<String> specialties;
   String _sorter = "all";
 
-  GradesSimulator simulator;
   double get average => _average;
   String get bestAverage => _bestAverage;
 
@@ -40,23 +40,14 @@ class GradesController extends ChangeNotifier {
   get isSimulating => _isSimulating;
 
   set isSimulating(bool newState) {
-    if (newState && _disciplines != null) {
-      print("yo");
-      _old.clear();
-      _old.addAll(_disciplines);
-      simulator = GradesSimulator(_disciplines, simulatorCallback);
-    } else if (_old != null) {
-      print("restoring");
-      _disciplines.clear();
-      _disciplines.addAll(_old);
-    }
-
     _isSimulating = newState;
     refresh();
     notifyListeners();
   }
 
-  List<Discipline> get disciplines => isSimulating ? simulator.disciplines : _disciplines;
+  List<Discipline> get disciplines => isSimulating
+      ? _filterDisciplinesForPeriod(simulationMerge(_disciplines))
+      : _filterDisciplinesForPeriod(_disciplines);
 
   List<Period> get periods => _schoolPeriods;
 
@@ -85,17 +76,19 @@ class GradesController extends ChangeNotifier {
       _disciplines = await _api.getGrades(forceReload: force);
       notifyListeners();
     }
+
     isFetching = false;
     _setDefaultPeriod();
-    _filterDisciplinesForPeriod();
+    _setAverage();
+    _setBestAverage();
     await _setListSpecialties();
 
     notifyListeners();
   }
 
   void _setDefaultPeriod() {
-    if (disciplines != null && _period == "") {
-      _period = disciplines.lastWhere((list) => list.gradesList.length > 0).gradesList.last.periodName;
+    if (_disciplines != null && _period == "") {
+      _period = _disciplines.lastWhere((list) => list.gradesList.length > 0).gradesList.last.periodName;
     }
   }
 
@@ -165,9 +158,9 @@ class GradesController extends ChangeNotifier {
   }
 
   ///Get the corresponding disciplines and responding to the filter chosen
-  void _filterDisciplinesForPeriod() {
+  List<Discipline> _filterDisciplinesForPeriod(List<Discipline> li) {
     List<Discipline> toReturn = new List<Discipline>();
-    disciplines.forEach((f) {
+    li.forEach((f) {
       switch (_sorter) {
         case "all":
           if (f.period == _period) {
@@ -251,23 +244,10 @@ class GradesController extends ChangeNotifier {
           break;
       }
     });
-    _setAverage();
-    _setBestAverage();
-    _disciplines = toReturn;
-    notifyListeners();
+    return toReturn;
   }
-}
 
-///A grade simulator
-class GradesSimulator {
-  final List<Discipline> defaultDisciplines;
-  final Function callback;
-
-  ///This list is NEVER touched
-  List<Discipline> _defaultDisciplines;
-
-  ///Returned disciplines
-  List<Discipline> _simulatedDisciplines;
+  /*-----SIMULATION PART------*/
 
   //Added "unreal" grades
   List<Grade> _addedGrades = List();
@@ -275,59 +255,55 @@ class GradesSimulator {
   //Removed "real" grades
   List<Grade> _removedGrades = List();
 
-  List<Discipline> get disciplines => _simulatedDisciplines;
-
-  GradesSimulator(this.defaultDisciplines, this.callback) {
-    if (defaultDisciplines != null) {
-      _defaultDisciplines = List();
-      _defaultDisciplines.addAll(defaultDisciplines);
-    }
-
-    reset();
-  }
-
-  void reset() {
-    if (_defaultDisciplines != null) {
-      _simulatedDisciplines = List();
-      _simulatedDisciplines.addAll(_defaultDisciplines);
-    }
-    _addedGrades.clear();
-    _removedGrades.clear();
-    merge();
-  }
-
-  void add(Grade _grade) {
+  void simulationAdd(Grade _grade) {
     _removedGrades.removeWhere((grade) => grade == _grade);
     _addedGrades.add(_grade);
-    print(_addedGrades);
-    merge();
+    notifyListeners();
   }
 
-  void remove(Grade _grade) {
+  void simulationRemove(Grade _grade) {
     if (_addedGrades.contains(_grade)) {
       _addedGrades.removeWhere((grade) => grade == _grade);
     } else {
       _removedGrades.add(_grade);
     }
-    merge();
+    notifyListeners();
   }
 
-  void merge() {
-    if (defaultDisciplines != null) {
-      print("Merging ...");
-      _simulatedDisciplines = List();
-      _simulatedDisciplines.addAll(_defaultDisciplines);
+  String gradeHash(Grade grade) {
+    return (grade.value.hashCode.toString() +
+        grade.disciplineName.hashCode.toString() +
+        grade.entryDate.hashCode.toString());
+  }
+
+  simulationMerge(List<Discipline> list) {
+    ///Returned disciplines
+    List<Discipline> _simulatedDisciplines;
+    _simulatedDisciplines = List();
+    if (list != null) {
+      _simulatedDisciplines += list;
+
+      /* print("Merging ...");
       _simulatedDisciplines.forEach((discipline) {
         discipline.gradesList.removeWhere((_grade) => _removedGrades.contains(_grade));
-        if (_addedGrades.any((_grade) =>
-            _grade.periodName == discipline.period &&
-            _grade.disciplineCode == discipline.disciplineCode &&
-            !_simulatedDisciplines.contains(_grade))) {
+        if (_addedGrades.any(
+            (_grade) => _grade.periodName == discipline.period && _grade.disciplineCode == discipline.disciplineCode)) {
           discipline.gradesList.addAll(_addedGrades.where((_grade) =>
               _grade.periodName == discipline.period && _grade.disciplineCode == discipline.disciplineCode));
         }
+      });*/
+      _simulatedDisciplines.forEach((element) {
+        element.gradesList = [
+          Grade(
+              testName: "a",
+              entryDate: DateTime.now(),
+              date: DateTime.now(),
+              value: "10",
+              scale: "20",
+              coefficient: '1')
+        ];
       });
     }
-    this.callback();
+    return _simulatedDisciplines;
   }
 }

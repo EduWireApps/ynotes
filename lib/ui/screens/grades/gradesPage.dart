@@ -73,7 +73,7 @@ class _GradesPageState extends State<GradesPage> {
             onPressed: () async {
               Grade a = await simulatorModalBottomSheet(this.widget.gradesController, context);
               if (a != null) {
-                widget.gradesController.simulator.add(a);
+                widget.gradesController.simulationAdd(a);
               }
             },
           ),
