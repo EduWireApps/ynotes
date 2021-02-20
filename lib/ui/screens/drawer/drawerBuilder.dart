@@ -169,8 +169,8 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
     await hwcontroller.refresh();
 
     //Lazy reloads
-    await hwcontroller.refresh(force: true);
     await gradesController.refresh(force: true);
+    await hwcontroller.refresh(force: true);
   }
 
   initPageControllers() {
