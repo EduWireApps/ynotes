@@ -34,11 +34,11 @@ class DisciplinesOffline extends Offline {
           offlineBox = await Hive.openBox("offlineData");
         }*/
         print("Updating disciplines");
-        await offlineBox.delete("disciplines");
-        await offlineBox.put("disciplines", newData);
+        await parent.offlineBox.delete("disciplines");
+        await parent.offlineBox.put("disciplines", newData);
         await refreshData();
       } catch (e) {
-        print("Error while updating disciplines " + e);
+        print("Error while updating disciplines " + e.toString());
       }
     }
   }
