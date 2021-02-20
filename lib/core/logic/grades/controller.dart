@@ -230,9 +230,10 @@ class GradesController extends ChangeNotifier {
           break;
       }
     });
+
+    _old = toReturn;
     _setAverage();
     _setBestAverage();
-    _old = toReturn;
     notifyListeners();
   }
 }
