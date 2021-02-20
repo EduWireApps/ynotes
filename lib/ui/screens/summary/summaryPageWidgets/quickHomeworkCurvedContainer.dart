@@ -2,17 +2,17 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'dart:ui' as ui;
 
-class Thing extends StatelessWidget {
-  Thing();
+class TestBadge extends StatelessWidget {
+  TestBadge();
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(painter: ThingPainter());
+    return CustomPaint(painter: TestBadgePainter());
   }
 }
 
-class ThingPainter extends CustomPainter {
-  ThingPainter();
+class TestBadgePainter extends CustomPainter {
+  TestBadgePainter();
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -105,12 +105,12 @@ class ThingPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRebuildSemantics(ThingPainter oldDelegate) {
+  bool shouldRebuildSemantics(TestBadgePainter oldDelegate) {
     return shouldRepaint(oldDelegate);
   }
 
   @override
-  bool shouldRepaint(ThingPainter oldDelegate) {
+  bool shouldRepaint(TestBadgePainter oldDelegate) {
     return false;
   }
 }

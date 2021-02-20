@@ -438,10 +438,11 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
               ),
             ),
           ),
-          Container(
-              height: (screenSize.size.height / 10 * 8.8) / 10 * 0.8,
-              width: screenSize.size.width / 5 * 0.2,
-              child: Thing()),
+          if (widget._homework.isATest)
+            Container(
+                height: (screenSize.size.height / 10 * 8.8) / 10 * 0.8,
+                width: screenSize.size.width / 5 * 0.2,
+                child: TestBadge()),
         ],
       ),
     );
