@@ -70,6 +70,10 @@ class Offline {
     print("Disposed hive");
   }
 
+  test() {
+    print(offlineBox);
+  }
+
   //Called when instanciated
   init() async {
     print("Init offline");
@@ -93,27 +97,27 @@ class Offline {
       try {
         Hive.init("${dir.path}/offline");
         offlineBox = await safeBoxOpen("offlineData");
-
         homeworkDoneBox = await Hive.openBox('doneHomework');
         pinnedHomeworkBox = await Hive.openBox('pinnedHomework');
         agendaBox = await Hive.openBox("agenda");
+        print("All boxes opened");
       } catch (e) {
-        print(e);
+        print("Issue while opening boxes : " + e.toString());
       }
     }
     initObjects();
   }
 
   initObjects() {
-    homework = HomeworkOffline(this.locked);
-    doneHomework = DoneHomeworkOffline(this.locked);
-    pinnedHomework = PinnedHomeworkOffline(this.locked);
-    agendaEvents = AgendaEventsOffline(this.locked);
-    reminders = RemindersOffline(this.locked);
-    lessons = LessonsOffline(this.locked);
-    disciplines = DisciplinesOffline(this.locked);
-    polls = PollsOffline(this.locked);
-    recipients = RecipientsOffline(this.locked);
+    homework = HomeworkOffline(this.locked, this);
+    doneHomework = DoneHomeworkOffline(this.locked, this);
+    pinnedHomework = PinnedHomeworkOffline(this.locked, this);
+    agendaEvents = AgendaEventsOffline(this.locked, this);
+    reminders = RemindersOffline(this.locked, this);
+    lessons = LessonsOffline(this.locked, this);
+    disciplines = DisciplinesOffline(this.locked, this);
+    polls = PollsOffline(this.locked, this);
+    recipients = RecipientsOffline(this.locked, this);
   }
 
   safeBoxOpen(String boxName) async {
@@ -144,15 +148,9 @@ class Offline {
 
   //Refresh lists when needed
   refreshData() async {
-    print("Refreshing offline");
     if (!locked) {
+      print("Refreshing offline");
       try {
-        if (offlineBox == null || !offlineBox.isOpen) {
-          offlineBox = await Hive.openBox("offlineData");
-        }
-        if (agendaBox == null || !agendaBox.isOpen) {
-          agendaBox = await Hive.openBox("agenda");
-        }
         //Get data and cast it
         var offlineLessonsData = await agendaBox.get("lessons");
         var offlineDisciplinesData = await offlineBox.get("disciplines");

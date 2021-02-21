@@ -179,11 +179,13 @@ List<Grade> getAllGrades(List<Discipline> list, {bool overrideLimit = false, boo
     List<Grade> listToReturn = List();
     if (list != null) {
       list.forEach((element) {
-        element.gradesList.forEach((grade) {
-          if (!listToReturn.contains(grade)) {
-            listToReturn.add(grade);
-          }
-        });
+        if (element != null) {
+          element.gradesList.forEach((grade) {
+            if (!listToReturn.contains(grade)) {
+              listToReturn.add(grade);
+            }
+          });
+        }
       });
       if (localApi.gradesList != null && localApi.gradesList.length > 0 && listToReturn == localApi.gradesList) {
         return localApi.gradesList;

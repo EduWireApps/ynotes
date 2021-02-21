@@ -21,7 +21,6 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 
 import 'homeworkPageWidgets/HWsettingsPage.dart';
 
-Future<List<Homework>> homeworkListFuture;
 
 List<Homework> localListHomeworkDateToUse;
 
@@ -50,10 +49,7 @@ class HomeworkPageState extends State<HomeworkPage> {
     //WidgetsFlutterBinding.ensureInitialized();
     //Test if it's the first start
 
-    setState(() {
-      homeworkListFuture = localApi.getNextHomework();
-    });
-
+    
     getPinnedStateDayToUse();
   }
 
@@ -77,13 +73,7 @@ class HomeworkPageState extends State<HomeworkPage> {
     setState(() {});
   }
 
-  @override
-  Future<void> refreshLocalHomeworkList() async {
-    setState(() {
-      homeworkListFuture = localApi.getNextHomework(forceReload: true);
-    });
-    var realHW = await homeworkListFuture;
-  }
+ 
 
   animateToPage(int index) {
     _pageControllerHW.animateToPage(index, duration: Duration(milliseconds: 250), curve: Curves.ease);

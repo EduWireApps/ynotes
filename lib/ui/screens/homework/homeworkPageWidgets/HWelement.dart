@@ -478,8 +478,6 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                 isExpanded)
                               Material(
                                 color: Color(0xff63A86A),
-                                borderRadius: BorderRadius.only(
-                                    bottomLeft: Radius.circular(15), bottomRight: Radius.circular(15)),
                                 child: InkWell(
                                   onTap: () async {
                                     CustomDialogs.showUnimplementedSnackBar(context);

@@ -3,15 +3,17 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/offline/offline.dart';
 
 class RemindersOffline extends Offline {
-  RemindersOffline(bool locked) : super(locked);
-
+  Offline parent;
+  RemindersOffline(bool locked, Offline _parent) : super(locked) {
+    parent = _parent;
+  }
   Future<List<AgendaReminder>> getReminders(String idLesson) async {
     try {
-      if (remindersData != null) {
-        return remindersData.where((element) => element.lessonID == idLesson).toList();
+      if (parent.remindersData != null) {
+        return parent.remindersData.where((element) => element.lessonID == idLesson).toList();
       } else {
-        await refreshData();
-        var toCollect = remindersData;
+        await parent.refreshData();
+        var toCollect = parent.remindersData;
         if (toCollect != null) {
           toCollect = toCollect.where((element) => element.lessonID == idLesson).toList();
         }
@@ -28,10 +30,8 @@ class RemindersOffline extends Offline {
     if (!locked) {
       print("Update reminders");
       try {
-        if (!agendaBox.isOpen) {
-          agendaBox = await Hive.openBox("agenda");
-        }
-        var old = await agendaBox.get("reminders");
+        
+        var old = await parent.agendaBox.get("reminders");
         List<AgendaReminder> offline = List();
         if (old != null) {
           offline = old.cast<AgendaReminder>();
@@ -40,9 +40,8 @@ class RemindersOffline extends Offline {
           offline.removeWhere((a) => a.id == newData.id);
         }
         offline.add(newData);
-        print(offline);
-        await agendaBox.put("reminders", offline);
-        await refreshData();
+        await parent.agendaBox.put("reminders", offline);
+        await parent.refreshData();
         print("Updated reminders");
       } catch (e) {
         print("Error while updating reminder " + e.toString());
@@ -54,10 +53,7 @@ class RemindersOffline extends Offline {
   removeAll(String lessonId) async {
     if (!locked) {
       try {
-        if (!agendaBox.isOpen) {
-          agendaBox = await Hive.openBox("agenda");
-        }
-        var old = await agendaBox.get("reminders");
+        var old = await parent.agendaBox.get("reminders");
         List<AgendaReminder> offline = List();
         if (old != null) {
           offline = old.cast<AgendaReminder>();
@@ -65,8 +61,8 @@ class RemindersOffline extends Offline {
         if (offline != null) {
           offline.removeWhere((element) => element.lessonID == lessonId);
         }
-        await agendaBox.put("reminders", offline);
-        await refreshData();
+        await parent.agendaBox.put("reminders", offline);
+        await parent.refreshData();
       } catch (e) {
         print("Error while removing reminder " + e.toString());
       }
@@ -77,10 +73,7 @@ class RemindersOffline extends Offline {
   void remove(String id) async {
     if (!locked) {
       try {
-        if (!agendaBox.isOpen) {
-          agendaBox = await Hive.openBox("agenda");
-        }
-        var old = await agendaBox.get("reminders");
+        var old = await parent.agendaBox.get("reminders");
         List<AgendaReminder> offline = List();
         if (old != null) {
           offline = old.cast<AgendaReminder>();
@@ -88,8 +81,8 @@ class RemindersOffline extends Offline {
         if (offline != null) {
           offline.removeWhere((a) => a.id == id);
         }
-        await agendaBox.put("reminders", offline);
-        await refreshData();
+        await parent.agendaBox.put("reminders", offline);
+        await parent.refreshData();
       } catch (e) {
         print("Error while removing reminder " + e.toString());
       }
