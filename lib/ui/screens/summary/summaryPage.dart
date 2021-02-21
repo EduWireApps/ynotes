@@ -95,9 +95,9 @@ class SummaryPageState extends State<SummaryPage> {
   }
 
   showUpdateNote() async {
-    if ((!await getSetting("updateNote0.9+rev1"))) {
+    if ((!await getSetting("updateNote0.9.1"))) {
       await CustomDialogs.showUpdateNoteDialog(context);
-      await setSetting("updateNote0.9+rev1", true);
+      await setSetting("updateNote0.9.1", true);
     }
   }
 
