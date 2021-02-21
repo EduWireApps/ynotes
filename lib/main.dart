@@ -9,22 +9,29 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:wiredash/wiredash.dart';
 import 'package:workmanager/workmanager.dart' as wm;
-import 'package:ynotes/UI/screens/carousel/carousel.dart';
-import 'package:ynotes/UI/screens/drawer/drawerBuilder.dart';
-import 'package:ynotes/UI/screens/loading/loadingPage.dart';
-import 'package:ynotes/background.dart';
-import 'package:ynotes/classes.dart';
-import 'package:ynotes/models.dart';
-import 'package:ynotes/offline/offline.dart';
+import 'package:ynotes/ui/screens/carousel/carousel.dart';
+import 'package:ynotes/ui/screens/drawer/drawerBuilder.dart';
+import 'package:ynotes/ui/screens/loading/loadingPage.dart';
+import 'package:ynotes/core/services/background.dart';
+import 'package:ynotes/core/apis/model.dart';
+import 'package:ynotes/core/apis/utils.dart';
+import 'package:ynotes/core/logic/shared/loginController.dart';
+import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/usefulMethods.dart';
 
-import 'UI/screens/school_api_choice/schoolAPIChoicePage.dart';
-import 'utils/themeUtils.dart';
+import 'ui/screens/school_api_choice/schoolAPIChoicePage.dart';
+import 'core/utils/themeUtils.dart';
 
 var uuid = Uuid();
 
+extension StringExtension on String {
+  String capitalize() {
+    return "${this[0].toUpperCase()}${this.substring(1)}";
+  }
+}
+
 //login manager
-TransparentLogin tlogin;
+LoginController tlogin;
 Offline offline;
 API localApi;
 
@@ -32,18 +39,17 @@ FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
 ///The app main class
 Future main() async {
-
   WidgetsFlutterBinding.ensureInitialized();
+
+  offline = Offline(false);
+  await offline.init();
   await initBackgroundTask();
-  
+
   //Load api
   await reloadChosenApi();
-  offline = Offline(false);
-  localApi = APIManager(offline);
-  tlogin = TransparentLogin();
 
-  //Init offline data
-  await offline.init();
+  localApi = APIManager(offline);
+  tlogin = LoginController();
 
   //Cancel the old task manager (will be removed after migration)
   wm.Workmanager.cancelAll();
@@ -92,7 +98,6 @@ class HomeApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    
     final themeNotifier = Provider.of<AppStateNotifier>(context);
     return Wiredash(
       projectId: "ynotes-giw0qs2",

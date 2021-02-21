@@ -6,13 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:ynotes/apis/EcoleDirecte.dart';
-import 'package:ynotes/apis/utils.dart';
-import 'package:ynotes/classes.dart';
+import 'package:ynotes/core/apis/EcoleDirecte.dart';
+import 'package:ynotes/core/apis/utils.dart';
+import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/main.dart';
-import 'package:ynotes/shared_preferences.dart';
+import 'package:ynotes/core/services/shared_preferences.dart';
+import 'package:ynotes/ui/screens/summary/summaryPage.dart';
 
-import 'UI/screens/summary/summaryPage.dart';
+import 'ui/screens/summary/summaryPage.dart';
 
 launchURL(url) async {
   if (await canLaunch(url)) {
@@ -178,11 +179,13 @@ List<Grade> getAllGrades(List<Discipline> list, {bool overrideLimit = false, boo
     List<Grade> listToReturn = List();
     if (list != null) {
       list.forEach((element) {
-        element.gradesList.forEach((grade) {
-          if (!listToReturn.contains(grade)) {
-            listToReturn.add(grade);
-          }
-        });
+        if (element != null) {
+          element.gradesList.forEach((grade) {
+            if (!listToReturn.contains(grade)) {
+              listToReturn.add(grade);
+            }
+          });
+        }
       });
       if (localApi.gradesList != null && localApi.gradesList.length > 0 && listToReturn == localApi.gradesList) {
         return localApi.gradesList;
