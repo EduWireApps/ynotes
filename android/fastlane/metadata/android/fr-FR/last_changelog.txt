@@ -1,1 +1,1 @@
-Correction de bugs.
+Version 0.9.1 ! Voir la note in app pour en savoir plus.
