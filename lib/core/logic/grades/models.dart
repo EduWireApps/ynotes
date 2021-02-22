@@ -69,6 +69,23 @@ class Discipline {
   set setGradeList(List<Grade> list) {
     gradesList = list;
   }
+
+  double getAverage() {
+    double average = 0.0;
+    double counter = 0;
+    gradesList.forEach((grade) {
+      if (!grade.notSignificant && !grade.letters) {
+        counter += double.parse(grade.weight);
+        average += double.parse(grade.value.replaceAll(',', '.')) *
+            20 /
+            double.parse(grade.scale.replaceAll(',', '.')) *
+            double.parse(grade.weight.replaceAll(',', '.'));
+      }
+    });
+    average = average / counter;
+    return (average);
+  }
+
 //Map<String, dynamic> json, List<String> profs, String codeMatiere, String periode, Color color, String moyenneG, String bmoyenneClasse, String moyenneClasse
 //disciplinesList.add(Discipline.fromJson(element, teachersNames, element['codeMatiere'], periodeElement["idPeriode"], Colors.blue, periodeElement["ensembleMatieres"]["moyenneGenerale"], periodeElement["ensembleMatieres"]["moyenneMax"], periodeElement["ensembleMatieres"]["moyenneClasse"]));
 

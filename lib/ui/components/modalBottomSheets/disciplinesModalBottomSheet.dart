@@ -92,7 +92,7 @@ void disciplineModalBottomSheet(context, Discipline discipline, Function callbac
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      buildKeyValuesInfo(context, "Votre moyenne", [discipline.average]),
+                      buildKeyValuesInfo(context, "Votre moyenne", [discipline.getAverage().toString()]),
                       SizedBox(
                         height: (screenSize.size.height / 3) / 25,
                       ),
