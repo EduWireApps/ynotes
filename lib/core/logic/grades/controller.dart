@@ -334,11 +334,6 @@ class GradesController extends ChangeNotifier {
               _grade.periodName == discipline.period && _grade.disciplineCode == discipline.disciplineCode));
         }
       });
-      _simulatedDisciplines.forEach((element) {
-        element.gradesList = [
-          Grade(testName: "a", entryDate: DateTime.now(), date: DateTime.now(), value: "10", scale: "20", weight: '1')
-        ];
-      });
     }
     return _simulatedDisciplines;
   }

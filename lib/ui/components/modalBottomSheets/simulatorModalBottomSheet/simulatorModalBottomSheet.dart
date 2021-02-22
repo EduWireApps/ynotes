@@ -222,7 +222,7 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
                 SizedBox(
                   width: screenSize.size.width / 5 * 0.3,
                 ),
-                Expanded(child: dropdown(this.widget.gradesController.disciplines)),
+                Expanded(child: dropdown(this.widget.gradesController.disciplines())),
                 Expanded(child: weightSelector()),
                 SizedBox(
                   width: screenSize.size.width / 5 * 0.3,
@@ -253,7 +253,7 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
                           (disciplineChoice.subdisciplineCode != null && disciplineChoice.subdisciplineCode.length > 0)
                               ? disciplineChoice.subdisciplineCode[0]
                               : null,
-                      coefficient: gradeWeight.toString(),
+                      weight: gradeWeight.toString(),
                       periodName: disciplineChoice.period,
                       periodCode: widget.gradesController.periods
                           .firstWhere((period) => period.name == disciplineChoice.period)

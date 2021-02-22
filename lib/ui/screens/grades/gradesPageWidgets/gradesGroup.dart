@@ -311,7 +311,7 @@ class _GradesGroupState extends State<GradesGroup> {
                         onTap: () async {
                           GradesStats stats = GradesStats(
                               gradesForSelectedDiscipline[index],
-                              getAllGrades(widget.gradesController.disciplines,
+                              getAllGrades(widget.gradesController.disciplines(),
                                   overrideLimit: true, sortByWritingDate: false));
                           gradesModalBottomSheet(context, gradesForSelectedDiscipline[index], stats, widget.discipline,
                               callback, this.widget, widget.gradesController);
