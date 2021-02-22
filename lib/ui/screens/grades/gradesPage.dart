@@ -444,17 +444,17 @@ class _GradesPageState extends State<GradesPage> {
                                 borderRadius: BorderRadius.circular(0),
                                 child: Consumer<GradesController>(builder: (context, model, child) {
                                   if (!model.isFetching) {
-                                    if (model.disciplines
+                                    if (model.disciplines()
                                         .any((Discipline element) => (element.gradesList.length > 0))) {
                                       return ListView.builder(
                                           physics: AlwaysScrollableScrollPhysics(),
-                                          itemCount: model.disciplines.length,
+                                          itemCount: model.disciplines().length,
                                           padding: EdgeInsets.symmetric(
                                               vertical: screenSize.size.width / 5 * 0.1,
                                               horizontal: screenSize.size.width / 5 * 0.05),
                                           itemBuilder: (BuildContext context, int index) {
                                             return GradesGroup(
-                                                discipline: model.disciplines[index], gradesController: model);
+                                                discipline: model.disciplines()[index], gradesController: model);
                                           });
                                     } else {
                                       return Column(
@@ -549,7 +549,7 @@ class _GradesPageState extends State<GradesPage> {
                       if (model.disciplines != null) {
                         try {
                           lastDiscipline =
-                              model.disciplines.lastWhere((disciplinesList) => disciplinesList.period == model.period);
+                              model.disciplines().lastWhere((disciplinesList) => disciplinesList.period == model.period);
                         } catch (exception) {}
 
                         //If everything is ok, show stuff

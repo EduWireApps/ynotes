@@ -366,7 +366,7 @@ class _GradesGroupState extends State<GradesGroup> {
                                         ),
                                       ),
                                       //COEFF
-                                      if (gradesForSelectedDiscipline[index].coefficient != "1")
+                                      if (gradesForSelectedDiscipline[index].weight != "1")
                                         Container(
                                             padding: EdgeInsets.all(screenSize.size.width / 5 * 0.03),
                                             margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.05),
@@ -378,7 +378,7 @@ class _GradesGroupState extends State<GradesGroup> {
                                             ),
                                             child: FittedBox(
                                                 child: AutoSizeText(
-                                              gradesForSelectedDiscipline[index].coefficient,
+                                              gradesForSelectedDiscipline[index].weight,
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
                                                   fontFamily: "Asap", color: Colors.white, fontWeight: FontWeight.bold),

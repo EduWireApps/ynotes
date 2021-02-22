@@ -2,7 +2,8 @@
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
 [![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
-<img src="https://github.com/ModernChocolate/ynotes/blob/master/screenshots/brandLarge.png" width="800">
+
+[![Vidéo de promotion pour la version 0.9.1](https://img.youtube.com/vi/VID/0.jpg)](https://www.youtube.com/watch?v=BHQ5uG2zTS4)
 
 yNotes est un gestionnaire de notes, d'emploi du temps et de devoirs qui vous permet d'accéder à toutes vos informations scolaires dans une interface moderne et intuitive. L'application actuelle est basée sur les APIs des sites **École Directe** et **Pronote**. Je travaille actuellement dur pour adapter l'application à d'autres "applications scolaires". 
 
@@ -92,17 +93,15 @@ La documentation spécifique au développement vous permettant de modifier les l
 
 Le fichier principal (exécuté en premier) est `/lib/main.dart`
 
-### Front-end
-Tout le code peut être organisé dans des fichiers .dart, l'ui comme le backend, mais les layouts sont situés dans `/lib/UI`
-décomposés par écrans (screens) et par composants (components).
+### Architecture 
+yNotes a été codée suivant une architecture MVC.
+La partie business `/lib/core` inclut les controlleurs (dans `/logic`) ainsi qu'un dossier `/apis` qui contient tout ce qui est nécessaire pour collecter les données provenant d'EcoleDirecte ou Pronote.
 
-### Back-end
-Le traitement des données est maintenant effectué dans des parsers distincts situés dans `/lib/parsers`
-Ces fichiers contiennent des classes étendues de la classe API disponible dans le fichier `/lib/APIManager.dart` qui contient également toutes les classes importantes de l'application. L'ajout de fonctionnalités spécifiques nécessite une modification de l'APIManager ce qui est fortement déconseillé. Ainsi la fonction `app()` permet l'ajout de fonctionnalités spéficiques en toute liberté.
+Le dossier `/offline` contient tout ce qui est nécessaire à la mise en cache/hors ligne des données (nous utilisons la base de donnée Hive). Et finalement, le dossier `/services` est à différencier de `/utils`. Le premier servant à organiser les interactions "système" de l'application : notifications, deeplinks, arrière plan, le second contenant des utilitaires plus globaux dans l'application : theming, export de la db en json...
 
-### Ressources
-Les ressources sont dans `/assets`
-On y distingue les animations, (utilisant le moteur de rendu *Flare*, qui diffèrent des animations dans `/lib/UI/animations` qui sont des animations utilisant le langage Dart) ainsi que les images et les gifs animés.
+Les vues sont dans `/lib/ui`
+L'organisation des fichiers est néanmoins succeptible de changer.
+
 
 ### Mentions spéciales
 * Merci aux développeurs et bêta testeurs qui ont aidé à participer au projet en me suggérant des fonctionnalités et en montrant des bugs que je n'aurai sûrement jamais remarqués

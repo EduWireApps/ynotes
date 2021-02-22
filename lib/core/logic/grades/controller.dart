@@ -45,9 +45,9 @@ class GradesController extends ChangeNotifier {
     notifyListeners();
   }
 
-  List<Discipline> get disciplines => isSimulating
-      ? _filterDisciplinesForPeriod(simulationMerge(_disciplines))
-      : _filterDisciplinesForPeriod(_disciplines);
+  List<Discipline> disciplines({bool showAll = false}) => isSimulating
+      ? _filterDisciplinesForPeriod(simulationMerge(_disciplines), showAll: showAll)
+      : _filterDisciplinesForPeriod(_disciplines, showAll: showAll);
 
   List<Period> get periods => _schoolPeriods;
 
@@ -101,17 +101,17 @@ class GradesController extends ChangeNotifier {
   void _setAverage() {
     _average = 0;
     List<double> averages = List();
-    disciplines.where((i) => i.period == _period).forEach((f) {
+    disciplines().where((i) => i.period == _period).forEach((f) {
       try {
         double _average = 0.0;
         double _counter = 0;
         f.gradesList.forEach((grade) {
           if (!grade.notSignificant && !grade.letters) {
-            _counter += double.parse(grade.coefficient);
+            _counter += double.parse(grade.weight);
             _average += double.parse(grade.value.replaceAll(',', '.')) *
                 20 /
                 double.parse(grade.scale.replaceAll(',', '.')) *
-                double.parse(grade.coefficient.replaceAll(',', '.'));
+                double.parse(grade.weight.replaceAll(',', '.'));
           }
         });
         _average = _average / _counter;
@@ -132,8 +132,8 @@ class GradesController extends ChangeNotifier {
 
   void _setBestAverage() {
     try {
-      if (disciplines.last != null && disciplines.last.maxClassGeneralAverage != null) {
-        double value = double.tryParse(disciplines.last.maxClassGeneralAverage.replaceAll(",", "."));
+      if (disciplines().last != null && disciplines().last.maxClassGeneralAverage != null) {
+        double value = double.tryParse(disciplines().last.maxClassGeneralAverage.replaceAll(",", "."));
         if (value != null) {
           _bestAverage = value >= average ? value.toString() : average.toStringAsFixed(2);
         } else {
@@ -158,7 +158,10 @@ class GradesController extends ChangeNotifier {
   }
 
   ///Get the corresponding disciplines and responding to the filter chosen
-  List<Discipline> _filterDisciplinesForPeriod(List<Discipline> li) {
+  List<Discipline> _filterDisciplinesForPeriod(List<Discipline> li, {bool showAll = false}) {
+    if (showAll == true) {
+      return li;
+    }
     List<Discipline> toReturn = new List<Discipline>();
     li.forEach((f) {
       switch (_sorter) {
@@ -295,7 +298,7 @@ class GradesController extends ChangeNotifier {
                       disciplineName: f.disciplineName,
                       letters: f.letters,
                       value: f.value,
-                      coefficient: f.coefficient,
+                      weight: f.weight,
                       scale: f.scale,
                       classAverage: f.classAverage,
                       testType: f.testType,
@@ -330,6 +333,11 @@ class GradesController extends ChangeNotifier {
           discipline.gradesList.addAll(_addedGrades.where((_grade) =>
               _grade.periodName == discipline.period && _grade.disciplineCode == discipline.disciplineCode));
         }
+      });
+      _simulatedDisciplines.forEach((element) {
+        element.gradesList = [
+          Grade(testName: "a", entryDate: DateTime.now(), date: DateTime.now(), value: "10", scale: "20", weight: '1')
+        ];
       });
     }
     return _simulatedDisciplines;

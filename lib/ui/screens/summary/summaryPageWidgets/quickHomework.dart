@@ -19,6 +19,7 @@ import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/ui/screens/summary/summaryPageWidgets/quickHomeworkCurvedContainer.dart';
 
 class QuickHomework extends StatefulWidget {
   final Function switchPage;
@@ -343,18 +344,6 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
           bottom: (screenSize.size.height / 10 * 8.8) / 10 * 0.1, left: screenSize.size.width / 5 * 0.25),
       child: Stack(
         children: [
-          Transform.translate(
-            offset: Offset(-screenSize.size.width / 5 * 0.08, 0),
-            child: AnimatedContainer(
-              duration: Duration(milliseconds: 500),
-              width: widget._homework.isATest ? screenSize.size.width / 5 * 4.3 : 0,
-              height: (screenSize.size.height / 10 * 8.8) / 10 * 0.8,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                color: Color(0xffF97316),
-              ),
-            ),
-          ),
           Material(
             color: widget.color,
             borderRadius: BorderRadius.circular(8),
@@ -449,6 +438,11 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
               ),
             ),
           ),
+          if (widget._homework.isATest)
+            Container(
+                height: (screenSize.size.height / 10 * 8.8) / 10 * 0.8,
+                width: screenSize.size.width / 5 * 0.2,
+                child: TestBadge()),
         ],
       ),
     );

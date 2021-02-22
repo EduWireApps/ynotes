@@ -35,9 +35,9 @@ class GradesStats {
         if (!_grade.notSignificant && !_grade.letters) {
           double gradeOver20 =
               double.parse(_grade.value.replaceAll(',', '.')) * 20 / double.parse(_grade.scale.replaceAll(',', '.'));
-          beforeAverage += gradeOver20 * double.parse(_grade.coefficient.replaceAll(',', '.'));
-          afterAverage += gradeOver20 * double.parse(_grade.coefficient.replaceAll(',', '.'));
-          coeffCounter += double.tryParse(_grade.coefficient.replaceAll(',', '.'));
+          beforeAverage += gradeOver20 * double.parse(_grade.weight.replaceAll(',', '.'));
+          afterAverage += gradeOver20 * double.parse(_grade.weight.replaceAll(',', '.'));
+          coeffCounter += double.tryParse(_grade.weight.replaceAll(',', '.'));
         }
       }
       //At selected grade
@@ -48,8 +48,8 @@ class GradesStats {
         if (!_grade.notSignificant && !_grade.letters) {
           double gradeOver20 =
               double.parse(_grade.value.replaceAll(',', '.')) * 20 / double.parse(_grade.scale.replaceAll(',', '.'));
-          afterAverage += gradeOver20 * double.parse(_grade.coefficient.replaceAll(',', '.'));
-          coeffCounter += double.tryParse(_grade.coefficient.replaceAll(',', '.'));
+          afterAverage += gradeOver20 * double.parse(_grade.weight.replaceAll(',', '.'));
+          coeffCounter += double.tryParse(_grade.weight.replaceAll(',', '.'));
           //Calculate before average
 
           afterAverage = afterAverage / coeffCounter;
@@ -128,8 +128,8 @@ class GradesStats {
           average += double.parse(_grade.value.replaceAll(',', '.')) *
               20 /
               double.parse(_grade.scale.replaceAll(',', '.')) *
-              double.parse(_grade.coefficient.replaceAll(',', '.'));
-          counter += double.parse(_grade.coefficient);
+              double.parse(_grade.weight.replaceAll(',', '.'));
+          counter += double.parse(_grade.weight);
         } catch (e) {}
       });
       average = average / counter;

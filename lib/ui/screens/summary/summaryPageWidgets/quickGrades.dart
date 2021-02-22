@@ -200,8 +200,9 @@ class _QuickGradesState extends State<QuickGrades> {
       value: widget.gradesController,
       child: Consumer<GradesController>(builder: (context, model, child) {
         return Column(children: [
-          buildCHart(context, model.disciplines, model.isFetching),
-          buildGradesList(context, getAllGrades(model.disciplines, overrideLimit: true, sortByWritingDate: true)),
+          buildCHart(context, model.disciplines(showAll: true), model.isFetching),
+          buildGradesList(
+              context, getAllGrades(model.disciplines(showAll: true), overrideLimit: true, sortByWritingDate: true)),
         ]);
       }),
     );

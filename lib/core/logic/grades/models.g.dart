@@ -34,13 +34,14 @@ class DisciplineAdapter extends TypeAdapter<Discipline> {
       disciplineRank: fields[14] as int,
       classNumber: fields[15] as String,
       generalRank: fields[16] as String,
+      weight: fields[17] as String,
     );
   }
 
   @override
   void write(BinaryWriter writer, Discipline obj) {
     writer
-      ..writeByte(17)
+      ..writeByte(18)
       ..writeByte(0)
       ..write(obj.generalAverage)
       ..writeByte(1)
@@ -74,7 +75,9 @@ class DisciplineAdapter extends TypeAdapter<Discipline> {
       ..writeByte(15)
       ..write(obj.classNumber)
       ..writeByte(16)
-      ..write(obj.generalRank);
+      ..write(obj.generalRank)
+      ..writeByte(17)
+      ..write(obj.weight);
   }
 
   @override
@@ -108,7 +111,7 @@ class GradeAdapter extends TypeAdapter<Grade> {
       disciplineName: fields[4] as String,
       letters: fields[5] as bool,
       value: fields[6] as String,
-      coefficient: fields[7] as String,
+      weight: fields[7] as String,
       scale: fields[8] as String,
       classAverage: fields[9] as String,
       testType: fields[10] as String,
@@ -139,7 +142,7 @@ class GradeAdapter extends TypeAdapter<Grade> {
       ..writeByte(6)
       ..write(obj.value)
       ..writeByte(7)
-      ..write(obj.coefficient)
+      ..write(obj.weight)
       ..writeByte(8)
       ..write(obj.scale)
       ..writeByte(9)

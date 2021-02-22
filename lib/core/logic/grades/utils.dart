@@ -11,11 +11,11 @@ class GradesUtils {
         double _counter = 0;
         f.gradesList.forEach((grade) {
           if (!grade.notSignificant && !grade.letters) {
-            _counter += double.parse(grade.coefficient);
+            _counter += double.parse(grade.weight);
             _average += double.parse(grade.value.replaceAll(',', '.')) *
                 20 /
                 double.parse(grade.scale.replaceAll(',', '.')) *
-                double.parse(grade.coefficient.replaceAll(',', '.'));
+                double.parse(grade.weight.replaceAll(',', '.'));
           }
         });
         _average = _average / _counter;

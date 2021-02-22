@@ -39,24 +39,28 @@ class Discipline {
   final String classNumber;
   @HiveField(16)
   final String generalRank;
-  Discipline(
-      {this.gradesList,
-      this.maxClassGeneralAverage,
-      this.classGeneralAverage,
-      this.generalAverage,
-      this.classAverage,
-      this.minClassAverage,
-      this.maxClassAverage,
-      this.disciplineCode,
-      this.subdisciplineCode,
-      this.average,
-      this.teachers,
-      this.disciplineName,
-      this.period,
-      this.color,
-      this.disciplineRank,
-      this.classNumber,
-      this.generalRank});
+  @HiveField(17)
+  final String weight;
+  Discipline({
+    this.gradesList,
+    this.maxClassGeneralAverage,
+    this.classGeneralAverage,
+    this.generalAverage,
+    this.classAverage,
+    this.minClassAverage,
+    this.maxClassAverage,
+    this.disciplineCode,
+    this.subdisciplineCode,
+    this.average,
+    this.teachers,
+    this.disciplineName,
+    this.period,
+    this.color,
+    this.disciplineRank,
+    this.classNumber,
+    this.generalRank,
+    this.weight,
+  });
 
   set setcolor(Color newcolor) {
     color = newcolor.value;
@@ -80,23 +84,23 @@ class Discipline {
       String effectifClasse = "0",
       String rangGeneral = "0"}) {
     return Discipline(
-      subdisciplineCode: [],
-      disciplineCode: json['codeMatiere'],
-      disciplineName: json['discipline'],
-      average: json['moyenne'],
-      classAverage: json['moyenneClasse'],
-      minClassAverage: json['moyenneMin'],
-      maxClassAverage: json['moyenneMax'],
-      teachers: profs,
-      period: periode,
-      color: color.value,
-      generalAverage: moyenneG,
-      maxClassGeneralAverage: bmoyenneClasse,
-      classGeneralAverage: moyenneClasse,
-      disciplineRank: showrank ? json["rang"] : null,
-      classNumber: effectifClasse,
-      generalRank: rangGeneral,
-    );
+        subdisciplineCode: [],
+        disciplineCode: json['codeMatiere'],
+        disciplineName: json['discipline'],
+        average: json['moyenne'],
+        classAverage: json['moyenneClasse'],
+        minClassAverage: json['moyenneMin'],
+        maxClassAverage: json['moyenneMax'],
+        teachers: profs,
+        period: periode,
+        color: color.value,
+        generalAverage: moyenneG,
+        maxClassGeneralAverage: bmoyenneClasse,
+        classGeneralAverage: moyenneClasse,
+        disciplineRank: showrank ? json["rang"] : null,
+        classNumber: effectifClasse,
+        generalRank: rangGeneral,
+        weight: json["coef"].toString());
   }
   //overrides == operator to avoid issues in selectors
   @override
@@ -133,7 +137,7 @@ class Grade {
   final String value;
   //E.G : "1"
   @HiveField(7)
-  final String coefficient;
+  final String weight;
   //E.G : "10" (affichage en lettres)
   @HiveField(8)
   final String scale;
@@ -159,29 +163,28 @@ class Grade {
   final String max;
   @HiveField(18)
   final String min;
-  //Used for simulator
+
   @HiveField(19)
   final bool simulated;
-  Grade({
-    this.max,
-    this.min,
-    this.testName,
-    this.periodCode,
-    this.disciplineCode,
-    this.subdisciplineCode,
-    this.disciplineName,
-    this.letters,
-    this.value,
-    this.coefficient,
-    this.scale,
-    this.classAverage,
-    this.testType,
-    this.date,
-    this.entryDate,
-    this.notSignificant,
-    this.periodName,
-    this.simulated = false,
-  });
+  Grade(
+      {this.max,
+      this.min,
+      this.testName,
+      this.periodCode,
+      this.disciplineCode,
+      this.subdisciplineCode,
+      this.disciplineName,
+      this.letters,
+      this.value,
+      this.weight,
+      this.scale,
+      this.classAverage,
+      this.testType,
+      this.date,
+      this.entryDate,
+      this.notSignificant,
+      this.periodName,
+      this.simulated = false});
 
   factory Grade.fromEcoleDirecteJson(Map<String, dynamic> json, String nomPeriode) {
     return Grade(
@@ -195,7 +198,7 @@ class Grade {
         disciplineName: json['libelleMatiere'],
         letters: json['enLettre'],
         value: json['valeur'],
-        coefficient: json['coef'],
+        weight: json['coef'],
         scale: json['noteSur'],
         classAverage: json['moyenneClasse'],
         testType: json['typeDevoir'],

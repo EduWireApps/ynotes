@@ -95,9 +95,9 @@ class SummaryPageState extends State<SummaryPage> {
   }
 
   showUpdateNote() async {
-    if ((!await getSetting("updateNote0.9+rev1"))) {
+    if ((!await getSetting("updateNote0.9.1"))) {
       await CustomDialogs.showUpdateNoteDialog(context);
-      await setSetting("updateNote0.9+rev1", true);
+      await setSetting("updateNote0.9.1", true);
     }
   }
 
@@ -149,23 +149,34 @@ class SummaryPageState extends State<SummaryPage> {
             height: screenSize.size.height,
             child: RefreshIndicator(
               onRefresh: refreshControllers,
-              child: SingleChildScrollView(
-                physics: AlwaysScrollableScrollPhysics(),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    separator(context, "Notes"),
-                    QuickGrades(
-                      switchPage: widget.switchPage,
-                      gradesController: this.widget.gradesController,
-                    ),
-                    separator(context, "Devoirs"),
-                    QuickHomework(
-                      switchPage: widget.switchPage,
-                      hwcontroller: this.widget.hwcontroller,
-                    )
-                  ],
+              child: ShaderMask(
+                shaderCallback: (Rect rect) {
+                  return LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.purple, Colors.transparent, Colors.transparent, Colors.purple],
+                    stops: [0.0, 0.0, 0.94, 1.0], // 10% purple, 80% transparent, 10% purple
+                  ).createShader(rect);
+                },
+                blendMode: BlendMode.dstOut,
+                child: SingleChildScrollView(
+                  physics: AlwaysScrollableScrollPhysics(),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      separator(context, "Notes"),
+                      QuickGrades(
+                        switchPage: widget.switchPage,
+                        gradesController: this.widget.gradesController,
+                      ),
+                      separator(context, "Devoirs"),
+                      QuickHomework(
+                        switchPage: widget.switchPage,
+                        hwcontroller: this.widget.hwcontroller,
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),

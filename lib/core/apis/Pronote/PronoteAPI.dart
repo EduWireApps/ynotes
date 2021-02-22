@@ -1078,7 +1078,7 @@ class PronotePeriod {
           subdisciplineCode: null,
           disciplineName: element["service"]["V"]["L"],
           letters: element["note"]["V"].contains("|"),
-          coefficient: element["coefficient"].toString(),
+          weight: element["coefficient"].toString(),
           scale: element["bareme"]["V"],
           min: this.gradeTranslate(element["noteMin"]["V"]),
           max: this.gradeTranslate(element["noteMax"]["V"]),
