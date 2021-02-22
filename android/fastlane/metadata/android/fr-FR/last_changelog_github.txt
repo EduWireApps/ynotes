@@ -1,3 +1,1 @@
-0.9.1 version
-* New summary page
-* Enhancements
+Fixes reversed grades list.

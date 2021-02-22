@@ -1,1 +1,1 @@
-Version 0.9.1 ! Voir la note in app pour en savoir plus.
+Correction d'un bug qui inversait la liste de notes.
