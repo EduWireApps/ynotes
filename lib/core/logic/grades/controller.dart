@@ -279,12 +279,31 @@ class GradesController extends ChangeNotifier {
   simulationMerge(List<Discipline> list) {
     ///Returned disciplines
     List<Discipline> _simulatedDisciplines;
-    _simulatedDisciplines = List();
     if (list != null) {
-      _simulatedDisciplines += list;
+      //boring clone
+      _simulatedDisciplines = list
+          .map((e) => Discipline(
+              gradesList: e.gradesList,
+              maxClassGeneralAverage: e.maxClassGeneralAverage,
+              classGeneralAverage: e.classGeneralAverage,
+              generalAverage: e.generalAverage,
+              classAverage: e.classAverage,
+              minClassAverage: e.minClassAverage,
+              maxClassAverage: e.maxClassAverage,
+              disciplineCode: e.classAverage,
+              subdisciplineCode: e.subdisciplineCode,
+              average: e.average,
+              teachers: e.teachers,
+              disciplineName: e.disciplineName,
+              period: e.period,
+              color: e.color,
+              disciplineRank: e.disciplineRank,
+              classNumber: e.classNumber,
+              generalRank: e.generalRank))
+          .toList();
 
-      /* print("Merging ...");
-      _simulatedDisciplines.forEach((discipline) {
+      print("Merging ...");
+      /*_simulatedDisciplines.forEach((discipline) {
         discipline.gradesList.removeWhere((_grade) => _removedGrades.contains(_grade));
         if (_addedGrades.any(
             (_grade) => _grade.periodName == discipline.period && _grade.disciplineCode == discipline.disciplineCode)) {
@@ -292,17 +311,6 @@ class GradesController extends ChangeNotifier {
               _grade.periodName == discipline.period && _grade.disciplineCode == discipline.disciplineCode));
         }
       });*/
-      _simulatedDisciplines.forEach((element) {
-        element.gradesList = [
-          Grade(
-              testName: "a",
-              entryDate: DateTime.now(),
-              date: DateTime.now(),
-              value: "10",
-              scale: "20",
-              coefficient: '1')
-        ];
-      });
     }
     return _simulatedDisciplines;
   }
