@@ -98,6 +98,13 @@ class Discipline {
       generalRank: rangGeneral,
     );
   }
+  //overrides == operator to avoid issues in selectors
+  @override
+  bool operator ==(Object other) =>
+      other is Discipline &&
+      other.disciplineCode == disciplineCode &&
+      other.period == period &&
+      other.subdisciplineCode == subdisciplineCode;
 }
 
 //Marks class

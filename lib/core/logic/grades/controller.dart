@@ -280,10 +280,31 @@ class GradesController extends ChangeNotifier {
     ///Returned disciplines
     List<Discipline> _simulatedDisciplines;
     if (list != null) {
+      _simulatedDisciplines = List();
       //boring clone
-      _simulatedDisciplines = list
+      _simulatedDisciplines.addAll(list
           .map((e) => Discipline(
-              gradesList: e.gradesList,
+              gradesList: e.gradesList
+                  .map((f) => Grade(
+                      max: f.max,
+                      min: f.min,
+                      testName: f.testName,
+                      periodCode: f.periodCode,
+                      disciplineCode: f.disciplineCode,
+                      subdisciplineCode: f.subdisciplineCode,
+                      disciplineName: f.disciplineName,
+                      letters: f.letters,
+                      value: f.value,
+                      coefficient: f.coefficient,
+                      scale: f.scale,
+                      classAverage: f.classAverage,
+                      testType: f.testType,
+                      date: f.date,
+                      entryDate: f.entryDate,
+                      notSignificant: f.notSignificant,
+                      periodName: f.periodName,
+                      simulated: f.simulated))
+                  .toList(),
               maxClassGeneralAverage: e.maxClassGeneralAverage,
               classGeneralAverage: e.classGeneralAverage,
               generalAverage: e.generalAverage,
@@ -300,17 +321,16 @@ class GradesController extends ChangeNotifier {
               disciplineRank: e.disciplineRank,
               classNumber: e.classNumber,
               generalRank: e.generalRank))
-          .toList();
-
+          .toList());
       print("Merging ...");
-      /*_simulatedDisciplines.forEach((discipline) {
+      _simulatedDisciplines.forEach((discipline) {
         discipline.gradesList.removeWhere((_grade) => _removedGrades.contains(_grade));
         if (_addedGrades.any(
             (_grade) => _grade.periodName == discipline.period && _grade.disciplineCode == discipline.disciplineCode)) {
           discipline.gradesList.addAll(_addedGrades.where((_grade) =>
               _grade.periodName == discipline.period && _grade.disciplineCode == discipline.disciplineCode));
         }
-      });*/
+      });
     }
     return _simulatedDisciplines;
   }
