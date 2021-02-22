@@ -309,10 +309,12 @@ class _GradesGroupState extends State<GradesGroup> {
                         borderRadius: BorderRadius.all(Radius.circular(11)),
                         splashColor: colorGroup,
                         onTap: () async {
-                          /*GradesStats stats = GradesStats(gradesForSelectedDiscipline[index],
-                              getAllGrades(await localApi.getGrades(), overrideLimit: true, sortByWritingDate: false));
+                          GradesStats stats = GradesStats(
+                              gradesForSelectedDiscipline[index],
+                              getAllGrades(widget.gradesController.disciplines,
+                                  overrideLimit: true, sortByWritingDate: false));
                           gradesModalBottomSheet(context, gradesForSelectedDiscipline[index], stats, widget.discipline,
-                              callback, this.widget);*/
+                              callback, this.widget, widget.gradesController);
                         },
                         onLongPress: () {
                           CustomDialogs.showShareGradeDialog(context, gradesForSelectedDiscipline[index]);

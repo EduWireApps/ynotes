@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/disciplinesModalBottomSheet.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/gradesModalBottomSheet/stats.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/keyValues.dart';
@@ -16,6 +17,7 @@ void gradesModalBottomSheet(
   Discipline discipline,
   Function callback,
   var widget,
+  GradesController gradesController,
 ) {
   MediaQueryData screenSize = MediaQuery.of(context);
 
@@ -32,24 +34,21 @@ void gradesModalBottomSheet(
           stats: stats,
           discipline: discipline,
           callback: callback,
+          gradesController: gradesController,
         );
       });
 }
 
 class GradesModalBottomSheetContainer extends StatefulWidget {
-  const GradesModalBottomSheetContainer({
-    Key key,
-    this.grade,
-    this.stats,
-    this.discipline,
-    this.callback,
-  }) : super(key: key);
+  const GradesModalBottomSheetContainer(
+      {Key key, this.grade, this.stats, this.discipline, this.callback, this.gradesController})
+      : super(key: key);
 
   final Grade grade;
   final GradesStats stats;
   final Discipline discipline;
   final Function callback;
-
+  final GradesController gradesController;
   @override
   _GradesModalBottomSheetContainerState createState() => _GradesModalBottomSheetContainerState();
 }
@@ -140,23 +139,37 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
-                                Material(
-                                  color: colorGroup,
-                                  borderRadius: BorderRadius.circular(15),
-                                  child: InkWell(
-                                    radius: 45,
-                                    onTap: () {
-                                      Navigator.pop(context);
-                                      disciplineModalBottomSheet(context, widget.discipline, widget.callback, widget);
-                                    },
-                                    borderRadius: BorderRadius.circular(15),
-                                    child: Container(
-                                      padding: EdgeInsets.all(5),
-                                      child: Text(widget.discipline.disciplineName,
-                                          style:
-                                              TextStyle(fontFamily: "Asap", fontSize: 15, fontWeight: FontWeight.w100)),
+                                Row(
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(Icons.delete),
+                                      iconSize: screenSize.size.width / 5 * 0.4,
+                                      color: Colors.blue,
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                        widget.gradesController.simulationRemove(widget.grade);
+                                      },
                                     ),
-                                  ),
+                                    Material(
+                                      color: colorGroup,
+                                      borderRadius: BorderRadius.circular(15),
+                                      child: InkWell(
+                                        radius: 45,
+                                        onTap: () {
+                                          Navigator.pop(context);
+                                          disciplineModalBottomSheet(
+                                              context, widget.discipline, widget.callback, widget);
+                                        },
+                                        borderRadius: BorderRadius.circular(15),
+                                        child: Container(
+                                          padding: EdgeInsets.all(5),
+                                          child: Text(widget.discipline.disciplineName,
+                                              style: TextStyle(
+                                                  fontFamily: "Asap", fontSize: 15, fontWeight: FontWeight.w100)),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 Container(
                                   width: (screenSize.size.width / 5) * 3,
