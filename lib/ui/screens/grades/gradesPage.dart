@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -387,33 +388,36 @@ class _GradesPageState extends State<GradesPage> {
                             ),
                           ),
                         ),
-                        Container(
-                          margin: EdgeInsets.only(left: (screenSize.size.height / 10 * 8.8) / 10 * 0.1),
-                          child: Material(
-                            color: model.isSimulating ? Colors.blue : Theme.of(context).primaryColorDark,
-                            borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-                            child: InkWell(
+
+                        //For now only enable simulator on debug mode
+                        if (kDebugMode)
+                          Container(
+                            margin: EdgeInsets.only(left: (screenSize.size.height / 10 * 8.8) / 10 * 0.1),
+                            child: Material(
+                              color: model.isSimulating ? Colors.blue : Theme.of(context).primaryColorDark,
                               borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-                              onTap: () {
-                                model.isSimulating = !model.isSimulating;
-                              },
-                              child: Container(
-                                  height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
-                                  padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
-                                  child: FittedBox(
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        Icon(
-                                          MdiIcons.flask,
-                                          color: ThemeUtils.textColor(),
-                                        ),
-                                      ],
-                                    ),
-                                  )),
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                                onTap: () {
+                                  model.isSimulating = !model.isSimulating;
+                                },
+                                child: Container(
+                                    height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
+                                    padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
+                                    child: FittedBox(
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Icon(
+                                            MdiIcons.flask,
+                                            color: ThemeUtils.textColor(),
+                                          ),
+                                        ],
+                                      ),
+                                    )),
+                              ),
                             ),
                           ),
-                        ),
                       ],
                     ),
                   ),
@@ -522,7 +526,7 @@ class _GradesPageState extends State<GradesPage> {
                                   }
                                 }),
                               ),
-                              _buildFloatingButton(context)
+                              if (kDebugMode && model.isSimulating) _buildFloatingButton(context)
                             ],
                           )))
                 ],
