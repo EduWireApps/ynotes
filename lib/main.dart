@@ -103,6 +103,15 @@ class HomeApp extends StatelessWidget {
       projectId: "ynotes-giw0qs2",
       secret: "y9zengsvskpriizwniqxr6vxa1ka1n6u",
       navigatorKey: _navigatorKey,
+      theme: WiredashThemeData(
+          backgroundColor: isDarkModeEnabled ? Color(0xff313131) : Colors.white,
+          primaryBackgroundColor: isDarkModeEnabled ? Color(0xff414141) : Color(0xffF3F3F3),
+          secondaryBackgroundColor: isDarkModeEnabled ? Color(0xff313131) : Colors.white,
+          secondaryColor: Theme.of(context).primaryColorDark,
+          primaryColor: Theme.of(context).primaryColor,
+          primaryTextColor: ThemeUtils.textColor(),
+          brightness: Brightness.dark,
+          secondaryTextColor: ThemeUtils.textColor().withOpacity(0.8)),
       options: WiredashOptionsData(
         /// You can set your own locale to override device default (`window.locale` by default)
         locale: const Locale.fromSubtags(languageCode: 'fr'),
