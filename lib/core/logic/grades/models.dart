@@ -82,7 +82,7 @@ class Discipline {
             double.parse(grade.weight.replaceAll(',', '.'));
       }
     });
-    average = average / counter;
+    average = double.parse((average / counter).toStringAsFixed(2));
     return (average);
   }
 
