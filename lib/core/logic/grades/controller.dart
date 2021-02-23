@@ -258,10 +258,17 @@ class GradesController extends ChangeNotifier {
   //Removed "real" grades
   List<Grade> _removedGrades = List();
 
+  void simulationReset() {
+    _addedGrades.clear();
+    _removedGrades.clear();
+    refresh();
+  }
+
   void simulationAdd(Grade _grade) {
     _removedGrades.removeWhere((grade) => grade == _grade);
     _addedGrades.add(_grade);
     notifyListeners();
+    refresh();
   }
 
   void simulationRemove(Grade _grade) {
@@ -271,6 +278,7 @@ class GradesController extends ChangeNotifier {
       _removedGrades.add(_grade);
     }
     notifyListeners();
+    refresh();
   }
 
   String gradeHash(Grade grade) {
@@ -327,7 +335,8 @@ class GradesController extends ChangeNotifier {
           .toList());
       print("Merging ...");
       _simulatedDisciplines.forEach((discipline) {
-        discipline.gradesList.removeWhere((_grade) => _removedGrades.contains(_grade));
+        discipline.gradesList.removeWhere((_grade) => _removedGrades.any((element) =>
+            element.date == _grade.date && element.value == _grade.value && element.testName == _grade.testName));
         if (_addedGrades.any(
             (_grade) => _grade.periodName == discipline.period && _grade.disciplineCode == discipline.disciplineCode)) {
           discipline.gradesList.addAll(_addedGrades.where((_grade) =>

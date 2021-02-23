@@ -17,6 +17,7 @@ import 'package:ynotes/core/logic/stats/gradesStats.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/core/services/shared_preferences.dart';
+import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/disciplinesModalBottomSheet.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/gradesModalBottomSheet/gradesModalBottomSheet.dart';
@@ -61,6 +62,17 @@ class _GradesPageState extends State<GradesPage> {
       ),
       width: model.isSimulating ? screenSize.size.height : 0,
       height: model.isSimulating ? screenSize.size.height : 0,
+    );
+  }
+
+  _buildResetButton(GradesController controller) {
+    var screenSize = MediaQuery.of(context);
+    return Container(
+      margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.1),
+      child:
+          CustomButtons.materialButton(context, screenSize.size.width / 5 * 3.2, screenSize.size.height / 10 * 0.5, () {
+        controller.simulationReset();
+      }, label: "Réinitialiser les notes", textColor: Colors.white, backgroundColor: Colors.blue),
     );
   }
 
@@ -472,17 +484,26 @@ class _GradesPageState extends State<GradesPage> {
                                             if (model
                                                 .disciplines()
                                                 .any((Discipline element) => (element.gradesList.length > 0))) {
-                                              return ListView.builder(
-                                                  physics: AlwaysScrollableScrollPhysics(),
-                                                  itemCount: model.disciplines().length,
-                                                  padding: EdgeInsets.symmetric(
-                                                      vertical: screenSize.size.width / 5 * 0.1,
-                                                      horizontal: screenSize.size.width / 5 * 0.05),
-                                                  itemBuilder: (BuildContext context, int index) {
-                                                    return GradesGroup(
-                                                        discipline: model.disciplines()[index],
-                                                        gradesController: model);
-                                                  });
+                                              return Column(
+                                                children: [
+                                                  if (model.isSimulating) _buildResetButton(model),
+                                                  Expanded(
+                                                    child: Container(
+                                                      child: ListView.builder(
+                                                          physics: AlwaysScrollableScrollPhysics(),
+                                                          itemCount: model.disciplines().length,
+                                                          padding: EdgeInsets.symmetric(
+                                                              vertical: screenSize.size.width / 5 * 0.1,
+                                                              horizontal: screenSize.size.width / 5 * 0.05),
+                                                          itemBuilder: (BuildContext context, int index) {
+                                                            return GradesGroup(
+                                                                discipline: model.disciplines()[index],
+                                                                gradesController: model);
+                                                          }),
+                                                    ),
+                                                  ),
+                                                ],
+                                              );
                                             } else {
                                               return Column(
                                                 mainAxisAlignment: MainAxisAlignment.center,
