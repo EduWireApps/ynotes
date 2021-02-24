@@ -103,18 +103,7 @@ class GradesController extends ChangeNotifier {
     List<double> averages = List();
     disciplines().where((i) => i.period == _period).forEach((f) {
       try {
-        double _average = 0.0;
-        double _counter = 0;
-        f.gradesList.forEach((grade) {
-          if (!grade.notSignificant && !grade.letters) {
-            _counter += double.parse(grade.weight);
-            _average += double.parse(grade.value.replaceAll(',', '.')) *
-                20 /
-                double.parse(grade.scale.replaceAll(',', '.')) *
-                double.parse(grade.weight.replaceAll(',', '.'));
-          }
-        });
-        _average = _average / _counter;
+        double _average = f.getAverage().isNaN ? f.average : f.getAverage();
         if (_average != null && !_average.isNaN) {
           averages.add(_average);
         }
