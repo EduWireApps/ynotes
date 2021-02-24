@@ -654,9 +654,9 @@ class _Communication {
       'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/74.0'
     };
 
-    var get_response = await Requests.get(this.root_site + "/" + this.html_page + (this.cookies != null ? "?fd=1" : ''),
-            headers: headers)
-        .catchError((e) {
+    var get_response =
+        await Requests.get(this.root_site + "/" + (this.cookies != null ? "eleve.html?fd=1" : ''), headers: headers)
+            .catchError((e) {
       throw ("Impossible de se connecter");
     });
 

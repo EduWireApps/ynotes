@@ -86,7 +86,8 @@ dependencies:
   awesome_notifications: ^0.0.5+2
   pull_to_refresh: ^1.6.1
   flutter_markdown: ^0.5.0
-  html_editor: ^1.0.1
+  html_editor:
+     path: ./lib/ui/components/flutter-html-editor
   popup_menu: ^1.0.5
   floating_action_bubble: ^1.1.2
   catex: ^0.0.1+7

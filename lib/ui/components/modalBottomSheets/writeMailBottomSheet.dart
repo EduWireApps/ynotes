@@ -245,7 +245,9 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(15),
                 child: HtmlEditor(
-                  decoration: BoxDecoration(color: Theme.of(context).primaryColor),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor,
+                  ),
                   hint: "Saisissez votre mail ici..",
                   key: keyEditor,
                   showBottomToolbar: false,

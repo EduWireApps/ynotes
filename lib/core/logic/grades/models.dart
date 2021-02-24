@@ -73,8 +73,9 @@ class Discipline {
   double getAverage() {
     double average = 0.0;
     double counter = 0;
+
     gradesList.forEach((grade) {
-      if (!grade.notSignificant && !grade.letters) {
+      if (!grade.notSignificant && !grade.letters && grade.periodName == this.period) {
         counter += double.parse(grade.weight);
         average += double.parse(grade.value.replaceAll(',', '.')) *
             20 /
@@ -82,6 +83,7 @@ class Discipline {
             double.parse(grade.weight.replaceAll(',', '.'));
       }
     });
+    print(counter);
     average = double.parse((average / counter).toStringAsFixed(2));
     return (average);
   }

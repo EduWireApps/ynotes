@@ -106,7 +106,7 @@ class GradesController extends ChangeNotifier {
         double _average = 0.0;
         double _counter = 0;
         f.gradesList.forEach((grade) {
-          if (!grade.notSignificant && !grade.letters) {
+          if (!grade.notSignificant && !grade.letters && grade.periodName == _period) {
             _counter += double.parse(grade.weight);
             _average += double.parse(grade.value.replaceAll(',', '.')) *
                 20 /
