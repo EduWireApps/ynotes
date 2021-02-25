@@ -242,6 +242,9 @@ class _GradesGroupState extends State<GradesGroup> {
     bool canShow = false;
     List<Grade> gradesForSelectedDiscipline = getGradesForDiscipline(sousMatiereIndex, periodName);
     if (gradesForSelectedDiscipline != null) {
+      gradesForSelectedDiscipline.sort((a, b) => b.entryDate.compareTo(a.entryDate));
+    }
+    if (gradesForSelectedDiscipline != null) {
       gradesForSelectedDiscipline = gradesForSelectedDiscipline.reversed.toList();
     }
     if (gradesForSelectedDiscipline == null) {
