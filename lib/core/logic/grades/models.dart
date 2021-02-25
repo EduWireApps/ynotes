@@ -185,46 +185,52 @@ class Grade {
 
   @HiveField(19)
   final bool simulated;
-  Grade(
-      {this.max,
-      this.min,
-      this.testName,
-      this.periodCode,
-      this.disciplineCode,
-      this.subdisciplineCode,
-      this.disciplineName,
-      this.letters,
-      this.value,
-      this.weight,
-      this.scale,
-      this.classAverage,
-      this.testType,
-      this.date,
-      this.entryDate,
-      this.notSignificant,
-      this.periodName,
-      this.simulated = false});
+  @HiveField(20)
+  final bool countAsZero;
+  Grade({
+    this.max,
+    this.min,
+    this.testName,
+    this.periodCode,
+    this.disciplineCode,
+    this.subdisciplineCode,
+    this.disciplineName,
+    this.letters,
+    this.value,
+    this.weight,
+    this.scale,
+    this.classAverage,
+    this.testType,
+    this.date,
+    this.entryDate,
+    this.notSignificant,
+    this.periodName,
+    this.simulated = false,
+    this.countAsZero,
+  });
 
   factory Grade.fromEcoleDirecteJson(Map<String, dynamic> json, String nomPeriode) {
     return Grade(
-        min: json["minClasse"],
-        max: json["maxClasse"],
-        testName: json['devoir'],
-        periodCode: json['codePeriode'],
-        periodName: nomPeriode,
-        disciplineCode: json['codeMatiere'],
-        subdisciplineCode: json['codeSousMatiere'],
-        disciplineName: json['libelleMatiere'],
-        letters: json['enLettre'],
-        value: json['valeur'],
-        weight: json['coef'],
-        scale: json['noteSur'],
-        classAverage: json['moyenneClasse'],
-        testType: json['typeDevoir'],
-        date: DateTime.parse(json['date']),
-        entryDate: DateTime.parse(json['dateSaisie']),
-        notSignificant: json['nonSignificatif'],
-        simulated: false);
+      min: json["minClasse"],
+      max: json["maxClasse"],
+      testName: json['devoir'],
+      periodCode: json['codePeriode'],
+      periodName: nomPeriode,
+      disciplineCode: json['codeMatiere'],
+      subdisciplineCode: json['codeSousMatiere'],
+      disciplineName: json['libelleMatiere'],
+      letters: json['enLettre'],
+      value: json['valeur'],
+      weight: json['coef'],
+      scale: json['noteSur'],
+      classAverage: json['moyenneClasse'],
+      testType: json['typeDevoir'],
+      date: DateTime.parse(json['date']),
+      entryDate: DateTime.parse(json['dateSaisie']),
+      notSignificant: json['nonSignificatif'],
+      simulated: false,
+      countAsZero: false,
+    );
   }
 }
 

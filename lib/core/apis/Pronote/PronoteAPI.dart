@@ -1015,6 +1015,7 @@ class PronotePeriod {
     this.start = inputFormat.parse(parsed_json['dateDebut']['V']);
     this.end = inputFormat.parse(parsed_json['dateFin']['V']);
   }
+
   gradeTranslate(String value) {
     List grade_translate = [
       'Absent',
@@ -1048,6 +1049,13 @@ class PronotePeriod {
       gradeTranslate(averageData["moyMin"]["V"]),
       gradeTranslate(averageData["moyClasse"]["V"])
     ];
+  }
+
+  shouldCountAsZero(String grade) {
+    if (grade == "Absent zéro" || grade == "Non rendu zéro") {
+      return true;
+    } else
+      return false;
   }
 
   grades(int codePeriode) async {
@@ -1086,7 +1094,8 @@ class PronotePeriod {
           date: DateFormat("dd/MM/yyyy").parse(element["date"]["V"]),
           notSignificant: this.gradeTranslate(element["note"]["V"]) == "NonNote" ? true : false,
           testType: "Interrogation",
-          entryDate: DateFormat("dd/MM/yyyy").parse(element["date"]["V"])));
+          entryDate: DateFormat("dd/MM/yyyy").parse(element["date"]["V"]),
+          countAsZero: shouldCountAsZero(this.gradeTranslate(element["note"]["V"]))));
       other.add(average(response, element["service"]["V"]["L"].hashCode.toString()));
     });
     return [list, other];
