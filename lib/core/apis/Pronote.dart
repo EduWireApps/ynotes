@@ -13,7 +13,6 @@ import 'package:ynotes/core/logic/shared/loginController.dart';
 
 import 'package:ynotes/usefulMethods.dart';
 
-
 Client localClient;
 //Locks are use to prohibit the app to send too much requests while collecting data and ensure there are made one by one
 //They are ABSOLUTELY needed or user will be quickly IP suspended
@@ -427,6 +426,10 @@ class APIPronote extends API {
         }
       }
     }
+  }
+
+  Future<List<SchoolLifeTicket>> getSchoolLife() async {
+    return [];
   }
 
   @override

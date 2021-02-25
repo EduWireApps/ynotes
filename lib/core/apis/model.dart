@@ -48,6 +48,9 @@ abstract class API {
   ///Apps
   Future app(String appname, {String args, String action, CloudItem folder});
 
+  ///SchoolLife
+  Future getSchoolLife();
+
   ///All events
   Future getEvents(DateTime date, bool afterSchool, {bool forceReload = false}) async {
     List<AgendaEvent> events = List<AgendaEvent>();

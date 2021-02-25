@@ -29,14 +29,54 @@ class _SchoolLifePageState extends State<SchoolLifePage> {
     // refreshPolls();
   }
 
+  Widget separator(BuildContext context, String text) {
+    MediaQueryData screenSize = MediaQuery.of(context);
+
+    return Container(
+      height: screenSize.size.height / 10 * 0.35,
+      margin: EdgeInsets.only(
+        top: screenSize.size.height / 10 * 0.1,
+        left: screenSize.size.width / 5 * 0.25,
+        bottom: screenSize.size.height / 10 * 0.1,
+      ),
+      child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
+        Text(
+          text,
+          style:
+              TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontSize: 25, fontWeight: FontWeight.w600),
+        ),
+      ]),
+    );
+  }
+
   Widget buildCircle(SchoolLifeTicket ticket) {
-    IconData icon;
-    if (ticket.type == "absence") {
-      icon = MdiIcons.alert;
+    IconData icon = MdiIcons.alertCircleOutline;
+    if (ticket.type == "Absence") {
+      icon = MdiIcons.ghost;
     }
+    if (ticket.type == "Retard") {
+      icon = MdiIcons.clockAlertOutline;
+    }
+    if (ticket.type == "Repas") {
+      icon = MdiIcons.foodOff;
+    }
+    /*
     return CircleAvatar(
       child: Icon(icon),
     );
+    */
+    var screenSize = MediaQuery.of(context);
+    return Container(
+        decoration: BoxDecoration(shape: BoxShape.circle, color: Theme.of(context).primaryColorDark),
+        child: FittedBox(
+            child: Icon(
+          icon,
+          color: ThemeUtils.textColor(),
+        )),
+        padding: EdgeInsets.all(screenSize.size.width / 5 * 0.15),
+        width: screenSize.size.width / 5 * 0.8,
+        height: screenSize.size.width / 5 * 0.8,
+        margin: EdgeInsets.all(10));
   }
 
   Widget buildTicket(SchoolLifeTicket ticket) {
@@ -44,14 +84,53 @@ class _SchoolLifePageState extends State<SchoolLifePage> {
     return Container(
       width: screenSize.size.width / 5 * 4.2,
       child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
+        color: Theme.of(context).primaryColor,
         child: Row(
           children: [
             buildCircle(ticket),
-            Column(
-              children: [
-                Text(ticket.libelle),
-                Text(ticket.motif),
-              ],
+            SizedBox(width: screenSize.size.width / 5 * 0.1),
+            Flexible(
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: 8, top: 8),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      ticket.libelle,
+                      style: TextStyle(
+                          color: ThemeUtils.textColor(), fontFamily: "Asap", fontWeight: FontWeight.bold, fontSize: 16),
+                      textAlign: TextAlign.left,
+                    ),
+                    Text(
+                      "Motif : " + ticket.motif,
+                      style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontSize: 15),
+                      textAlign: TextAlign.left,
+                    ),
+                    Text(
+                      "Date : " + ticket.displayDate,
+                      style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontSize: 15),
+                      textAlign: TextAlign.left,
+                    ),
+                    RichText(
+                        text: TextSpan(
+                            style: TextStyle(
+                                color: ticket.isJustified ? Colors.green : Colors.orange,
+                                fontFamily: "Asap",
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16),
+                            children: [
+                          TextSpan(
+                            text: ticket.isJustified ? "Justifié " : "A justifier ",
+                          ),
+                          WidgetSpan(
+                              child: Icon(ticket.isJustified ? MdiIcons.check : MdiIcons.exclamation,
+                                  color: ticket.isJustified ? Colors.green : Colors.orange))
+                        ])),
+                  ],
+                ),
+              ),
             )
           ],
         ),
@@ -96,11 +175,21 @@ class _SchoolLifePageState extends State<SchoolLifePage> {
                 if (snapshot.data != null) {
                   return buildNoTickets();
                 } else {
+                  /*
                   return ListView.builder(
                       itemCount: 5,
                       itemBuilder: (context, index) {
                         return buildTicket(SchoolLifeTicket("a", "a", "a", "a", false));
                       });
+                      */
+                  return Column(
+                    children: [
+                      separator(context, "Absences et retards"),
+                      buildTicket(SchoolLifeTicket(
+                          "Retard du 10/02 de 10 minutes en 7e heure", "date", "Sans motif", "type", true)),
+                      buildTicket(SchoolLifeTicket("azerty", "date", "motif", "Repas", false)),
+                    ],
+                  );
                 }
               } else {
                 return Center(child: SpinKitFadingFour(color: Theme.of(context).primaryColor));

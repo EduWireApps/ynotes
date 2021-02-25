@@ -61,7 +61,6 @@ List<String> colorList = [
 class APIEcoleDirecte extends API {
   APIEcoleDirecte(Offline offlineController) : super(offlineController);
 
-
 //Get connection message and store token
   Future<String> login(username, password, {url, cas}) async {
     final prefs = await SharedPreferences.getInstance();
@@ -414,4 +413,9 @@ Future readMail(String mailId, bool read) async {
   } catch (e) {
     print("error during the mail reading $e");
   }
+}
+
+Future<List<SchoolLifeTicket>> getSchoolLife() async {
+  List<SchoolLifeTicket> tickets = await EcoleDirecteMethod(offline).schoolLife();
+  return tickets;
 }
