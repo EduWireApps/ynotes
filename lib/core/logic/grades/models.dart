@@ -74,10 +74,11 @@ class Discipline {
     double average = 0.0;
     double counter = 0;
 
-    gradesList.forEach((grade) {
-      if (!grade.notSignificant && !grade.letters && grade.periodName == this.period) {
+    gradesList.forEach((Grade grade) {
+      if (!grade.notSignificant && (!grade.letters || grade.countAsZero) && grade.periodName == this.period) {
         counter += double.parse(grade.weight);
-        average += double.parse(grade.value.replaceAll(',', '.')) *
+        String gradeStringValue = grade.countAsZero ? "0" : grade.value;
+        average += double.parse(gradeStringValue.replaceAll(',', '.')) *
             20 /
             double.parse(grade.scale.replaceAll(',', '.')) *
             double.parse(grade.weight.replaceAll(',', '.'));
