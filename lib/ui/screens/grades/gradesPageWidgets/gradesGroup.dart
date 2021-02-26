@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:badges/badges.dart';
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -285,26 +286,36 @@ class _GradesGroupState extends State<GradesGroup> {
                 }
               }
 
-              return Stack(
-                children: <Widget>[
-                  Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(11),
-                        border: Border.all(
-                            color: (getGradesForDiscipline(sousMatiereIndex, periodName) == null)
-                                ? Colors.transparent
-                                : Colors.black,
-                            width: 1)),
-                    margin: EdgeInsets.only(
-                        left: screenSize.size.width / 5 * 0.025, right: screenSize.size.width / 5 * 0.025),
+              return Badge(
+                animationType: BadgeAnimationType.scale,
+                toAnimate: true,
+                elevation: 0,
+                showBadge: (gradesForSelectedDiscipline != null) &&
+                    (DateFormat('yyyy-MM-dd').format(gradesForSelectedDiscipline[index].entryDate) ==
+                            DateFormat('yyyy-MM-dd').format(DateTime.now()) &&
+                        !gradesForSelectedDiscipline[index].simulated),
+                position: BadgePosition.topEnd(top: 0, end: 0),
+                badgeColor: Colors.blue,
+                child: Container(
+                  margin: EdgeInsets.only(
+                      left: screenSize.size.width / 5 * 0.025, right: screenSize.size.width / 5 * 0.025),
+                  child: DottedBorder(
+                    borderType: BorderType.RRect,
+                    color: getGradesForDiscipline(sousMatiereIndex, periodName) == null
+                        ? Colors.transparent
+                        : (gradesForSelectedDiscipline[index].simulated ? Colors.blue : Colors.transparent),
+                    strokeWidth: 1,
+                    radius: Radius.circular(11),
                     child: Material(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(11)), side: BorderSide.none),
+                      borderOnForeground: false,
                       color: (getGradesForDiscipline(sousMatiereIndex, periodName) == null)
                           ? Colors.transparent
                           : ((gradesForSelectedDiscipline[index].simulated != null &&
                                   gradesForSelectedDiscipline[index].simulated)
                               ? Colors.blue.withOpacity(0.7)
                               : colorGroup),
-                      borderRadius: BorderRadius.all(Radius.circular(11)),
                       child: InkWell(
                         borderRadius: BorderRadius.all(Radius.circular(11)),
                         splashColor: colorGroup,
@@ -325,6 +336,13 @@ class _GradesGroupState extends State<GradesGroup> {
                               if (gradesForSelectedDiscipline != null)
                                 //Grade box
                                 Container(
+                                  decoration: BoxDecoration(
+                                    //don't show it if simulator enabled
+                                    border: gradesForSelectedDiscipline[index].simulated
+                                        ? null
+                                        : Border.all(width: 1.2, color: Colors.black),
+                                    borderRadius: BorderRadius.circular(11),
+                                  ),
                                   padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.12),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -403,21 +421,7 @@ class _GradesGroupState extends State<GradesGroup> {
                       ),
                     ),
                   ),
-                  if (gradesForSelectedDiscipline != null)
-                    if (DateFormat('yyyy-MM-dd').format(gradesForSelectedDiscipline[index].entryDate) ==
-                        DateFormat('yyyy-MM-dd').format(DateTime.now()))
-                      Positioned(
-                        right: screenSize.size.width / 5 * 0.06,
-                        top: screenSize.size.height / 15 * 0.01,
-                        child: Badge(
-                          animationType: BadgeAnimationType.scale,
-                          toAnimate: true,
-                          elevation: 0,
-                          position: BadgePosition.topEnd(),
-                          badgeColor: Colors.blue,
-                        ),
-                      ),
-                ],
+                ),
               );
             }));
   }

@@ -16,7 +16,6 @@ import 'package:ynotes/core/apis/utils.dart';
 
 import 'dart:ui' as ui;
 
-
 class ShareBox extends StatefulWidget {
   final Grade grade;
 
@@ -113,7 +112,9 @@ class _ShareBoxState extends State<ShareBox> {
                                         fontFamily: "Asap",
                                         color: ThemeUtils.textColor(),
                                       )),
-                                  Text(widget.grade.testName,
+                                  Text(
+                                      widget.grade.testName ??
+                                          (widget.grade.simulated ? "(note simulée)" : "(sans nom)"),
                                       style: TextStyle(
                                           fontFamily: "Asap",
                                           color: ThemeUtils.textColor(),

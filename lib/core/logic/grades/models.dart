@@ -207,7 +207,7 @@ class Grade {
     this.notSignificant,
     this.periodName,
     this.simulated = false,
-    this.countAsZero,
+    this.countAsZero = false,
   });
 
   factory Grade.fromEcoleDirecteJson(Map<String, dynamic> json, String nomPeriode) {
