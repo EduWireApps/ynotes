@@ -84,7 +84,8 @@ logFile(String error) async {
   print("logging");
   final directory = await FolderAppUtil.getDirectory();
   final File file = File('${directory.path}/logs.txt');
-  await file.writeAsString("\n\n" + DateTime.now().toString() + "\n" + error, mode: FileMode.append);
+  String existingText = await getFileData();
+  await file.writeAsString(DateTime.now().toString() + "\n" + error + "\n\n" + existingText, mode: FileMode.write);
 }
 
 removeLogFile() async {
