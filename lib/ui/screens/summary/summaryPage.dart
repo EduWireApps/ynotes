@@ -112,7 +112,6 @@ class SummaryPageState extends State<SummaryPage> {
     MediaQueryData screenSize = MediaQuery.of(context);
 
     return Container(
-      height: screenSize.size.height / 10 * 0.35,
       margin: EdgeInsets.only(
         top: screenSize.size.height / 10 * 0.1,
         left: screenSize.size.width / 5 * 0.25,

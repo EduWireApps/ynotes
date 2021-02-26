@@ -215,50 +215,54 @@ class _QuickHomeworkState extends State<QuickHomework> {
                               child: Consumer<HomeworkController>(
                                 builder: (context, model, child) {
                                   if (model.getHomework != null && model.getHomework.length != 0) {
-                                    return ColumnBuilder(
-                                        itemCount: model.getHomework.length,
-                                        itemBuilder: (context, index) {
-                                          return FutureBuilder(
-                                            initialData: 0,
-                                            future: getColor(model.getHomework[index].disciplineCode),
-                                            builder: (context, color) => Column(
-                                              children: <Widget>[
-                                                if (index == 0 ||
-                                                    model.getHomework[index - 1].date != model.getHomework[index].date)
-                                                  Container(
-                                                    margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.25),
-                                                    child: Row(children: <Widget>[
-                                                      Text(
-                                                        DateFormat("EEEE d", "fr_FR")
-                                                                .format(
-                                                                    this.widget.hwcontroller.getHomework[index].date)
-                                                                .toString()
-                                                                .capitalize() +
-                                                            " " +
-                                                            DateFormat("MMMM", "fr_FR")
-                                                                .format(
-                                                                    this.widget.hwcontroller.getHomework[index].date)
-                                                                .toString()
-                                                                .capitalize(),
-                                                        style: TextStyle(
-                                                            color: ThemeUtils.textColor(),
-                                                            fontFamily: "Asap",
-                                                            fontSize: 17,
-                                                            fontWeight: FontWeight.w600),
-                                                      ),
-                                                    ]),
-                                                  ),
-                                                SizedBox(height: screenSize.size.height / 10 * 0.1),
-                                                HomeworkTicket(
-                                                    model.getHomework[index],
-                                                    Color(color.data),
-                                                    widget.switchPage,
-                                                    this.widget.hwcontroller.refresh,
-                                                    model.isFetching && !model.getHomework[index].loaded),
-                                              ],
-                                            ),
-                                          );
-                                        });
+                                    return Padding(
+                                      padding: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.4),
+                                      child: ColumnBuilder(
+                                          itemCount: model.getHomework.length,
+                                          itemBuilder: (context, index) {
+                                            return FutureBuilder(
+                                              initialData: 0,
+                                              future: getColor(model.getHomework[index].disciplineCode),
+                                              builder: (context, color) => Column(
+                                                children: <Widget>[
+                                                  if (index == 0 ||
+                                                      model.getHomework[index - 1].date !=
+                                                          model.getHomework[index].date)
+                                                    Container(
+                                                      margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.25),
+                                                      child: Row(children: <Widget>[
+                                                        Text(
+                                                          DateFormat("EEEE d", "fr_FR")
+                                                                  .format(
+                                                                      this.widget.hwcontroller.getHomework[index].date)
+                                                                  .toString()
+                                                                  .capitalize() +
+                                                              " " +
+                                                              DateFormat("MMMM", "fr_FR")
+                                                                  .format(
+                                                                      this.widget.hwcontroller.getHomework[index].date)
+                                                                  .toString()
+                                                                  .capitalize(),
+                                                          style: TextStyle(
+                                                              color: ThemeUtils.textColor(),
+                                                              fontFamily: "Asap",
+                                                              fontSize: 17,
+                                                              fontWeight: FontWeight.w600),
+                                                        ),
+                                                      ]),
+                                                    ),
+                                                  SizedBox(height: screenSize.size.height / 10 * 0.1),
+                                                  HomeworkTicket(
+                                                      model.getHomework[index],
+                                                      Color(color.data),
+                                                      widget.switchPage,
+                                                      this.widget.hwcontroller.refresh,
+                                                      model.isFetching && !model.getHomework[index].loaded),
+                                                ],
+                                              ),
+                                            );
+                                          }),
+                                    );
                                   } else {
                                     return Center(
                                       child: FittedBox(

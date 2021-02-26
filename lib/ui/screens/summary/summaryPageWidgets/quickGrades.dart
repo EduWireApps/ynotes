@@ -112,36 +112,39 @@ class _QuickGradesState extends State<QuickGrades> {
     DateFormat df = DateFormat("dd MMMM", "fr_FR");
     var screenSize = MediaQuery.of(context);
 
-    return Row(children: [
-      buildGradeCircle(grade),
-      SizedBox(width: screenSize.size.width / 5 * 0.1),
-      Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Wrap(
-            spacing: screenSize.size.width / 5 * 0.1,
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: screenSize.size.width / 5 * 2.8),
+      child: Row(children: [
+        buildGradeCircle(grade),
+        SizedBox(width: screenSize.size.width / 5 * 0.1),
+        Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
                 grade.disciplineName ?? "",
                 style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.left,
+              ),
+              Text(
+                grade.testName ?? "",
+                style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontWeight: FontWeight.bold),
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.left,
+              ),
+              Text(
+                grade.date != null ? df.format(grade.entryDate) : "",
+                style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
+                overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.left,
               )
             ],
           ),
-          Text(
-            grade.testName ?? "",
-            style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontWeight: FontWeight.bold),
-            textAlign: TextAlign.left,
-          ),
-          Text(
-            grade.date != null ? df.format(grade.entryDate) : "",
-            style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
-            textAlign: TextAlign.left,
-          )
-        ],
-      )
-    ]);
+        )
+      ]),
+    );
   }
 
   buildGradesList(BuildContext context, List<Grade> grades) {
