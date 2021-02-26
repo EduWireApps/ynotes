@@ -7,7 +7,11 @@
   <title>Summernote Text Editor HTML</title>
   <script src="jquery-3.4.1.slim.min.js"></script>
   <link href="summernote-lite.min.css" rel="stylesheet">
-  <script src="summernote-lite.min.js"></script>
+  <link href="summernote-lite-darkly.min.css" rel="stylesheet">
+
+  <script src="summernote-lite.min.js">
+  </script>
+
 </head>
 <body>
 <div id="summernote" style="width:100%;height:100%"></div>
@@ -20,14 +24,12 @@
           ['font', ['bold', 'underline', 'italic']],
           ['color', ['color']],
           ['para', ['ul', 'ol', 'paragraph']],
-          ['insert', ['link', 'picture']],
+          ['insert', ['link', 'picture', 'hr', 'video']],
           ['view', ['codeview']]
         ],
         disableGrammar: false,
         spellCheck: false
-        
       });
-
     </script>
 <style>
       body {
@@ -72,7 +74,6 @@ html.dark .note-toolbar .dropdown-menu .dropdown-item {
 html.dark .note-toolbar .btn {
     color: #9097a0;
 }
-
     </style>
 </body>
 </html>

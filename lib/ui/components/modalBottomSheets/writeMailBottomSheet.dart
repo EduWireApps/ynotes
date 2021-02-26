@@ -29,7 +29,7 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
       return html;
     }
     String color = isDarkModeEnabled ? "white" : "black";
-    String finalHTML = html.replaceAll("color", "taratata");
+    String finalHTML = html.replaceAll("color", "");
     return finalHTML;
   }
 
@@ -79,7 +79,7 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                               Navigator.pop(context);
                             }
                           },
-                          icon: Icon(MdiIcons.arrowLeft, color: ThemeUtils.textColor()),
+                          icon: Icon(MdiIcons.arrowLeft, color: Colors.black),
                         ),
                       ),
                       SizedBox(
@@ -87,7 +87,7 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                       ),
                       AutoSizeText(
                         "Ecrire un mail",
-                        style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                        style: TextStyle(fontFamily: "Asap", color: Colors.black),
                       )
                     ],
                   ),
@@ -108,7 +108,7 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                               CustomDialogs.showAnyDialog(context, "Ajoutez au moins un destinataire.");
                             }
                           },
-                          icon: Icon(Icons.send, color: ThemeUtils.textColor()),
+                          icon: Icon(Icons.send, color: Colors.black),
                         ),
                       ],
                     ),
@@ -133,7 +133,9 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                               Container(
                                 margin: EdgeInsets.only(right: screenSize.size.width / 5 * 0.1),
                                 child: Chip(
-                                  label: Text("Ajoutez des destinataires"),
+                                  backgroundColor: Colors.grey.shade500,
+                                  label: Text("(aucun destinataire)",
+                                      style: TextStyle(fontFamily: "Asap", color: Colors.white)),
                                 ),
                               ),
                             for (Recipient recipient in selectedRecipients)
@@ -167,7 +169,7 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                             });
                           }
                         },
-                        icon: Icon(Icons.add, color: ThemeUtils.textColor()),
+                        icon: Icon(Icons.add, color: Colors.black),
                       ),
                     ),
                   ),
@@ -207,7 +209,7 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                             });
                           }
                         },
-                        icon: Icon(Icons.contact_page, color: ThemeUtils.textColor()),
+                        icon: Icon(Icons.contact_page, color: Colors.black),
                       ),
                     ),
                   ),
@@ -223,15 +225,15 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
               child: TextField(
                 controller: subjectController,
                 maxLines: 1,
-                style: TextStyle(
-                    fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.width / 5 * 0.35),
+                style: TextStyle(fontFamily: "Asap", color: Colors.black, fontSize: screenSize.size.width / 5 * 0.35),
                 decoration: new InputDecoration(
                   border: OutlineInputBorder(),
-                  contentPadding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.05, vertical: 0),
+                  contentPadding: EdgeInsets.symmetric(
+                      horizontal: screenSize.size.width / 5 * 0.05, vertical: screenSize.size.height / 10 * 0.2),
                   labelText: 'Sujet',
                   labelStyle: TextStyle(
                       fontFamily: "Asap",
-                      color: isDarkModeEnabled ? Colors.white.withOpacity(0.5) : Colors.black.withOpacity(0.5),
+                      color: Colors.black.withOpacity(0.5),
                       fontSize: screenSize.size.width / 5 * 0.35),
                 ),
               ),
@@ -243,11 +245,7 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
               height: screenSize.size.height / 10 * 7.5,
               width: screenSize.size.width,
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(15),
                 child: HtmlEditor(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor,
-                  ),
                   hint: "Saisissez votre mail ici..",
                   key: keyEditor,
                   showBottomToolbar: false,

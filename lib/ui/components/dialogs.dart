@@ -324,7 +324,7 @@ class CustomDialogs {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
         ),
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: Color(0xffDCDCDC),
         context: context,
         isScrollControlled: true,
         builder: (BuildContext bc) {
