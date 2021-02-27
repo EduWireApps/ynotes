@@ -54,6 +54,7 @@ class _LogsPageState extends State<LogsPage> {
                     if (snapshot.hasData) {
                       return Center(
                           child: Container(
+                              padding: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
                               width: screenSize.size.width / 5 * 4.5,
                               child: SingleChildScrollView(
                                 padding: EdgeInsets.zero,
