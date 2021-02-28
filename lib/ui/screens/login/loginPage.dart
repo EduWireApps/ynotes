@@ -1,3 +1,4 @@
+import 'package:flare_flutter/flare_actor.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 
@@ -9,13 +10,268 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:ynotes/core/services/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/ui/animations/FadeAnimation.dart';
+import 'package:ynotes/ui/components/buttons.dart';
+import 'package:ynotes/ui/screens/login/loginPageWidgets/pronoteSetup.dart';
+import 'package:ynotes/ui/screens/login/loginPageWidgets/textField.dart';
 import 'package:ynotes/ui/screens/school_api_choice/schoolAPIChoicePage.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/usefulMethods.dart';
 
-
 Color textButtonColor = Color(0xff252B62);
+
+class LoginSlider extends StatefulWidget {
+  final bool setupNeeded;
+
+  const LoginSlider({Key key, this.setupNeeded}) : super(key: key);
+  @override
+  _LoginSliderState createState() => _LoginSliderState();
+}
+
+class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin {
+  PageController sliderController;
+  Map loginHelpTexts = {
+    "pronoteSetupText":
+        """Nous avons besoin de savoir quel est votre établissement avant que vous puissiez rentrer vos identifiants.""",
+    "pronoteUrlSetupText": """Entrez ou vérifiez l'adresse URL Pronote communiquée par votre établissement."""
+  };
+  TextEditingController _username = TextEditingController();
+  TextEditingController _password = TextEditingController();
+
+  AnimationController iconSlideAnimationController;
+  Animation<double> iconSlideAnimation;
+  int currentPage;
+  initState() {
+    super.initState();
+
+    sliderController = PageController(initialPage: widget.setupNeeded ? 0 : 2);
+    currentPage = widget.setupNeeded ? 0 : 2;
+    sliderController.addListener(_pageViewPageCange);
+    iconSlideAnimationController = AnimationController(vsync: this, value: 1, duration: Duration(milliseconds: 500));
+    iconSlideAnimation = CurvedAnimation(
+      parent: iconSlideAnimationController,
+      curve: Curves.easeIn,
+      reverseCurve: Curves.easeOut,
+    );
+    iconSlideAnimationController.reverse();
+  }
+
+  _pageViewPageCange() {
+    setState(() {
+      currentPage = sliderController.page.round();
+    });
+  }
+
+  _setupPartCallback(String id) {
+    switch (id) {
+      case "qrcode":
+        {
+          sliderController.animateToPage(1, duration: Duration(milliseconds: 300), curve: Curves.easeIn);
+        }
+        break;
+      case "location":
+        {
+          sliderController.animateToPage(1, duration: Duration(milliseconds: 300), curve: Curves.easeIn);
+        }
+        break;
+      case "manual":
+        {
+          sliderController.animateToPage(1, duration: Duration(milliseconds: 300), curve: Curves.easeIn);
+        }
+        break;
+    }
+  }
+
+  _buildStepsText() {
+    MediaQueryData screenSize = MediaQuery.of(context);
+
+    return Container(
+      height: screenSize.size.height / 10 * 1,
+      width: screenSize.size.width,
+      padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.2),
+      child: Text(_getStepText(currentPage),
+          textAlign: TextAlign.center, style: TextStyle(fontFamily: "Asap", color: Colors.white, fontSize: 15)),
+    );
+  }
+
+  _getStepText(int page) {
+    if (page == 0) {
+      return loginHelpTexts["pronoteSetupText"];
+    }
+    if (page == 1) {
+      return loginHelpTexts["pronoteUrlSetupText"];
+    }
+    if (page == 2) {
+      return "Entrez vos identifiants de connexion.";
+    }
+  }
+
+  _buildStartingAnimation() {
+    MediaQueryData screenSize = MediaQuery.of(context);
+    return AnimatedBuilder(
+        animation: iconSlideAnimation,
+        builder: (context, child) {
+          return Transform.scale(
+            scale: 1 + 0.2 * iconSlideAnimation.value,
+            child: Transform.translate(
+              //animation goes from 1 to 0
+              offset: Offset(0, 0 + iconSlideAnimation.value * screenSize.size.height / 10 * 0.2),
+              child: Container(
+                  width: screenSize.size.width / 5 * 2.2,
+                  height: screenSize.size.width / 5 * 2.2,
+                  decoration: BoxDecoration(color: Colors.white)),
+            ),
+          );
+        });
+  }
+
+  _buildRoundedContainer(Widget child) {
+    MediaQueryData screenSize = MediaQuery.of(context);
+
+    return Container(
+        padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.2),
+        decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(topLeft: Radius.circular(32.0), topRight: Radius.circular(32.0))),
+        child: child);
+  }
+
+  _loginTextAndHelpButton() {
+    MediaQueryData screenSize = MediaQuery.of(context);
+    return InkWell(
+      onTap: () {
+        print("clicked");
+      },
+      child: Container(
+        child: Column(
+          children: [
+            Text("Se connecter",
+                style: TextStyle(fontFamily: 'Asap', color: Colors.white, fontSize: 38, fontWeight: FontWeight.bold)),
+            Text("En savoir plus sur la connexion",
+                style: TextStyle(
+                  fontFamily: 'Asap',
+                  color: Colors.transparent,
+                  shadows: [Shadow(color: Colors.white, offset: Offset(0, -5))],
+                  fontSize: 17,
+                  decorationColor: Colors.white,
+                  fontWeight: FontWeight.normal,
+                  textBaseline: TextBaseline.alphabetic,
+                  decoration: TextDecoration.underline,
+                  decorationThickness: 2,
+                  decorationStyle: TextDecorationStyle.dashed,
+                )),
+            Container(
+                width: screenSize.size.height / 10 * 0.1,
+                height: screenSize.size.height / 10 * 0.1,
+                margin: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.1),
+                decoration: BoxDecoration(borderRadius: BorderRadius.circular(5000), color: Colors.white)),
+            _buildStepsText()
+          ],
+        ),
+      ),
+    );
+  }
+
+  _buildPageView(bool setupNeeded) {
+    return PageView(
+      controller: sliderController,
+      children: [
+        if (setupNeeded) PronoteSetupPart(callback: _setupPartCallback),
+        if (setupNeeded) PronoteUrlFieldPart(),
+        _buildLoginPart(),
+      ],
+    );
+  }
+
+  _buildLoginPart() {
+    MediaQueryData screenSize = MediaQuery.of(context);
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        LoginPageTextField(_username, "Nom d'utilisateur", false, MdiIcons.account),
+        SizedBox(
+          height: screenSize.size.height / 10 * 0.1,
+        ),
+        LoginPageTextField(_password, "Mot de passe", true, MdiIcons.key),
+        SizedBox(height: screenSize.size.height / 10 * 0.4),
+        CustomButtons.materialButton(context, screenSize.size.width / 5 * 2.2, null, () {},
+            backgroundColor: Colors.green, label: "Se connecter", textColor: Colors.white)
+      ],
+    );
+  }
+
+  _buildMetaPart() {
+    MediaQueryData screenSize = MediaQuery.of(context);
+
+    return Container(
+      margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
+      padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.4),
+      width: screenSize.size.width,
+      child: FittedBox(
+        fit: BoxFit.fitWidth,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            InkWell(
+                child: new Text(
+                  'Foire aux questions',
+                  style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: Colors.white60),
+                ),
+                onTap: () => launch('https://ynotes.fr/faq')),
+            SizedBox(
+              width: screenSize.size.width / 5 * 0.2,
+            ),
+            InkWell(
+                child: new Text(
+                  'PDC',
+                  style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: Colors.white60),
+                ),
+                onTap: () => launch('https://ynotes.fr/legal/PDCYNotes.pdf')),
+            SizedBox(
+              width: screenSize.size.width / 5 * 0.2,
+            ),
+            InkWell(
+                child: new Text(
+                  'CGU',
+                  style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: Colors.white60),
+                ),
+                onTap: () => launch('https://ynotes.fr/legal/CGUYNotes.pdf')),
+          ],
+        ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    MediaQueryData screenSize = MediaQuery.of(context);
+    //build background
+    return Container(
+        height: screenSize.size.height,
+        width: screenSize.size.width,
+        decoration: BoxDecoration(
+            gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Color(0xff22256A),
+            Color(0xff5C66C1),
+          ],
+        )),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Spacer(),
+            _loginTextAndHelpButton(),
+            Container(
+                height: screenSize.size.height / 10 * 4, width: screenSize.size.width, child: _buildPageView(true)),
+            Spacer(),
+            _buildMetaPart()
+          ],
+        ));
+  }
+}
 
 class LoginPage extends StatefulWidget {
   State<StatefulWidget> createState() {
@@ -171,6 +427,13 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
+  Widget build(BuildContext context) {
+    return LoginSlider(
+      setupNeeded: true,
+    );
+  }
+
+/* 
   Widget build(BuildContext context) {
     MediaQueryData screenSize;
     screenSize = MediaQuery.of(context);
@@ -773,7 +1036,7 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
-  }
+  } */
 }
 
 class AlertBoxWidget extends StatefulWidget {

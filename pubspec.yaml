@@ -94,6 +94,8 @@ dependencies:
   flutter_tex: ^3.6.7+10
   fl_chart: ^0.12.0
   expandable: ^4.1.4
+  webview_flutter: ^1.0.7
+
   liquid_progress_indicator: ^0.3.2
     
   wiredash:
