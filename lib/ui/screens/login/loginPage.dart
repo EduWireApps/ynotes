@@ -1,4 +1,6 @@
 import 'package:flare_flutter/flare_actor.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 
@@ -11,6 +13,7 @@ import 'package:ynotes/core/services/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/ui/animations/FadeAnimation.dart';
 import 'package:ynotes/ui/components/buttons.dart';
+import 'package:ynotes/ui/screens/login/loginPageWidgets/loginWebView.dart';
 import 'package:ynotes/ui/screens/login/loginPageWidgets/pronoteSetup.dart';
 import 'package:ynotes/ui/screens/login/loginPageWidgets/textField.dart';
 import 'package:ynotes/ui/screens/school_api_choice/schoolAPIChoicePage.dart';
@@ -173,11 +176,19 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
   }
 
   _buildPageView(bool setupNeeded) {
+    InAppWebViewController _controller;
+
     return PageView(
       controller: sliderController,
       children: [
         if (setupNeeded) PronoteSetupPart(callback: _setupPartCallback),
-        if (setupNeeded) PronoteUrlFieldPart(),
+        if (setupNeeded)
+          PronoteUrlFieldPart(
+            callback: () {
+              Navigator.of(context).push(router(LoginWebView(
+                  url: "https://0782540m.index-education.net/pronote/eleve.html", controller: _controller)));
+            },
+          ),
         _buildLoginPart(),
       ],
     );

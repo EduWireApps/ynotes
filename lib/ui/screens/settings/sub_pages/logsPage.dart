@@ -75,10 +75,13 @@ class _LogsPageState extends State<LogsPage> {
 }
 
 Future<String> getFileData() async {
-  final dir = await FolderAppUtil.getDirectory();
-  final File file = File('${dir.path}/logs.txt');
-
-  return await file.readAsString();
+  try {
+    final dir = await FolderAppUtil.getDirectory();
+    final File file = File('${dir.path}/logs.txt');
+    return await file.readAsString();
+  } catch (e) {
+    return "";
+  }
 }
 
 logFile(String error) async {
