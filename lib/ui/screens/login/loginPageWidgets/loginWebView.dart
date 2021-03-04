@@ -145,9 +145,10 @@ class _LoginWebViewState extends State<LoginWebView> {
       }
     }
   }
+
   ///1) Redirected to the first URL (CAS login)
   ///2) User enters its credentials
-  ///3) We get 
+  ///3) We get
   interpreteLogin(String data) {
     print(data);
   }
