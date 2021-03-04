@@ -90,7 +90,7 @@ class _LoginWebViewState extends State<LoginWebView> {
             },
             onLoadStart: (InAppWebViewController controller, String url) {},
             onLoadStop: (InAppWebViewController controller, String url) async {
-              /* var uuid = Uuid();
+              var uuid = Uuid();
 
               //Injected to get the server metas
               String locationProcess = "(function(){return JSON.stringify(location);})();";
@@ -121,7 +121,7 @@ class _LoginWebViewState extends State<LoginWebView> {
               });
 
               //Interprete location to get URLs and other useful stuff
-              interpreteLocation(locationProcessResult);*/
+              interpreteLocation(locationProcessResult);
             },
             onProgressChanged: (InAppWebViewController controller, int progress) {},
           ),
@@ -145,7 +145,9 @@ class _LoginWebViewState extends State<LoginWebView> {
       }
     }
   }
-
+  ///1) Redirected to the first URL (CAS login)
+  ///2) User enters its credentials
+  ///3) We get 
   interpreteLogin(String data) {
     print(data);
   }
