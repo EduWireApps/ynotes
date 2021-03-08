@@ -270,7 +270,8 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
                 label: "J'ajoute cette note",
                 backgroundColor: Colors.blue,
                 textColor: Colors.white,
-                icon: MdiIcons.flaskEmptyPlus),
+                icon: MdiIcons.flaskEmptyPlus,
+                iconColor: Colors.white),
           )
         ],
       ),

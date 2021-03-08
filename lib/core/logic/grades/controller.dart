@@ -313,7 +313,7 @@ class GradesController extends ChangeNotifier {
               classAverage: e.classAverage,
               minClassAverage: e.minClassAverage,
               maxClassAverage: e.maxClassAverage,
-              disciplineCode: e.classAverage,
+              disciplineCode: e.disciplineCode,
               subdisciplineCode: e.subdisciplineCode,
               average: e.average,
               teachers: e.teachers,

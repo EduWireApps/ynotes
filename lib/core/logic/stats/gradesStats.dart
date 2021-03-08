@@ -14,13 +14,12 @@ class GradesStats {
 
     List<Grade> _sortedGrades = List();
     _sortedGrades.addAll(this.allGrades);
-    //Order
+    print(grade.disciplineCode);
     //Remove unconcerned grades
-
     _sortedGrades.removeWhere(
         (_grade) => _grade.disciplineCode != this.grade.disciplineCode || _grade.periodCode != this.grade.periodCode);
     _sortedGrades = _sortedGrades.reversed.toList();
-
+    //get concerned grad index
     int gradeIndex =
         _sortedGrades.indexWhere((_grade) => _grade.testName == this.grade.testName && _grade.date == this.grade.date);
     //remove next items
@@ -43,7 +42,6 @@ class GradesStats {
       else {
         //Calculate before average
         beforeAverage = beforeAverage / coeffCounter;
-
         if (!_grade.notSignificant && !_grade.letters) {
           double gradeOver20 =
               double.parse(_grade.value.replaceAll(',', '.')) * 20 / double.parse(_grade.scale.replaceAll(',', '.'));
