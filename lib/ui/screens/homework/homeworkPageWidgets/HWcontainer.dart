@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/HWelement.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
@@ -95,13 +96,13 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
         duration: Duration(milliseconds: 170),
         width: screenSize.size.width / 5 * 5,
         decoration: BoxDecoration(
-          color: Theme.of(context).primaryColorDark,
+          color: Theme.of(context).primaryColor,
           borderRadius: BorderRadius.circular(11),
         ),
         child: Stack(
           children: <Widget>[
             Material(
-              color: Theme.of(context).primaryColorDark,
+              color: Theme.of(context).primaryColor,
               borderRadius: BorderRadius.all(
                 Radius.circular(11),
               ),
@@ -179,6 +180,7 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
                       ),
                       AnimatedContainer(
                           duration: Duration(milliseconds: 170),
+                          curve: Curves.ease,
                           decoration: BoxDecoration(
                             color: isDarkModeEnabled ? Color(0xff656565) : Colors.white,
                           ),
@@ -190,7 +192,28 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: <Widget>[
-                                //Pin button
+                                CustomButtons.materialButton(
+                                  context,
+                                  null,
+                                  null,
+                                  () async {
+                                    setState(() {
+                                      isPinned = !isPinned;
+                                      offline.pinnedHomework.set(widget.date.toString(), isPinned);
+                                      //If date pinned is before actual date (can be deleted)
+                                    });
+                                    if (isPinned != true && widget.date.isBefore(DateTime.now())) {
+                                      CustomDialogs.showAnyDialog(
+                                          context, "Cette date sera supprimée au prochain rafraichissement.");
+                                    }
+                                    widget.callback();
+                                  },
+                                  icon: MdiIcons.pin,
+                                  label: (isPinned) ? "Epinglé" : "Epingler",
+                                  textColor: (isPinned) ? Colors.green : Colors.white,
+                                ),
+
+                                /* //Pin button
                                 RaisedButton(
                                   color: Color(0xff3b3b3b),
                                   onPressed: () async {
@@ -215,7 +238,7 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
                                         color: (isPinned) ? Colors.green : Colors.white,
                                         size: screenSize.size.width / 5 * 0.5,
                                       )),
-                                ),
+                                ), */
                               ],
                             ),
                           )),

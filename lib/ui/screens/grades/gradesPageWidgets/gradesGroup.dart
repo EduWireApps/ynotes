@@ -166,7 +166,7 @@ class _GradesGroupState extends State<GradesGroup> {
                 margin: EdgeInsets.only(top: (screenSize.size.height / 10 * 8.8) / 10 * 0.55),
                 width: screenSize.size.width / 5 * 4.51,
                 decoration: BoxDecoration(
-                  color: isDarkModeEnabled ? Color(0xff333333) : Color(0xffE2E2E2),
+                  color: Theme.of(context).primaryColor,
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(15),
                     bottomRight: Radius.circular(15),

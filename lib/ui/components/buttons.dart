@@ -24,7 +24,7 @@ class CustomButtons {
                     if (icon != null)
                       Icon(
                         icon,
-                        color: ThemeUtils.textColor(),
+                        color: textColor ?? ThemeUtils.textColor(),
                       ),
                     if (label != null)
                       Text(

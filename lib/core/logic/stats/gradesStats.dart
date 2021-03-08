@@ -28,7 +28,6 @@ class GradesStats {
     double beforeAverage = 0.0;
     double afterAverage = 0.0;
     double coeffCounter = 0.0;
-    print(gradeIndex);
     _sortedGrades.forEach((_grade) {
       //Before selected grade
       if (_grade.testName != this.grade.testName || _grade.entryDate != this.grade.entryDate) {
