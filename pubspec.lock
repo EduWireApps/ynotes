@@ -63,7 +63,7 @@ packages:
       name: asn1lib
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.6.5"
+    version: "0.8.1"
   async:
     dependency: transitive
     description:
@@ -364,7 +364,7 @@ packages:
       name: encrypt
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.3"
+    version: "4.1.0"
   equatable:
     dependency: transitive
     description:
@@ -972,7 +972,7 @@ packages:
       name: pointycastle
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.2"
+    version: "2.0.1"
   pool:
     dependency: transitive
     description:

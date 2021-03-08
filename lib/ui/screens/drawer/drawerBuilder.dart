@@ -226,7 +226,6 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
       //PAppbar
       child: Scaffold(
           key: _drawerKey,
-          resizeToAvoidBottomPadding: false,
           resizeToAvoidBottomInset: false,
           drawer: Theme(
             data: Theme.of(context).copyWith(

@@ -185,8 +185,8 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
         if (setupNeeded)
           PronoteUrlFieldPart(
             callback: () {
-              Navigator.of(context).push(router(LoginWebView(
-                  url: "https://0782540m.index-education.net/pronote/eleve.html", controller: _controller)));
+              Navigator.of(context).push(
+                  router(LoginWebView(url: "https://0782540m.index-education.net/pronote", controller: _controller)));
             },
           ),
         _buildLoginPart(),

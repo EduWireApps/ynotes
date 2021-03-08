@@ -56,8 +56,8 @@ dependencies:
   package_info: ^0.4.0+16
   share: ^0.6.4+3
   requests: ^3.3.0
-  encrypt: ^4.0.2
-  pointycastle: ^1.0.2
+  encrypt: ^4.1.0
+  pointycastle: ^2.0.0
   dio: ^3.0.9
   uuid: ^2.1.0
   highlight_text: ^0.7.2

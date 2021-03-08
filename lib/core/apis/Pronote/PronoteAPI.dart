@@ -162,9 +162,10 @@ class Client {
       "pourENT": this.ent,
       "enConnexionAuto": false,
       "demandeConnexionAuto": false,
+      "enConnexionAppliMobile": true,
       "demandeConnexionAppliMobile": false,
       "demandeConnexionAppliMobileJeton": false,
-      "uuidAppliMobile": "",
+      "uuidAppliMobile": "121567895313231",
       "loginTokenSAV": ""
     };
     var idr = await this.communication.post("Identification", data: {'donnees': ident_json});
@@ -200,7 +201,7 @@ class Client {
       }
 
       var alea = idr['donneesSec']['donnees']['alea'];
-      List<int> encoded = utf8.encode(alea + p);
+      List<int> encoded = utf8.encode(alea ?? "" + p);
       motdepasse = sha256.convert(encoded);
       motdepasse = hex.encode(motdepasse.bytes);
       motdepasse = motdepasse.toString().toUpperCase();
@@ -655,10 +656,9 @@ class _Communication {
     };
 
 //?fd=1 bypass the old navigator issue
-    var get_response = await Requests.get(
-            this.root_site + "/" + (this.cookies != null ? "?fd=1" : this.html_page + "?fd=1"),
-            headers: headers)
-        .catchError((e) {
+    var get_response =
+        await Requests.get(this.root_site + "/" + (this.cookies != null ? "?fd=1" : this.html_page), headers: headers)
+            .catchError((e) {
       throw ("Impossible de se connecter");
     });
 
