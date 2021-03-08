@@ -102,12 +102,13 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
         child: Stack(
           children: <Widget>[
             Material(
+              animationDuration: Duration(milliseconds: 1200),
               color: Theme.of(context).primaryColor,
               borderRadius: BorderRadius.all(
                 Radius.circular(11),
               ),
               child: InkWell(
-                onLongPress: () {
+                onTap: () {
                   if (containerSize == 0) {
                     setState(() {
                       containerSize = 2;
@@ -210,7 +211,7 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
                                   },
                                   icon: MdiIcons.pin,
                                   label: (isPinned) ? "Epinglé" : "Epingler",
-                                  textColor: (isPinned) ? Colors.green : Colors.white,
+                                  textColor: (isPinned) ? Colors.green : null,
                                 ),
 
                                 /* //Pin button

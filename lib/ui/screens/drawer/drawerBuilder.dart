@@ -230,7 +230,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
           resizeToAvoidBottomInset: false,
           drawer: Theme(
             data: Theme.of(context).copyWith(
-              canvasColor: Theme.of(context).primaryColorDark, //This will change the drawer background to blue.
+              canvasColor: Theme.of(context).primaryColor, //This will change the drawer background to blue.
               //other styles
             ),
             child: ClipRRect(

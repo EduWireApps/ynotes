@@ -122,24 +122,27 @@ class _QuickGradesState extends State<QuickGrades> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                grade.disciplineName ?? "",
-                style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.left,
-              ),
-              Text(
-                grade.testName ?? "",
-                style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontWeight: FontWeight.bold),
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.left,
-              ),
-              Text(
-                grade.date != null ? df.format(grade.entryDate) : "",
-                style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.left,
-              )
+              if (grade.disciplineName != null && grade.disciplineName != "")
+                Text(
+                  grade.disciplineName ?? "",
+                  style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.left,
+                ),
+              if (grade.testName != null && grade.testName != "")
+                Text(
+                  grade.testName ?? "",
+                  style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontWeight: FontWeight.bold),
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.left,
+                ),
+              if (grade.date != null)
+                Text(
+                  grade.date != null ? df.format(grade.entryDate) : "",
+                  style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.left,
+                )
             ],
           ),
         )
@@ -162,9 +165,10 @@ class _QuickGradesState extends State<QuickGrades> {
     } else {
       return Container(
         margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
-        height: screenSize.size.height / 10 * 1.2,
+        height: screenSize.size.height / 10 * 1.4,
         width: screenSize.size.width,
         child: ListView.builder(
+            padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.1),
             itemCount: grades.length,
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) {

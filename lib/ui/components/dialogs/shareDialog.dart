@@ -16,6 +16,7 @@ import 'package:ynotes/core/apis/utils.dart';
 
 import 'dart:ui' as ui;
 
+import 'package:ynotes/ui/components/buttons.dart';
 
 class ShareBox extends StatefulWidget {
   final Grade grade;
@@ -182,20 +183,9 @@ class _ShareBoxState extends State<ShareBox> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                RaisedButton(
-                  color: Theme.of(context).primaryColor,
-                  shape: CircleBorder(),
-                  onPressed: () async {
-                    await _capturePng();
-                  },
-                  child: Container(
-                      padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
-                      child: Icon(
-                        MdiIcons.share,
-                        color: ThemeUtils.textColor(),
-                        size: screenSize.size.width / 5 * 0.5,
-                      )),
-                ),
+                CustomButtons.materialButton(context, screenSize.size.width / 5 * 1.5, null, () async {
+                  await _capturePng();
+                }, label: "Partager", icon: MdiIcons.share)
               ],
             )
           ],
