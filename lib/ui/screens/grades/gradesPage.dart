@@ -579,7 +579,7 @@ class _GradesPageState extends State<GradesPage> {
                                             }
                                           }),
                                         ),
-                                        if (kDebugMode && model.isSimulating) _buildFloatingButton(context)
+                                        if (model.isSimulating) _buildFloatingButton(context)
                                       ],
                                     )))
                           ],
