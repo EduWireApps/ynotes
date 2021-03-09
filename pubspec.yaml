@@ -168,6 +168,8 @@ flutter:
     - family: Asap
       fonts:
         - asset: fonts/Asap-Regular.otf
+        - asset: fonts/Asap-Italic.otf
+          style: italic
         - asset: fonts/Asap-Bold.otf
           weight: 700
     - family: ProximaNova
