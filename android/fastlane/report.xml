@@ -5,47 +5,44 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.002541791">
+      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.000365235">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="1: number_of_commits" time="0.009727884">
+      <testcase classname="fastlane.lanes" name="1: number_of_commits" time="0.009181749">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="2: flutter_version" time="0.001623248">
+      <testcase classname="fastlane.lanes" name="2: flutter clean" time="0.874564707">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="3: prompt" time="28.419908782">
+      <testcase classname="fastlane.lanes" name="3: flutter build apk --flavor prod --release --build-number\=387 --split-per-abi" time="141.778193235">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="4: prompt" time="0.136523233">
+      <testcase classname="fastlane.lanes" name="4: adb install build/app/outputs/flutter-apk/app-arm64-v8a-prod-release.apk" time="2.623233991">
+        
+          <failure message="/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.172.0/fastlane/lib/fastlane/actions/actions_helper.rb:67:in `execute_action'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.172.0/fastlane/lib/fastlane/fast_file.rb:218:in `sh'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.172.0/fastlane/lib/fastlane/fast_file.rb:212:in `sh'&#10;Fastfile:98:in `block (2 levels) in parsing_binding'&#10;Fastfile:97:in `chdir'&#10;Fastfile:97:in `block in parsing_binding'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.172.0/fastlane/lib/fastlane/lane.rb:33:in `call'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.172.0/fastlane/lib/fastlane/runner.rb:49:in `block in execute'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.172.0/fastlane/lib/fastlane/runner.rb:45:in `chdir'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.172.0/fastlane/lib/fastlane/runner.rb:45:in `execute'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.172.0/fastlane/lib/fastlane/lane_manager.rb:47:in `cruise_lane'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.172.0/fastlane/lib/fastlane/command_line_handler.rb:36:in `handle'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.172.0/fastlane/lib/fastlane/commands_generator.rb:108:in `block (2 levels) in run'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/commander-fastlane-4.4.6/lib/commander/command.rb:178:in `call'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/commander-fastlane-4.4.6/lib/commander/command.rb:153:in `run'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/commander-fastlane-4.4.6/lib/commander/runner.rb:476:in `run_active_command'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.172.0/fastlane_core/lib/fastlane_core/ui/fastlane_runner.rb:76:in `run!'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/commander-fastlane-4.4.6/lib/commander/delegates.rb:15:in `run!'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.172.0/fastlane/lib/fastlane/commands_generator.rb:352:in `run'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.172.0/fastlane/lib/fastlane/commands_generator.rb:41:in `start'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.172.0/fastlane/lib/fastlane/cli_tools_distributor.rb:122:in `take_off'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.172.0/bin/fastlane:23:in `&lt;top (required)&gt;'&#10;/home/jsonlines/.rbenv/versions/2.6.6/bin/fastlane:23:in `load'&#10;/home/jsonlines/.rbenv/versions/2.6.6/bin/fastlane:23:in `&lt;main&gt;'&#10;&#10;Exit status of command 'adb install build/app/outputs/flutter-apk/app-arm64-v8a-prod-release.apk' was 1 instead of 0.&#10;adb: failed to install build/app/outputs/flutter-apk/app-arm64-v8a-prod-release.apk: Failure [INSTALL_FAILED_UPDATE_INCOMPATIBLE: Package fr.ynotes signatures do not match previously installed version; ignoring!]&#10;Performing Streamed Install&#10;" />
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="5: cat last_changelog.txt &gt; changelogs/227.txt" time="0.010405206">
+      <testcase classname="fastlane.lanes" name="5: adb uninstall fr.ynotes" time="0.51066935">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="6: flutter packages get" time="2.149420894">
+      <testcase classname="fastlane.lanes" name="6: adb install build/app/outputs/flutter-apk/app-arm64-v8a-prod-release.apk" time="2.118604733">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="7: flutter clean" time="1.013125752">
-        
-      </testcase>
-    
-      
-      <testcase classname="fastlane.lanes" name="8: flutter build appbundle --build-number\=227 --flavor prod" time="63.582896449">
+      <testcase classname="fastlane.lanes" name="7: adb shell am start -n fr.ynotes/.MainActivity" time="0.085809382">
         
       </testcase>
     
