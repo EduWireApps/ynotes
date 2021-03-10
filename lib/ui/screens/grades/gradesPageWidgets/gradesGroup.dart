@@ -130,7 +130,7 @@ class _GradesGroupState extends State<GradesGroup> {
                                           "Moyenne : " + (widget.discipline.getAverage().toString() ?? "-"),
                                           style: TextStyle(
                                               fontFamily: "Asap",
-                                              fontSize: screenSize.size.height / 10 * 0.2,
+                                              fontSize: screenSize.size.height / 10 * 0.17,
                                               fontStyle: FontStyle.italic),
                                         ),
                                       )),
