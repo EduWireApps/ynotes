@@ -1,5 +1,3 @@
-
-## Note de mise à jour 0.9.2
 Dans cette version, nous introduisons un simulateur :
 - Ajoutez des notes virtuelles et visualisez leurs effets sur vos moyennes
 - Supprimez virtuellement les notes existantes et visualisez leurs effets sur vos moyennes
