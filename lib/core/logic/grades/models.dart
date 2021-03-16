@@ -69,6 +69,26 @@ class Discipline {
   set setGradeList(List<Grade> list) {
     gradesList = list;
   }
+
+  double getAverage() {
+    double average = 0.0;
+    double counter = 0;
+
+    gradesList.forEach((Grade grade) {
+      if (!grade.notSignificant && (!grade.letters || grade.countAsZero) && grade.periodName == this.period) {
+        counter += double.parse(grade.weight);
+        String gradeStringValue = grade.countAsZero ? "0" : grade.value;
+        average += double.parse(gradeStringValue.replaceAll(',', '.')) *
+            20 /
+            double.parse(grade.scale.replaceAll(',', '.')) *
+            double.parse(grade.weight.replaceAll(',', '.'));
+      }
+    });
+    print(counter);
+    average = double.parse((average / counter).toStringAsFixed(2));
+    return (average);
+  }
+
 //Map<String, dynamic> json, List<String> profs, String codeMatiere, String periode, Color color, String moyenneG, String bmoyenneClasse, String moyenneClasse
 //disciplinesList.add(Discipline.fromJson(element, teachersNames, element['codeMatiere'], periodeElement["idPeriode"], Colors.blue, periodeElement["ensembleMatieres"]["moyenneGenerale"], periodeElement["ensembleMatieres"]["moyenneMax"], periodeElement["ensembleMatieres"]["moyenneClasse"]));
 
@@ -102,6 +122,13 @@ class Discipline {
         generalRank: rangGeneral,
         weight: json["coef"].toString());
   }
+  //overrides == operator to avoid issues in selectors
+  @override
+  bool operator ==(Object other) =>
+      other is Discipline &&
+      other.disciplineCode == disciplineCode &&
+      other.period == period &&
+      other.subdisciplineCode == subdisciplineCode;
 }
 
 //Marks class
@@ -156,44 +183,55 @@ class Grade {
   final String max;
   @HiveField(18)
   final String min;
-  Grade(
-      {this.max,
-      this.min,
-      this.testName,
-      this.periodCode,
-      this.disciplineCode,
-      this.subdisciplineCode,
-      this.disciplineName,
-      this.letters,
-      this.value,
-      this.weight,
-      this.scale,
-      this.classAverage,
-      this.testType,
-      this.date,
-      this.entryDate,
-      this.notSignificant,
-      this.periodName});
+
+  @HiveField(19)
+  final bool simulated;
+  @HiveField(20)
+  final bool countAsZero;
+  Grade({
+    this.max,
+    this.min,
+    this.testName,
+    this.periodCode,
+    this.disciplineCode,
+    this.subdisciplineCode,
+    this.disciplineName,
+    this.letters,
+    this.value,
+    this.weight,
+    this.scale,
+    this.classAverage,
+    this.testType,
+    this.date,
+    this.entryDate,
+    this.notSignificant,
+    this.periodName,
+    this.simulated = false,
+    this.countAsZero = false,
+  });
 
   factory Grade.fromEcoleDirecteJson(Map<String, dynamic> json, String nomPeriode) {
     return Grade(
-        min: json["minClasse"],
-        max: json["maxClasse"],
-        testName: json['devoir'],
-        periodCode: json['codePeriode'],
-        periodName: nomPeriode,
-        disciplineCode: json['codeMatiere'],
-        subdisciplineCode: json['codeSousMatiere'],
-        disciplineName: json['libelleMatiere'],
-        letters: json['enLettre'],
-        value: json['valeur'],
-        weight: json['coef'],
-        scale: json['noteSur'],
-        classAverage: json['moyenneClasse'],
-        testType: json['typeDevoir'],
-        date: DateTime.parse(json['date']),
-        entryDate: DateTime.parse(json['dateSaisie']),
-        notSignificant: json['nonSignificatif']);
+      min: json["minClasse"],
+      max: json["maxClasse"],
+      testName: json['devoir'],
+      periodCode: json['codePeriode'],
+      periodName: nomPeriode,
+      disciplineCode: json['codeMatiere'],
+      subdisciplineCode: json['codeSousMatiere'],
+      disciplineName: json['libelleMatiere'],
+      letters: json['enLettre'],
+      value: json['valeur'],
+      weight: json['coef'],
+      scale: json['noteSur'],
+      classAverage: json['moyenneClasse'],
+      testType: json['typeDevoir'],
+      date: DateTime.parse(json['date']),
+      entryDate: DateTime.parse(json['dateSaisie']),
+      notSignificant: json['nonSignificatif'],
+      simulated: false,
+      countAsZero: false,
+    );
   }
 }
 

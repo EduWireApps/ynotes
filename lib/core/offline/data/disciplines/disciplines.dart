@@ -30,9 +30,6 @@ class DisciplinesOffline extends Offline {
   updateDisciplines(List<Discipline> newData) async {
     if (!locked) {
       try {
-        /*if (offlineBox == null || !offlineBox.isOpen) {
-          offlineBox = await Hive.openBox("offlineData");
-        }*/
         print("Updating disciplines");
         await parent.offlineBox.delete("disciplines");
         await parent.offlineBox.put("disciplines", newData);
@@ -51,7 +48,7 @@ class DisciplinesOffline extends Offline {
       List<Grade> grades = getAllGrades(disciplines, overrideLimit: true);
 
       grades.forEach((grade) {
-        if (!listPeriods.any((period) => period.name == grade.periodName && period.id == grade.periodCode)) {
+        if (!listPeriods.any((period) => period.name == grade.periodName || period.id == grade.periodCode)) {
           if (grade.periodName != null && grade.periodName != "") {
             listPeriods.add(Period(grade.periodName, grade.periodCode));
           } else {}

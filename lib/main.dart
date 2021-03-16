@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:background_fetch/background_fetch.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -28,6 +29,14 @@ extension StringExtension on String {
   String capitalize() {
     return "${this[0].toUpperCase()}${this.substring(1)}";
   }
+}
+
+extension on TextStyle {
+  /// Temporary fix the following Flutter Web issues
+  /// https://github.com/flutter/flutter/issues/63467
+  /// https://github.com/flutter/flutter/issues/64904#issuecomment-699039851
+  /// https://github.com/flutter/flutter/issues/65526
+  TextStyle get withZoomFix => copyWith(wordSpacing: 0);
 }
 
 //login manager
@@ -103,6 +112,15 @@ class HomeApp extends StatelessWidget {
       projectId: "ynotes-giw0qs2",
       secret: "y9zengsvskpriizwniqxr6vxa1ka1n6u",
       navigatorKey: _navigatorKey,
+      theme: WiredashThemeData(
+          backgroundColor: isDarkModeEnabled ? Color(0xff313131) : Colors.white,
+          primaryBackgroundColor: isDarkModeEnabled ? Color(0xff414141) : Color(0xffF3F3F3),
+          secondaryBackgroundColor: isDarkModeEnabled ? Color(0xff313131) : Colors.white,
+          secondaryColor: Theme.of(context).primaryColorDark,
+          primaryColor: Theme.of(context).primaryColor,
+          primaryTextColor: ThemeUtils.textColor(),
+          brightness: Brightness.dark,
+          secondaryTextColor: ThemeUtils.textColor().withOpacity(0.8)),
       options: WiredashOptionsData(
         /// You can set your own locale to override device default (`window.locale` by default)
         locale: const Locale.fromSubtags(languageCode: 'fr'),
@@ -121,6 +139,7 @@ class HomeApp extends StatelessWidget {
         ],
         debugShowCheckedModeBanner: false,
         theme: lightTheme,
+        title: kDebugMode ? "yNotes DEV" : "yNotes",
         navigatorKey: _navigatorKey,
         darkTheme: darkTheme,
         home: loader(),

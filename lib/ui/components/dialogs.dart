@@ -118,13 +118,16 @@ class CustomDialogs {
     );
   }
 
-  static Future<int> showNumberChoiceDialog(BuildContext context, {String text = ""}) {
+  static showNumberChoiceDialog(BuildContext context, {String text = "", bool isDouble = false}) {
     // show the dialog
-    return showDialog<int>(
+    return showDialog(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return NumberChoiceDialog(text);
+        return NumberChoiceDialog(
+          text,
+          isDouble: isDouble,
+        );
       },
     );
   }
@@ -321,7 +324,7 @@ class CustomDialogs {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
         ),
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: Color(0xffDCDCDC),
         context: context,
         isScrollControlled: true,
         builder: (BuildContext bc) {

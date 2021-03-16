@@ -654,7 +654,9 @@ class _Communication {
       'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/74.0'
     };
 
-    var get_response = await Requests.get(this.root_site + "/" + this.html_page + (this.cookies != null ? "?fd=1" : ''),
+//?fd=1 bypass the old navigator issue
+    var get_response = await Requests.get(
+            this.root_site + "/" + (this.cookies != null ? "?fd=1" : this.html_page + "?fd=1"),
             headers: headers)
         .catchError((e) {
       throw ("Impossible de se connecter");
@@ -1015,6 +1017,7 @@ class PronotePeriod {
     this.start = inputFormat.parse(parsed_json['dateDebut']['V']);
     this.end = inputFormat.parse(parsed_json['dateFin']['V']);
   }
+
   gradeTranslate(String value) {
     List grade_translate = [
       'Absent',
@@ -1048,6 +1051,13 @@ class PronotePeriod {
       gradeTranslate(averageData["moyMin"]["V"]),
       gradeTranslate(averageData["moyClasse"]["V"])
     ];
+  }
+
+  shouldCountAsZero(String grade) {
+    if (grade == "Absent zéro" || grade == "Non rendu zéro") {
+      return true;
+    } else
+      return false;
   }
 
   grades(int codePeriode) async {
@@ -1086,7 +1096,8 @@ class PronotePeriod {
           date: DateFormat("dd/MM/yyyy").parse(element["date"]["V"]),
           notSignificant: this.gradeTranslate(element["note"]["V"]) == "NonNote" ? true : false,
           testType: "Interrogation",
-          entryDate: DateFormat("dd/MM/yyyy").parse(element["date"]["V"])));
+          entryDate: DateFormat("dd/MM/yyyy").parse(element["date"]["V"]),
+          countAsZero: shouldCountAsZero(this.gradeTranslate(element["note"]["V"]))));
       other.add(average(response, element["service"]["V"]["L"].hashCode.toString()));
     });
     return [list, other];

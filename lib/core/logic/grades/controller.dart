@@ -103,18 +103,7 @@ class GradesController extends ChangeNotifier {
     List<double> averages = List();
     disciplines().where((i) => i.period == _period).forEach((f) {
       try {
-        double _average = 0.0;
-        double _counter = 0;
-        f.gradesList.forEach((grade) {
-          if (!grade.notSignificant && !grade.letters) {
-            _counter += double.parse(grade.weight);
-            _average += double.parse(grade.value.replaceAll(',', '.')) *
-                20 /
-                double.parse(grade.scale.replaceAll(',', '.')) *
-                double.parse(grade.weight.replaceAll(',', '.'));
-          }
-        });
-        _average = _average / _counter;
+        double _average = f.getAverage().isNaN ? f.average : f.getAverage();
         if (_average != null && !_average.isNaN) {
           averages.add(_average);
         }
@@ -258,10 +247,17 @@ class GradesController extends ChangeNotifier {
   //Removed "real" grades
   List<Grade> _removedGrades = List();
 
+  void simulationReset() {
+    _addedGrades.clear();
+    _removedGrades.clear();
+    refresh();
+  }
+
   void simulationAdd(Grade _grade) {
     _removedGrades.removeWhere((grade) => grade == _grade);
     _addedGrades.add(_grade);
     notifyListeners();
+    refresh();
   }
 
   void simulationRemove(Grade _grade) {
@@ -271,6 +267,7 @@ class GradesController extends ChangeNotifier {
       _removedGrades.add(_grade);
     }
     notifyListeners();
+    refresh();
   }
 
   String gradeHash(Grade grade) {
@@ -282,23 +279,60 @@ class GradesController extends ChangeNotifier {
   simulationMerge(List<Discipline> list) {
     ///Returned disciplines
     List<Discipline> _simulatedDisciplines;
-    _simulatedDisciplines = List();
     if (list != null) {
-      _simulatedDisciplines += list;
-
-      /* print("Merging ...");
+      _simulatedDisciplines = List();
+      //boring clone
+      _simulatedDisciplines.addAll(list
+          .map((e) => Discipline(
+              gradesList: e.gradesList
+                  .map((f) => Grade(
+                        max: f.max,
+                        min: f.min,
+                        testName: f.testName,
+                        periodCode: f.periodCode,
+                        disciplineCode: f.disciplineCode,
+                        subdisciplineCode: f.subdisciplineCode,
+                        disciplineName: f.disciplineName,
+                        letters: f.letters,
+                        value: f.value,
+                        weight: f.weight,
+                        scale: f.scale,
+                        classAverage: f.classAverage,
+                        testType: f.testType,
+                        date: f.date,
+                        entryDate: f.entryDate,
+                        notSignificant: f.notSignificant,
+                        periodName: f.periodName,
+                        simulated: f.simulated,
+                        countAsZero: f.countAsZero,
+                      ))
+                  .toList(),
+              maxClassGeneralAverage: e.maxClassGeneralAverage,
+              classGeneralAverage: e.classGeneralAverage,
+              generalAverage: e.generalAverage,
+              classAverage: e.classAverage,
+              minClassAverage: e.minClassAverage,
+              maxClassAverage: e.maxClassAverage,
+              disciplineCode: e.disciplineCode,
+              subdisciplineCode: e.subdisciplineCode,
+              average: e.average,
+              teachers: e.teachers,
+              disciplineName: e.disciplineName,
+              period: e.period,
+              color: e.color,
+              disciplineRank: e.disciplineRank,
+              classNumber: e.classNumber,
+              generalRank: e.generalRank))
+          .toList());
+      print("Merging ...");
       _simulatedDisciplines.forEach((discipline) {
-        discipline.gradesList.removeWhere((_grade) => _removedGrades.contains(_grade));
+        discipline.gradesList.removeWhere((_grade) => _removedGrades.any((element) =>
+            element.date == _grade.date && element.value == _grade.value && element.testName == _grade.testName));
         if (_addedGrades.any(
             (_grade) => _grade.periodName == discipline.period && _grade.disciplineCode == discipline.disciplineCode)) {
           discipline.gradesList.addAll(_addedGrades.where((_grade) =>
               _grade.periodName == discipline.period && _grade.disciplineCode == discipline.disciplineCode));
         }
-      });*/
-      _simulatedDisciplines.forEach((element) {
-        element.gradesList = [
-          Grade(testName: "a", entryDate: DateTime.now(), date: DateTime.now(), value: "10", scale: "20", weight: '1')
-        ];
       });
     }
     return _simulatedDisciplines;
