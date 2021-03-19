@@ -93,18 +93,28 @@ class _PronoteSetupPartState extends State<PronoteSetupPart> {
 
 class PronoteUrlFieldPart extends StatefulWidget {
   final Function callback;
-  PronoteUrlFieldPart({Key key, this.callback}) : super(key: key);
+  final String pronoteUrl;
+  PronoteUrlFieldPart({Key key, this.callback, this.pronoteUrl}) : super(key: key);
   @override
   _PronoteUrlFieldPartState createState() => _PronoteUrlFieldPartState();
 }
 
 class _PronoteUrlFieldPartState extends State<PronoteUrlFieldPart> {
   bool useEnt = false;
+  TextEditingController _url = TextEditingController();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if (widget.pronoteUrl != null) {
+      _url.text = widget.pronoteUrl;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
-    TextEditingController _url = TextEditingController();
+
     return Container(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

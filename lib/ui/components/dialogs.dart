@@ -2,6 +2,7 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/logic/pronote/schoolsModel.dart';
 import 'package:ynotes/ui/components/dialogs/homeworkDetails.dart';
 import 'package:ynotes/core/services/shared_preferences.dart';
 import 'package:ynotes/ui/components/dialogs/authorizationsDialog.dart';
@@ -11,6 +12,7 @@ import 'package:ynotes/ui/components/dialogs/shareDialog.dart';
 import 'package:ynotes/ui/components/dialogs/updateNoteDialog.dart';
 import 'package:ynotes/ui/components/giffy_dialog/src/asset.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/writeMailBottomSheet.dart';
+import 'package:ynotes/ui/screens/login/loginPageWidgets/pronoteLocationDialog.dart';
 import 'package:ynotes/ui/screens/settings/settingsPage.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/apis/EcoleDirecte/ecoleDirecteMethods.dart';
@@ -316,6 +318,21 @@ class CustomDialogs {
           MediaQueryData screenSize;
           screenSize = MediaQuery.of(context);
           return Transform.scale(scale: a1.value, child: Container(child: DialogHomework(hw)));
+        });
+  }
+
+  static Future<List<PronoteSchool>> showPronoteSchoolGeolocationDialog(BuildContext context) async {
+    return await showGeneralDialog(
+        context: context,
+        barrierColor: Colors.black.withOpacity(0.5),
+        transitionDuration: Duration(milliseconds: 200),
+        barrierDismissible: true,
+        barrierLabel: '',
+        pageBuilder: (context, animation1, animation2) {},
+        transitionBuilder: (context, a1, a2, widget) {
+          MediaQueryData screenSize;
+          screenSize = MediaQuery.of(context);
+          return Transform.scale(scale: a1.value, child: PronoteGeolocationDialog());
         });
   }
 

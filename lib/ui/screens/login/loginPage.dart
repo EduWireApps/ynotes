@@ -13,6 +13,7 @@ import 'package:ynotes/core/services/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/ui/animations/FadeAnimation.dart';
 import 'package:ynotes/ui/components/buttons.dart';
+import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/screens/login/loginPageWidgets/loginWebView.dart';
 import 'package:ynotes/ui/screens/login/loginPageWidgets/pronoteSetup.dart';
 import 'package:ynotes/ui/screens/login/loginPageWidgets/textField.dart';
@@ -65,7 +66,7 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
     });
   }
 
-  _setupPartCallback(String id) {
+  _setupPartCallback(String id) async {
     switch (id) {
       case "qrcode":
         {
@@ -74,6 +75,8 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
         break;
       case "location":
         {
+          var r = await CustomDialogs.showPronoteSchoolGeolocationDialog(context);
+          
           sliderController.animateToPage(1, duration: Duration(milliseconds: 300), curve: Curves.easeIn);
         }
         break;

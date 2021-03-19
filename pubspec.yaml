@@ -95,6 +95,9 @@ dependencies:
   fl_chart: ^0.12.0
   expandable: ^4.1.4
   flutter_inappwebview: ^4.0.0+4
+  geolocator: ^6.2.1
+  rive: ^0.6.8
+
 
   liquid_progress_indicator: ^0.3.2
     
