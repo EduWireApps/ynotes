@@ -287,7 +287,7 @@ class APIPronote extends API {
         }
       } catch (e) {
         loginLock = false;
-
+        localClient.stepsLogger.add("❌ Pronote login failed : " + e.toString());
         print(e);
         String error = "Une erreur a eu lieu. " + e.toString();
         if (e.toString().contains("invalid url")) {
@@ -307,6 +307,9 @@ class APIPronote extends API {
         if (e.toString().contains("SocketException")) {
           error = "Impossible de se connecter à l'adresse saisie. Vérifiez cette dernière et votre connexion.";
         }
+        if (e.toString().contains("Invalid or corrupted pad block")) {
+          error = "Le mot de passe et/ou l'identifiant saisi(s) est/sont incorrect(s)";
+        }
         if (e.toString().contains("HTML PAGE")) {
           error = "Problème de page HTML.";
         }
@@ -316,7 +319,6 @@ class APIPronote extends API {
         }
         print("test");
         await logFile(error);
-        localClient.stepsLogger.add("❌ Pronote login failed : " + error);
         return ([0, error, localClient.stepsLogger]);
       }
     } else {

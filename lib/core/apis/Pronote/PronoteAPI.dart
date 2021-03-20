@@ -687,13 +687,10 @@ class _Communication {
       'connection': 'keep-alive',
       'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/74.0'
     };
-    String url = this.root_site + "/" + (this.cookies != null ? "?fd=1" : this.html_page + "?fd=1");
+    String url = this.root_site + "/" + this.html_page + (this.cookies != null ? "?login=true" : "") + "?fd=1";
     this.client.stepsLogger.add("ⓘ" + " Used url is " + "`" + url + "`");
 //?fd=1 bypass the old navigator issue
-    var get_response = await Requests.get(
-            this.root_site + "/" + (this.cookies != null ? "?fd=1" : this.html_page + "?fd=1"),
-            headers: headers)
-        .catchError((e) {
+    var get_response = await Requests.get(url, headers: headers).catchError((e) {
       this.client.stepsLogger.add("❌ Failed login request");
 
       throw ("Impossible de se connecter");
@@ -973,14 +970,21 @@ class _Encryption {
   }
 
   rsa_encrypt(var data) async {
-    var modulusBytes = this.rsa_keys['MR'];
-    var modulus = BigInt.parse(modulusBytes, radix: 16);
-    var exponent = BigInt.parse(this.rsa_keys['ER'], radix: 16);
-    var cipher = PKCS1Encoding(RSAEngine());
-    cipher.init(true, PublicKeyParameter<RSAPublicKey>(RSAPublicKey(modulus, exponent)));
-    Uint8List output1 = cipher.process(aes_iv_temp);
+    try {
+      var modulusBytes = this.rsa_keys['MR'];
 
-    return output1;
+      var modulus = BigInt.parse(modulusBytes, radix: 16);
+
+      var exponent = BigInt.parse(this.rsa_keys['ER'], radix: 16);
+
+      var cipher = PKCS1Encoding(RSAEngine());
+      cipher.init(true, PublicKeyParameter<RSAPublicKey>(RSAPublicKey(modulus, exponent)));
+      Uint8List output1 = cipher.process(aes_iv_temp);
+
+      return output1;
+    } catch (e) {
+      throw ("Error while RSA encrypting " + e.toString());
+    }
   }
 
   _prepare_onglets(list_of_onglets) {
