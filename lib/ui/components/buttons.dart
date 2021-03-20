@@ -13,7 +13,7 @@ class CustomButtons {
         borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
         child: InkWell(
           borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-          onTap: onTap,
+          onTap: onTap ?? null,
           child: Container(
               height: height,
               padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),

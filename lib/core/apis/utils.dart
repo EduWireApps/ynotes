@@ -30,7 +30,10 @@ setChosenParser(int chosen) async {
   final prefs = await SharedPreferences.getInstance();
   prefs.setInt('chosenParser', chosen);
 }
-
+test_if_pronote_cas(String url) async 
+{
+  
+}
 get_week(DateTime date) async {
   final storage = new FlutterSecureStorage();
   return (1 + (date.difference(DateTime.parse(await storage.read(key: "startday"))).inDays / 7).floor()).round();

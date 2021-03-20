@@ -2,6 +2,7 @@ import 'package:flare_flutter/flare_actor.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:ynotes/core/apis/utils.dart';
+import 'package:ynotes/core/logic/pronote/schoolsModel.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 
 import 'dart:async';
@@ -41,9 +42,11 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
   };
   TextEditingController _username = TextEditingController();
   TextEditingController _password = TextEditingController();
+  TextEditingController _url = TextEditingController();
 
   AnimationController iconSlideAnimationController;
   Animation<double> iconSlideAnimation;
+  PronoteSpace chosenSpace;
   int currentPage;
   initState() {
     super.initState();
@@ -76,7 +79,10 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
       case "location":
         {
           var r = await CustomDialogs.showPronoteSchoolGeolocationDialog(context);
-          
+          if (r != null) {
+            chosenSpace = r;
+            _url.text = chosenSpace.url;
+          }
           sliderController.animateToPage(1, duration: Duration(milliseconds: 300), curve: Curves.easeIn);
         }
         break;
@@ -177,7 +183,7 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
       ),
     );
   }
-
+  
   _buildPageView(bool setupNeeded) {
     InAppWebViewController _controller;
 
@@ -187,10 +193,8 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
         if (setupNeeded) PronoteSetupPart(callback: _setupPartCallback),
         if (setupNeeded)
           PronoteUrlFieldPart(
-            callback: () {
-              Navigator.of(context).push(
-                  router(LoginWebView(url: "https://0782540m.index-education.net/pronote", controller: _controller)));
-            },
+            pronoteUrl: _url,
+            callback: () {},
           ),
         _buildLoginPart(),
       ],

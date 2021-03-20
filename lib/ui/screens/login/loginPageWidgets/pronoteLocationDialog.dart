@@ -1,8 +1,11 @@
+import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
+import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/pronote/schoolsController.dart';
+import 'package:ynotes/ui/components/buttons.dart';
 
 class PronoteGeolocationDialog extends StatefulWidget {
   @override
@@ -13,6 +16,8 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
   PronoteSchoolsController con;
   Artboard _riveArtboard;
   RiveAnimationController _controller;
+  PronoteSchool selectedSchool;
+  PronoteSpace space;
   @override
   void initState() {
     // TODO: implement initState
@@ -40,6 +45,7 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
     var screenSize = MediaQuery.of(context);
 
     return Column(
+      key: ValueKey<int>(0),
       children: [
         Container(
           decoration: BoxDecoration(color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(18)),
@@ -47,7 +53,7 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
           child: _riveArtboard == null ? const SizedBox() : Rive(artboard: _riveArtboard),
         ),
         Text(
-          "Géolocalisation des établissements à proximité...",
+          con.geolocating ? "Géolocalisation des établissements à proximité..." : "Recherche des status disponibles",
           style: TextStyle(fontFamily: "Asap", color: Colors.black),
           textAlign: TextAlign.center,
         ),
@@ -55,14 +61,15 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
     );
   }
 
-  Widget buildError() {
+  Widget buildError(String error) {
     var screenSize = MediaQuery.of(context);
 
     return Column(
+      key: ValueKey<int>(1),
       children: [
         Container(
           decoration: BoxDecoration(color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(18)),
-          height: screenSize.size.height / 10 * 2.5,
+          height: screenSize.size.height / 10 * 1.5,
           child: FittedBox(
             child: Icon(
               Icons.error,
@@ -71,14 +78,257 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
           ),
         ),
         Text(
-          "Erreur !",
+          "Hum... quelque chose ne s'est pas passé comme prévu ! \n $error",
           style: TextStyle(fontFamily: "Asap", color: Colors.black),
           textAlign: TextAlign.center,
         ),
+        Container(
+          margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
+          child: CustomButtons.materialButton(context, null, null, () async {
+            await con.reset();
+          }, label: "Recommencer"),
+        )
       ],
     );
   }
 
+  Widget buildSchools(List schools) {
+    var screenSize = MediaQuery.of(context);
+
+    return Container(
+      width: screenSize.size.width / 5 * 4,
+      child: Column(
+        children: [
+          Text(
+            "Choisissez votre école :",
+            style: TextStyle(fontFamily: "Asap"),
+          ),
+          Container(
+            height: screenSize.size.height / 10 * 5,
+            child: AnimatedList(
+              initialItemCount: schools.length,
+              itemBuilder: (context, index, animation) {
+                return slidingSchool(context, schools[index], animation);
+              },
+            ),
+          ),
+          SizedBox(height: screenSize.size.height / 10 * 0.3),
+          Container(
+            height: screenSize.size.height / 10 * 0.4,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: CustomButtons.materialButton(context, null, null, () {
+                    Navigator.of(context).pop();
+                  }, label: "Quitter", backgroundColor: Colors.orange, textColor: Colors.white),
+                ),
+                Expanded(
+                  child: CustomButtons.materialButton(
+                      context,
+                      null,
+                      null,
+                      selectedSchool != null
+                          ? () async {
+                              con.chosenSchool = selectedSchool;
+                              await con.getSpaces();
+                            }
+                          : null,
+                      label: "Continuer",
+                      backgroundColor: selectedSchool != null ? Colors.green : Colors.grey,
+                      textColor: Colors.white),
+                )
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget buildStatusRequest(List<PronoteSpace> spaces) {
+    var screenSize = MediaQuery.of(context);
+
+    return Container(
+      width: screenSize.size.width / 5 * 4,
+      child: Column(
+        children: [
+          Text(
+            "Choisissez votre status :",
+            style: TextStyle(fontFamily: "Asap"),
+          ),
+          Container(
+            height: screenSize.size.height / 10 * 5,
+            child: AnimatedList(
+              initialItemCount: spaces != null ? spaces.length : 0,
+              itemBuilder: (context, index, animation) {
+                return slidingSpace(context, spaces[index], animation);
+              },
+            ),
+          ),
+          SizedBox(height: screenSize.size.height / 10 * 0.3),
+          Container(
+            height: screenSize.size.height / 10 * 0.4,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: CustomButtons.materialButton(context, null, null, () {
+                    Navigator.of(context).pop();
+                  }, label: "Quitter", backgroundColor: Colors.orange, textColor: Colors.white),
+                ),
+                Expanded(
+                  child: CustomButtons.materialButton(
+                      context,
+                      null,
+                      null,
+                      space != null
+                          ? () {
+                              Navigator.of(context).pop(space);
+                            }
+                          : null,
+                      label: "Continuer",
+                      backgroundColor: space != null ? Colors.green : Colors.grey,
+                      textColor: Colors.white),
+                )
+              ],
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget slidingSpace(BuildContext context, PronoteSpace _space, animation) {
+    var screenSize = MediaQuery.of(context);
+
+    TextStyle textStyle = Theme.of(context).textTheme.headline4;
+    return SlideTransition(
+      position: Tween<Offset>(
+        begin: const Offset(-1, 0),
+        end: Offset(0, 0),
+      ).animate(animation),
+      child: SizedBox(
+        // Actual widget to display
+        height: screenSize.size.height / 10 * 0.9,
+        child: GestureDetector(
+          onTap: () {
+            setState(() {
+              space = _space;
+            });
+          },
+          child: Card(
+            color: Theme.of(context).primaryColorDark,
+            child: Row(
+              children: [
+                SizedBox(width: screenSize.size.width / 10 * 0.1),
+                CircularCheckBox(
+                    value: space == _space,
+                    onChanged: (newValue) {
+                      setState(() {
+                        space = _space;
+                      });
+                    }),
+                SizedBox(width: screenSize.size.width / 10 * 0.1),
+                Expanded(
+                  child: Wrap(
+                    spacing: screenSize.size.width / 5 * 0.05,
+                    children: [
+                      Text(
+                        _space.name ?? "",
+                        style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(width: screenSize.size.width / 10 * 0.1),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget slidingSchool(BuildContext context, PronoteSchool school, animation) {
+    var screenSize = MediaQuery.of(context);
+    String distance;
+    if (school.coordinates.length > 2) {
+      try {
+        double val = double.tryParse(school.coordinates[2]) / 1000;
+        distance = "à " + val.toStringAsPrecision(2) + " kilomètres";
+      } catch (e) {
+        distance = "(distance non définie)";
+      }
+    }
+    TextStyle textStyle = Theme.of(context).textTheme.headline4;
+    return SlideTransition(
+      position: Tween<Offset>(
+        begin: const Offset(-1, 0),
+        end: Offset(0, 0),
+      ).animate(animation),
+      child: SizedBox(
+        // Actual widget to display
+        height: screenSize.size.height / 10 * 0.9,
+        child: GestureDetector(
+          onTap: () {
+            setState(() {
+              selectedSchool = school;
+            });
+          },
+          child: Card(
+            color: Theme.of(context).primaryColorDark,
+            child: Row(
+              children: [
+                SizedBox(width: screenSize.size.width / 10 * 0.1),
+                CircularCheckBox(
+                    value: selectedSchool == school,
+                    onChanged: (newValue) {
+                      setState(() {
+                        selectedSchool = school;
+                      });
+                    }),
+                SizedBox(width: screenSize.size.width / 10 * 0.1),
+                Expanded(
+                  child: Wrap(
+                    spacing: screenSize.size.width / 5 * 0.05,
+                    children: [
+                      Text(
+                        school.name ?? "",
+                        style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        "-",
+                      ),
+                      Text(
+                        school.postalCode ?? "",
+                        style: TextStyle(fontFamily: "Asap", fontStyle: FontStyle.italic),
+                      ),
+                      Text(distance),
+                    ],
+                  ),
+                ),
+                SizedBox(width: screenSize.size.width / 10 * 0.1),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  getView(PronoteSchoolsController model) {
+    if (((model.school != null && model.spaces == null && !model.geolocating) || model.geolocating) &&
+        model.error == null) {
+      return buildGeolocating();
+    } else if (model.school != null) {
+      return (model.error != null ? buildError(model.error) : buildStatusRequest(model.spaces));
+    } else {
+      return (model.error != null ? buildError(model.error) : buildSchools(model.schools));
+    }
+  }
+
+  Widget loadingWidget;
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
@@ -98,12 +348,11 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 AnimatedSwitcher(
-                  key: ValueKey<bool>(model.geolocating),
-                  duration: Duration(milliseconds: 900),
+                  duration: Duration(milliseconds: 200),
                   transitionBuilder: (Widget child, Animation<double> animation) {
-                    return FadeTransition(child: child, opacity: animation);
+                    return ScaleTransition(child: child, scale: animation);
                   },
-                  child: model.geolocating ? buildGeolocating() : (model.error != null ? buildError() : buildError()),
+                  child: getView(model),
                 )
               ],
             ),

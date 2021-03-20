@@ -93,7 +93,7 @@ class _PronoteSetupPartState extends State<PronoteSetupPart> {
 
 class PronoteUrlFieldPart extends StatefulWidget {
   final Function callback;
-  final String pronoteUrl;
+  final TextEditingController pronoteUrl;
   PronoteUrlFieldPart({Key key, this.callback, this.pronoteUrl}) : super(key: key);
   @override
   _PronoteUrlFieldPartState createState() => _PronoteUrlFieldPartState();
@@ -106,9 +106,7 @@ class _PronoteUrlFieldPartState extends State<PronoteUrlFieldPart> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    if (widget.pronoteUrl != null) {
-      _url.text = widget.pronoteUrl;
-    }
+    _url = widget.pronoteUrl;
   }
 
   @override

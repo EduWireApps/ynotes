@@ -321,7 +321,7 @@ class CustomDialogs {
         });
   }
 
-  static Future<List<PronoteSchool>> showPronoteSchoolGeolocationDialog(BuildContext context) async {
+  static Future<PronoteSpace> showPronoteSchoolGeolocationDialog(BuildContext context) async {
     return await showGeneralDialog(
         context: context,
         barrierColor: Colors.black.withOpacity(0.5),
