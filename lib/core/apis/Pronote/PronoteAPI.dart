@@ -65,6 +65,8 @@ class Client {
   DateTime hour_start;
 
   int one_hour_duration;
+
+  List<String> stepsLogger;
   refresh() async {
     print("Reinitialisation");
 
@@ -114,6 +116,7 @@ class Client {
       print("LOGIN AS REGULAR USER");
       this.ent = false;
     }
+    this.stepsLogger.add("✅ Login passed : using " + (this.ent ? "ent" : "direct") + "connection");
     //set up encryption
     this.encryption = _Encryption();
     this.encryption.aes_iv = this.communication.encryption.aes_iv;
@@ -168,6 +171,8 @@ class Client {
       "loginTokenSAV": ""
     };
     var idr = await this.communication.post("Identification", data: {'donnees': ident_json});
+    this.stepsLogger.add("✅ Posted identification successfully");
+
     print("Identification");
 
     var challenge = idr['donneesSec']['donnees']['challenge'];
@@ -180,7 +185,6 @@ class Client {
       motdepasse = sha256.convert(encoded).bytes;
       motdepasse = hex.encode(motdepasse);
       motdepasse = motdepasse.toString().toUpperCase();
-      print("t");
       e.aes_key = md5.convert(utf8.encode(motdepasse));
     } else {
       var u = this.username;
@@ -191,12 +195,14 @@ class Client {
         print("LOWER CASE ID");
         print(idr['donneesSec']['donnees']['modeCompLog']);
         u = u.toString().toLowerCase();
+        this.stepsLogger.add("- Lowercased id");
       }
 
       if (idr['donneesSec']['donnees']['modeCompMdp'] != null && idr['donneesSec']['donnees']['modeCompMdp'] != 0) {
         print("LOWER CASE PASSWORD");
         print(idr['donneesSec']['donnees']['modeCompMdp']);
         p = p.toString().toLowerCase();
+        this.stepsLogger.add("- Lowercased password");
       }
 
       var alea = idr['donneesSec']['donnees']['alea'];
@@ -208,16 +214,21 @@ class Client {
     }
 
     var dec = e.aes_decrypt(hex.decode(challenge));
+    this.stepsLogger.add("✅ Decrypted challenge");
 
     var dec_no_alea = _enleverAlea(dec);
     var ch = e.aes_encrypt(utf8.encode(dec_no_alea));
+    this.stepsLogger.add("✅ Encrypted credentials");
 
     Map auth_json = {"connexion": 0, "challenge": ch, "espace": int.parse(this.attributes['a'])};
+    this.stepsLogger.add("✅ Identification passed");
+
     try {
       print("Authentification");
       this.auth_response =
           await this.communication.post("Authentification", data: {'donnees': auth_json, 'identifiantNav': ''});
     } catch (e) {
+      this.stepsLogger.add("❌  Authentification failed : " + e.toString());
       throw ("Error during auth" + e.toString());
     }
 
@@ -239,6 +250,8 @@ class Client {
               print(e);
             }
           } catch (e) {
+            this.stepsLogger.add(" - Old api ");
+
             print("Surely using OLD API");
           }
         }
