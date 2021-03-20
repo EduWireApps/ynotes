@@ -36,6 +36,49 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
     );
   }
 
+  Widget buildGeolocating() {
+    var screenSize = MediaQuery.of(context);
+
+    return Column(
+      children: [
+        Container(
+          decoration: BoxDecoration(color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(18)),
+          height: screenSize.size.height / 10 * 2.5,
+          child: _riveArtboard == null ? const SizedBox() : Rive(artboard: _riveArtboard),
+        ),
+        Text(
+          "Géolocalisation des établissements à proximité...",
+          style: TextStyle(fontFamily: "Asap", color: Colors.black),
+          textAlign: TextAlign.center,
+        ),
+      ],
+    );
+  }
+
+  Widget buildError() {
+    var screenSize = MediaQuery.of(context);
+
+    return Column(
+      children: [
+        Container(
+          decoration: BoxDecoration(color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(18)),
+          height: screenSize.size.height / 10 * 2.5,
+          child: FittedBox(
+            child: Icon(
+              Icons.error,
+              color: Colors.red,
+            ),
+          ),
+        ),
+        Text(
+          "Erreur !",
+          style: TextStyle(fontFamily: "Asap", color: Colors.black),
+          textAlign: TextAlign.center,
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
@@ -54,17 +97,14 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Container(
-                  decoration:
-                      BoxDecoration(color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(18)),
-                  height: screenSize.size.height / 10 * 2.5,
-                  child: _riveArtboard == null ? const SizedBox() : Rive(artboard: _riveArtboard),
-                ),
-                Text(
-                  "Géolocalisation des établissements à proximité...",
-                  style: TextStyle(fontFamily: "Asap", color: Colors.black),
-                  textAlign: TextAlign.center,
-                ),
+                AnimatedSwitcher(
+                  key: ValueKey<bool>(model.geolocating),
+                  duration: Duration(milliseconds: 900),
+                  transitionBuilder: (Widget child, Animation<double> animation) {
+                    return FadeTransition(child: child, opacity: animation);
+                  },
+                  child: model.geolocating ? buildGeolocating() : (model.error != null ? buildError() : buildError()),
+                )
               ],
             ),
           );
