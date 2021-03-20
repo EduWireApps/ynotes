@@ -120,7 +120,7 @@ class Client {
         "");
 
     var attributesandfunctions = await this.communication.initialise();
-    this.stepsLogger.add("✅ Login passed : using " + (this.ent ? "ent" : "direct") + "connection");
+    this.stepsLogger.add("✅ Initialized");
 
     this.attributes = attributesandfunctions[0];
     this.func_options = attributesandfunctions[1];
@@ -132,7 +132,7 @@ class Client {
       print("LOGIN AS REGULAR USER");
       this.ent = false;
     }
-    this.stepsLogger.add("✅ Login passed : using " + (this.ent ? "ent" : "direct") + "connection");
+    this.stepsLogger.add("✅ Login passed : using " + ((this.ent ?? false) ? "ent" : "direct") + "connection");
     //set up encryption
     this.encryption = _Encryption();
     this.encryption.aes_iv = this.communication.encryption.aes_iv;

@@ -316,6 +316,7 @@ class APIPronote extends API {
         }
         print("test");
         await logFile(error);
+        localClient.stepsLogger.add("❌ Pronote login failed : " + error);
         return ([0, error, localClient.stepsLogger]);
       }
     } else {
