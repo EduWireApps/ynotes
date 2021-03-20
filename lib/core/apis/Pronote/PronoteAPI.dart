@@ -9,6 +9,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:html/parser.dart' show parse;
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
+import 'package:package_info/package_info.dart';
 import 'package:pointycastle/api.dart';
 import 'package:pointycastle/asymmetric/api.dart';
 import 'package:pointycastle/asymmetric/pkcs1.dart';
@@ -17,6 +18,7 @@ import 'package:requests/requests.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
+import 'package:ynotes/tests.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
 
@@ -65,6 +67,8 @@ class Client {
   DateTime hour_start;
 
   int one_hour_duration;
+
+  List<String> stepsLogger;
   refresh() async {
     print("Reinitialisation");
 
@@ -102,7 +106,21 @@ class Client {
     this.communication = _Communication(pronote_url, cookies, this);
   }
   Future init() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+
+    this.stepsLogger = List();
+    this.stepsLogger.add("ⓘ " +
+            DateFormat("dd/MM/yyyy hh:mm:ss").format(DateTime.now()) +
+            " Started login - yNotes version is : " +
+            packageInfo.version +
+            "+" +
+            packageInfo.buildNumber +
+            " T" +
+            Tests.testVersion ??
+        "");
+
     var attributesandfunctions = await this.communication.initialise();
+    this.stepsLogger.add("✅ Login passed : using " + (this.ent ? "ent" : "direct") + "connection");
 
     this.attributes = attributesandfunctions[0];
     this.func_options = attributesandfunctions[1];
@@ -114,6 +132,7 @@ class Client {
       print("LOGIN AS REGULAR USER");
       this.ent = false;
     }
+    this.stepsLogger.add("✅ Login passed : using " + (this.ent ? "ent" : "direct") + "connection");
     //set up encryption
     this.encryption = _Encryption();
     this.encryption.aes_iv = this.communication.encryption.aes_iv;
@@ -168,6 +187,8 @@ class Client {
       "loginTokenSAV": ""
     };
     var idr = await this.communication.post("Identification", data: {'donnees': ident_json});
+    this.stepsLogger.add("✅ Posted identification successfully");
+
     print("Identification");
 
     var challenge = idr['donneesSec']['donnees']['challenge'];
@@ -180,7 +201,6 @@ class Client {
       motdepasse = sha256.convert(encoded).bytes;
       motdepasse = hex.encode(motdepasse);
       motdepasse = motdepasse.toString().toUpperCase();
-      print("t");
       e.aes_key = md5.convert(utf8.encode(motdepasse));
     } else {
       var u = this.username;
@@ -191,12 +211,14 @@ class Client {
         print("LOWER CASE ID");
         print(idr['donneesSec']['donnees']['modeCompLog']);
         u = u.toString().toLowerCase();
+        this.stepsLogger.add("ⓘ Lowercased id");
       }
 
       if (idr['donneesSec']['donnees']['modeCompMdp'] != null && idr['donneesSec']['donnees']['modeCompMdp'] != 0) {
         print("LOWER CASE PASSWORD");
         print(idr['donneesSec']['donnees']['modeCompMdp']);
         p = p.toString().toLowerCase();
+        this.stepsLogger.add("ⓘ Lowercased password");
       }
 
       var alea = idr['donneesSec']['donnees']['alea'];
@@ -208,16 +230,23 @@ class Client {
     }
 
     var dec = e.aes_decrypt(hex.decode(challenge));
+    this.stepsLogger.add("✅ Decrypted challenge");
 
     var dec_no_alea = _enleverAlea(dec);
+    this.stepsLogger.add("✅ Removed alea");
+
     var ch = e.aes_encrypt(utf8.encode(dec_no_alea));
+    this.stepsLogger.add("✅ Encrypted credentials");
 
     Map auth_json = {"connexion": 0, "challenge": ch, "espace": int.parse(this.attributes['a'])};
+    this.stepsLogger.add("✅ Identification passed");
+
     try {
       print("Authentification");
       this.auth_response =
           await this.communication.post("Authentification", data: {'donnees': auth_json, 'identifiantNav': ''});
     } catch (e) {
+      this.stepsLogger.add("❌  Authentification failed : " + e.toString());
       throw ("Error during auth" + e.toString());
     }
 
@@ -230,15 +259,21 @@ class Client {
 
             this.communication.authorized_onglets =
                 _prepare_onglets(paramsUser['donneesSec']['donnees']['listeOnglets']);
+            this.stepsLogger.add("✅ Prepared tabs");
+
             try {
               CreateStorage("classe", paramsUser['donneesSec']['donnees']['ressource']["classeDEleve"]["L"] ?? "");
               CreateStorage("userFullName", paramsUser['donneesSec']['donnees']['ressource']["L"] ?? "");
               actualUser = paramsUser['donneesSec']['donnees']['ressource']["L"];
             } catch (e) {
+              this.stepsLogger.add("❌ Failed to register UserInfos");
+
               print("Failed to register UserInfos");
               print(e);
             }
           } catch (e) {
+            this.stepsLogger.add("ⓘ Using old api ");
+
             print("Surely using OLD API");
           }
         }
@@ -246,7 +281,7 @@ class Client {
         print("Successfully logged in as ${this.username}");
         return true;
       } else {
-        print("login failed");
+        print("Login failed");
         return false;
       }
     } catch (e) {
@@ -648,30 +683,35 @@ class _Communication {
       Requests.setStoredCookies(hostName, this.cookies);
     }
 
-    print(this.root_site + "/" + this.html_page);
     var headers = {
       'connection': 'keep-alive',
       'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/74.0'
     };
-
+    String url = this.root_site + "/" + (this.cookies != null ? "?fd=1" : this.html_page + "?fd=1");
+    this.client.stepsLogger.add("ⓘ" + " Used url is " + "`" + url + "`");
 //?fd=1 bypass the old navigator issue
     var get_response = await Requests.get(
             this.root_site + "/" + (this.cookies != null ? "?fd=1" : this.html_page + "?fd=1"),
             headers: headers)
         .catchError((e) {
+      this.client.stepsLogger.add("❌ Failed login request");
+
       throw ("Impossible de se connecter");
     });
+    this.client.stepsLogger.add("✅ Posted login request");
 
     if (get_response.hasError) {
       print("|pImpossible de se connecter à l'adresse fournie");
     }
 
     this.attributes = this._parse_html(get_response.content());
-    print("test" + this.attributes['ER']);
+    this.client.stepsLogger.add("✅ Parsed HTML");
     //uuid
     this.encryption.rsa_keys = {'MR': this.attributes['MR'], 'ER': this.attributes['ER']};
 
     var uuid = base64.encode(await this.encryption.rsa_encrypt(this.encryption.aes_iv_temp));
+    this.client.stepsLogger.add("✅ Encrypted IV");
+
     //uuid
     var json_post = {'Uuid': uuid};
     this.encrypt_requests = (this.attributes["sCra"] != null ? !this.attributes["sCra"] : false);
@@ -694,6 +734,8 @@ class _Communication {
       if (html.contains("IP")) {
         throw ('Your IP address is suspended.');
       } else {
+        this.client.stepsLogger.add("❌ Failed to parse HTML");
+
         printWrapped(html.toString());
         throw ("Error with HTML PAGE");
       }

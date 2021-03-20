@@ -14,7 +14,6 @@ import 'package:ynotes/main.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/usefulMethods.dart';
 
-
 Color textButtonColor = Color(0xff252B62);
 
 class LoginPage extends StatefulWidget {
@@ -25,7 +24,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   String casValue = "Aucun";
-  Future<String> connectionData;
+  Future<List> connectionData;
   final _username = TextEditingController();
   final _password = TextEditingController();
   final _url = TextEditingController();
@@ -104,10 +103,10 @@ class _LoginPageState extends State<LoginPage> {
                 padding: EdgeInsets.only(left: 5, right: 5, top: 20, bottom: 20),
                 child: Column(
                   children: <Widget>[
-                    FutureBuilder(
+                    FutureBuilder<List>(
                       future: connectionData,
                       builder: (context, snapshot) {
-                        if (snapshot.hasData && snapshot.data.toString().contains("Bienvenue")) {
+                        if (snapshot.hasData && snapshot.data[0] == 1) {
                           Future.delayed(const Duration(milliseconds: 500), () {
                             Navigator.pop(context);
                             if (_isFirstUse == true) {
@@ -124,12 +123,12 @@ class _LoginPageState extends State<LoginPage> {
                                 color: Colors.lightGreen,
                               ),
                               Text(
-                                snapshot.data,
+                                snapshot.data[1],
                                 textAlign: TextAlign.center,
                               )
                             ],
                           );
-                        } else if (snapshot.hasData && !snapshot.data.toString().contains("Bienvenue")) {
+                        } else if (snapshot.hasData && snapshot.data[0] == 0) {
                           return Column(
                             children: <Widget>[
                               Icon(
@@ -138,7 +137,7 @@ class _LoginPageState extends State<LoginPage> {
                                 color: Colors.redAccent,
                               ),
                               Text(
-                                utf8convert(snapshot.data.toString()),
+                                snapshot.data[2],
                                 textAlign: TextAlign.center,
                               )
                             ],
