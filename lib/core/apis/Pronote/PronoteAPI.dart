@@ -1121,8 +1121,8 @@ class PronotePeriod {
 
     /*var a = await Requests.get("http://192.168.1.99:3000/posts/2");
 
-    var response = (codePeriode == 2) ? a.json() : {};*/
-
+    var response = (codePeriode == 2) ? a.json() : {};
+*/
     var response = await _client.communication.post('DernieresNotes', data: json_data);
     var grades = mapGet(response, ['donneesSec', 'donnees', 'listeDevoirs', 'V']) ?? [];
     this.moyenneGenerale = gradeTranslate(mapGet(response, ['donneesSec', 'donnees', 'moyGenerale', 'V']) ?? "");

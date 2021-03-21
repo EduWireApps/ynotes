@@ -788,14 +788,9 @@ class _GradesPageState extends State<GradesPage> {
                                           child: Center(
                                             child: FittedBox(
                                               child: Text(
-                                                (chosenParser == 1)
-                                                    ? (lastDiscipline.generalAverage ??
-                                                        (model.average.toString() != null && !model.average.isNaN
-                                                            ? model.average.toStringAsFixed(2)
-                                                            : "-"))
-                                                    : (model.average.toString() != null && !model.average.isNaN
-                                                        ? model.average.toStringAsFixed(2)
-                                                        : "-"),
+                                                (model.average.toString() != null && !model.average.isNaN
+                                                    ? model.average.toStringAsFixed(2)
+                                                    : "-"),
                                                 style: TextStyle(
                                                     color: Colors.black,
                                                     fontFamily: "Asap",
