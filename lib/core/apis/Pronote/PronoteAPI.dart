@@ -1119,14 +1119,13 @@ class PronotePeriod {
 
     //Tests
 
-    var a = await Requests.get("http://192.168.1.99:3000/posts/2");
-    var response = a.json();
+    /*var a = await Requests.get("http://192.168.1.99:3000/posts/2");
 
-    //var response = await _client.communication.post('DernieresNotes', data: json_data);
-    var grades = response['donneesSec']['donnees']['listeDevoirs']['V'];
+    var response = (codePeriode == 2) ? a.json() : {};*/
 
+    var response = await _client.communication.post('DernieresNotes', data: json_data);
+    var grades = mapGet(response, ['donneesSec', 'donnees', 'listeDevoirs', 'V']) ?? [];
     this.moyenneGenerale = gradeTranslate(mapGet(response, ['donneesSec', 'donnees', 'moyGenerale', 'V']) ?? "");
-
     this.moyenneGeneraleClasse =
         gradeTranslate(mapGet(response, ['donneesSec', 'donnees', 'moyGeneraleClasse', 'V']) ?? "");
 
@@ -1140,14 +1139,14 @@ class PronotePeriod {
           disciplineCode: (mapGet(element, ["service", "V", "L"]) ?? "").hashCode.toString(),
           subdisciplineCode: null,
           disciplineName: mapGet(element, ["service", "V", "L"]),
-          letters: mapGet(element, ["note", "V"]) ?? "".contains("|"),
+          letters: (mapGet(element, ["note", "V"]) ?? "").contains("|"),
           weight: mapGet(element, ["coefficient"]).toString(),
           scale: mapGet(element, ["bareme", "V"]),
           min: this.gradeTranslate(mapGet(element, ["noteMin", "V"]) ?? ""),
           max: this.gradeTranslate(mapGet(element, ["noteMax", "V"]) ?? ""),
           classAverage: this.gradeTranslate(mapGet(element, ["moyenne", "V"]) ?? ""),
           date: mapGet(element, ["date", "V"]) != null ? DateFormat("dd/MM/yyyy").parse(element["date"]["V"]) : null,
-          notSignificant: this.gradeTranslate(mapGet(element, ["note", "V"]) ?? "") == "NonNote" ? true : false,
+          notSignificant: this.gradeTranslate(mapGet(element, ["note", "V"]) ?? "") == "NonNote",
           testType: "Interrogation",
           entryDate: mapGet(element, ["date", "V"]) != null
               ? DateFormat("dd/MM/yyyy").parse(mapGet(element, ["date", "V"]))
