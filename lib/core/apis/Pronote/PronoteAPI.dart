@@ -65,6 +65,8 @@ class Client {
   DateTime hour_start;
 
   int one_hour_duration;
+
+  bool isCas;
   refresh() async {
     print("Reinitialisation");
 
@@ -90,13 +92,14 @@ class Client {
     this._expired = true;
   }
 
-  Client(String pronote_url, {String username, String password, var cookies}) {
+  Client(String pronote_url, {String username, String password, var cookies, bool isCas}) {
     if (cookies == null && password == null && username == null) {
       throw 'Please provide login credentials. Cookies are None, and username and password are empty.';
     }
     this.username = username;
     this.password = password;
     this.pronote_url = pronote_url;
+    this.isCas = isCas;
     print("Initiate communication");
 
     this.communication = _Communication(pronote_url, cookies, this);
@@ -145,8 +148,11 @@ class Client {
     try {
       final storage = new FlutterSecureStorage();
       await storage.write(key: "username", value: this.username);
-      await storage.write(key: "password", value: this.password);
+      if (!isCas) {
+        await storage.write(key: "password", value: this.password);
+      }
       await storage.write(key: "pronoteurl", value: this.pronote_url);
+      await storage.write(key: "ispronotecas", value: this.isCas.toString());
       print("Saved credentials");
     } catch (e) {
       print("failed to write values");
@@ -162,7 +168,7 @@ class Client {
       "pourENT": this.ent,
       "enConnexionAuto": false,
       "demandeConnexionAuto": false,
-      "enConnexionAppliMobile": true,
+      "enConnexionAppliMobile": this.isCas,
       "demandeConnexionAppliMobile": false,
       "demandeConnexionAppliMobileJeton": false,
       "uuidAppliMobile": "121567895313231",
@@ -223,6 +229,11 @@ class Client {
     }
 
     try {
+      if (isCas) {
+        await storage.write(
+            key: "password", value: this.auth_response['donneesSec']['donnees']["jetonConnexionAppliMobile"]);
+        this.password = this.auth_response['donneesSec']['donnees']["jetonConnexionAppliMobile"];
+      }
       if (this.auth_response['donneesSec']['donnees'].toString().contains("cle")) {
         await this.communication.after_auth(this.communication.last_response, this.auth_response, e.aes_key);
         if (isOldAPIUsed == false) {
@@ -654,11 +665,15 @@ class _Communication {
       'connection': 'keep-alive',
       'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/74.0'
     };
-
+    print(this.client.isCas ? "CAS" : "NOT CAS");
 //?fd=1 bypass the old navigator issue
-    var get_response =
-        await Requests.get(this.root_site + "/" + (this.cookies != null ? "?fd=1" : this.html_page), headers: headers)
-            .catchError((e) {
+    var get_response = await Requests.get(
+            this.root_site +
+                "/" +
+                (this.cookies != null ? "?fd=1" : this.html_page) +
+                (this.client.isCas ? "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335" : ""),
+            headers: headers)
+        .catchError((e) {
       throw ("Impossible de se connecter");
     });
 
@@ -823,7 +838,6 @@ class _Communication {
     var work = this.encryption.aes_decrypt(hex.decode(data['donneesSec']['donnees']['cle']));
     try {
       this.authorized_onglets = _prepare_onglets(data['donneesSec']['donnees']['listeOnglets']);
-
       CreateStorage("classe", data['donneesSec']['donnees']['ressource']["classeDEleve"]["L"]);
       CreateStorage("userFullName", data['donneesSec']['donnees']['ressource']["L"]);
       isOldAPIUsed = true;

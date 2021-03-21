@@ -154,7 +154,7 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
       child: Column(
         children: [
           Text(
-            "Choisissez votre status :",
+            "Choisissez votre statut :",
             style: TextStyle(fontFamily: "Asap"),
           ),
           Container(

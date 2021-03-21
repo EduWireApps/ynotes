@@ -16,6 +16,11 @@ class PronoteSchool {
 class PronoteSpace {
   final String name;
   final String url;
+  final String originUrl;
 
-  PronoteSpace({this.name, this.url});
+  PronoteSpace({
+    this.name,
+    this.url,
+    this.originUrl,
+  });
 }

@@ -48,7 +48,8 @@ class PronoteSchoolsController extends ChangeNotifier {
             if (space["nom"].toUpperCase().contains("ÉLÈVES"))
               _spaces.add(PronoteSpace(
                   name: space["nom"],
-                  url: school.url + (school.url[school.url.length - 1] == "/" ? "" : "/") + space["URL"]));
+                  url: school.url + (school.url[school.url.length - 1] == "/" ? "" : "/") + space["URL"],
+                  originUrl: school.url));
           });
           spaces = _spaces;
           notifyListeners();

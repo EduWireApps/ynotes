@@ -13,7 +13,6 @@ import 'package:ynotes/core/logic/shared/loginController.dart';
 
 import 'package:ynotes/usefulMethods.dart';
 
-
 Client localClient;
 //Locks are use to prohibit the app to send too much requests while collecting data and ensure there are made one by one
 //They are ABSOLUTELY needed or user will be quickly IP suspended
@@ -259,7 +258,7 @@ class APIPronote extends API {
 
   int loginReqNumber = 0;
   @override
-  Future<String> login(username, password, {url, cas}) async {
+  Future<String> login(username, password, {url, cas, mobileCasLogin}) async {
     print(username + " " + password + " " + url);
     int req = 0;
     while (loginLock == true && req < 5) {
@@ -271,7 +270,7 @@ class APIPronote extends API {
       loginLock = true;
       try {
         var cookies = await callCas(cas, username, password, url ?? "");
-        localClient = Client(url, username: username, password: password, cookies: cookies);
+        localClient = Client(url, username: username, password: password, isCas: mobileCasLogin, cookies: cookies);
 
         await localClient.init();
         if (localClient.logged_in) {

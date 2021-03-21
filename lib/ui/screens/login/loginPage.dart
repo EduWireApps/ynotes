@@ -151,8 +151,9 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
   _loginTextAndHelpButton() {
     MediaQueryData screenSize = MediaQuery.of(context);
     return InkWell(
-      onTap: () {
-        print("clicked");
+      onTap: () async {
+        connectionData = localApi.login(_username.text.trim(), _password.text.trim(),
+            url: _url.text.trim(), mobileCasLogin: testIfPronoteCas(_url.text.trim()));
       },
       child: Container(
         child: Column(
@@ -183,7 +184,7 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
       ),
     );
   }
-  
+
   _buildPageView(bool setupNeeded) {
     InAppWebViewController _controller;
 
@@ -194,7 +195,17 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
         if (setupNeeded)
           PronoteUrlFieldPart(
             pronoteUrl: _url,
-            callback: () {},
+            callback: () async {
+              if (await testIfPronoteCas(_url.text)) {
+                var a = await Navigator.of(context).push(router(LoginWebView(url: _url.text, controller: _controller)));
+                if (a != null) {
+                  connectionData = localApi.login(a["login"], a["mdp"], url: _url.text, mobileCasLogin: true);
+                  openLoadingDialog();
+                }
+              } else {
+                sliderController.animateToPage(2, duration: Duration(milliseconds: 300), curve: Curves.easeIn);
+              }
+            },
           ),
         _buildLoginPart(),
       ],
@@ -258,6 +269,91 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
         ),
       ),
     );
+  }
+
+  Future<String> connectionData;
+  static String utf8convert(String text) {
+    List<int> bytes = text.toString().codeUnits;
+    return utf8.decode(bytes);
+  }
+
+  openAlertBox() {
+    var offset = 0.0;
+
+    MediaQueryData screenSize;
+    screenSize = MediaQuery.of(context);
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertBoxWidget(screenSize: screenSize);
+        });
+  }
+
+  openLoadingDialog() {
+    MediaQueryData screenSize;
+    screenSize = MediaQuery.of(context);
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0))),
+            contentPadding: EdgeInsets.only(top: 10.0),
+            content: SingleChildScrollView(
+              child: Container(
+                padding: EdgeInsets.only(left: 5, right: 5, top: 20, bottom: 20),
+                child: Column(
+                  children: <Widget>[
+                    FutureBuilder(
+                      future: connectionData,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData && snapshot.data.toString().contains("Bienvenue")) {
+                          Future.delayed(const Duration(milliseconds: 500), () {
+                            Navigator.pop(context);
+                            openAlertBox();
+                          });
+                          return Column(
+                            children: <Widget>[
+                              Icon(
+                                Icons.check_circle,
+                                size: MediaQuery.of(context).size.width / 5,
+                                color: Colors.lightGreen,
+                              ),
+                              Text(
+                                snapshot.data,
+                                textAlign: TextAlign.center,
+                              )
+                            ],
+                          );
+                        } else if (snapshot.hasData && !snapshot.data.toString().contains("Bienvenue")) {
+                          return Column(
+                            children: <Widget>[
+                              Icon(
+                                Icons.error,
+                                size: MediaQuery.of(context).size.width / 5,
+                                color: Colors.redAccent,
+                              ),
+                              Text(
+                                utf8convert(snapshot.data.toString()),
+                                textAlign: TextAlign.center,
+                              )
+                            ],
+                          );
+                        } else {
+                          return Container(
+                              width: 50,
+                              height: 50,
+                              child: CircularProgressIndicator(
+                                backgroundColor: Color(0xff444A83),
+                              ));
+                        }
+                      },
+                    )
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
   }
 
   @override
@@ -347,8 +443,8 @@ class _LoginPageState extends State<LoginPage> {
     String z = await storage.read(key: "agreedTermsAndConfiguredApp");
 
     if (u != null && p != null && z != null) {
-      /*connectionData =  localApi.login(u, p, url: url, cas: cas);
-      openLoadingDialog();*/
+      connectionData = localApi.login(u, p, url: url, cas: cas);
+      openLoadingDialog();
     }
   }
 
