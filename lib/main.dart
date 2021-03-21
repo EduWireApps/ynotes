@@ -108,6 +108,7 @@ class HomeApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeNotifier = Provider.of<AppStateNotifier>(context);
+    
     return Wiredash(
       projectId: "ynotes-giw0qs2",
       secret: "y9zengsvskpriizwniqxr6vxa1ka1n6u",
@@ -146,6 +147,7 @@ class HomeApp extends StatelessWidget {
         themeMode: themeNotifier.getTheme(),
       ),
     );
+    
   }
 }
 

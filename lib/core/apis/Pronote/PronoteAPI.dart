@@ -16,6 +16,7 @@ import 'package:pointycastle/asymmetric/pkcs1.dart';
 import 'package:pointycastle/asymmetric/rsa.dart';
 import 'package:requests/requests.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/utils/nullSafeMap.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
 import 'package:ynotes/tests.dart';
@@ -1115,36 +1116,43 @@ class PronotePeriod {
       },
       "_Signature_": {"onglet": 198}
     };
+
     //Tests
-    /*var a = await Requests.get("http://demo2235921.mockable.io/2");
-    var response = a.json();*/
+
+    /*var a = await Requests.get("http://192.168.1.99:3000/posts/2");
+
+    var response = (codePeriode == 2) ? a.json() : {};
+*/
     var response = await _client.communication.post('DernieresNotes', data: json_data);
-    var grades = response['donneesSec']['donnees']['listeDevoirs']['V'];
-    this.moyenneGenerale = gradeTranslate(response['donneesSec']['donnees']['moyGenerale']['V']);
-    this.moyenneGeneraleClasse = gradeTranslate(response['donneesSec']['donnees']['moyGeneraleClasse']['V']);
+    var grades = mapGet(response, ['donneesSec', 'donnees', 'listeDevoirs', 'V']) ?? [];
+    this.moyenneGenerale = gradeTranslate(mapGet(response, ['donneesSec', 'donnees', 'moyGenerale', 'V']) ?? "");
+    this.moyenneGeneraleClasse =
+        gradeTranslate(mapGet(response, ['donneesSec', 'donnees', 'moyGeneraleClasse', 'V']) ?? "");
 
     var other = List();
     grades.forEach((element) async {
       list.add(Grade(
-          value: this.gradeTranslate(element["note"]["V"]),
+          value: this.gradeTranslate(mapGet(element, ["note", "V"]) ?? ""),
           testName: element["commentaire"],
           periodCode: this.id,
           periodName: this.name,
-          disciplineCode: element["service"]["V"]["L"].hashCode.toString(),
+          disciplineCode: (mapGet(element, ["service", "V", "L"]) ?? "").hashCode.toString(),
           subdisciplineCode: null,
-          disciplineName: element["service"]["V"]["L"],
-          letters: element["note"]["V"].contains("|"),
-          weight: element["coefficient"].toString(),
-          scale: element["bareme"]["V"],
-          min: this.gradeTranslate(element["noteMin"]["V"]),
-          max: this.gradeTranslate(element["noteMax"]["V"]),
-          classAverage: this.gradeTranslate(element["moyenne"]["V"]),
-          date: DateFormat("dd/MM/yyyy").parse(element["date"]["V"]),
-          notSignificant: this.gradeTranslate(element["note"]["V"]) == "NonNote" ? true : false,
+          disciplineName: mapGet(element, ["service", "V", "L"]),
+          letters: (mapGet(element, ["note", "V"]) ?? "").contains("|"),
+          weight: mapGet(element, ["coefficient"]).toString(),
+          scale: mapGet(element, ["bareme", "V"]),
+          min: this.gradeTranslate(mapGet(element, ["noteMin", "V"]) ?? ""),
+          max: this.gradeTranslate(mapGet(element, ["noteMax", "V"]) ?? ""),
+          classAverage: this.gradeTranslate(mapGet(element, ["moyenne", "V"]) ?? ""),
+          date: mapGet(element, ["date", "V"]) != null ? DateFormat("dd/MM/yyyy").parse(element["date"]["V"]) : null,
+          notSignificant: this.gradeTranslate(mapGet(element, ["note", "V"]) ?? "") == "NonNote",
           testType: "Interrogation",
-          entryDate: DateFormat("dd/MM/yyyy").parse(element["date"]["V"]),
-          countAsZero: shouldCountAsZero(this.gradeTranslate(element["note"]["V"]))));
-      other.add(average(response, element["service"]["V"]["L"].hashCode.toString()));
+          entryDate: mapGet(element, ["date", "V"]) != null
+              ? DateFormat("dd/MM/yyyy").parse(mapGet(element, ["date", "V"]))
+              : null,
+          countAsZero: shouldCountAsZero(this.gradeTranslate(mapGet(element, ["note", "V"]) ?? ""))));
+      other.add(average(response, (mapGet(element, ["service", "V", "L"]) ?? "").hashCode.toString()));
     });
     return [list, other];
   }
