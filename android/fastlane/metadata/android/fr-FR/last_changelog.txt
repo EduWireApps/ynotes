@@ -1,1 +1,1 @@
-Différents correctifs importants pour Pronote. 
+Correctif d'un bug qui empêchait la connexion.
