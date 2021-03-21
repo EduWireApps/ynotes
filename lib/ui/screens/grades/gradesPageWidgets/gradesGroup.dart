@@ -119,40 +119,44 @@ class _GradesGroupState extends State<GradesGroup> {
                                       )),
                               ],
                             ),
-                            if (!widget.discipline.getAverage().isNaN)
-                              Row(
-                                children: [
+                            Row(
+                              children: [
+                                Container(
+                                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(0)),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(0),
+                                      child: Text(
+                                        "Moyenne : " +
+                                            ((chosenParser == 1)
+                                                ? (widget.discipline.average ?? "-")
+                                                : ((!widget.discipline.getAverage().isNaN)
+                                                    ? widget.discipline.getAverage().toString()
+                                                    : widget.discipline.average ?? "-")),
+                                        style: TextStyle(
+                                            fontFamily: "Asap",
+                                            fontSize: screenSize.size.height / 10 * 0.17,
+                                            fontStyle: FontStyle.italic),
+                                      ),
+                                    )),
+                                if (widget.discipline.weight != null && widget.discipline.weight != "1")
                                   Container(
-                                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(0)),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(0),
-                                        child: Text(
-                                          "Moyenne : " + (widget.discipline.getAverage().toString() ?? "-"),
-                                          style: TextStyle(
-                                              fontFamily: "Asap",
-                                              fontSize: screenSize.size.height / 10 * 0.17,
-                                              fontStyle: FontStyle.italic),
-                                        ),
-                                      )),
-                                  if (widget.discipline.weight != null && widget.discipline.weight != "1")
-                                    Container(
-                                        padding: EdgeInsets.all(screenSize.size.width / 5 * 0.03),
-                                        margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.09),
-                                        width: screenSize.size.width / 5 * 0.25,
-                                        height: screenSize.size.width / 5 * 0.25,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.all(Radius.circular(50)),
-                                          color: Colors.grey.shade600,
-                                        ),
-                                        child: FittedBox(
-                                            child: AutoSizeText(
-                                          widget.discipline.weight ?? "",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              fontFamily: "Asap", color: Colors.white, fontWeight: FontWeight.bold),
-                                        ))),
-                                ],
-                              ),
+                                      padding: EdgeInsets.all(screenSize.size.width / 5 * 0.03),
+                                      margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.09),
+                                      width: screenSize.size.width / 5 * 0.25,
+                                      height: screenSize.size.width / 5 * 0.25,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.all(Radius.circular(50)),
+                                        color: Colors.grey.shade600,
+                                      ),
+                                      child: FittedBox(
+                                          child: AutoSizeText(
+                                        widget.discipline.weight ?? "",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontFamily: "Asap", color: Colors.white, fontWeight: FontWeight.bold),
+                                      ))),
+                              ],
+                            ),
                           ],
                         ),
                       ),

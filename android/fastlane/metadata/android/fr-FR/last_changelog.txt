@@ -1,3 +1,1 @@
-Mise à jour de fonctionnalités 0.9.2 : 
-Simulez désormais des notes virtuelles à l'aide d'un simulateur de notes.
-Nous calculons désormais les moyennes de matière automatique.
+Différents correctifs importants pour Pronote. 
