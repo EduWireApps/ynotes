@@ -5,56 +5,44 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.000362353">
+      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.00026548">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="1: number_of_commits" time="0.019772023">
+      <testcase classname="fastlane.lanes" name="1: number_of_commits" time="0.023413338">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="2: flutter_version" time="0.001698249">
+      <testcase classname="fastlane.lanes" name="2: flutter clean" time="1.241813797">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="3: mv TXT_v0.9.1+395_v0.9.1+399_v0.9.1+399_v0.9.1+399.apk TXT_v0.9.1+395_v0.9.1+399_v0.9.1+399_v0.9.1+399_v0.9.2+406.apk" time="0.002720168">
+      <testcase classname="fastlane.lanes" name="3: flutter build apk --flavor prod --release --build-number\=416 --split-per-abi" time="160.160591099">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="4: mv app-dev-debug.apk yNotes-dev-debug_v0.9.2+406.apk" time="0.004295791">
+      <testcase classname="fastlane.lanes" name="4: adb install build/app/outputs/flutter-apk/app-arm64-v8a-prod-release.apk" time="3.823322289">
+        
+          <failure message="/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/actions/actions_helper.rb:67:in `execute_action'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/fast_file.rb:222:in `sh'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/fast_file.rb:216:in `sh'&#10;Fastfile:136:in `block (2 levels) in parsing_binding'&#10;Fastfile:135:in `chdir'&#10;Fastfile:135:in `block in parsing_binding'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/lane.rb:33:in `call'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/runner.rb:49:in `block in execute'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/runner.rb:45:in `chdir'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/runner.rb:45:in `execute'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/lane_manager.rb:47:in `cruise_lane'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/command_line_handler.rb:36:in `handle'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/commands_generator.rb:108:in `block (2 levels) in run'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/commander-fastlane-4.4.6/lib/commander/command.rb:178:in `call'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/commander-fastlane-4.4.6/lib/commander/command.rb:153:in `run'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/commander-fastlane-4.4.6/lib/commander/runner.rb:476:in `run_active_command'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane_core/lib/fastlane_core/ui/fastlane_runner.rb:76:in `run!'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/commander-fastlane-4.4.6/lib/commander/delegates.rb:15:in `run!'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/commands_generator.rb:352:in `run'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/commands_generator.rb:41:in `start'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/cli_tools_distributor.rb:122:in `take_off'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/bin/fastlane:23:in `&lt;top (required)&gt;'&#10;/home/jsonlines/.rbenv/versions/2.6.6/bin/fastlane:23:in `load'&#10;/home/jsonlines/.rbenv/versions/2.6.6/bin/fastlane:23:in `&lt;main&gt;'&#10;&#10;Exit status of command 'adb install build/app/outputs/flutter-apk/app-arm64-v8a-prod-release.apk' was 1 instead of 0.&#10;adb: failed to install build/app/outputs/flutter-apk/app-arm64-v8a-prod-release.apk: Failure [INSTALL_FAILED_UPDATE_INCOMPATIBLE: Package fr.ynotes signatures do not match previously installed version; ignoring!]&#10;Performing Streamed Install&#10;" />
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="5: mv app.apk yNotes_v0.9.2+406.apk" time="0.003439933">
+      <testcase classname="fastlane.lanes" name="5: adb uninstall fr.ynotes" time="1.292733159">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="6: mv app.apk.apk yNotes.apk_v0.9.2+406.apk" time="0.026110726">
-        
-          <failure message="/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/actions/actions_helper.rb:67:in `execute_action'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/fast_file.rb:222:in `sh'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/fast_file.rb:216:in `sh'&#10;Fastfile:108:in `block (3 levels) in parsing_binding'&#10;Fastfile:107:in `chdir'&#10;Fastfile:107:in `block (2 levels) in parsing_binding'&#10;Fastfile:100:in `each'&#10;Fastfile:100:in `block in parsing_binding'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/lane.rb:33:in `call'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/runner.rb:49:in `block in execute'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/runner.rb:45:in `chdir'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/runner.rb:45:in `execute'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/lane_manager.rb:47:in `cruise_lane'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/command_line_handler.rb:36:in `handle'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/commands_generator.rb:108:in `block (2 levels) in run'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/commander-fastlane-4.4.6/lib/commander/command.rb:178:in `call'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/commander-fastlane-4.4.6/lib/commander/command.rb:153:in `run'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/commander-fastlane-4.4.6/lib/commander/runner.rb:476:in `run_active_command'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane_core/lib/fastlane_core/ui/fastlane_runner.rb:76:in `run!'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/commander-fastlane-4.4.6/lib/commander/delegates.rb:15:in `run!'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/commands_generator.rb:352:in `run'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/commands_generator.rb:41:in `start'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/cli_tools_distributor.rb:122:in `take_off'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/bin/fastlane:23:in `&lt;top (required)&gt;'&#10;/home/jsonlines/.rbenv/versions/2.6.6/bin/fastlane:23:in `load'&#10;/home/jsonlines/.rbenv/versions/2.6.6/bin/fastlane:23:in `&lt;main&gt;'&#10;&#10;Exit status of command 'mv app.apk.apk yNotes.apk_v0.9.2+406.apk' was 1 instead of 0.&#10;mv: cannot stat 'app.apk.apk': No such file or directory&#10;" />
+      <testcase classname="fastlane.lanes" name="6: adb install build/app/outputs/flutter-apk/app-arm64-v8a-prod-release.apk" time="3.367610951">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="7: mv yNotes-dev-debug_v0.9.1+399_v0.9.1+399_v0.9.1+399.apk yNotes-dev-debug_v0.9.1+399_v0.9.1+399_v0.9.1+399_v0.9.2+406.apk" time="0.004796768">
-        
-      </testcase>
-    
-      
-      <testcase classname="fastlane.lanes" name="8: mv yNotes_v0.9.1+399_v0.9.1+399_v0.9.1+399.apk yNotes_v0.9.1+399_v0.9.1+399_v0.9.1+399_v0.9.2+406.apk" time="0.007868104">
-        
-      </testcase>
-    
-      
-      <testcase classname="fastlane.lanes" name="9: set_github_release" time="0.184455639">
-        
-          <failure message="/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/actions/actions_helper.rb:67:in `execute_action'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/runner.rb:255:in `block in execute_action'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/runner.rb:229:in `chdir'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/runner.rb:229:in `execute_action'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/runner.rb:157:in `trigger_action_by_name'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/fast_file.rb:159:in `method_missing'&#10;Fastfile:115:in `block in parsing_binding'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/lane.rb:33:in `call'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/runner.rb:49:in `block in execute'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/runner.rb:45:in `chdir'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/runner.rb:45:in `execute'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/lane_manager.rb:47:in `cruise_lane'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/command_line_handler.rb:36:in `handle'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/commands_generator.rb:108:in `block (2 levels) in run'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/commander-fastlane-4.4.6/lib/commander/command.rb:178:in `call'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/commander-fastlane-4.4.6/lib/commander/command.rb:153:in `run'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/commander-fastlane-4.4.6/lib/commander/runner.rb:476:in `run_active_command'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane_core/lib/fastlane_core/ui/fastlane_runner.rb:76:in `run!'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/commander-fastlane-4.4.6/lib/commander/delegates.rb:15:in `run!'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/commands_generator.rb:352:in `run'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/commands_generator.rb:41:in `start'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/fastlane/lib/fastlane/cli_tools_distributor.rb:122:in `take_off'&#10;/home/jsonlines/.rvm/gems/ruby-2.7.0/gems/fastlane-2.178.0/bin/fastlane:23:in `&lt;top (required)&gt;'&#10;/home/jsonlines/.rbenv/versions/2.6.6/bin/fastlane:23:in `load'&#10;/home/jsonlines/.rbenv/versions/2.6.6/bin/fastlane:23:in `&lt;main&gt;'&#10;&#10;You are not authorized to access ModernChocolate/ynotes, please make sure you provided a valid API token (GITHUB_API_TOKEN)" />
+      <testcase classname="fastlane.lanes" name="7: adb shell am start -n fr.ynotes/.MainActivity" time="0.216917314">
         
       </testcase>
     
