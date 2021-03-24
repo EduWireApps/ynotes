@@ -861,7 +861,7 @@ class _Communication {
     if (this.compress_requests) {
       await saveInFile(hex.encode(response_data['donneesSec']), "test");
       var toDecode = response_data['donneesSec'];
-      response_data['donneesSec'] = zlibInstanceDecoder.convert(toDecode);
+      response_data['donneesSec'] = conv.utf8.decode(zlibInstanceDecoder.convert(toDecode));
     }
     if (response_data['donneesSec'].runtimeType == String) {
       try {
