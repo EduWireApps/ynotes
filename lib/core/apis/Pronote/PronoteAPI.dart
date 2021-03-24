@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 import 'dart:typed_data';
 import 'package:convert/convert.dart';
 import 'package:crypto/crypto.dart';
@@ -20,8 +18,10 @@ import 'package:ynotes/core/utils/nullSafeMap.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
 import 'package:ynotes/tests.dart';
+import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
+import 'dart:convert' as conv;
 
 import '../EcoleDirecte.dart';
 import '../utils.dart';
@@ -151,6 +151,8 @@ class Client {
     this.week = await get_week(DateTime.now());
 
     this.localPeriods = this.periods;
+    this.stepsLogger.add("✅ Created attributes");
+
     this.logged_in = await this._login();
 
     this.hour_start =
@@ -199,11 +201,11 @@ class Client {
     var motdepasse;
 
     if (this.ent != null && this.ent == true) {
-      List<int> encoded = utf8.encode(this.password);
+      List<int> encoded = conv.utf8.encode(this.password);
       motdepasse = sha256.convert(encoded).bytes;
       motdepasse = hex.encode(motdepasse);
       motdepasse = motdepasse.toString().toUpperCase();
-      e.aes_key = md5.convert(utf8.encode(motdepasse));
+      e.aes_key = md5.convert(conv.utf8.encode(motdepasse));
     } else {
       var u = this.username;
       var p = this.password;
@@ -224,11 +226,11 @@ class Client {
       }
 
       var alea = idr['donneesSec']['donnees']['alea'];
-      List<int> encoded = utf8.encode(alea + p);
+      List<int> encoded = conv.utf8.encode(alea + p);
       motdepasse = sha256.convert(encoded);
       motdepasse = hex.encode(motdepasse.bytes);
       motdepasse = motdepasse.toString().toUpperCase();
-      e.aes_key = md5.convert(utf8.encode(u + motdepasse));
+      e.aes_key = md5.convert(conv.utf8.encode(u + motdepasse));
     }
 
     var dec = e.aes_decrypt(hex.decode(challenge));
@@ -237,7 +239,7 @@ class Client {
     var dec_no_alea = _enleverAlea(dec);
     this.stepsLogger.add("✅ Removed alea");
 
-    var ch = e.aes_encrypt(utf8.encode(dec_no_alea));
+    var ch = e.aes_encrypt(conv.utf8.encode(dec_no_alea));
     this.stepsLogger.add("✅ Encrypted credentials");
 
     Map auth_json = {"connexion": 0, "challenge": ch, "espace": int.parse(this.attributes['a'])};
@@ -299,7 +301,7 @@ class Client {
     try {
       Map data = {"N": document.id, "G": int.parse(document.type)};
       //Used by pronote to encrypt the data (I don't know why)
-      var magic_stuff = this.encryption.aes_encryptFromString(jsonEncode(data));
+      var magic_stuff = this.encryption.aes_encryptFromString(conv.jsonEncode(data));
       String libelle = Uri.encodeComponent(Uri.encodeComponent(document.documentName));
       String url = this.communication.root_site +
           '/FichiersExternes/' +
@@ -453,7 +455,7 @@ class Client {
         List<String> questions = List();
         List<Map> choices = List();
         element["listeQuestions"]["V"].forEach((question) {
-          questions.add(jsonEncode(question));
+          questions.add(conv.jsonEncode(question));
         });
         listInfosPolls.add(PollInfo(
             element["elmauteur"]["V"]["L"],
@@ -502,8 +504,8 @@ class Client {
     try {
       List metas = meta.split("/ynsplit");
       var user = this.paramsUser['donneesSec']['donnees']['ressource'];
-      Map mapData = jsonDecode(metas[0]);
-      Map pollMapData = jsonDecode(metas[1]);
+      Map mapData = conv.jsonDecode(metas[0]);
+      Map pollMapData = conv.jsonDecode(metas[1]);
       String answer = metas[2];
 
       mapData["reponse"]["V"]["valeurReponse"]["V"] = "[$answer]";
@@ -711,7 +713,7 @@ class _Communication {
     this.client.stepsLogger.add("✅ Parsed HTML");
     //uuid
     this.encryption.rsa_keys = {'MR': this.attributes['MR'], 'ER': this.attributes['ER']};
-    var uuid = base64.encode(await this.encryption.rsa_encrypt(this.encryption.aes_iv_temp));
+    var uuid = conv.base64.encode(await this.encryption.rsa_encrypt(this.encryption.aes_iv_temp));
     this.client.stepsLogger.add("✅ Encrypted IV");
 
     //uuid
@@ -771,16 +773,18 @@ class _Communication {
     print(data);
     if (this.compress_requests) {
       print("Compress request");
-      data = jsonEncode(data.toString());
+      data = """{"donnees": {"Uuid": "${data["donnees"]["Uuid"]}", "identifiantNav": null}}""";
+      print(data);
       var zlibInstance = ZLibCodec(level: 6, raw: true);
-      data = zlibInstance.encode(utf8.encode(hex.encode(utf8.encode(data))));
+      data = zlibInstance.encode(conv.utf8.encode(hex.encode(conv.utf8.encode(data))));
     }
     if (this.encrypt_requests) {
       print("Encrypt requests");
       data = encryption.aes_encrypt(data);
     }
+    print(data);
     var zlibInstance = ZLibCodec(level: 6, raw: true);
-    var rNumber = encryption.aes_encrypt(utf8.encode(this.request_number.toString()));
+    var rNumber = encryption.aes_encrypt(conv.utf8.encode(this.request_number.toString()));
 
     var json = {
       'session': int.parse(this.attributes['h']),
@@ -848,16 +852,20 @@ class _Communication {
     Map response_data = response.json();
 
     if (this.encrypt_requests) {
-      response_data['donneesSec'] = this.encryption.aes_decrypt(hex.decode(response_data['donneesSec']));
+      await saveInFile(response_data['donneesSec'], "a");
+
+      response_data['donneesSec'] = this.encryption.aes_decryptAsBytes(hex.decode(response_data['donneesSec']));
       print("décrypté données sec");
     }
-    var zlibInstanceDecode = ZLibCodec(windowBits: 15);
+    var zlibInstanceDecoder = ZLibDecoder(raw: true);
     if (this.compress_requests) {
-      response_data['donneesSec'] = zlibInstanceDecode.decode(response_data['donneesSec']);
+      await saveInFile(hex.encode(response_data['donneesSec']), "test");
+      var toDecode = response_data['donneesSec'];
+      response_data['donneesSec'] = zlibInstanceDecoder.convert(toDecode);
     }
     if (response_data['donneesSec'].runtimeType == String) {
       try {
-        response_data['donneesSec'] = jsonDecode(response_data['donneesSec']);
+        response_data['donneesSec'] = conv.jsonDecode(response_data['donneesSec']);
       } catch (e) {
         throw "JSONDecodeError";
       }
@@ -928,13 +936,12 @@ class _Encryption {
   _Encryption() {
     this.aes_iv = IV.fromLength(16);
     this.aes_iv_temp = IV.fromSecureRandom(16).bytes;
-    print(this.aes_iv_temp);
     this.aes_key = generateMd5("");
 
     this.rsa_keys = {};
   }
   String generateMd5(String input) {
-    return md5.convert(utf8.encode(input)).toString();
+    return md5.convert(conv.utf8.encode(input)).toString();
   }
 
   my_lil_test(List<int> data) {
@@ -976,7 +983,21 @@ class _Encryption {
     print(this.aes_iv);
 
     try {
-      return aesEncrypter.decrypt64(base64.encode(data), iv: this.aes_iv);
+      return aesEncrypter.decrypt64(conv.base64.encode(data), iv: this.aes_iv);
+    } catch (e) {
+      throw ("Error during decryption : $e");
+    }
+  }
+
+  aes_decryptAsBytes(List<int> data) {
+    var key = Key.fromBase16(this.aes_key.toString());
+    final aesEncrypter = Encrypter(AES(key, mode: AESMode.cbc, padding: "PKCS7"));
+    //generate AES CBC block encrypter with key and PKCS7 padding
+
+    print(this.aes_iv);
+
+    try {
+      return aesEncrypter.decryptBytes(Encrypted.from64(conv.base64.encode(data)), iv: this.aes_iv);
     } catch (e) {
       throw ("Error during decryption : $e");
     }
@@ -997,10 +1018,9 @@ class _Encryption {
       var modulus = BigInt.parse(modulusBytes, radix: 16);
 
       var exponent = BigInt.parse(this.rsa_keys['ER'], radix: 16);
-
       var cipher = PKCS1Encoding(RSAEngine());
       cipher.init(true, PublicKeyParameter<RSAPublicKey>(RSAPublicKey(modulus, exponent)));
-      Uint8List output1 = cipher.process(aes_iv_temp);
+      Uint8List output1 = cipher.process(data);
 
       return output1;
     } catch (e) {
