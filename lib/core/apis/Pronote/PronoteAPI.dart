@@ -75,6 +75,7 @@ class Client {
 
     this.communication = _Communication(this.pronote_url, null, this);
     var future = await this.communication.initialise();
+
     this.attributes = future[0];
     this.func_options = future[1];
     this.encryption = _Encryption();
@@ -644,7 +645,7 @@ class _Communication {
   var client;
   var html_page;
   var root_site;
-  var encryption;
+  _Encryption encryption;
   Map attributes;
   int request_number;
   List authorized_onglets;
@@ -672,8 +673,6 @@ class _Communication {
   }
 
   Future<List<Object>> initialise() async {
-    //some headers to be real
-
     print("Getting hostname");
     // get rsa keys and session id
     String hostName = Requests.getHostname(this.root_site + "/" + this.html_page);
@@ -688,7 +687,12 @@ class _Communication {
       'connection': 'keep-alive',
       'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/74.0'
     };
-    String url = this.root_site + "/" + this.html_page + (this.cookies != null ? "?login=true" : "") + "?fd=1";
+    String url = this.root_site + "/" + this.html_page + (this.cookies != null ? "?login=true" : "");
+    /* if (url.contains("?login=true") || url.contains("?fd=1")) {
+      url += "&fd=1";
+    } else {
+      url += "?fd=1";
+    }*/
     this.client.stepsLogger.add("ⓘ" + " Used url is " + "`" + url + "`");
 //?fd=1 bypass the old navigator issue
     var get_response = await Requests.get(url, headers: headers).catchError((e) {
@@ -696,6 +700,7 @@ class _Communication {
 
       throw ("Impossible de se connecter");
     });
+    printWrapped(get_response.content().toString());
     this.client.stepsLogger.add("✅ Posted login request");
 
     if (get_response.hasError) {
@@ -706,16 +711,22 @@ class _Communication {
     this.client.stepsLogger.add("✅ Parsed HTML");
     //uuid
     this.encryption.rsa_keys = {'MR': this.attributes['MR'], 'ER': this.attributes['ER']};
-
     var uuid = base64.encode(await this.encryption.rsa_encrypt(this.encryption.aes_iv_temp));
     this.client.stepsLogger.add("✅ Encrypted IV");
 
     //uuid
-    var json_post = {'Uuid': uuid};
-    this.encrypt_requests = (this.attributes["sCra"] != null ? !this.attributes["sCra"] : false);
-    this.compress_requests = (this.attributes["sCra"] != null ? !this.attributes["sCoA"] : false);
+    var json_post = {'Uuid': uuid, 'identifiantNav': null};
+    print(this.attributes);
+    this.encrypt_requests = (this.attributes["sCrA"] == null);
+    if (this.attributes["sCrA"] == null) {
+      this.client.stepsLogger.add("ⓘ" + " Requests will be encrypted");
+    }
+    this.compress_requests = (this.attributes["sCoA"] == null);
+    if (this.attributes["sCoA"] == null) {
+      this.client.stepsLogger.add("ⓘ" + " Requests will be compressed");
+    }
     var initial_response = await this.post('FonctionParametres',
-        data: {'donnees': json_post}, decryption_change: {'iv': md5.convert(this.encryption.aes_iv_temp).toString()});
+        data: {'donnees': json_post}, decryptionChange: {'iv': md5.convert(this.encryption.aes_iv_temp).toString()});
 
     return [this.attributes, initial_response];
   }
@@ -749,38 +760,38 @@ class _Communication {
     return attributes;
   }
 
-  post(String function_name, {var data, bool recursive = false, var decryption_change = null}) async {
+  post(String functionName, {var data, bool recursive = false, var decryptionChange}) async {
+    this.client.stepsLogger.add("✅ Posting " + functionName);
     if (data != null) {
       if (data["_Signature_"] != null &&
           !this.authorized_onglets.toString().contains(data['_Signature_']['onglet'].toString())) {
         throw ('Action not permitted. (onglet is not normally accessible)');
       }
     }
+    print(data);
     if (this.compress_requests) {
       print("Compress request");
-      data = utf8.encode(jsonEncode(data.toString()));
-      data = hex.encode(data);
-      var zlibInstance = ZLibCodec(level: 6);
-      data = zlibInstance.encode(data).sublist(2, data.length - 4);
+      data = jsonEncode(data.toString());
+      var zlibInstance = ZLibCodec(level: 6, raw: true);
+      data = zlibInstance.encode(utf8.encode(hex.encode(utf8.encode(data))));
     }
     if (this.encrypt_requests) {
       print("Encrypt requests");
-      if (data.runtimeType == Map) {
-        data = utf8.encode(data.toString());
-      }
-      data = encryption.aes_encrypt(data).toUpperCase();
+      data = encryption.aes_encrypt(data);
     }
+    var zlibInstance = ZLibCodec(level: 6, raw: true);
+    var rNumber = encryption.aes_encrypt(utf8.encode(this.request_number.toString()));
 
-    var r_number = encryption.aes_encrypt(utf8.encode(this.request_number.toString()));
-    print(r_number);
     var json = {
       'session': int.parse(this.attributes['h']),
-      'numeroOrdre': r_number,
-      'nom': function_name,
+      'numeroOrdre': rNumber,
+      'nom': functionName,
       'donneesSec': data
     };
+    print(json.toString());
     String p_site =
-        this.root_site + '/appelfonction/' + this.attributes['a'] + '/' + this.attributes['h'] + '/' + r_number;
+        this.root_site + '/appelfonction/' + this.attributes['a'] + '/' + this.attributes['h'] + '/' + rNumber;
+    print(p_site);
 
     this.request_number += 2;
     if (request_number > 90) {
@@ -800,6 +811,7 @@ class _Communication {
       print("Error occured");
       print(response.content());
       var r_json = response.json();
+
       if (r_json["Erreur"]['G'] == 22) {
         throw error_messages["22"];
       }
@@ -809,27 +821,27 @@ class _Communication {
 
         throw error_messages["10"];
       }
+
       if (recursive != null && recursive) {
         throw "Unknown error from pronote: ${r_json["Erreur"]["G"]} | ${r_json["Erreur"]["Titre"]}\n$r_json";
       }
 
-      //await this.client.refresh();
-
-      return await this.client.communication.post(function_name, data: data, recursive: true);
+      return await this.client.communication.post(functionName, data: data, recursive: true);
     }
 
-    if (decryption_change != null) {
+    if (decryptionChange != null) {
       print("decryption change");
-      if (decryption_change.toString().contains("iv")) {
+      if (decryptionChange.toString().contains("iv")) {
         print("decryption_change contains IV");
-        print(decryption_change['iv']);
-        this.encryption.aes_iv = IV.fromBase16(decryption_change['iv']);
+        print(decryptionChange['iv']);
+        this.encryption.aes_iv = IV.fromBase16(decryptionChange['iv']);
       }
 
-      if (decryption_change.toString().contains("key")) {
+      if (decryptionChange.toString().contains("key")) {
         print("decryption_change contains key");
-        print(decryption_change['key']);
-        this.encryption.aes_key = decryption_change['key'];
+        print(decryptionChange['key']);
+
+        this.encryption.aes_key = decryptionChange['key'];
       }
     }
 
@@ -905,7 +917,7 @@ _prepare_onglets(var list_of_onglets) {
 }
 
 class _Encryption {
-  var aes_iv;
+  IV aes_iv;
 
   var aes_iv_temp;
 
@@ -914,14 +926,9 @@ class _Encryption {
   Map rsa_keys;
 
   _Encryption() {
-    List<int> list = List();
-    for (var i = 0; i < 16; i++) {
-      var rng = new Random();
-      list.add(rng.nextInt(255));
-    }
-    this.aes_iv = IV.fromBase16("00000000000000000000000000000000");
-
-    this.aes_iv_temp = Uint8List.fromList(list);
+    this.aes_iv = IV.fromLength(16);
+    this.aes_iv_temp = IV.fromSecureRandom(16).bytes;
+    print(this.aes_iv_temp);
     this.aes_key = generateMd5("");
 
     this.rsa_keys = {};
@@ -930,14 +937,27 @@ class _Encryption {
     return md5.convert(utf8.encode(input)).toString();
   }
 
-  aes_encrypt(List<int> data, {padding = true}) {
-    var data2 = utf8.decode(data);
+  my_lil_test(List<int> data) {
     var key = Key.fromBase16(this.aes_key.toString());
-    final encrypter = Encrypter(AES(key, mode: AESMode.cbc, padding: padding ? "PKCS7" : null));
+    final encrypter = Encrypter(AES(key, mode: AESMode.cbc, padding: "PKCS7"));
+    final encrypted = encrypter.encryptBytes(data, iv: this.aes_iv).base16;
+    return encrypted;
+  }
 
-    final encrypted = encrypter.encrypt(data2, iv: this.aes_iv).base16;
+  aes_encrypt(List<int> data, {padding = true, disableIV = false}) {
+    try {
+      var iv;
+      var key = Key.fromBase16(this.aes_key.toString());
+      print("KEY :" + this.aes_key.toString());
+      iv = this.aes_iv;
+      print(iv.base16);
+      final encrypter = Encrypter(AES(key, mode: AESMode.cbc, padding: padding ? "PKCS7" : null));
+      final encrypted = encrypter.encryptBytes(data, iv: iv).base16;
 
-    return (encrypted);
+      return (encrypted);
+    } catch (e) {
+      throw "Error during aes encryption " + e.toString();
+    }
   }
 
   aes_encryptFromString(String data) {
