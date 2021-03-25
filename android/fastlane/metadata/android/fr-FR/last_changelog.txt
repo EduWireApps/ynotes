@@ -1,1 +1,1 @@
-Correctif d'un bug qui empêchait la connexion.
+Correctif du tiroir d'informations des matières. 
