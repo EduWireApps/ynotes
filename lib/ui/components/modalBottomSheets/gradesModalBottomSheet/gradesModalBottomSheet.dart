@@ -141,15 +141,16 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                               children: <Widget>[
                                 Row(
                                   children: [
-                                    IconButton(
-                                      icon: Icon(Icons.delete),
-                                      iconSize: screenSize.size.width / 5 * 0.4,
-                                      color: Colors.blue,
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                        widget.gradesController.simulationRemove(widget.grade);
-                                      },
-                                    ),
+                                    if (widget.gradesController.isSimulating)
+                                      IconButton(
+                                        icon: Icon(Icons.delete),
+                                        iconSize: screenSize.size.width / 5 * 0.4,
+                                        color: Colors.blue,
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                          widget.gradesController.simulationRemove(widget.grade);
+                                        },
+                                      ),
                                     Material(
                                       color: colorGroup,
                                       borderRadius: BorderRadius.circular(15),

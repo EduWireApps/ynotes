@@ -12,7 +12,7 @@ description: yNotes application de gestion de vie scolaire
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.
 
-version: 0.9.1+9
+version: 0.9.3+9
 
 environment:
   sdk: '>=2.10.0 <3.0.0'
@@ -100,7 +100,8 @@ dependencies:
 
 
   liquid_progress_indicator: ^0.3.2
-    
+  dotted_border: ^1.0.7
+
   wiredash:
     git:
       url: https://github.com/wiredashio/wiredash-sdk
@@ -172,6 +173,8 @@ flutter:
     - family: Asap
       fonts:
         - asset: fonts/Asap-Regular.otf
+        - asset: fonts/Asap-Italic.otf
+          style: italic
         - asset: fonts/Asap-Bold.otf
           weight: 700
     - family: ProximaNova

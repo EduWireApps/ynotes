@@ -3,7 +3,7 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 
 class CustomButtons {
   static Widget materialButton(BuildContext context, double width, double height, Function onTap,
-      {IconData icon, String label, Color backgroundColor, Color textColor}) {
+      {IconData icon, String label, Color backgroundColor, Color textColor, Color iconColor}) {
     var screenSize = MediaQuery.of(context);
     return Container(
       width: width,
@@ -24,7 +24,7 @@ class CustomButtons {
                     if (icon != null)
                       Icon(
                         icon,
-                        color: ThemeUtils.textColor(),
+                        color: textColor ?? ThemeUtils.textColor(),
                       ),
                     if (label != null)
                       Text(

@@ -1,4 +1,5 @@
 import 'package:flare_flutter/flare_actor.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:ynotes/core/apis/utils.dart';
@@ -271,7 +272,7 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
     );
   }
 
-  Future<String> connectionData;
+  Future<List> connectionData;
   static String utf8convert(String text) {
     List<int> bytes = text.toString().codeUnits;
     return utf8.decode(bytes);
@@ -395,7 +396,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   String casValue = "Aucun";
-  Future<String> connectionData;
+  Future<List> connectionData;
   final _username = TextEditingController();
   final _password = TextEditingController();
   final _url = TextEditingController();
@@ -477,7 +478,7 @@ class _LoginPageState extends State<LoginPage> {
                     FutureBuilder(
                       future: connectionData,
                       builder: (context, snapshot) {
-                        if (snapshot.hasData && snapshot.data.toString().contains("Bienvenue")) {
+                        if (snapshot.hasData && snapshot.data[0] == 1) {
                           Future.delayed(const Duration(milliseconds: 500), () {
                             Navigator.pop(context);
                             if (_isFirstUse == true) {
@@ -494,12 +495,13 @@ class _LoginPageState extends State<LoginPage> {
                                 color: Colors.lightGreen,
                               ),
                               Text(
-                                snapshot.data,
+                                snapshot.data[1].toString(),
                                 textAlign: TextAlign.center,
                               )
                             ],
                           );
-                        } else if (snapshot.hasData && !snapshot.data.toString().contains("Bienvenue")) {
+                        } else if (snapshot.hasData && snapshot.data[0] == 0) {
+                          print(snapshot.data);
                           return Column(
                             children: <Widget>[
                               Icon(
@@ -508,9 +510,30 @@ class _LoginPageState extends State<LoginPage> {
                                 color: Colors.redAccent,
                               ),
                               Text(
-                                utf8convert(snapshot.data.toString()),
+                                snapshot.data[1].toString(),
                                 textAlign: TextAlign.center,
-                              )
+                              ),
+                              if (snapshot.data.length > 2 && snapshot.data[2] != null && snapshot.data[2].length > 0)
+                                Container(
+                                  margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
+                                  child: CustomButtons.materialButton(
+                                    context,
+                                    MediaQuery.of(context).size.width / 5 * 1.5,
+                                    null,
+                                    () async {
+                                      List stepLogger = snapshot.data[2];
+                                      try {
+                                        //add step logs to clip board
+                                        await Clipboard.setData(new ClipboardData(text: stepLogger.join("\n")));
+                                        CustomDialogs.showAnyDialog(context, "Logs copiés dans le presse papier.");
+                                      } catch (e) {
+                                        CustomDialogs.showAnyDialog(
+                                            context, "Impossible de copier dans le presse papier !");
+                                      }
+                                    },
+                                    label: "Copier les logs",
+                                  ),
+                                )
                             ],
                           );
                         } else {
@@ -1113,8 +1136,8 @@ class _LoginPageState extends State<LoginPage> {
                                                                       fontWeight: FontWeight.bold,
                                                                       color: Colors.black),
                                                                 ),
-                                                                onTap: () =>
-                                                                    launch('https://ynotes.fr/legal/PDCYNotes.pdf')),
+                                                                onTap: () => launch(
+                                                                    'https://ynotes.fr/files/legal/PDCYNotes.pdf')),
                                                             SizedBox(
                                                               width: screenSize.size.width / 5 * 0.2,
                                                             ),
@@ -1126,8 +1149,8 @@ class _LoginPageState extends State<LoginPage> {
                                                                       fontWeight: FontWeight.bold,
                                                                       color: Colors.black),
                                                                 ),
-                                                                onTap: () =>
-                                                                    launch('https://ynotes.fr/legal/CGUYNotes.pdf')),
+                                                                onTap: () => launch(
+                                                                    'https://ynotes.fr/files/legal/CGUYNotes.pdf')),
                                                           ],
                                                         ),
                                                       ),

@@ -31,6 +31,14 @@ extension StringExtension on String {
   }
 }
 
+extension on TextStyle {
+  /// Temporary fix the following Flutter Web issues
+  /// https://github.com/flutter/flutter/issues/63467
+  /// https://github.com/flutter/flutter/issues/64904#issuecomment-699039851
+  /// https://github.com/flutter/flutter/issues/65526
+  TextStyle get withZoomFix => copyWith(wordSpacing: 0);
+}
+
 //login manager
 LoginController tlogin;
 Offline offline;
@@ -100,6 +108,7 @@ class HomeApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeNotifier = Provider.of<AppStateNotifier>(context);
+    
     return Wiredash(
       projectId: "ynotes-giw0qs2",
       secret: "y9zengsvskpriizwniqxr6vxa1ka1n6u",
@@ -138,6 +147,7 @@ class HomeApp extends StatelessWidget {
         themeMode: themeNotifier.getTheme(),
       ),
     );
+    
   }
 }
 

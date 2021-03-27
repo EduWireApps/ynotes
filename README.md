@@ -3,75 +3,89 @@
 [![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
-[![Vidéo de promotion pour la version 0.9.1](https://img.youtube.com/vi/VID/0.jpg)](https://www.youtube.com/watch?v=BHQ5uG2zTS4)
+[![Vidéo de promotion pour la version 0.9.1](https://img.youtube.com/vi/BHQ5uG2zTS4/0.jpg)](https://www.youtube.com/watch?v=BHQ5uG2zTS4)
 
-yNotes est un gestionnaire de notes, d'emploi du temps et de devoirs qui vous permet d'accéder à toutes vos informations scolaires dans une interface moderne et intuitive. L'application actuelle est basée sur les APIs des sites **École Directe** et **Pronote**. Je travaille actuellement dur pour adapter l'application à d'autres "applications scolaires". 
+# Introduction
+ **yNotes est un gestionnaire de notes, d'emploi du temps et de devoirs qui vous permet d'accéder à toutes vos informations scolaires dans une interface moderne et intuitive**. 
 
-Téléchargez dès maintenant yNotes sur le [Google Play Store](https://play.google.com/store/apps/details?id=fr.ynotes) !
-
-yNotes est un projet ouvert et collaboratif ! N'hésitez pas à soumettre une pull request ou me contacter directement pour aider au projet **(discord : JsonLines
-#0721)**.
-
-__yNotes n'est **pas un client officiel** et utilise directement les APIs d'applications scolaires. Vos identifiants sont chiffrés et stockés sur votre appareil, mais nous ne nous portons pas responsables en cas de sanction de l'application scolaire. De plus, les fonctionnalités proposées par yNotes peuvent varier à tout moment, par décision externe ou interne.__
-
-J'ai décidé de créer yNotes en constatant que les demandes des utilisateurs des applications scolaires n'étaient pas écoutées, et que les applications mobiles de vie scolaire étaient basiques, à l'interface peu élaborée. Bien que la propriété intellectuelle m'empêche de diffuser yNotes à grande ampleur, j'espère que les éditeurs des applications scolaires entendront un jour nos réclamations !
-
-## Fonctionnalités 
-Les fonctionnalités de yNotes s'étendent chaque jour pour permettre d'être le plus efficace dans son travail, et l'interface est régulièrement revue pour être la plus intuitive possible.
-#### Fonctionnalités mises en place
+*L'application actuelle est basée sur les APIs des sites **École Directe** et **Pronote***. 
 
 
-- Accès au notes : Affichage des notes et des données liées, partage des notes (en cours), tri des notes
-- Accès aux devoirs : Accès aux prochains devoirs, affichage des pièces jointes liées (en cours)
-- Coloration des matières personnalisable
-- Mode nuit
-- Application hors ligne, nul besoin d'Internet pour accéder à ses notes 
-- Accès aux applications supplémentaires : mail et cloud (disponible sur École Directe)
-- Ajout aux favoris de devoirs. (fonctionnalité d'épinglage)
-- ~~Mise en place d'un "Quick menu" (menu rapide) pour accéder rapidement aux documents téléchargés~~ (supprimé car non intuitif)
-#### Fonctionnalités à venir
+- ### Téléchargez dès maintenant yNotes sur le [Google Play Store](https://play.google.com/store/apps/details?id=fr.ynotes) 
+- ### Rejoignez le [serveur Discord officiel](https://discord.gg/uNy7F3hwuA) pour contacter l'équipe et être au courant de chaque nouveauté
+
+```diff
+- yNotes n'est pas un client officiel et utilise directement les APIs d'applications scolaires. 
+- Vos identifiants sont chiffrés et stockés sur votre appareil et nous n'y avons strictement pas accès
+- Nous ne nous portons pas responsables en cas de sanction de l'application scolaire. 
+```
+# Plan de ce README
+- [yNotes](#ynotes)
+- [Introduction](#introduction)
+- [Plan de ce README](#plan-de-ce-readme)
+- [Fonctionnalités](#fonctionnalités)
+    - [Fonctionnalités mises en place](#fonctionnalités-mises-en-place)
+    - [Fonctionnalités à venir](#fonctionnalités-à-venir)
+- [Installation](#installation)
+    - [Depuis les releases officielles](#depuis-les-releases-officielles)
+    - [Android](#android)
+    - [iOS](#ios)
+- [Compilation](#compilation)
+- [Compatibilité](#compatibilité)
+- [A propos des APIs officielles](#a-propos-des-apis-officielles)
+- [Documentation](#documentation)
+    - [Architecture](#architecture)
+- [Contributeurs](#contributeurs)
+    - [Mentions spéciales](#mentions-spéciales)
+
+
+# Fonctionnalités 
+Les fonctionnalités de yNotes s'étendent chaque jour pour vous permettre d'être le plus efficace dans votre travail, et l'interface est régulièrement revue pour être la plus intuitive possible.
+### Fonctionnalités mises en place
+
+
+- **Notes**
+  - Affichage des notes et des données liées
+  - Notification de nouvelles notes
+  - Partage des notes
+  - Filtrage des notes par spécialités ou catégorie (sciences, littérature)
+
+- **Devoirs**
+  - Accès aux devoirs à faire
+  - Accès aux devoirs à une date spécifique
+  - Affichage des pièces jointes liées (EcoleDirecte seulement)
+  - Epinglage de devoirs importants
+- **Emploi du temps**
+  - Accès aux cours programmés
+  - Ajout d'évènements personnalisables
+  - Ajout de rappels et alarmes
+- **Applications supplémentaires**
+  - Cloud (EcoleDirecte)
+  - Mails (EcoleDirecte) avec notifications
+  - Sondages (Pronote)
+- **Mode nuit**
+- **Application hors ligne**
+### Fonctionnalités à venir
 
 - Fonctionnalités supplémentaires dans l'affichage des devoirs, partage et recherche rapide par mot-clé (partenariat avec applications scolaires ?)
-- Visualisation de l'emploi du temps et organisation de la vie d'étudiant
-- yNotes web
-- ~~Ajout de la foncionnalité envoyer des mails au Quick menu,~~ ~~devoirs favoris~~
-~~- Multicomptes~~ (abandonné)
-
-## Compatibilité (apps scolaires)
-yNotes se veut multi compatible et ainsi permettre un portage vers n'importe quelle application scolaire à l'aide d'une API. Cette implémentation n'est pas encore faite et demande du travail, mais sera faite le plus rapidement possible pour permettre à n'importe qui de créer son parser vers une application scolaire. Peut-être même de rendre l'application internationale ?
-*Note du **01/08** la connexion via Pronote est quasiment effective en connexion directe (?login=true à la fin de l'adresse ou sans ENT). L'intégration des ENT va bientôt commencer.*
-
-## Fonctionnalité générale Space
-Space, pour espace de l'étudiant, est un algorithme qui permettrait à l'étudiant d'aménager sa vie en fonction de son emploi du temps tout en suggérant un plan de travail.
-
-#### Est-ce que Space existe ?
-
-Soyons clair, Space n'est absolument pas implémenté, mais compte l'être le plus rapidement possible car il constitue une pièce maîtresse du projet yNotes.
-
-#### Mode de fonctionnement
-
-Space se baserait sur l'emploi du temps de l'utilisateur, importé grâce aux APIs des applications scolaires. Puis ce dernier pourra ajouter manuellement les évènements, cours extrascolaires, activités auxquelles l'utilisateur participe régulièrement ou non. yNotes suggérera des idées d'organisation de rendez-vous, et évaluera le risque d'un rendez-vous non obligatoire si ce dernier se situe avant un contrôle important.
-#### Les contraintes
-
-Sans devenir un laboratoire, Space devra se baser sur un algorithme intelligent, sans se montrer trop intrusif, ni collecter de données. En effet ces dernières ne doivent êtres stockées que localement, et ne peuvent être sujettes à des traitements extérieurs a l'application.
-
-## Comment utiliser l'application
+- Tickets de vie scolaire
+- Actualités et informations
+# Installation
 L'application est développée avec le framework Flutter, et donc développée en Dart.
 
 ### Depuis les releases officielles
 Si vous êtes utilisateur et souhaitez télécharger l'application sur votre smartphone, vous pouvez :
-#### Android :
-- Télécharger la dernière release (.apk) [ici](https://github.com/ModernChocolate/ynotes/releases)
-- Vous rendre sur le site de yNotes pour vous inscrire à la newsletter et être informé des dernières nouveautés et recevoir votre application
-- Tester la dernière bêta pour tester les fonctionnalités en avant première ici
-- Compiler vous même votre application
-#### IOS :
+### Android
+- [Installer l'application depuis le Google Play Store](https://play.google.com/store/apps/details?id=fr.ynotes)
+- [Télécharger la dernière release (.apk)](https://github.com/ModernChocolate/ynotes/releases)
+- [Compiler vous même votre application](#compilation)
+### iOS
 - Étant donné que les frais d'inscriptions obligatoires pour devenir Apple Developer sont hors budgets, vous ne pourrez pas trouver l'application sur l'App Store. Vous pouvez donc compiler l'application à l'étape suivante si vous possédez un Mac.
 
 
-### Compilation 
+# Compilation 
 
-La compilation permet de créer une application interprétable par un appareil donné, dans notre cas votre smartphone à partir d'un code source.
+La compilation permet de créer une application interprétable par un appareil donné, dans notre cas votre smartphone à partir du code source.
 
 Il est conseillé de procéder à l'installation guidée indiquée par [la documentation officielle de Flutter](https://flutter.dev/docs/get-started/install).
 
@@ -88,8 +102,23 @@ Suivez les étapes de compilation de la documentation officielle :
 * [Compiler pour iOS](https://flutter.dev/docs/deployment/ios)
 *Vous devez disposer d'un compte Apple Developer gratuit (ou payant) pour installer l'application sur un appareil iOS*
 
-## Documentation 
-La documentation spécifique au développement vous permettant de modifier les layouts selon vos goûts, ajouter vos fonctionnalités, votre touche.
+# Compatibilité
+yNotes est disponible pour les utilisateurs suivants :
+- Utilisateurs d'EcoleDirecte (comptes élèves)
+- Utilisateurs Pronote
+  -  Par connexion directe (sans ENT ou ?login=true) **HTTPS** :
+  si votre adresse Pronote contient **HTTP** yNotes ne poura pas se connecter. Ceci est en cours de correction et sera disponible dans quelques jours à date de l'écriture de ces lignes.
+  -  Avec l'ENT Ile de France
+  
+  Nous ajoutons actuellement une fonction qui permettra de se connecter à partir de __n'importe quel ENT__.
+
+# A propos des APIs officielles
+En réalité, Pronote et EcoleDirecte ne proposent pas vraiment "d'APIs" publiques et faciles d'accès. Je vous invite à regarder le dossier apis (`lib/core/apis`) puis consulter leurs dossiers respectifs pour comprendre comment yNotes accède aux données.
+
+- Pour EcoleDirecte, j'ai intégralement réalisé l'API de l'application. Les requêtes ne sont pas très complexes et vous pouvez facilement obtenir les données après avoir récupéré un `token` qui est valide environ `15 minutes` dans la requête de connexion.
+- Pour Pronote, j'ai quasiment recopié l'[API en python](https://github.com/bain3/pronotepy) réalisée par [bain](https://github.com/bain3). Si vous comptez vous lancer dans la réalisation de votre propre API - ce que je vous déconseille - jetez un coup d'oeil à [cette discussion](https://github.com/LelouBil/PronoteLib/blob/master/Protocol.md). Mais Pronote utilisant tellement de méthodes complexes qui vous compliqueront la tache je vous conseille plutôt de vous baser sur [l'API de Bain](https://github.com/bain3/pronotepy) citée précédemment, sur [l'API très complète de Litarvan](https://github.com/Litarvan/pronote-api) ou la [bibliothèque de Leloubil](https://github.com/LelouBil/PronoteLib). 
+<br>*Je suis bien moins compétant qu'eux sur le sujet, alors n'hésitez pas à aller consulter leur travail voire leur demander directement !*
+# Documentation 
 
 Le fichier principal (exécuté en premier) est `/lib/main.dart`
 
@@ -103,11 +132,10 @@ Les vues sont dans `/lib/ui`
 L'organisation des fichiers est néanmoins succeptible de changer.
 
 
+# Contributeurs
 ### Mentions spéciales
 * Merci aux développeurs et bêta testeurs qui ont aidé à participer au projet en me suggérant des fonctionnalités et en montrant des bugs que je n'aurai sûrement jamais remarqués
 * L'API Pronote est un portage de [pronotepy](https://github.com/bain3/pronotepy), développée par [bain](https://github.com/bain3) que je remercie énormément pour ses explications et sa disponibilité :)
-
-## Contributeurs ✨
 
 Je tiens à remercier chaque autre personne ne figurant pas dans cette section pour avoir testé yNotes, collaboré d'une manière ou d'une autre pour la création de l'application et m'avoir donné des idées pour l'améliorer.
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->

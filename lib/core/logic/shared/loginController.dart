@@ -75,13 +75,14 @@ class LoginController extends ChangeNotifier {
 
       var z = await storage.read(key: "agreedTermsAndConfiguredApp");
       if (u != null && p != null && z != null) {
-        await localApi.login(u, p, url: url, mobileCasLogin: iscas ?? false, cas: cas).then((String value) {
-          if (value == null) {
+
+       await localApi.login(u, p, url: url, mobileCasLogin: iscas ?? false, cas: cas).then((List loginValues) {
+          if (loginValues == null) {
             _actualState = loginStatus.loggedOff;
             _details = "Connexion à l'API...";
             notifyListeners();
           }
-          if (value.contains("Bienvenue")) {
+          if (loginValues[0] == 1) {
             gradeRefreshRecursive = false;
             hwRefreshRecursive = false;
             lessonsRefreshRecursive = false;
@@ -89,14 +90,14 @@ class LoginController extends ChangeNotifier {
             _actualState = loginStatus.loggedIn;
             notifyListeners();
           } else {
-            print("La valeur est :" + value.toString());
-            if (value.contains("IP")) {
+            print("La valeur est :" + loginValues[1].toString());
+            if (loginValues[1].contains("IP")) {
               _details = "Ban temporaire IP !";
             } else {
               _details = "Erreur de connexion.";
             }
 
-            _logs = value.toString();
+            _logs = loginValues[1].toString();
             _actualState = loginStatus.error;
             notifyListeners();
           }

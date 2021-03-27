@@ -5,6 +5,7 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/keyValues.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/usefulMethods.dart';
 
 ///Bottom windows with some infos on the discipline and the possibility to change the discipline color
 void disciplineModalBottomSheet(context, Discipline discipline, Function callback, var widget) {
@@ -99,9 +100,11 @@ void disciplineModalBottomSheet(context, Discipline discipline, Function callbac
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           buildKeyValuesInfo(context, "Votre moyenne", [
-                            discipline.getAverage().isNaN
-                                ? discipline.average ?? "-"
-                                : discipline.getAverage().toString()
+                            (chosenParser == 1)
+                                ? (widget.discipline.average ?? "-")
+                                : ((!widget.discipline.getAverage().isNaN)
+                                    ? widget.discipline.getAverage().toString()
+                                    : widget.discipline.average ?? "-")
                           ]),
                           SizedBox(
                             height: (screenSize.size.height / 3) / 25,

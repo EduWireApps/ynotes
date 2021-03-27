@@ -78,18 +78,24 @@ Future<String> getFileData() async {
   try {
     final dir = await FolderAppUtil.getDirectory();
     final File file = File('${dir.path}/logs.txt');
-    return await file.readAsString();
+    String toReturn = await file.readAsString();
+    return toReturn;
   } catch (e) {
     return "";
   }
 }
 
+
 logFile(String error) async {
   print("logging");
-  final directory = await FolderAppUtil.getDirectory();
-  final File file = File('${directory.path}/logs.txt');
-  String existingText = await getFileData();
-  await file.writeAsString(DateTime.now().toString() + "\n" + error + "\n\n" + existingText, mode: FileMode.write);
+  try {
+    final directory = await FolderAppUtil.getDirectory();
+    final File file = File('${directory.path}/logs.txt');
+    String existingText = await getFileData();
+    await file.writeAsString(DateTime.now().toString() + "\n" + error + "\n\n" + existingText, mode: FileMode.write);
+  } catch (e) {
+    print(e.toString());
+  }
 }
 
 removeLogFile() async {

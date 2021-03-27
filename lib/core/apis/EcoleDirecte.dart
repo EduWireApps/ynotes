@@ -62,7 +62,7 @@ class APIEcoleDirecte extends API {
   APIEcoleDirecte(Offline offlineController) : super(offlineController);
 
 //Get connection message and store token
-  Future<String> login(username, password, {url, cas, mobileCasLogin}) async {
+  Future<List> login(username, password, {url, cas, mobileCasLogin}) async {
     final prefs = await SharedPreferences.getInstance();
     if (username == null) {
       username = "";
@@ -115,15 +115,15 @@ class APIEcoleDirecte extends API {
           logFile(e.toString());
         }
         this.loggedIn = true;
-        return "Bienvenue ${actualUser[0].toUpperCase()}${actualUser.substring(1).toLowerCase()} !";
+        return [1, "Bienvenue ${actualUser[0].toUpperCase()}${actualUser.substring(1).toLowerCase()} !"];
       }
       //Return an error
       else {
         String message = req['message'];
-        return "Oups ! Une erreur a eu lieu :\n$message";
+        return [0, "Oups ! Une erreur a eu lieu :\n$message"];
       }
     } else {
-      return "Erreur";
+      return [0, "Erreur"];
     }
   }
 

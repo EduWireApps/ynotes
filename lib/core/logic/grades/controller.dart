@@ -100,22 +100,35 @@ class GradesController extends ChangeNotifier {
   ///Set the user average
   void _setAverage() {
     _average = 0;
+    double temp;
     List<double> averages = List();
-    disciplines().where((i) => i.period == _period).forEach((f) {
+    for (Discipline f in disciplines().where((i) => i.period == _period)) {
+      if (chosenParser == 1) {
+        if (f.generalAverage != null) {
+          double _temp = double.tryParse(f.generalAverage.replaceAll(",", "."));
+          if (temp != null && !temp.isNaN) {
+            print("uwu");
+            temp = _temp;
+            notifyListeners();
+            break;
+          }
+        }
+      }
       try {
         double _average = f.getAverage().isNaN ? f.average : f.getAverage();
         if (_average != null && !_average.isNaN) {
           averages.add(_average);
         }
       } catch (e) {}
-    });
+    }
+
     double sum = 0.0;
     averages.forEach((element) {
       if (element != null && !element.isNaN) {
         sum += element;
       }
     });
-    _average = sum / averages.length;
+    _average = temp ?? (sum / averages.length);
     notifyListeners();
   }
 
@@ -313,7 +326,7 @@ class GradesController extends ChangeNotifier {
               classAverage: e.classAverage,
               minClassAverage: e.minClassAverage,
               maxClassAverage: e.maxClassAverage,
-              disciplineCode: e.classAverage,
+              disciplineCode: e.disciplineCode,
               subdisciplineCode: e.subdisciplineCode,
               average: e.average,
               teachers: e.teachers,

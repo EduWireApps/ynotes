@@ -4,14 +4,14 @@ name: CD
 on:
   push:
     branches:
-      - beta-releases
+      - master
 
 jobs:
   # CD
   deploy_android:
     runs-on: ubuntu-latest
     # Beta release only
-    if: github.ref == 'refs/heads/beta-releases'
+    if: github.ref == 'refs/heads/master'
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -65,7 +65,7 @@ jobs:
         working-directory: android/fastlane
       - name: Release to Google Play (beta)
         run: |
-          bundle exec fastlane beta 
+          bundle exec fastlane prod 
         working-directory: android/fastlane
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN}}

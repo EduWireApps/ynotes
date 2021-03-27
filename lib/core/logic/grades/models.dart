@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:ynotes/usefulMethods.dart';
 part 'models.g.dart';
 
 @HiveType(typeId: 3)
@@ -71,6 +72,8 @@ class Discipline {
   }
 
   double getAverage() {
+    //if using Pronote
+
     double average = 0.0;
     double counter = 0;
 
@@ -207,7 +210,7 @@ class Grade {
     this.notSignificant,
     this.periodName,
     this.simulated = false,
-    this.countAsZero,
+    this.countAsZero = false,
   });
 
   factory Grade.fromEcoleDirecteJson(Map<String, dynamic> json, String nomPeriode) {
