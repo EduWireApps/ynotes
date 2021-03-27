@@ -265,6 +265,11 @@ class Client {
     }
 
     try {
+      if (mobileLogin) {
+        await storage.write(
+            key: "password", value: this.authResponse['donneesSec']['donnees']["jetonConnexionAppliMobile"]);
+        this.password = this.authResponse['donneesSec']['donnees']["jetonConnexionAppliMobile"];
+      }
       if (this.authResponse['donneesSec']['donnees'].toString().contains("cle")) {
         await this.communication.afterAuth(this.communication.lastResponse, this.authResponse, e.aesKey);
         if (isOldAPIUsed == false) {
