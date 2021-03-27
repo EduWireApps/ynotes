@@ -95,9 +95,9 @@ class _PronoteSetupPartState extends State<PronoteSetupPart> {
 class PronoteUrlFieldPart extends StatefulWidget {
   final Function loginCallback;
   final Function backButton;
-
+  final Function onLongPressCallback;
   final TextEditingController pronoteUrl;
-  PronoteUrlFieldPart({Key key, this.pronoteUrl, this.loginCallback, this.backButton}) : super(key: key);
+  PronoteUrlFieldPart({Key key, this.pronoteUrl, this.loginCallback, this.backButton, this.onLongPressCallback}) : super(key: key);
   @override
   _PronoteUrlFieldPartState createState() => _PronoteUrlFieldPartState();
 }
@@ -147,7 +147,10 @@ class _PronoteUrlFieldPartState extends State<PronoteUrlFieldPart> {
               CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5, widget.backButton,
                   backgroundColor: Colors.grey, label: "Retour", textColor: Colors.white),
               CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5, widget.loginCallback,
-                  backgroundColor: Colors.green, label: "Se connecter", textColor: Colors.white),
+                  onLongPress: widget.onLongPressCallback,
+                  backgroundColor: Colors.green,
+                  label: "Se connecter",
+                  textColor: Colors.white),
             ],
           )
         ],

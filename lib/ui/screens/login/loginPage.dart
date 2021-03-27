@@ -199,9 +199,19 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
               backButton: () {
                 sliderController.previousPage(duration: Duration(milliseconds: 300), curve: Curves.easeIn);
               },
+              onLongPressCallback: () {
+                if (chosenParser == 1 &&
+                    _url.text.length == 0 &&
+                    _password.text.length == 0 &&
+                    _username.text.length == 0) {
+                  connectionData = localApi.login("demonstration", "pronotevs",
+                      url: "https://demo.index-education.net/pronote/eleve.html", cas: "Aucun");
+                }
+                openLoadingDialog();
+              },
               loginCallback: () async {
                 try {
-                  if (await testIfPronoteCas(_url.text)) {
+                  if (await testIfPronoteCas(_url.text + "?fd=1")) {
                     var a =
                         await Navigator.of(context).push(router(LoginWebView(url: _url.text, controller: _controller)));
                     if (a != null) {
@@ -232,12 +242,13 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
         LoginPageTextField(_password, "Mot de passe", true, MdiIcons.key),
         SizedBox(height: screenSize.size.height / 10 * 0.4),
         Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (widget.setupNeeded)
               CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5, () {
                 sliderController.previousPage(duration: Duration(milliseconds: 300), curve: Curves.easeIn);
               }, backgroundColor: Colors.grey, label: "Retour", textColor: Colors.white),
-            CustomButtons.materialButton(context, screenSize.size.width / 5 * 2.2, null, () async {
+            CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5, () async {
               //Actions when pressing the ok button
               if (_username.text != "" && (chosenParser == 1 ? _url.text != null : true) && _password.text != null) {
                 reloadChosenApi();
