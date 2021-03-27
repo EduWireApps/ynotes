@@ -329,7 +329,8 @@ class EcoleDirecteMethod {
         }
         return parsedData;
       } else {
-        throw (onErrorBody + "  Server returned wrong statuscode.");
+        printWrapped(responseData.toString());
+        throw (onErrorBody + "  Server returned wrong statuscode : ${response.statusCode}");
       }
     } catch (e) {
       throw (onErrorBody + " " + e.toString());

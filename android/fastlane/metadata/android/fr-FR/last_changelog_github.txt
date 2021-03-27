@@ -1,1 +1,1 @@
-Fixes reversed grades list.
+Pronote important fixes (including non-HTTPS login) and bug fixes

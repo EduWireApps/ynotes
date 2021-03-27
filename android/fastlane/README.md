@@ -20,6 +20,11 @@ or alternatively using `brew install fastlane`
 fastlane beta
 ```
 
+### prod
+```
+fastlane prod
+```
+
 ### githubrelease
 ```
 fastlane githubrelease
@@ -30,15 +35,6 @@ fastlane githubrelease
 fastlane local_test
 ```
 
-
-----
-
-## Android
-### android gh_actions_beta_release
-```
-fastlane android gh_actions_beta_release
-```
-Deploy to closed beta track
 
 ----
 

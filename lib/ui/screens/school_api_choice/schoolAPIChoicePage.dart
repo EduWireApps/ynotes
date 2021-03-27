@@ -4,7 +4,7 @@ import 'package:ynotes/core/utils/fileUtils.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:ynotes/ui/screens/loginPage.dart';
+import 'package:ynotes/ui/screens/login/loginPage.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/usefulMethods.dart';
 

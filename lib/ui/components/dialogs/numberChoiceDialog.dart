@@ -6,15 +6,15 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 
 class NumberChoiceDialog extends StatefulWidget {
   final String unit;
-
-  const NumberChoiceDialog(this.unit);
+  final bool isDouble;
+  const NumberChoiceDialog(this.unit, {this.isDouble = false});
   @override
   _NumberChoiceDialogState createState() => _NumberChoiceDialogState();
 }
 
 class _NumberChoiceDialogState extends State<NumberChoiceDialog> {
   TextEditingController textController = TextEditingController(text: "");
-  int value;
+  var value;
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
@@ -38,7 +38,7 @@ class _NumberChoiceDialogState extends State<NumberChoiceDialog> {
               height: screenSize.size.height / 10 * 0.8,
               child: TextFormField(
                 controller: textController,
-                keyboardType: TextInputType.number,
+                keyboardType: TextInputType.numberWithOptions(decimal: widget.isDouble),
                 decoration: InputDecoration(
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(color: ThemeUtils.textColor()),
@@ -49,7 +49,11 @@ class _NumberChoiceDialogState extends State<NumberChoiceDialog> {
                 ),
                 onChanged: (newValue) {
                   setState(() {
-                    value = int.parse(newValue);
+                    if (widget.isDouble) {
+                      value = double.parse(newValue);
+                    } else {
+                      value = int.parse(newValue);
+                    }
                   });
                 },
                 style: TextStyle(

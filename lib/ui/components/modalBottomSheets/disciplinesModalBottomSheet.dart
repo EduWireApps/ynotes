@@ -1,13 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/services/shared_preferences.dart';
+import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/keyValues.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/usefulMethods.dart';
 
 ///Bottom windows with some infos on the discipline and the possibility to change the discipline color
 void disciplineModalBottomSheet(context, Discipline discipline, Function callback, var widget) {
   Color colorGroup;
+
   if (widget.discipline == null) {
     colorGroup = Colors.blueAccent;
   } else {
@@ -87,39 +90,48 @@ void disciplineModalBottomSheet(context, Discipline discipline, Function callbac
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.only(top: (screenSize.size.height / 10 * 0.2)),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      buildKeyValuesInfo(context, "Votre moyenne", [discipline.average]),
-                      SizedBox(
-                        height: (screenSize.size.height / 3) / 25,
+                  child: Card(
+                    color: ThemeUtils.darken(Theme.of(context).primaryColorDark, forceAmount: 0.05),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
+                    child: Container(
+                      padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
+                      width: screenSize.size.width / 5 * 4.5,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          buildKeyValuesInfo(context, "Votre moyenne", [
+                            (chosenParser == 1)
+                                ? (widget.discipline.average ?? "-")
+                                : ((!widget.discipline.getAverage().isNaN)
+                                    ? widget.discipline.getAverage().toString()
+                                    : widget.discipline.average ?? "-")
+                          ]),
+                          SizedBox(
+                            height: (screenSize.size.height / 3) / 25,
+                          ),
+                          buildKeyValuesInfo(context, "Moyenne de la classe", [discipline.classAverage]),
+                          SizedBox(
+                            height: (screenSize.size.height / 3) / 25,
+                          ),
+                          buildKeyValuesInfo(context, "Moyenne la plus élevée", [discipline.maxClassAverage]),
+                          if (discipline.minClassAverage != null)
+                            SizedBox(
+                              height: (screenSize.size.height / 3) / 25,
+                            ),
+                          if (discipline.minClassAverage != null)
+                            buildKeyValuesInfo(context, "Moyenne la plus basse", [discipline.minClassAverage]),
+                          if (discipline.disciplineRank != null)
+                            SizedBox(
+                              height: (screenSize.size.height / 3) / 25,
+                            ),
+                          if (discipline.disciplineRank != null)
+                            buildKeyValuesInfo(context, "Rang",
+                                [discipline.disciplineRank.toString() + "/" + discipline.classNumber.toString()]),
+                        ],
                       ),
-                      buildKeyValuesInfo(context, "Moyenne de la classe", [discipline.classAverage]),
-                      SizedBox(
-                        height: (screenSize.size.height / 3) / 25,
-                      ),
-                      buildKeyValuesInfo(context, "Moyenne la plus élevée", [discipline.maxClassAverage]),
-                      if (discipline.minClassAverage != null)
-                        SizedBox(
-                          height: (screenSize.size.height / 3) / 25,
-                        ),
-                      if (discipline.minClassAverage != null)
-                        buildKeyValuesInfo(context, "Moyenne la plus basse", [discipline.minClassAverage]),
-                      if (discipline.disciplineRank != null)
-                        SizedBox(
-                          height: (screenSize.size.height / 3) / 25,
-                        ),
-                      if (discipline.disciplineRank != null)
-                        buildKeyValuesInfo(context, "Rang",
-                            [discipline.disciplineRank.toString() + "/" + discipline.classNumber.toString()]),
-                      SizedBox(
-                        height: (screenSize.size.height / 3) / 25,
-                      ),
-                    ],
+                    ),
                   ),
-                )
+                ),
               ],
             ),
           ],

@@ -1,1 +1,2 @@
-Correction d'un bug qui inversait la liste de notes.
+Différent correctifs importants pour Pronote, notamment la connexion depuis un serveur HTTP. 
+Cette mise à jour contient également des correctifs de bugs mineurs.

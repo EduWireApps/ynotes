@@ -54,6 +54,7 @@ class _LogsPageState extends State<LogsPage> {
                     if (snapshot.hasData) {
                       return Center(
                           child: Container(
+                              padding: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
                               width: screenSize.size.width / 5 * 4.5,
                               child: SingleChildScrollView(
                                 padding: EdgeInsets.zero,
@@ -74,17 +75,27 @@ class _LogsPageState extends State<LogsPage> {
 }
 
 Future<String> getFileData() async {
-  final dir = await FolderAppUtil.getDirectory();
-  final File file = File('${dir.path}/logs.txt');
-
-  return await file.readAsString();
+  try {
+    final dir = await FolderAppUtil.getDirectory();
+    final File file = File('${dir.path}/logs.txt');
+    String toReturn = await file.readAsString();
+    return toReturn;
+  } catch (e) {
+    return "";
+  }
 }
+
 
 logFile(String error) async {
   print("logging");
-  final directory = await FolderAppUtil.getDirectory();
-  final File file = File('${directory.path}/logs.txt');
-  await file.writeAsString("\n\n" + DateTime.now().toString() + "\n" + error, mode: FileMode.append);
+  try {
+    final directory = await FolderAppUtil.getDirectory();
+    final File file = File('${directory.path}/logs.txt');
+    String existingText = await getFileData();
+    await file.writeAsString(DateTime.now().toString() + "\n" + error + "\n\n" + existingText, mode: FileMode.write);
+  } catch (e) {
+    print(e.toString());
+  }
 }
 
 removeLogFile() async {

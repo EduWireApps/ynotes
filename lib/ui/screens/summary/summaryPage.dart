@@ -95,9 +95,9 @@ class SummaryPageState extends State<SummaryPage> {
   }
 
   showUpdateNote() async {
-    if ((!await getSetting("updateNote0.9.1"))) {
+    if ((!await getSetting("updateNote0.9.2"))) {
       await CustomDialogs.showUpdateNoteDialog(context);
-      await setSetting("updateNote0.9.1", true);
+      await setSetting("updateNote0.9.2", true);
     }
   }
 
@@ -112,7 +112,6 @@ class SummaryPageState extends State<SummaryPage> {
     MediaQueryData screenSize = MediaQuery.of(context);
 
     return Container(
-      height: screenSize.size.height / 10 * 0.35,
       margin: EdgeInsets.only(
         top: screenSize.size.height / 10 * 0.1,
         left: screenSize.size.width / 5 * 0.25,

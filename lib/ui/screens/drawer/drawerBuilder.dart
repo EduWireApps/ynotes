@@ -234,7 +234,6 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
               //other styles
             ),
             child: ClipRRect(
-              borderRadius: BorderRadius.only(bottomRight: Radius.circular(20), topRight: Radius.circular(20)),
               child: Container(
                   width: screenSize.size.width / 5 * 3.6,
                   child: Drawer(

@@ -13,7 +13,6 @@ import 'package:ynotes/core/logic/shared/loginController.dart';
 
 import 'package:ynotes/usefulMethods.dart';
 
-
 Client localClient;
 //Locks are use to prohibit the app to send too much requests while collecting data and ensure there are made one by one
 //They are ABSOLUTELY needed or user will be quickly IP suspended
@@ -259,7 +258,7 @@ class APIPronote extends API {
 
   int loginReqNumber = 0;
   @override
-  Future<String> login(username, password, {url, cas}) async {
+  Future<List> login(username, password, {url, cas}) async {
     print(username + " " + password + " " + url);
     int req = 0;
     while (loginLock == true && req < 5) {
@@ -274,17 +273,21 @@ class APIPronote extends API {
         localClient = Client(url, username: username, password: password, cookies: cookies);
 
         await localClient.init();
-        if (localClient.logged_in) {
+        if (localClient.loggedIn) {
           this.loggedIn = true;
           loginLock = false;
-          return ("Bienvenue $actualUser!");
+          return ([1, "Bienvenue $actualUser!"]);
         } else {
           loginLock = false;
-          return ("Oups, une erreur a eu lieu. Vérifiez votre mot de passe et les autres informations de connexion.");
+          return ([
+            0,
+            "Oups, une erreur a eu lieu. Vérifiez votre mot de passe et les autres informations de connexion.",
+            localClient.stepsLogger
+          ]);
         }
       } catch (e) {
         loginLock = false;
-
+        localClient.stepsLogger.add("❌ Pronote login failed : " + e.toString());
         print(e);
         String error = "Une erreur a eu lieu. " + e.toString();
         if (e.toString().contains("invalid url")) {
@@ -304,12 +307,22 @@ class APIPronote extends API {
         if (e.toString().contains("SocketException")) {
           error = "Impossible de se connecter à l'adresse saisie. Vérifiez cette dernière et votre connexion.";
         }
+        if (e.toString().contains("Invalid or corrupted pad block")) {
+          error = "Le mot de passe et/ou l'identifiant saisi(s) est/sont incorrect(s)";
+        }
+        if (e.toString().contains("HTML PAGE")) {
+          error = "Problème de page HTML.";
+        }
         if (e.toString().contains("nombre d'erreurs d'authentification autorisées")) {
           error =
               "Vous avez dépassé le nombre d'erreurs d'authentification authorisées ! Réessayez dans quelques minutes.";
         }
+        if (e.toString().contains("Failed login request")) {
+          error = "Impossible de se connecter à l'URL renseignée. Vérifiez votre connexion et l'URL entrée.";
+        }
+        print("test");
         await logFile(error);
-        return (error);
+        return ([0, error, localClient.stepsLogger]);
       }
     } else {
       loginReqNumber++;
@@ -413,7 +426,7 @@ class APIPronote extends API {
     } catch (e) {
       print("Erreur while getting offline period " + e);
       if (connectivityResult != ConnectivityResult.none) {
-        if (localClient.logged_in) {
+        if (localClient.loggedIn) {
           print("getting periods online");
           return await getOnlinePeriods();
         } else {

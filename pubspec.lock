@@ -351,6 +351,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "3.0.10"
+  dotted_border:
+    dependency: "direct main"
+    description:
+      name: dotted_border
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.7"
   dotted_line:
     dependency: "direct main"
     description:
@@ -633,9 +640,9 @@ packages:
   html_editor:
     dependency: "direct main"
     description:
-      name: html_editor
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "lib/ui/components/flutter-html-editor"
+      relative: true
+    source: path
     version: "1.0.1"
   http:
     dependency: "direct main"

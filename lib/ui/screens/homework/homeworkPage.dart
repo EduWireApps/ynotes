@@ -21,7 +21,6 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 
 import 'homeworkPageWidgets/HWsettingsPage.dart';
 
-
 List<Homework> localListHomeworkDateToUse;
 
 class HomeworkPage extends StatefulWidget {
@@ -49,7 +48,6 @@ class HomeworkPageState extends State<HomeworkPage> {
     //WidgetsFlutterBinding.ensureInitialized();
     //Test if it's the first start
 
-    
     getPinnedStateDayToUse();
   }
 
@@ -72,8 +70,6 @@ class HomeworkPageState extends State<HomeworkPage> {
   void callback() {
     setState(() {});
   }
-
- 
 
   animateToPage(int index) {
     _pageControllerHW.animateToPage(index, duration: Duration(milliseconds: 250), curve: Curves.ease);
@@ -98,7 +94,7 @@ class HomeworkPageState extends State<HomeworkPage> {
           Card(
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
             margin: EdgeInsets.zero,
-            color: Theme.of(context).primaryColor,
+            color: Theme.of(context).backgroundColor,
             child: Container(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -113,7 +109,7 @@ class HomeworkPageState extends State<HomeworkPage> {
                             topRight: Radius.circular(15),
                           ),
                           border: Border.all(width: 0.00000, color: Colors.transparent),
-                          color: Theme.of(context).primaryColor),
+                          color: Theme.of(context).backgroundColor),
                       child: Stack(
                         children: <Widget>[
                           ClipRRect(
@@ -151,12 +147,12 @@ class HomeworkPageState extends State<HomeworkPage> {
                             bottomRight: Radius.circular(15),
                           ),
                           border: Border.all(width: 0.00000, color: Colors.transparent),
-                          color: Theme.of(context).primaryColor),
+                          color: Theme.of(context).backgroundColor),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: <Widget>[
                           Material(
-                            color: Theme.of(context).primaryColorDark,
+                            color: Theme.of(context).primaryColor,
                             borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                             child: InkWell(
                               borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
@@ -187,7 +183,7 @@ class HomeworkPageState extends State<HomeworkPage> {
                             ),
                           ),
                           Material(
-                            color: Theme.of(context).primaryColorDark,
+                            color: Theme.of(context).primaryColor,
                             borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                             child: InkWell(
                               borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
