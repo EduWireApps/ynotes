@@ -1,1 +1,1 @@
-Discipline bottomsheet fix
+Pronote important fixes (including non-HTTPS login) and bug fixes

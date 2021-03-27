@@ -1,1 +1,2 @@
-Correctif du tiroir d'informations des matières. 
+Différent correctifs importants pour Pronote, notamment la connexion depuis un serveur HTTP. 
+Cette mise à jour contient également des correctifs de bugs mineurs.
