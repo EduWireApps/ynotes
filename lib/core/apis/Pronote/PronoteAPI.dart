@@ -235,7 +235,7 @@ class Client {
       motdepasse = sha256.convert(encoded);
       motdepasse = conv.hex.encode(motdepasse.bytes);
       motdepasse = motdepasse.toString().toUpperCase();
-      e.aesKey = md5.convert(conv.utf8.encode(u ?? "" + motdepasse));
+      e.aesKey = md5.convert(conv.utf8.encode((u ?? "") + motdepasse));
     }
 
     var rawChallenge = e.aesDecrypt(conv.hex.decode(challenge));
