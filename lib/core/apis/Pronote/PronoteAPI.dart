@@ -242,13 +242,18 @@ class Client {
     var encryptedChallenge = e.aesEncrypt(conv.utf8.encode(rawChallengeWithoutAlea));
     this.stepsLogger.add("✅ Encrypted credentials");
 
-    Map authentificationJson = {"connexion": 0, "challenge": encryptedChallenge, "espace": int.parse(this.attributes['a'])};
+    Map authentificationJson = {
+      "connexion": 0,
+      "challenge": encryptedChallenge,
+      "espace": int.parse(this.attributes['a'])
+    };
     this.stepsLogger.add("✅ Identification passed");
 
     try {
       print("Authentification");
-      this.authResponse =
-          await this.communication.post("Authentification", data: {'donnees': authentificationJson, 'identifiantNav': ''});
+      this.authResponse = await this
+          .communication
+          .post("Authentification", data: {'donnees': authentificationJson, 'identifiantNav': ''});
     } catch (e) {
       this.stepsLogger.add("❌  Authentification failed : " + e.toString());
       throw ("Error during auth" + e.toString());
@@ -261,8 +266,7 @@ class Client {
           try {
             paramsUser = await this.communication.post("ParametresUtilisateur", data: {'donnees': {}});
 
-            this.communication.authorizedTabs =
-                prepareTabs(paramsUser['donneesSec']['donnees']['listeOnglets']);
+            this.communication.authorizedTabs = prepareTabs(paramsUser['donneesSec']['donnees']['listeOnglets']);
             this.stepsLogger.add("✅ Prepared tabs");
 
             try {
@@ -699,9 +703,8 @@ class Communication {
     this.client.stepsLogger.add("ⓘ" + " Used url is " + "`" + url + "`");
 //?fd=1 bypass the old navigator issue
     var getResponse = await Requests.get(url, headers: headers).catchError((e) {
-      this.client.stepsLogger.add("❌ Failed login request");
-
-      throw ("Impossible de se connecter");
+      this.client.stepsLogger.add("❌ Failed login request " +e.toString());
+      throw ("Failed login request");
     });
     this.client.stepsLogger.add("✅ Posted login request");
 

@@ -317,6 +317,9 @@ class APIPronote extends API {
           error =
               "Vous avez dépassé le nombre d'erreurs d'authentification authorisées ! Réessayez dans quelques minutes.";
         }
+        if (e.toString().contains("Failed login request")) {
+          error = "Impossible de se connecter à l'URL renseignée. Vérifiez votre connexion et l'URL entrée.";
+        }
         print("test");
         await logFile(error);
         return ([0, error, localClient.stepsLogger]);
