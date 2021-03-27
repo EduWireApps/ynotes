@@ -15,48 +15,8 @@
 
 default_platform(:android)
 
-platform :android do
-  desc "Deploy to closed beta track"
-  lane :gh_actions_beta_release do
-    begin
-      gradle(task: "clean")
-      gradle(
-        task: "bundle",
-        build_type: 'Release'
-      )
-      upload_to_play_store(
-        track: 'beta',
-        aab: '../build/app/outputs/bundle/release/app-release.aab',
-        skip_upload_metadata: true,
-        skip_upload_images: true,
-        skip_upload_screenshots: true,
-        release_status: "draft",
-        version_code: flutter_version()["version_code"],
-      )
-    end
-  end
-end
-platform :android_prod_promote do
-  desc "Promote to prod track"
-  lane :gh_actions_beta_release do
-    begin
-      gradle(task: "clean")
-      gradle(
-        task: "bundle",
-        build_type: 'Release'
-      )
-      upload_to_play_store(
-        track_to_promote: 'production',
-        aab: '../build/app/outputs/bundle/release/app-release.aab',
-        skip_upload_metadata: true,
-        skip_upload_images: true,
-        skip_upload_screenshots: true,
-        release_status: "draft",
-        version_code: flutter_version()["version_code"],
-      )
-    end
-  end
-end
+
+
 begin lane :beta do
   gh = prompt(
     text: "Do you want to push to github ?",
@@ -91,7 +51,41 @@ begin lane :beta do
       )  end
  
 end
-
+begin lane :prod do
+  gh = prompt(
+    text: "Do you want to push to github ?",
+    boolean: true)
+    if gh
+      githubrelease()
+    end
+  build_number = number_of_commits()
+  version = flutter_version()["version_name"]
+  continue = prompt(
+  text: "Do you really want to push to PROD ? Please check that every files (including changelog) are ready.",
+  boolean: true)
+  linux = prompt(
+  text: "Are you currently using Linux ?",
+  boolean: true)
+  command = "type"
+  #Use linux cat command instead of type
+  if linux
+    command = "cat"
+  end
+  if continue
+    #Copy changelog
+    Dir.chdir "metadata/android/fr-FR" do
+      sh("#{command} last_changelog.txt > changelogs/#{build_number}.txt")
+    end
+    upload_to_play_store(
+        track: 'production',
+        track_promote_to: 'production'
+        aab: '../build/app/outputs/bundle/prodRelease/app-prod-release.aab',
+        package_name: 'fr.ynotes',
+        release_status: "draft",
+        version_code: flutter_version()["version_code"],
+      )  end
+ 
+end
 lane :githubrelease do
   begin
       build_number = number_of_commits()

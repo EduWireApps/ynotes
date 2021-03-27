@@ -1,1 +1,2 @@
-Correctif d'un bug qui empêchait la connexion.
+Différent correctifs importants pour Pronote, notamment la connexion depuis un serveur HTTP. 
+Cette mise à jour contient également des correctifs de bugs mineurs.

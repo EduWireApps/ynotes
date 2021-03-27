@@ -102,7 +102,7 @@ void disciplineModalBottomSheet(context, Discipline discipline, Function callbac
                           buildKeyValuesInfo(context, "Votre moyenne", [
                             (chosenParser == 1)
                                 ? (widget.discipline.average ?? "-")
-                                : ((!widget.discipline.getAverage().isNan)
+                                : ((!widget.discipline.getAverage().isNaN)
                                     ? widget.discipline.getAverage().toString()
                                     : widget.discipline.average ?? "-")
                           ]),
