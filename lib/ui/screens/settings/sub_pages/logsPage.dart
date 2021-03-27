@@ -85,6 +85,7 @@ Future<String> getFileData() async {
   }
 }
 
+
 logFile(String error) async {
   print("logging");
   try {

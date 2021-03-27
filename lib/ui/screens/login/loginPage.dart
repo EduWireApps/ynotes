@@ -1,3 +1,4 @@
+import 'package:flutter/services.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 
@@ -9,6 +10,8 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:ynotes/core/services/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/ui/animations/FadeAnimation.dart';
+import 'package:ynotes/ui/components/buttons.dart';
+import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/screens/school_api_choice/schoolAPIChoicePage.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
@@ -103,7 +106,7 @@ class _LoginPageState extends State<LoginPage> {
                 padding: EdgeInsets.only(left: 5, right: 5, top: 20, bottom: 20),
                 child: Column(
                   children: <Widget>[
-                    FutureBuilder<List>(
+                    FutureBuilder(
                       future: connectionData,
                       builder: (context, snapshot) {
                         if (snapshot.hasData && snapshot.data[0] == 1) {
@@ -123,12 +126,13 @@ class _LoginPageState extends State<LoginPage> {
                                 color: Colors.lightGreen,
                               ),
                               Text(
-                                snapshot.data[1],
+                                snapshot.data[1].toString(),
                                 textAlign: TextAlign.center,
                               )
                             ],
                           );
                         } else if (snapshot.hasData && snapshot.data[0] == 0) {
+                          print(snapshot.data);
                           return Column(
                             children: <Widget>[
                               Icon(
@@ -137,9 +141,30 @@ class _LoginPageState extends State<LoginPage> {
                                 color: Colors.redAccent,
                               ),
                               Text(
-                                snapshot.data[2],
+                                snapshot.data[1].toString(),
                                 textAlign: TextAlign.center,
-                              )
+                              ),
+                              if (snapshot.data.length > 2 && snapshot.data[2] != null && snapshot.data[2].length > 0)
+                                Container(
+                                  margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
+                                  child: CustomButtons.materialButton(
+                                    context,
+                                    MediaQuery.of(context).size.width / 5 * 1.5,
+                                    null,
+                                    () async {
+                                      List stepLogger = snapshot.data[2];
+                                      try {
+                                        //add step logs to clip board
+                                        await Clipboard.setData(new ClipboardData(text: stepLogger.join("\n")));
+                                        CustomDialogs.showAnyDialog(context, "Logs copiés dans le presse papier.");
+                                      } catch (e) {
+                                        CustomDialogs.showAnyDialog(
+                                            context, "Impossible de copier dans le presse papier !");
+                                      }
+                                    },
+                                    label: "Copier les logs",
+                                  ),
+                                )
                             ],
                           );
                         } else {
@@ -735,8 +760,8 @@ class _LoginPageState extends State<LoginPage> {
                                                                       fontWeight: FontWeight.bold,
                                                                       color: Colors.black),
                                                                 ),
-                                                                onTap: () =>
-                                                                    launch('https://ynotes.fr/legal/PDCYNotes.pdf')),
+                                                                onTap: () => launch(
+                                                                    'https://ynotes.fr/files/legal/PDCYNotes.pdf')),
                                                             SizedBox(
                                                               width: screenSize.size.width / 5 * 0.2,
                                                             ),
@@ -748,8 +773,8 @@ class _LoginPageState extends State<LoginPage> {
                                                                       fontWeight: FontWeight.bold,
                                                                       color: Colors.black),
                                                                 ),
-                                                                onTap: () =>
-                                                                    launch('https://ynotes.fr/legal/CGUYNotes.pdf')),
+                                                                onTap: () => launch(
+                                                                    'https://ynotes.fr/files/legal/CGUYNotes.pdf')),
                                                           ],
                                                         ),
                                                       ),
