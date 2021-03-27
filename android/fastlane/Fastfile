@@ -48,9 +48,10 @@ begin lane :beta do
         package_name: 'fr.ynotes',
         release_status: "draft",
         version_code: flutter_version()["version_code"],
-      )  end
- 
+      )
+  end
 end
+
 begin lane :prod do
   gh = prompt(
     text: "Do you want to push to github ?",
@@ -82,10 +83,10 @@ begin lane :prod do
         aab: '../build/app/outputs/bundle/prodRelease/app-prod-release.aab',
         package_name: 'fr.ynotes',
         release_status: "draft",
-        version_code: flutter_version()["version_code"],
-      )  end
- 
+        version_code: flutter_version()["version_code"],)
+  end
 end
+
 lane :githubrelease do
   begin
       build_number = number_of_commits()
@@ -101,6 +102,7 @@ lane :githubrelease do
           Dir.chdir folder_path do
             sh("mv #{oldname}.apk #{filename}.apk")
           end
+        end
         rescue
           next
         end
