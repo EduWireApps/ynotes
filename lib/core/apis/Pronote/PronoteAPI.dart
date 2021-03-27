@@ -693,7 +693,7 @@ class Communication {
       'connection': 'keep-alive',
       'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/74.0'
     };
-    String url = this.rootSite + "/" + this.htmlPage + (this.cookies != null ? "?login=true" : "");
+    String url = this.rootSite + "/" + this.htmlPage + (this.cookies != null ? "?fd=1" : "");
     if (url.contains("?login=true") || url.contains("?fd=1")) {
       url += "&fd=1";
     } else {
@@ -703,7 +703,7 @@ class Communication {
     this.client.stepsLogger.add("ⓘ" + " Used url is " + "`" + url + "`");
 //?fd=1 bypass the old navigator issue
     var getResponse = await Requests.get(url, headers: headers).catchError((e) {
-      this.client.stepsLogger.add("❌ Failed login request " +e.toString());
+      this.client.stepsLogger.add("❌ Failed login request " + e.toString());
       throw ("Failed login request");
     });
     this.client.stepsLogger.add("✅ Posted login request");
@@ -759,7 +759,6 @@ class Communication {
       var value = attr.split(':')[1];
       attributes[key] = value.toString().replaceAll("'", "");
     });
-
     return attributes;
   }
 
