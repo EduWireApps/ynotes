@@ -273,7 +273,7 @@ class APIPronote extends API {
         localClient = Client(url, username: username, password: password, cookies: cookies);
 
         await localClient.init();
-        if (localClient.logged_in) {
+        if (localClient.loggedIn) {
           this.loggedIn = true;
           loginLock = false;
           return ([1, "Bienvenue $actualUser!"]);
@@ -423,7 +423,7 @@ class APIPronote extends API {
     } catch (e) {
       print("Erreur while getting offline period " + e);
       if (connectivityResult != ConnectivityResult.none) {
-        if (localClient.logged_in) {
+        if (localClient.loggedIn) {
           print("getting periods online");
           return await getOnlinePeriods();
         } else {

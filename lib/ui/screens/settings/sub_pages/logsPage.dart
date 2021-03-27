@@ -85,16 +85,6 @@ Future<String> getFileData() async {
   }
 }
 
-saveInFile(String data, String fileName) async {
-  print("Writing");
-  try {
-    final directory = await FolderAppUtil.getDirectory();
-    final File file = File('${directory.path}/$fileName.txt');
-    await file.writeAsString(data, mode: FileMode.write);
-  } catch (e) {
-    print(e.toString());
-  }
-}
 
 logFile(String error) async {
   print("logging");
