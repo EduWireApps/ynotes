@@ -1,6 +1,7 @@
 import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/screens/login/loginPageWidgets/textField.dart';
 
@@ -92,9 +93,11 @@ class _PronoteSetupPartState extends State<PronoteSetupPart> {
 }
 
 class PronoteUrlFieldPart extends StatefulWidget {
-  final Function callback;
+  final Function loginCallback;
+  final Function backButton;
+
   final TextEditingController pronoteUrl;
-  PronoteUrlFieldPart({Key key, this.callback, this.pronoteUrl}) : super(key: key);
+  PronoteUrlFieldPart({Key key, this.pronoteUrl, this.loginCallback, this.backButton}) : super(key: key);
   @override
   _PronoteUrlFieldPartState createState() => _PronoteUrlFieldPartState();
 }
@@ -118,9 +121,35 @@ class _PronoteUrlFieldPartState extends State<PronoteUrlFieldPart> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           LoginPageTextField(_url, "URL Pronote", false, MdiIcons.link),
-          SizedBox(height: screenSize.size.height / 10 * 0.4),
-          CustomButtons.materialButton(context, screenSize.size.width / 5 * 2.2, null, widget.callback,
-              backgroundColor: Colors.green, label: "Se connecter", textColor: Colors.white)
+          SizedBox(height: screenSize.size.height / 10 * 0.2),
+          GestureDetector(
+            onTap: () {
+              launch("https://support.ynotes.fr/compte/se-connecter-avec-son-compte-pronote");
+            },
+            child: Text("Où trouver l'URL Pronote ?",
+                style: TextStyle(
+                  fontFamily: 'Asap',
+                  color: Colors.transparent,
+                  shadows: [Shadow(color: Colors.white, offset: Offset(0, -5))],
+                  fontSize: 17,
+                  decorationColor: Colors.white,
+                  fontWeight: FontWeight.normal,
+                  textBaseline: TextBaseline.alphabetic,
+                  decoration: TextDecoration.underline,
+                  decorationThickness: 2,
+                  decorationStyle: TextDecorationStyle.dashed,
+                )),
+          ),
+          SizedBox(height: screenSize.size.height / 10 * 0.2),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5, widget.backButton,
+                  backgroundColor: Colors.grey, label: "Retour", textColor: Colors.white),
+              CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5, widget.loginCallback,
+                  backgroundColor: Colors.green, label: "Se connecter", textColor: Colors.white),
+            ],
+          )
         ],
       ),
     );

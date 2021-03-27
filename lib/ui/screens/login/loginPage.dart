@@ -153,8 +153,7 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
     MediaQueryData screenSize = MediaQuery.of(context);
     return InkWell(
       onTap: () async {
-        connectionData = localApi.login(_username.text.trim(), _password.text.trim(),
-            url: _url.text.trim(), mobileCasLogin: testIfPronoteCas(_url.text.trim()));
+        launch('https://support.ynotes.fr/compte');
       },
       child: Container(
         child: Column(
@@ -190,24 +189,32 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
     InAppWebViewController _controller;
 
     return PageView(
+      physics: new NeverScrollableScrollPhysics(),
       controller: sliderController,
       children: [
         if (setupNeeded) PronoteSetupPart(callback: _setupPartCallback),
         if (setupNeeded)
           PronoteUrlFieldPart(
-            pronoteUrl: _url,
-            callback: () async {
-              if (await testIfPronoteCas(_url.text)) {
-                var a = await Navigator.of(context).push(router(LoginWebView(url: _url.text, controller: _controller)));
-                if (a != null) {
-                  connectionData = localApi.login(a["login"], a["mdp"], url: _url.text, mobileCasLogin: true);
-                  openLoadingDialog();
+              pronoteUrl: _url,
+              backButton: () {
+                sliderController.previousPage(duration: Duration(milliseconds: 300), curve: Curves.easeIn);
+              },
+              loginCallback: () async {
+                try {
+                  if (await testIfPronoteCas(_url.text)) {
+                    var a =
+                        await Navigator.of(context).push(router(LoginWebView(url: _url.text, controller: _controller)));
+                    if (a != null) {
+                      connectionData = localApi.login(a["login"], a["mdp"], url: _url.text, mobileCasLogin: true);
+                      openLoadingDialog();
+                    }
+                  } else {
+                    sliderController.animateToPage(2, duration: Duration(milliseconds: 300), curve: Curves.easeIn);
+                  }
+                } catch (e) {
+                  CustomDialogs.showErrorSnackBar(context, "Impossible de se connecter à cette adresse");
                 }
-              } else {
-                sliderController.animateToPage(2, duration: Duration(milliseconds: 300), curve: Curves.easeIn);
-              }
-            },
-          ),
+              }),
         _buildLoginPart(),
       ],
     );
@@ -224,8 +231,27 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
         ),
         LoginPageTextField(_password, "Mot de passe", true, MdiIcons.key),
         SizedBox(height: screenSize.size.height / 10 * 0.4),
-        CustomButtons.materialButton(context, screenSize.size.width / 5 * 2.2, null, () {},
-            backgroundColor: Colors.green, label: "Se connecter", textColor: Colors.white)
+        Row(
+          children: [
+            if (widget.setupNeeded)
+              CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5, () {
+                sliderController.previousPage(duration: Duration(milliseconds: 300), curve: Curves.easeIn);
+              }, backgroundColor: Colors.grey, label: "Retour", textColor: Colors.white),
+            CustomButtons.materialButton(context, screenSize.size.width / 5 * 2.2, null, () async {
+              //Actions when pressing the ok button
+              if (_username.text != "" && (chosenParser == 1 ? _url.text != null : true) && _password.text != null) {
+                reloadChosenApi();
+                //Login using the chosen API
+                connectionData = localApi.login(_username.text.trim(), _password.text.trim(),
+                    url: _url.text.trim(), mobileCasLogin: false);
+
+                openLoadingDialog();
+              } else {
+                CustomDialogs.showAnyDialog(context, "Remplissez tous les champs.");
+              }
+            }, backgroundColor: Colors.green, label: "Se connecter", textColor: Colors.white),
+          ],
+        )
       ],
     );
   }
@@ -441,6 +467,8 @@ class _LoginPageState extends State<LoginPage> {
     String p = await ReadStorage("password");
     String url = await ReadStorage("pronoteurl");
     String cas = await ReadStorage("pronotecas");
+    String isCas = await ReadStorage("pronotecas");
+
     String z = await storage.read(key: "agreedTermsAndConfiguredApp");
 
     if (u != null && p != null && z != null) {

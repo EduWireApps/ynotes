@@ -231,6 +231,26 @@ class CustomDialogs {
     )..show(context);
   }
 
+  //Bêta purposes : show when a function is not available yet
+  static showErrorSnackBar(BuildContext context, String text) {
+    Flushbar(
+      flushbarPosition: FlushbarPosition.BOTTOM,
+      backgroundColor: Colors.red,
+      isDismissible: true,
+      duration: Duration(seconds: 2),
+      margin: EdgeInsets.all(8),
+      messageText: Text(
+        text ?? "Une erreur a eu lieu.",
+        style: TextStyle(fontFamily: "Asap", color: Colors.white),
+      ),
+      icon: Icon(
+        Icons.error,
+        color: Colors.white,
+      ),
+      borderRadius: 8,
+    )..show(context);
+  }
+
   static Future showPersistantNotificationDialog(BuildContext context) {
     return showDialog(
       barrierDismissible: true,
