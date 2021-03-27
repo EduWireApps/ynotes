@@ -151,36 +151,45 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
 
   _loginTextAndHelpButton() {
     MediaQueryData screenSize = MediaQuery.of(context);
-    return InkWell(
-      onTap: () async {
-        launch('https://support.ynotes.fr/compte');
-      },
-      child: Container(
-        child: Column(
-          children: [
-            Text("Se connecter",
-                style: TextStyle(fontFamily: 'Asap', color: Colors.white, fontSize: 38, fontWeight: FontWeight.bold)),
-            Text("En savoir plus sur la connexion",
-                style: TextStyle(
-                  fontFamily: 'Asap',
-                  color: Colors.transparent,
-                  shadows: [Shadow(color: Colors.white, offset: Offset(0, -5))],
-                  fontSize: 17,
-                  decorationColor: Colors.white,
-                  fontWeight: FontWeight.normal,
-                  textBaseline: TextBaseline.alphabetic,
-                  decoration: TextDecoration.underline,
-                  decorationThickness: 2,
-                  decorationStyle: TextDecorationStyle.dashed,
-                )),
-            Container(
+    return Container(
+      child: Column(
+        children: [
+          CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5, () async {
+            Navigator.of(context).pushReplacement(router(SchoolAPIChoice()));
+          },
+              label: "Retourner au selecteur d'application",
+              backgroundColor: Colors.white,
+              icon: Icons.home,
+              textColor: Colors.black),
+          Text(
+            "Se connecter",
+            style: TextStyle(fontFamily: 'Asap', color: Colors.white, fontSize: 38, fontWeight: FontWeight.bold),
+          ),
+          Text("En savoir plus sur la connexion",
+              style: TextStyle(
+                fontFamily: 'Asap',
+                color: Colors.transparent,
+                shadows: [Shadow(color: Colors.white, offset: Offset(0, -5))],
+                fontSize: 17,
+                decorationColor: Colors.white,
+                fontWeight: FontWeight.normal,
+                textBaseline: TextBaseline.alphabetic,
+                decoration: TextDecoration.underline,
+                decorationThickness: 2,
+                decorationStyle: TextDecorationStyle.dashed,
+              )),
+          GestureDetector(
+            onTap: () async {
+              launch('https://support.ynotes.fr/compte');
+            },
+            child: Container(
                 width: screenSize.size.height / 10 * 0.1,
                 height: screenSize.size.height / 10 * 0.1,
                 margin: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.1),
                 decoration: BoxDecoration(borderRadius: BorderRadius.circular(5000), color: Colors.white)),
-            _buildStepsText()
-          ],
-        ),
+          ),
+          _buildStepsText(),
+        ],
       ),
     );
   }
@@ -235,11 +244,11 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        LoginPageTextField(_username, "Nom d'utilisateur", false, MdiIcons.account),
+        LoginPageTextField(_username, "Nom d'utilisateur", false, MdiIcons.account, false),
         SizedBox(
           height: screenSize.size.height / 10 * 0.1,
         ),
-        LoginPageTextField(_password, "Mot de passe", true, MdiIcons.key),
+        LoginPageTextField(_password, "Mot de passe", true, MdiIcons.key, true),
         SizedBox(height: screenSize.size.height / 10 * 0.4),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -344,9 +353,10 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
                     FutureBuilder(
                       future: connectionData,
                       builder: (context, snapshot) {
-                        if (snapshot.hasData && snapshot.data.toString().contains("Bienvenue")) {
+                        if (snapshot.hasData && snapshot.data[0] == 1) {
                           Future.delayed(const Duration(milliseconds: 500), () {
                             Navigator.pop(context);
+
                             openAlertBox();
                           });
                           return Column(
@@ -357,12 +367,13 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
                                 color: Colors.lightGreen,
                               ),
                               Text(
-                                snapshot.data,
+                                snapshot.data[1].toString(),
                                 textAlign: TextAlign.center,
                               )
                             ],
                           );
-                        } else if (snapshot.hasData && !snapshot.data.toString().contains("Bienvenue")) {
+                        } else if (snapshot.hasData && snapshot.data[0] == 0) {
+                          print(snapshot.data);
                           return Column(
                             children: <Widget>[
                               Icon(
@@ -371,9 +382,30 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
                                 color: Colors.redAccent,
                               ),
                               Text(
-                                utf8convert(snapshot.data.toString()),
+                                snapshot.data[1].toString(),
                                 textAlign: TextAlign.center,
-                              )
+                              ),
+                              if (snapshot.data.length > 2 && snapshot.data[2] != null && snapshot.data[2].length > 0)
+                                Container(
+                                  margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
+                                  child: CustomButtons.materialButton(
+                                    context,
+                                    MediaQuery.of(context).size.width / 5 * 1.5,
+                                    null,
+                                    () async {
+                                      List stepLogger = snapshot.data[2];
+                                      try {
+                                        //add step logs to clip board
+                                        await Clipboard.setData(new ClipboardData(text: stepLogger.join("\n")));
+                                        CustomDialogs.showAnyDialog(context, "Logs copiés dans le presse papier.");
+                                      } catch (e) {
+                                        CustomDialogs.showAnyDialog(
+                                            context, "Impossible de copier dans le presse papier !");
+                                      }
+                                    },
+                                    label: "Copier les logs",
+                                  ),
+                                )
                             ],
                           );
                         } else {

@@ -69,7 +69,7 @@ class Client {
   int oneHourDuration;
 
   List<String> stepsLogger;
-  bool isCas;
+  bool mobileLogin;
   refresh() async {
     print("Reinitialisation");
 
@@ -96,14 +96,14 @@ class Client {
     this.expired = true;
   }
 
-  Client(String pronote_url, {String username, String password, var cookies, bool isCas}) {
+  Client(String pronote_url, {String username, String password, var cookies, bool mobileLogin}) {
     if (cookies == null && password == null && username == null) {
       throw 'Please provide login credentials. Cookies are None, and username and password are empty.';
     }
     this.username = username;
     this.password = password;
     this.pronote_url = pronote_url;
-    this.isCas = isCas;
+    this.mobileLogin = mobileLogin;
     print("Initiate communication");
 
     this.communication = Communication(pronote_url, cookies, this);
@@ -169,11 +169,11 @@ class Client {
     try {
       final storage = new FlutterSecureStorage();
       await storage.write(key: "username", value: this.username);
-      if (!isCas) {
+      if (!mobileLogin) {
         await storage.write(key: "password", value: this.password);
       }
       await storage.write(key: "pronoteurl", value: this.pronote_url);
-      await storage.write(key: "ispronotecas", value: this.isCas.toString());
+      await storage.write(key: "ispronotecas", value: this.mobileLogin.toString());
       print("Saved credentials");
     } catch (e) {
       print("failed to write values");
@@ -189,7 +189,7 @@ class Client {
       "pourENT": this.ent,
       "enConnexionAuto": false,
       "demandeConnexionAuto": false,
-      "enConnexionAppliMobile": this.isCas,
+      "enConnexionAppliMobile": this.mobileLogin,
       "demandeConnexionAppliMobile": false,
       "demandeConnexionAppliMobileJeton": false,
       "uuidAppliMobile": "121567895313231",
@@ -231,11 +231,11 @@ class Client {
       }
 
       var alea = idr['donneesSec']['donnees']['alea'];
-      List<int> encoded = conv.utf8.encode(alea + p);
+      List<int> encoded = conv.utf8.encode(alea ?? "" + p);
       motdepasse = sha256.convert(encoded);
       motdepasse = conv.hex.encode(motdepasse.bytes);
       motdepasse = motdepasse.toString().toUpperCase();
-      e.aesKey = md5.convert(conv.utf8.encode(u + motdepasse));
+      e.aesKey = md5.convert(conv.utf8.encode(u ?? "" + motdepasse));
     }
 
     var rawChallenge = e.aesDecrypt(conv.hex.decode(challenge));
@@ -702,7 +702,7 @@ class Communication {
     String url = this.rootSite +
         "/" +
         (this.cookies != null ? "?fd=1" : this.htmlPage) +
-        (this.client.isCas ? "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335" : "");
+        (this.client.mobileLogin ? "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335" : "");
     if (url.contains("?login=true") || url.contains("?fd=1")) {
       url += "&fd=1";
     } else {
@@ -710,7 +710,7 @@ class Communication {
     }
     print(url);
     this.client.stepsLogger.add("ⓘ" + " Used url is " + "`" + url + "`");
-    print(this.client.isCas ? "CAS" : "NOT CAS");
+    print(this.client.mobileLogin ? "CAS" : "NOT CAS");
 //?fd=1 bypass the old navigator issue
     var getResponse = await Requests.get(url, headers: headers).catchError((e) {
       this.client.stepsLogger.add("❌ Failed login request " + e.toString());

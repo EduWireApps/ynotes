@@ -270,7 +270,7 @@ class APIPronote extends API {
       loginLock = true;
       try {
         var cookies = await callCas(cas, username, password, url ?? "");
-        localClient = Client(url, username: username, password: password, isCas: mobileCasLogin, cookies: cookies);
+        localClient = Client(url, username: username, password: password, mobileLogin: mobileCasLogin, cookies: cookies);
 
         await localClient.init();
         if (localClient.loggedIn) {

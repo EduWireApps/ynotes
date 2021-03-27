@@ -97,7 +97,8 @@ class PronoteUrlFieldPart extends StatefulWidget {
   final Function backButton;
   final Function onLongPressCallback;
   final TextEditingController pronoteUrl;
-  PronoteUrlFieldPart({Key key, this.pronoteUrl, this.loginCallback, this.backButton, this.onLongPressCallback}) : super(key: key);
+  PronoteUrlFieldPart({Key key, this.pronoteUrl, this.loginCallback, this.backButton, this.onLongPressCallback})
+      : super(key: key);
   @override
   _PronoteUrlFieldPartState createState() => _PronoteUrlFieldPartState();
 }
@@ -120,7 +121,7 @@ class _PronoteUrlFieldPartState extends State<PronoteUrlFieldPart> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          LoginPageTextField(_url, "URL Pronote", false, MdiIcons.link),
+          LoginPageTextField(_url, "URL Pronote", false, MdiIcons.link, false),
           SizedBox(height: screenSize.size.height / 10 * 0.2),
           GestureDetector(
             onTap: () {
