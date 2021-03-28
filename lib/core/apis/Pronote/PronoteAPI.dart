@@ -15,6 +15,7 @@ import 'package:pointycastle/pointycastle.dart';
 import 'package:requests/requests.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
+import 'package:ynotes/core/utils/fileUtils.dart';
 
 import 'package:ynotes/core/utils/nullSafeMap.dart';
 import 'package:ynotes/main.dart';
@@ -201,8 +202,12 @@ class Client {
     print("Identification");
 
     var challenge = idr['donneesSec']['donnees']['challenge'];
+    await FileAppUtil.writeInFile(idr.toString(), "dsec");
     var e = Encryption();
+    print("New IV " + this.communication.encryption.aesIV.base16);
     e.aesSetIV(this.communication.encryption.aesIV);
+    print("IV " + e.aesIV.base16);
+
     var motdepasse;
 
     if (this.ent != null && this.ent == true) {
@@ -229,8 +234,9 @@ class Client {
         p = p.toString().toLowerCase();
         this.stepsLogger.add("ⓘ Lowercased password");
       }
-
+      FileAppUtil.writeInFile(idr.toString(), "dsec");
       var alea = idr['donneesSec']['donnees']['alea'];
+    
       List<int> encoded = conv.utf8.encode(alea ?? "" + p);
       motdepasse = sha256.convert(encoded);
       motdepasse = conv.hex.encode(motdepasse.bytes);
@@ -950,7 +956,6 @@ class Encryption {
     this.aesIV = IV.fromLength(16);
     this.aesIVTemp = IV.fromSecureRandom(16).bytes;
     this.aesKey = generateMd5("");
-
     this.rsaKeys = {};
   }
   String generateMd5(String input) {
