@@ -14,14 +14,13 @@ import 'package:pointycastle/asymmetric/rsa.dart';
 import 'package:pointycastle/pointycastle.dart';
 import 'package:requests/requests.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/core/logic/shared/loginController.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
-
 import 'package:ynotes/core/utils/nullSafeMap.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/tests.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'dart:convert' as conv;
+import 'package:ynotes/core/logic/shared/loginController.dart';
 
 import '../EcoleDirecte.dart';
 import '../utils.dart';
@@ -214,7 +213,7 @@ class Client {
       motdepasse = sha256.convert(encoded).bytes;
       motdepasse = conv.hex.encode(motdepasse);
       motdepasse = motdepasse.toString().toUpperCase();
-      e.aesKey = md5.convert(conv.utf8.encode(motdepasse));
+      e.aesKey = conv.hex.encode(md5.convert(conv.utf8.encode(motdepasse)).bytes);
     } else {
       var u = this.username;
       var p = this.password;
@@ -234,13 +233,15 @@ class Client {
         this.stepsLogger.add("ⓘ Lowercased password");
       }
       var alea = idr['donneesSec']['donnees']['alea'];
-    
-      List<int> encoded = conv.utf8.encode(alea ?? "" + p);
+      List<int> encoded = conv.utf8.encode((alea ?? "") + p);
       motdepasse = sha256.convert(encoded);
       motdepasse = conv.hex.encode(motdepasse.bytes);
       motdepasse = motdepasse.toString().toUpperCase();
       e.aesKey = md5.convert(conv.utf8.encode((u ?? "") + motdepasse));
     }
+    print(e.aesKey);
+    print("CHALLENGE" + challenge);
+    print("IV " + e.aesIV.base16);
 
     var rawChallenge = e.aesDecrypt(conv.hex.decode(challenge));
     this.stepsLogger.add("✅ Decrypted challenge");
@@ -735,7 +736,7 @@ class Communication {
     this.client.stepsLogger.add("✅ Parsed HTML");
     //uuid
     this.encryption.rsaKeys = {'MR': this.attributes['MR'], 'ER': this.attributes['ER']};
-    var uuid = conv.base64.encode(await this.encryption.rsaEncrypt(this.encryption.aesIVTemp));
+    var uuid = conv.base64.encode(await this.encryption.rsaEncrypt(this.encryption.aesIVTemp.bytes));
     this.client.stepsLogger.add("✅ Encrypted IV");
 
     //uuid
@@ -750,7 +751,8 @@ class Communication {
       this.client.stepsLogger.add("ⓘ" + " Requests will be compressed");
     }
     var initialResponse = await this.post('FonctionParametres',
-        data: {'donnees': jsonPost}, decryptionChange: {'iv': md5.convert(this.encryption.aesIVTemp).toString()});
+        data: {'donnees': jsonPost},
+        decryptionChange: {'iv': conv.hex.encode(md5.convert(this.encryption.aesIVTemp.bytes).bytes)});
 
     return [this.attributes, initialResponse];
   }
@@ -814,6 +816,7 @@ class Communication {
     };
     String p_site =
         this.rootSite + '/appelfonction/' + this.attributes['a'] + '/' + this.attributes['h'] + '/' + rNumber;
+    //p_site = "http://192.168.1.99:3000/home";
     print(p_site);
 
     this.requestNumber += 2;
@@ -856,8 +859,7 @@ class Communication {
       print("decryption change");
       if (decryptionChange.toString().contains("iv")) {
         print("decryption_change contains IV");
-        print(decryptionChange['iv']);
-        this.encryption.aesIV = IV.fromBase16(decryptionChange['iv']);
+        this.encryption.aesIV = IV.fromBase16(decryptionChange["iv"]);
       }
 
       if (decryptionChange.toString().contains("key")) {
@@ -866,6 +868,7 @@ class Communication {
         this.encryption.aesKey = decryptionChange['key'];
       }
     }
+    await FileAppUtil.writeInFile(response.content(), functionName);
 
     Map responseData = response.json();
 
@@ -944,7 +947,7 @@ prepareTabs(var tabsList) {
 class Encryption {
   IV aesIV;
 
-  var aesIVTemp;
+  IV aesIVTemp;
 
   var aesKey;
 
@@ -952,7 +955,7 @@ class Encryption {
 
   Encryption() {
     this.aesIV = IV.fromLength(16);
-    this.aesIVTemp = IV.fromSecureRandom(16).bytes;
+    this.aesIVTemp = IV.fromSecureRandom(16);
     this.aesKey = generateMd5("");
     this.rsaKeys = {};
   }
@@ -1020,7 +1023,7 @@ class Encryption {
     }
   }
 
-  rsaEncrypt(var data) async {
+  rsaEncrypt(Uint8List data) async {
     try {
       var modulusBytes = this.rsaKeys['MR'];
 
