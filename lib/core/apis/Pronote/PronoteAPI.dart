@@ -940,7 +940,7 @@ class Encryption {
 
   Encryption() {
     this.aesIV = IV.fromLength(16);
-    this.aesIVTemp = IV.fromBase16("de3f45fe461dd25e74a6548d556fe288");
+    this.aesIVTemp = IV.fromSecureRandom(16);
     this.aesKey = generateMd5("");
 
     this.rsaKeys = {};
