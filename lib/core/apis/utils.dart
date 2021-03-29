@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/apis/Pronote.dart';
+import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/shared_preferences.dart';
 
@@ -31,6 +33,21 @@ setChosenParser(int chosen) async {
   prefs.setInt('chosenParser', chosen);
 }
 
+testIfPronoteCas(String url) async {
+  var response = await http.get(url);
+  printWrapped(response.body);
+  if (response.body.contains('id="id_body"')) {
+    return false;
+  } else {
+    return true;
+  }
+}
+  getRootAddress(addr) {
+    return [
+      (addr.split('/').sublist(0, addr.split('/').length - 1).join("/")),
+      (addr.split('/').sublist(addr.split('/').length - 1, addr.split('/').length).join("/"))
+    ];
+  }
 get_week(DateTime date) async {
   final storage = new FlutterSecureStorage();
   return (1 + (date.difference(DateTime.parse(await storage.read(key: "startday"))).inDays / 7).floor()).round();
