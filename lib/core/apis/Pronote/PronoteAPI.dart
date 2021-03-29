@@ -206,7 +206,7 @@ class Client {
       motdepasse = sha256.convert(encoded).bytes;
       motdepasse = hex.encode(motdepasse);
       motdepasse = motdepasse.toString().toUpperCase();
-      e.aesKey = md5.convert(conv.utf8.encode(motdepasse));
+      e.aesKey = hex.encode(md5.convert(conv.utf8.encode(motdepasse)).bytes);
     } else {
       var u = this.username;
       var p = this.password;
@@ -231,8 +231,11 @@ class Client {
       motdepasse = sha256.convert(encoded);
       motdepasse = hex.encode(motdepasse.bytes);
       motdepasse = motdepasse.toString().toUpperCase();
-      e.aesKey = md5.convert(conv.utf8.encode(u + motdepasse));
+      e.aesKey = hex.encode(md5.convert(conv.utf8.encode(u + motdepasse)).bytes);
     }
+    print(e.aesKey);
+    print("CHALLENGE" + challenge);
+    print("IV " + e.aesIV.base16);
 
     var rawChallenge = e.aesDecrypt(hex.decode(challenge));
     this.stepsLogger.add("✅ Decrypted challenge");
@@ -717,7 +720,7 @@ class Communication {
     this.client.stepsLogger.add("✅ Parsed HTML");
     //uuid
     this.encryption.rsaKeys = {'MR': this.attributes['MR'], 'ER': this.attributes['ER']};
-    var uuid = conv.base64.encode(await this.encryption.rsaEncrypt(this.encryption.aesIVTemp));
+    var uuid = conv.base64.encode(await this.encryption.rsaEncrypt(this.encryption.aesIVTemp.bytes));
     this.client.stepsLogger.add("✅ Encrypted IV");
 
     //uuid
@@ -733,7 +736,7 @@ class Communication {
     }
     var initialResponse = await this.post('FonctionParametres',
         data: {'donnees': jsonPost},
-        decryptionChange: {'iv': hex.encode(md5.convert(this.encryption.aesIVTemp).bytes)});
+        decryptionChange: {'iv': hex.encode(md5.convert(this.encryption.aesIVTemp.bytes).bytes)});
 
     return [this.attributes, initialResponse];
   }
@@ -798,6 +801,7 @@ class Communication {
     print(json.toString());
     String p_site =
         this.rootSite + '/appelfonction/' + this.attributes['a'] + '/' + this.attributes['h'] + '/' + rNumber;
+    //p_site = "http://192.168.1.99:3000/home";
     print(p_site);
 
     this.requestNumber += 2;
@@ -840,8 +844,7 @@ class Communication {
       print("decryption change");
       if (decryptionChange.toString().contains("iv")) {
         print("decryption_change contains IV");
-        print(decryptionChange['iv']);
-        this.encryption.aesIV = IV.fromBase16(decryptionChange['iv']);
+        this.encryption.aesIV = IV.fromBase16(decryptionChange["iv"]);
       }
 
       if (decryptionChange.toString().contains("key")) {
@@ -929,7 +932,7 @@ prepareTabs(var tabsList) {
 class Encryption {
   IV aesIV;
 
-  var aesIVTemp;
+  IV aesIVTemp;
 
   var aesKey;
 
@@ -937,7 +940,7 @@ class Encryption {
 
   Encryption() {
     this.aesIV = IV.fromLength(16);
-    this.aesIVTemp = IV.fromSecureRandom(16).bytes;
+    this.aesIVTemp = IV.fromBase16("de3f45fe461dd25e74a6548d556fe288");
     this.aesKey = generateMd5("");
 
     this.rsaKeys = {};
@@ -1006,7 +1009,7 @@ class Encryption {
     }
   }
 
-  rsaEncrypt(var data) async {
+  rsaEncrypt(Uint8List data) async {
     try {
       var modulusBytes = this.rsaKeys['MR'];
 
