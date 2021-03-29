@@ -202,7 +202,6 @@ class Client {
     print("Identification");
 
     var challenge = idr['donneesSec']['donnees']['challenge'];
-    await FileAppUtil.writeInFile(idr.toString(), "dsec");
     var e = Encryption();
     print("New IV " + this.communication.encryption.aesIV.base16);
     e.aesSetIV(this.communication.encryption.aesIV);
@@ -234,7 +233,6 @@ class Client {
         p = p.toString().toLowerCase();
         this.stepsLogger.add("ⓘ Lowercased password");
       }
-      FileAppUtil.writeInFile(idr.toString(), "dsec");
       var alea = idr['donneesSec']['donnees']['alea'];
     
       List<int> encoded = conv.utf8.encode(alea ?? "" + p);
