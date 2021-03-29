@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:convert/convert.dart';
 
 import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,12 +15,15 @@ import 'package:ynotes/core/services/platform.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/exportPage.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
+import 'package:ynotes/core/apis/EcoleDirecte/ecoleDirecteConverters.dart';
+import 'package:ynotes/core/apis/EcoleDirecte/ecoleDirecteMethods.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:http/http.dart' as http;
+
 import '../../../tests.dart';
 import '../../../usefulMethods.dart';
-import 'package:crypto/crypto.dart';
 
 class SettingsPage extends StatefulWidget {
   @override
@@ -443,17 +445,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     title: 'Bouton magique',
                     leading: Icon(MdiIcons.testTube, color: ThemeUtils.textColor()),
                     onTap: () async {
-                      var u = "test";
-                      var p = "test";
-                      var alea = "fMPCjXI8";
-                      List<int> encoded = utf8.encode((alea ?? "") + p);
-                      var motdepasse;
-                      motdepasse = sha256.convert(encoded).bytes;
-                      motdepasse = hex.encode(motdepasse);
-                      motdepasse = motdepasse.toString().toUpperCase();
-                      print(motdepasse);
-                      var test = md5.convert(utf8.encode((u ?? "") + motdepasse));
-                      print(test);
+                      await logFile("test");
                     },
                     titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                     subtitleTextStyle: TextStyle(

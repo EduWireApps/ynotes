@@ -10,9 +10,6 @@ import 'package:requests/requests.dart';
 callCas(String cas, String username, String password, String url) async {
   final storage = new FlutterSecureStorage();
   await storage.write(key: "pronotecas", value: cas);
-  if (cas == null) {
-    cas = "aucun";
-  }
   switch (cas.toLowerCase()) {
     case ("aucun"):
       {
@@ -34,13 +31,9 @@ callCas(String cas, String username, String password, String url) async {
 
 atrium_sud(String username, String password) async {
   // ENT / PRONOTE required URLs
-  var ent_login =
-      'https://www.atrium-sud.fr/connexion/login?service=https:%2F%2F0060013G.index-education.net%2Fpronote%2F';
+  var ent_login = 'https://www.atrium-sud.fr/connexion/login?service=https:%2F%2F0060013G.index-education.net%2Fpronote%2F';
   // ENT / PRONOTE required URLs
-  var headers = {
-    'connection': 'keep-alive',
-    'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/73.0'
-  };
+  var headers = {'connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/73.0'};
   // Ent connection
   //Session session = Session();
   var response = await Requests.get(ent_login, persistCookies: true);
@@ -51,22 +44,12 @@ atrium_sud(String username, String password) async {
   //Login payload
   var parsed = parse(response.content());
   //print(parsed.outerHtml);
-  var input_ = parsed.getElementsByTagName("input").firstWhere(
-      (element) => element.attributes.toString().contains("hidden") && element.attributes.toString().contains("lt"));
+  var input_ = parsed.getElementsByTagName("input").firstWhere((element) => element.attributes.toString().contains("hidden") && element.attributes.toString().contains("lt"));
   var lt = input_.attributes["value"];
-  input_ = parsed.getElementsByTagName("input").firstWhere((element) =>
-      element.attributes.toString().contains("hidden") && element.attributes.toString().contains("execution"));
+  input_ = parsed.getElementsByTagName("input").firstWhere((element) => element.attributes.toString().contains("hidden") && element.attributes.toString().contains("execution"));
   var execution = input_.attributes["value"];
-  var payload = {
-    'execution': execution,
-    '_eventId': 'submit',
-    'submit': '',
-    'lt': lt,
-    'username': username,
-    'password': password
-  };
-  var response2 = await Requests.post(ent_login,
-      body: payload, persistCookies: true, bodyEncoding: RequestBodyEncoding.FormURLEncoded);
+  var payload = {'execution': execution, '_eventId': 'submit', 'submit': '', 'lt': lt, 'username': username, 'password': password};
+  var response2 = await Requests.post(ent_login, body: payload, persistCookies: true, bodyEncoding: RequestBodyEncoding.FormURLEncoded);
 
   var cookies = await Requests.getStoredCookies(Requests.getHostname(ent_login));
   printWrapped(cookies.toString());
@@ -84,10 +67,7 @@ void printWrapped(String text) {
 }
 
 idf(String username, String password, String url) async {
-  var headers = {
-    'connection': 'keep-alive',
-    'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/73.0'
-  };
+  var headers = {'connection': 'keep-alive', 'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/73.0'};
 
   final client = HttpClient();
 // ignore: close_sinks
@@ -110,8 +90,7 @@ idf(String username, String password, String url) async {
   //payload to send
   var payload = {"email": username, "password": password, "callback": callback};
   print(payload);
-  var response2 = await Requests.post(ent_login,
-      body: payload, persistCookies: true, bodyEncoding: RequestBodyEncoding.FormURLEncoded);
+  var response2 = await Requests.post(ent_login, body: payload, persistCookies: true, bodyEncoding: RequestBodyEncoding.FormURLEncoded);
 
   if (response2.content().contains("identifiant ou le mot de passe est incorrect.")) {
     throw "runes";

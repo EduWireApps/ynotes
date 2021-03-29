@@ -2,7 +2,6 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/core/logic/pronote/schoolsModel.dart';
 import 'package:ynotes/ui/components/dialogs/homeworkDetails.dart';
 import 'package:ynotes/core/services/shared_preferences.dart';
 import 'package:ynotes/ui/components/dialogs/authorizationsDialog.dart';
@@ -12,7 +11,6 @@ import 'package:ynotes/ui/components/dialogs/shareDialog.dart';
 import 'package:ynotes/ui/components/dialogs/updateNoteDialog.dart';
 import 'package:ynotes/ui/components/giffy_dialog/src/asset.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/writeMailBottomSheet.dart';
-import 'package:ynotes/ui/screens/login/loginPageWidgets/pronoteLocationDialog.dart';
 import 'package:ynotes/ui/screens/settings/settingsPage.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/apis/EcoleDirecte/ecoleDirecteMethods.dart';
@@ -231,26 +229,6 @@ class CustomDialogs {
     )..show(context);
   }
 
-  //Bêta purposes : show when a function is not available yet
-  static showErrorSnackBar(BuildContext context, String text) {
-    Flushbar(
-      flushbarPosition: FlushbarPosition.BOTTOM,
-      backgroundColor: Colors.red,
-      isDismissible: true,
-      duration: Duration(seconds: 2),
-      margin: EdgeInsets.all(8),
-      messageText: Text(
-        text ?? "Une erreur a eu lieu.",
-        style: TextStyle(fontFamily: "Asap", color: Colors.white),
-      ),
-      icon: Icon(
-        Icons.error,
-        color: Colors.white,
-      ),
-      borderRadius: 8,
-    )..show(context);
-  }
-
   static Future showPersistantNotificationDialog(BuildContext context) {
     return showDialog(
       barrierDismissible: true,
@@ -338,21 +316,6 @@ class CustomDialogs {
           MediaQueryData screenSize;
           screenSize = MediaQuery.of(context);
           return Transform.scale(scale: a1.value, child: Container(child: DialogHomework(hw)));
-        });
-  }
-
-  static Future<PronoteSpace> showPronoteSchoolGeolocationDialog(BuildContext context) async {
-    return await showGeneralDialog(
-        context: context,
-        barrierColor: Colors.black.withOpacity(0.5),
-        transitionDuration: Duration(milliseconds: 200),
-        barrierDismissible: true,
-        barrierLabel: '',
-        pageBuilder: (context, animation1, animation2) {},
-        transitionBuilder: (context, a1, a2, widget) {
-          MediaQueryData screenSize;
-          screenSize = MediaQuery.of(context);
-          return Transform.scale(scale: a1.value, child: PronoteGeolocationDialog());
         });
   }
 

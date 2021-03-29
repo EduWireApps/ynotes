@@ -3,7 +3,7 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 
 class CustomButtons {
   static Widget materialButton(BuildContext context, double width, double height, Function onTap,
-      {IconData icon, String label, Color backgroundColor, Color textColor, Color iconColor, Function onLongPress}) {
+      {IconData icon, String label, Color backgroundColor, Color textColor, Color iconColor}) {
     var screenSize = MediaQuery.of(context);
     return Container(
       width: width,
@@ -13,8 +13,7 @@ class CustomButtons {
         borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
         child: InkWell(
           borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-          onTap: onTap ?? null,
-          onLongPress: onLongPress ?? null,
+          onTap: onTap,
           child: Container(
               height: height,
               padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
