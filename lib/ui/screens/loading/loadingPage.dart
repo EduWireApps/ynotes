@@ -6,6 +6,7 @@ import 'package:ynotes/main.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/usefulMethods.dart';
 
+
 class LoadingPage extends StatefulWidget {
   const LoadingPage({Key key}) : super(key: key);
 
@@ -31,8 +32,6 @@ class _LoadingPageState extends State<LoadingPage> {
     String p = await ReadStorage("password");
     String url = await ReadStorage("pronoteurl");
     String cas = await ReadStorage("pronotecas");
-    bool iscas = (await ReadStorage("ispronotecas") == "true");
-
     z = await storage.read(key: "agreedTermsAndConfiguredApp");
     if (u != null && p != null && z != null && chosenParser != null) {
       Navigator.of(context).pushReplacement(router(homePage()));

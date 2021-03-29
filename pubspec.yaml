@@ -56,8 +56,8 @@ dependencies:
   package_info: ^0.4.0+16
   share: ^0.6.4+3
   requests: ^3.3.0
-  encrypt: ^4.1.0
-  pointycastle: ^2.0.0
+  encrypt: ^4.0.2
+  pointycastle: ^1.0.2
   dio: ^3.0.9
   uuid: ^2.1.0
   highlight_text: ^0.7.2
@@ -94,11 +94,6 @@ dependencies:
   flutter_tex: ^3.6.7+10
   fl_chart: ^0.12.0
   expandable: ^4.1.4
-  flutter_inappwebview: ^4.0.0+4
-  geolocator: ^6.2.1
-  rive: ^0.6.8
-
-
   liquid_progress_indicator: ^0.3.2
   dotted_border: ^1.0.7
 
