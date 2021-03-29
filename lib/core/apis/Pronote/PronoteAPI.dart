@@ -14,6 +14,7 @@ import 'package:pointycastle/asymmetric/pkcs1.dart';
 import 'package:pointycastle/asymmetric/rsa.dart';
 import 'package:requests/requests.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/utils/nullSafeMap.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
@@ -226,7 +227,7 @@ class Client {
       }
 
       var alea = idr['donneesSec']['donnees']['alea'];
-      List<int> encoded = conv.utf8.encode(alea + p);
+      List<int> encoded = conv.utf8.encode((alea ?? "") + p);
       motdepasse = sha256.convert(encoded);
       motdepasse = hex.encode(motdepasse.bytes);
       motdepasse = motdepasse.toString().toUpperCase();
@@ -731,7 +732,8 @@ class Communication {
       this.client.stepsLogger.add("ⓘ" + " Requests will be compressed");
     }
     var initialResponse = await this.post('FonctionParametres',
-        data: {'donnees': jsonPost}, decryptionChange: {'iv': md5.convert(this.encryption.aesIVTemp).toString()});
+        data: {'donnees': jsonPost},
+        decryptionChange: {'iv': hex.encode(md5.convert(this.encryption.aesIVTemp).bytes)});
 
     return [this.attributes, initialResponse];
   }
@@ -848,6 +850,7 @@ class Communication {
         this.encryption.aesKey = decryptionChange['key'];
       }
     }
+    await FileAppUtil.writeInFile(response.content(), functionName);
 
     Map responseData = response.json();
 
