@@ -777,10 +777,12 @@ class Communication {
     print(data);
     if (this.shouldCompressRequests) {
       print("Compress request");
-      data = """{"donnees": {"Uuid": "${data["donnees"]["Uuid"]}", "identifiantNav": null}}""";
+      data = conv.jsonEncode(data);
+
       print(data);
       var zlibInstance = ZLibCodec(level: 6, raw: true);
       data = zlibInstance.encode(conv.utf8.encode(hex.encode(conv.utf8.encode(data))));
+
       this.client.stepsLogger.add("✅ Compressed request");
     }
     if (this.shouldEncryptRequests) {
@@ -873,6 +875,8 @@ class Communication {
         throw "JSONDecodeError";
       }
     }
+    if (functionName == "Identification") {}
+
     return responseData;
   }
 
