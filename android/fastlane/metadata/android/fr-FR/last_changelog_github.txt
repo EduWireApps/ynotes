@@ -1,1 +1,1 @@
-HTTP fixes
+HTTP Pronote users are now able to login. 
