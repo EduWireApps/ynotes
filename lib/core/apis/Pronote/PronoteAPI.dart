@@ -13,6 +13,7 @@ import 'package:pointycastle/asymmetric/api.dart';
 import 'package:pointycastle/asymmetric/pkcs1.dart';
 import 'package:pointycastle/asymmetric/rsa.dart';
 import 'package:requests/requests.dart';
+import 'package:ynotes/core/apis/Pronote/pronoteConverters.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/nullSafeMap.dart';
 import 'package:ynotes/main.dart';
@@ -33,7 +34,7 @@ Map error_messages = {
 };
 bool isOldAPIUsed = false;
 
-class Client {
+class PronoteClient {
   var username;
   var password;
   var pronote_url;
@@ -97,7 +98,7 @@ class Client {
     this.expired = true;
   }
 
-  Client(String pronote_url, {String username, String password, var cookies}) {
+  PronoteClient(String pronote_url, {String username, String password, var cookies}) {
     if (cookies == null && password == null && username == null) {
       throw 'Please provide login credentials. Cookies are None, and username and password are empty.';
     }
@@ -582,6 +583,11 @@ class Client {
       var lessonsList = response['donneesSec']['donnees']['ListeCours'];
       lessonsList.forEach((lesson) {
         try {
+          listToReturn.add(PronoteConverter.lesson(this, lesson));
+        } catch (e) {
+          print("Failed to add lesson");
+        }
+        /*try {
           //Lesson(String room, List<String> teachers, DateTime start, int duration, bool canceled, String status, List<String> groups, String content, String matiere, String codeMatiere)
           String room;
           try {
@@ -600,9 +606,6 @@ class Client {
             });
           } catch (e) {}
 
-          DateTime start = DateFormat("dd/MM/yyyy HH:mm:ss", "fr_FR").parse(lesson["DateDuCours"]["V"]);
-          DateTime end = start.add(Duration(minutes: this.oneHourDuration * lesson["duree"]));
-          int duration = this.oneHourDuration * lesson["duree"];
           String matiere = lesson["ListeContenus"]["V"][0]["L"];
           String codeMatiere = lesson["ListeContenus"]["V"][0]["L"].hashCode.toString();
           String id = lesson["N"];
@@ -627,7 +630,7 @@ class Client {
               disciplineCode: codeMatiere));
         } catch (e) {
           print("Error while getting lessons " + e.toString());
-        }
+        }*/
       });
       print("Agenda collecte succeeded");
       return listToReturn;
@@ -1030,7 +1033,7 @@ class KeepAlive {
 
   bool keepAlive;
 
-  void init(Client client) {
+  void init(PronoteClient client) {
     this._connection = client.communication;
     this.keepAlive = true;
   }
@@ -1061,7 +1064,7 @@ class PronotePeriod {
   var moyenneGenerale;
   var moyenneGeneraleClasse;
 
-  Client _client;
+  PronoteClient _client;
 
   // Represents a period of the school year. You shouldn't have to create this class manually.
 
@@ -1076,7 +1079,7 @@ class PronotePeriod {
   // end : str
   //     date on which the period ends
 
-  PronotePeriod(Client client, Map parsedJson) {
+  PronotePeriod(PronoteClient client, Map parsedJson) {
     this._client = client;
     this.id = parsedJson['N'];
     this.name = parsedJson['L'];
@@ -1175,23 +1178,5 @@ class PronotePeriod {
       other.add(average(response, (mapGet(element, ["service", "V", "L"]) ?? "").hashCode.toString()));
     });
     return [list, other];
-  }
-}
-
-class PronoteLesson {
-  String id;
-  String teacherName;
-  String classroom;
-  bool canceled;
-  String status;
-  String backgroundColor;
-  String outing;
-  DateTime start;
-  String groupName;
-  var _content;
-  Client _client;
-  PronoteLesson(Client client, var parsedJson) {
-    this._client = client;
-    this._content = null;
   }
 }
