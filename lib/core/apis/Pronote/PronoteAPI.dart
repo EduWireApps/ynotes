@@ -553,6 +553,7 @@ class PronoteClient {
     initializeDateFormatting();
     var user = this.paramsUser['donneesSec']['donnees']['ressource'];
     List<Lesson> listToReturn = List();
+    //Set request
     Map data = {
       "_Signature_": {"onglet": 16},
       "donnees": {
@@ -577,7 +578,6 @@ class PronoteClient {
     for (int week = firstWeek; lastWeek < lastWeek + 1; ++lastWeek) {
       data["donnees"]["NumeroSemaine"] = lastWeek;
       data["donnees"]["numeroSemaine"] = lastWeek;
-
       var response = await this.communication.post('PageEmploiDuTemps', data: data);
 
       var lessonsList = response['donneesSec']['donnees']['ListeCours'];
@@ -587,50 +587,6 @@ class PronoteClient {
         } catch (e) {
           print("Failed to add lesson");
         }
-        /*try {
-          //Lesson(String room, List<String> teachers, DateTime start, int duration, bool canceled, String status, List<String> groups, String content, String matiere, String codeMatiere)
-          String room;
-          try {
-            var roomContainer = lesson["ListeContenus"]["V"].firstWhere((element) => element["G"] == 17);
-            room = roomContainer["L"];
-          }
-          //Sort of null aware
-          catch (e) {}
-
-          List<String> teachers = List();
-          try {
-            lesson["ListeContenus"]["V"].forEach((element) {
-              if (element["G"] == 3) {
-                teachers.add(element["L"]);
-              }
-            });
-          } catch (e) {}
-
-          String matiere = lesson["ListeContenus"]["V"][0]["L"];
-          String codeMatiere = lesson["ListeContenus"]["V"][0]["L"].hashCode.toString();
-          String id = lesson["N"];
-          String status;
-          bool canceled = false;
-          if (lesson["Statut"] != null) {
-            status = lesson["Statut"];
-          }
-          if (lesson["estAnnule"] != null) {
-            canceled = lesson["estAnnule"];
-          }
-          listToReturn.add(Lesson(
-              room: room,
-              teachers: teachers,
-              start: start,
-              end: end,
-              duration: duration,
-              canceled: canceled,
-              status: status,
-              discipline: matiere,
-              id: id,
-              disciplineCode: codeMatiere));
-        } catch (e) {
-          print("Error while getting lessons " + e.toString());
-        }*/
       });
       print("Agenda collecte succeeded");
       return listToReturn;
@@ -638,6 +594,7 @@ class PronoteClient {
   }
 }
 
+//Remove some random security in challenge
 removeAlea(String text) {
   List sansalea = List();
   int i = 0;
@@ -652,6 +609,7 @@ removeAlea(String text) {
   return sansalea.join("");
 }
 
+///Communication class used to send requests to Pronote
 class Communication {
   var cookies;
   var client;
