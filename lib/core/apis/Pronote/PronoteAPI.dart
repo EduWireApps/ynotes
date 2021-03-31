@@ -233,9 +233,7 @@ class PronoteClient {
       motdepasse = motdepasse.toString().toUpperCase();
       e.aesKey = md5.convert(conv.utf8.encode(u + motdepasse));
     }
-    print(e.aesKey);
-    print("CHALLENGE" + challenge);
-    print("IV " + e.aesIV.base16);
+
 
     var rawChallenge = e.aesDecrypt(hex.decode(challenge));
     this.stepsLogger.add("✅ Decrypted challenge");
@@ -503,7 +501,7 @@ class PronoteClient {
         "saisieActualite": false
       }
     };
-    print(data);
+
     var response = await this.communication.post('SaisieActualites', data: data);
     print(response);
   }
@@ -541,7 +539,6 @@ class PronoteClient {
           "saisieActualite": false
         }
       };
-      print(data);
       var response = await this.communication.post('SaisieActualites', data: data);
       print(response);
     } catch (e) {
@@ -570,7 +567,6 @@ class PronoteClient {
 
     var output = [];
     var firstWeek = await get_week(date_from);
-    print(firstWeek);
     if (date_to == null) {
       date_to = date_from;
     }
@@ -585,7 +581,7 @@ class PronoteClient {
         try {
           listToReturn.add(PronoteConverter.lesson(this, lesson));
         } catch (e) {
-          print("Failed to add lesson");
+          print(e);
         }
       });
       print("Agenda collecte succeeded");
@@ -685,7 +681,6 @@ class Communication {
 
     //uuid
     var jsonPost = {'Uuid': uuid, 'identifiantNav': null};
-    print(this.attributes);
     this.shouldEncryptRequests = (this.attributes["sCrA"] == null);
     if (this.attributes["sCrA"] == null) {
       this.client.stepsLogger.add("ⓘ" + " Requests will be encrypted");
@@ -735,7 +730,6 @@ class Communication {
         throw ('Action not permitted. (onglet is not normally accessible)');
       }
     }
-    print(data);
     if (this.shouldCompressRequests) {
       print("Compress request");
       data = """{"donnees": {"Uuid": "${data["donnees"]["Uuid"]}", "identifiantNav": null}}""";
@@ -758,14 +752,13 @@ class Communication {
       'nom': functionName,
       'donneesSec': data
     };
-    print(json.toString());
     String p_site =
         this.rootSite + '/appelfonction/' + this.attributes['a'] + '/' + this.attributes['h'] + '/' + rNumber;
     //p_site = "http://192.168.1.99:3000/home";
-    print(p_site);
 
     this.requestNumber += 2;
-    if (requestNumber > 90) {
+    if (requestNumber > 190) {
+      print("WELL DUH" +requestNumber.toString());
       await this.client.refresh();
     }
 

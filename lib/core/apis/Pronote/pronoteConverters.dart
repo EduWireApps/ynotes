@@ -5,7 +5,6 @@ import 'package:ynotes/core/utils/nullSafeMap.dart';
 
 class PronoteConverter {
   static Lesson lesson(PronoteClient client, Map<String, dynamic> lessonData) {
-    
     DateTime start = DateFormat("dd/MM/yyyy HH:mm:ss", "fr_FR").parse(mapGet(lessonData, ["DateDuCours", "V"]));
     DateTime end;
     var endPlace = (mapGet(lessonData, ['place']) %
@@ -21,6 +20,7 @@ class PronoteConverter {
         end = DateTime(start.year, start.month, start.day, endTime.hour, endTime.minute);
       }
     }
+
     String room;
     try {
       var roomContainer = mapGet(lessonData, ["ListeContenus", "V"]) ?? [].firstWhere((element) => element["G"] == 17);
