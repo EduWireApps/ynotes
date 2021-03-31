@@ -1,1 +1,1 @@
-Correctifs pour la connexion HTTP.
+Les utilisateurs de Pronote avec HTTP peuvent désormais se connecter.
