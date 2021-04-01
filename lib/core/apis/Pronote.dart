@@ -13,7 +13,7 @@ import 'package:ynotes/core/logic/shared/loginController.dart';
 
 import 'package:ynotes/usefulMethods.dart';
 
-Client localClient;
+PronoteClient localClient;
 //Locks are use to prohibit the app to send too much requests while collecting data and ensure there are made one by one
 //They are ABSOLUTELY needed or user will be quickly IP suspended
 bool gradeLock = false;
@@ -270,7 +270,7 @@ class APIPronote extends API {
       loginLock = true;
       try {
         var cookies = await callCas(cas, username, password, url ?? "");
-        localClient = Client(url, username: username, password: password, cookies: cookies);
+        localClient = PronoteClient(url, username: username, password: password, cookies: cookies);
 
         await localClient.init();
         if (localClient.loggedIn) {
