@@ -12,6 +12,7 @@ import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:wiredash/wiredash.dart';
 import 'package:ynotes/core/services/platform.dart';
+import 'package:ynotes/core/utils/nullSafeMap.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/exportPage.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
@@ -445,7 +446,12 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     title: 'Bouton magique',
                     leading: Icon(MdiIcons.testTube, color: ThemeUtils.textColor()),
                     onTap: () async {
-                      await logFile("test");
+                      var test = {
+                        "A": [
+                          {"B": "test"}
+                        ]
+                      };
+                      print(mapGet(test, ["A", 0, "B"]));
                     },
                     titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                     subtitleTextStyle: TextStyle(

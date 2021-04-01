@@ -5,18 +5,22 @@ import 'package:ynotes/core/utils/nullSafeMap.dart';
 
 class PronoteConverter {
   static Lesson lesson(PronoteClient client, Map<String, dynamic> lessonData) {
+    String matiere = mapGet(lessonData, ["ListeContenus", "V", 0, "L"]);
+
     DateTime start = DateFormat("dd/MM/yyyy HH:mm:ss", "fr_FR").parse(mapGet(lessonData, ["DateDuCours", "V"]));
+    
     DateTime end;
     var endPlace = (mapGet(lessonData, ['place']) %
                 (client.funcOptions['donneesSec']['donnees']['General']['ListeHeuresFin']['V']).length -
             1) +
-        mapGet(lessonData, ['duree']) -
-        1;
-
+        (mapGet(lessonData, ['duree']) - 1);
     ///Get the correct hours
-    for (var endTime in mapGet(client.funcOptions, ['donneesSec', 'donnees', 'General', 'ListeHeuresFin', 'V']) ?? []) {
+    ///Pronote gives us the place where the hour should be in a week, when we modulo that with the amount of
+    ///hours in a day we can get the "place" when the hour starts. Then we just add the duration (and substract 1)
+    for (var endTime in (mapGet(client.funcOptions, ['donneesSec', 'donnees', 'General', 'ListeHeuresFin', 'V']))) {
       if (mapGet(endTime, ['G']) == endPlace) {
-        endTime = DateFormat("""'hh'h'mm'""").parse(mapGet(lessonData, ["start_date"]));
+        print(matiere + " " + endTime.toString() + " " + start.toString());
+        endTime = DateFormat("""hh'h'mm""").parse(mapGet(endTime, ["L"]));
         end = DateTime(start.year, start.month, start.day, endTime.hour, endTime.minute);
       }
     }
@@ -26,6 +30,7 @@ class PronoteConverter {
       var roomContainer = mapGet(lessonData, ["ListeContenus", "V"]) ?? [].firstWhere((element) => element["G"] == 17);
       room = mapGet(roomContainer, ["L"]);
     }
+
     //Sort of null aware
     catch (e) {}
     List<String> teachers = List();
@@ -37,10 +42,12 @@ class PronoteConverter {
       });
     } catch (e) {}
 
+    print(lessonData);
     //Some attributes
-    String matiere = mapGet(lessonData, ["ListeContenus", "V", 0, "L"]);
     String codeMatiere = mapGet(lessonData, ["ListeContenus", "V", 0, "L"]).hashCode.toString();
+
     String id = mapGet(lessonData, ["N"]);
+
     String status;
     bool canceled = false;
 
@@ -51,6 +58,8 @@ class PronoteConverter {
     if (mapGet(lessonData, ["estAnnule"]) != null) {
       canceled = mapGet(lessonData, ["estAnnule"]);
     }
+    print("d");
+
     //Finally set attributes
     Lesson l = Lesson(
         room: room,
@@ -64,5 +73,6 @@ class PronoteConverter {
         id: id,
         disciplineCode: codeMatiere);
     //return lesson
+    return l;
   }
 }
