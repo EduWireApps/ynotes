@@ -8,19 +8,19 @@ class PronoteConverter {
     String matiere = mapGet(lessonData, ["ListeContenus", "V", 0, "L"]);
 
     DateTime start = DateFormat("dd/MM/yyyy HH:mm:ss", "fr_FR").parse(mapGet(lessonData, ["DateDuCours", "V"]));
-    
+
     DateTime end;
     var endPlace = (mapGet(lessonData, ['place']) %
-                (client.funcOptions['donneesSec']['donnees']['General']['ListeHeuresFin']['V']).length -
-            1) +
+            ((client.funcOptions['donneesSec']['donnees']['General']['ListeHeuresFin']['V']).length - 1)) +
         (mapGet(lessonData, ['duree']) - 1);
+
     ///Get the correct hours
     ///Pronote gives us the place where the hour should be in a week, when we modulo that with the amount of
     ///hours in a day we can get the "place" when the hour starts. Then we just add the duration (and substract 1)
     for (var endTime in (mapGet(client.funcOptions, ['donneesSec', 'donnees', 'General', 'ListeHeuresFin', 'V']))) {
       if (mapGet(endTime, ['G']) == endPlace) {
-        print(matiere + " " + endTime.toString() + " " + start.toString());
-        endTime = DateFormat("""hh'h'mm""").parse(mapGet(endTime, ["L"]));
+        print(matiere + " " + "START " + start.toString() + " END " + endTime["L"]);
+        endTime = DateFormat("""HH'h'mm""").parse(mapGet(endTime, ["L"]));
         end = DateTime(start.year, start.month, start.day, endTime.hour, endTime.minute);
       }
     }
