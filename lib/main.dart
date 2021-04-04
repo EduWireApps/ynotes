@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/foundation.dart';
@@ -10,6 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:wiredash/wiredash.dart';
 import 'package:workmanager/workmanager.dart' as wm;
+import 'package:ynotes/core/services/shared_preferences.dart';
 import 'package:ynotes/ui/screens/carousel/carousel.dart';
 import 'package:ynotes/ui/screens/drawer/drawerBuilder.dart';
 import 'package:ynotes/ui/screens/loading/loadingPage.dart';
@@ -49,10 +51,11 @@ FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 ///The app main class
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   offline = Offline(false);
   await offline.init();
-  await initBackgroundTask();
+  if (Platform.isAndroid || Platform.isIOS) {
+    await initBackgroundTask();
+  }
 
   //Load api
   await reloadChosenApi();
@@ -61,8 +64,9 @@ Future main() async {
   tlogin = LoginController();
 
   //Cancel the old task manager (will be removed after migration)
-  wm.Workmanager.cancelAll();
-
+  if (Platform.isAndroid || Platform.isIOS) {
+    wm.Workmanager.cancelAll();
+  }
   //Set system notification bar color
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       systemNavigationBarColor: isDarkModeEnabled ? Color(0xff414141) : Color(0xffF3F3F3),
@@ -108,7 +112,7 @@ class HomeApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeNotifier = Provider.of<AppStateNotifier>(context);
-    
+
     return Wiredash(
       projectId: "ynotes-giw0qs2",
       secret: "y9zengsvskpriizwniqxr6vxa1ka1n6u",
@@ -147,7 +151,6 @@ class HomeApp extends StatelessWidget {
         themeMode: themeNotifier.getTheme(),
       ),
     );
-    
   }
 }
 

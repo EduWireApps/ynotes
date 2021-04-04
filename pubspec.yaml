@@ -24,7 +24,7 @@ dependencies:
     sdk: flutter
   flutter_secure_storage: ^3.3.3
   auto_size_text: ^2.1.0
-  http: ^0.12.0+4
+  http: ^0.13.0
   charts_flutter: ^0.8.1
   circular_check_box: ^1.0.1
   shimmer: ^1.0.1
@@ -40,11 +40,10 @@ dependencies:
       ref: master
   provider: ^4.3.2+2
   flutter_widget_from_html_core: ^0.5.1+4
-  path_provider: ^1.6.11
+  path_provider: ^2.0.0
   marquee: ^1.3.1
   url_launcher: ^5.5.0
   stacked: ^1.6.0
-  alice: ^0.0.33
   open_file: ^3.0.1
   flushbar: ^1.10.4
   hive: ^1.5.0-pre
@@ -55,11 +54,13 @@ dependencies:
   scrollable_positioned_list: ^0.1.6
   package_info: ^0.4.0+16
   share: ^0.6.4+3
-  requests: ^3.3.0
-  encrypt: ^4.0.2
-  pointycastle: ^1.0.2
-  dio: ^3.0.9
-  uuid: ^2.1.0
+  requests: 
+    git:
+      url: https://github.com/tlkops/requests
+      ref: master
+  encrypt: ^5.0.0
+  pointycastle: ^3.0.1
+  uuid: ^3.0.3
   highlight_text: ^0.7.2
   device_apps: ^1.0.10
   rxdart: ^0.24.1
@@ -84,38 +85,34 @@ dependencies:
   battery_optimization: ^0.1.0
   flutter_dnd: ^0.1.3
   awesome_notifications: ^0.0.5+2
-  pull_to_refresh: ^1.6.1
-  flutter_markdown: ^0.5.0
+  pull_to_refresh: ^1.6.4
   html_editor:
      path: ./lib/ui/components/flutter-html-editor
   popup_menu: ^1.0.5
   floating_action_bubble: ^1.1.2
   catex: ^0.0.1+7
-  flutter_tex: ^3.6.7+10
+  flutter_tex: ^3.6.7
   fl_chart: ^0.12.0
   expandable: ^4.1.4
   liquid_progress_indicator: ^0.3.2
   dotted_border: ^1.0.7
-
-  wiredash:
-    git:
-      url: https://github.com/wiredashio/wiredash-sdk
-      ref: master
+  flutter_markdown: ^0.6.1  
+  wiredash: ^0.6.2
   flutter_file_dialog: ^0.0.5
-  advance_pdf_viewer: ^1.2.1+2
 
 dependency_overrides:
-  analyzer: ^0.40.4
-  intl: ^0.16.1
-  webview_flutter: ^1.0.3
+  intl: ^0.17.0-nullsafety.2
+
+  path_provider: ^1.0.0
+  args: ^1.0.0
+  markdown: ^3.0.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_launcher_icons: ^0.7.4
   hive_generator: ^0.8.1
+
   build_runner: ^1.10.3
   json_serializable: ^3.5.1
-  dependency_validator: ^1.0.0
 flutter_icons:
   ios: true
   android: true
