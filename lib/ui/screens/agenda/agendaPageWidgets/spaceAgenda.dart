@@ -10,7 +10,7 @@ import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/buttons.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/main.dart';
-
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 
 class SpaceAgenda extends StatefulWidget {
@@ -43,8 +43,8 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
   Future<void> refreshAgendaFutures({bool force = true}) async {
     if (mounted) {
       setState(() {
-        spaceAgendaFuture = localApi.getEvents(agendaDate, true, forceReload: false);
-        agendaFuture = localApi.getEvents(agendaDate, false, forceReload: force);
+        spaceAgendaFuture = appSys.api.getEvents(agendaDate, true, forceReload: false);
+        agendaFuture = appSys.api.getEvents(agendaDate, false, forceReload: force);
       });
     }
     var realAF = await spaceAgendaFuture;
@@ -72,10 +72,10 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
         /*AgendaEvent temp = await agendaEventEdit(context, true, defaultDate: agendaDate);
         if (temp != null) {
           if (temp.recurrenceScheme != null && temp.recurrenceScheme != "0") {
-            await offline.agendaEvents.add(temp, temp.recurrenceScheme);
+            await appSys.offline.agendaEvents.add(temp, temp.recurrenceScheme);
             await refreshAgendaFutures(force: false);
           } else {
-            await offline.agendaEvents.add(temp, await get_week(temp.start));
+            await appSys.offline.agendaEvents.add(temp, await get_week(temp.start));
             await refreshAgendaFutures(force: false);
           }
         }

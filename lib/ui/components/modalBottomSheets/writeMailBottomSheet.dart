@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 
 import 'package:html_editor/html_editor.dart';
@@ -180,7 +181,7 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                       child: IconButton(
                         onPressed: () async {
                           //Get the recipients
-                          List<Recipient> recipients = await localApi.app("mailRecipients");
+                          List<Recipient> recipients = await appSys.api.app("mailRecipients");
                           List<String> recipientsName = List();
                           if (recipients != null) {
                             recipients.forEach((element) {

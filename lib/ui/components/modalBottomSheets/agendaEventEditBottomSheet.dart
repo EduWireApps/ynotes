@@ -6,6 +6,7 @@ import 'package:uuid/uuid.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:calendar_time/calendar_time.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 
@@ -173,17 +174,17 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                           if (this.widget.customEvent != null) {
                             if (this.widget.customEvent.recurrenceScheme != null &&
                                 this.widget.customEvent.recurrenceScheme != "0") {
-                              await offline.agendaEvents
+                              await appSys.offline.agendaEvents
                                   .removeAgendaEvent(id, await get_week(this.widget.customEvent.start));
-                              await offline.agendaEvents
+                              await appSys.offline.agendaEvents
                                   .removeAgendaEvent(id, this.widget.customEvent.recurrenceScheme);
                             } else {
-                              await offline.agendaEvents
+                              await appSys.offline.agendaEvents
                                   .removeAgendaEvent(id, await get_week(this.widget.customEvent.start));
                             }
                           }
                           if (this.widget.reminder != null) {
-                            await offline.reminders.remove(id);
+                            await appSys.offline.reminders.remove(id);
                           }
                           Navigator.of(context).pop("removed");
                         },

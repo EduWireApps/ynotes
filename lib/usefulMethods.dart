@@ -10,6 +10,7 @@ import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/services/shared_preferences.dart';
 import 'package:ynotes/ui/screens/summary/summaryPage.dart';
 
@@ -29,25 +30,6 @@ List parsers = ["EcoleDirecte", "Pronote"];
 int chosenParser;
 
 bool isDarkModeEnabled = false;
-
-//Change notifier to deal with themes
-class AppStateNotifier extends ChangeNotifier {
-  bool isDarkMode = false;
-  getTheme() => isDarkMode ? ThemeMode.dark : ThemeMode.light;
-
-  void updateTheme(bool isDarkMode) {
-    this.isDarkMode = isDarkMode;
-    isDarkModeEnabled = isDarkMode;
-
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        systemNavigationBarColor: isDarkModeEnabled ? Color(0xff414141) : Color(0xffF3F3F3),
-        statusBarColor: Colors.transparent // navigation bar color
-        // status bar color
-        ));
-
-    notifyListeners();
-  }
-}
 
 Route router(Widget widget) {
   return PageRouteBuilder(
@@ -175,7 +157,7 @@ class ConnectionStatusSingleton {
 
 //Get only grades as a list
 List<Grade> getAllGrades(List<Discipline> list, {bool overrideLimit = false, bool sortByWritingDate = true}) {
-  if (localApi != null) {
+  if (appSys.api != null) {
     List<Grade> listToReturn = List();
     if (list != null) {
       list.forEach((element) {
@@ -187,8 +169,8 @@ List<Grade> getAllGrades(List<Discipline> list, {bool overrideLimit = false, boo
           });
         }
       });
-      if (localApi.gradesList != null && localApi.gradesList.length > 0 && listToReturn == localApi.gradesList) {
-        return localApi.gradesList;
+      if (appSys.api.gradesList != null && appSys.api.gradesList.length > 0 && listToReturn == appSys.api.gradesList) {
+        return appSys.api.gradesList;
       }
       listToReturn = listToReturn.toSet().toList();
       if (listToReturn != null) {
@@ -201,11 +183,11 @@ List<Grade> getAllGrades(List<Discipline> list, {bool overrideLimit = false, boo
         //remove duplicates
         listToReturn = listToReturn.toSet().toList();
         listToReturn = listToReturn.reversed.toList();
-        if (localApi.gradesList == null) {
-          localApi.gradesList = List<Grade>();
+        if (appSys.api.gradesList == null) {
+          appSys.api.gradesList = List<Grade>();
         }
-        localApi.gradesList.clear();
-        localApi.gradesList.addAll(listToReturn);
+        appSys.api.gradesList.clear();
+        appSys.api.gradesList.addAll(listToReturn);
 
         if (overrideLimit == false && listToReturn != null) {
           listToReturn = listToReturn.sublist(0, (listToReturn.length >= 5) ? 5 : listToReturn.length);
@@ -247,7 +229,7 @@ Future<List<Discipline>> refreshDisciplinesListColors(List<Discipline> list) asy
 //Leave app
 exitApp() async {
   try {
-    await offline.clearAll();
+    await appSys.offline.clearAll();
     //Delete sharedPref
     SharedPreferences preferences = await SharedPreferences.getInstance();
     await preferences.clear();
@@ -257,8 +239,8 @@ exitApp() async {
     await storage.deleteAll();
     isDarkModeEnabled = false;
     //delete hive files
-    localApi.gradesList = null;
-    localApi = null;
+    appSys.api.gradesList = null;
+    appSys.api = null;
     firstStart = true;
   } catch (e) {
     print(e);

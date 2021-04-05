@@ -12,6 +12,7 @@ import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/core/logic/shared/downloadController.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';

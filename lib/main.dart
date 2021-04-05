@@ -9,6 +9,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:wiredash/wiredash.dart';
+import 'package:ynotes/core/logic/appConfig/controller.dart';
 import 'package:ynotes/core/services/shared_preferences.dart';
 import 'package:ynotes/ui/screens/carousel/carousel.dart';
 import 'package:ynotes/ui/screens/drawer/drawerBuilder.dart';
@@ -19,7 +20,7 @@ import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/usefulMethods.dart';
-
+import 'package:ynotes/globals.dart' as globals;
 import 'ui/screens/school_api_choice/schoolAPIChoicePage.dart';
 import 'core/utils/themeUtils.dart';
 
@@ -39,16 +40,17 @@ extension on TextStyle {
   TextStyle get withZoomFix => copyWith(wordSpacing: 0);
 }
 
-//login manager
-LoginController tlogin;
+/*//login manager
+LoginController appSys.loginController;
 Offline offline;
-API localApi;
+API appSys.api;*/
 
 ///The app main class
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  offline = Offline(false);
-  await offline.init();
+  globals.appSys.initApp();
+  /*offline = Offline(false);
+  await appSys.offline.init();
   if (Platform.isAndroid || Platform.isIOS) {
     await initBackgroundTask();
   }
@@ -56,8 +58,8 @@ Future main() async {
   //Load api
   await reloadChosenApi();
 
-  localApi = APIManager(offline);
-  tlogin = LoginController();
+  appSys.api = APIManager(offline);
+  appSys.loginController = LoginController();
   //Set system notification bar color
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       systemNavigationBarColor: isDarkModeEnabled ? Color(0xff414141) : Color(0xffF3F3F3),
@@ -65,35 +67,9 @@ Future main() async {
   ConnectionStatusSingleton connectionStatus = ConnectionStatusSingleton.getInstance();
 
   //Load connection status
-  connectionStatus.initialize();
+  connectionStatus.initialize();*/
   runZoned<Future<Null>>(() async {
-    runApp(
-      ChangeNotifierProvider<AppStateNotifier>(
-        child: HomeApp(),
-        create: (BuildContext context) {
-          return AppStateNotifier();
-        },
-      ),
-    );
-  });
-}
-
-//Init background fetch
-Future<void> initBackgroundTask() async {
-  // Configure BackgroundFetch.
-  await BackgroundFetch.configure(
-      BackgroundFetchConfig(
-          minimumFetchInterval: 15,
-          stopOnTerminate: false,
-          startOnBoot: true,
-          enableHeadless: true,
-          requiresBatteryNotLow: false,
-          requiresCharging: false,
-          requiresStorageNotLow: false,
-          requiresDeviceIdle: false,
-          requiredNetworkType: NetworkType.ANY), (taskId) async {
-    await BackgroundService.backgroundFetchHeadlessTask(taskId);
-    BackgroundFetch.finish(taskId);
+    runApp(HomeApp());
   });
 }
 
@@ -102,45 +78,47 @@ class HomeApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeNotifier = Provider.of<AppStateNotifier>(context);
-
-    return Wiredash(
-      projectId: "ynotes-giw0qs2",
-      secret: "y9zengsvskpriizwniqxr6vxa1ka1n6u",
-      navigatorKey: _navigatorKey,
-      theme: WiredashThemeData(
-          backgroundColor: isDarkModeEnabled ? Color(0xff313131) : Colors.white,
-          primaryBackgroundColor: isDarkModeEnabled ? Color(0xff414141) : Color(0xffF3F3F3),
-          secondaryBackgroundColor: isDarkModeEnabled ? Color(0xff313131) : Colors.white,
-          secondaryColor: Theme.of(context).primaryColorDark,
-          primaryColor: Theme.of(context).primaryColor,
-          primaryTextColor: ThemeUtils.textColor(),
-          brightness: Brightness.dark,
-          secondaryTextColor: ThemeUtils.textColor().withOpacity(0.8)),
-      options: WiredashOptionsData(
-        /// You can set your own locale to override device default (`window.locale` by default)
-        locale: const Locale.fromSubtags(languageCode: 'fr'),
-      ),
-      child: MaterialApp(
-        localizationsDelegates: [
-          // ... app-specific localization delegate[s] here
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-        ],
-        supportedLocales: [
-          const Locale('en'), // English (could be useless ?)
-          const Locale('fr'), //French
-          // ... other locales the app supports
-        ],
-        debugShowCheckedModeBanner: false,
-        theme: lightTheme,
-        title: kDebugMode ? "yNotes DEV" : "yNotes",
-        navigatorKey: _navigatorKey,
-        darkTheme: darkTheme,
-        home: loader(),
-        themeMode: themeNotifier.getTheme(),
-      ),
+    return ChangeNotifierProvider<ApplicationSystem>.value(
+      value: globals.appSys,
+      child: Consumer<ApplicationSystem>(builder: (context, model, child) {
+        return Wiredash(
+          projectId: "ynotes-giw0qs2",
+          secret: "y9zengsvskpriizwniqxr6vxa1ka1n6u",
+          navigatorKey: _navigatorKey,
+          theme: WiredashThemeData(
+              backgroundColor: isDarkModeEnabled ? Color(0xff313131) : Colors.white,
+              primaryBackgroundColor: isDarkModeEnabled ? Color(0xff414141) : Color(0xffF3F3F3),
+              secondaryBackgroundColor: isDarkModeEnabled ? Color(0xff313131) : Colors.white,
+              secondaryColor: Theme.of(context).primaryColorDark,
+              primaryColor: Theme.of(context).primaryColor,
+              primaryTextColor: ThemeUtils.textColor(),
+              brightness: Brightness.dark,
+              secondaryTextColor: ThemeUtils.textColor().withOpacity(0.8)),
+          options: WiredashOptionsData(
+            /// You can set your own locale to override device default (`window.locale` by default)
+            locale: const Locale.fromSubtags(languageCode: 'fr'),
+          ),
+          child: MaterialApp(
+            localizationsDelegates: [
+              // ... app-specific localization delegate[s] here
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: [
+              const Locale('en'), // English (could be useless ?)
+              const Locale('fr'), //French
+              // ... other locales the app supports
+            ],
+            debugShowCheckedModeBanner: false,
+            theme: globals.appSys.theme,
+            title: kDebugMode ? "yNotes DEV" : "yNotes",
+            navigatorKey: _navigatorKey,
+            home: loader(),
+            themeMode: ThemeMode.light,
+          ),
+        );
+      }),
     );
   }
 }

@@ -18,6 +18,7 @@ import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
 import 'package:ynotes/core/apis/EcoleDirecte/ecoleDirecteConverters.dart';
 import 'package:ynotes/core/apis/EcoleDirecte/ecoleDirecteMethods.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:http/http.dart' as http;
@@ -153,7 +154,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                   switchValue: boolSettings["nightmode"],
                   onToggle: (value) async {
                     setState(() {
-                      Provider.of<AppStateNotifier>(context, listen: false).updateTheme(value);
+                      appSys.updateTheme(value ? "Sombre" : "Clair");
                       boolSettings["nightmode"] = value;
                     });
 
@@ -398,7 +399,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     if (await CustomDialogs.showConfirmationDialog(context, null,
                         alternativeText:
                             "Etes-vous sûr de vouloir supprimer les données hors ligne ? (irréversible)")) {
-                      await offline.clearAll();
+                      await appSys.offline.clearAll();
                     }
                   },
                   titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
@@ -510,7 +511,7 @@ class _ExitDialogWidgetState extends State<ExitDialogWidget> {
               await exitApp();
               setState(() {});
               try {
-                Provider.of<AppStateNotifier>(context, listen: false).updateTheme(false);
+                appSys.updateTheme("Clair");
               } catch (e) {}
               Navigator.of(context).pushReplacement(router(login()));
             },

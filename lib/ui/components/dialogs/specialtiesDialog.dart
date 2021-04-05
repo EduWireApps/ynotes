@@ -6,6 +6,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/services/shared_preferences.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/globals.dart';
 
 import '../../../main.dart';
 import '../../../usefulMethods.dart';
@@ -42,7 +43,7 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
     super.initState();
     getChosenSpecialties();
     setState(() {
-      disciplinesFuture = localApi.getGrades(forceReload: true);
+      disciplinesFuture = appSys.api.getGrades(forceReload: true);
     });
   }
 

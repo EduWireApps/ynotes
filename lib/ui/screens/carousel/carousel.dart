@@ -13,6 +13,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/usefulMethods.dart';
 
@@ -464,7 +465,7 @@ class _page4State extends State<page4> {
 
   void refreshCarouselDLFuture() {
     setState(() {
-      carouselDisciplineListFuture = localApi.getGrades();
+      carouselDisciplineListFuture = appSys.api.getGrades();
     });
   }
 
@@ -495,7 +496,7 @@ class _page4State extends State<page4> {
   Widget build(BuildContext context) {
     SchedulerBinding.instance.addPostFrameCallback((_) => mounted
         ? setState(() {
-            isDarkModeEnabled = Provider.of<AppStateNotifier>(context, listen: false).isDarkMode;
+            appSys.updateTheme("clair");
           })
         : null);
 
@@ -568,7 +569,7 @@ class _page4State extends State<page4> {
                                 fontSize: screenSize.size.height / 10 * 0.3)),
                         onChanged: (value) {
                           setState(() {
-                            Provider.of<AppStateNotifier>(context, listen: false).updateTheme(value);
+                            appSys.updateTheme(value ? "sombre" : "clair");
                             setSetting("nightmode", value);
                           });
                         },

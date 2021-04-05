@@ -14,6 +14,7 @@ import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/screens/school_api_choice/schoolAPIChoicePage.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/usefulMethods.dart';
 
@@ -75,7 +76,7 @@ class _LoginPageState extends State<LoginPage> {
     String z = await storage.read(key: "agreedTermsAndConfiguredApp");
 
     if (u != null && p != null && z != null) {
-      /*connectionData =  localApi.login(u, p, url: url, cas: cas);
+      /*connectionData =  appSys.api.login(u, p, url: url, cas: cas);
       openLoadingDialog();*/
     }
   }
@@ -624,7 +625,7 @@ class _LoginPageState extends State<LoginPage> {
                                                                             : true) &&
                                                                         _password.text != null) {
                                                                       //Login using the chosen API
-                                                                      connectionData = localApi.login(
+                                                                      connectionData = appSys.api.login(
                                                                           _username.text.trim(), _password.text.trim(),
                                                                           url: _url.text.trim(), cas: casValue);
 
@@ -640,7 +641,7 @@ class _LoginPageState extends State<LoginPage> {
                                                                         _url.text.length == 0 &&
                                                                         _password.text.length == 0 &&
                                                                         _username.text.length == 0) {
-                                                                      connectionData = localApi.login(
+                                                                      connectionData = appSys.api.login(
                                                                           "demonstration", "pronotevs",
                                                                           url:
                                                                               "https://demo.index-education.net/pronote/eleve.html",
@@ -654,7 +655,7 @@ class _LoginPageState extends State<LoginPage> {
                                                                               : true) &&
                                                                           _password.text != null) {
                                                                         //Login using the chosen API
-                                                                        connectionData = localApi.login(
+                                                                        connectionData = appSys.api.login(
                                                                             _username.text.trim(),
                                                                             _password.text.trim(),
                                                                             url: _url.text.trim(),
@@ -689,13 +690,13 @@ class _LoginPageState extends State<LoginPage> {
                                                                   //LOGIN AS pronote DEMO
                                                                   onLongPress: () {
                                                                     if (chosenParser == 1 && _url.text.length == 0 && _password.text.length == 0 && _username.text.length == 0) {
-                                                                      connectionData = localApi.login("demonstration", "pronotevs", url: "https://demo.index-education.net/pronote/eleve.html", cas: "Aucun");
+                                                                      connectionData = appSys.api.login("demonstration", "pronotevs", url: "https://demo.index-education.net/pronote/eleve.html", cas: "Aucun");
 
                                                                       openLoadingDialog();
                                                                     } else {
                                                                       if (_username.text != "" && (chosenParser == 1 ? _url.text != null : true) && _password.text != null) {
                                                                         //Login using the chosen API
-                                                                        connectionData = localApi.login(_username.text.trim(), _password.text.trim(), url: _url.text.trim(), cas: casValue);
+                                                                        connectionData = appSys.api.login(_username.text.trim(), _password.text.trim(), url: _url.text.trim(), cas: casValue);
 
                                                                         openLoadingDialog();
                                                                       } else {
@@ -711,7 +712,7 @@ class _LoginPageState extends State<LoginPage> {
                                                                     //Actions when pressing the ok button
                                                                     if (_username.text != "" && (chosenParser == 1 ? _url.text != null : true) && _password.text != null) {
                                                                       //Login using the chosen API
-                                                                      connectionData = localApi.login(_username.text.trim(), _password.text.trim(), url: _url.text.trim(), cas: casValue);
+                                                                      connectionData = appSys.api.login(_username.text.trim(), _password.text.trim(), url: _url.text.trim(), cas: casValue);
 
                                                                       openLoadingDialog();
                                                                     } else {

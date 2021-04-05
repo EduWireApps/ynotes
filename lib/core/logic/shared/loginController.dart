@@ -4,6 +4,7 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/apis/Pronote.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 enum loginStatus { loggedIn, loggedOff, offline, error }
@@ -38,9 +39,9 @@ class LoginController extends ChangeNotifier {
       notifyListeners();
     }
     internetConnexion = connectionStatus.connectionChange.listen(connectionChanged);
-    if (_actualState != loginStatus.offline && localApi.loggedIn == false) {
+    if (_actualState != loginStatus.offline && appSys.api.loggedIn == false) {
       await login();
-    } else if (localApi.loggedIn) {
+    } else if (appSys.api.loggedIn) {
       _details = "Connecté";
       _actualState = loginStatus.loggedIn;
       notifyListeners();
@@ -73,7 +74,7 @@ class LoginController extends ChangeNotifier {
       String cas = await ReadStorage("pronotecas");
       var z = await storage.read(key: "agreedTermsAndConfiguredApp");
       if (u != null && p != null && z != null) {
-        await localApi.login(u, p, url: url, cas: cas).then((List loginValues) {
+        await appSys.api.login(u, p, url: url, cas: cas).then((List loginValues) {
           if (loginValues == null) {
             _actualState = loginStatus.loggedOff;
             _details = "Connexion à l'API...";

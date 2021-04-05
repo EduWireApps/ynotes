@@ -6,6 +6,7 @@ import 'package:ynotes/ui/animations/FadeAnimation.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPage.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 import 'HWelement.dart';
@@ -23,7 +24,7 @@ class _HomeworkSecondPageState extends State<HomeworkSecondPage> {
   Future homeworkListFuture;
   Future<void> refreshLocalHomeworkList() async {
     setState(() {
-      homeworkListFuture = localApi.getNextHomework(forceReload: true);
+      homeworkListFuture = appSys.api.getNextHomework(forceReload: true);
     });
     var realHW = await homeworkListFuture;
   }
@@ -36,7 +37,7 @@ class _HomeworkSecondPageState extends State<HomeworkSecondPage> {
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
     return FutureBuilder(
-        future: localApi.getHomeworkFor(dateToUse),
+        future: appSys.api.getHomeworkFor(dateToUse),
         builder: (context, snapshot) {
           if (snapshot.hasData && snapshot.data != null) {
             localListHomeworkDateToUse = snapshot.data;
@@ -59,10 +60,10 @@ class _HomeworkSecondPageState extends State<HomeworkSecondPage> {
                                 : () {
                                     setState(() {
                                       isPinnedDateToUse = !isPinnedDateToUse;
-                                      offline.pinnedHomework.set(dateToUse.toString(), isPinnedDateToUse);
+                                      appSys.offline.pinnedHomework.set(dateToUse.toString(), isPinnedDateToUse);
                                     });
                                     if (isPinnedDateToUse) {
-                                      offline.homework.updateHomework(localListHomeworkDateToUse, add: true);
+                                      appSys.offline.homework.updateHomework(localListHomeworkDateToUse, add: true);
                                     }
                                   },
                             child: Container(

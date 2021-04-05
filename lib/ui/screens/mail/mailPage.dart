@@ -8,6 +8,7 @@ import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/readMailBottomSheet.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 
@@ -29,7 +30,7 @@ class _MailPageState extends State<MailPage> {
   var actualSort = sortValue.date;
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {
-          mailsListFuture = localApi.app("mail");
+          mailsListFuture = appSys.api.app("mail");
         }));
     ConnectionStatusSingleton connectionStatus = ConnectionStatusSingleton.getInstance();
     loginconnexion = connectionStatus.connectionChange.listen(connectionChanged);
@@ -45,7 +46,7 @@ class _MailPageState extends State<MailPage> {
 
   Future<void> refreshLocalMailsList() async {
     setState(() {
-      mailsListFuture = localApi.app("mail");
+      mailsListFuture = appSys.api.app("mail");
     });
     var realdisciplinesListFuture = await mailsListFuture;
   }

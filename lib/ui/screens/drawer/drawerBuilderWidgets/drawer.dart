@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:wiredash/wiredash.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/day_night_switch-master/lib/day_night_switch.dart';
 import 'package:ynotes/ui/screens/drawer/drawerBuilder.dart';
 import 'package:ynotes/ui/screens/settings/settingsPage.dart';
@@ -91,7 +92,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 setState(() {
                                   isDarkModeEnabled = val;
                                 });
-                                Provider.of<AppStateNotifier>(context, listen: false).updateTheme(val);
+                                appSys.updateTheme(val ? "sombre" : "clair");
                                 await setSetting("nightmode", val);
                               },
                             ),

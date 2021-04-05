@@ -14,6 +14,7 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/shared_preferences.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
@@ -218,7 +219,7 @@ class AppNotification {
           defaultColor: ThemeUtils.spaceColor(),
           ledColor: Colors.white)
     ]);
-    List<AgendaReminder> reminders = await offline.reminders.getReminders(event.lesson.id);
+    List<AgendaReminder> reminders = await appSys.offline.reminders.getReminders(event.lesson.id);
     await Future.forEach(reminders, (AgendaReminder rmd) async {
       //Unschedule existing
       if (rmd.alarm == alarmType.none) {
@@ -328,7 +329,7 @@ class AppNotification {
     var connectivityResult = await (Connectivity().checkConnectivity());
     List<Lesson> lessons = List();
     await reloadChosenApi();
-    API api = APIManager(offline);
+    API api = APIManager(appSys.offline);
     //Login creds
     String u = await ReadStorage("username");
     String p = await ReadStorage("password");

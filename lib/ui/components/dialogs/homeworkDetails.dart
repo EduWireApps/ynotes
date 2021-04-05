@@ -9,6 +9,7 @@ import 'package:ynotes/ui/screens/summary/summaryPageWidgets/quickHomework.dart'
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 

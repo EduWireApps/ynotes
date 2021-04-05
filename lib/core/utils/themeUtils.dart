@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:tinycolor/tinycolor.dart';
 import 'package:ynotes/usefulMethods.dart';
 
-
 class ThemeUtils {
   Map themeColors = {
     "light": {"primaryColor": Colors.red},

@@ -11,6 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 
 class PollsAndInfoPage extends StatefulWidget {
@@ -35,7 +36,7 @@ class _PollsAndInfoPageState extends State<PollsAndInfoPage> {
 
   Future<void> refreshPolls({bool forced = false}) async {
     setState(() {
-      pollsFuture = localApi.app("polls", action: "get", args: (forced) ? "forced" : null);
+      pollsFuture = appSys.api.app("polls", action: "get", args: (forced) ? "forced" : null);
     });
     var realFuture = await pollsFuture;
   }
@@ -114,7 +115,7 @@ class _PollsAndInfoPageState extends State<PollsAndInfoPage> {
 
                                                         String userID = pollsList[index].data["public"]["V"]["N"];
                                                         //Pass args (that's messy but it works lel)
-                                                        await localApi.app("polls",
+                                                        await appSys.api.app("polls",
                                                             action: "read",
                                                             args: pollsList[index].id +
                                                                 "/" +
@@ -204,7 +205,7 @@ Widget _buildPollChoices(Map data, screenSize, PollInfo pollinfo) {
               value: response.contains(i + 1),
               /* onChanged: (value) async {
                   await refreshPolls(forced: true);
-                  await localApi.app("polls", action: "answer", args: jsonEncode(data) + "/ynsplit" + jsonEncode(pollinfo.data) + "/ynsplit" + (i + 1).toString());
+                  await appSys.api.app("polls", action: "answer", args: jsonEncode(data) + "/ynsplit" + jsonEncode(pollinfo.data) + "/ynsplit" + (i + 1).toString());
                 },*/
             ),
             Text(choices[i]["L"])

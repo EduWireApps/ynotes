@@ -10,6 +10,7 @@ import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/agenda.dart';
 
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 
 import '../../../usefulMethods.dart';
@@ -170,7 +171,7 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
                 setState(() {
                   boolSettings["enableDNDWhenOnGoingNotifEnabled"] = value;
                 });
-                if (value && (await getCurrentLesson(await localApi.getNextLessons(DateTime.now()))) != null) {
+                if (value && (await getCurrentLesson(await appSys.api.getNextLessons(DateTime.now()))) != null) {
                   if (await FlutterDnd.isNotificationPolicyAccessGranted) {
                     await FlutterDnd.setInterruptionFilter(
                         FlutterDnd.INTERRUPTION_FILTER_NONE); // Turn on DND - All notifications are suppressed.

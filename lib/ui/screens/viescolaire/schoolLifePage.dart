@@ -12,6 +12,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 
 class SchoolLifePage extends StatefulWidget {
@@ -157,7 +158,7 @@ Widget _buildPollChoices(Map data, screenSize, PollInfo pollinfo) {
               value: response.contains(i + 1),
               /* onChanged: (value) async {
                   await refreshPolls(forced: true);
-                  await localApi.app("polls", action: "answer", args: jsonEncode(data) + "/ynsplit" + jsonEncode(pollinfo.data) + "/ynsplit" + (i + 1).toString());
+                  await appSys.api.app("polls", action: "answer", args: jsonEncode(data) + "/ynsplit" + jsonEncode(pollinfo.data) + "/ynsplit" + (i + 1).toString());
                 },*/
             ),
             Text(choices[i]["L"])

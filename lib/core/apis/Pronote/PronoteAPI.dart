@@ -16,6 +16,7 @@ import 'package:requests/requests.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/nullSafeMap.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
 import 'package:ynotes/tests.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
@@ -828,8 +829,8 @@ class Communication {
         throw error_messages["22"];
       }
       if (responseJson["Erreur"]['G'] == 10) {
-        tlogin.details = "Connexion expirée";
-        tlogin.actualState = loginStatus.error;
+        appSys.loginController.details = "Connexion expirée";
+        appSys.loginController.actualState = loginStatus.error;
 
         throw error_messages["10"];
       }

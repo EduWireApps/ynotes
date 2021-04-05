@@ -62,7 +62,7 @@ class SummaryPageState extends State<SummaryPage> {
         offset = _pageControllerSummaryPage.offset;
       });
     });
-    disciplinesListFuture = localApi.getGrades();
+    disciplinesListFuture = appSys.api.getGrades();
 
     SchedulerBinding.instance.addPostFrameCallback(!mounted
         ? null
@@ -86,7 +86,7 @@ class SummaryPageState extends State<SummaryPage> {
   }
 
   initLoginController() async {
-    await tlogin.init();
+    await appSys.loginController.init();
   }
 
   showDialog() async {

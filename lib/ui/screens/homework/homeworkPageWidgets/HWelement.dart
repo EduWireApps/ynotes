@@ -16,6 +16,7 @@ import 'package:ynotes/ui/screens/summary/summaryPage.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
@@ -606,7 +607,7 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                         height: screenSize.size.width / 5 * 0.5,
                                         child: FittedBox(
                                           child: FutureBuilder(
-                                              future: offline.doneHomework
+                                              future: appSys.offline.doneHomework
                                                   .getHWCompletion(widget.homeworkForThisDay.id ?? ''),
                                               initialData: false,
                                               builder: (context, snapshot) {
@@ -621,7 +622,7 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                                       done = !done;
                                                       donePercentFuture = HomeworkUtils.getHomeworkDonePercent();
                                                     });
-                                                    offline.doneHomework
+                                                    appSys.offline.doneHomework
                                                         .setHWCompletion(widget.homeworkForThisDay.id, x);
                                                   },
                                                 );

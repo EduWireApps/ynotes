@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/services/shared_preferences.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/apis/model.dart';
@@ -62,7 +63,7 @@ class BackgroundService {
       //Getting the offline count of grades
       //instanciate an offline controller read only
       Offline _offline = Offline(true);
-      await _offline.init();
+      await appSys.offline.init();
       await reloadChosenApi();
       API backgroundFetchApi = APIManager(_offline);
 

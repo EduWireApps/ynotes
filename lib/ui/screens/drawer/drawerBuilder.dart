@@ -27,6 +27,7 @@ import 'package:ynotes/ui/screens/summary/summaryPage.dart';
 import 'package:ynotes/ui/screens/viescolaire/schoolLifePage.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
@@ -160,12 +161,12 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
     _notifier?.dispose();
     drawerPageViewController.dispose();
     super.dispose();
-    offline.dispose();
+    appSys.offline.dispose();
   }
 
   initControllers() async {
-    hwcontroller = HomeworkController(localApi);
-    gradesController = GradesController(localApi);
+    hwcontroller = HomeworkController(appSys.api);
+    gradesController = GradesController(appSys.api);
     await gradesController.refresh();
     await hwcontroller.refresh();
 
@@ -298,7 +299,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
 
               //Transparent login panel
               ChangeNotifierProvider.value(
-                value: tlogin,
+                value: appSys.loginController,
                 child: Consumer<LoginController>(builder: (context, model, child) {
                   if (model.actualState != loginStatus.loggedIn) {
                     showLoginControllerStatusController.forward();

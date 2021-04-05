@@ -14,6 +14,7 @@ import 'package:ynotes/core/apis/Pronote.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/screens/summary/summaryPageWidgets/chart.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';

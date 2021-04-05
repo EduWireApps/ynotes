@@ -3,9 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/ui/animations/FadeAnimation.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/usefulMethods.dart';
-
 
 class LoadingPage extends StatefulWidget {
   const LoadingPage({Key key}) : super(key: key);
@@ -21,7 +21,6 @@ class _LoadingPageState extends State<LoadingPage> {
   String z;
   @override
   void initState() {
-    getDarkModeSetting();
     tryToConnect();
   }
 
@@ -38,11 +37,6 @@ class _LoadingPageState extends State<LoadingPage> {
     } else {
       Navigator.of(context).pushReplacement(router(login()));
     }
-  }
-
-  getDarkModeSetting() async {
-    bool toset = await getSetting("nightmode");
-    Provider.of<AppStateNotifier>(context, listen: false).updateTheme(toset);
   }
 
   @override
