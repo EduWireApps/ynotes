@@ -44,7 +44,6 @@ LoginController tlogin;
 Offline offline;
 API localApi;
 
-
 ///The app main class
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
