@@ -2,7 +2,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:highlight_text/highlight_text.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:share/share.dart';
 import 'package:ynotes/ui/screens/summary/summaryPage.dart';
@@ -29,7 +28,6 @@ class _DialogHomeworkState extends State<DialogHomework> {
     super.initState();
   }
 
-  HighlightMap highlightMap;
   int segmentedControlIndex = 0;
   Widget build(BuildContext context) {
     TextStyle textStyle = TextStyle(backgroundColor: Colors.yellow.shade100);

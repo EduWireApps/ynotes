@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:workmanager/workmanager.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/services/shared_preferences.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
@@ -128,13 +127,5 @@ class BackgroundService {
       print("Erreur dans la verification de nouveaux mails hors ligne " + e.toString());
       return null;
     }
-  }
-
-  static Future<void> callbackDispatcher() async {
-    Workmanager.executeTask((task, inputData) async {
-      print("Called background fetch."); //simpleTask will be emitted here.
-      await backgroundFetchHeadlessTask("");
-      return Future.value(true);
-    });
   }
 }

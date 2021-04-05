@@ -5,12 +5,10 @@ import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:wiredash/wiredash.dart';
-import 'package:workmanager/workmanager.dart' as wm;
 import 'package:ynotes/core/services/shared_preferences.dart';
 import 'package:ynotes/ui/screens/carousel/carousel.dart';
 import 'package:ynotes/ui/screens/drawer/drawerBuilder.dart';
@@ -46,7 +44,6 @@ LoginController tlogin;
 Offline offline;
 API localApi;
 
-FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 
 ///The app main class
 Future main() async {
@@ -62,11 +59,6 @@ Future main() async {
 
   localApi = APIManager(offline);
   tlogin = LoginController();
-
-  //Cancel the old task manager (will be removed after migration)
-  if (Platform.isAndroid || Platform.isIOS) {
-    wm.Workmanager.cancelAll();
-  }
   //Set system notification bar color
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       systemNavigationBarColor: isDarkModeEnabled ? Color(0xff414141) : Color(0xffF3F3F3),
