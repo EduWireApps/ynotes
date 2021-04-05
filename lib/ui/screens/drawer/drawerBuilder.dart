@@ -143,6 +143,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
     if (firstStart == true) {
       firstStart = false;
     }
+
     AppNotification.initNotifications(context, _scrollTo);
     //Mvc init
     initControllers();
@@ -226,7 +227,6 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
       //PAppbar
       child: Scaffold(
           key: _drawerKey,
-          resizeToAvoidBottomPadding: false,
           resizeToAvoidBottomInset: false,
           drawer: Theme(
             data: Theme.of(context).copyWith(

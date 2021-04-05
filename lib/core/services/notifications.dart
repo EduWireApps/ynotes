@@ -417,10 +417,6 @@ class AppNotification {
     print("Cancelled on going notification");
   }
 
-  static Future<void> cancellAll() async {
-    await flutterLocalNotificationsPlugin.cancelAll();
-  }
-
   static Future<void> callback() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     List<Lesson> lessons = List();

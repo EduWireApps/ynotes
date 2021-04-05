@@ -194,7 +194,7 @@ class EcoleDirecteMethod {
       String data = 'data={"token": "$token"}';
       //encode Map to JSON
       var body = data;
-      var response = await http.post(url, headers: headers, body: body).catchError((e) {
+      var response = await http.post(Uri.parse(url), headers: headers, body: body).catchError((e) {
         return false;
       });
 
@@ -273,7 +273,7 @@ class EcoleDirecteMethod {
     //encode Map to JSON
 
     var body = data;
-    var response = await http.post(url, headers: headers, body: body).catchError((e) {
+    var response = await http.post(Uri.parse(url), headers: headers, body: body).catchError((e) {
       throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou reessayez plus tard.");
     });
     print("Starting the mail reading");
@@ -311,9 +311,9 @@ class EcoleDirecteMethod {
       }
       var response;
       if (getRequest) {
-        response = await http.get(finalUrl, headers: headers);
+        response = await http.get(Uri.parse(finalUrl), headers: headers);
       } else {
-        response = await http.post(finalUrl, headers: headers, body: data);
+        response = await http.post(Uri.parse(finalUrl), headers: headers, body: data);
       }
       printWrapped(finalUrl);
       Map<String, dynamic> responseData = json.decode(utf8.decode(response.bodyBytes));
@@ -347,7 +347,7 @@ class EcoleDirecteMethod {
     String data = 'data={"identifiant": "$username", "motdepasse": "$password"}';
     //encode Map to JSON
     var body = data;
-    var response = await http.post(url, headers: headers, body: body).catchError((e) {
+    var response = await http.post(Uri.parse(url), headers: headers, body: body).catchError((e) {
       throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou reessayez plus tard. ${e.toString()}");
     });
     if (response.statusCode == 200) {

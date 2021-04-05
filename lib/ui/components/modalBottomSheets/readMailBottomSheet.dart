@@ -15,7 +15,6 @@ import 'package:ynotes/main.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
 import '../../../usefulMethods.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
