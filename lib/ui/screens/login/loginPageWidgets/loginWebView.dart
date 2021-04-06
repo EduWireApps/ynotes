@@ -69,21 +69,20 @@ class _LoginWebViewState extends State<LoginWebView> {
       body: Stack(
         children: [
           InAppWebView(
+            initialUrlRequest: URLRequest(
+                url: Uri.parse(getRootAddress(widget.url)[0] +
+                    (widget.url[widget.url.length - 1] == "/" ? "" : "/") +
+                    "InfoMobileApp.json?id=0D264427-EEFC-4810-A9E9-346942A862A4")),
+
             ///1) We open a page with the serverUrl + weird string hardcoded
-            initialUrl: getRootAddress(widget.url)[0] +
-                (widget.url[widget.url.length - 1] == "/" ? "" : "/") +
-                "InfoMobileApp.json?id=0D264427-EEFC-4810-A9E9-346942A862A4",
-            initialOptions: InAppWebViewGroupOptions(
-                crossPlatform: InAppWebViewOptions(
-              debuggingEnabled: true,
-            )),
+            initialOptions: InAppWebViewGroupOptions(crossPlatform: InAppWebViewOptions()),
             onWebViewCreated: (InAppWebViewController controller) {
               widget.controller = controller;
               //Clear cookies
               controller.clearCache();
             },
-            onLoadStart: (InAppWebViewController controller, String url) {},
-            onLoadStop: (InAppWebViewController controller, String url) async {
+
+            onLoadStop: (controller, url) async {
               await stepper();
             },
             onProgressChanged: (InAppWebViewController controller, int progress) {},
@@ -239,7 +238,8 @@ class _LoginWebViewState extends State<LoginWebView> {
         setState(() {
           step = 5;
         });
-        await widget.controller.loadUrl(url: widget.url + "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335");
+        //url: widget.url + "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335"
+        await widget.controller.loadUrl(urlRequest: URLRequest(url: Uri.parse( widget.url + "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335")));
       }
     });
   }

@@ -34,7 +34,7 @@ setChosenParser(int chosen) async {
 }
 
 testIfPronoteCas(String url) async {
-  var response = await http.get(url);
+  var response = await http.get(Uri.parse(url));
   printWrapped(response.body);
   if (response.body.contains('id="id_body"')) {
     return false;

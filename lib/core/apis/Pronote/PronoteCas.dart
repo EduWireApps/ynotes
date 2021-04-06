@@ -125,14 +125,14 @@ class Session {
   Map<String, String> headers = {};
 
   Future get(String url) async {
-    http.Response response = await http.get(url, headers: headers);
+    http.Response response = await http.get(Uri.parse(url), headers: headers);
     updateCookie(response);
     return response.body;
   }
 
   Future post(String url, dynamic data) async {
     print(headers);
-    http.Response response = await http.post(url, body: data, headers: headers);
+    http.Response response = await http.post(Uri.parse(url), body: data, headers: headers);
     updateCookie(response);
     return response.body;
   }

@@ -37,7 +37,7 @@ class PronoteSchoolsController extends ChangeNotifier {
         url = school.url +
             (school.url[school.url.length - 1] == "/" ? "" : "/") +
             "InfoMobileApp.json?id=0D264427-EEFC-4810-A9E9-346942A862A4";
-        var response = await http.get(url).catchError((e) {
+        var response = await http.get(Uri.parse(url)).catchError((e) {
           return "Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.";
         });
         if (response.body != null) {
@@ -69,7 +69,7 @@ class PronoteSchoolsController extends ChangeNotifier {
     Map<String, String> headers = {"Content-Type": "application/x-www-form-urlencoded"};
 
     var body = 'data=%7B%22nomFonction%22%3A%22geoLoc%22%2C%22lat%22%3A$lat%2C%22long%22%3A$long%7D';
-    var response = await http.post(url, headers: headers, body: body).catchError((e) {
+    var response = await http.post(Uri.parse(url), headers: headers, body: body).catchError((e) {
       return "Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.";
     });
     if (response.statusCode == 200) {
