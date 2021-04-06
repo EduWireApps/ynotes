@@ -96,6 +96,7 @@ class _GradesGroupState extends State<GradesGroup> {
                               children: [
                                 if (capitalizedNomDiscipline != null)
                                   Container(
+                                    width: screenSize.size.width / 5 * 4.5,
                                     child: Text(
                                       capitalizedNomDiscipline,
                                       overflow: TextOverflow.ellipsis,

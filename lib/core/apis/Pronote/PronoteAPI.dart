@@ -214,7 +214,7 @@ class Client {
       motdepasse = sha256.convert(encoded).bytes;
       motdepasse = conv.hex.encode(motdepasse);
       motdepasse = motdepasse.toString().toUpperCase();
-      e.aesKey = md5.convert(conv.utf8.encode(motdepasse));
+      e.aesKey = conv.hex.encode(md5.convert(conv.utf8.encode(motdepasse)).bytes);
     } else {
       var u = this.username;
       var p = this.password;
@@ -235,11 +235,11 @@ class Client {
       }
 
       var alea = idr['donneesSec']['donnees']['alea'];
-      List<int> encoded = conv.utf8.encode(alea ?? "" + p);
+      List<int> encoded = conv.utf8.encode((alea ?? "") + p);
       motdepasse = sha256.convert(encoded);
       motdepasse = conv.hex.encode(motdepasse.bytes);
       motdepasse = motdepasse.toString().toUpperCase();
-      e.aesKey = md5.convert(conv.utf8.encode((u ?? "") + motdepasse));
+      e.aesKey = md5.convert(conv.utf8.encode(u + motdepasse));
     }
 
     var rawChallenge = e.aesDecrypt(conv.hex.decode(challenge));
@@ -736,7 +736,7 @@ class Communication {
     this.client.stepsLogger.add("✅ Parsed HTML");
     //uuid
     this.encryption.rsaKeys = {'MR': this.attributes['MR'], 'ER': this.attributes['ER']};
-    var uuid = conv.base64.encode(await this.encryption.rsaEncrypt(this.encryption.aesIVTemp));
+    var uuid = conv.base64.encode(await this.encryption.rsaEncrypt(this.encryption.aesIVTemp.bytes));
     this.client.stepsLogger.add("✅ Encrypted IV");
 
     //uuid
@@ -751,7 +751,8 @@ class Communication {
       this.client.stepsLogger.add("ⓘ" + " Requests will be compressed");
     }
     var initialResponse = await this.post('FonctionParametres',
-        data: {'donnees': jsonPost}, decryptionChange: {'iv': md5.convert(this.encryption.aesIVTemp).toString()});
+        data: {'donnees': jsonPost},
+        decryptionChange: {'iv': conv.hex.encode(md5.convert(this.encryption.aesIVTemp.bytes).bytes)});
 
     return [this.attributes, initialResponse];
   }
@@ -793,7 +794,8 @@ class Communication {
     print(data);
     if (this.shouldCompressRequests) {
       print("Compress request");
-      data = """{"donnees": {"Uuid": "${data["donnees"]["Uuid"]}", "identifiantNav": null}}""";
+      data = conv.jsonEncode(data);
+
       print(data);
       var zlibInstance = ZLibCodec(level: 6, raw: true);
       data = zlibInstance.encode(conv.utf8.encode(conv.hex.encode(conv.utf8.encode(data))));
@@ -945,7 +947,7 @@ prepareTabs(var tabsList) {
 class Encryption {
   IV aesIV;
 
-  var aesIVTemp;
+  IV aesIVTemp;
 
   var aesKey;
 
@@ -953,7 +955,7 @@ class Encryption {
 
   Encryption() {
     this.aesIV = IV.fromLength(16);
-    this.aesIVTemp = IV.fromSecureRandom(16).bytes;
+    this.aesIVTemp = IV.fromSecureRandom(16);
     this.aesKey = generateMd5("");
 
     this.rsaKeys = {};
@@ -1022,7 +1024,7 @@ class Encryption {
     }
   }
 
-  rsaEncrypt(var data) async {
+  rsaEncrypt(Uint8List data) async {
     try {
       var modulusBytes = this.rsaKeys['MR'];
 

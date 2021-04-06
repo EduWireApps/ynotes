@@ -214,7 +214,7 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
                     _password.text.length == 0 &&
                     _username.text.length == 0) {
                   connectionData = localApi.login("demonstration", "pronotevs",
-                      url: "https://demo.index-education.net/pronote/eleve.html", cas: "Aucun");
+                      url: "https://demo.index-education.net/pronote/eleve.html", mobileCasLogin: false);
                 }
                 openLoadingDialog();
               },
