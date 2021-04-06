@@ -220,7 +220,7 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
               },
               loginCallback: () async {
                 try {
-                  if (await testIfPronoteCas(_url.text + "?fd=1")) {
+                  if (await testIfPronoteCas(_url.text )) {
                     var a =
                         await Navigator.of(context).push(router(LoginWebView(url: _url.text, controller: _controller)));
                     if (a != null) {

@@ -34,6 +34,12 @@ setChosenParser(int chosen) async {
 }
 
 testIfPronoteCas(String url) async {
+  //auto forward
+  if (url.contains("?")) {
+    url += "&fd=1";
+  } else {
+    url += "?fd=1";
+  }
   var response = await http.get(Uri.parse(url));
   printWrapped(response.body);
   if (response.body.contains('id="id_body"')) {
@@ -42,12 +48,14 @@ testIfPronoteCas(String url) async {
     return true;
   }
 }
-  getRootAddress(addr) {
-    return [
-      (addr.split('/').sublist(0, addr.split('/').length - 1).join("/")),
-      (addr.split('/').sublist(addr.split('/').length - 1, addr.split('/').length).join("/"))
-    ];
-  }
+
+getRootAddress(addr) {
+  return [
+    (addr.split('/').sublist(0, addr.split('/').length - 1).join("/")),
+    (addr.split('/').sublist(addr.split('/').length - 1, addr.split('/').length).join("/"))
+  ];
+}
+
 get_week(DateTime date) async {
   final storage = new FlutterSecureStorage();
   return (1 + (date.difference(DateTime.parse(await storage.read(key: "startday"))).inDays / 7).floor()).round();

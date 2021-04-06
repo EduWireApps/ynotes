@@ -172,6 +172,10 @@ class Client {
       if (!mobileLogin) {
         await storage.write(key: "password", value: this.password);
       }
+      //In case password changed
+      if (mobileLogin && (await storage.read(key: "password")) != null) {
+        password = await storage.read(key: "password");
+      }
       await storage.write(key: "pronoteurl", value: this.pronote_url);
       await storage.write(key: "ispronotecas", value: this.mobileLogin.toString());
       print("Saved credentials");
