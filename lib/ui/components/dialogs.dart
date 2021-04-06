@@ -232,7 +232,7 @@ class CustomDialogs {
   }
 
   //Bêta purposes : show when a function is not available yet
-  static showErrorSnackBar(BuildContext context, String text) {
+  static showErrorSnackBar(BuildContext context, String text, String logs) {
     Flushbar(
       flushbarPosition: FlushbarPosition.BOTTOM,
       backgroundColor: Colors.red,
@@ -248,6 +248,10 @@ class CustomDialogs {
         color: Colors.white,
       ),
       borderRadius: 8,
+      mainButton: Text(
+        "Copier les logs",
+        style: TextStyle(fontFamily: "Asap", color: Colors.blueGrey),
+      ),
     )..show(context);
   }
 

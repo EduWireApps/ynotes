@@ -95,6 +95,9 @@ class PronoteSchoolsController extends ChangeNotifier {
           url: rawData["url"],
           postalCode: rawData["cp"].toString()));
     });
+    //sort schools by distance
+    _schools
+        .sort((a, b) => (double.tryParse(a.coordinates[2]) ?? 0.0).compareTo(double.tryParse(b.coordinates[2]) ?? 0.0));
     schools = _schools;
   }
 

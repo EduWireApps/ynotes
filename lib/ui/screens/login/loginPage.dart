@@ -231,7 +231,8 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
                     sliderController.animateToPage(2, duration: Duration(milliseconds: 300), curve: Curves.easeIn);
                   }
                 } catch (e) {
-                  CustomDialogs.showErrorSnackBar(context, "Impossible de se connecter à cette adresse");
+                  print(e);
+                  CustomDialogs.showErrorSnackBar(context, "Impossible de se connecter à cette adresse", e.toString());
                 }
               }),
         _buildLoginPart(),

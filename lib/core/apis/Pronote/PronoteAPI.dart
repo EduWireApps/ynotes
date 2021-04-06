@@ -266,6 +266,7 @@ class Client {
 
     try {
       if (mobileLogin) {
+        print("Saving token");
         await storage.write(
             key: "password", value: this.authResponse['donneesSec']['donnees']["jetonConnexionAppliMobile"]);
         this.password = this.authResponse['donneesSec']['donnees']["jetonConnexionAppliMobile"];

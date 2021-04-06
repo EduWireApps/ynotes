@@ -29,6 +29,8 @@ class SummaryChartState extends State<SummaryChart> {
         _grades.clear();
         _grades.addAll(widget.lastGrades);
         _grades.sort((a, b) => a.entryDate.compareTo(b.entryDate));
+        _grades.removeWhere(
+            (element) => element.value == null || element.notSignificant || element.simulated || element.letters);
         if (_grades.length > 10) {
           _grades = _grades.sublist(_grades.length - 10, _grades.length);
         }
@@ -179,7 +181,7 @@ class SummaryChartState extends State<SummaryChart> {
       borderData: FlBorderData(show: false, border: Border.all(color: const Color(0xff37434d), width: 1)),
       minX: 0,
       maxX: (_grades.length > 10 ? 10 : _grades.length).toDouble(),
-      minY: getMin() > 0 ? getMin() - 1 : getMin(),
+      minY: getMin() > 0 ? ((getMin() ?? 1) - 1) : getMin(),
       maxY: getMax() + 2,
       lineBarsData: [
         LineChartBarData(
