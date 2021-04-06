@@ -165,29 +165,29 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
             "Se connecter",
             style: TextStyle(fontFamily: 'Asap', color: Colors.white, fontSize: 38, fontWeight: FontWeight.bold),
           ),
-          Text("En savoir plus sur la connexion",
-              style: TextStyle(
-                fontFamily: 'Asap',
-                color: Colors.transparent,
-                shadows: [Shadow(color: Colors.white, offset: Offset(0, -5))],
-                fontSize: 17,
-                decorationColor: Colors.white,
-                fontWeight: FontWeight.normal,
-                textBaseline: TextBaseline.alphabetic,
-                decoration: TextDecoration.underline,
-                decorationThickness: 2,
-                decorationStyle: TextDecorationStyle.dashed,
-              )),
           GestureDetector(
             onTap: () async {
               launch('https://support.ynotes.fr/compte');
             },
-            child: Container(
-                width: screenSize.size.height / 10 * 0.1,
-                height: screenSize.size.height / 10 * 0.1,
-                margin: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.1),
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(5000), color: Colors.white)),
+            child: Text("En savoir plus sur la connexion",
+                style: TextStyle(
+                  fontFamily: 'Asap',
+                  color: Colors.transparent,
+                  shadows: [Shadow(color: Colors.white, offset: Offset(0, -5))],
+                  fontSize: 17,
+                  decorationColor: Colors.white,
+                  fontWeight: FontWeight.normal,
+                  textBaseline: TextBaseline.alphabetic,
+                  decoration: TextDecoration.underline,
+                  decorationThickness: 2,
+                  decorationStyle: TextDecorationStyle.dashed,
+                )),
           ),
+          Container(
+              width: screenSize.size.height / 10 * 0.1,
+              height: screenSize.size.height / 10 * 0.1,
+              margin: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.1),
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(5000), color: Colors.white)),
           _buildStepsText(),
         ],
       ),
@@ -220,7 +220,7 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
               },
               loginCallback: () async {
                 try {
-                  if (await testIfPronoteCas(_url.text )) {
+                  if (await testIfPronoteCas(_url.text)) {
                     var a =
                         await Navigator.of(context).push(router(LoginWebView(url: _url.text, controller: _controller)));
                     if (a != null) {
