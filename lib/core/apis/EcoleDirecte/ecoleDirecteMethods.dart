@@ -74,7 +74,7 @@ class EcoleDirecteMethod {
     }
     createStack();
     if (disciplinesList != null) {
-      await setIntSetting("gradesNumber", getAllGrades(disciplinesList, overrideLimit: true).length);
+      await appSys.setSetting(["system", "lastGradeCount"], getAllGrades(disciplinesList, overrideLimit: true).length);
     }
     return disciplinesList;
   }
@@ -86,15 +86,14 @@ class EcoleDirecteMethod {
     String data = 'data={"token": "$token"}';
     List<DateTime> homeworkDates = await request(
         data, rootUrl, method, EcoleDirecteConverter.homeworkDates, "Homework dates request returned an error:");
-    bool isLimitedTo7Days = await getSetting("7DaysLimit");
-    if (isLimitedTo7Days) {
-      homeworkDates.removeWhere((date) =>
-          DateFormat("yyyy-MM-dd")
-              .parse(date.toString())
-              .difference(DateFormat("yyyy-MM-dd").parse(DateTime.now().toString()))
-              .inDays >
-          7);
-    }
+
+    homeworkDates.removeWhere((date) =>
+        DateFormat("yyyy-MM-dd")
+            .parse(date.toString())
+            .difference(DateFormat("yyyy-MM-dd").parse(DateTime.now().toString()))
+            .inDays >
+        7);
+
     //Get pinned dates
     List<DateTime> pinnedDates = await appSys.offline.pinnedHomework.getPinnedHomeworkDates();
     //Combine lists

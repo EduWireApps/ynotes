@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 class HomeworkSettingPage extends StatefulWidget {
@@ -11,29 +12,9 @@ class HomeworkSettingPage extends StatefulWidget {
 
 class _HomeworkSettingPageState extends State<HomeworkSettingPage> {
   //Settings
-  var boolSettings = {
-    "isExpandedByDefault": false,
-  };
-  var intSettings = {};
-  void getSettings() async {
-    await Future.forEach(boolSettings.keys, (key) async {
-      var value = await getSetting(key);
-      setState(() {
-        boolSettings[key] = value;
-      });
-    });
-
-    await Future.forEach(intSettings.keys, (key) async {
-      int value = await getIntSetting(key);
-      setState(() {
-        intSettings[key] = value;
-      });
-    });
-  }
 
   initState() {
     super.initState();
-    getSettings();
   }
 
   @override
@@ -57,7 +38,7 @@ class _HomeworkSettingPageState extends State<HomeworkSettingPage> {
                 textAlign: TextAlign.left,
               )),
           SwitchListTile(
-            value: boolSettings["isExpandedByDefault"],
+            value: appSys.settings["user"]["homeworkPage"]["isExpandedByDefault"],
             title: Text("Étendre les devoirs",
                 style: TextStyle(
                     fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.25)),
@@ -67,11 +48,7 @@ class _HomeworkSettingPageState extends State<HomeworkSettingPage> {
                   fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.2),
             ),
             onChanged: (value) async {
-              setState(() {
-                boolSettings["isExpandedByDefault"] = value;
-              });
-
-              await setSetting("isExpandedByDefault", value);
+              appSys.setSetting(["user", "homeworkPage", "isExpandedByDefault"], value);
             },
             secondary: Icon(
               MdiIcons.arrowExpand,

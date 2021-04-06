@@ -29,7 +29,7 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
     if (!monochromatic) {
       return html;
     }
-    String color = isDarkModeEnabled ? "white" : "black";
+    String color = ThemeUtils.isThemeDark ? "white" : "black";
     String finalHTML = html.replaceAll("color", "");
     return finalHTML;
   }

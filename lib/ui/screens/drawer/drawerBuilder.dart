@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:ynotes/core/logic/appConfig/controller.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/core/logic/homework/controller.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
@@ -36,11 +37,12 @@ import 'drawerBuilderWidgets/drawer.dart';
 
 ///Build a bottom tabbar and tabs
 class DrawerBuilder extends StatefulWidget {
+  final ApplicationSystem appSys;
   State<StatefulWidget> createState() {
     return _DrawerBuilderState();
   }
 
-  DrawerBuilder({Key key}) : super(key: key);
+  DrawerBuilder({Key key, this.appSys}) : super(key: key);
 }
 
 int _currentIndex = 0;
@@ -56,7 +58,10 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
         "menuName": "Résumé",
         "icon": MdiIcons.home,
         "page": SummaryPage(
-            switchPage: _switchPage, key: summaryPage, hwcontroller: hwcontroller, gradesController: gradesController),
+          switchPage: _switchPage,
+          key: summaryPage,
+          appSys: appSys,
+        ),
         "key": summaryPage
       },
       {
@@ -215,7 +220,8 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
   @override
   Widget build(BuildContext context) {
     //status bar info
-    SystemChrome.setSystemUIOverlayStyle(isDarkModeEnabled ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark);
+    SystemChrome.setSystemUIOverlayStyle(
+        ThemeUtils.isThemeDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark);
     MediaQueryData screenSize;
     screenSize = MediaQuery.of(context);
 
@@ -263,7 +269,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                         builder: (context, value, child) {
                           return AppBar(
                               shadowColor: Colors.transparent,
-                              backgroundColor: isDarkModeEnabled
+                              backgroundColor: ThemeUtils.isThemeDark
                                   ? Theme.of(context).primaryColorLight
                                   : Theme.of(context).primaryColorDark,
                               title: Text(entries()[value]["menuName"]),
@@ -271,8 +277,8 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                                 if (entries()[value]["key"] != null)
                                   FlatButton(
                                     color: Colors.transparent,
-                                    child:
-                                        Icon(MdiIcons.wrench, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                    child: Icon(MdiIcons.wrench,
+                                        color: ThemeUtils.isThemeDark ? Colors.white : Colors.black),
                                     onPressed: () {
                                       entries()[value]["key"].currentState.triggerSettings();
                                     },
@@ -280,9 +286,10 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                               ],
                               leading: FlatButton(
                                 color: Colors.transparent,
-                                child: Icon(MdiIcons.menu, color: isDarkModeEnabled ? Colors.white : Colors.black),
-                                onPressed: () {
-                                  _drawerKey.currentState.openDrawer();
+                                child: Icon(MdiIcons.menu, color: ThemeUtils.isThemeDark ? Colors.white : Colors.black),
+                                onPressed: () async {
+                         
+                                _drawerKey.currentState.openDrawer();//
                                 },
                               ));
                         }),

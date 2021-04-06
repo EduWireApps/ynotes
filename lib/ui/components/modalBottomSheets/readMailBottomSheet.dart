@@ -39,7 +39,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
     if (!monochromatic) {
       return html;
     }
-    String color = isDarkModeEnabled ? "white" : "black";
+    String color = ThemeUtils.isThemeDark ? "white" : "black";
     String finalHTML = html.replaceAll("color", color);
     return finalHTML;
   }
@@ -154,7 +154,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                             format.format(DateTime.parse(widget.mail.date)),
                                             style: TextStyle(
                                                 fontFamily: "Asap",
-                                                color: isDarkModeEnabled
+                                                color: ThemeUtils.isThemeDark
                                                     ? Colors.white.withOpacity(0.5)
                                                     : Colors.black.withOpacity(0.5)),
                                           ),
@@ -165,7 +165,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                           this.widget.mail.to[0]["name"],
                                           style: TextStyle(
                                               fontFamily: "Asap",
-                                              color: isDarkModeEnabled
+                                              color: ThemeUtils.isThemeDark
                                                   ? Colors.white.withOpacity(0.5)
                                                   : Colors.black.withOpacity(0.5)),
                                         )

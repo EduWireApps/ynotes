@@ -1,30 +1,16 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/date_symbol_data_local.dart';
-import 'package:intl/intl.dart';
-import 'package:marquee/marquee.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
-import 'package:shimmer/shimmer.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/core/logic/stats/gradesStats.dart';
-import 'package:ynotes/globals.dart';
-import 'package:ynotes/main.dart';
-import 'package:ynotes/globals.dart';
-import 'package:ynotes/core/services/shared_preferences.dart';
 import 'package:ynotes/ui/components/buttons.dart';
-import 'package:ynotes/ui/components/dialogs.dart';
-import 'package:ynotes/ui/components/modalBottomSheets/disciplinesModalBottomSheet.dart';
-import 'package:ynotes/ui/components/modalBottomSheets/gradesModalBottomSheet/gradesModalBottomSheet.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/simulatorModalBottomSheet/simulatorModalBottomSheet.dart';
 import 'package:ynotes/ui/screens/grades/gradesPageWidgets/gradesGroup.dart';
-import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 
 class GradesPage extends StatefulWidget {
@@ -248,7 +234,7 @@ class _GradesPageState extends State<GradesPage> {
                     height: screenSize.size.height / 10 * 0.8,
                     decoration: BoxDecoration(),
                     child: Material(
-                      color: isDarkModeEnabled ? Colors.white10 : Colors.grey,
+                      color: ThemeUtils.isThemeDark ? Colors.white10 : Colors.grey,
                       borderRadius: BorderRadius.all(Radius.circular(30)),
                       child: InkWell(
                         borderRadius: BorderRadius.all(Radius.circular(30)),
@@ -286,12 +272,6 @@ class _GradesPageState extends State<GradesPage> {
             ),
           );
         });
-  }
-
-  showShowCaseDialog(BuildContext _context) async {
-    if ((!await getSetting("gradesShowCase"))) {
-      await setSetting("gradesShowCase", true);
-    }
   }
 
   ///Start building grades box from here

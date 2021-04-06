@@ -67,7 +67,7 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
   }
 
   void getDefaultValue() async {
-    var defaultValue = await getSetting("isExpandedByDefault");
+    var defaultValue = appSys.settings["user"]["homeworkPage"]["isExpandedByDefault"];
 
     setState(() {
       isExpanded = defaultValue;
@@ -134,7 +134,7 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                             /* Container(
                               width: screenSize.size.width / 5 * 4.5,
                               child: Container(
-                                color: isDarkModeEnabled
+                                color: ThemeUtils.isThemeDark
                                     ? ThemeUtils.darken(Theme.of(context).primaryColorDark, forceAmount: 0.1)
                                     : ThemeUtils.darken(Theme.of(context).primaryColor, forceAmount: 0.03),
                                 height: screenSize.size.height / 10 * 0.5,
@@ -153,7 +153,7 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                             ),*/
                             if (this.widget.homeworkForThisDay.loaded)
                               Container(
-                                color: isDarkModeEnabled
+                                color: ThemeUtils.isThemeDark
                                     ? ThemeUtils.darken(Theme.of(context).primaryColorDark, forceAmount: 0.1)
                                     : ThemeUtils.darken(Theme.of(context).primaryColor, forceAmount: 0.03),
                                 width: screenSize.size.width / 5 * 4.5,
@@ -212,7 +212,7 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                             if (element.attributes['style'] != null &&
                                                 element.attributes['style'].contains("background")) {
                                               element.attributes['style'] = "";
-                                              if (isDarkModeEnabled) {
+                                              if (ThemeUtils.isThemeDark) {
                                                 return {'background': '#CF7545', 'color': 'white'};
                                               } else {
                                                 return {'background': '#F9DDA7', 'color': 'black'};
@@ -228,7 +228,7 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                                     child: TeXView(
                                                   child: TeXViewDocument(element.text,
                                                       style: TeXViewStyle.fromCSS(
-                                                          """background-color: #${(isDarkModeEnabled ? ThemeUtils.darken(Theme.of(context).primaryColorDark, forceAmount: 0.1) : ThemeUtils.darken(Theme.of(context).primaryColor, forceAmount: 0.03)).toCSSColor()}; color: #${ThemeUtils.textColor().toCSSColor()}""")),
+                                                          """background-color: #${(ThemeUtils.isThemeDark ? ThemeUtils.darken(Theme.of(context).primaryColorDark, forceAmount: 0.1) : ThemeUtils.darken(Theme.of(context).primaryColor, forceAmount: 0.03)).toCSSColor()}; color: #${ThemeUtils.textColor().toCSSColor()}""")),
                                                 ));
                                               } catch (e) {
                                                 return Container();

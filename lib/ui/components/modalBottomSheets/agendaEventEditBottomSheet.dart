@@ -410,9 +410,7 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                                             'Fin  ${DateFormat.Hm().format(end)}',
                                             style: TextStyle(
                                                 fontFamily: "Asap",
-                                                color: isDarkModeEnabled
-                                                    ? Colors.white.withOpacity(0.8)
-                                                    : Colors.black.withOpacity(0.8),
+                                                color: ThemeUtils.textColor().withOpacity(0.8),
                                                 fontSize: screenSize.size.width / 5 * 0.25),
                                           )
                                         ],
@@ -455,8 +453,7 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                               "Récurrence",
                               style: TextStyle(
                                   fontFamily: "Asap",
-                                  color:
-                                      isDarkModeEnabled ? Colors.white.withOpacity(0.8) : Colors.black.withOpacity(0.8),
+                                  color: ThemeUtils.textColor().withOpacity(0.8),
                                   fontSize: screenSize.size.width / 5 * 0.25),
                             )
                           ],
@@ -493,8 +490,7 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                               alarmChoices[alarm.index],
                               style: TextStyle(
                                   fontFamily: "Asap",
-                                  color:
-                                      isDarkModeEnabled ? Colors.white.withOpacity(0.8) : Colors.black.withOpacity(0.8),
+                                  color: ThemeUtils.textColor().withOpacity(0.8),
                                   fontSize: screenSize.size.width / 5 * 0.25),
                             )
                           ],
@@ -516,10 +512,7 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                         maxLines: null,
                         decoration: new InputDecoration.collapsed(
                             hintText: 'Description',
-                            hintStyle: TextStyle(
-                                fontFamily: "Asap",
-                                color:
-                                    isDarkModeEnabled ? Colors.white.withOpacity(0.8) : Colors.black.withOpacity(0.8))),
+                            hintStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor().withOpacity(0.8))),
                       ),
                     ),
                     Divider(height: screenSize.size.height / 10 * 0.4),

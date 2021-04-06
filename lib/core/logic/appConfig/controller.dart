@@ -16,7 +16,7 @@ import 'package:ynotes/ui/themes/themesList.dart';
 
 ///Top level application sytem class
 class ApplicationSystem extends ChangeNotifier {
-  Map settings;
+  Map settings = {};
 
   ///A boolean representing the use of the application
   bool isFirstUse;
@@ -37,25 +37,37 @@ class ApplicationSystem extends ChangeNotifier {
   LoginController loginController;
   GradesController gradesController;
   HomeworkController homeworkController;
+  ApplicationSystem() {
+    initApp();
+  }
 
   ///The most important function
   ///It will intialize Offline, APIs and background fetch
-  initApp() {
-    _initSettings();
-    //Set theme to default
-    updateTheme(settings["user"]["theme"]);
-    //Set background fetch
-    _initBackgroundFetch();
+  initApp() async {
+    //set settings
+    await _initSettings();
     //Set offline
-    _initOffline();
+    await _initOffline();
+    //Set theme to default
+    updateTheme(settings["user"]["global"]["theme"]);
     //Set api
     this.api = APIManager(this.offline);
+    //Set background fetch
+    await _initBackgroundFetch();
     //Set controllers
-    _initControllers();
+    await _initControllers();
+  }
+
+  setSetting(List<String> setting, var value) {
+    SettingsUtils.setSetting(setting, value);
+    settings = SettingsUtils.getAppSettings();
+    notifyListeners();
   }
 
   updateTheme(String themeName) {
+    print("Updating theme to " + themeName);
     theme = appThemes[themeName];
+    this.themeName = themeName;
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         systemNavigationBarColor: theme.backgroundColor, statusBarColor: Colors.transparent // navigation bar color
         // status bar color
@@ -63,8 +75,9 @@ class ApplicationSystem extends ChangeNotifier {
     notifyListeners();
   }
 
-  _initSettings() {
-    this.settings = SettingsUtil.getSettings();
+  _initSettings() async {
+    settings = await SettingsUtils.getSettings();
+    notifyListeners();
   }
 
   _initBackgroundFetch() async {
@@ -89,6 +102,7 @@ class ApplicationSystem extends ChangeNotifier {
   _initOffline() {
     //Initiate an unlocked offline controller
     offline = Offline(false);
+    offline.init();
   }
 
   _initControllers() {

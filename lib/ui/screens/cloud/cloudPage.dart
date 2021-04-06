@@ -252,7 +252,7 @@ class _CloudPageState extends State<CloudPage> {
                                                                           color: ((localFoldersList[index].type ==
                                                                                   "FOLDER")
                                                                               ? Colors.yellow.shade600
-                                                                              : isDarkModeEnabled
+                                                                              : ThemeUtils.isThemeDark
                                                                                   ? Colors.grey.shade300
                                                                                   : Colors.grey.shade400),
                                                                         ),
@@ -286,7 +286,7 @@ class _CloudPageState extends State<CloudPage> {
                                                                           style: TextStyle(
                                                                             fontFamily: "Asap",
                                                                             fontSize: screenSize.size.height / 10 * 0.2,
-                                                                            color: isDarkModeEnabled
+                                                                            color: ThemeUtils.isThemeDark
                                                                                 ? Colors.white60
                                                                                 : Colors.black87,
                                                                           ),
@@ -302,7 +302,7 @@ class _CloudPageState extends State<CloudPage> {
                                                                                 fontFamily: "Asap",
                                                                                 fontSize:
                                                                                     screenSize.size.height / 10 * 0.2,
-                                                                                color: isDarkModeEnabled
+                                                                                color: ThemeUtils.isThemeDark
                                                                                     ? Colors.white38
                                                                                     : Colors.black38,
                                                                               ),

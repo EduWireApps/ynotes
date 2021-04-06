@@ -128,7 +128,7 @@ class _GradesGroupState extends State<GradesGroup> {
                                       borderRadius: BorderRadius.circular(0),
                                       child: Text(
                                         "Moyenne : " +
-                                            ((chosenParser == 1)
+                                            ((appSys.settings["system"]["chosenParser"] == 1)
                                                 ? (widget.discipline.average ?? "-")
                                                 : ((!widget.discipline.getAverage().isNaN)
                                                     ? widget.discipline.getAverage().toString()

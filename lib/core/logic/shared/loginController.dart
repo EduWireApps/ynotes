@@ -67,7 +67,6 @@ class LoginController extends ChangeNotifier {
       _actualState = loginStatus.loggedOff;
       _details = "Connexion à l'API...";
       notifyListeners();
-      await reloadChosenApi();
       String u = await ReadStorage("username");
       String p = await ReadStorage("password");
       String url = await ReadStorage("pronoteurl");

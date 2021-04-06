@@ -41,9 +41,8 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
   }
 
   getLocalChosen() async {
-    await reloadChosenApi();
     setState(() {
-      chosen = chosenParser;
+      chosen = appSys.settings["system"]["chosenParser"];
     });
     if (chosen == 0) {
       chosenAnimation2Controller.reverse();
@@ -207,7 +206,6 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
                         ? null
                         : () async {
                             await setChosenParser(chosen);
-                            await reloadChosenApi();
                             setState(() {
                               appSys.api = APIManager(appSys.offline);
                             });

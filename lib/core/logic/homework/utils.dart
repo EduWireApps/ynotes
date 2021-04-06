@@ -31,7 +31,7 @@ class HomeworkUtils {
   }
 
   static Future<List<Homework>> getReducedListHomework({forceReload = false}) async {
-    int reduce = await getIntSetting("summaryQuickHomework");
+    int reduce = await appSys.settings["user"]["summaryPage"]["summaryQuickHomework"];
     if (reduce == 11) {
       reduce = 770;
     }

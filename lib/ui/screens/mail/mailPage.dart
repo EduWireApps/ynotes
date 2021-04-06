@@ -297,7 +297,7 @@ class _MailPageState extends State<MailPage> {
                                                                   style: TextStyle(
                                                                     fontFamily: "Asap",
                                                                     fontSize: screenSize.size.height / 10 * 0.2,
-                                                                    color: isDarkModeEnabled
+                                                                    color: ThemeUtils.isThemeDark
                                                                         ? Colors.white60
                                                                         : Colors.black87,
                                                                   ),
@@ -311,7 +311,7 @@ class _MailPageState extends State<MailPage> {
                                                                       style: TextStyle(
                                                                         fontFamily: "Asap",
                                                                         fontSize: screenSize.size.height / 10 * 0.2,
-                                                                        color: isDarkModeEnabled
+                                                                        color: ThemeUtils.isThemeDark
                                                                             ? Colors.white38
                                                                             : Colors.black38,
                                                                       ),
@@ -320,7 +320,7 @@ class _MailPageState extends State<MailPage> {
                                                                     if (localList[index].files.length > 0)
                                                                       Icon(
                                                                         MdiIcons.attachment,
-                                                                        color: isDarkModeEnabled
+                                                                        color: ThemeUtils.isThemeDark
                                                                             ? Colors.white38
                                                                             : Colors.black38,
                                                                       )

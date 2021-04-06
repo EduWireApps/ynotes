@@ -130,7 +130,7 @@ class _DialogHomeworkState extends State<DialogHomework> {
                             textAlign: TextAlign.left,
                             style: TextStyle(
                                 fontFamily: "Asap",
-                                color: isDarkModeEnabled ? Colors.grey.shade200 : Colors.black54,
+                                color: ThemeUtils.textColor().withOpacity(0.5),
                                 fontSize: screenSize.size.height / 10 * 0.25),
                           ),
                         ],

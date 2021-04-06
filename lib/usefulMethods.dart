@@ -27,10 +27,6 @@ launchURL(url) async {
 //Parsers list
 List parsers = ["EcoleDirecte", "Pronote"];
 
-int chosenParser;
-
-bool isDarkModeEnabled = false;
-
 Route router(Widget widget) {
   return PageRouteBuilder(
     pageBuilder: (context, animation, secondaryAnimation) => widget,
@@ -52,44 +48,6 @@ Route router(Widget widget) {
 ///Color theme switcher, actually 0 for darkmode and 1 for lightmode
 int colorTheme = 0;
 String actualUser = "";
-
-Future<bool> getSetting(String setting) async {
-  final prefs = await SharedPreferences.getInstance();
-  bool value = prefs.getBool(setting);
-  if (value == null) {
-    print("Setting was null");
-    setSetting(setting, false);
-    value = false;
-  }
-  return value;
-}
-
-setSetting(String setting, bool value) async {
-  final prefs = await SharedPreferences.getInstance();
-
-  await prefs.setBool(setting, value);
-}
-
-Future<int> getIntSetting(String setting) async {
-  final prefs = await SharedPreferences.getInstance();
-  var value = prefs.getInt(setting);
-  if (value == null) {
-    value = 0;
-    if (setting == "summaryQuickHomework") {
-      value = 10;
-    }
-    if (setting == "lessonReminderDelay") {
-      value = 5;
-    }
-    setIntSetting(setting, value);
-  }
-  return value;
-}
-
-setIntSetting(String setting, int value) async {
-  final prefs = await SharedPreferences.getInstance();
-  await prefs.setInt(setting, value);
-}
 
 //Connectivity  classs
 
@@ -237,7 +195,7 @@ exitApp() async {
     final storage = new FlutterSecureStorage();
     //Delete all
     await storage.deleteAll();
-    isDarkModeEnabled = false;
+    appSys.updateTheme("clair");
     //delete hive files
     appSys.api.gradesList = null;
     appSys.api = null;
@@ -248,9 +206,8 @@ exitApp() async {
 }
 
 specialtiesSelectionAvailable() async {
-  await reloadChosenApi();
   return [false];
-  if (chosenParser == 0) {
+  if (appSys.settings["system"]["chosenParser"] == 0) {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String classe = await storage.read(key: "classe") ?? "";
 

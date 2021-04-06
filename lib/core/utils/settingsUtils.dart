@@ -3,11 +3,17 @@ import 'dart:convert';
 import 'package:ynotes/core/services/shared_preferences.dart';
 import 'package:ynotes/core/utils/nullSafeMap.dart';
 
-class SettingsUtil {
+class SettingsUtils {
   static const Map secureSettingsForm = {"username": "", "password": "", "pronoteurl": "", "pronotecas": ""};
   static const Map settingsForm = {
     //System global settings
-    "system": {"firstUse": false, "agreedTermsAndConfiguredApp": false, "chosenParser": 0},
+    "system": {
+      "firstUse": false,
+      "agreedTermsAndConfiguredApp": false,
+      "chosenParser": 0,
+      "lastMailCount": 0,
+      "lastGradeCount": 0
+    },
 
     ///The user's app global settings
     ///As theme, notifications, choices..
@@ -18,9 +24,8 @@ class SettingsUtil {
         "batterySaver": false,
         "notificationNewMail": false,
         "notificationNewGrade": false,
-        "lighteningOverride": false,
         "shakeToReport": false,
-        "autoCloseDrawer": false
+        "autoCloseDrawer": false,
       },
       "summaryPage": {"summaryQuickHomework": 1},
       "homeworkPage": {
@@ -30,7 +35,9 @@ class SettingsUtil {
         "lighteningOverride": false,
         "agendaOnGoingNotification": false,
         "reverseWeekNames": false,
-        "lessonReminderDelay": 5
+        "lessonReminderDelay": 5,
+        "enableDNDWhenOnGoingNotifEnabled": false,
+        "disableAtDayEnd": false
       }
     },
   };
@@ -56,6 +63,7 @@ class SettingsUtil {
         value = getBoolSetting(key) ?? value;
       }
     });
+    print(_settings);
     return _settings;
     //The user's settings per page
   }
@@ -89,6 +97,7 @@ class SettingsUtil {
     var m = temp ?? {};
     for (int i = 0; i < setting.length - 1; i++) {
       m = m[setting[i]] ?? {};
+      print(m);
     }
     m[setting.last] = value;
     String encoded = json.encode(m);

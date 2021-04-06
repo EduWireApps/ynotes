@@ -200,7 +200,7 @@ class HomeworkPageState extends State<HomeworkPage> {
                                       child: Material(
                                         color: Colors.transparent,
                                         child: Theme(
-                                          data: isDarkModeEnabled ? ThemeData.dark() : ThemeData.light(),
+                                          data: appSys.theme,
                                           child: Column(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: <Widget>[SizedBox(child: child)],

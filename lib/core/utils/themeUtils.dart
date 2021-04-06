@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tinycolor/tinycolor.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 class ThemeUtils {
@@ -13,12 +14,13 @@ class ThemeUtils {
   static Color spaceColor() => Color(0xff282246);
   static Color textColor({bool revert = false}) {
     if (revert) {
-      return isDarkModeEnabled ? Colors.black : Colors.white;
+      return isThemeDark ? Colors.black : Colors.white;
     } else {
-      return isDarkModeEnabled ? Colors.white : Colors.black;
+      return isThemeDark ? Colors.white : Colors.black;
     }
   }
 
+  static get isThemeDark => appSys.themeName.contains("sombre");
   Color test() => Colors.blue;
 
   ///Make the selected color darker

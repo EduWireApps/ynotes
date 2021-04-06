@@ -20,7 +20,7 @@ import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/usefulMethods.dart';
-import 'package:ynotes/globals.dart' as globals;
+import 'package:ynotes/globals.dart';
 import 'ui/screens/school_api_choice/schoolAPIChoicePage.dart';
 import 'core/utils/themeUtils.dart';
 
@@ -46,9 +46,12 @@ Offline offline;
 API appSys.api;*/
 
 ///The app main class
+///
+///
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  globals.appSys.initApp();
+  appSys = ApplicationSystem();
+
   /*offline = Offline(false);
   await appSys.offline.init();
   if (Platform.isAndroid || Platform.isIOS) {
@@ -62,7 +65,7 @@ Future main() async {
   appSys.loginController = LoginController();
   //Set system notification bar color
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      systemNavigationBarColor: isDarkModeEnabled ? Color(0xff414141) : Color(0xffF3F3F3),
+      systemNavigationBarColor: ThemeUtils.isThemeDark ? Color(0xff414141) : Color(0xffF3F3F3),
       statusBarColor: Colors.transparent));
   ConnectionStatusSingleton connectionStatus = ConnectionStatusSingleton.getInstance();
 
@@ -79,16 +82,16 @@ class HomeApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider<ApplicationSystem>.value(
-      value: globals.appSys,
+      value: appSys,
       child: Consumer<ApplicationSystem>(builder: (context, model, child) {
         return Wiredash(
           projectId: "ynotes-giw0qs2",
           secret: "y9zengsvskpriizwniqxr6vxa1ka1n6u",
           navigatorKey: _navigatorKey,
           theme: WiredashThemeData(
-              backgroundColor: isDarkModeEnabled ? Color(0xff313131) : Colors.white,
-              primaryBackgroundColor: isDarkModeEnabled ? Color(0xff414141) : Color(0xffF3F3F3),
-              secondaryBackgroundColor: isDarkModeEnabled ? Color(0xff313131) : Colors.white,
+              backgroundColor: ThemeUtils.isThemeDark ? Color(0xff313131) : Colors.white,
+              primaryBackgroundColor: ThemeUtils.isThemeDark ? Color(0xff414141) : Color(0xffF3F3F3),
+              secondaryBackgroundColor: ThemeUtils.isThemeDark ? Color(0xff313131) : Colors.white,
               secondaryColor: Theme.of(context).primaryColorDark,
               primaryColor: Theme.of(context).primaryColor,
               primaryTextColor: ThemeUtils.textColor(),
@@ -111,7 +114,7 @@ class HomeApp extends StatelessWidget {
               // ... other locales the app supports
             ],
             debugShowCheckedModeBanner: false,
-            theme: globals.appSys.theme,
+            theme: model.theme,
             title: kDebugMode ? "yNotes DEV" : "yNotes",
             navigatorKey: _navigatorKey,
             home: loader(),
@@ -165,10 +168,17 @@ class homePage extends StatelessWidget {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
-    return Scaffold(
-        backgroundColor: Theme.of(context).backgroundColor,
-        body: SafeArea(
-          child: DrawerBuilder(),
-        ));
+    return ChangeNotifierProvider<ApplicationSystem>.value(
+      value: appSys,
+      child: Consumer<ApplicationSystem>(builder: (context, model, child) {
+        return Scaffold(
+            backgroundColor: Theme.of(context).backgroundColor,
+            body: SafeArea(
+              child: DrawerBuilder(
+                appSys: model,
+              ),
+            ));
+      }),
+    );
   }
 }

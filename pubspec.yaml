@@ -96,7 +96,10 @@ dependencies:
   url_launcher: ^6.0.3
   uuid: ^3.0.3
   visibility_detector: ^0.2.0-nullsafety.1
-  wiredash: ^0.6.2
+  wiredash:
+    git:
+      url: https://github.com/wiredashio/wiredash-sdk
+      ref: stable
 dependency_overrides:
   intl: ^0.17.0-nullsafety.2
   mime: ^1.0.0

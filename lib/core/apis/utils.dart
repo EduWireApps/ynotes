@@ -6,13 +6,14 @@ import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/shared_preferences.dart';
 
 import 'package:stack/stack.dart' as sta;
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 //Return the good API (will be extended to Pronote)
 APIManager(Offline _offline) {
   //The parser list index corresponding to the user choice
 
-  switch (chosenParser) {
+  switch (appSys.settings["system"]["chosenParser"]) {
     case 0:
       return APIEcoleDirecte(_offline);
 
@@ -21,14 +22,8 @@ APIManager(Offline _offline) {
   }
 }
 
-reloadChosenApi() async {
-  final prefs = await SharedPreferences.getInstance();
-  chosenParser = prefs.getInt('chosenParser') ?? null;
-}
-
 setChosenParser(int chosen) async {
-  final prefs = await SharedPreferences.getInstance();
-  prefs.setInt('chosenParser', chosen);
+  appSys.setSetting(["system", "chosenApi"], chosen);
 }
 
 get_week(DateTime date) async {

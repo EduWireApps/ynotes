@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/services/shared_preferences.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/keyValues.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
@@ -100,7 +101,7 @@ void disciplineModalBottomSheet(context, Discipline discipline, Function callbac
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           buildKeyValuesInfo(context, "Votre moyenne", [
-                            (chosenParser == 1)
+                            (appSys.settings["system"]["chosenParser"] == 1)
                                 ? (widget.discipline.average ?? "-")
                                 : ((!widget.discipline.getAverage().isNaN)
                                     ? widget.discipline.getAverage().toString()

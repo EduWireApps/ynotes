@@ -557,7 +557,7 @@ class _page4State extends State<page4> {
                   color: ThemeUtils.textColor(),
                 ),
                 FutureBuilder(
-                    future: getSetting("nightmode"),
+                    future: appSys.settings["user"]["global"]["nightmode"],
                     initialData: false,
                     builder: (context, snapshot) {
                       return SwitchListTile(
@@ -570,7 +570,6 @@ class _page4State extends State<page4> {
                         onChanged: (value) {
                           setState(() {
                             appSys.updateTheme(value ? "sombre" : "clair");
-                            setSetting("nightmode", value);
                           });
                         },
                         secondary: Icon(
@@ -590,7 +589,7 @@ class _page4State extends State<page4> {
                 ),
                 Divider(),
                 FutureBuilder(
-                    future: getSetting("notificationNewGrade"),
+                    future: appSys.settings["user"]["global"]["notificationNewGrade"],
                     initialData: false,
                     builder: (context, snapshot) {
                       return SwitchListTile(
@@ -608,9 +607,7 @@ class _page4State extends State<page4> {
                           ),
                           onChanged: (value) async {
                             if ((await Permission.ignoreBatteryOptimizations.isGranted)) {
-                              setState(() {
-                                setSetting("notificationNewGrade", value);
-                              });
+                              appSys.setSetting(["user", "global", "notificationNewGrade"], value);
                             } else {
                               if (await CustomDialogs.showAuthorizationsDialog(
                                       context,
@@ -618,9 +615,7 @@ class _page4State extends State<page4> {
                                       "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ??
                                   false) {
                                 if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
-                                  setState(() {
-                                    setSetting("notificationNewGrade", value);
-                                  });
+                                  appSys.setSetting(["user", "global", "notificationNewGrade"], value);
                                 }
                               }
                             }
@@ -628,7 +623,7 @@ class _page4State extends State<page4> {
                     }),
                 Divider(),
                 FutureBuilder(
-                    future: getSetting("notificationNewMail"),
+                    future: appSys.settings["user"]["global"]["notificationNewMail"],
                     initialData: false,
                     builder: (context, snapshot) {
                       return SwitchListTile(
@@ -642,9 +637,7 @@ class _page4State extends State<page4> {
                         ),
                         onChanged: (value) async {
                           if ((await Permission.ignoreBatteryOptimizations.isGranted)) {
-                            setState(() {
-                              setSetting("notificationNewMail", value);
-                            });
+                            appSys.setSetting(["user", "global", "notificationNewMail"], value);
                           } else {
                             if (await CustomDialogs.showAuthorizationsDialog(
                                     context,
@@ -652,9 +645,7 @@ class _page4State extends State<page4> {
                                     "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ??
                                 false) {
                               if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
-                                setState(() {
-                                  setSetting("notificationNewMail", value);
-                                });
+                                appSys.setSetting(["user", "global", "notificationNewMail"], value);
                               }
                             }
                           }
@@ -762,7 +753,7 @@ class _SlidingCarouselState extends State<SlidingCarousel> {
             offset: offset,
             idx: idx,
           ),
-          backgroundColor: isDarkModeEnabled ? Color(0xff313131) : Colors.white),
+          backgroundColor: ThemeUtils.isThemeDark ? Color(0xff313131) : Colors.white),
     ];
   }
 
@@ -777,10 +768,10 @@ class _SlidingCarouselState extends State<SlidingCarousel> {
       Color current = _pageInfoList[_pageOffset.toInt()].backgroundColor;
       Color next = _pageInfoList[_pageOffset.toInt() + 1].backgroundColor;
       if (_pageOffset.toInt() == 2) {
-        next = isDarkModeEnabled ? Color(0xff313131) : Colors.white;
+        next = ThemeUtils.isThemeDark ? Color(0xff313131) : Colors.white;
       }
       if (_pageOffset.toInt() == 3) {
-        current = isDarkModeEnabled ? Color(0xff313131) : Colors.white;
+        current = ThemeUtils.isThemeDark ? Color(0xff313131) : Colors.white;
       }
       return Color.lerp(current, next, _pageOffset - _pageOffset.toInt());
     } else {

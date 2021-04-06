@@ -173,7 +173,7 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
                                 DateFormat("EEEE d MMMM", "fr_FR").format(widget.date),
                                 textAlign: TextAlign.left,
                                 style: TextStyle(
-                                    color: isDarkModeEnabled ? Colors.white70 : Colors.grey,
+                                    color: ThemeUtils.isThemeDark ? Colors.white70 : Colors.grey,
                                     fontFamily: "Asap",
                                     fontSize: screenSize.size.height / 10 * 0.2),
                               )
@@ -184,7 +184,7 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
                           duration: Duration(milliseconds: 170),
                           curve: Curves.ease,
                           decoration: BoxDecoration(
-                            color: isDarkModeEnabled ? Color(0xff656565) : Colors.white,
+                            color: ThemeUtils.isThemeDark ? Color(0xff656565) : Colors.white,
                           ),
                           padding: EdgeInsets.only(
                               top: screenSize.size.height / 10 * 0.1, bottom: screenSize.size.height / 10 * 0.1),

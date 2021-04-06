@@ -21,16 +21,10 @@ class PersistantNotificationConfigDialog extends StatefulWidget {
 }
 
 class _PersistantNotificationConfigDialogState extends State<PersistantNotificationConfigDialog> {
-  var boolSettings = {
-    "enableDNDWhenOnGoingNotifEnabled": false,
-    "agendaOnGoingNotification": false,
-    "disableAtDayEnd": false,
-  };
   String perm = "Permissions accordées.";
   void initState() {
     // TODO: implement initState
 
-    getSettings();
     getAuth();
   }
 
@@ -46,23 +40,6 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
             perm = "L'application n'ignore pas les optimisations de batterie !";
           });
         }
-      });
-    });
-  }
-
-  var intSettings = {};
-  void getSettings() async {
-    await Future.forEach(boolSettings.keys, (key) async {
-      var value = await getSetting(key);
-      setState(() {
-        boolSettings[key] = value;
-      });
-    });
-
-    await Future.forEach(intSettings.keys, (key) async {
-      int value = await getIntSetting(key);
-      setState(() {
-        intSettings[key] = value;
       });
     });
   }
@@ -100,7 +77,7 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
                           height: screenSize.size.height / 10 * 1.8,
                           fit: BoxFit.scaleDown,
                           image: AssetImage(
-                              'assets/images/persistantNotification/persisIllu${isDarkModeEnabled ? "Dark" : "Light"}.png'))),
+                              'assets/images/persistantNotification/persisIllu${appSys.themeName == "sombre" ? "Dark" : "Light"}.png'))),
                   Container(
                     width: screenSize.size.width / 5 * 4.4,
                     child: AutoSizeText.rich(
@@ -119,16 +96,13 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
               ),
             ),
             SwitchListTile(
-              value: boolSettings["agendaOnGoingNotification"],
+              value: appSys.settings["user"]["agendaPage"]["agendaOnGoingNotification"],
               title: Text("Activée",
                   style: TextStyle(
                       fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.21)),
               onChanged: (value) async {
                 if ((await Permission.ignoreBatteryOptimizations.isGranted)) {
-                  setState(() {
-                    boolSettings["agendaOnGoingNotification"] = value;
-                  });
-                  await setSetting("agendaOnGoingNotification", value);
+                  appSys.setSetting(["user", "agendaPage", "agendaOnGoingNotification"], value);
                   if (value) {
                     await AppNotification.setOnGoingNotification();
                   } else {
@@ -141,10 +115,7 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
                           "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ??
                       false) {
                     if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
-                      setState(() {
-                        boolSettings["agendaOnGoingNotification"] = value;
-                      });
-                      await setSetting("agendaOnGoingNotification", value);
+                      appSys.setSetting(["user", "agendaOnGoingNotification"], value);
                       if (value) {
                         await AppNotification.setOnGoingNotification();
                       } else {
@@ -163,14 +134,11 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
               thickness: 1,
             ),
             SwitchListTile(
-              value: boolSettings["enableDNDWhenOnGoingNotifEnabled"],
+              value: appSys.settings["user"]["agendaPage"]["enableDNDWhenOnGoingNotifEnabled"],
               title: Text("Activer le mode ne pas déranger à l'entrée en cours",
                   style: TextStyle(
                       fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.20)),
               onChanged: (value) async {
-                setState(() {
-                  boolSettings["enableDNDWhenOnGoingNotifEnabled"] = value;
-                });
                 if (value && (await getCurrentLesson(await appSys.api.getNextLessons(DateTime.now()))) != null) {
                   if (await FlutterDnd.isNotificationPolicyAccessGranted) {
                     await FlutterDnd.setInterruptionFilter(
@@ -182,7 +150,7 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
                     }
                   }
                 }
-                await setSetting("enableDNDWhenOnGoingNotifEnabled", value);
+                appSys.setSetting(["user", "agendaPage", "enableDNDWhenOnGoingNotifEnabled"], value);
               },
               secondary: Icon(
                 MdiIcons.moonWaningCrescent,
@@ -190,16 +158,12 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
               ),
             ),
             SwitchListTile(
-              value: boolSettings["disableAtDayEnd"],
+              value: appSys.settings["user"]["agendaPage"]["disableAtDayEnd"],
               title: Text("Desactiver en fin de journée",
                   style: TextStyle(
                       fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.20)),
               onChanged: (value) async {
-                setState(() {
-                  boolSettings["disableAtDayEnd"] = value;
-                });
-
-                await setSetting("disableAtDayEnd", value);
+                appSys.setSetting(["user", "agendaPage", "disableAtDayEnd"], value);
               },
               secondary: Icon(
                 MdiIcons.powerOff,

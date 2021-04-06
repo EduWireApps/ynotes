@@ -71,7 +71,7 @@ class AppNotification {
     }
     if (receivedNotification.channelKey == "persisnotif" &&
         receivedNotification.toMap()["buttonKeyPressed"] == "KILL") {
-      await setSetting("agendaOnGoingNotification", false);
+      appSys.setSetting(["user", "agendaPage", "agendaOnGoingNotification"], false);
       await AppNotification.cancelOnGoingNotification();
       return;
     }
@@ -262,7 +262,7 @@ class AppNotification {
   static Future<void> showOngoingNotification(Lesson lesson) async {
     var id = 333;
 
-    if (await getSetting("agendaOnGoingNotification")) {
+    if (appSys.settings["user"]["agendaPage"]["agendaOnGoingNotification"]) {
       await AwesomeNotifications().initialize('resource://drawable/tfiche', [
         NotificationChannel(
             channelKey: 'persisnotif',
@@ -328,7 +328,6 @@ class AppNotification {
     print("Setting on going notification");
     var connectivityResult = await (Connectivity().checkConnectivity());
     List<Lesson> lessons = List();
-    await reloadChosenApi();
     API api = APIManager(appSys.offline);
     //Login creds
     String u = await ReadStorage("username");
@@ -376,10 +375,10 @@ class AppNotification {
         }
       }
     }
-    if (await getSetting("agendaOnGoingNotification")) {
+    if (appSys.settings["user"]["agendaPage"]["agendaOnGoingNotification"]) {
       Lesson getActualLesson = getCurrentLesson(lessons);
       if (!dontShowActual) {
-        if (await getSetting("enableDNDWhenOnGoingNotifEnabled")) {
+        if (appSys.settings["user"]["agendaPage"]["enableDNDWhenOnGoingNotifEnabled"]) {
           if (await FlutterDnd.isNotificationPolicyAccessGranted) {
             await FlutterDnd.setInterruptionFilter(
                 FlutterDnd.INTERRUPTION_FILTER_NONE); // Turn on DND - All notifications are suppressed.
@@ -390,7 +389,7 @@ class AppNotification {
         await showOngoingNotification(getActualLesson);
       }
 
-      int minutes = await getIntSetting("lessonReminderDelay");
+      int minutes = appSys.settings["user"]["agendaPage"]["lastMailCount"];
       await Future.forEach(lessons, (Lesson lesson) async {
         if (lesson.start.isAfter(date)) {
           try {
@@ -421,7 +420,6 @@ class AppNotification {
   static Future<void> callback() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     List<Lesson> lessons = List();
-    await reloadChosenApi();
     //Lock offline data
     Offline _offline = Offline(true);
     API api = APIManager(_offline);
@@ -476,7 +474,7 @@ class AppNotification {
     Lesson lesson;
     //Show next lesson if this one is after current datetime
     if (nextLesson != null && nextLesson.start.isAfter(DateTime.now())) {
-      if (await getSetting("enableDNDWhenOnGoingNotifEnabled")) {
+      if (await appSys.settings["user"]["agendaPage"]["enableDNDWhenOnGoingNotifEnabled"]) {
         if (await FlutterDnd.isNotificationPolicyAccessGranted) {
           await FlutterDnd.setInterruptionFilter(
               FlutterDnd.INTERRUPTION_FILTER_NONE); // Turn on DND - All notifications are suppressed.
@@ -490,8 +488,8 @@ class AppNotification {
       final prefs = await SharedPreferences.getInstance();
       bool value = prefs.getBool("disableAtDayEnd");
       print(value);
-      print(await getSetting("disableAtDayEnd"));
-      if (await getSetting("disableAtDayEnd")) {
+      print(appSys.settings["user"]["agendaPage"]["disableAtDayEnd"]);
+      if (appSys.settings["user"]["agendaPage"]["disableAtDayEnd"]) {
         await cancelOnGoingNotification();
       } else {
         lesson = currentLesson;

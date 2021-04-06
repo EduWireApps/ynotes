@@ -31,22 +31,8 @@ class CustomDrawer extends StatefulWidget {
 }
 
 class _CustomDrawerState extends State<CustomDrawer> {
-  //Settings
-  var boolSettings = {
-    "autoCloseDrawer": false,
-  };
-  void getSettings() async {
-    await Future.forEach(boolSettings.keys, (key) async {
-      var value = await getSetting(key);
-      setState(() {
-        boolSettings[key] = value;
-      });
-    });
-  }
-
   void initState() {
     super.initState();
-    getSettings();
   }
 
   @override
@@ -85,15 +71,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
                             scale: 0.4,
                             child: DayNightSwitch(
                               height: screenSize.size.height / 10 * 0.2,
-                              value: isDarkModeEnabled,
+                              value: ThemeUtils.isThemeDark,
                               dragStartBehavior: DragStartBehavior.start,
                               onChanged: (val) async {
-                                print(val);
-                                setState(() {
-                                  isDarkModeEnabled = val;
-                                });
                                 appSys.updateTheme(val ? "sombre" : "clair");
-                                await setSetting("nightmode", val);
                               },
                             ),
                           ),
@@ -108,7 +89,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
               ),
               for (var entry in this.widget.entries)
                 if (entry["relatedApi"] == null ||
-                    entry["relatedApi"] == chosenParser ||
+                    entry["relatedApi"] == appSys.settings["system"]["chosenParser"] ||
                     (entry["relatedApi"] == -1 && !kReleaseMode))
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -126,7 +107,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 splashFactory: InkRipple.splashFactory,
                                 onTap: () {
                                   //Close drawer
-                                  if (boolSettings["autoCloseDrawer"]) {
+                                  if (appSys.settings["user"]["global"]["autoCloseDrawer"]) {
                                     Navigator.of(context).pop();
                                   }
                                   widget.drawerPageViewController.jumpToPage(this.widget.entries.indexOf(entry));
