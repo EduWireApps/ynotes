@@ -236,6 +236,20 @@ class Grade {
       countAsZero: false,
     );
   }
+  //overrides == operator to avoid issues in selectors
+  //We use the most operator possible to avoid duplicates
+  @override
+  bool operator ==(Object other) =>
+      other is Grade &&
+      other.disciplineName == disciplineName &&
+      other.date == date &&
+      other.entryDate == entryDate &&
+      other.max == max &&
+      other.min == min &&
+      other.value == value &&
+      other.testName == testName &&
+      other.simulated == simulated &&
+      other.scale == scale;
 }
 
 class Period {

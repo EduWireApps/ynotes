@@ -9,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/core/services/shared_preferences.dart';
 import 'package:ynotes/ui/screens/summary/summaryPage.dart';
@@ -188,8 +189,10 @@ List<Grade> getAllGrades(List<Discipline> list, {bool overrideLimit = false, boo
         }
       });
       if (localApi.gradesList != null && localApi.gradesList.length > 0 && listToReturn == localApi.gradesList) {
+
         return localApi.gradesList;
       }
+
       listToReturn = listToReturn.toSet().toList();
       if (listToReturn != null) {
         //sort grades
@@ -219,6 +222,7 @@ List<Grade> getAllGrades(List<Discipline> list, {bool overrideLimit = false, boo
     return [];
   }
 }
+
 
 //Redefine the switch statement
 TValue case2<TOptionType, TValue>(
