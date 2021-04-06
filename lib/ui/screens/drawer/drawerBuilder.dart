@@ -143,6 +143,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
     if (firstStart == true) {
       firstStart = false;
     }
+
     AppNotification.initNotifications(context, _scrollTo);
     //Mvc init
     initControllers();

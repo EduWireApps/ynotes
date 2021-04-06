@@ -25,7 +25,7 @@ changeFolder(String path) async {
   String data = 'data={"token": "$token"}';
 
   var body = data;
-  var response = await http.post(url, headers: headers, body: body).catchError((e) {
+  var response = await http.post(Uri.parse(url), headers: headers, body: body).catchError((e) {
     throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.");
   });
 

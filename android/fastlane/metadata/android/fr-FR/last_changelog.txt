@@ -1,2 +1,1 @@
-Différent correctifs importants pour Pronote, notamment la connexion depuis un serveur HTTP. 
-Cette mise à jour contient également des correctifs de bugs mineurs.
+Les utilisateurs de Pronote avec HTTP peuvent désormais se connecter.

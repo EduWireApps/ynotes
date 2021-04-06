@@ -4,7 +4,6 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:alice/alice.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/offline/offline.dart';
@@ -21,7 +20,6 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 
 import 'EcoleDirecte/ecoleDirecteMethods.dart';
 
-Alice alice = Alice();
 //Create a secure storage
 void CreateStorage(String key, String data) async {
   await storage.write(key: key, value: data);
@@ -62,7 +60,7 @@ class APIEcoleDirecte extends API {
   APIEcoleDirecte(Offline offlineController) : super(offlineController);
 
 //Get connection message and store token
-  Future<List> login(username, password, {url, cas, mobileCasLogin}) async {
+  Future<List> login(username, password, {url, cas}) async {
     final prefs = await SharedPreferences.getInstance();
     if (username == null) {
       username = "";
@@ -76,7 +74,7 @@ class APIEcoleDirecte extends API {
     String data = 'data={"identifiant": "$username", "motdepasse": "$password"}';
     //encode Map to JSON
     var body = data;
-    var response = await http.post(url, headers: headers, body: body).catchError((e) {
+    var response = await http.post(Uri.parse(url), headers: headers, body: body).catchError((e) {
       return "Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.";
     });
 
@@ -323,7 +321,7 @@ Future getMails({bool checking}) async {
   String data = 'data={"token": "$token"}';
   //encode Map to JSON
   var body = data;
-  var response = await http.post(url, headers: headers, body: body).catchError((e) {
+  var response = await http.post(Uri.parse(url), headers: headers, body: body).catchError((e) {
     throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou reessayez plus tard.");
   });
   print("Starting the mails collection");
@@ -387,7 +385,7 @@ Future readMail(String mailId, bool read) async {
   String data = 'data={"token": "$token"}';
   //encode Map to JSON
   var body = data;
-  var response = await http.post(url, headers: headers, body: body).catchError((e) {
+  var response = await http.post(Uri.parse(url), headers: headers, body: body).catchError((e) {
     throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou reessayez plus tard.");
   });
   print("Starting the mail reading");
