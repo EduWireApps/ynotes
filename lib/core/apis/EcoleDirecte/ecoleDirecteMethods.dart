@@ -74,7 +74,7 @@ class EcoleDirecteMethod {
     }
     createStack();
     if (disciplinesList != null) {
-      await appSys.setSetting(["system", "lastGradeCount"], getAllGrades(disciplinesList, overrideLimit: true).length);
+      appSys.settings["system"]["lastGradeCount"] = getAllGrades(disciplinesList, overrideLimit: true).length;
     }
     return disciplinesList;
   }

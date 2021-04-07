@@ -91,16 +91,11 @@ class SettingsUtils {
     return _settings;
   }
 
-  static setSetting(List<String> setting, var value) async {
+  static setSetting(Map newMap) async {
     final prefs = await SharedPreferences.getInstance();
-    Map temp = await getSavedSettings();
-    var m = temp ?? {};
-    for (int i = 0; i < setting.length - 1; i++) {
-      m = m[setting[i]] ?? {};
-      print(m);
-    }
-    m[setting.last] = value;
-    String encoded = json.encode(m);
+
+    String encoded = json.encode(newMap);
+    print(encoded);
     await prefs.setString("settings", encoded);
   }
 

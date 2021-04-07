@@ -37,12 +37,11 @@ import 'drawerBuilderWidgets/drawer.dart';
 
 ///Build a bottom tabbar and tabs
 class DrawerBuilder extends StatefulWidget {
-  final ApplicationSystem appSys;
   State<StatefulWidget> createState() {
     return _DrawerBuilderState();
   }
 
-  DrawerBuilder({Key key, this.appSys}) : super(key: key);
+  DrawerBuilder({Key key}) : super(key: key);
 }
 
 int _currentIndex = 0;
@@ -60,7 +59,6 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
         "page": SummaryPage(
           switchPage: _switchPage,
           key: summaryPage,
-          appSys: appSys,
         ),
         "key": summaryPage
       },
@@ -288,8 +286,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                                 color: Colors.transparent,
                                 child: Icon(MdiIcons.menu, color: ThemeUtils.isThemeDark ? Colors.white : Colors.black),
                                 onPressed: () async {
-                         
-                                _drawerKey.currentState.openDrawer();//
+                                  _drawerKey.currentState.openDrawer(); //
                                 },
                               ));
                         }),

@@ -607,7 +607,8 @@ class _page4State extends State<page4> {
                           ),
                           onChanged: (value) async {
                             if ((await Permission.ignoreBatteryOptimizations.isGranted)) {
-                              appSys.setSetting(["user", "global", "notificationNewGrade"], value);
+                              appSys.settings["user"]["global"]["notificationNewGrade"] = value;
+                              setState(() {});
                             } else {
                               if (await CustomDialogs.showAuthorizationsDialog(
                                       context,
@@ -615,7 +616,9 @@ class _page4State extends State<page4> {
                                       "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ??
                                   false) {
                                 if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
-                                  appSys.setSetting(["user", "global", "notificationNewGrade"], value);
+                                  appSys.settings["user"]["global"]["notificationNewGrade"] = value;
+
+                                  setState(() {});
                                 }
                               }
                             }
@@ -637,7 +640,8 @@ class _page4State extends State<page4> {
                         ),
                         onChanged: (value) async {
                           if ((await Permission.ignoreBatteryOptimizations.isGranted)) {
-                            appSys.setSetting(["user", "global", "notificationNewMail"], value);
+                            appSys.settings["user"]["global"]["notificationNewMail"] = value;
+                            setState(() {});
                           } else {
                             if (await CustomDialogs.showAuthorizationsDialog(
                                     context,
@@ -645,7 +649,8 @@ class _page4State extends State<page4> {
                                     "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ??
                                 false) {
                               if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
-                                appSys.setSetting(["user", "global", "notificationNewMail"], value);
+                                appSys.settings["user"]["global"]["notificationNewMail"] = value;
+                                setState(() {});
                               }
                             }
                           }

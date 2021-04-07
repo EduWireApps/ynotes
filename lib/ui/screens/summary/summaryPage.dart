@@ -26,12 +26,10 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 ///First page to access quickly to last grades, homework and
 class SummaryPage extends StatefulWidget {
   final Function switchPage;
-  final ApplicationSystem appSys;
 
   const SummaryPage({
     Key key,
     this.switchPage,
-    this.appSys,
   }) : super(key: key);
   State<StatefulWidget> createState() {
     return SummaryPageState();
@@ -65,7 +63,7 @@ class SummaryPageState extends State<SummaryPage> {
         offset = _pageControllerSummaryPage.offset;
       });
     });
-    disciplinesListFuture = this.widget.appSys.api.getGrades();
+    disciplinesListFuture = appSys.api.getGrades();
 
     SchedulerBinding.instance.addPostFrameCallback(!mounted
         ? null
@@ -84,12 +82,12 @@ class SummaryPageState extends State<SummaryPage> {
   }
 
   Future<void> refreshControllers() async {
-    await this.widget.appSys.gradesController.refresh(force: true);
-    await this.widget.appSys.homeworkController.refresh(force: true);
+    await appSys.gradesController.refresh(force: true);
+    await appSys.homeworkController.refresh(force: true);
   }
 
   initLoginController() async {
-    await this.widget.appSys.loginController.init();
+    await appSys.loginController.init();
   }
 
   showDialog() async {
@@ -98,9 +96,9 @@ class SummaryPageState extends State<SummaryPage> {
   }
 
   showUpdateNote() async {
-    if ((await this.widget.appSys.settings["system"]["lastReadUpdateNote"] != "0.9.2")) {
+    if ((await appSys.settings["system"]["lastReadUpdateNote"] != "0.9.2")) {
       await CustomDialogs.showUpdateNoteDialog(context);
-      this.widget.appSys.setSetting(["sys", "lastReadUpdateNote"], "0.9.2");
+      appSys.settings["system"]["lastReadUpdateNote"] = "0.9.2";
     }
   }
 
@@ -163,12 +161,12 @@ class SummaryPageState extends State<SummaryPage> {
                       separator(context, "Notes"),
                       QuickGrades(
                         switchPage: widget.switchPage,
-                        gradesController: this.widget.appSys.gradesController,
+                        gradesController: appSys.gradesController,
                       ),
                       separator(context, "Devoirs"),
                       QuickHomework(
                         switchPage: widget.switchPage,
-                        hwcontroller: this.widget.appSys.homeworkController,
+                        hwcontroller: appSys.homeworkController,
                       )
                     ],
                   ),

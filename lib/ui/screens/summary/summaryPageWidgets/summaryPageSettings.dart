@@ -46,10 +46,8 @@ class _SummaryPageSettingsState extends State<SummaryPageSettings> {
                       max: 11.0,
                       divisions: 11,
                       onChanged: (double newValue) async {
-                        appSys.setSetting(["user","summaryPage","summaryQuickHomework"], newValue.round());
-                        setState(() {
-                          appSys.settings["user"]["summaryPage"]["summaryQuickHomework"] = newValue.round();
-                        });
+                        appSys.settings["user"]["summaryPage"]["summaryQuickHomework"] = newValue.round();
+                        setState(() {});
                       }),
                   Container(
                     margin: EdgeInsets.only(top: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),

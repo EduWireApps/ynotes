@@ -11,6 +11,7 @@ import 'package:uuid/uuid.dart';
 import 'package:wiredash/wiredash.dart';
 import 'package:ynotes/core/logic/appConfig/controller.dart';
 import 'package:ynotes/core/services/shared_preferences.dart';
+import 'package:ynotes/core/utils/settingsUtils.dart';
 import 'package:ynotes/ui/screens/carousel/carousel.dart';
 import 'package:ynotes/ui/screens/drawer/drawerBuilder.dart';
 import 'package:ynotes/ui/screens/loading/loadingPage.dart';
@@ -25,6 +26,7 @@ import 'ui/screens/school_api_choice/schoolAPIChoicePage.dart';
 import 'core/utils/themeUtils.dart';
 
 var uuid = Uuid();
+var setting;
 
 extension StringExtension on String {
   String capitalize() {
@@ -51,9 +53,9 @@ API appSys.api;*/
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   appSys = ApplicationSystem();
+  appSys.initApp();
 
   /*offline = Offline(false);
-  await appSys.offline.init();
   if (Platform.isAndroid || Platform.isIOS) {
     await initBackgroundTask();
   }
@@ -76,8 +78,17 @@ Future main() async {
   });
 }
 
-class HomeApp extends StatelessWidget {
+class HomeApp extends StatefulWidget {
+  @override
+  _HomeAppState createState() => _HomeAppState();
+}
+
+class _HomeAppState extends State<HomeApp> {
   final _navigatorKey = GlobalKey<NavigatorState>();
+
+  initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -168,17 +179,12 @@ class homePage extends StatelessWidget {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
-    return ChangeNotifierProvider<ApplicationSystem>.value(
-      value: appSys,
-      child: Consumer<ApplicationSystem>(builder: (context, model, child) {
-        return Scaffold(
-            backgroundColor: Theme.of(context).backgroundColor,
-            body: SafeArea(
-              child: DrawerBuilder(
-                appSys: model,
-              ),
-            ));
-      }),
-    );
+    return Scaffold(
+        backgroundColor: Theme.of(context).backgroundColor,
+        body: SafeArea(
+          child: DrawerBuilder(
+           
+          ),
+        ));
   }
 }

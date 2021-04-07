@@ -14,9 +14,24 @@ import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/utils/settingsUtils.dart';
 import 'package:ynotes/ui/themes/themesList.dart';
 
+class Test {
+  Map settings;
+  Test() {
+    settings = SettingsUtils.getAppSettings();
+  }
+}
+
 ///Top level application sytem class
 class ApplicationSystem extends ChangeNotifier {
-  Map settings = {};
+  Map _settings;
+
+  set settings(Map newValue) {
+    _settings = settings;
+    SettingsUtils.setSetting(_settings);
+    notifyListeners();
+  }
+
+  get settings => _settings;
 
   ///A boolean representing the use of the application
   bool isFirstUse;
@@ -37,9 +52,6 @@ class ApplicationSystem extends ChangeNotifier {
   LoginController loginController;
   GradesController gradesController;
   HomeworkController homeworkController;
-  ApplicationSystem() {
-    initApp();
-  }
 
   ///The most important function
   ///It will intialize Offline, APIs and background fetch
@@ -56,12 +68,6 @@ class ApplicationSystem extends ChangeNotifier {
     await _initBackgroundFetch();
     //Set controllers
     await _initControllers();
-  }
-
-  setSetting(List<String> setting, var value) {
-    SettingsUtils.setSetting(setting, value);
-    settings = SettingsUtils.getAppSettings();
-    notifyListeners();
   }
 
   updateTheme(String themeName) {

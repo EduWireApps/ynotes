@@ -102,7 +102,8 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
                       fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.21)),
               onChanged: (value) async {
                 if ((await Permission.ignoreBatteryOptimizations.isGranted)) {
-                  appSys.setSetting(["user", "agendaPage", "agendaOnGoingNotification"], value);
+                  appSys.settings["user"]["agendaPage"]["agendaOnGoingNotification"] = value;
+                  setState(() {});
                   if (value) {
                     await AppNotification.setOnGoingNotification();
                   } else {
@@ -115,7 +116,8 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
                           "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ??
                       false) {
                     if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
-                      appSys.setSetting(["user", "agendaOnGoingNotification"], value);
+                      appSys.settings["user"]["agendaPage"]["agendaOnGoingNotification"] = value;
+                      setState(() {});
                       if (value) {
                         await AppNotification.setOnGoingNotification();
                       } else {
@@ -150,7 +152,7 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
                     }
                   }
                 }
-                appSys.setSetting(["user", "agendaPage", "enableDNDWhenOnGoingNotifEnabled"], value);
+                appSys.settings["user"]["agendaPage"]["enableDNDWhenOnGoingNotifEnabled"] = value;
               },
               secondary: Icon(
                 MdiIcons.moonWaningCrescent,
@@ -163,7 +165,8 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
                   style: TextStyle(
                       fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.20)),
               onChanged: (value) async {
-                appSys.setSetting(["user", "agendaPage", "disableAtDayEnd"], value);
+                appSys.settings["user"]["agendaPage"]["disableAtDayEnd"] = value;
+                setState(() {});
               },
               secondary: Icon(
                 MdiIcons.powerOff,

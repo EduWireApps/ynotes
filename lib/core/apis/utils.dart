@@ -23,7 +23,7 @@ APIManager(Offline _offline) {
 }
 
 setChosenParser(int chosen) async {
-  appSys.setSetting(["system", "chosenApi"], chosen);
+  appSys.settings["system"]["chosenApi"] = chosen;
 }
 
 get_week(DateTime date) async {

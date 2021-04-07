@@ -157,7 +157,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                       leading: Icon(MdiIcons.batteryHeart, color: ThemeUtils.textColor()),
                       switchValue: _appSys.settings["user"]["global"]["batterySaver"],
                       onToggle: (value) async {
-                        _appSys.setSetting(["user", "global", "batterySaver"], value);
+                        _appSys.settings["user"]["global"]["batterySaver"] = value;
                       },
                     ),
                     SettingsTile.switchTile(
@@ -174,7 +174,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                       leading: Icon(MdiIcons.arrowCollapseLeft, color: ThemeUtils.textColor()),
                       switchValue: _appSys.settings["user"]["global"]["autoCloseDrawer"],
                       onToggle: (value) async {
-                        _appSys.setSetting(["user", "global", "autoCloseDrawer"], value);
+                        _appSys.settings["user"]["global"]["autoCloseDrawer"] = value;
                       },
                     ),
                   ],
@@ -193,7 +193,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                       switchValue: _appSys.settings["user"]["global"]["notificationNewMail"],
                       onToggle: (bool value) async {
                         if (value == false || (await Permission.ignoreBatteryOptimizations.isGranted)) {
-                          _appSys.setSetting(["user", "global", "notificationNewMail"], value);
+                          _appSys.settings["user"]["global"]["notificationNewMail"] = value;
                         } else {
                           if (await CustomDialogs.showAuthorizationsDialog(
                                   context,
@@ -201,7 +201,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                                   "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ??
                               false) {
                             if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
-                              _appSys.setSetting(["user", "global", "notificationNewMail"], value);
+                              _appSys.settings["user"]["global"]["notificationNewMail"] = value;
                             }
                           }
                         }
@@ -218,7 +218,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                       switchValue: _appSys.settings["user"]["global"]["notificationNewGrade"],
                       onToggle: (bool value) async {
                         if (value == false || (await Permission.ignoreBatteryOptimizations.isGranted)) {
-                          _appSys.setSetting(["user", "global", "notificationNewGrade"], value);
+                          _appSys.settings["user"]["global"]["notificationNewGrade"] = value;
                         } else {
                           if (await CustomDialogs.showAuthorizationsDialog(
                                   context,
@@ -226,7 +226,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                                   "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ??
                               false) {
                             if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
-                              _appSys.setSetting(["user", "global", "notificationNewGrade"], value);
+                              _appSys.settings["user"]["global"]["notificationNewGrade"] = value;
                             }
                           }
                         }
