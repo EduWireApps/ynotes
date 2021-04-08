@@ -53,7 +53,7 @@ API appSys.api;*/
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   appSys = ApplicationSystem();
-  appSys.initApp();
+  await appSys.initApp();
 
   /*offline = Offline(false);
   if (Platform.isAndroid || Platform.isIOS) {

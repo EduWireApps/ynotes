@@ -48,7 +48,9 @@ class _HomeworkSettingPageState extends State<HomeworkSettingPage> {
                   fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.2),
             ),
             onChanged: (value) async {
-              appSys.settings["user"]["homeworkPage"]["isExpandedByDefault"] = value;
+              appSys.updateSetting(appSys.settings["user"]["homeworkPage"], "isExpandedByDefault", value);
+
+
             },
             secondary: Icon(
               MdiIcons.arrowExpand,

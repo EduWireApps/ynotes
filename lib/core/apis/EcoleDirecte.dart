@@ -361,7 +361,7 @@ Future getMails({bool checking}) async {
       if (checking == null) {
         print("checking mails");
         List<Mail> receivedMails = mailsList.where((element) => element.mtype == "received").toList();
-        appSys.settings["system"]["lastMailCount"] = receivedMails.length;
+        appSys.updateSetting(appSys.settings["system"], "lastMailCount", receivedMails.length);
         print("checked mails");
       }
 

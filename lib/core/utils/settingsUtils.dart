@@ -5,7 +5,7 @@ import 'package:ynotes/core/utils/nullSafeMap.dart';
 
 class SettingsUtils {
   static const Map secureSettingsForm = {"username": "", "password": "", "pronoteurl": "", "pronotecas": ""};
-  static const Map settingsForm = {
+  static Map settingsForm = {
     //System global settings
     "system": {
       "firstUse": false,
@@ -72,21 +72,28 @@ class SettingsUtils {
     Map _settings;
     Map _oldSettings;
     Map _newSettings;
-
     _oldSettings = getOldSettings();
+    print(_oldSettings == null);
     _newSettings = await getSavedSettings();
+
+    print(_newSettings == null);
 
     //merge settings
     _settings = {
       ..._oldSettings,
-      ..._newSettings,
+      ..._newSettings ?? settingsForm,
     };
     return _settings;
   }
 
   static Future<Map> getSavedSettings() async {
     final prefs = await SharedPreferences.getInstance();
-    String settings = prefs.getString("settings") ?? json.encode(settingsForm);
+    String settings = prefs.getString("settings");
+
+    if (settings == null) {
+      settings = json.encode(settingsForm);
+    }
+    print(settings);
     Map _settings = json.decode(settings);
     return _settings;
   }

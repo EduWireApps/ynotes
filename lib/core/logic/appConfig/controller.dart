@@ -23,15 +23,13 @@ class Test {
 
 ///Top level application sytem class
 class ApplicationSystem extends ChangeNotifier {
-  Map _settings;
+  Map settings;
 
-  set settings(Map newValue) {
-    _settings = settings;
-    SettingsUtils.setSetting(_settings);
+  updateSetting(Map path, String key, var value) {
+    path[key] = value;
+    SettingsUtils.setSetting(settings);
     notifyListeners();
   }
-
-  get settings => _settings;
 
   ///A boolean representing the use of the application
   bool isFirstUse;
@@ -58,10 +56,11 @@ class ApplicationSystem extends ChangeNotifier {
   initApp() async {
     //set settings
     await _initSettings();
-    //Set offline
-    await _initOffline();
     //Set theme to default
     updateTheme(settings["user"]["global"]["theme"]);
+    //Set offline
+    await _initOffline();
+
     //Set api
     this.api = APIManager(this.offline);
     //Set background fetch
@@ -74,6 +73,7 @@ class ApplicationSystem extends ChangeNotifier {
     print("Updating theme to " + themeName);
     theme = appThemes[themeName];
     this.themeName = themeName;
+    updateSetting(this.settings["user"]["global"], "theme", themeName);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
         systemNavigationBarColor: theme.backgroundColor, statusBarColor: Colors.transparent // navigation bar color
         // status bar color
@@ -105,10 +105,10 @@ class ApplicationSystem extends ChangeNotifier {
     }
   }
 
-  _initOffline() {
+  _initOffline() async {
     //Initiate an unlocked offline controller
     offline = Offline(false);
-    offline.init();
+    await offline.init();
   }
 
   _initControllers() {

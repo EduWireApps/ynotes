@@ -50,7 +50,8 @@ class _AgendaSettingsState extends State<AgendaSettings> {
                   fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.16),
             ),
             onChanged: (value) async {
-              appSys.settings["user"]["agendaPage"]["lighteningOverride"] = value;
+              appSys.updateSetting(appSys.settings["user"]["agendaPage"], "lighteningOverride", value);
+              setState(() {});
             },
             secondary: Icon(
               MdiIcons.zipBox,
@@ -63,7 +64,7 @@ class _AgendaSettingsState extends State<AgendaSettings> {
                 style: TextStyle(
                     fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.21)),
             onChanged: (value) async {
-              appSys.settings["user"]["agendaPage"]["reverseWeekNames"] = value;
+              appSys.updateSetting(appSys.settings["user"]["agendaPage"], "reverseWeekNames", value);
               setState(() {});
             },
             secondary: Icon(
@@ -83,7 +84,7 @@ class _AgendaSettingsState extends State<AgendaSettings> {
             onTap: () async {
               var value = await CustomDialogs.showNumberChoiceDialog(context, text: "la durée");
               if (value != null) {
-                appSys.settings["user"]["agendaPage"]["agendaOnGoingNotification"] = value;
+                appSys.updateSetting(appSys.settings["user"]["agendaPage"], "agendaOnGoingNotification", value);
                 setState(() {});
               }
             },

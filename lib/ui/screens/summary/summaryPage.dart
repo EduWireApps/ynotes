@@ -74,6 +74,10 @@ class SummaryPageState extends State<SummaryPage> {
                 }
               })
             });
+
+    //Init controllers
+    appSys.gradesController.refresh(force: false);
+    appSys.homeworkController.refresh(force: false);
   }
 
   void triggerSettings() {
@@ -98,7 +102,8 @@ class SummaryPageState extends State<SummaryPage> {
   showUpdateNote() async {
     if ((await appSys.settings["system"]["lastReadUpdateNote"] != "0.9.2")) {
       await CustomDialogs.showUpdateNoteDialog(context);
-      appSys.settings["system"]["lastReadUpdateNote"] = "0.9.2";
+
+      appSys.updateSetting(appSys.settings["system"], "lastReadUpdateNote", "0.9.2");
     }
   }
 

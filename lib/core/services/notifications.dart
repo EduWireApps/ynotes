@@ -71,7 +71,8 @@ class AppNotification {
     }
     if (receivedNotification.channelKey == "persisnotif" &&
         receivedNotification.toMap()["buttonKeyPressed"] == "KILL") {
-      appSys.settings["user"]["agendaPage"]["agendaOnGoingNotification"] = false;
+      appSys.updateSetting(appSys.settings["user"]["agendaPage"], "agendaOnGoingNotification", false);
+
       await AppNotification.cancelOnGoingNotification();
       return;
     }

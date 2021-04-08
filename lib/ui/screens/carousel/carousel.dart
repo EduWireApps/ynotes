@@ -556,28 +556,22 @@ class _page4State extends State<page4> {
                 Divider(
                   color: ThemeUtils.textColor(),
                 ),
-                FutureBuilder(
-                    future: appSys.settings["user"]["global"]["nightmode"],
-                    initialData: false,
-                    builder: (context, snapshot) {
-                      return SwitchListTile(
-                        value: snapshot.data,
-                        title: Text("Mode nuit",
-                            style: TextStyle(
-                                fontFamily: "Asap",
-                                color: ThemeUtils.textColor(),
-                                fontSize: screenSize.size.height / 10 * 0.3)),
-                        onChanged: (value) {
-                          setState(() {
-                            appSys.updateTheme(value ? "sombre" : "clair");
-                          });
-                        },
-                        secondary: Icon(
-                          Icons.lightbulb_outline,
+                SwitchListTile(
+                  value: ThemeUtils.isThemeDark,
+                  title: Text("Mode nuit",
+                      style: TextStyle(
+                          fontFamily: "Asap",
                           color: ThemeUtils.textColor(),
-                        ),
-                      );
-                    }),
+                          fontSize: screenSize.size.height / 10 * 0.3)),
+                  onChanged: (value) {
+                    appSys.updateTheme(value ? "sombre" : "clair");
+                    setState(() {});
+                  },
+                  secondary: Icon(
+                    Icons.lightbulb_outline,
+                    color: ThemeUtils.textColor(),
+                  ),
+                ),
                 Divider(
                   color: ThemeUtils.textColor(),
                 ),
@@ -588,79 +582,68 @@ class _page4State extends State<page4> {
                   textAlign: TextAlign.center,
                 ),
                 Divider(),
-                FutureBuilder(
-                    future: appSys.settings["user"]["global"]["notificationNewGrade"],
-                    initialData: false,
-                    builder: (context, snapshot) {
-                      return SwitchListTile(
-                          value: snapshot.data,
-                          title: Text(
-                            "Notification de nouvelle note",
-                            style: TextStyle(
-                                fontFamily: "Asap",
-                                color: ThemeUtils.textColor(),
-                                fontSize: screenSize.size.height / 10 * 0.3),
-                          ),
-                          secondary: Icon(
-                            MdiIcons.newBox,
-                            color: ThemeUtils.textColor(),
-                          ),
-                          onChanged: (value) async {
-                            if ((await Permission.ignoreBatteryOptimizations.isGranted)) {
-                              appSys.settings["user"]["global"]["notificationNewGrade"] = value;
-                              setState(() {});
-                            } else {
-                              if (await CustomDialogs.showAuthorizationsDialog(
-                                      context,
-                                      "la configuration d'optimisation de batterie",
-                                      "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ??
-                                  false) {
-                                if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
-                                  appSys.settings["user"]["global"]["notificationNewGrade"] = value;
+                SwitchListTile(
+                    value: appSys.settings["user"]["global"]["notificationNewGrade"],
+                    title: Text(
+                      "Notification de nouvelle note",
+                      style: TextStyle(
+                          fontFamily: "Asap",
+                          color: ThemeUtils.textColor(),
+                          fontSize: screenSize.size.height / 10 * 0.3),
+                    ),
+                    secondary: Icon(
+                      MdiIcons.newBox,
+                      color: ThemeUtils.textColor(),
+                    ),
+                    onChanged: (value) async {
+                      if ((await Permission.ignoreBatteryOptimizations.isGranted)) {
+                        appSys.updateSetting(appSys.settings["user"]["global"], "notificationNewGrade", value);
+                        setState(() {});
+                      } else {
+                        if (await CustomDialogs.showAuthorizationsDialog(
+                                context,
+                                "la configuration d'optimisation de batterie",
+                                "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ??
+                            false) {
+                          if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
+                            appSys.updateSetting(appSys.settings["user"]["global"], "notificationNewGrade", value);
 
-                                  setState(() {});
-                                }
-                              }
-                            }
-                          });
+                            setState(() {});
+                          }
+                        }
+                      }
                     }),
                 Divider(),
-                FutureBuilder(
-                    future: appSys.settings["user"]["global"]["notificationNewMail"],
-                    initialData: false,
-                    builder: (context, snapshot) {
-                      return SwitchListTile(
-                        value: snapshot.data,
-                        title: Text(
-                          "Notification de nouveau mail",
-                          style: TextStyle(
-                              fontFamily: "Asap",
-                              color: ThemeUtils.textColor(),
-                              fontSize: screenSize.size.height / 10 * 0.3),
-                        ),
-                        onChanged: (value) async {
-                          if ((await Permission.ignoreBatteryOptimizations.isGranted)) {
-                            appSys.settings["user"]["global"]["notificationNewMail"] = value;
-                            setState(() {});
-                          } else {
-                            if (await CustomDialogs.showAuthorizationsDialog(
-                                    context,
-                                    "la configuration d'optimisation de batterie",
-                                    "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ??
-                                false) {
-                              if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
-                                appSys.settings["user"]["global"]["notificationNewMail"] = value;
-                                setState(() {});
-                              }
-                            }
-                          }
-                        },
-                        secondary: Icon(
-                          MdiIcons.newBox,
-                          color: ThemeUtils.textColor(),
-                        ),
-                      );
-                    }),
+                SwitchListTile(
+                  value: appSys.settings["user"]["global"]["notificationNewMail"],
+                  title: Text(
+                    "Notification de nouveau mail",
+                    style: TextStyle(
+                        fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.3),
+                  ),
+                  onChanged: (value) async {
+                    if ((await Permission.ignoreBatteryOptimizations.isGranted)) {
+                      appSys.updateSetting(appSys.settings["user"]["global"], "notificationNewMail", value);
+
+                      setState(() {});
+                    } else {
+                      if (await CustomDialogs.showAuthorizationsDialog(
+                              context,
+                              "la configuration d'optimisation de batterie",
+                              "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ??
+                          false) {
+                        if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
+                          appSys.updateSetting(appSys.settings["user"]["global"], "notificationNewMail", value);
+                          setState(() {});
+                        }
+                      }
+                    }
+                  },
+                  secondary: Icon(
+                    MdiIcons.newBox,
+                    color: ThemeUtils.textColor(),
+                  ),
+                ),
                 Divider(
                   color: ThemeUtils.textColor(),
                 ),

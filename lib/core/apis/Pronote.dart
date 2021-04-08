@@ -54,7 +54,7 @@ class APIPronote extends API {
       }
       toReturn = await refreshDisciplinesListColors(toReturn);
       if (toReturn != null) {
-        appSys.settings["system"]["lastGradeCount"] = getAllGrades(toReturn, overrideLimit: true).length;
+        appSys.updateSetting(appSys.settings["system"], "lastGradeCount", getAllGrades(toReturn, overrideLimit: true).length);
       }
 
       return toReturn;
