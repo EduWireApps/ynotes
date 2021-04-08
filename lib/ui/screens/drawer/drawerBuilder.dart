@@ -153,9 +153,6 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
     initControllers();
     initPageControllers();
     //Page sys
-    ConnectionStatusSingleton connectionStatus = ConnectionStatusSingleton.getInstance();
-    tabBarconnexion = connectionStatus.connectionChange.listen(connectionChanged);
-    isOffline = !connectionStatus.hasConnection;
     _previousPage = drawerPageViewController.initialPage;
   }
 
@@ -199,13 +196,6 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
       end: 1.3,
     ).animate(
         new CurvedAnimation(parent: quickMenuAnimationController, curve: Curves.easeIn, reverseCurve: Curves.easeOut));
-  }
-
-  void connectionChanged(dynamic hasConnection) {
-    print("Connection changed");
-    setState(() {
-      isOffline = !hasConnection;
-    });
   }
 
   _onPageViewUpdate() {

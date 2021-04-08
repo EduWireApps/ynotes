@@ -54,6 +54,7 @@ Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   appSys = ApplicationSystem();
   await appSys.initApp();
+  appSys.loginController = LoginController();
 
   /*offline = Offline(false);
   if (Platform.isAndroid || Platform.isIOS) {
@@ -64,15 +65,10 @@ Future main() async {
   await reloadChosenApi();
 
   appSys.api = APIManager(offline);
-  appSys.loginController = LoginController();
   //Set system notification bar color
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
       systemNavigationBarColor: ThemeUtils.isThemeDark ? Color(0xff414141) : Color(0xffF3F3F3),
-      statusBarColor: Colors.transparent));
-  ConnectionStatusSingleton connectionStatus = ConnectionStatusSingleton.getInstance();
-
-  //Load connection status
-  connectionStatus.initialize();*/
+      statusBarColor: Colors.transparent));*/
   runZoned<Future<Null>>(() async {
     runApp(HomeApp());
   });
@@ -182,9 +178,7 @@ class homePage extends StatelessWidget {
     return Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
         body: SafeArea(
-          child: DrawerBuilder(
-           
-          ),
+          child: DrawerBuilder(),
         ));
   }
 }

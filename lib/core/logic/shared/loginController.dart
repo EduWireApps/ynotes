@@ -1,3 +1,4 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
@@ -31,14 +32,19 @@ class LoginController extends ChangeNotifier {
     notifyListeners();
   }
 
+  Connectivity _connectivity = Connectivity();
+  LoginController() {
+    _connectivity.onConnectivityChanged.listen(connectionChanged);
+  }
+
   init() async {
-    ConnectionStatusSingleton connectionStatus = ConnectionStatusSingleton.getInstance();
-    if (await connectionStatus.checkConnection() == false) {
+    print("Init connection status");
+
+    if (await _connectivity.checkConnectivity() == ConnectivityResult.none) {
       _actualState = loginStatus.offline;
       _details = "Vous êtes hors ligne";
       notifyListeners();
     }
-    internetConnexion = connectionStatus.connectionChange.listen(connectionChanged);
     if (_actualState != loginStatus.offline && appSys.api.loggedIn == false) {
       await login();
     } else if (appSys.api.loggedIn) {
@@ -49,8 +55,8 @@ class LoginController extends ChangeNotifier {
   }
 
 //on connection change
-  void connectionChanged(dynamic hasConnection) async {
-    if (hasConnection != true) {
+  void connectionChanged(dynamic hasConnection) {
+    if (hasConnection == ConnectivityResult.none) {
       _actualState = loginStatus.offline;
       _details = "Vous êtes hors ligne";
       notifyListeners();
@@ -58,7 +64,7 @@ class LoginController extends ChangeNotifier {
       _actualState = loginStatus.loggedOff;
       _details = "Reconnecté";
       notifyListeners();
-      await login();
+      login();
     }
   }
 
