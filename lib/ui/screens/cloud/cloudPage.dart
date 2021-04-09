@@ -8,6 +8,7 @@ import 'package:ynotes/core/logic/shared/downloadController.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
+import 'package:ynotes/ui/components/customLoader.dart';
 
 import '../../../main.dart';
 import '../../../usefulMethods.dart';
@@ -370,10 +371,8 @@ class _CloudPageState extends State<CloudPage> {
                                   );
                                 } else {
                                   return Center(
-                                    child: SpinKitFadingFour(
-                                      color: Theme.of(context).primaryColorDark,
-                                      size: screenSize.size.width / 5 * 0.7,
-                                    ),
+                                    child: CustomLoader(screenSize.size.width / 5 * 2.5,
+                                        screenSize.size.width / 5 * 2.5, Theme.of(context).primaryColorDark),
                                   );
                                 }
                               }),

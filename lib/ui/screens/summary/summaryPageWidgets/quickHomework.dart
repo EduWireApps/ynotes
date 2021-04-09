@@ -391,7 +391,7 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
                                       .widget
                                       ._homework
                                       .date
-                                      .isAtSameMomentAs(DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now())))
+                                      .isBefore(DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now())))
                                   ? null
                                   : (bool x) async {
                                       widget.refreshCallback();

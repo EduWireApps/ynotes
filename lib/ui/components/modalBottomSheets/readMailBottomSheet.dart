@@ -8,6 +8,7 @@ import 'package:marquee/marquee.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:stacked/stacked.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:ynotes/ui/components/customLoader.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/core/logic/shared/downloadController.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
@@ -399,9 +400,9 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                       )
                                     ],
                                   )
-                                : SpinKitFadingFour(
-                                    color: Theme.of(context).primaryColorDark,
-                                    size: screenSize.size.width / 5 * 0.7,
+                                : Center(
+                                    child: CustomLoader(screenSize.size.width / 5 * 2.5,
+                                        screenSize.size.width / 5 * 2.5, Theme.of(context).primaryColorDark),
                                   ),
                           )
                         ],
