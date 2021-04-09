@@ -1,16 +1,11 @@
-import 'dart:math';
-
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
+import 'package:ynotes/ui/components/customLoader.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
-import 'package:ynotes/ui/screens/grades/gradesPage.dart';
-import 'package:ynotes/core/apis/Pronote.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/main.dart';
@@ -59,8 +54,8 @@ class _QuickGradesState extends State<QuickGrades> {
                           ? SummaryChart(
                               getAllGrades(disciplines, overrideLimit: true, sortByWritingDate: true),
                             )
-                          : SpinKitThreeBounce(
-                              color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4))
+                          : CustomLoader(
+                              screenSize.size.width / 5 * 2.5, screenSize.size.width / 5 * 2.5, Color(0xff4A446D)))
                 ],
               ),
             )));

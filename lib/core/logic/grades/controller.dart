@@ -83,7 +83,6 @@ class GradesController extends ChangeNotifier {
     _setAverage();
     _setBestAverage();
     await _setListSpecialties();
-
     notifyListeners();
   }
 
