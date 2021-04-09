@@ -1,15 +1,21 @@
+import 'dart:math';
+
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
+import 'package:ynotes/ui/animations/FadeAnimation.dart';
 import 'package:ynotes/ui/components/customLoader.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
+import 'package:ynotes/ui/screens/grades/gradesPage.dart';
+import 'package:ynotes/core/apis/Pronote.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/main.dart';
-import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/screens/summary/summaryPageWidgets/chart.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
@@ -27,7 +33,7 @@ class _QuickGradesState extends State<QuickGrades> {
     await this.widget.gradesController.refresh(force: true);
   }
 
-  Widget buildChart(BuildContext context, List<Discipline> disciplines, bool fetching) {
+  Widget buildCHart(BuildContext context, List<Discipline> disciplines, bool fetching) {
     var screenSize = MediaQuery.of(context);
 
     //First division (gauge)
@@ -45,17 +51,23 @@ class _QuickGradesState extends State<QuickGrades> {
               color: Colors.transparent,
               width: screenSize.size.width / 5 * 4.5,
               height: (screenSize.size.height / 10 * 8.8) / 10 * 2,
-              child: Row(
+              child: Stack(
                 children: [
-                  Container(
-                      color: Colors.transparent,
-                      width: screenSize.size.width / 5 * 4.5,
-                      child: (disciplines != null && !fetching)
-                          ? SummaryChart(
-                              getAllGrades(disciplines, overrideLimit: true, sortByWritingDate: true),
-                            )
-                          : CustomLoader(
-                              screenSize.size.width / 5 * 2.5, screenSize.size.width / 5 * 2.5, Color(0xff4A446D)))
+                  Row(
+                    children: [
+                      Container(
+                          color: Colors.transparent,
+                          width: screenSize.size.width / 5 * 4.5,
+                          child: (disciplines != null && !fetching)
+                              ? ClipRRect(
+                                  child: SummaryChart(
+                                    getAllGrades(disciplines, overrideLimit: true, sortByWritingDate: true),
+                                  ),
+                                )
+                              : CustomLoader(
+                                  screenSize.size.width / 5 * 2.5, screenSize.size.width / 5 * 2.5, Color(0xff5c66c1)))
+                    ],
+                  ),
                 ],
               ),
             )));
@@ -118,7 +130,7 @@ class _QuickGradesState extends State<QuickGrades> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (grade.disciplineName != null && grade.disciplineName != "")
+              if (grade.disciplineName != null || grade.disciplineName != "")
                 Text(
                   grade.disciplineName ?? "",
                   style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
@@ -203,7 +215,7 @@ class _QuickGradesState extends State<QuickGrades> {
       value: widget.gradesController,
       child: Consumer<GradesController>(builder: (context, model, child) {
         return Column(children: [
-          buildChart(context, model.disciplines(showAll: true), model.isFetching),
+          buildCHart(context, model.disciplines(showAll: true), model.isFetching),
           buildGradesList(
               context, getAllGrades(model.disciplines(showAll: true), overrideLimit: true, sortByWritingDate: true)),
         ]);

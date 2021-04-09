@@ -487,7 +487,8 @@ class _ExitDialogWidgetState extends State<ExitDialogWidget> {
               style: TextStyle(color: Colors.red),
             ),
             onPressed: () async {
-              await exitApp();
+              await appSys.exitApp();
+              appSys.api.gradesList.clear();
               setState(() {});
               try {
                 appSys.updateTheme("clair");

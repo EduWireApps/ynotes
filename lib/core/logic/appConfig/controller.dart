@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
@@ -11,7 +12,9 @@ import 'package:ynotes/core/logic/shared/loginController.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/background.dart';
 import 'package:ynotes/core/services/notifications.dart';
+import 'package:ynotes/core/services/shared_preferences.dart';
 import 'package:ynotes/core/utils/settingsUtils.dart';
+import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/ui/themes/themesList.dart';
 
 class Test {
@@ -66,7 +69,7 @@ class ApplicationSystem extends ChangeNotifier {
     //Set background fetch
     await _initBackgroundFetch();
     //Set controllers
-    await _initControllers();
+    await initControllers();
   }
 
   updateTheme(String themeName) {
@@ -75,7 +78,8 @@ class ApplicationSystem extends ChangeNotifier {
     this.themeName = themeName;
     updateSetting(this.settings["user"]["global"], "theme", themeName);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        systemNavigationBarColor: theme.backgroundColor, statusBarColor: Colors.transparent // navigation bar color
+        systemNavigationBarColor: ThemeUtils.isThemeDark ? theme.primaryColorLight : theme.primaryColorDark,
+        statusBarColor: Colors.transparent // navigation bar color
         // status bar color
         ));
     notifyListeners();
@@ -84,6 +88,27 @@ class ApplicationSystem extends ChangeNotifier {
   _initSettings() async {
     settings = await SettingsUtils.getSettings();
     notifyListeners();
+  }
+
+//Leave app
+  exitApp() async {
+    try {
+      await this.offline.clearAll();
+      //Delete sharedPref
+      SharedPreferences preferences = await SharedPreferences.getInstance();
+      await preferences.clear();
+      //Import secureStorage
+      final storage = new FlutterSecureStorage();
+      //Delete all
+      await storage.deleteAll();
+      this.updateTheme("clair");
+      //delete hive files
+      this._initOffline();
+      this.gradesController = GradesController(api);
+      this.homeworkController = HomeworkController(api);
+    } catch (e) {
+      print(e);
+    }
   }
 
   _initBackgroundFetch() async {
@@ -111,7 +136,7 @@ class ApplicationSystem extends ChangeNotifier {
     await offline.init();
   }
 
-  _initControllers() {
+  initControllers() {
     loginController = LoginController();
     gradesController = GradesController(this.api);
     homeworkController = HomeworkController(this.api);

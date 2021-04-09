@@ -14,9 +14,9 @@ import 'package:ynotes/usefulMethods.dart';
 //Return the good API (will be extended to Pronote)
 APIManager(Offline _offline) {
   //The parser list index corresponding to the user choice
-
   switch (appSys.settings["system"]["chosenParser"]) {
     case 0:
+    
       return APIEcoleDirecte(_offline);
 
     case 1:
