@@ -13,6 +13,7 @@ import 'package:pointycastle/asymmetric/pkcs1.dart';
 import 'package:pointycastle/asymmetric/rsa.dart';
 import 'package:pointycastle/pointycastle.dart';
 import 'package:requests/requests.dart';
+import 'package:ynotes/core/apis/Pronote/pronoteConverters.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
 
@@ -31,7 +32,7 @@ Map error_messages = {
 };
 bool isOldAPIUsed = false;
 
-class Client {
+class PronoteClient {
   var username;
   var password;
   var pronote_url;
@@ -96,7 +97,7 @@ class Client {
     this.expired = true;
   }
 
-  Client(String pronote_url, {String username, String password, var cookies, bool mobileLogin}) {
+  PronoteClient(String pronote_url, {String username, String password, var cookies, bool mobileLogin}) {
     if (cookies == null && password == null && username == null) {
       throw 'Please provide login credentials. Cookies are None, and username and password are empty.';
     }
@@ -514,7 +515,7 @@ class Client {
         "saisieActualite": false
       }
     };
-    print(data);
+
     var response = await this.communication.post('SaisieActualites', data: data);
     print(response);
   }
@@ -552,7 +553,6 @@ class Client {
           "saisieActualite": false
         }
       };
-      print(data);
       var response = await this.communication.post('SaisieActualites', data: data);
       print(response);
     } catch (e) {
@@ -564,6 +564,7 @@ class Client {
     initializeDateFormatting();
     var user = this.paramsUser['donneesSec']['donnees']['ressource'];
     List<Lesson> listToReturn = List();
+    //Set request
     Map data = {
       "_Signature_": {"onglet": 16},
       "donnees": {
@@ -580,7 +581,6 @@ class Client {
 
     var output = [];
     var firstWeek = await get_week(date_from);
-    print(firstWeek);
     if (date_to == null) {
       date_to = date_from;
     }
@@ -588,57 +588,14 @@ class Client {
     for (int week = firstWeek; lastWeek < lastWeek + 1; ++lastWeek) {
       data["donnees"]["NumeroSemaine"] = lastWeek;
       data["donnees"]["numeroSemaine"] = lastWeek;
-
       var response = await this.communication.post('PageEmploiDuTemps', data: data);
 
       var lessonsList = response['donneesSec']['donnees']['ListeCours'];
       lessonsList.forEach((lesson) {
         try {
-          //Lesson(String room, List<String> teachers, DateTime start, int duration, bool canceled, String status, List<String> groups, String content, String matiere, String codeMatiere)
-          String room;
-          try {
-            var roomContainer = lesson["ListeContenus"]["V"].firstWhere((element) => element["G"] == 17);
-            room = roomContainer["L"];
-          }
-          //Sort of null aware
-          catch (e) {}
-
-          List<String> teachers = List();
-          try {
-            lesson["ListeContenus"]["V"].forEach((element) {
-              if (element["G"] == 3) {
-                teachers.add(element["L"]);
-              }
-            });
-          } catch (e) {}
-
-          DateTime start = DateFormat("dd/MM/yyyy HH:mm:ss", "fr_FR").parse(lesson["DateDuCours"]["V"]);
-          DateTime end = start.add(Duration(minutes: this.oneHourDuration * lesson["duree"]));
-          int duration = this.oneHourDuration * lesson["duree"];
-          String matiere = lesson["ListeContenus"]["V"][0]["L"];
-          String codeMatiere = lesson["ListeContenus"]["V"][0]["L"].hashCode.toString();
-          String id = lesson["N"];
-          String status;
-          bool canceled = false;
-          if (lesson["Statut"] != null) {
-            status = lesson["Statut"];
-          }
-          if (lesson["estAnnule"] != null) {
-            canceled = lesson["estAnnule"];
-          }
-          listToReturn.add(Lesson(
-              room: room,
-              teachers: teachers,
-              start: start,
-              end: end,
-              duration: duration,
-              canceled: canceled,
-              status: status,
-              discipline: matiere,
-              id: id,
-              disciplineCode: codeMatiere));
+          listToReturn.add(PronoteConverter.lesson(this, lesson));
         } catch (e) {
-          print("Error while getting lessons " + e.toString());
+          print(e);
         }
       });
       print("Agenda collecte succeeded");
@@ -647,6 +604,7 @@ class Client {
   }
 }
 
+//Remove some random security in challenge
 removeAlea(String text) {
   List sansalea = List();
   int i = 0;
@@ -661,6 +619,7 @@ removeAlea(String text) {
   return sansalea.join("");
 }
 
+///Communication class used to send requests to Pronote
 class Communication {
   var cookies;
   var client;
@@ -741,7 +700,6 @@ class Communication {
 
     //uuid
     var jsonPost = {'Uuid': uuid, 'identifiantNav': null};
-    print(this.attributes);
     this.shouldEncryptRequests = (this.attributes["sCrA"] == null);
     if (this.attributes["sCrA"] == null) {
       this.client.stepsLogger.add("ⓘ" + " Requests will be encrypted");
@@ -791,7 +749,6 @@ class Communication {
         throw ('Action not permitted. (onglet is not normally accessible)');
       }
     }
-    print(data);
     if (this.shouldCompressRequests) {
       print("Compress request");
       data = conv.jsonEncode(data);
@@ -820,7 +777,8 @@ class Communication {
     print(p_site);
 
     this.requestNumber += 2;
-    if (requestNumber > 90) {
+    if (requestNumber > 190) {
+      print("WELL DUH" +requestNumber.toString());
       await this.client.refresh();
     }
 
@@ -1047,7 +1005,7 @@ class KeepAlive {
 
   bool keepAlive;
 
-  void init(Client client) {
+  void init(PronoteClient client) {
     this._connection = client.communication;
     this.keepAlive = true;
   }
@@ -1078,7 +1036,7 @@ class PronotePeriod {
   var moyenneGenerale;
   var moyenneGeneraleClasse;
 
-  Client _client;
+  PronoteClient _client;
 
   // Represents a period of the school year. You shouldn't have to create this class manually.
 
@@ -1093,7 +1051,7 @@ class PronotePeriod {
   // end : str
   //     date on which the period ends
 
-  PronotePeriod(Client client, Map parsedJson) {
+  PronotePeriod(PronoteClient client, Map parsedJson) {
     this._client = client;
     this.id = parsedJson['N'];
     this.name = parsedJson['L'];
@@ -1192,23 +1150,5 @@ class PronotePeriod {
       other.add(average(response, (mapGet(element, ["service", "V", "L"]) ?? "").hashCode.toString()));
     });
     return [list, other];
-  }
-}
-
-class PronoteLesson {
-  String id;
-  String teacherName;
-  String classroom;
-  bool canceled;
-  String status;
-  String backgroundColor;
-  String outing;
-  DateTime start;
-  String groupName;
-  var _content;
-  Client _client;
-  PronoteLesson(Client client, var parsedJson) {
-    this._client = client;
-    this._content = null;
   }
 }

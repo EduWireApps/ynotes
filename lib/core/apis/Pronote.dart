@@ -13,7 +13,7 @@ import 'package:ynotes/core/logic/shared/loginController.dart';
 
 import 'package:ynotes/usefulMethods.dart';
 
-Client localClient;
+PronoteClient localClient;
 //Locks are use to prohibit the app to send too much requests while collecting data and ensure there are made one by one
 //They are ABSOLUTELY needed or user will be quickly IP suspended
 bool gradeLock = false;
@@ -270,7 +270,7 @@ class APIPronote extends API {
       loginLock = true;
       try {
         var cookies = await callCas(cas, username, password, url ?? "");
-        localClient = Client(url, username: username, password: password, mobileLogin: mobileCasLogin, cookies: cookies);
+        localClient = PronoteClient(url, username: username, password: password, mobileLogin: mobileCasLogin, cookies: cookies);
 
         await localClient.init();
         if (localClient.loggedIn) {
@@ -462,9 +462,10 @@ class APIPronote extends API {
           toReturn.addAll(offlineLesson);
 
           //filter lessons
-          toReturn.removeWhere((lesson) =>
-              DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) !=
-              DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)));
+          toReturn ??
+              [].removeWhere((lesson) =>
+                  DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) !=
+                  DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)));
         }
         //Check if needed to force refresh if not offline
         if ((forceReload == true || toReturn == null) && connectivityResult != ConnectivityResult.none) {
@@ -480,7 +481,7 @@ class APIPronote extends API {
         }
 
         lessonsLock = false;
-        toReturn.sort((a, b) => a.start.compareTo(b.start));
+        toReturn ?? [].sort((a, b) => a.start.compareTo(b.start));
         return toReturn
             .where((lesson) =>
                 DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) ==
@@ -494,10 +495,11 @@ class APIPronote extends API {
           lessonsRefreshRecursive = true;
           await refreshClient();
           toReturn = await localClient.lessons(dateToUse);
-          toReturn.removeWhere((lesson) =>
-              DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) !=
-              DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)));
-          toReturn.sort((a, b) => a.start.compareTo(b.start));
+          toReturn ??
+              [].removeWhere((lesson) =>
+                  DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) !=
+                  DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)));
+          toReturn ?? [].sort((a, b) => a.start.compareTo(b.start));
 
           return toReturn;
         }
