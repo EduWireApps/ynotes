@@ -3,6 +3,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/ui/animations/FadeAnimation.dart';
+import 'package:ynotes/ui/components/customLoader.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPage.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/main.dart';
@@ -175,10 +176,8 @@ class _HomeworkSecondPageState extends State<HomeworkSecondPage> {
                                     ),
                                   ))
                         : Center(
-                            child: SpinKitFadingFour(
-                            color: Theme.of(context).primaryColorDark,
-                            size: screenSize.size.width / 5 * 1,
-                          ))),
+                            child: CustomLoader(screenSize.size.width / 5 * 2.5, screenSize.size.width / 5 * 2.5,
+                                Theme.of(context).primaryColor))),
               ],
             ),
           );
