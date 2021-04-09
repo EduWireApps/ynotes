@@ -63,7 +63,6 @@ class SummaryPageState extends State<SummaryPage> {
         offset = _pageControllerSummaryPage.offset;
       });
     });
-    disciplinesListFuture = appSys.api.getGrades();
 
     SchedulerBinding.instance.addPostFrameCallback(!mounted
         ? null
@@ -78,6 +77,8 @@ class SummaryPageState extends State<SummaryPage> {
     //Init controllers
     appSys.gradesController.refresh(force: false);
     appSys.homeworkController.refresh(force: false);
+    appSys.gradesController.refresh(force: true);
+    appSys.homeworkController.refresh(force: true);
   }
 
   void triggerSettings() {
