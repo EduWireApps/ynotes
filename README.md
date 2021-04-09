@@ -105,8 +105,10 @@ Suivez les étapes de compilation de la documentation officielle :
 # Compatibilité
 yNotes est disponible pour les utilisateurs suivants :
 - Utilisateurs d'EcoleDirecte (comptes élèves)
-- Utilisateurs Pronote
-  -  Par connexion directe (grâce à l'ad
+- Utilisateurs Pronote (comptes élèves)
+  - Par connexion directe (munissez vous d'une [adresse Pronote valide](https://support.ynotes.fr/compte/se-connecter-avec-son-compte-pronote)) ou géolocalisation
+    - Support HTTPS et HTTP
+    - Support de tous les ENT/CAS
   
   Nous ajoutons actuellement une fonction qui permettra de se connecter à partir de __n'importe quel ENT__.
 
