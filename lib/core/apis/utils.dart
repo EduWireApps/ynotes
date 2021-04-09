@@ -25,7 +25,7 @@ APIManager(Offline _offline) {
 }
 
 setChosenParser(int chosen) async {
-  appSys.updateSetting(appSys.settings["system"], "chosenApi", chosen);
+  appSys.updateSetting(appSys.settings["system"], "chosenParser", chosen);
 }
 
 testIfPronoteCas(String url) async {
