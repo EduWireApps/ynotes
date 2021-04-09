@@ -97,6 +97,9 @@ class ApplicationSystem extends ChangeNotifier {
       //Delete sharedPref
       SharedPreferences preferences = await SharedPreferences.getInstance();
       await preferences.clear();
+      //delte local setings and init them
+      this.settings.clear();
+      this._initSettings();
       //Import secureStorage
       final storage = new FlutterSecureStorage();
       //Delete all

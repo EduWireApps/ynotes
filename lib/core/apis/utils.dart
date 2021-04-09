@@ -16,7 +16,6 @@ APIManager(Offline _offline) {
   //The parser list index corresponding to the user choice
   switch (appSys.settings["system"]["chosenParser"]) {
     case 0:
-    
       return APIEcoleDirecte(_offline);
 
     case 1:
@@ -54,6 +53,19 @@ getRootAddress(addr) {
 get_week(DateTime date) async {
   final storage = new FlutterSecureStorage();
   return (1 + (date.difference(DateTime.parse(await storage.read(key: "startday"))).inDays / 7).floor()).round();
+}
+
+checkPronoteURL(String url) async {
+  var response = await http
+      .get(Uri.parse(getRootAddress(url)[0] +
+          (url[url.length - 1] == "/" ? "" : "/") +
+          "InfoMobileApp.json?id=0D264427-EEFC-4810-A9E9-346942A862A4"))
+      .catchError((e) {});
+  if (response != null && response.statusCode == 200) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 ///Generate lesson ID using, the next scheme : week parity (1 or 2), day of week (1-7) and an hashcode

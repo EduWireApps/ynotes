@@ -106,9 +106,7 @@ Suivez les étapes de compilation de la documentation officielle :
 yNotes est disponible pour les utilisateurs suivants :
 - Utilisateurs d'EcoleDirecte (comptes élèves)
 - Utilisateurs Pronote
-  -  Par connexion directe (sans ENT ou ?login=true) **HTTPS** :
-  si votre adresse Pronote contient **HTTP** yNotes ne poura pas se connecter. Ceci est en cours de correction et sera disponible dans quelques jours à date de l'écriture de ces lignes.
-  -  Avec l'ENT Ile de France
+  -  Par connexion directe (grâce à l'ad
   
   Nous ajoutons actuellement une fonction qui permettra de se connecter à partir de __n'importe quel ENT__.
 
