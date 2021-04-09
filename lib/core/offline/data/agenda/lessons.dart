@@ -2,6 +2,7 @@ import 'package:hive/hive.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/offline/offline.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 class LessonsOffline extends Offline {
@@ -53,7 +54,7 @@ class LessonsOffline extends Offline {
 
           int todayWeek = await get_week(DateTime.now());
 
-          bool lighteningOverride = await getSetting("lighteningOverride");
+          bool lighteningOverride = appSys.settings["user"]["agendaPage"]["lighteningOverride"];
 
           //Remove old lessons in order to lighten the db
           //Can be overriden in settings

@@ -10,6 +10,7 @@ import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/services/shared_preferences.dart';
 import 'package:ynotes/ui/screens/summary/summaryPage.dart';
 
@@ -25,29 +26,6 @@ launchURL(url) async {
 
 //Parsers list
 List parsers = ["EcoleDirecte", "Pronote"];
-
-int chosenParser;
-
-bool isDarkModeEnabled = false;
-
-//Change notifier to deal with themes
-class AppStateNotifier extends ChangeNotifier {
-  bool isDarkMode = false;
-  getTheme() => isDarkMode ? ThemeMode.dark : ThemeMode.light;
-
-  void updateTheme(bool isDarkMode) {
-    this.isDarkMode = isDarkMode;
-    isDarkModeEnabled = isDarkMode;
-
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        systemNavigationBarColor: isDarkModeEnabled ? Color(0xff414141) : Color(0xffF3F3F3),
-        statusBarColor: Colors.transparent // navigation bar color
-        // status bar color
-        ));
-
-    notifyListeners();
-  }
-}
 
 Route router(Widget widget) {
   return PageRouteBuilder(
@@ -70,44 +48,6 @@ Route router(Widget widget) {
 ///Color theme switcher, actually 0 for darkmode and 1 for lightmode
 int colorTheme = 0;
 String actualUser = "";
-
-Future<bool> getSetting(String setting) async {
-  final prefs = await SharedPreferences.getInstance();
-  bool value = prefs.getBool(setting);
-  if (value == null) {
-    print("Setting was null");
-    setSetting(setting, false);
-    value = false;
-  }
-  return value;
-}
-
-setSetting(String setting, bool value) async {
-  final prefs = await SharedPreferences.getInstance();
-
-  await prefs.setBool(setting, value);
-}
-
-Future<int> getIntSetting(String setting) async {
-  final prefs = await SharedPreferences.getInstance();
-  var value = prefs.getInt(setting);
-  if (value == null) {
-    value = 0;
-    if (setting == "summaryQuickHomework") {
-      value = 10;
-    }
-    if (setting == "lessonReminderDelay") {
-      value = 5;
-    }
-    setIntSetting(setting, value);
-  }
-  return value;
-}
-
-setIntSetting(String setting, int value) async {
-  final prefs = await SharedPreferences.getInstance();
-  await prefs.setInt(setting, value);
-}
 
 //Connectivity  classs
 
@@ -175,7 +115,7 @@ class ConnectionStatusSingleton {
 
 //Get only grades as a list
 List<Grade> getAllGrades(List<Discipline> list, {bool overrideLimit = false, bool sortByWritingDate = true}) {
-  if (localApi != null) {
+  if (appSys.api != null) {
     List<Grade> listToReturn = List();
     if (list != null) {
       list.forEach((element) {
@@ -187,8 +127,8 @@ List<Grade> getAllGrades(List<Discipline> list, {bool overrideLimit = false, boo
           });
         }
       });
-      if (localApi.gradesList != null && localApi.gradesList.length > 0 && listToReturn == localApi.gradesList) {
-        return localApi.gradesList;
+      if (appSys.api.gradesList != null && appSys.api.gradesList.length > 0 && listToReturn == appSys.api.gradesList) {
+        return appSys.api.gradesList;
       }
       listToReturn = listToReturn.toSet().toList();
       if (listToReturn != null) {
@@ -201,11 +141,11 @@ List<Grade> getAllGrades(List<Discipline> list, {bool overrideLimit = false, boo
         //remove duplicates
         listToReturn = listToReturn.toSet().toList();
         listToReturn = listToReturn.reversed.toList();
-        if (localApi.gradesList == null) {
-          localApi.gradesList = List<Grade>();
+        if (appSys.api.gradesList == null) {
+          appSys.api.gradesList = List<Grade>();
         }
-        localApi.gradesList.clear();
-        localApi.gradesList.addAll(listToReturn);
+        appSys.api.gradesList.clear();
+        appSys.api.gradesList.addAll(listToReturn);
 
         if (overrideLimit == false && listToReturn != null) {
           listToReturn = listToReturn.sublist(0, (listToReturn.length >= 5) ? 5 : listToReturn.length);
@@ -247,7 +187,7 @@ Future<List<Discipline>> refreshDisciplinesListColors(List<Discipline> list) asy
 //Leave app
 exitApp() async {
   try {
-    await offline.clearAll();
+    await appSys.offline.clearAll();
     //Delete sharedPref
     SharedPreferences preferences = await SharedPreferences.getInstance();
     await preferences.clear();
@@ -255,10 +195,10 @@ exitApp() async {
     final storage = new FlutterSecureStorage();
     //Delete all
     await storage.deleteAll();
-    isDarkModeEnabled = false;
+    appSys.updateTheme("clair");
     //delete hive files
-    localApi.gradesList = null;
-    localApi = null;
+    appSys.api.gradesList = null;
+    appSys.api = null;
     firstStart = true;
   } catch (e) {
     print(e);
@@ -266,9 +206,8 @@ exitApp() async {
 }
 
 specialtiesSelectionAvailable() async {
-  await reloadChosenApi();
   return [false];
-  if (chosenParser == 0) {
+  if (appSys.settings["system"]["chosenParser"] == 0) {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String classe = await storage.read(key: "classe") ?? "";
 

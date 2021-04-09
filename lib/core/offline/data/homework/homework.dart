@@ -2,14 +2,13 @@ import 'package:hive/hive.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/offline/offline.dart';
 
-
 class HomeworkOffline extends Offline {
   Offline parent;
   HomeworkOffline(bool locked, Offline _parent) : super(locked) {
     parent = _parent;
   }
 
-  ///Update existing offline.homework.get() with passed data
+  ///Update existing appSys.offline.homework.get() with passed data
   ///if `add` boolean is set to true passed data is combined with old data
   updateHomework(List<Homework> newData, {bool add = false, forceAdd = false}) async {
     if (!locked) {

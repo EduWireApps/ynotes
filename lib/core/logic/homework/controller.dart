@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/logic/homework/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 
 class HomeworkController extends ChangeNotifier {
   final api;
@@ -56,7 +56,7 @@ class HomeworkController extends ChangeNotifier {
         int done = 0;
 
         await Future.forEach(list, (element) async {
-          bool isDone = await offline.doneHomework.getHWCompletion(element.id);
+          bool isDone = await appSys.offline.doneHomework.getHWCompletion(element.id);
           if (isDone) {
             done++;
           }

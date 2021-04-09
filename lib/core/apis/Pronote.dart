@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteAPI.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
@@ -35,25 +36,25 @@ class APIPronote extends API {
   @override
   Future<List<Discipline>> getGrades({bool forceReload}) async {
     var connectivityResult = await (Connectivity().checkConnectivity());
-    var offlineGrades = await offline.disciplines.getDisciplines();
+    var offlineGrades = await appSys.offline.disciplines.getDisciplines();
 
     //If force reload enabled the grades will be loaded online
     if ((connectivityResult == ConnectivityResult.none || forceReload == false || forceReload == null) &&
         offlineGrades != null) {
       print("Loading grades from offline storage.");
 
-      var toReturn = await offline.disciplines.getDisciplines();
+      var toReturn = await appSys.offline.disciplines.getDisciplines();
       toReturn = await refreshDisciplinesListColors(toReturn);
       return toReturn;
     } else {
       print("Loading grades inline.");
       var toReturn = await getGradesFromInternet();
       if (toReturn == null) {
-        toReturn = await offline.disciplines.getDisciplines();
+        toReturn = await appSys.offline.disciplines.getDisciplines();
       }
       toReturn = await refreshDisciplinesListColors(toReturn);
       if (toReturn != null) {
-        await setIntSetting("gradesNumber", getAllGrades(toReturn, overrideLimit: true).length);
+        appSys.updateSetting(appSys.settings["system"], "lastGradeCount", getAllGrades(toReturn, overrideLimit: true).length);
       }
 
       return toReturn;
@@ -114,7 +115,7 @@ class APIPronote extends API {
         listDisciplines = await refreshDisciplinesListColors(listDisciplines);
         gradeLock = false;
         gradeRefreshRecursive = false;
-        offline.disciplines.updateDisciplines(listDisciplines);
+        appSys.offline.disciplines.updateDisciplines(listDisciplines);
         return listDisciplines;
       } catch (e) {
         gradeLock = false;
@@ -183,7 +184,7 @@ class APIPronote extends API {
   @override
   Future<List<Homework>> getNextHomework({bool forceReload}) async {
     var connectivityResult = await (Connectivity().checkConnectivity());
-    var offlineHomework = await offline.homework.getHomework();
+    var offlineHomework = await appSys.offline.homework.getHomework();
 
     //If force reload enabled the grades will be loaded online
     if ((connectivityResult == ConnectivityResult.none || forceReload == false || forceReload == null) &&
@@ -195,7 +196,7 @@ class APIPronote extends API {
       print("Loading homework inline.");
       List<Homework> toReturn = await getNextHomeworkFromInternet();
       if (toReturn == null) {
-        toReturn = await offline.homework.getHomework();
+        toReturn = await appSys.offline.homework.getHomework();
       }
       toReturn.sort((a, b) => a.date.compareTo(b.date));
       return toReturn;
@@ -218,7 +219,7 @@ class APIPronote extends API {
         List<Homework> hws = await localClient.homework(now);
         hws.removeWhere((element) => element.date.isBefore(now));
         listHW.addAll(hws);
-        List<DateTime> pinnedDates = await offline.pinnedHomework.getPinnedHomeworkDates();
+        List<DateTime> pinnedDates = await appSys.offline.pinnedHomework.getPinnedHomeworkDates();
         //Add pinned content
         await Future.wait(pinnedDates.map((element) async {
           List<Homework> pinnedHomework = await localClient.homework(element, date_to: element);
@@ -235,7 +236,7 @@ class APIPronote extends API {
 
         hwLock = false;
         hwRefreshRecursive = false;
-        offline.homework.updateHomework(listHW);
+        appSys.offline.homework.updateHomework(listHW);
 
         return listHW;
       } catch (e) {
@@ -456,7 +457,7 @@ class APIPronote extends API {
       lessonsLock = true;
       try {
         //get lessons from offline storage
-        var offlineLesson = await offline.lessons.get(await get_week(dateToUse));
+        var offlineLesson = await appSys.offline.lessons.get(await get_week(dateToUse));
         if (offlineLesson != null) {
           toReturn = List();
           toReturn.addAll(offlineLesson);
@@ -471,7 +472,7 @@ class APIPronote extends API {
           try {
             List<Lesson> onlineLessons = await localClient.lessons(dateToUse);
 
-            await offline.lessons.updateLessons(onlineLessons, await get_week(dateToUse));
+            await appSys.offline.lessons.updateLessons(onlineLessons, await get_week(dateToUse));
 
             toReturn = onlineLessons;
           } catch (e) {
@@ -510,7 +511,7 @@ class APIPronote extends API {
   getOfflinePeriods() async {
     try {
       List<Period> listPeriods = List();
-      List<Discipline> disciplines = await offline.disciplines.getDisciplines();
+      List<Discipline> disciplines = await appSys.offline.disciplines.getDisciplines();
       List<Grade> grades = getAllGrades(disciplines, overrideLimit: true);
       grades.forEach((grade) {
         if (!listPeriods.any((period) => period.name == grade.periodName && period.id == grade.periodCode)) {
@@ -550,9 +551,9 @@ class APIPronote extends API {
   }
 
   refreshClient() async {
-    await tlogin.login();
+    await appSys.loginController.login();
     //reset all recursives
-    if (tlogin.actualState == loginStatus.loggedIn) {
+    if (appSys.loginController.actualState == loginStatus.loggedIn) {
       gradeRefreshRecursive = false;
       hwRefreshRecursive = false;
       lessonsRefreshRecursive = false;
@@ -613,7 +614,7 @@ class APIPronote extends API {
         listDisciplines = await refreshDisciplinesListColors(listDisciplines);
         gradeLock = false;
         gradeRefreshRecursive = false;
-        offline.disciplines.updateDisciplines(listDisciplines);
+        appSys.offline.disciplines.updateDisciplines(listDisciplines);
         return listDisciplines;
       } catch (e) {
         gradeLock = false;
@@ -638,21 +639,21 @@ Future<List<PollInfo>> getPronotePolls(bool forced) async {
   try {
     if (forced) {
       listPolls = await localClient.polls() as List<PollInfo>;
-      await offline.polls.update(listPolls);
+      await appSys.offline.polls.update(listPolls);
       return listPolls;
     } else {
-      listPolls = await offline.polls.get();
+      listPolls = await appSys.offline.polls.get();
       if (listPolls == null) {
         print("Error while returning offline polls");
         listPolls = await localClient.polls() as List<PollInfo>;
-        await offline.polls.update(listPolls);
+        await appSys.offline.polls.update(listPolls);
         return listPolls;
       } else {
         return listPolls;
       }
     }
   } catch (e) {
-    listPolls = await offline.polls.get();
+    listPolls = await appSys.offline.polls.get();
     return listPolls;
   }
 }

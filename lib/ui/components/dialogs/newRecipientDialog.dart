@@ -95,7 +95,7 @@ class _NewRecipientDialogState extends State<NewRecipientDialog> {
                   labelText: 'Prénom',
                   labelStyle: TextStyle(
                       fontFamily: "Asap",
-                      color: isDarkModeEnabled ? Colors.white.withOpacity(0.5) : Colors.black.withOpacity(0.5),
+                      color: ThemeUtils.textColor().withOpacity(0.5),
                       fontSize: screenSize.size.width / 5 * 0.35),
                 ),
               ),

@@ -16,6 +16,7 @@ import 'package:ynotes/ui/screens/summary/summaryPage.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
@@ -66,7 +67,7 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
   }
 
   void getDefaultValue() async {
-    var defaultValue = await getSetting("isExpandedByDefault");
+    var defaultValue = appSys.settings["user"]["homeworkPage"]["isExpandedByDefault"];
 
     setState(() {
       isExpanded = defaultValue;
@@ -133,7 +134,7 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                             /* Container(
                               width: screenSize.size.width / 5 * 4.5,
                               child: Container(
-                                color: isDarkModeEnabled
+                                color: ThemeUtils.isThemeDark
                                     ? ThemeUtils.darken(Theme.of(context).primaryColorDark, forceAmount: 0.1)
                                     : ThemeUtils.darken(Theme.of(context).primaryColor, forceAmount: 0.03),
                                 height: screenSize.size.height / 10 * 0.5,
@@ -152,7 +153,7 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                             ),*/
                             if (this.widget.homeworkForThisDay.loaded)
                               Container(
-                                color: isDarkModeEnabled
+                                color: ThemeUtils.isThemeDark
                                     ? ThemeUtils.darken(Theme.of(context).primaryColorDark, forceAmount: 0.1)
                                     : ThemeUtils.darken(Theme.of(context).primaryColor, forceAmount: 0.03),
                                 width: screenSize.size.width / 5 * 4.5,
@@ -211,7 +212,7 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                             if (element.attributes['style'] != null &&
                                                 element.attributes['style'].contains("background")) {
                                               element.attributes['style'] = "";
-                                              if (isDarkModeEnabled) {
+                                              if (ThemeUtils.isThemeDark) {
                                                 return {'background': '#CF7545', 'color': 'white'};
                                               } else {
                                                 return {'background': '#F9DDA7', 'color': 'black'};
@@ -227,7 +228,7 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                                     child: TeXView(
                                                   child: TeXViewDocument(element.text,
                                                       style: TeXViewStyle.fromCSS(
-                                                          """background-color: #${(isDarkModeEnabled ? ThemeUtils.darken(Theme.of(context).primaryColorDark, forceAmount: 0.1) : ThemeUtils.darken(Theme.of(context).primaryColor, forceAmount: 0.03)).toCSSColor()}; color: #${ThemeUtils.textColor().toCSSColor()}""")),
+                                                          """background-color: #${(ThemeUtils.isThemeDark ? ThemeUtils.darken(Theme.of(context).primaryColorDark, forceAmount: 0.1) : ThemeUtils.darken(Theme.of(context).primaryColor, forceAmount: 0.03)).toCSSColor()}; color: #${ThemeUtils.textColor().toCSSColor()}""")),
                                                 ));
                                               } catch (e) {
                                                 return Container();
@@ -606,7 +607,7 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                         height: screenSize.size.width / 5 * 0.5,
                                         child: FittedBox(
                                           child: FutureBuilder(
-                                              future: offline.doneHomework
+                                              future: appSys.offline.doneHomework
                                                   .getHWCompletion(widget.homeworkForThisDay.id ?? ''),
                                               initialData: false,
                                               builder: (context, snapshot) {
@@ -621,7 +622,7 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                                       done = !done;
                                                       donePercentFuture = HomeworkUtils.getHomeworkDonePercent();
                                                     });
-                                                    offline.doneHomework
+                                                    appSys.offline.doneHomework
                                                         .setHWCompletion(widget.homeworkForThisDay.id, x);
                                                   },
                                                 );

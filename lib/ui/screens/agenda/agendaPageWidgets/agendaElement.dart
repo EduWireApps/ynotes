@@ -11,6 +11,7 @@ import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
@@ -31,8 +32,8 @@ class _AgendaElementState extends State<AgendaElement> {
   Future<void> refreshAgendaFuture() async {
     if (mounted) {
       setState(() {
-        spaceAgendaFuture = localApi.getEvents(agendaDate, true);
-        agendaFuture = localApi.getEvents(agendaDate, false);
+        spaceAgendaFuture = appSys.api.getEvents(agendaDate, true);
+        agendaFuture = appSys.api.getEvents(agendaDate, false);
       });
     }
     var realAF = await spaceAgendaFuture;
@@ -113,13 +114,13 @@ class _AgendaElementState extends State<AgendaElement> {
                           if (temp != "removed") {
                             if (temp != null) {
                               if (temp.recurrenceScheme != null && temp.recurrenceScheme != "0") {
-                                await offline.agendaEvents.addAgendaEvent(temp, temp.recurrenceScheme);
+                                await appSys.offline.agendaEvents.addAgendaEvent(temp, temp.recurrenceScheme);
 
                                 setState(() {
                                   this.widget.event = temp;
                                 });
                               } else {
-                                await offline.agendaEvents.addAgendaEvent(temp, await get_week(temp.start));
+                                await appSys.offline.agendaEvents.addAgendaEvent(temp, await get_week(temp.start));
 
                                 setState(() {
                                   this.widget.event = temp;
@@ -128,7 +129,7 @@ class _AgendaElementState extends State<AgendaElement> {
                               await AppNotification.scheduleAgendaReminders(temp);
                             }
                           } else {
-                            await offline.reminders.removeAll(_event.id);
+                            await appSys.offline.reminders.removeAll(_event.id);
                             await AppNotification.cancelNotification(_event.id.hashCode);
                           }
                           await refreshAgendaFuture();

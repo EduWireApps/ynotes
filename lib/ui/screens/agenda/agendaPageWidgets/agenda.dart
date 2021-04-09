@@ -15,6 +15,7 @@ import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/agendaGrid.dart';
 import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/buttons.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 
 class Agenda extends StatefulWidget {
@@ -45,8 +46,8 @@ class _AgendaState extends State<Agenda> {
   Future<void> refreshAgendaFutures({bool force = true}) async {
     if (mounted) {
       setState(() {
-        spaceAgendaFuture = localApi.getEvents(agendaDate, true, forceReload: force);
-        agendaFuture = localApi.getEvents(agendaDate, false, forceReload: false);
+        spaceAgendaFuture = appSys.api.getEvents(agendaDate, true, forceReload: force);
+        agendaFuture = appSys.api.getEvents(agendaDate, false, forceReload: false);
       });
     }
     var realSAF = await agendaFuture;
@@ -56,8 +57,8 @@ class _AgendaState extends State<Agenda> {
   Future<void> refreshAgendaFuture() async {
     if (mounted) {
       setState(() {
-        spaceAgendaFuture = localApi.getEvents(agendaDate, true);
-        agendaFuture = localApi.getEvents(agendaDate, false);
+        spaceAgendaFuture = appSys.api.getEvents(agendaDate, true);
+        agendaFuture = appSys.api.getEvents(agendaDate, false);
       });
     }
     var realAF = await spaceAgendaFuture;

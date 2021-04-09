@@ -1,6 +1,7 @@
 import 'package:intl/intl.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 class HomeworkUtils {
@@ -15,7 +16,7 @@ class HomeworkUtils {
         int done = 0;
 
         await Future.forEach(list, (element) async {
-          bool isDone = await offline.doneHomework.getHWCompletion(element.id);
+          bool isDone = await appSys.offline.doneHomework.getHWCompletion(element.id);
           if (isDone) {
             done++;
           }
@@ -30,11 +31,11 @@ class HomeworkUtils {
   }
 
   static Future<List<Homework>> getReducedListHomework({forceReload = false}) async {
-    int reduce = await getIntSetting("summaryQuickHomework");
+    int reduce = await appSys.settings["user"]["summaryPage"]["summaryQuickHomework"];
     if (reduce == 11) {
       reduce = 770;
     }
-    List<Homework> localList = await localApi.getNextHomework(forceReload: forceReload);
+    List<Homework> localList = await appSys.api.getNextHomework(forceReload: forceReload);
     if (localList != null) {
       List<Homework> listToReturn = List<Homework>();
       localList.forEach((element) {

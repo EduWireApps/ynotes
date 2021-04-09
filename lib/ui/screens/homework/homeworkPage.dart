@@ -15,6 +15,7 @@ import 'package:ynotes/ui/screens/summary/summaryPage.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 
@@ -58,7 +59,7 @@ class HomeworkPageState extends State<HomeworkPage> {
 
   getPinnedStateDayToUse() async {
     print(dateToUse);
-    var pinnedStatus = await offline.pinnedHomework.getPinnedHomeworkSingleDate(dateToUse.toString());
+    var pinnedStatus = await appSys.offline.pinnedHomework.getPinnedHomeworkSingleDate(dateToUse.toString());
     if (mounted) {
       setState(() {
         isPinnedDateToUse = pinnedStatus;
@@ -199,7 +200,7 @@ class HomeworkPageState extends State<HomeworkPage> {
                                       child: Material(
                                         color: Colors.transparent,
                                         child: Theme(
-                                          data: isDarkModeEnabled ? ThemeData.dark() : ThemeData.light(),
+                                          data: appSys.theme,
                                           child: Column(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: <Widget>[SizedBox(child: child)],

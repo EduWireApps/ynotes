@@ -6,6 +6,7 @@ import 'package:uuid/uuid.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:calendar_time/calendar_time.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 
@@ -173,17 +174,17 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                           if (this.widget.customEvent != null) {
                             if (this.widget.customEvent.recurrenceScheme != null &&
                                 this.widget.customEvent.recurrenceScheme != "0") {
-                              await offline.agendaEvents
+                              await appSys.offline.agendaEvents
                                   .removeAgendaEvent(id, await get_week(this.widget.customEvent.start));
-                              await offline.agendaEvents
+                              await appSys.offline.agendaEvents
                                   .removeAgendaEvent(id, this.widget.customEvent.recurrenceScheme);
                             } else {
-                              await offline.agendaEvents
+                              await appSys.offline.agendaEvents
                                   .removeAgendaEvent(id, await get_week(this.widget.customEvent.start));
                             }
                           }
                           if (this.widget.reminder != null) {
-                            await offline.reminders.remove(id);
+                            await appSys.offline.reminders.remove(id);
                           }
                           Navigator.of(context).pop("removed");
                         },
@@ -409,9 +410,7 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                                             'Fin  ${DateFormat.Hm().format(end)}',
                                             style: TextStyle(
                                                 fontFamily: "Asap",
-                                                color: isDarkModeEnabled
-                                                    ? Colors.white.withOpacity(0.8)
-                                                    : Colors.black.withOpacity(0.8),
+                                                color: ThemeUtils.textColor().withOpacity(0.8),
                                                 fontSize: screenSize.size.width / 5 * 0.25),
                                           )
                                         ],
@@ -454,8 +453,7 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                               "Récurrence",
                               style: TextStyle(
                                   fontFamily: "Asap",
-                                  color:
-                                      isDarkModeEnabled ? Colors.white.withOpacity(0.8) : Colors.black.withOpacity(0.8),
+                                  color: ThemeUtils.textColor().withOpacity(0.8),
                                   fontSize: screenSize.size.width / 5 * 0.25),
                             )
                           ],
@@ -492,8 +490,7 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                               alarmChoices[alarm.index],
                               style: TextStyle(
                                   fontFamily: "Asap",
-                                  color:
-                                      isDarkModeEnabled ? Colors.white.withOpacity(0.8) : Colors.black.withOpacity(0.8),
+                                  color: ThemeUtils.textColor().withOpacity(0.8),
                                   fontSize: screenSize.size.width / 5 * 0.25),
                             )
                           ],
@@ -515,10 +512,7 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                         maxLines: null,
                         decoration: new InputDecoration.collapsed(
                             hintText: 'Description',
-                            hintStyle: TextStyle(
-                                fontFamily: "Asap",
-                                color:
-                                    isDarkModeEnabled ? Colors.white.withOpacity(0.8) : Colors.black.withOpacity(0.8))),
+                            hintStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor().withOpacity(0.8))),
                       ),
                     ),
                     Divider(height: screenSize.size.height / 10 * 0.4),

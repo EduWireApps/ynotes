@@ -259,7 +259,7 @@ packages:
       name: connectivity_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "2.0.1"
   convert:
     dependency: transitive
     description:
@@ -741,7 +741,7 @@ packages:
       name: path_provider_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "2.0.1"
   path_provider_windows:
     dependency: transitive
     description:
@@ -953,7 +953,7 @@ packages:
       name: shelf_web_socket
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.4+1"
+    version: "1.0.1"
   shimmer:
     dependency: "direct main"
     description:
@@ -1172,7 +1172,7 @@ packages:
       name: web_socket_channel
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.2.0"
+    version: "2.0.0"
   webview_flutter:
     dependency: transitive
     description:
@@ -1197,9 +1197,11 @@ packages:
   wiredash:
     dependency: "direct main"
     description:
-      name: wiredash
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: stable
+      resolved-ref: "9cb1afafdbd5b15d2e482e6d298476771b739db1"
+      url: "https://github.com/wiredashio/wiredash-sdk"
+    source: git
     version: "0.6.2"
   xdg_directories:
     dependency: transitive

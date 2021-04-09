@@ -1,9 +1,11 @@
+import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/apis/Pronote.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 enum loginStatus { loggedIn, loggedOff, offline, error }
@@ -16,7 +18,6 @@ class LoginController extends ChangeNotifier {
   String _details = "Déconnecté";
   //Error logs
   String _logs = "";
-  var internetConnexion;
   //getters
   get actualState => _actualState;
   set actualState(loginStatus) {
@@ -30,17 +31,22 @@ class LoginController extends ChangeNotifier {
     notifyListeners();
   }
 
+  Connectivity _connectivity = Connectivity();
+  LoginController() {
+    _connectivity.onConnectivityChanged.listen(connectionChanged);
+  }
+
   init() async {
-    ConnectionStatusSingleton connectionStatus = ConnectionStatusSingleton.getInstance();
-    if (await connectionStatus.checkConnection() == false) {
+    print("Init connection status");
+
+    if (await _connectivity.checkConnectivity() == ConnectivityResult.none) {
       _actualState = loginStatus.offline;
       _details = "Vous êtes hors ligne";
       notifyListeners();
     }
-    internetConnexion = connectionStatus.connectionChange.listen(connectionChanged);
-    if (_actualState != loginStatus.offline && localApi.loggedIn == false) {
+    if (_actualState != loginStatus.offline && appSys.api.loggedIn == false) {
       await login();
-    } else if (localApi.loggedIn) {
+    } else if (appSys.api.loggedIn) {
       _details = "Connecté";
       _actualState = loginStatus.loggedIn;
       notifyListeners();
@@ -48,8 +54,8 @@ class LoginController extends ChangeNotifier {
   }
 
 //on connection change
-  void connectionChanged(dynamic hasConnection) async {
-    if (hasConnection != true) {
+  void connectionChanged(dynamic hasConnection) {
+    if (hasConnection == ConnectivityResult.none) {
       _actualState = loginStatus.offline;
       _details = "Vous êtes hors ligne";
       notifyListeners();
@@ -57,7 +63,7 @@ class LoginController extends ChangeNotifier {
       _actualState = loginStatus.loggedOff;
       _details = "Reconnecté";
       notifyListeners();
-      await login();
+      login();
     }
   }
 
@@ -66,14 +72,13 @@ class LoginController extends ChangeNotifier {
       _actualState = loginStatus.loggedOff;
       _details = "Connexion à l'API...";
       notifyListeners();
-      await reloadChosenApi();
       String u = await ReadStorage("username");
       String p = await ReadStorage("password");
       String url = await ReadStorage("pronoteurl");
       String cas = await ReadStorage("pronotecas");
       var z = await storage.read(key: "agreedTermsAndConfiguredApp");
       if (u != null && p != null && z != null) {
-        await localApi.login(u, p, url: url, cas: cas).then((List loginValues) {
+        await appSys.api.login(u, p, url: url, cas: cas).then((List loginValues) {
           if (loginValues == null) {
             _actualState = loginStatus.loggedOff;
             _details = "Connexion à l'API...";

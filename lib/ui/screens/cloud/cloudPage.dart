@@ -7,6 +7,7 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/shared/downloadController.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/globals.dart';
 
 import '../../../main.dart';
 import '../../../usefulMethods.dart';
@@ -37,7 +38,7 @@ class _CloudPageState extends State<CloudPage> {
 
   Future<void> refreshLocalCloudItemsList() async {
     setState(() {
-      cloudFolderFuture = localApi.app("cloud", args: path, action: "CD");
+      cloudFolderFuture = appSys.api.app("cloud", args: path, action: "CD");
       isLoading = true;
     });
     var realdisciplinesListFuture = await cloudFolderFuture;
@@ -50,7 +51,7 @@ class _CloudPageState extends State<CloudPage> {
   changeDirectory(CloudItem item) async {
     print(path);
     setState(() {
-      cloudFolderFuture = localApi.app("cloud", args: path, action: "CD", folder: item);
+      cloudFolderFuture = appSys.api.app("cloud", args: path, action: "CD", folder: item);
       isLoading = true;
     });
     var realdisciplinesListFuture = await cloudFolderFuture;
@@ -251,7 +252,7 @@ class _CloudPageState extends State<CloudPage> {
                                                                           color: ((localFoldersList[index].type ==
                                                                                   "FOLDER")
                                                                               ? Colors.yellow.shade600
-                                                                              : isDarkModeEnabled
+                                                                              : ThemeUtils.isThemeDark
                                                                                   ? Colors.grey.shade300
                                                                                   : Colors.grey.shade400),
                                                                         ),
@@ -285,7 +286,7 @@ class _CloudPageState extends State<CloudPage> {
                                                                           style: TextStyle(
                                                                             fontFamily: "Asap",
                                                                             fontSize: screenSize.size.height / 10 * 0.2,
-                                                                            color: isDarkModeEnabled
+                                                                            color: ThemeUtils.isThemeDark
                                                                                 ? Colors.white60
                                                                                 : Colors.black87,
                                                                           ),
@@ -301,7 +302,7 @@ class _CloudPageState extends State<CloudPage> {
                                                                                 fontFamily: "Asap",
                                                                                 fontSize:
                                                                                     screenSize.size.height / 10 * 0.2,
-                                                                                color: isDarkModeEnabled
+                                                                                color: ThemeUtils.isThemeDark
                                                                                     ? Colors.white38
                                                                                     : Colors.black38,
                                                                               ),

@@ -232,7 +232,7 @@ class _QuickMenuState extends State<QuickMenu> with TickerProviderStateMixin {
                                                                         style: TextStyle(
                                                                             fontFamily: "Asap",
                                                                             fontSize: screenSize.size.height / 10 * 0.2,
-                                                                            color: isDarkModeEnabled
+                                                                            color: ThemeUtils.isThemeDark
                                                                                 ? Colors.white.withOpacity(0.5)
                                                                                 : Colors.black.withOpacity(0.5)),
                                                                       ),

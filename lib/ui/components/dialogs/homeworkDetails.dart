@@ -9,6 +9,7 @@ import 'package:ynotes/ui/screens/summary/summaryPageWidgets/quickHomework.dart'
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 
@@ -129,7 +130,7 @@ class _DialogHomeworkState extends State<DialogHomework> {
                             textAlign: TextAlign.left,
                             style: TextStyle(
                                 fontFamily: "Asap",
-                                color: isDarkModeEnabled ? Colors.grey.shade200 : Colors.black54,
+                                color: ThemeUtils.textColor().withOpacity(0.5),
                                 fontSize: screenSize.size.height / 10 * 0.25),
                           ),
                         ],

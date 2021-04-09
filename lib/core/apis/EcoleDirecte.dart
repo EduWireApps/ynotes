@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/apis/EcoleDirecte/ecoleDirecteCloud.dart';
 import 'package:ynotes/core/apis/EcoleDirecte/ecoleDirecteConverters.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
@@ -159,7 +160,8 @@ class APIEcoleDirecte extends API {
   Future<bool> testNewGrades() async {
     try {
       //Getting the offline count of grades
-      List<Grade> listOfflineGrades = getAllGrades(await offline.disciplines.getDisciplines(), overrideLimit: true);
+      List<Grade> listOfflineGrades =
+          getAllGrades(await appSys.offline.disciplines.getDisciplines(), overrideLimit: true);
       print("Offline length is ${listOfflineGrades.length}");
       //Getting the online count of grades
       List<Grade> listOnlineGrades =
@@ -299,7 +301,7 @@ Future getCloud(String args, String action, CloudItem item) async {
 
       case ("/"):
         {
-          return await EcoleDirecteMethod(offline).cloudFolders();
+          return await EcoleDirecteMethod(appSys.offline).cloudFolders();
         }
         break;
       default:
@@ -313,7 +315,7 @@ Future getCloud(String args, String action, CloudItem item) async {
 
 ///Returning Ecole Directe Mails, **checking** bool is used to only returns old mail number
 Future getMails({bool checking}) async {
-  await EcoleDirecteMethod(offline).testToken();
+  await EcoleDirecteMethod(appSys.offline).testToken();
   String id = await storage.read(key: "userID");
   var url = 'https://api.ecoledirecte.com/v3/eleves/$id/messages.awp?verbe=getall&typeRecuperation=all';
 
@@ -359,8 +361,7 @@ Future getMails({bool checking}) async {
       if (checking == null) {
         print("checking mails");
         List<Mail> receivedMails = mailsList.where((element) => element.mtype == "received").toList();
-
-        setIntSetting("mailNumber", receivedMails.length);
+        appSys.updateSetting(appSys.settings["system"], "lastMailCount", receivedMails.length);
         print("checked mails");
       }
 
@@ -377,7 +378,7 @@ Future getMails({bool checking}) async {
 }
 
 Future readMail(String mailId, bool read) async {
-  await EcoleDirecteMethod(offline).testToken();
+  await EcoleDirecteMethod(appSys.offline).testToken();
   String id = await storage.read(key: "userID");
   var url = 'https://api.ecoledirecte.com/v3/eleves/$id/messages/$mailId.awp?verbe=get&mode=destinataire';
 

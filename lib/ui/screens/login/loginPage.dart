@@ -1,5 +1,7 @@
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:ynotes/core/apis/utils.dart';
+import 'package:ynotes/core/logic/shared/loginController.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 
 import 'dart:async';
@@ -14,6 +16,7 @@ import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/screens/school_api_choice/schoolAPIChoicePage.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/usefulMethods.dart';
 
@@ -36,8 +39,6 @@ class _LoginPageState extends State<LoginPage> {
   String _obligationText = "";
   StreamSubscription loginconnexion;
 
-  bool isOffline = false;
-
   @override
   initState() {
     super.initState();
@@ -45,17 +46,6 @@ class _LoginPageState extends State<LoginPage> {
     tryToConnect();
 
     getFirstUse();
-    ConnectionStatusSingleton connectionStatus = ConnectionStatusSingleton.getInstance();
-    loginconnexion = connectionStatus.connectionChange.listen(connectionChanged);
-    isOffline = !connectionStatus.hasConnection;
-  }
-
-  void connectionChanged(dynamic hasConnection) {
-    print("connected");
-    setState(() {
-      isOffline = !hasConnection;
-    });
-    tryToConnect();
   }
 
   getFirstUse() async {
@@ -66,8 +56,6 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   tryToConnect() async {
-    await reloadChosenApi();
-
     String u = await ReadStorage("username");
     String p = await ReadStorage("password");
     String url = await ReadStorage("pronoteurl");
@@ -75,7 +63,7 @@ class _LoginPageState extends State<LoginPage> {
     String z = await storage.read(key: "agreedTermsAndConfiguredApp");
 
     if (u != null && p != null && z != null) {
-      /*connectionData =  localApi.login(u, p, url: url, cas: cas);
+      /*connectionData =  appSys.api.login(u, p, url: url, cas: cas);
       openLoadingDialog();*/
     }
   }
@@ -331,7 +319,9 @@ class _LoginPageState extends State<LoginPage> {
                                         children: <Widget>[
                                           Material(
                                             shape: CircleBorder(),
-                                            color: chosenParser == 0 ? Colors.white : Color(0xff61b872),
+                                            color: appSys.settings["system"]["chosenParser"] == 0
+                                                ? Colors.white
+                                                : Color(0xff61b872),
                                             child: InkWell(
                                               onTap: () {
                                                 Navigator.of(context).pushReplacement(router(SchoolAPIChoice()));
@@ -352,7 +342,7 @@ class _LoginPageState extends State<LoginPage> {
                                                             height: screenSize.size.width / 5 * 0.5,
                                                             fit: BoxFit.fitWidth,
                                                             image: AssetImage(
-                                                                'assets/images/${chosenParser == 0 ? "EcoleDirecte" : "Pronote"}/${chosenParser == 0 ? "EcoleDirecte" : "Pronote"}Icon.png')),
+                                                                'assets/images/${appSys.settings["system"]["chosenParser"] == 0 ? "EcoleDirecte" : "Pronote"}/${appSys.settings["system"]["chosenParser"] == 0 ? "EcoleDirecte" : "Pronote"}Icon.png')),
                                                       ),
                                                     ],
                                                   ),
@@ -483,7 +473,7 @@ class _LoginPageState extends State<LoginPage> {
                                                         ),
                                                       ),
                                                     ),
-                                                    if (chosenParser == 1)
+                                                    if (appSys.settings["system"]["chosenParser"] == 1)
                                                       Container(
                                                         margin: EdgeInsets.only(
                                                           top: screenSize.size.height / 10 * 0.3,
@@ -505,7 +495,7 @@ class _LoginPageState extends State<LoginPage> {
                                                           ],
                                                         ),
                                                       ),
-                                                    if (chosenParser == 1)
+                                                    if (appSys.settings["system"]["chosenParser"] == 1)
                                                       Container(
                                                         width: screenSize.size.width / 5 * 3.2,
                                                         margin: EdgeInsets.only(
@@ -527,7 +517,7 @@ class _LoginPageState extends State<LoginPage> {
                                                           ),
                                                         ),
                                                       ),
-                                                    if (chosenParser == 1)
+                                                    if (appSys.settings["system"]["chosenParser"] == 1)
                                                       Container(
                                                         margin: EdgeInsets.only(
                                                           top: screenSize.size.height / 10 * 0.3,
@@ -545,7 +535,7 @@ class _LoginPageState extends State<LoginPage> {
                                                           ],
                                                         ),
                                                       ),
-                                                    if (chosenParser == 1)
+                                                    if (appSys.settings["system"]["chosenParser"] == 1)
                                                       Container(
                                                           width: screenSize.size.width / 5 * 3.2,
                                                           margin: EdgeInsets.only(
@@ -600,13 +590,20 @@ class _LoginPageState extends State<LoginPage> {
                                                             child: Row(
                                                               mainAxisAlignment: MainAxisAlignment.end,
                                                               children: <Widget>[
-                                                                if (isOffline)
-                                                                  Row(
-                                                                    children: <Widget>[
-                                                                      Text("Vous êtes hors ligne",
-                                                                          style: TextStyle(color: Colors.red)),
-                                                                    ],
-                                                                  ),
+                                                                ChangeNotifierProvider.value(
+                                                                  value: appSys.loginController,
+                                                                  child: Consumer<LoginController>(
+                                                                      builder: (buildContext, model, widget) {
+                                                                    return (model.actualState == loginStatus.offline)
+                                                                        ? Row(
+                                                                            children: <Widget>[
+                                                                              Text("Vous êtes hors ligne",
+                                                                                  style: TextStyle(color: Colors.red)),
+                                                                            ],
+                                                                          )
+                                                                        : Container();
+                                                                  }),
+                                                                ),
                                                                 SizedBox(
                                                                   width: screenSize.size.width / 5 * 0.2,
                                                                 ),
@@ -615,16 +612,14 @@ class _LoginPageState extends State<LoginPage> {
                                                                   shape: RoundedRectangleBorder(
                                                                       borderRadius: BorderRadius.circular(11)),
                                                                   onPressed: () async {
-                                                                    await reloadChosenApi();
-
                                                                     //Actions when pressing the ok button
                                                                     if (_username.text != "" &&
-                                                                        (chosenParser == 1
+                                                                        (appSys.settings["system"]["chosenParser"] == 1
                                                                             ? _url.text != null
                                                                             : true) &&
                                                                         _password.text != null) {
                                                                       //Login using the chosen API
-                                                                      connectionData = localApi.login(
+                                                                      connectionData = appSys.api.login(
                                                                           _username.text.trim(), _password.text.trim(),
                                                                           url: _url.text.trim(), cas: casValue);
 
@@ -636,11 +631,12 @@ class _LoginPageState extends State<LoginPage> {
                                                                     }
                                                                   },
                                                                   onLongPress: () async {
-                                                                    if (chosenParser == 1 &&
+                                                                    if (appSys.settings["system"]["chosenParser"] ==
+                                                                            1 &&
                                                                         _url.text.length == 0 &&
                                                                         _password.text.length == 0 &&
                                                                         _username.text.length == 0) {
-                                                                      connectionData = localApi.login(
+                                                                      connectionData = appSys.api.login(
                                                                           "demonstration", "pronotevs",
                                                                           url:
                                                                               "https://demo.index-education.net/pronote/eleve.html",
@@ -649,12 +645,13 @@ class _LoginPageState extends State<LoginPage> {
                                                                       openLoadingDialog();
                                                                     } else {
                                                                       if (_username.text != "" &&
-                                                                          (chosenParser == 1
+                                                                          (appSys.settings["system"]["chosenParser"] ==
+                                                                                  1
                                                                               ? _url.text != null
                                                                               : true) &&
                                                                           _password.text != null) {
                                                                         //Login using the chosen API
-                                                                        connectionData = localApi.login(
+                                                                        connectionData = appSys.api.login(
                                                                             _username.text.trim(),
                                                                             _password.text.trim(),
                                                                             url: _url.text.trim(),
@@ -688,14 +685,14 @@ class _LoginPageState extends State<LoginPage> {
                                                                   highlightedBorderColor: Color(0xff252B62),
                                                                   //LOGIN AS pronote DEMO
                                                                   onLongPress: () {
-                                                                    if (chosenParser == 1 && _url.text.length == 0 && _password.text.length == 0 && _username.text.length == 0) {
-                                                                      connectionData = localApi.login("demonstration", "pronotevs", url: "https://demo.index-education.net/pronote/eleve.html", cas: "Aucun");
+                                                                    if (appSys.settings["system"]["chosenParser"] == 1 && _url.text.length == 0 && _password.text.length == 0 && _username.text.length == 0) {
+                                                                      connectionData = appSys.api.login("demonstration", "pronotevs", url: "https://demo.index-education.net/pronote/eleve.html", cas: "Aucun");
 
                                                                       openLoadingDialog();
                                                                     } else {
-                                                                      if (_username.text != "" && (chosenParser == 1 ? _url.text != null : true) && _password.text != null) {
+                                                                      if (_username.text != "" && (appSys.settings["system"]["chosenParser"] == 1 ? _url.text != null : true) && _password.text != null) {
                                                                         //Login using the chosen API
-                                                                        connectionData = localApi.login(_username.text.trim(), _password.text.trim(), url: _url.text.trim(), cas: casValue);
+                                                                        connectionData = appSys.api.login(_username.text.trim(), _password.text.trim(), url: _url.text.trim(), cas: casValue);
 
                                                                         openLoadingDialog();
                                                                       } else {
@@ -706,12 +703,12 @@ class _LoginPageState extends State<LoginPage> {
                                                                     }
                                                                   },
                                                                   onPressed: () async {
-                                                                    await getChosenParser();
+                                                                    await getappSys.settings["system"]["chosenParser"]();
 
                                                                     //Actions when pressing the ok button
-                                                                    if (_username.text != "" && (chosenParser == 1 ? _url.text != null : true) && _password.text != null) {
+                                                                    if (_username.text != "" && (appSys.settings["system"]["chosenParser"] == 1 ? _url.text != null : true) && _password.text != null) {
                                                                       //Login using the chosen API
-                                                                      connectionData = localApi.login(_username.text.trim(), _password.text.trim(), url: _url.text.trim(), cas: casValue);
+                                                                      connectionData = appSys.api.login(_username.text.trim(), _password.text.trim(), url: _url.text.trim(), cas: casValue);
 
                                                                       openLoadingDialog();
                                                                     } else {

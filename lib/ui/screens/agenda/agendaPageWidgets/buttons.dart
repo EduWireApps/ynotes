@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/apis/utils.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 
@@ -27,7 +28,7 @@ class _AgendaButtonsState extends State<AgendaButtons> {
 
   getWeekName() async {
     bool isEven = (await get_week(agendaDate)).isEven;
-    bool reverse = await getSetting("reverseWeekNames");
+    bool reverse = appSys.settings["user"]["agendaPage"]["reverseWeekNames"];
     if (isEven ^= reverse) {
       if (mounted) {
         setState(() {
@@ -119,7 +120,7 @@ class _AgendaButtonsState extends State<AgendaButtons> {
                               child: Material(
                                 color: Colors.transparent,
                                 child: Theme(
-                                  data: isDarkModeEnabled ? ThemeData.dark() : ThemeData.light(),
+                                  data: ThemeUtils.isThemeDark ? ThemeData.dark() : ThemeData.light(),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[SizedBox(child: child)],

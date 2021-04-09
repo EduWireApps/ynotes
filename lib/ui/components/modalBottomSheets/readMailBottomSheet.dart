@@ -12,6 +12,7 @@ import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/core/logic/shared/downloadController.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
@@ -38,7 +39,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
     if (!monochromatic) {
       return html;
     }
-    String color = isDarkModeEnabled ? "white" : "black";
+    String color = ThemeUtils.isThemeDark ? "white" : "black";
     String finalHTML = html.replaceAll("color", color);
     return finalHTML;
   }
@@ -153,7 +154,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                             format.format(DateTime.parse(widget.mail.date)),
                                             style: TextStyle(
                                                 fontFamily: "Asap",
-                                                color: isDarkModeEnabled
+                                                color: ThemeUtils.isThemeDark
                                                     ? Colors.white.withOpacity(0.5)
                                                     : Colors.black.withOpacity(0.5)),
                                           ),
@@ -164,7 +165,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                           this.widget.mail.to[0]["name"],
                                           style: TextStyle(
                                               fontFamily: "Asap",
-                                              color: isDarkModeEnabled
+                                              color: ThemeUtils.isThemeDark
                                                   ? Colors.white.withOpacity(0.5)
                                                   : Colors.black.withOpacity(0.5)),
                                         )

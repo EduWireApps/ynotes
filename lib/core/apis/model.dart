@@ -1,3 +1,6 @@
+import 'dart:core';
+
+import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:ynotes/core/apis/utils.dart';
@@ -5,6 +8,9 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/space/recurringEvents.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
+
+enum apiType { EcoleDirecte, Pronote }
 
 abstract class API {
   bool loggedIn = false;
@@ -52,7 +58,7 @@ abstract class API {
   Future getEvents(DateTime date, bool afterSchool, {bool forceReload = false}) async {
     List<AgendaEvent> events = List<AgendaEvent>();
     List<AgendaEvent> extracurricularEvents = List<AgendaEvent>();
-    List<Lesson> lessons = await localApi.getNextLessons(date, forceReload: forceReload);
+    List<Lesson> lessons = await appSys.api.getNextLessons(date, forceReload: forceReload);
     int week = await get_week(date);
     //Add lessons for this day
     if (lessons != null) {
@@ -61,7 +67,7 @@ abstract class API {
       lessons.sort((a, b) => a.end.compareTo(b.end));
     }
     if (!afterSchool) {
-      extracurricularEvents = await offline.agendaEvents.getAgendaEvents(week);
+      extracurricularEvents = await appSys.offline.agendaEvents.getAgendaEvents(week);
       if (extracurricularEvents != null) {
         if (lessons != null && lessons.length > 0) {
           //Last date
@@ -81,7 +87,7 @@ abstract class API {
         }
       }
     } else {
-      extracurricularEvents = await offline.agendaEvents.getAgendaEvents(week);
+      extracurricularEvents = await appSys.offline.agendaEvents.getAgendaEvents(week);
 
       if (extracurricularEvents != null) {
         //extracurricularEvents.removeWhere((element) => element.isLesson);
@@ -106,7 +112,7 @@ abstract class API {
     RecurringEventSchemes recurr = RecurringEventSchemes();
     recurr.date = date;
     recurr.week = week;
-    var recurringEvents = await offline.agendaEvents.getAgendaEvents(week, selector: recurr.testRequest);
+    var recurringEvents = await appSys.offline.agendaEvents.getAgendaEvents(week, selector: recurr.testRequest);
     if (recurringEvents != null && recurringEvents.length != 0) {
       recurringEvents.forEach((recurringEvent) {
         events.removeWhere((element) => element.id == recurringEvent.id);

@@ -7,6 +7,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:showcaseview/showcaseview.dart';
 import 'package:visibility_detector/visibility_detector.dart';
+import 'package:ynotes/core/logic/appConfig/controller.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/core/logic/homework/controller.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
@@ -25,11 +26,11 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 ///First page to access quickly to last grades, homework and
 class SummaryPage extends StatefulWidget {
   final Function switchPage;
-  final HomeworkController hwcontroller;
-  final GradesController gradesController;
 
-  const SummaryPage({Key key, this.switchPage, @required this.hwcontroller, @required this.gradesController})
-      : super(key: key);
+  const SummaryPage({
+    Key key,
+    this.switchPage,
+  }) : super(key: key);
   State<StatefulWidget> createState() {
     return SummaryPageState();
   }
@@ -62,7 +63,7 @@ class SummaryPageState extends State<SummaryPage> {
         offset = _pageControllerSummaryPage.offset;
       });
     });
-    disciplinesListFuture = localApi.getGrades();
+    disciplinesListFuture = appSys.api.getGrades();
 
     SchedulerBinding.instance.addPostFrameCallback(!mounted
         ? null
@@ -73,6 +74,10 @@ class SummaryPageState extends State<SummaryPage> {
                 }
               })
             });
+
+    //Init controllers
+    appSys.gradesController.refresh(force: false);
+    appSys.homeworkController.refresh(force: false);
   }
 
   void triggerSettings() {
@@ -81,12 +86,12 @@ class SummaryPageState extends State<SummaryPage> {
   }
 
   Future<void> refreshControllers() async {
-    await this.widget.gradesController.refresh(force: true);
-    await this.widget.hwcontroller.refresh(force: true);
+    await appSys.gradesController.refresh(force: true);
+    await appSys.homeworkController.refresh(force: true);
   }
 
   initLoginController() async {
-    await tlogin.init();
+    await appSys.loginController.init();
   }
 
   showDialog() async {
@@ -95,16 +100,10 @@ class SummaryPageState extends State<SummaryPage> {
   }
 
   showUpdateNote() async {
-    if ((!await getSetting("updateNote0.9.2"))) {
+    if ((await appSys.settings["system"]["lastReadUpdateNote"] != "0.9.2")) {
       await CustomDialogs.showUpdateNoteDialog(context);
-      await setSetting("updateNote0.9.2", true);
-    }
-  }
 
-  showShowCaseDialog(BuildContext _context) async {
-    if ((!await getSetting("summaryShowCase"))) {
-      ShowCaseWidget.of(_context).startShowCase([_gradeChartGB, _quickGradeGB]);
-      await setSetting("summaryShowCase", true);
+      appSys.updateSetting(appSys.settings["system"], "lastReadUpdateNote", "0.9.2");
     }
   }
 
@@ -167,12 +166,12 @@ class SummaryPageState extends State<SummaryPage> {
                       separator(context, "Notes"),
                       QuickGrades(
                         switchPage: widget.switchPage,
-                        gradesController: this.widget.gradesController,
+                        gradesController: appSys.gradesController,
                       ),
                       separator(context, "Devoirs"),
                       QuickHomework(
                         switchPage: widget.switchPage,
-                        hwcontroller: this.widget.hwcontroller,
+                        hwcontroller: appSys.homeworkController,
                       )
                     ],
                   ),

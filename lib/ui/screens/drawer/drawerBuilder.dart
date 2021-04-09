@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:ynotes/core/logic/appConfig/controller.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/core/logic/homework/controller.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
@@ -27,6 +28,7 @@ import 'package:ynotes/ui/screens/summary/summaryPage.dart';
 import 'package:ynotes/ui/screens/viescolaire/schoolLifePage.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
@@ -55,7 +57,9 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
         "menuName": "Résumé",
         "icon": MdiIcons.home,
         "page": SummaryPage(
-            switchPage: _switchPage, key: summaryPage, hwcontroller: hwcontroller, gradesController: gradesController),
+          switchPage: _switchPage,
+          key: summaryPage,
+        ),
         "key": summaryPage
       },
       {
@@ -149,9 +153,6 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
     initControllers();
     initPageControllers();
     //Page sys
-    ConnectionStatusSingleton connectionStatus = ConnectionStatusSingleton.getInstance();
-    tabBarconnexion = connectionStatus.connectionChange.listen(connectionChanged);
-    isOffline = !connectionStatus.hasConnection;
     _previousPage = drawerPageViewController.initialPage;
   }
 
@@ -160,12 +161,12 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
     _notifier?.dispose();
     drawerPageViewController.dispose();
     super.dispose();
-    offline.dispose();
+    appSys.offline.dispose();
   }
 
   initControllers() async {
-    hwcontroller = HomeworkController(localApi);
-    gradesController = GradesController(localApi);
+    hwcontroller = HomeworkController(appSys.api);
+    gradesController = GradesController(appSys.api);
     await gradesController.refresh();
     await hwcontroller.refresh();
 
@@ -197,13 +198,6 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
         new CurvedAnimation(parent: quickMenuAnimationController, curve: Curves.easeIn, reverseCurve: Curves.easeOut));
   }
 
-  void connectionChanged(dynamic hasConnection) {
-    print("Connection changed");
-    setState(() {
-      isOffline = !hasConnection;
-    });
-  }
-
   _onPageViewUpdate() {
     _notifier?.value = drawerPageViewController.page.round();
   }
@@ -214,7 +208,8 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
   @override
   Widget build(BuildContext context) {
     //status bar info
-    SystemChrome.setSystemUIOverlayStyle(isDarkModeEnabled ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark);
+    SystemChrome.setSystemUIOverlayStyle(
+        ThemeUtils.isThemeDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark);
     MediaQueryData screenSize;
     screenSize = MediaQuery.of(context);
 
@@ -262,7 +257,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                         builder: (context, value, child) {
                           return AppBar(
                               shadowColor: Colors.transparent,
-                              backgroundColor: isDarkModeEnabled
+                              backgroundColor: ThemeUtils.isThemeDark
                                   ? Theme.of(context).primaryColorLight
                                   : Theme.of(context).primaryColorDark,
                               title: Text(entries()[value]["menuName"]),
@@ -270,8 +265,8 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                                 if (entries()[value]["key"] != null)
                                   FlatButton(
                                     color: Colors.transparent,
-                                    child:
-                                        Icon(MdiIcons.wrench, color: isDarkModeEnabled ? Colors.white : Colors.black),
+                                    child: Icon(MdiIcons.wrench,
+                                        color: ThemeUtils.isThemeDark ? Colors.white : Colors.black),
                                     onPressed: () {
                                       entries()[value]["key"].currentState.triggerSettings();
                                     },
@@ -279,9 +274,9 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                               ],
                               leading: FlatButton(
                                 color: Colors.transparent,
-                                child: Icon(MdiIcons.menu, color: isDarkModeEnabled ? Colors.white : Colors.black),
-                                onPressed: () {
-                                  _drawerKey.currentState.openDrawer();
+                                child: Icon(MdiIcons.menu, color: ThemeUtils.isThemeDark ? Colors.white : Colors.black),
+                                onPressed: () async {
+                                  _drawerKey.currentState.openDrawer(); //
                                 },
                               ));
                         }),
@@ -298,7 +293,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
 
               //Transparent login panel
               ChangeNotifierProvider.value(
-                value: tlogin,
+                value: appSys.loginController,
                 child: Consumer<LoginController>(builder: (context, model, child) {
                   if (model.actualState != loginStatus.loggedIn) {
                     showLoginControllerStatusController.forward();
