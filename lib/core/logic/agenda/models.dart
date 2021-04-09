@@ -18,7 +18,7 @@ class Lesson {
   //E.G : 10h30
   @HiveField(3)
   final DateTime end;
-  //E.G : 45
+  ///E.G : 45 (minutes)
   @HiveField(4)
   final int duration;
   @HiveField(5)
