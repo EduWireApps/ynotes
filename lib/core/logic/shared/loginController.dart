@@ -18,7 +18,6 @@ class LoginController extends ChangeNotifier {
   String _details = "Déconnecté";
   //Error logs
   String _logs = "";
-  var internetConnexion;
   //getters
   get actualState => _actualState;
   set actualState(loginStatus) {

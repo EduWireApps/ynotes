@@ -1,5 +1,7 @@
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:ynotes/core/apis/utils.dart';
+import 'package:ynotes/core/logic/shared/loginController.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 
 import 'dart:async';
@@ -37,8 +39,6 @@ class _LoginPageState extends State<LoginPage> {
   String _obligationText = "";
   StreamSubscription loginconnexion;
 
-  bool isOffline = false;
-
   @override
   initState() {
     super.initState();
@@ -46,17 +46,6 @@ class _LoginPageState extends State<LoginPage> {
     tryToConnect();
 
     getFirstUse();
-    ConnectionStatusSingleton connectionStatus = ConnectionStatusSingleton.getInstance();
-    loginconnexion = connectionStatus.connectionChange.listen(connectionChanged);
-    isOffline = !connectionStatus.hasConnection;
-  }
-
-  void connectionChanged(dynamic hasConnection) {
-    print("connected");
-    setState(() {
-      isOffline = !hasConnection;
-    });
-    tryToConnect();
   }
 
   getFirstUse() async {
@@ -601,13 +590,20 @@ class _LoginPageState extends State<LoginPage> {
                                                             child: Row(
                                                               mainAxisAlignment: MainAxisAlignment.end,
                                                               children: <Widget>[
-                                                                if (isOffline)
-                                                                  Row(
-                                                                    children: <Widget>[
-                                                                      Text("Vous êtes hors ligne",
-                                                                          style: TextStyle(color: Colors.red)),
-                                                                    ],
-                                                                  ),
+                                                                ChangeNotifierProvider.value(
+                                                                  value: appSys.loginController,
+                                                                  child: Consumer<LoginController>(
+                                                                      builder: (buildContext, model, widget) {
+                                                                    return (model.actualState == loginStatus.offline)
+                                                                        ? Row(
+                                                                            children: <Widget>[
+                                                                              Text("Vous êtes hors ligne",
+                                                                                  style: TextStyle(color: Colors.red)),
+                                                                            ],
+                                                                          )
+                                                                        : Container();
+                                                                  }),
+                                                                ),
                                                                 SizedBox(
                                                                   width: screenSize.size.width / 5 * 0.2,
                                                                 ),
