@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/logic/homework/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
@@ -44,7 +45,8 @@ class HomeworkController extends ChangeNotifier {
     }
     //Remove antecedent hw
     if (list != null) {
-      list.removeWhere((element) => !element.date.isAfter(DateTime.now()));
+      list.removeWhere(
+          (element) => element.date.isBefore(DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now()))));
     }
     if (list != null) {
       //Number of elements in list
