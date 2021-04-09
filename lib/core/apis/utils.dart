@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/apis/Pronote.dart';
+import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/shared_preferences.dart';
 
@@ -24,6 +26,29 @@ APIManager(Offline _offline) {
 
 setChosenParser(int chosen) async {
   appSys.updateSetting(appSys.settings["system"], "chosenApi", chosen);
+}
+
+testIfPronoteCas(String url) async {
+  //auto forward
+  if (url.contains("?")) {
+    url += "&fd=1";
+  } else {
+    url += "?fd=1";
+  }
+  var response = await http.get(Uri.parse(url));
+  printWrapped(response.body);
+  if (response.body.contains('id="id_body"')) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
+getRootAddress(addr) {
+  return [
+    (addr.split('/').sublist(0, addr.split('/').length - 1).join("/")),
+    (addr.split('/').sublist(addr.split('/').length - 1, addr.split('/').length).join("/"))
+  ];
 }
 
 get_week(DateTime date) async {

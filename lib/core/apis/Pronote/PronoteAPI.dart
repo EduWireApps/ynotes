@@ -1,30 +1,29 @@
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:convert/convert.dart';
+import 'package:html/parser.dart' show parse;
+import 'package:convert/convert.dart' as conv;
 import 'package:crypto/crypto.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:html/parser.dart' show parse;
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:package_info/package_info.dart';
 import 'package:pointycastle/api.dart';
-import 'package:pointycastle/asymmetric/api.dart';
 import 'package:pointycastle/asymmetric/pkcs1.dart';
 import 'package:pointycastle/asymmetric/rsa.dart';
+import 'package:pointycastle/pointycastle.dart';
 import 'package:requests/requests.dart';
 import 'package:ynotes/core/apis/Pronote/pronoteConverters.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/logic/shared/loginController.dart';
+
 import 'package:ynotes/core/utils/nullSafeMap.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
 import 'package:ynotes/tests.dart';
-import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
 import 'package:ynotes/usefulMethods.dart';
-import 'package:ynotes/core/logic/shared/loginController.dart';
 import 'dart:convert' as conv;
-import 'package:ynotes/core/logic/shared/loginController.dart';
 
 import '../EcoleDirecte.dart';
 import '../utils.dart';
@@ -73,6 +72,7 @@ class PronoteClient {
   int oneHourDuration;
 
   List<String> stepsLogger;
+  bool mobileLogin;
   refresh() async {
     print("Reinitialisation");
 
@@ -99,13 +99,14 @@ class PronoteClient {
     this.expired = true;
   }
 
-  PronoteClient(String pronote_url, {String username, String password, var cookies}) {
+  PronoteClient(String pronote_url, {String username, String password, var cookies, bool mobileLogin}) {
     if (cookies == null && password == null && username == null) {
       throw 'Please provide login credentials. Cookies are None, and username and password are empty.';
     }
     this.username = username;
     this.password = password;
     this.pronote_url = pronote_url;
+    this.mobileLogin = mobileLogin;
     print("Initiate communication");
 
     this.communication = Communication(pronote_url, cookies, this);
@@ -171,8 +172,15 @@ class PronoteClient {
     try {
       final storage = new FlutterSecureStorage();
       await storage.write(key: "username", value: this.username);
-      await storage.write(key: "password", value: this.password);
+      if (!mobileLogin) {
+        await storage.write(key: "password", value: this.password);
+      }
+      //In case password changed
+      if (mobileLogin && (await storage.read(key: "password")) != null) {
+        password = await storage.read(key: "password");
+      }
       await storage.write(key: "pronoteurl", value: this.pronote_url);
+      await storage.write(key: "ispronotecas", value: this.mobileLogin.toString());
       print("Saved credentials");
     } catch (e) {
       print("failed to write values");
@@ -188,9 +196,10 @@ class PronoteClient {
       "pourENT": this.ent,
       "enConnexionAuto": false,
       "demandeConnexionAuto": false,
+      "enConnexionAppliMobile": this.mobileLogin,
       "demandeConnexionAppliMobile": false,
       "demandeConnexionAppliMobileJeton": false,
-      "uuidAppliMobile": "",
+      "uuidAppliMobile": "121567895313231",
       "loginTokenSAV": ""
     };
     var idr = await this.communication.post("Identification", data: {'donnees': ident_json});
@@ -206,9 +215,9 @@ class PronoteClient {
     if (this.ent != null && this.ent == true) {
       List<int> encoded = conv.utf8.encode(this.password);
       motdepasse = sha256.convert(encoded).bytes;
-      motdepasse = hex.encode(motdepasse);
+      motdepasse = conv.hex.encode(motdepasse);
       motdepasse = motdepasse.toString().toUpperCase();
-      e.aesKey = hex.encode(md5.convert(conv.utf8.encode(motdepasse)).bytes);
+      e.aesKey = conv.hex.encode(md5.convert(conv.utf8.encode(motdepasse)).bytes);
     } else {
       var u = this.username;
       var p = this.password;
@@ -227,16 +236,16 @@ class PronoteClient {
         p = p.toString().toLowerCase();
         this.stepsLogger.add("ⓘ Lowercased password");
       }
+
       var alea = idr['donneesSec']['donnees']['alea'];
       List<int> encoded = conv.utf8.encode((alea ?? "") + p);
       motdepasse = sha256.convert(encoded);
-      motdepasse = hex.encode(motdepasse.bytes);
+      motdepasse = conv.hex.encode(motdepasse.bytes);
       motdepasse = motdepasse.toString().toUpperCase();
       e.aesKey = md5.convert(conv.utf8.encode(u + motdepasse));
     }
 
-
-    var rawChallenge = e.aesDecrypt(hex.decode(challenge));
+    var rawChallenge = e.aesDecrypt(conv.hex.decode(challenge));
     this.stepsLogger.add("✅ Decrypted challenge");
 
     var rawChallengeWithoutAlea = removeAlea(rawChallenge);
@@ -263,6 +272,12 @@ class PronoteClient {
     }
 
     try {
+      if (mobileLogin) {
+        print("Saving token");
+        await storage.write(
+            key: "password", value: this.authResponse['donneesSec']['donnees']["jetonConnexionAppliMobile"]);
+        this.password = this.authResponse['donneesSec']['donnees']["jetonConnexionAppliMobile"];
+      }
       if (this.authResponse['donneesSec']['donnees'].toString().contains("cle")) {
         await this.communication.afterAuth(this.communication.lastResponse, this.authResponse, e.aesKey);
         if (isOldAPIUsed == false) {
@@ -654,7 +669,11 @@ class Communication {
       'connection': 'keep-alive',
       'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/74.0'
     };
-    String url = this.rootSite + "/" + this.htmlPage + (this.cookies != null ? "?fd=1" : "");
+
+    String url = this.rootSite +
+        "/" +
+        (this.cookies != null ? "?fd=1" : this.htmlPage) +
+        (this.client.mobileLogin ? "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335" : "");
     if (url.contains("?login=true") || url.contains("?fd=1")) {
       url += "&fd=1";
     } else {
@@ -662,6 +681,7 @@ class Communication {
     }
     print(url);
     this.client.stepsLogger.add("ⓘ" + " Used url is " + "`" + url + "`");
+    print(this.client.mobileLogin ? "CAS" : "NOT CAS");
 //?fd=1 bypass the old navigator issue
     var getResponse = await Requests.get(url, headers: headers).catchError((e) {
       this.client.stepsLogger.add("❌ Failed login request " + e.toString());
@@ -692,7 +712,7 @@ class Communication {
     }
     var initialResponse = await this.post('FonctionParametres',
         data: {'donnees': jsonPost},
-        decryptionChange: {'iv': hex.encode(md5.convert(this.encryption.aesIVTemp.bytes).bytes)});
+        decryptionChange: {'iv': conv.hex.encode(md5.convert(this.encryption.aesIVTemp.bytes).bytes)});
 
     return [this.attributes, initialResponse];
   }
@@ -737,8 +757,7 @@ class Communication {
 
       print(data);
       var zlibInstance = ZLibCodec(level: 6, raw: true);
-      data = zlibInstance.encode(conv.utf8.encode(hex.encode(conv.utf8.encode(data))));
-
+      data = zlibInstance.encode(conv.utf8.encode(conv.hex.encode(conv.utf8.encode(data))));
       this.client.stepsLogger.add("✅ Compressed request");
     }
     if (this.shouldEncryptRequests) {
@@ -757,7 +776,7 @@ class Communication {
     };
     String p_site =
         this.rootSite + '/appelfonction/' + this.attributes['a'] + '/' + this.attributes['h'] + '/' + rNumber;
-    //p_site = "http://192.168.1.99:3000/home";
+    print(p_site);
 
     this.requestNumber += 2;
     if (requestNumber > 190) {
@@ -800,7 +819,8 @@ class Communication {
       print("decryption change");
       if (decryptionChange.toString().contains("iv")) {
         print("decryption_change contains IV");
-        this.encryption.aesIV = IV.fromBase16(decryptionChange["iv"]);
+        print(decryptionChange['iv']);
+        this.encryption.aesIV = IV.fromBase16(decryptionChange['iv']);
       }
 
       if (decryptionChange.toString().contains("key")) {
@@ -813,7 +833,7 @@ class Communication {
     Map responseData = response.json();
 
     if (this.shouldEncryptRequests) {
-      responseData['donneesSec'] = this.encryption.aesDecryptAsBytes(hex.decode(responseData['donneesSec']));
+      responseData['donneesSec'] = this.encryption.aesDecryptAsBytes(conv.hex.decode(responseData['donneesSec']));
       print("décrypté données sec");
       this.client.stepsLogger.add("✅ Decrypted response");
     }
@@ -830,8 +850,6 @@ class Communication {
         throw "JSONDecodeError";
       }
     }
-    if (functionName == "Identification") {}
-
     return responseData;
   }
 
@@ -841,7 +859,7 @@ class Communication {
       var host = Requests.getHostname(authentificationResponse.url.toString());
       this.cookies = await Requests.getStoredCookies(host);
     }
-    var work = this.encryption.aesDecrypt(hex.decode(data['donneesSec']['donnees']['cle']));
+    var work = this.encryption.aesDecrypt(conv.hex.decode(data['donneesSec']['donnees']['cle']));
     try {
       this.authorizedTabs = prepareTabs(data['donneesSec']['donnees']['listeOnglets']);
 

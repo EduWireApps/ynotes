@@ -61,7 +61,7 @@ class APIEcoleDirecte extends API {
   APIEcoleDirecte(Offline offlineController) : super(offlineController);
 
 //Get connection message and store token
-  Future<List> login(username, password, {url, cas}) async {
+  Future<List> login(username, password, {url, cas, mobileCasLogin}) async {
     final prefs = await SharedPreferences.getInstance();
     if (username == null) {
       username = "";

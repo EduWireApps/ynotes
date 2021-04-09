@@ -30,6 +30,8 @@ class _LoadingPageState extends State<LoadingPage> {
     String p = await ReadStorage("password");
     String url = await ReadStorage("pronoteurl");
     String cas = await ReadStorage("pronotecas");
+    bool iscas = (await ReadStorage("ispronotecas") == "true");
+
     z = await storage.read(key: "agreedTermsAndConfiguredApp");
     if (u != null && p != null && z != null && appSys.settings["system"]["chosenParser"] != null) {
       Navigator.of(context).pushReplacement(router(homePage()));

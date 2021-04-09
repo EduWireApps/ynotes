@@ -20,7 +20,7 @@ abstract class API {
 
   ///Connect to the API
   ///Should return a connection status
-  Future<List> login(username, password, {url, cas});
+  Future<List> login(username, password, {url, cas, mobileCasLogin});
 
   ///Get years periods
   Future<List<Period>> getPeriods();
