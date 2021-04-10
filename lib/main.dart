@@ -56,19 +56,6 @@ Future main() async {
   await appSys.initApp();
   appSys.loginController = LoginController();
 
-  /*offline = Offline(false);
-  if (Platform.isAndroid || Platform.isIOS) {
-    await initBackgroundTask();
-  }
-
-  //Load api
-  await reloadChosenApi();
-
-  appSys.api = APIManager(offline);
-  //Set system notification bar color
-  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      systemNavigationBarColor: ThemeUtils.isThemeDark ? Color(0xff414141) : Color(0xffF3F3F3),
-      statusBarColor: Colors.transparent));*/
   runZoned<Future<Null>>(() async {
     runApp(HomeApp());
   });

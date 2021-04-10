@@ -1,4 +1,5 @@
 import 'package:permission_handler/permission_handler.dart';
+import 'package:ynotes/core/logic/appConfig/controller.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -494,12 +495,6 @@ class _page4State extends State<page4> {
   List<String> chosenSpecialties = List();
   @override
   Widget build(BuildContext context) {
-    SchedulerBinding.instance.addPostFrameCallback((_) => mounted
-        ? setState(() {
-            appSys.updateTheme("clair");
-          })
-        : null);
-
     var screenSize = MediaQuery.of(context);
     double opacityvalue = 0;
     if (widget.offset - 1 > 0 && widget.offset - 1 < 1) {
@@ -507,172 +502,176 @@ class _page4State extends State<page4> {
     } else {
       opacityvalue = 0;
     }
-    return Container(
-      height: screenSize.size.height,
-      color: Theme.of(context).backgroundColor,
-      child: CupertinoScrollbar(
-        child: SingleChildScrollView(
-          child: Container(
-            height: screenSize.size.height,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  "Paramètrons votre application",
-                  style: TextStyle(
-                      fontFamily: "Asap", fontSize: screenSize.size.height / 10 * 0.35, color: ThemeUtils.textColor()),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(
-                  height: screenSize.size.height / 10 * 0.1,
-                ),
-                SizedBox(
-                  height: screenSize.size.height / 10 * 0.2,
-                ),
-                ListTile(
-                    title: Text(
-                      "Choix de spécialités",
+    return ChangeNotifierProvider<ApplicationSystem>.value(
+      value: appSys,
+      child: Consumer<ApplicationSystem>(builder: (buildContext, model, child) {
+        return Container(
+          height: screenSize.size.height,
+          color: Theme.of(context).backgroundColor,
+          child: CupertinoScrollbar(
+            child: SingleChildScrollView(
+              child: Container(
+                height: screenSize.size.height,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      "Paramètrons votre application",
                       style: TextStyle(
                           fontFamily: "Asap",
-                          color: ThemeUtils.textColor(),
-                          fontSize: screenSize.size.height / 10 * 0.3),
+                          fontSize: screenSize.size.height / 10 * 0.35,
+                          color: ThemeUtils.textColor()),
+                      textAlign: TextAlign.center,
                     ),
-                    leading: Icon(MdiIcons.formatListBulleted, color: ThemeUtils.textColor()),
-                    onTap: () {
-                      CustomDialogs.showSpecialtiesChoice(context);
-                    }),
-                SizedBox(
-                  height: screenSize.size.height / 10 * 0.2,
-                ),
-                Text(
-                  "De quel côté de la force êtes vous ?",
-                  style: TextStyle(
-                    fontFamily: "Asap",
-                    fontSize: screenSize.size.height / 10 * 0.27,
-                    color: ThemeUtils.textColor(),
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                Divider(
-                  color: ThemeUtils.textColor(),
-                ),
-                SwitchListTile(
-                  value: ThemeUtils.isThemeDark,
-                  title: Text("Mode nuit",
-                      style: TextStyle(
-                          fontFamily: "Asap",
-                          color: ThemeUtils.textColor(),
-                          fontSize: screenSize.size.height / 10 * 0.3)),
-                  onChanged: (value) {
-                    appSys.updateTheme(value ? "sombre" : "clair");
-                    setState(() {});
-                  },
-                  secondary: Icon(
-                    Icons.lightbulb_outline,
-                    color: ThemeUtils.textColor(),
-                  ),
-                ),
-                Divider(
-                  color: ThemeUtils.textColor(),
-                ),
-                Text(
-                  "Notifications",
-                  style: TextStyle(
-                      fontFamily: "Asap", fontSize: screenSize.size.height / 10 * 0.27, color: ThemeUtils.textColor()),
-                  textAlign: TextAlign.center,
-                ),
-                Divider(),
-                SwitchListTile(
-                    value: appSys.settings["user"]["global"]["notificationNewGrade"],
-                    title: Text(
-                      "Notification de nouvelle note",
-                      style: TextStyle(
-                          fontFamily: "Asap",
-                          color: ThemeUtils.textColor(),
-                          fontSize: screenSize.size.height / 10 * 0.3),
+                    SizedBox(
+                      height: screenSize.size.height / 10 * 0.1,
                     ),
-                    secondary: Icon(
-                      MdiIcons.newBox,
+                    SizedBox(
+                      height: screenSize.size.height / 10 * 0.2,
+                    ),
+                    ListTile(
+                        title: Text(
+                          "Choix de spécialités",
+                          style: TextStyle(
+                              fontFamily: "Asap",
+                              color: ThemeUtils.textColor(),
+                              fontSize: screenSize.size.height / 10 * 0.3),
+                        ),
+                        leading: Icon(MdiIcons.formatListBulleted, color: ThemeUtils.textColor()),
+                        onTap: () {
+                          CustomDialogs.showSpecialtiesChoice(context);
+                        }),
+                    SizedBox(
+                      height: screenSize.size.height / 10 * 0.2,
+                    ),
+                    Text(
+                      "De quel côté de la force êtes vous ?",
+                      style: TextStyle(
+                        fontFamily: "Asap",
+                        fontSize: screenSize.size.height / 10 * 0.27,
+                        color: ThemeUtils.textColor(),
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    Divider(
                       color: ThemeUtils.textColor(),
                     ),
-                    onChanged: (value) async {
-                      if ((await Permission.ignoreBatteryOptimizations.isGranted)) {
-                        appSys.updateSetting(appSys.settings["user"]["global"], "notificationNewGrade", value);
-                        setState(() {});
-                      } else {
-                        if (await CustomDialogs.showAuthorizationsDialog(
-                                context,
-                                "la configuration d'optimisation de batterie",
-                                "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ??
-                            false) {
-                          if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
-                            appSys.updateSetting(appSys.settings["user"]["global"], "notificationNewGrade", value);
-
-                            setState(() {});
+                    SwitchListTile(
+                      value: ThemeUtils.isThemeDark,
+                      title: Text("Mode nuit",
+                          style: TextStyle(
+                              fontFamily: "Asap",
+                              color: ThemeUtils.textColor(),
+                              fontSize: screenSize.size.height / 10 * 0.3)),
+                      onChanged: (value) async {
+                        await model.updateTheme(value ? "sombre" : "clair");
+                      },
+                      secondary: Icon(
+                        Icons.lightbulb_outline,
+                        color: ThemeUtils.textColor(),
+                      ),
+                    ),
+                    Divider(
+                      color: ThemeUtils.textColor(),
+                    ),
+                    Text(
+                      "Notifications",
+                      style: TextStyle(
+                          fontFamily: "Asap",
+                          fontSize: screenSize.size.height / 10 * 0.27,
+                          color: ThemeUtils.textColor()),
+                      textAlign: TextAlign.center,
+                    ),
+                    Divider(),
+                    SwitchListTile(
+                        value: model.settings["user"]["global"]["notificationNewGrade"],
+                        title: Text(
+                          "Notification de nouvelle note",
+                          style: TextStyle(
+                              fontFamily: "Asap",
+                              color: ThemeUtils.textColor(),
+                              fontSize: screenSize.size.height / 10 * 0.3),
+                        ),
+                        secondary: Icon(
+                          MdiIcons.newBox,
+                          color: ThemeUtils.textColor(),
+                        ),
+                        onChanged: (value) async {
+                          if ((await Permission.ignoreBatteryOptimizations.isGranted)) {
+                            model.updateSetting(appSys.settings["user"]["global"], "notificationNewGrade", value);
+                          } else {
+                            if (await CustomDialogs.showAuthorizationsDialog(
+                                    context,
+                                    "la configuration d'optimisation de batterie",
+                                    "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ??
+                                false) {
+                              if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
+                                model.updateSetting(appSys.settings["user"]["global"], "notificationNewGrade", value);
+                              }
+                            }
+                          }
+                        }),
+                    Divider(),
+                    SwitchListTile(
+                      value: appSys.settings["user"]["global"]["notificationNewMail"],
+                      title: Text(
+                        "Notification de nouveau mail",
+                        style: TextStyle(
+                            fontFamily: "Asap",
+                            color: ThemeUtils.textColor(),
+                            fontSize: screenSize.size.height / 10 * 0.3),
+                      ),
+                      onChanged: (value) async {
+                        if ((await Permission.ignoreBatteryOptimizations.isGranted)) {
+                          model.updateSetting(appSys.settings["user"]["global"], "notificationNewMail", value);
+                        } else {
+                          if (await CustomDialogs.showAuthorizationsDialog(
+                                  context,
+                                  "la configuration d'optimisation de batterie",
+                                  "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ??
+                              false) {
+                            if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
+                              appSys.updateSetting(appSys.settings["user"]["global"], "notificationNewMail", value);
+                            }
                           }
                         }
-                      }
-                    }),
-                Divider(),
-                SwitchListTile(
-                  value: appSys.settings["user"]["global"]["notificationNewMail"],
-                  title: Text(
-                    "Notification de nouveau mail",
-                    style: TextStyle(
-                        fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.3),
-                  ),
-                  onChanged: (value) async {
-                    if ((await Permission.ignoreBatteryOptimizations.isGranted)) {
-                      appSys.updateSetting(appSys.settings["user"]["global"], "notificationNewMail", value);
-
-                      setState(() {});
-                    } else {
-                      if (await CustomDialogs.showAuthorizationsDialog(
-                              context,
-                              "la configuration d'optimisation de batterie",
-                              "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ??
-                          false) {
-                        if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
-                          appSys.updateSetting(appSys.settings["user"]["global"], "notificationNewMail", value);
-                          setState(() {});
+                      },
+                      secondary: Icon(
+                        MdiIcons.newBox,
+                        color: ThemeUtils.textColor(),
+                      ),
+                    ),
+                    Divider(
+                      color: ThemeUtils.textColor(),
+                    ),
+                    RaisedButton(
+                      color: Color(0xff5DADE2),
+                      shape: StadiumBorder(),
+                      onPressed: () async {
+                        var classe = await specialtiesSelectionAvailable();
+                        if (classe[0] && chosenSpecialties.length == (classe[1] == "Première" ? 3 : 2)) {
+                          CreateStorage("agreedTermsAndConfiguredApp", "true");
+                          final prefs = await SharedPreferences.getInstance();
+                          prefs.setStringList("listSpecialties", chosenSpecialties);
+                          Navigator.of(context).pushReplacement(router(homePage()));
+                        } else if (!classe[0]) {
+                          CreateStorage("agreedTermsAndConfiguredApp", "true");
+                          final prefs = await SharedPreferences.getInstance();
+                          prefs.setStringList("listSpecialties", chosenSpecialties);
+                          Navigator.of(context).pushReplacement(router(homePage()));
+                        } else {
+                          CustomDialogs.showAnyDialog(context, "Vous devez renseigner toutes vos spécialités.");
                         }
-                      }
-                    }
-                  },
-                  secondary: Icon(
-                    MdiIcons.newBox,
-                    color: ThemeUtils.textColor(),
-                  ),
+                      },
+                      child: const Text('Allons-y !', style: TextStyle(fontSize: 20, fontFamily: "Asap")),
+                    ),
+                  ],
                 ),
-                Divider(
-                  color: ThemeUtils.textColor(),
-                ),
-                RaisedButton(
-                  color: Color(0xff5DADE2),
-                  shape: StadiumBorder(),
-                  onPressed: () async {
-                    var classe = await specialtiesSelectionAvailable();
-                    if (classe[0] && chosenSpecialties.length == (classe[1] == "Première" ? 3 : 2)) {
-                      CreateStorage("agreedTermsAndConfiguredApp", "true");
-                      final prefs = await SharedPreferences.getInstance();
-                      prefs.setStringList("listSpecialties", chosenSpecialties);
-                      Navigator.of(context).pushReplacement(router(homePage()));
-                    } else if (!classe[0]) {
-                      CreateStorage("agreedTermsAndConfiguredApp", "true");
-                      final prefs = await SharedPreferences.getInstance();
-                      prefs.setStringList("listSpecialties", chosenSpecialties);
-                      Navigator.of(context).pushReplacement(router(homePage()));
-                    } else {
-                      CustomDialogs.showAnyDialog(context, "Vous devez renseigner toutes vos spécialités.");
-                    }
-                  },
-                  child: const Text('Allons-y !', style: TextStyle(fontSize: 20, fontFamily: "Asap")),
-                ),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 }

@@ -100,9 +100,7 @@ class SettingsUtils {
 
   static setSetting(Map newMap) async {
     final prefs = await SharedPreferences.getInstance();
-
     String encoded = json.encode(newMap);
-    print(encoded);
     await prefs.setString("settings", encoded);
   }
 

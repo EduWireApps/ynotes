@@ -221,15 +221,19 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
               },
               loginCallback: () async {
                 try {
-                  if (await testIfPronoteCas(_url.text)) {
-                    var a =
-                        await Navigator.of(context).push(router(LoginWebView(url: _url.text, controller: _controller)));
-                    if (a != null) {
-                      connectionData = appSys.api.login(a["login"], a["mdp"], url: _url.text, mobileCasLogin: true);
-                      openLoadingDialog();
+                  if (await checkPronoteURL(_url.text)) {
+                    if (await testIfPronoteCas(_url.text)) {
+                      var a = await Navigator.of(context)
+                          .push(router(LoginWebView(url: _url.text, controller: _controller)));
+                      if (a != null) {
+                        connectionData = appSys.api.login(a["login"], a["mdp"], url: _url.text, mobileCasLogin: true);
+                        openLoadingDialog();
+                      }
+                    } else {
+                      sliderController.animateToPage(2, duration: Duration(milliseconds: 300), curve: Curves.easeIn);
                     }
                   } else {
-                    sliderController.animateToPage(2, duration: Duration(milliseconds: 300), curve: Curves.easeIn);
+                    CustomDialogs.showErrorSnackBar(context, "Adresse invalide", "(pas de log spécifique)");
                   }
                 } catch (e) {
                   print(e);

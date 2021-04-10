@@ -162,7 +162,6 @@ List<Grade> getAllGrades(List<Discipline> list, {bool overrideLimit = false, boo
   }
 }
 
-
 //Redefine the switch statement
 TValue case2<TOptionType, TValue>(
   TOptionType selectedOption,
@@ -185,27 +184,6 @@ Future<List<Discipline>> refreshDisciplinesListColors(List<Discipline> list) asy
     newList.add(f);
   });
   return newList;
-}
-
-//Leave app
-exitApp() async {
-  try {
-    await appSys.offline.clearAll();
-    //Delete sharedPref
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    await preferences.clear();
-    //Import secureStorage
-    final storage = new FlutterSecureStorage();
-    //Delete all
-    await storage.deleteAll();
-    appSys.updateTheme("clair");
-    //delete hive files
-    appSys.api.gradesList = null;
-    appSys.api = null;
-    firstStart = true;
-  } catch (e) {
-    print(e);
-  }
 }
 
 specialtiesSelectionAvailable() async {
