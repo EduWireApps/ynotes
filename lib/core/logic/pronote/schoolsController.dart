@@ -48,7 +48,9 @@ class PronoteSchoolsController extends ChangeNotifier {
             if (space["nom"].toUpperCase().contains("ÉLÈVES"))
               _spaces.add(PronoteSpace(
                   name: space["nom"],
-                  url: school.url + (school.url[school.url.length - 1] == "/" ? "" : "/") + space["URL"],
+                  url: school.url +
+                      (school.url[school.url.length - 1] == "/" ? "" : "/") +
+                      space["URL"],
                   originUrl: school.url));
           });
           spaces = _spaces;
@@ -66,12 +68,18 @@ class PronoteSchoolsController extends ChangeNotifier {
   //Request to pronote to get schools around
   schoolRequest(double long, double lat) async {
     String url = "https://www.index-education.com/swie/geoloc.php";
-    Map<String, String> headers = {"Content-Type": "application/x-www-form-urlencoded"};
+    Map<String, String> headers = {
+      "Content-Type": "application/x-www-form-urlencoded"
+    };
 
-    var body = 'data=%7B%22nomFonction%22%3A%22geoLoc%22%2C%22lat%22%3A$lat%2C%22long%22%3A$long%7D';
-    var response = await http.post(Uri.parse(url), headers: headers, body: body).catchError((e) {
-      return "Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.";
+    var body =
+        'data=%7B%22nomFonction%22%3A%22geoLoc%22%2C%22lat%22%3A$lat%2C%22long%22%3A$long%7D';
+    var response = await http
+        .post(Uri.parse(url), headers: headers, body: body)
+        .catchError((e) {
+      throw "Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.";
     });
+
     if (response.statusCode == 200) {
       convertToSchool(response.body, long, lat);
     } else {
@@ -82,22 +90,31 @@ class PronoteSchoolsController extends ChangeNotifier {
 
   convertToSchool(String body, double long, double lat) {
     var decodedData = json.decode(body);
-    List<PronoteSchool> _schools = List();
-    decodedData.forEach((rawData) {
-      _schools.add(PronoteSchool(
-          name: rawData["nomEtab"],
-          coordinates: [
-            rawData["lat"].toString(),
-            rawData["long"].toString(),
-            Geolocator.distanceBetween(double.tryParse(rawData["lat"]), double.tryParse(rawData["long"]), lat, long)
-                .toString()
-          ],
-          url: rawData["url"],
-          postalCode: rawData["cp"].toString()));
-    });
+    List<PronoteSchool> _schools = [];
+    print(decodedData);
+    if (decodedData != null) {
+      try {
+        decodedData.forEach((rawData) {
+          _schools.add(PronoteSchool(
+              name: rawData["nomEtab"],
+              coordinates: [
+                rawData["lat"].toString(),
+                rawData["long"].toString(),
+                Geolocator.distanceBetween(double.tryParse(rawData["lat"]),
+                        double.tryParse(rawData["long"]), lat, long)
+                    .toString()
+              ],
+              url: rawData["url"],
+              postalCode: rawData["cp"].toString()));
+        });
+      } catch (e) {}
+    }
+
     //sort schools by distance
-    _schools
-        .sort((a, b) => (double.tryParse(a.coordinates[2]) ?? 0.0).compareTo(double.tryParse(b.coordinates[2]) ?? 0.0));
+    try {
+      _schools.sort((a, b) => (double.tryParse(a.coordinates[2]) ?? 0.0)
+          .compareTo(double.tryParse(b.coordinates[2]) ?? 0.0));
+    } catch (e) {}
     schools = _schools;
   }
 

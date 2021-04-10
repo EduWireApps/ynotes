@@ -99,6 +99,7 @@ class _AgendaState extends State<Agenda> {
           Color color = Color(snapshot.data);
           return Container(
             width: screenSize.size.width / 5 * 4.5,
+            
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
