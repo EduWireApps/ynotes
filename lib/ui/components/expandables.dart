@@ -243,15 +243,22 @@ class _ExpandablesState extends State<Expandables>
                             widget.topExpandableBorderRadius)),
                     color: widget.topExpandableColor ??
                         Theme.of(context).primaryColor,
-                    child: Container(
-                      padding: EdgeInsets.zero,
-                      width: widget.width,
-                      height: widget.minHeight +
-                          (widget.maxHeight - widget.minHeight) *
-                              topWidgetPercentExpansion /
-                              100,
-                      child: widget.topChild,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(
+                          widget.topExpandableBorderRadius),
+                      child: Container(
+                        padding: EdgeInsets.zero,
+                        width: widget.width,
+                        height: widget.minHeight +
+                            (widget.maxHeight - widget.minHeight) *
+                                topWidgetPercentExpansion /
+                                100,
+                        child: widget.topChild,
+                      ),
                     )),
+              ),
+              SizedBox(
+                height: widget.spaceBetween,
               ),
               GestureDetector(
                 onVerticalDragUpdate: handleBottomWidgetDragUpdate,
@@ -259,22 +266,27 @@ class _ExpandablesState extends State<Expandables>
                 onTap: () {
                   animateBottomWidgetToMax();
                 },
-                child: Card(
-                    shadowColor: widget.expandablesShadowColor,
-                    shape: RoundedRectangleBorder(
+                child: ClipRRect(
+                  child: Card(
+                      shadowColor: widget.expandablesShadowColor,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(
+                              widget.bottomExpandableBorderRadius)),
+                      color: widget.bottomExpandableColor ??
+                          Theme.of(context).primaryColor,
+                      child: ClipRRect(
                         borderRadius: BorderRadius.circular(
-                            widget.bottomExpandableBorderRadius)),
-                    margin: EdgeInsets.only(top: widget.spaceBetween),
-                    color: widget.bottomExpandableColor ??
-                        Theme.of(context).primaryColor,
-                    child: Container(
-                      width: widget.width,
-                      height: widget.minHeight +
-                          (widget.maxHeight - widget.minHeight) *
-                              bottomWidgetPercentExpansion /
-                              100,
-                      child: widget.bottomChild,
-                    )),
+                            widget.bottomExpandableBorderRadius),
+                        child: Container(
+                          width: widget.width,
+                          height: widget.minHeight +
+                              (widget.maxHeight - widget.minHeight) *
+                                  bottomWidgetPercentExpansion /
+                                  100,
+                          child: widget.bottomChild,
+                        ),
+                      )),
+                ),
               ),
             ],
           );
