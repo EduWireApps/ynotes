@@ -1,0 +1,35 @@
+name: Tests 
+on:
+  push:
+    branches: ios_testdeploy
+  pull_request:
+    branches: ios_testdeploy
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+jobs:
+  tests:
+    name: Tests 
+    runs-on: macos-latest
+      
+    steps:      
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Select Xcode Version
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: latest-stable
+    
+    - name: Setup ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 2.7.2
+        bundler-cache: true
+        
+    - name: Install Pods
+      run: |
+        pod install
+            
+    - name: Run tests
+      working-directory: ios/fastlane 
+      run: |
+        bundle exec fastlane tests
