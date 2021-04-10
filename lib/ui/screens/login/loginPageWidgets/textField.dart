@@ -30,7 +30,7 @@ class _LoginPageTextFieldState extends State<LoginPageTextField> {
         height: screenSize.size.width / 5 * 0.7,
         decoration: BoxDecoration(
             border: Border.all(width: 0.7, color: Colors.white),
-            borderRadius: BorderRadius.circular(25),
+            borderRadius: BorderRadius.circular(10000),
             color: Colors.white70),
         padding: EdgeInsets.zero,
         child: Stack(
@@ -39,25 +39,30 @@ class _LoginPageTextFieldState extends State<LoginPageTextField> {
             Container(
               width: screenSize.size.width / 5 * 4.2,
               height: screenSize.size.width / 5 * 0.7,
-              child: TextField(
-                maxLines: 1,
-                controller: widget.controller,
-                obscureText: widget.isObscured,
-                style: TextStyle(color: Colors.black),
-                textAlignVertical: TextAlignVertical.center,
-                decoration: InputDecoration(
-                  contentPadding: EdgeInsets.only(
-                      left: screenSize.size.width / 5 * 0.75,
-                      right: widget.eyeButton ? screenSize.size.width / 5 * 0.75 : 0),
-                  border: new OutlineInputBorder(
-                    borderSide: BorderSide.none,
-                    borderRadius: const BorderRadius.all(
-                      const Radius.circular(25),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextField(
+                    maxLines: 1,
+                    controller: widget.controller,
+                    obscureText: widget.isObscured,
+                    style: TextStyle(color: Colors.black),
+                    textAlignVertical: TextAlignVertical.center,
+                    decoration: InputDecoration(
+                      contentPadding: EdgeInsets.only(
+                          left: screenSize.size.width / 5 * 0.75,
+                          right: widget.eyeButton ? screenSize.size.width / 5 * 0.75 : 0),
+                      border: new OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: const BorderRadius.all(
+                          const Radius.circular(25),
+                        ),
+                      ),
+                      hintStyle: new TextStyle(color: Colors.grey[800]),
+                      hintText: widget.hint,
                     ),
                   ),
-                  hintStyle: new TextStyle(color: Colors.grey[800]),
-                  hintText: widget.hint,
-                ),
+                ],
               ),
             ),
             Container(
