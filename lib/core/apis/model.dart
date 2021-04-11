@@ -16,6 +16,8 @@ abstract class API {
   bool loggedIn = false;
   final Offline offlineController;
 
+  List<SchoolAccount> accounts;
+
   API(this.offlineController);
 
   ///Connect to the API
@@ -130,4 +132,24 @@ abstract class API {
   }
 
   List<Grade> gradesList;
+}
+
+class SchoolAccount {
+  //Name of the student
+  String name;
+
+  //Class of the student
+  String studentClass;
+
+  String studentID;
+
+  
+
+  //Tabs the student can access to
+  List<appTabs> availableTabs;
+
+  List<Period> studentPeriods;
+
+  
+
 }

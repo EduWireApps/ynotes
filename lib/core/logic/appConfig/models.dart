@@ -1,0 +1,10 @@
+enum appTabs {
+  SUMMARY,
+  GRADES,
+  HOMEWORK,
+  AGENDA,
+  POLLS,
+  MESSAGING,
+  CLOUD,
+  FILES,
+}
