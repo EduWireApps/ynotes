@@ -1,6 +1,7 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:ynotes/core/apis/Pronote/pronoteMethods.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/main.dart';
@@ -29,39 +30,17 @@ bool pollsRefreshRecursive = false;
 
 class APIPronote extends API {
   APIPronote(Offline offlineController) : super(offlineController);
-
+  PronoteMethod pronoteMethod = PronoteMethod(localClient, appSys.account);
   @override
   // TODO: implement listApp
 
   @override
   Future<List<Discipline>> getGrades({bool forceReload}) async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    var offlineGrades = await appSys.offline.disciplines.getDisciplines();
-
-    //If force reload enabled the grades will be loaded online
-    if ((connectivityResult == ConnectivityResult.none || forceReload == false || forceReload == null) &&
-        offlineGrades != null) {
-      print("Loading grades from offline storage.");
-
-      var toReturn = await appSys.offline.disciplines.getDisciplines();
-      toReturn = await refreshDisciplinesListColors(toReturn);
-      return toReturn;
-    } else {
-      print("Loading grades inline.");
-      var toReturn = await getGradesFromInternet();
-      if (toReturn == null) {
-        toReturn = await appSys.offline.disciplines.getDisciplines();
-      }
-      toReturn = await refreshDisciplinesListColors(toReturn);
-      if (toReturn != null) {
-        appSys.updateSetting(appSys.settings["system"], "lastGradeCount", getAllGrades(toReturn, overrideLimit: true).length);
-      }
-
-      return toReturn;
-    }
+    return await pronoteMethod.fetchAnyData(pronoteMethod.grades, offlineController.disciplines, "grades",
+        forceFetch: forceReload, isOfflineLocked: offlineController.locked);
   }
 
-  getGradesFromInternet() async {
+  /*getGradesFromInternet() async {
     int req = 0;
     //Time out of 20 seconds. Wait until the task is unlocked
     while (gradeLock == true && req < 10) {
@@ -135,7 +114,7 @@ class APIPronote extends API {
       List<Discipline> listDisciplines = List<Discipline>();
       return listDisciplines;
     }
-  }
+  }*/
 
   @override
   Future<List<Homework>> getHomeworkFor(DateTime dateHomework) async {
@@ -271,7 +250,8 @@ class APIPronote extends API {
       loginLock = true;
       try {
         var cookies = await callCas(cas, username, password, url ?? "");
-        localClient = PronoteClient(url, username: username, password: password, mobileLogin: mobileCasLogin, cookies: cookies);
+        localClient =
+            PronoteClient(url, username: username, password: password, mobileLogin: mobileCasLogin, cookies: cookies);
 
         await localClient.init();
         if (localClient.loggedIn) {
@@ -549,17 +529,6 @@ class APIPronote extends API {
       }
     } catch (e) {
       print("Erreur while getting period " + e.toString());
-    }
-  }
-
-  refreshClient() async {
-    await appSys.loginController.login();
-    //reset all recursives
-    if (appSys.loginController.actualState == loginStatus.loggedIn) {
-      gradeRefreshRecursive = false;
-      hwRefreshRecursive = false;
-      lessonsRefreshRecursive = false;
-      pollsRefreshRecursive = false;
     }
   }
 

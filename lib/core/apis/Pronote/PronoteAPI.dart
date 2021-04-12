@@ -41,7 +41,7 @@ class PronoteClient {
   Communication communication;
   var attributes;
   var funcOptions;
-
+  PronoteUtils utils;
   bool ent;
 
   Encryption encryption;
@@ -108,7 +108,7 @@ class PronoteClient {
     this.pronote_url = pronote_url;
     this.mobileLogin = mobileLogin;
     print("Initiate communication");
-
+    utils = PronoteUtils();
     this.communication = Communication(pronote_url, cookies, this);
   }
   Future init() async {
@@ -780,7 +780,7 @@ class Communication {
 
     this.requestNumber += 2;
     if (requestNumber > 190) {
-      print("WELL DUH" +requestNumber.toString());
+      print("WELL DUH" + requestNumber.toString());
       await this.client.refresh();
     }
 
@@ -1025,6 +1025,34 @@ class KeepAlive {
 }
 
 Uint8List int32BigEndianBytes(int value) => Uint8List(4)..buffer.asByteData().setInt32(0, value, Endian.big);
+
+class PronoteUtils {
+  gradeTranslate(String value) {
+    List gradeTranslate = [
+      'Absent',
+      'Dispensé',
+      'Non noté',
+      'Inapte',
+      'Non rendu',
+      'Absent zéro',
+      'Non rendu zéro',
+      'Félicitations'
+    ];
+    if (value.contains("|")) {
+      return gradeTranslate[int.parse(value[1]) - 1];
+    } else {
+      return value;
+    }
+  }
+
+  
+  shouldCountAsZero(String grade) {
+    if (grade == "Absent zéro" || grade == "Non rendu zéro") {
+      return true;
+    } else
+      return false;
+  }
+}
 
 class PronotePeriod {
   DateTime end;

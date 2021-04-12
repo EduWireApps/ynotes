@@ -143,13 +143,10 @@ class SchoolAccount {
 
   String studentID;
 
-  
-
   //Tabs the student can access to
   List<appTabs> availableTabs;
 
   List<Period> studentPeriods;
 
-  
-
+  bool isParentAccount;
 }

@@ -28,6 +28,8 @@ class Test {
 class ApplicationSystem extends ChangeNotifier {
   Map settings;
 
+  SchoolAccount account;
+
   updateSetting(Map path, String key, var value) {
     path[key] = value;
     SettingsUtils.setSetting(settings);

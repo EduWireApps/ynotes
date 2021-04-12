@@ -29,7 +29,7 @@ class Discipline {
   @HiveField(10)
   final List<String> teachers;
   @HiveField(11)
-  final String period;
+  String period;
   @HiveField(12)
   List<Grade> gradesList;
   @HiveField(13)
