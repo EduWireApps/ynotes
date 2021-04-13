@@ -77,7 +77,6 @@ class GradesController extends ChangeNotifier {
       _disciplines = await _api.getGrades(forceReload: force);
       notifyListeners();
     }
-
     isFetching = false;
     _setDefaultPeriod();
     _setAverage();

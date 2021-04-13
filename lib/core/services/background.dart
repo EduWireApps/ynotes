@@ -19,7 +19,7 @@ class BackgroundService {
     //await LocalNotification.showDebugNotification();
     try {
 //Ensure that grades notification are enabled and battery saver disabled
-      if (appSys.settings["user"]["global"]["disableAtDayEnd"] && !appSys.settings["user"]["global"]["batterySaver"]) {
+      if (appSys.settings["user"]["agenda"]["disableAtDayEnd"] && !appSys.settings["user"]["global"]["batterySaver"]) {
         logFile("New grade test triggered");
         if (await testNewGrades()) {
           await AppNotification.showNewGradeNotification();

@@ -1,10 +1,12 @@
 import 'package:intl/intl.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteAPI.dart';
+import 'package:ynotes/core/apis/Pronote/convertersExporter.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/nullSafeMap.dart';
 
 class PronoteHomeworkConverter {
   static List<Homework> homework(PronoteClient client, Map homeworkData) {
+    List<Homework> hwList = List();
     List data = mapGet(homeworkData, ['donneesSec', 'donnees', 'ListeCahierDeTextes', 'V']) ?? [];
     data.forEach((singleHomeworkData) {
       String discipline = mapGet(singleHomeworkData, ["Matiere", "V", "L"]);
@@ -15,15 +17,19 @@ class PronoteHomeworkConverter {
 
       String rawContent = mapGet(singleHomeworkData, ["descriptif", "V"]);
       String sessionRawContent = null;
-      DateTime date;
-      DateTime entryDate;
-      bool done;
-      bool toReturn;
-      bool isATest;
-      List<Document> documents;
-      List<Document> sessionDocuments;
-      String teacherName;
-      bool loaded;
+      DateTime date = DateFormat("dd/MM/yyyy hh:mm:ss").parse(mapGet(singleHomeworkData, ["DateFin", "V"]));
+      DateTime entryDate = DateFormat("dd/MM/yyyy hh:mm:ss").parse(mapGet(singleHomeworkData, ["Date", "V"]));
+
+      bool done = false;
+      bool toReturn = false;
+      bool isATest = false;
+      List<Document> documents = PronoteDocumentConverter.documents(mapGet(singleHomeworkData, ["listeContenus", "V"]));
+      List<Document> sessionDocuments = [];
+      String teacherName = "";
+      bool loaded = true;
+      hwList.add(Homework(discipline, disciplineCode, id, rawContent, sessionRawContent, date, entryDate, done,
+          toReturn, isATest, documents, sessionDocuments, teacherName, loaded));
     });
+    return hwList;
   }
 }

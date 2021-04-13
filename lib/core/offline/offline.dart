@@ -152,13 +152,14 @@ class Offline {
       print("Refreshing offline");
       try {
         //Get data and cast it
-        var offlineLessonsData = await agendaBox.get("lessons");
-        var offlineDisciplinesData = await offlineBox.get("disciplines");
-        var offlinehomeworkData = await offlineBox.get("homework");
-        var offlinePollsData = await offlineBox.get("polls");
-        var offlineRemindersData = await agendaBox.get("reminders");
-        var offlineAgendaEventsData = await agendaBox.get("agendaEvents");
-        var offlineRecipientsData = await offlineBox.get("recipients");
+
+        var offlineDisciplinesData = offlineBox.get("disciplines");
+        var offlinehomeworkData = offlineBox.get("homework");
+        var offlineLessonsData = agendaBox.get("lessons");
+        var offlinePollsData = offlineBox.get("polls");
+        var offlineRemindersData = agendaBox.get("reminders");
+        var offlineAgendaEventsData = agendaBox.get("agendaEvents");
+        var offlineRecipientsData = offlineBox.get("recipients");
         //ensure that fetched data isn't null and if not, add it to the final value
         if (offlineLessonsData != null) {
           this.lessonsData = Map<dynamic, dynamic>.from(offlineLessonsData);

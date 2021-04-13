@@ -160,14 +160,6 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
     super.dispose();
   }
 
-/*
-  initControllers() async {
-    hwcontroller = HomeworkController(appSys.api);
-    gradesController = GradesController(appSys.api);
-    await gradesController.refresh();
-    await hwcontroller.refresh();
-  }
-*/
   initPageControllers() {
     // this creates the controller
     drawerPageViewController = PageController(

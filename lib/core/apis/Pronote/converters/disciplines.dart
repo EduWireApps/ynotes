@@ -20,7 +20,8 @@ class PronoteDisciplineConverter {
       String maxClassAverage = mapGet(rawDiscipline, ["moyMax", "V"]);
       String classAverage = mapGet(rawDiscipline, ["moyClasse", "V"]);
       String average = mapGet(rawDiscipline, ["moyEleve", "V"]);
-
+      List<String> teachers = [];
+      List<String> subdisciplineCode = [];
       disciplines.add(Discipline(
           disciplineName: disciplineName,
           disciplineCode: disciplineName.hashCode.toString(),
@@ -29,7 +30,9 @@ class PronoteDisciplineConverter {
           maxClassAverage: maxClassAverage,
           average: average,
           generalAverage: generalAverage,
-          classGeneralAverage: classGeneralAverage));
+          classGeneralAverage: classGeneralAverage,
+          subdisciplineCode: subdisciplineCode,
+          teachers: teachers));
     });
     var rawGrades = mapGet(disciplinesData, ['donneesSec', 'donnees', 'listeDevoirs', 'V']) ?? [];
     //get grades
@@ -45,7 +48,7 @@ class PronoteDisciplineConverter {
     gradesData.forEach((gradeData) {
       String value = client.utils.gradeTranslate(mapGet(gradeData, ["note", "V"]) ?? "");
       String testName = mapGet(gradeData, ["commentaire"]) ?? "";
-      String periodCode = mapGet(gradeData, ["periode", "V", "N"]) ?? "";
+      String periodCode = mapGet(gradeData, ["periode", "V", "L"]).hashCode.toString() ?? "";
       String periodName = mapGet(gradeData, ["periode", "V", "L"]) ?? "";
       String disciplineCode = (mapGet(gradeData, ["service", "V", "L"]) ?? "").hashCode.toString();
       String subdisciplineCode;

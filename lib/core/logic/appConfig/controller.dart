@@ -71,10 +71,13 @@ class ApplicationSystem extends ChangeNotifier {
     await _initOffline();
     //Set api
     this.api = APIManager(this.offline);
+
     //Set background fetch
     await _initBackgroundFetch();
     //Set controllers
-    await initControllers();
+    loginController = LoginController();
+    gradesController = GradesController(this.api);
+    homeworkController = HomeworkController(this.api);
   }
 
   updateTheme(String themeName) {
@@ -114,8 +117,6 @@ class ApplicationSystem extends ChangeNotifier {
       this.updateTheme("clair");
       //delete hive files
       this._initOffline();
-      this.gradesController = GradesController(api);
-      this.homeworkController = HomeworkController(api);
     } catch (e) {
       print(e);
     }
@@ -147,8 +148,7 @@ class ApplicationSystem extends ChangeNotifier {
   }
 
   initControllers() async {
-    loginController = LoginController();
-    gradesController = GradesController(this.api);
-    homeworkController = HomeworkController(this.api);
+    await this.gradesController.refresh(force: true);
+    await this.homeworkController.refresh(force: true);
   }
 }

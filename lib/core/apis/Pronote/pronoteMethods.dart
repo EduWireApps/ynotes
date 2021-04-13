@@ -1,49 +1,97 @@
 import 'package:connectivity/connectivity.dart';
+import 'package:intl/intl.dart';
 import 'package:ynotes/core/apis/Pronote.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteAPI.dart';
-import 'package:ynotes/core/apis/Pronote/converters/disciplines.dart';
+import 'package:ynotes/core/apis/Pronote/convertersExporter.dart';
 import 'package:ynotes/core/apis/model.dart';
+import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
+import 'package:ynotes/core/offline/offline.dart';
 
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 class PronoteMethod {
   Map locks = Map();
-  final PronoteClient client;
+  PronoteClient client;
   final SchoolAccount account;
+  final Offline _offlineController;
 
-  PronoteMethod(this.client, this.account);
+  PronoteMethod(this.client, this.account, this._offlineController);
 
   Future<List<SchoolAccount>> accounts() {}
 
   Future<List<Lesson>> lessons(DateTime dateToUse, int week) {}
 
   Future<List<Discipline>> grades() async {
-    List<PronotePeriod> periods = localClient.periods();
+    List<PronotePeriod> periods = this.client.periods();
     List<Discipline> listDisciplines = List<Discipline>();
     await Future.forEach(periods, (period) async {
+      print(period.name);
       var jsonData = {
         'donnees': {
           'Periode': {'N': period.id, 'L': period.name}
         },
       };
-      listDisciplines
-          .addAll(await request("DernieresNotes", PronoteDisciplineConverter.disciplines, data: jsonData, onglet: 198));
-      listDisciplines.forEach((element) {
+      var temp = await request("DernieresNotes", PronoteDisciplineConverter.disciplines, data: jsonData, onglet: 198);
+      temp.forEach((element) {
         element.period = period.name;
       });
+      listDisciplines.addAll(temp);
       listDisciplines = await refreshDisciplinesListColors(listDisciplines);
     });
     print("Completed disciplines request");
-    await appSys.offline.disciplines.updateDisciplines(listDisciplines);
+    if (!_offlineController.locked) {
+      await _offlineController.disciplines.updateDisciplines(listDisciplines);
+    }
     appSys.updateSetting(
         appSys.settings["system"], "lastGradeCount", getAllGrades(listDisciplines, overrideLimit: true).length);
     return listDisciplines;
   }
 
-  nextHomework() async {}
+  nextHomework() async {
+    DateTime now = DateTime.now();
+    List<Homework> listHW = List<Homework>();
+    final f = new DateFormat('dd/MM/yyyy');
+    var dateTo = f.parse(this.client.funcOptions['donneesSec']['donnees']['General']['DerniereDate']['V']);
+    var jsonData = {
+      'donnees': {
+        'domaine': {'_T': 8, 'V': "[${await get_week(now)}..${await get_week(dateTo)}]"}
+      },
+      '_Signature_': {'onglet': 88}
+    };
+    List<Homework> hws =
+        await request("PageCahierDeTexte", PronoteHomeworkConverter.homework, data: jsonData, onglet: 88);
+    hws.removeWhere((element) => element.date.isBefore(now));
+    listHW.addAll(hws);
+    List<DateTime> pinnedDates = await appSys.offline.pinnedHomework.getPinnedHomeworkDates();
+    //Add pinned content
+    await Future.wait(pinnedDates.map((element) async {
+      jsonData = {
+        'donnees': {
+          'domaine': {'_T': 8, 'V': "[${await get_week(now)}..${await get_week(element)}]"}
+        },
+        '_Signature_': {'onglet': 88}
+      };
+      List<Homework> pinnedHomework =
+          await await request("PageCahierDeTexte", PronoteHomeworkConverter.homework, data: jsonData, onglet: 88);
+      pinnedHomework.removeWhere((pinnedHWElement) => element.day != pinnedHWElement.date.day);
+      pinnedHomework.forEach((pinned) {
+        if (!listHW.any((hw) => hw.id == pinned.id)) {
+          listHW.add(pinned);
+        }
+      });
+    }));
+    //delete duplicates
+    listHW = listHW.toSet().toList();
+    hwLock = false;
+    hwRefreshRecursive = false;
+    if (!_offlineController.locked) {
+      await _offlineController.homework.updateHomework(listHW);
+    }
+    return listHW;
+  }
 
   Future<List<Homework>> homeworkFor(DateTime date) async {}
 
@@ -55,7 +103,7 @@ class PronoteMethod {
     //If it is a parent account
     if (this.account.isParentAccount) data['_Signature_']["membre"] = {'N': this.account.studentID, 'G': 4};
 
-    return await converter(localClient, await localClient.communication.post(functionName, data: data));
+    return await converter(this.client, await this.client.communication.post(functionName, data: data));
   }
 
   //Test if another concurrent task is not running
@@ -90,7 +138,6 @@ class PronoteMethod {
         if (!testLock("recursive_" + lockName)) {
           locks["recursive_" + lockName] = true;
           await refreshClient();
-          locks["recursive_" + lockName] = false;
           this.onlineFetchWithLock(onlineFetch, lockName);
         }
       }
@@ -100,13 +147,15 @@ class PronoteMethod {
   }
 
   refreshClient() async {
-    await appSys.loginController.login();
-    //reset all recursives
-    if (appSys.loginController.actualState == loginStatus.loggedIn) {
-      //reset every locks
-      locks.keys.forEach((element) {
-        locks[element] = false;
-      });
+    if (appSys.loginController.actualState != loginStatus.loggedIn) {
+      await appSys.loginController.login();
+      //reset all recursives
+      if (appSys.loginController.actualState == loginStatus.loggedIn) {
+        //reset every locks
+        locks.keys.forEach((element) {
+          locks[element] = false;
+        });
+      }
     }
   }
 

@@ -64,20 +64,20 @@ class SummaryPageState extends State<SummaryPage> {
         offset = _pageControllerSummaryPage.offset;
       });
     });
-    appInit();
-  }
-
-  appInit() async {
-    //Refresh controllers once (offline)
     appSys.gradesController.refresh();
     appSys.homeworkController.refresh();
 
-    try {
-      await appSys.loginController.init().then((e) async {
-        await appSys.gradesController.refresh(force: true);
-        await appSys.homeworkController.refresh(force: true);
-      });
-    } catch (e) {}
+    SchedulerBinding.instance.addPostFrameCallback(!mounted
+        ? null
+        : (_) => {
+              appSys.loginController.login().then((var f) async {
+                if (firstStart == true) {
+                  firstStart = false;
+                  await refreshControllers();
+                  setState(() {});
+                }
+              })
+            });
   }
 
   void triggerSettings() {

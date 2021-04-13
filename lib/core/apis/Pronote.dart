@@ -26,18 +26,18 @@ bool gradeRefreshRecursive = false;
 bool hwRefreshRecursive = false;
 bool lessonsRefreshRecursive = false;
 bool pollsRefreshRecursive = false;
-PronoteClient localClient;
 
 class APIPronote extends API {
-  APIPronote(Offline offlineController) : super(offlineController) {
-    pronoteMethod = PronoteMethod(localClient, appSys.account);
-  }
+  PronoteClient localClient;
   PronoteMethod pronoteMethod;
+  APIPronote(Offline offlineController) : super(offlineController) {}
+
   @override
   // TODO: implement listApp
 
   @override
   Future<List<Discipline>> getGrades({bool forceReload}) async {
+    pronoteMethod = PronoteMethod(localClient, appSys.account, this.offlineController);
     return await pronoteMethod.fetchAnyData(
         pronoteMethod.grades, offlineController.disciplines.getDisciplines, "grades",
         forceFetch: forceReload, isOfflineLocked: offlineController.locked);
@@ -89,24 +89,8 @@ class APIPronote extends API {
 
   @override
   Future<List<Homework>> getNextHomework({bool forceReload}) async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    var offlineHomework = await appSys.offline.homework.getHomework();
-
-    //If force reload enabled the grades will be loaded online
-    if ((connectivityResult == ConnectivityResult.none || forceReload == false || forceReload == null) &&
-        offlineHomework != null) {
-      print("Loading homework from offline storage.");
-      offlineHomework.sort((a, b) => a.date.compareTo(b.date));
-      return offlineHomework;
-    } else {
-      print("Loading homework inline.");
-      List<Homework> toReturn = await getNextHomeworkFromInternet();
-      if (toReturn == null) {
-        toReturn = await appSys.offline.homework.getHomework();
-      }
-      toReturn.sort((a, b) => a.date.compareTo(b.date));
-      return toReturn;
-    }
+    return await pronoteMethod.fetchAnyData(pronoteMethod.nextHomework, offlineController.homework.homework, "homework",
+        forceFetch: forceReload, isOfflineLocked: offlineController.locked);
   }
 
   getNextHomeworkFromInternet() async {
@@ -184,6 +168,7 @@ class APIPronote extends API {
         if (localClient.loggedIn) {
           this.loggedIn = true;
           loginLock = false;
+          pronoteMethod = PronoteMethod(localClient, appSys.account, this.offlineController);
           return ([1, "Bienvenue $actualUser!"]);
         } else {
           loginLock = false;
@@ -530,28 +515,28 @@ class APIPronote extends API {
     http.Request request = http.Request('GET', Uri.parse(url));
     return request;
   }
-}
 
-Future<List<PollInfo>> getPronotePolls(bool forced) async {
-  List<PollInfo> listPolls;
-  try {
-    if (forced) {
-      listPolls = await localClient.polls() as List<PollInfo>;
-      await appSys.offline.polls.update(listPolls);
-      return listPolls;
-    } else {
-      listPolls = await appSys.offline.polls.get();
-      if (listPolls == null) {
-        print("Error while returning offline polls");
+  Future<List<PollInfo>> getPronotePolls(bool forced) async {
+    List<PollInfo> listPolls;
+    try {
+      if (forced) {
         listPolls = await localClient.polls() as List<PollInfo>;
         await appSys.offline.polls.update(listPolls);
         return listPolls;
       } else {
-        return listPolls;
+        listPolls = await appSys.offline.polls.get();
+        if (listPolls == null) {
+          print("Error while returning offline polls");
+          listPolls = await localClient.polls() as List<PollInfo>;
+          await appSys.offline.polls.update(listPolls);
+          return listPolls;
+        } else {
+          return listPolls;
+        }
       }
+    } catch (e) {
+      listPolls = await appSys.offline.polls.get();
+      return listPolls;
     }
-  } catch (e) {
-    listPolls = await appSys.offline.polls.get();
-    return listPolls;
   }
 }
