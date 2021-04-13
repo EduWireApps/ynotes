@@ -4,11 +4,12 @@ class PronoteDocumentConverter {
   static documents(var filesData) {
     List<Document> documents = List();
     filesData.forEach((document) {
-      String documentName = document["L"];
-      String id = document["N"];
-      String type = document["G"];
+      String documentName = document["L"].toString();
+      String id = document["N"].toString();
+      String type = document["G"].toString();
       int length;
       documents.add(Document(documentName,id,type,length));
     });
+    return documents;
   }
 }

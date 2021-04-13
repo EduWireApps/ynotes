@@ -89,62 +89,10 @@ class APIPronote extends API {
 
   @override
   Future<List<Homework>> getNextHomework({bool forceReload}) async {
+    pronoteMethod = PronoteMethod(localClient, appSys.account, this.offlineController);
+
     return await pronoteMethod.fetchAnyData(pronoteMethod.nextHomework, offlineController.homework.homework, "homework",
         forceFetch: forceReload, isOfflineLocked: offlineController.locked);
-  }
-
-  getNextHomeworkFromInternet() async {
-    int req = 0;
-    //Time out of 20 seconds. Wait until the task is unlocked
-    while (hwLock == true && req < 10) {
-      req++;
-      await Future.delayed(const Duration(seconds: 2), () => "1");
-    }
-    if (hwLock == false) {
-      try {
-        print("GETTING HOMEWORK");
-        hwLock = true;
-        DateTime now = DateTime.now();
-        List<Homework> listHW = List<Homework>();
-        List<Homework> hws = await localClient.homework(now);
-        hws.removeWhere((element) => element.date.isBefore(now));
-        listHW.addAll(hws);
-        List<DateTime> pinnedDates = await appSys.offline.pinnedHomework.getPinnedHomeworkDates();
-        //Add pinned content
-        await Future.wait(pinnedDates.map((element) async {
-          List<Homework> pinnedHomework = await localClient.homework(element, date_to: element);
-          pinnedHomework.removeWhere((pinnedHWElement) => element.day != pinnedHWElement.date.day);
-          pinnedHomework.forEach((pinned) {
-            if (!listHW.any((hw) => hw.id == pinned.id)) {
-              listHW.add(pinned);
-            }
-          });
-        }));
-
-        //delete duplicates
-        listHW = listHW.toSet().toList();
-
-        hwLock = false;
-        hwRefreshRecursive = false;
-        appSys.offline.homework.updateHomework(listHW);
-
-        return listHW;
-      } catch (e) {
-        hwLock = false;
-        print("Error while getting homework" + e.toString());
-        List<Homework> listHW = List<Homework>();
-
-        if (hwRefreshRecursive == false) {
-          await pronoteMethod.refreshClient();
-          hwRefreshRecursive = true;
-          listHW.addAll(await getNextHomework());
-        }
-      }
-    } else {
-      print("HOMEWORK WERE LOCKED");
-      List<Homework> listHW = List<Homework>();
-      return listHW;
-    }
   }
 
   int loginReqNumber = 0;

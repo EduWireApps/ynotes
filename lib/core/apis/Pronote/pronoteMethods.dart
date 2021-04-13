@@ -59,7 +59,6 @@ class PronoteMethod {
       'donnees': {
         'domaine': {'_T': 8, 'V': "[${await get_week(now)}..${await get_week(dateTo)}]"}
       },
-      '_Signature_': {'onglet': 88}
     };
     List<Homework> hws =
         await request("PageCahierDeTexte", PronoteHomeworkConverter.homework, data: jsonData, onglet: 88);
@@ -72,7 +71,6 @@ class PronoteMethod {
         'donnees': {
           'domaine': {'_T': 8, 'V': "[${await get_week(now)}..${await get_week(element)}]"}
         },
-        '_Signature_': {'onglet': 88}
       };
       List<Homework> pinnedHomework =
           await await request("PageCahierDeTexte", PronoteHomeworkConverter.homework, data: jsonData, onglet: 88);
