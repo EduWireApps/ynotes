@@ -283,7 +283,7 @@ class PronoteClient {
         if (isOldAPIUsed == false) {
           try {
             paramsUser = await this.communication.post("ParametresUtilisateur", data: {'donnees': {}});
-
+            this.encryption.aesKey = this.communication.encryption.aesKey;
             this.communication.authorizedTabs = prepareTabs(paramsUser['donneesSec']['donnees']['listeOnglets']);
             this.stepsLogger.add("✅ Prepared tabs");
 
@@ -321,9 +321,10 @@ class PronoteClient {
 
   downloadUrl(Document document) {
     try {
-      Map data = {"N": document.id, "G": int.parse(document.type)};
+      Map data = {"N": document.id, "G": 1};
       //Used by pronote to encrypt the data (I don't know why)
-      var magic_stuff = this.encryption.aesEncryptFromString(conv.jsonEncode(data));
+      var magic_stuff = this.encryption.aesEncrypt(conv.utf8.encode(conv.jsonEncode(data)));
+      print(magic_stuff);
       String libelle = Uri.encodeComponent(Uri.encodeComponent(document.documentName));
       String url = this.communication.rootSite +
           '/FichiersExternes/' +
@@ -332,7 +333,7 @@ class PronoteClient {
           libelle +
           '?Session=' +
           this.attributes['h'].toString();
-
+      print(url);
       return url;
     } catch (e) {
       appSys.logger.i(e);
@@ -376,7 +377,9 @@ class PronoteClient {
         try {
           value["ListePieceJointe"]["V"].forEach((pj) {
             try {
-              downloadUrl(Document(pj["L"], pj["N"], pj["G"].toString(), 0));
+              if (pj["L"].contains("The Tales of Mother Goose")) {
+                downloadUrl(Document(pj["L"], pj["N"], pj["G"].toString(), 0));
+              }
             } catch (e) {}
           });
         } catch (e) {}
@@ -915,7 +918,7 @@ class Encryption {
 
   Encryption() {
     this.aesIV = IV.fromLength(16);
-    this.aesIVTemp = IV.fromSecureRandom(16);
+    this.aesIVTemp = IV.fromBase16("037816c8c18213eb6bd75347d12e8e41");
     this.aesKey = generateMd5("");
 
     this.rsaKeys = {};
@@ -932,7 +935,21 @@ class Encryption {
       iv = this.aesIV;
       appSys.logger.i(iv.base16);
       final encrypter = Encrypter(AES(key, mode: AESMode.cbc, padding: padding ? "PKCS7" : null));
-      final encrypted = encrypter.encryptBytes(data, iv: iv).base16;
+      final encrypted = encrypter.encryptBytes(data, iv: aesIV).base16;
+
+      return (encrypted);
+    } catch (e) {
+      throw "Error during aes encryption " + e.toString();
+    }
+  }
+
+  tests(List<int> data, {padding = true, disableIV = false}) {
+    try {
+      var iv;
+      var key = Key.fromBase16("10a2d5017551b8908479722bbfff0453");
+      iv = this.aesIV;
+      final encrypter = Encrypter(AES(key, mode: AESMode.cbc, padding: padding ? "PKCS7" : null));
+      final encrypted = encrypter.encryptBytes(data, iv: IV.fromBase16("623fbdf3f8d25340c06a44b7abeb9eb7")).base16;
 
       return (encrypted);
     } catch (e) {
@@ -943,7 +960,7 @@ class Encryption {
   aesEncryptFromString(String data) {
     var key = Key.fromBase16(this.aesKey.toString());
     final encrypter = Encrypter(AES(key, mode: AESMode.cbc, padding: "PKCS7"));
-    final encrypted = encrypter.encrypt(data, iv: this.aesIV).base16;
+    final encrypted = encrypter.encrypt(data, iv: aesIV).base16;
 
     return (encrypted);
   }
@@ -1180,5 +1197,23 @@ class PronotePeriod {
       other.add(average(response, (mapGet(element, ["service", "V", "L"]) ?? "").hashCode.toString()));
     });
     return [list, other];
+  }
+}
+
+class PronoteLesson {
+  String id;
+  String teacherName;
+  String classroom;
+  bool canceled;
+  String status;
+  String backgroundColor;
+  String outing;
+  DateTime start;
+  String groupName;
+  var _content;
+  PronoteClient _client;
+  PronoteLesson(PronoteClient client, var parsedJson) {
+    this._client = client;
+    this._content = null;
   }
 }
