@@ -325,7 +325,6 @@ class PronoteClient {
       Map data = {"N": document.id, "G": int.parse(document.type)};
       //Used by pronote to encrypt the data (I don't know why)
       var magic_stuff = this.encryption.aesEncrypt(conv.utf8.encode(conv.jsonEncode(data)));
-      print(magic_stuff);
       String libelle = Uri.encodeComponent(Uri.encodeComponent(document.documentName));
       String url = this.communication.rootSite +
           '/FichiersExternes/' +
@@ -784,7 +783,6 @@ class Communication {
 
     this.requestNumber += 2;
     if (requestNumber > 190) {
-      appSys.logger.i("WELL DUH" + requestNumber.toString());
       await this.client.refresh();
     }
 
@@ -798,6 +796,8 @@ class Communication {
       throw "Status code: ${response.statusCode}";
     }
     if (response.content().contains("Erreur")) {
+      appSys.loginController.actualState = loginStatus.error;
+
       appSys.logger.i("Error occured");
       appSys.logger.i(response.content());
       var responseJson = response.json();
@@ -807,7 +807,6 @@ class Communication {
       }
       if (responseJson["Erreur"]['G'] == 10) {
         appSys.loginController.details = "Connexion expirée";
-        appSys.loginController.actualState = loginStatus.error;
 
         throw error_messages["10"];
       }
@@ -919,7 +918,7 @@ class Encryption {
 
   Encryption() {
     this.aesIV = IV.fromLength(16);
-    this.aesIVTemp = IV.fromBase16("037816c8c18213eb6bd75347d12e8e41");
+    this.aesIVTemp = IV.fromSecureRandom(16);
     this.aesKey = generateMd5("");
 
     this.rsaKeys = {};

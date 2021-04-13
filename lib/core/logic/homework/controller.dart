@@ -34,6 +34,7 @@ class HomeworkController extends ChangeNotifier {
     }
 
     await prepareOld(_old);
+    print("Refreshed homework");
     isFetching = false;
     notifyListeners();
   }

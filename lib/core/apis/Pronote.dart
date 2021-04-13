@@ -30,7 +30,8 @@ bool pollsRefreshRecursive = false;
 class APIPronote extends API {
   PronoteClient localClient;
   PronoteMethod pronoteMethod;
-  APIPronote(Offline offlineController) : super(offlineController) {}
+
+  APIPronote(Offline offlineController) : super(offlineController);
 
   @override
   // TODO: implement listApp
@@ -40,6 +41,14 @@ class APIPronote extends API {
     pronoteMethod = PronoteMethod(localClient, appSys.account, this.offlineController);
     return await pronoteMethod.fetchAnyData(
         pronoteMethod.grades, offlineController.disciplines.getDisciplines, "grades",
+        forceFetch: forceReload, isOfflineLocked: offlineController.locked);
+  }
+
+  @override
+  Future<List<Homework>> getNextHomework({bool forceReload}) async {
+    pronoteMethod = PronoteMethod(localClient, appSys.account, this.offlineController);
+    return await pronoteMethod.fetchAnyData(
+        pronoteMethod.nextHomework, offlineController.homework.getHomework, "homework",
         forceFetch: forceReload, isOfflineLocked: offlineController.locked);
   }
 
@@ -85,14 +94,6 @@ class APIPronote extends API {
       return listHW;
     }
     return null;
-  }
-
-  @override
-  Future<List<Homework>> getNextHomework({bool forceReload}) async {
-    pronoteMethod = PronoteMethod(localClient, appSys.account, this.offlineController);
-
-    return await pronoteMethod.fetchAnyData(pronoteMethod.nextHomework, offlineController.homework.homework, "homework",
-        forceFetch: forceReload, isOfflineLocked: offlineController.locked);
   }
 
   int loginReqNumber = 0;

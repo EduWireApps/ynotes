@@ -28,7 +28,6 @@ class PronoteMethod {
     List<PronotePeriod> periods = this.client.periods();
     List<Discipline> listDisciplines = List<Discipline>();
     await Future.forEach(periods, (period) async {
-      print(period.name);
       var jsonData = {
         'donnees': {
           'Periode': {'N': period.id, 'L': period.name}
@@ -63,8 +62,9 @@ class PronoteMethod {
     List<Homework> hws =
         await request("PageCahierDeTexte", PronoteHomeworkConverter.homework, data: jsonData, onglet: 88);
     hws.removeWhere((element) => element.date.isBefore(now));
+
     listHW.addAll(hws);
-    List<DateTime> pinnedDates = await appSys.offline.pinnedHomework.getPinnedHomeworkDates();
+    /*List<DateTime> pinnedDates = await _offlineController.pinnedHomework.getPinnedHomeworkDates();
     //Add pinned content
     await Future.wait(pinnedDates.map((element) async {
       jsonData = {
@@ -73,21 +73,20 @@ class PronoteMethod {
         },
       };
       List<Homework> pinnedHomework =
-          await await request("PageCahierDeTexte", PronoteHomeworkConverter.homework, data: jsonData, onglet: 88);
+          await request("PageCahierDeTexte", PronoteHomeworkConverter.homework, data: jsonData, onglet: 88);
       pinnedHomework.removeWhere((pinnedHWElement) => element.day != pinnedHWElement.date.day);
       pinnedHomework.forEach((pinned) {
         if (!listHW.any((hw) => hw.id == pinned.id)) {
           listHW.add(pinned);
         }
       });
-    }));
+    }));*/
     //delete duplicates
     listHW = listHW.toSet().toList();
-    hwLock = false;
-    hwRefreshRecursive = false;
     if (!_offlineController.locked) {
       await _offlineController.homework.updateHomework(listHW);
     }
+
     return listHW;
   }
 
@@ -134,9 +133,10 @@ class PronoteMethod {
         print(e);
         locks[lockName] = false;
         if (!testLock("recursive_" + lockName)) {
+          print("Refreshing client");
           locks["recursive_" + lockName] = true;
           await refreshClient();
-          this.onlineFetchWithLock(onlineFetch, lockName);
+          return this.onlineFetchWithLock(onlineFetch, lockName);
         }
       }
     } else {

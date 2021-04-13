@@ -33,7 +33,7 @@ class DisciplinesOffline extends Offline {
         print("Updating disciplines");
         await parent.offlineBox.delete("disciplines");
         await parent.offlineBox.put("disciplines", newData);
-        await refreshData();
+        await parent.refreshData();
       } catch (e) {
         print("Error while updating disciplines " + e.toString());
       }

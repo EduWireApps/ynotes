@@ -12,7 +12,7 @@ class PollsOffline extends Offline {
       if (pollsData != null) {
         return parent.pollsData;
       } else {
-        await refreshData();
+        await parent.refreshData();
         return parent.pollsData.cast<PollInfo>();
       }
     } catch (e) {

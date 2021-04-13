@@ -16,23 +16,20 @@ class PronoteHomeworkConverter {
           mapGet(singleHomeworkData, ["descriptif", "V"]).hashCode.toString();
       String rawContent = mapGet(singleHomeworkData, ["descriptif", "V"]);
       String sessionRawContent = null;
-      DateTime date =  DateFormat("dd/MM/yyyy").parse(singleHomeworkData["PourLe"]["V"]);
-      DateTime entryDate =  DateFormat("dd/MM/yyyy").parse(singleHomeworkData["DonneLe"]["V"]);
+      DateTime date = DateFormat("dd/MM/yyyy").parse(singleHomeworkData["PourLe"]["V"]);
+      DateTime entryDate = DateFormat("dd/MM/yyyy").parse(singleHomeworkData["DonneLe"]["V"]);
       bool done = false;
       bool toReturn = false;
       bool isATest = false;
-                      print("a");
 
-      List<Document> documents = PronoteDocumentConverter.documents(mapGet(singleHomeworkData, ["ListePieceJointe", "V"]));
+      List<Document> documents =
+          PronoteDocumentConverter.documents(mapGet(singleHomeworkData, ["ListePieceJointe", "V"]));
       List<Document> sessionDocuments = [];
       String teacherName = "";
       bool loaded = true;
-                      print("dfs");
 
       hwList.add(Homework(discipline, disciplineCode, id, rawContent, sessionRawContent, date, entryDate, done,
           toReturn, isATest, documents, sessionDocuments, teacherName, loaded));
-                print("ended");
-
     });
     return hwList;
   }

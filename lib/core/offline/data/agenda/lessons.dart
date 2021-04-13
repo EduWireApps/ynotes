@@ -6,7 +6,6 @@ import 'package:ynotes/globals.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 class LessonsOffline extends Offline {
-  
   Offline parent;
   LessonsOffline(bool locked, Offline _parent) : super(locked) {
     parent = _parent;
@@ -19,7 +18,7 @@ class LessonsOffline extends Offline {
         lessons.addAll(parent.lessonsData[week].cast<Lesson>());
         return lessons;
       } else {
-        await refreshData();
+        await parent.refreshData();
         if (parent.lessonsData[week] != null) {
           List<Lesson> lessons = List();
           lessons.addAll(parent.lessonsData[week].cast<Lesson>());
@@ -39,7 +38,6 @@ class LessonsOffline extends Offline {
   updateLessons(List<Lesson> newData, int week) async {
     if (!locked) {
       try {
-       
         if (newData != null) {
           print("Update offline lessons (week : $week, length : ${newData.length})");
           Map<dynamic, dynamic> timeTable = Map();

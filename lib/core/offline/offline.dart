@@ -152,7 +152,6 @@ class Offline {
       print("Refreshing offline");
       try {
         //Get data and cast it
-
         var offlineDisciplinesData = offlineBox.get("disciplines");
         var offlinehomeworkData = offlineBox.get("homework");
         var offlineLessonsData = agendaBox.get("lessons");
