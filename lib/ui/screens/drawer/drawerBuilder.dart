@@ -158,7 +158,6 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
     _notifier?.dispose();
     drawerPageViewController.dispose();
     super.dispose();
-    appSys.offline.dispose();
   }
 
 /*

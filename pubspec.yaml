@@ -105,6 +105,7 @@ dependencies:
     git:
       url: https://github.com/wiredashio/wiredash-sdk
       ref: stable
+  logger: ^1.0.0
 dependency_overrides:
   intl: ^0.17.0-nullsafety.2
   mime: ^1.0.0

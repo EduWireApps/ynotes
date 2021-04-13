@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:wiredash/wiredash.dart';
@@ -51,6 +52,7 @@ API appSys.api;*/
 ///
 ///
 Future main() async {
+  Logger.level = Level.warning;
   WidgetsFlutterBinding.ensureInitialized();
   appSys = ApplicationSystem();
   await appSys.initApp();

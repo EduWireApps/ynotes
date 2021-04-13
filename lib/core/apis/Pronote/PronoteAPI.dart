@@ -74,7 +74,7 @@ class PronoteClient {
   List<String> stepsLogger;
   bool mobileLogin;
   refresh() async {
-    print("Reinitialisation");
+    appSys.logger.i("Reinitialisation");
 
     this.communication = Communication(this.pronote_url, null, this);
     var future = await this.communication.initialise();
@@ -94,7 +94,7 @@ class PronoteClient {
         .parse(this.funcOptions['donneesSec']['donnees']['General']['ListeHeuresFin']['V'][0]['L']);
 
     this.oneHourDuration = hourEnd.difference(hourStart).inMinutes;
-    print("ohduration " + oneHourDuration.toString());
+    appSys.logger.i("ohduration " + oneHourDuration.toString());
 
     this.expired = true;
   }
@@ -107,7 +107,7 @@ class PronoteClient {
     this.password = password;
     this.pronote_url = pronote_url;
     this.mobileLogin = mobileLogin;
-    print("Initiate communication");
+    appSys.logger.i("Initiate communication");
     utils = PronoteUtils();
     this.communication = Communication(pronote_url, cookies, this);
   }
@@ -132,10 +132,10 @@ class PronoteClient {
     this.funcOptions = attributesandfunctions[1];
 
     if (this.attributes["e"] != null && this.attributes["f"] != null) {
-      print("LOGIN AS ENT");
+      appSys.logger.i("LOGIN AS ENT");
       this.ent = true;
     } else {
-      print("LOGIN AS REGULAR USER");
+      appSys.logger.i("LOGIN AS REGULAR USER");
       this.ent = false;
     }
     this.stepsLogger.add("✅ Login passed : using " + ((this.ent ?? false) ? "ent" : "direct") + "connection");
@@ -181,9 +181,9 @@ class PronoteClient {
       }
       await storage.write(key: "pronoteurl", value: this.pronote_url);
       await storage.write(key: "ispronotecas", value: this.mobileLogin.toString());
-      print("Saved credentials");
+      appSys.logger.i("Saved credentials");
     } catch (e) {
-      print("failed to write values");
+      appSys.logger.i("failed to write values");
     }
     if (this.ent != null && this.ent) {
       this.username = this.attributes['e'];
@@ -205,7 +205,7 @@ class PronoteClient {
     var idr = await this.communication.post("Identification", data: {'donnees': ident_json});
     this.stepsLogger.add("✅ Posted identification successfully");
 
-    print("Identification");
+    appSys.logger.i("Identification");
 
     var challenge = idr['donneesSec']['donnees']['challenge'];
     var e = Encryption();
@@ -224,15 +224,15 @@ class PronoteClient {
 
       //Convert credentials to lowercase if needed (API returns 1)
       if (idr['donneesSec']['donnees']['modeCompLog'] != null && idr['donneesSec']['donnees']['modeCompLog'] != 0) {
-        print("LOWER CASE ID");
-        print(idr['donneesSec']['donnees']['modeCompLog']);
+        appSys.logger.i("LOWER CASE ID");
+        appSys.logger.i(idr['donneesSec']['donnees']['modeCompLog']);
         u = u.toString().toLowerCase();
         this.stepsLogger.add("ⓘ Lowercased id");
       }
 
       if (idr['donneesSec']['donnees']['modeCompMdp'] != null && idr['donneesSec']['donnees']['modeCompMdp'] != 0) {
-        print("LOWER CASE PASSWORD");
-        print(idr['donneesSec']['donnees']['modeCompMdp']);
+        appSys.logger.i("LOWER CASE PASSWORD");
+        appSys.logger.i(idr['donneesSec']['donnees']['modeCompMdp']);
         p = p.toString().toLowerCase();
         this.stepsLogger.add("ⓘ Lowercased password");
       }
@@ -262,7 +262,7 @@ class PronoteClient {
     this.stepsLogger.add("✅ Identification passed");
 
     try {
-      print("Authentification");
+      appSys.logger.i("Authentification");
       this.authResponse = await this
           .communication
           .post("Authentification", data: {'donnees': authentificationJson, 'identifiantNav': ''});
@@ -273,7 +273,7 @@ class PronoteClient {
 
     try {
       if (mobileLogin) {
-        print("Saving token");
+        appSys.logger.i("Saving token");
         await storage.write(
             key: "password", value: this.authResponse['donneesSec']['donnees']["jetonConnexionAppliMobile"]);
         this.password = this.authResponse['donneesSec']['donnees']["jetonConnexionAppliMobile"];
@@ -294,20 +294,20 @@ class PronoteClient {
             } catch (e) {
               this.stepsLogger.add("❌ Failed to register UserInfos");
 
-              print("Failed to register UserInfos");
-              print(e);
+              appSys.logger.i("Failed to register UserInfos");
+              appSys.logger.i(e);
             }
           } catch (e) {
             this.stepsLogger.add("ⓘ Using old api ");
 
-            print("Surely using OLD API");
+            appSys.logger.i("Surely using OLD API");
           }
         }
 
-        print("Successfully logged in as ${this.username}");
+        appSys.logger.i("Successfully logged in as ${this.username}");
         return true;
       } else {
-        print("Login failed");
+        appSys.logger.i("Login failed");
         return false;
       }
     } catch (e) {
@@ -335,12 +335,12 @@ class PronoteClient {
 
       return url;
     } catch (e) {
-      print(e);
+      appSys.logger.i(e);
     }
   }
 
   homework(DateTime date_from, {DateTime date_to}) async {
-    print(date_from);
+    appSys.logger.i(date_from);
     if (date_to == null) {
       final f = new DateFormat('dd/MM/yyyy');
       date_to = f.parse(this.funcOptions['donneesSec']['donnees']['General']['DerniereDate']['V']);
@@ -435,18 +435,18 @@ class PronoteClient {
 
   void printWrapped(String text) {
     final pattern = RegExp('.{1,800}'); // 800 is the size of each chunk
-    pattern.allMatches(text).forEach((match) => print(match.group(0)));
+    pattern.allMatches(text).forEach((match) => appSys.logger.i(match.group(0)));
   }
 
   List<PronotePeriod> periods() {
-    print("GETTING PERIODS");
+    appSys.logger.i("GETTING PERIODS");
     //printWrapped(this.func_options['donneesSec']['donnees'].toString());
 
     var json;
     try {
       json = this.funcOptions['donneesSec']['donnees']['General']['ListePeriodes'];
     } catch (e) {
-      print("ERROR WHILE PARSING JSON " + e.toString());
+      appSys.logger.i("ERROR WHILE PARSING JSON " + e.toString());
     }
 
     List<PronotePeriod> toReturn = List();
@@ -457,7 +457,7 @@ class PronoteClient {
   }
 
   polls() async {
-    print("GETTING POLLS");
+    appSys.logger.i("GETTING POLLS");
     Map data = {
       "_Signature_": {"onglet": 8},
     };
@@ -489,7 +489,7 @@ class PronoteClient {
             documents,
             element));
       } catch (e) {
-        print("Failed to add an element to the polls list " + e.toString());
+        appSys.logger.i("Failed to add an element to the polls list " + e.toString());
       }
     });
     return listInfosPolls;
@@ -497,7 +497,7 @@ class PronoteClient {
 
   setPollRead(String meta) async {
     var user = this.paramsUser['donneesSec']['donnees']['ressource'];
-    print(user);
+    appSys.logger.i(user);
     List metas = meta.split("/");
     Map data = {
       "_Signature_": {"onglet": 8},
@@ -519,7 +519,7 @@ class PronoteClient {
     };
 
     var response = await this.communication.post('SaisieActualites', data: data);
-    print(response);
+    appSys.logger.i(response);
   }
 
   setPollResponse(String meta) async {
@@ -556,9 +556,9 @@ class PronoteClient {
         }
       };
       var response = await this.communication.post('SaisieActualites', data: data);
-      print(response);
+      appSys.logger.i(response);
     } catch (e) {
-      print(e);
+      appSys.logger.i(e);
     }
   }
 
@@ -597,10 +597,10 @@ class PronoteClient {
         try {
           listToReturn.add(PronoteConverter.lesson(this, lesson));
         } catch (e) {
-          print(e);
+          appSys.logger.i(e);
         }
       });
-      print("Agenda collecte succeeded");
+      appSys.logger.i("Agenda collecte succeeded");
       return listToReturn;
     }
   }
@@ -655,13 +655,13 @@ class Communication {
   }
 
   Future<List<Object>> initialise() async {
-    print("Getting hostname");
+    appSys.logger.i("Getting hostname");
     // get rsa keys and session id
     String hostName = Requests.getHostname(this.rootSite + "/" + this.htmlPage);
 
     //set the cookies for ENT
     if (cookies != null) {
-      print("Cookies set");
+      appSys.logger.i("Cookies set");
       Requests.setStoredCookies(hostName, this.cookies);
     }
 
@@ -679,9 +679,9 @@ class Communication {
     } else {
       url += "?fd=1";
     }
-    print(url);
+    appSys.logger.i(url);
     this.client.stepsLogger.add("ⓘ" + " Used url is " + "`" + url + "`");
-    print(this.client.mobileLogin ? "CAS" : "NOT CAS");
+    appSys.logger.i(this.client.mobileLogin ? "CAS" : "NOT CAS");
 //?fd=1 bypass the old navigator issue
     var getResponse = await Requests.get(url, headers: headers).catchError((e) {
       this.client.stepsLogger.add("❌ Failed login request " + e.toString());
@@ -690,7 +690,7 @@ class Communication {
     this.client.stepsLogger.add("✅ Posted login request");
 
     if (getResponse.hasError) {
-      print("|pImpossible de se connecter à l'adresse fournie");
+      appSys.logger.i("|pImpossible de se connecter à l'adresse fournie");
     }
 
     this.attributes = this.parseHtml(getResponse.content());
@@ -722,7 +722,7 @@ class Communication {
     var onload = parsed.getElementById("id_body");
 
     String onloadC;
-    print(onload);
+    appSys.logger.i(onload);
     if (onload != null) {
       onloadC = onload.attributes["onload"].substring(14, onload.attributes["onload"].length - 37);
     } else {
@@ -752,16 +752,16 @@ class Communication {
       }
     }
     if (this.shouldCompressRequests) {
-      print("Compress request");
+      appSys.logger.i("Compress request");
       data = conv.jsonEncode(data);
 
-      print(data);
+      appSys.logger.i(data);
       var zlibInstance = ZLibCodec(level: 6, raw: true);
       data = zlibInstance.encode(conv.utf8.encode(conv.hex.encode(conv.utf8.encode(data))));
       this.client.stepsLogger.add("✅ Compressed request");
     }
     if (this.shouldEncryptRequests) {
-      print("Encrypt requests");
+      appSys.logger.i("Encrypt requests");
       data = encryption.aesEncrypt(data);
       this.client.stepsLogger.add("✅ Encrypted request");
     }
@@ -776,16 +776,16 @@ class Communication {
     };
     String p_site =
         this.rootSite + '/appelfonction/' + this.attributes['a'] + '/' + this.attributes['h'] + '/' + rNumber;
-    print(p_site);
+    appSys.logger.i(p_site);
 
     this.requestNumber += 2;
     if (requestNumber > 190) {
-      print("WELL DUH" + requestNumber.toString());
+      appSys.logger.i("WELL DUH" + requestNumber.toString());
       await this.client.refresh();
     }
 
     var response = await Requests.post(p_site, json: json).catchError((onError) {
-      print("Error occured during request : $onError");
+      appSys.logger.i("Error occured during request : $onError");
     });
 
     this.lastPing = (DateTime.now().millisecondsSinceEpoch / 1000);
@@ -794,8 +794,8 @@ class Communication {
       throw "Status code: ${response.statusCode}";
     }
     if (response.content().contains("Erreur")) {
-      print("Error occured");
-      print(response.content());
+      appSys.logger.i("Error occured");
+      appSys.logger.i(response.content());
       var responseJson = response.json();
 
       if (responseJson["Erreur"]['G'] == 22) {
@@ -816,16 +816,16 @@ class Communication {
     }
 
     if (decryptionChange != null) {
-      print("decryption change");
+      appSys.logger.i("decryption change");
       if (decryptionChange.toString().contains("iv")) {
-        print("decryption_change contains IV");
-        print(decryptionChange['iv']);
+        appSys.logger.i("decryption_change contains IV");
+        appSys.logger.i(decryptionChange['iv']);
         this.encryption.aesIV = IV.fromBase16(decryptionChange['iv']);
       }
 
       if (decryptionChange.toString().contains("key")) {
-        print("decryption_change contains key");
-        print(decryptionChange['key']);
+        appSys.logger.i("decryption_change contains key");
+        appSys.logger.i(decryptionChange['key']);
         this.encryption.aesKey = decryptionChange['key'];
       }
     }
@@ -834,7 +834,7 @@ class Communication {
 
     if (this.shouldEncryptRequests) {
       responseData['donneesSec'] = this.encryption.aesDecryptAsBytes(conv.hex.decode(responseData['donneesSec']));
-      print("décrypté données sec");
+      appSys.logger.i("décrypté données sec");
       this.client.stepsLogger.add("✅ Decrypted response");
     }
     var zlibInstanceDecoder = ZLibDecoder(raw: true);
@@ -869,10 +869,10 @@ class Communication {
     } catch (e) {
       isOldAPIUsed = false;
       this.client.stepsLogger.add("ⓘ 2020 API");
-      print("Surely using the 2020 API");
+      appSys.logger.i("Surely using the 2020 API");
     }
     var key = md5.convert(toBytes(work));
-    print("New key : $key");
+    appSys.logger.i("New key : $key");
     this.encryption.aesKey = key;
   }
 
@@ -928,9 +928,9 @@ class Encryption {
     try {
       var iv;
       var key = Key.fromBase16(this.aesKey.toString());
-      print("KEY :" + this.aesKey.toString());
+      appSys.logger.i("KEY :" + this.aesKey.toString());
       iv = this.aesIV;
-      print(iv.base16);
+      appSys.logger.i(iv.base16);
       final encrypter = Encrypter(AES(key, mode: AESMode.cbc, padding: padding ? "PKCS7" : null));
       final encrypted = encrypter.encryptBytes(data, iv: iv).base16;
 
@@ -953,7 +953,7 @@ class Encryption {
     final aesEncrypter = Encrypter(AES(key, mode: AESMode.cbc, padding: "PKCS7"));
     //generate AES CBC block encrypter with key and PKCS7 padding
 
-    print(this.aesIV);
+    appSys.logger.i(this.aesIV);
 
     try {
       return aesEncrypter.decrypt64(conv.base64.encode(data), iv: this.aesIV);
@@ -967,7 +967,7 @@ class Encryption {
     final aesEncrypter = Encrypter(AES(key, mode: AESMode.cbc, padding: "PKCS7"));
     //generate AES CBC block encrypter with key and PKCS7 padding
 
-    print(this.aesIV);
+    appSys.logger.i(this.aesIV);
 
     try {
       return aesEncrypter.decryptBytes(Encrypted.from64(conv.base64.encode(data)), iv: this.aesIV);
@@ -1115,7 +1115,7 @@ class PronotePeriod {
     //The average data for the given matiere
 
     var averageData = services.firstWhere((element) => element["L"].hashCode.toString() == codeMatiere);
-    //print(averageData["moyEleve"]["V"]);
+    //appSys.logger.i(averageData["moyEleve"]["V"]);
 
     return [
       gradeTranslate(averageData["moyEleve"]["V"]),

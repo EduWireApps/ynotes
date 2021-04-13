@@ -45,8 +45,8 @@ class PronoteDisciplineConverter {
     gradesData.forEach((gradeData) {
       String value = client.utils.gradeTranslate(mapGet(gradeData, ["note", "V"]) ?? "");
       String testName = mapGet(gradeData, ["commentaire"]) ?? "";
-      String periodCode = mapGet(gradeData, ["periode", "V", "L"]) ?? "";
-      String periodName = mapGet(gradeData, ["periode", "V", "N"]) ?? "";
+      String periodCode = mapGet(gradeData, ["periode", "V", "N"]) ?? "";
+      String periodName = mapGet(gradeData, ["periode", "V", "L"]) ?? "";
       String disciplineCode = (mapGet(gradeData, ["service", "V", "L"]) ?? "").hashCode.toString();
       String subdisciplineCode;
       String disciplineName = mapGet(gradeData, ["service", "V", "L"]);

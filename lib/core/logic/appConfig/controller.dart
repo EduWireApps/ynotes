@@ -4,6 +4,7 @@ import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:logger/logger.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
@@ -50,6 +51,9 @@ class ApplicationSystem extends ChangeNotifier {
   ///The chosen API
   Offline offline;
 
+  ///App logger
+  Logger logger;
+
   ///All the app controllers
 
   LoginController loginController;
@@ -59,6 +63,7 @@ class ApplicationSystem extends ChangeNotifier {
   ///The most important function
   ///It will intialize Offline, APIs and background fetch
   initApp() async {
+    logger = Logger();
     account = SchoolAccount("", "", "", [], []);
     //set settings
     _initSettings();
