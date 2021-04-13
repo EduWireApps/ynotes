@@ -280,10 +280,11 @@ class PronoteClient {
       }
       if (this.authResponse['donneesSec']['donnees'].toString().contains("cle")) {
         await this.communication.afterAuth(this.communication.lastResponse, this.authResponse, e.aesKey);
+        this.encryption.aesKey = this.communication.encryption.aesKey;
         if (isOldAPIUsed == false) {
           try {
             paramsUser = await this.communication.post("ParametresUtilisateur", data: {'donnees': {}});
-            this.encryption.aesKey = this.communication.encryption.aesKey;
+
             this.communication.authorizedTabs = prepareTabs(paramsUser['donneesSec']['donnees']['listeOnglets']);
             this.stepsLogger.add("✅ Prepared tabs");
 
@@ -321,7 +322,7 @@ class PronoteClient {
 
   downloadUrl(Document document) {
     try {
-      Map data = {"N": document.id, "G": 1};
+      Map data = {"N": document.id, "G": int.parse(document.type)};
       //Used by pronote to encrypt the data (I don't know why)
       var magic_stuff = this.encryption.aesEncrypt(conv.utf8.encode(conv.jsonEncode(data)));
       print(magic_stuff);
@@ -943,20 +944,6 @@ class Encryption {
     }
   }
 
-  tests(List<int> data, {padding = true, disableIV = false}) {
-    try {
-      var iv;
-      var key = Key.fromBase16("10a2d5017551b8908479722bbfff0453");
-      iv = this.aesIV;
-      final encrypter = Encrypter(AES(key, mode: AESMode.cbc, padding: padding ? "PKCS7" : null));
-      final encrypted = encrypter.encryptBytes(data, iv: IV.fromBase16("623fbdf3f8d25340c06a44b7abeb9eb7")).base16;
-
-      return (encrypted);
-    } catch (e) {
-      throw "Error during aes encryption " + e.toString();
-    }
-  }
-
   aesEncryptFromString(String data) {
     var key = Key.fromBase16(this.aesKey.toString());
     final encrypter = Encrypter(AES(key, mode: AESMode.cbc, padding: "PKCS7"));
@@ -1062,7 +1049,6 @@ class PronoteUtils {
     }
   }
 
-  
   shouldCountAsZero(String grade) {
     if (grade == "Absent zéro" || grade == "Non rendu zéro") {
       return true;
