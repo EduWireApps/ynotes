@@ -208,7 +208,6 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
                             await setChosenParser(chosen);
                             setState(() {
                               appSys.api = APIManager(appSys.offline);
-                              appSys.initControllers();
                             });
                             Navigator.of(context).pushReplacement(router(LoginPage()));
                           },

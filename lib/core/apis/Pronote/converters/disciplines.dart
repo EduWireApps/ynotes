@@ -10,7 +10,7 @@ class PronoteDisciplineConverter {
     String generalAverage =
         client.utils.gradeTranslate(mapGet(disciplinesData, ['donneesSec', 'donnees', 'moyGenerale', 'V']) ?? "");
     String classGeneralAverage =
-        client.utils.gradeTranslate(mapGet(disciplinesData, ['donneesSec', 'donnees', 'listeServices', 'V']) ?? "");
+        client.utils.gradeTranslate(mapGet(disciplinesData, ['donneesSec', 'donnees', 'moyClasse', 'V']) ?? "");
 
     var rawDisciplines = mapGet(disciplinesData, ['donneesSec', 'donnees', 'listeServices', 'V']) ?? [];
     rawDisciplines.forEach((rawDiscipline) {

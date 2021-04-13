@@ -1,4 +1,5 @@
 import 'package:connectivity/connectivity.dart';
+import 'package:ynotes/core/apis/Pronote.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteAPI.dart';
 import 'package:ynotes/core/apis/Pronote/converters/disciplines.dart';
 import 'package:ynotes/core/apis/model.dart';
@@ -17,13 +18,10 @@ class PronoteMethod {
 
   Future<List<SchoolAccount>> accounts() {}
 
-  Future<List<Lesson>> lessons(DateTime dateToUse, int week) {
-    
-  }
+  Future<List<Lesson>> lessons(DateTime dateToUse, int week) {}
 
-  
   Future<List<Discipline>> grades() async {
-    List<PronotePeriod> periods = await client.periods();
+    List<PronotePeriod> periods = localClient.periods();
     List<Discipline> listDisciplines = List<Discipline>();
     await Future.forEach(periods, (period) async {
       var jsonData = {
@@ -31,18 +29,18 @@ class PronoteMethod {
           'Periode': {'N': period.id, 'L': period.name}
         },
       };
-      listDisciplines.addAll(
-        await request("DernieresNotes", PronoteDisciplineConverter.disciplines, data: jsonData, onglet: 198),
-      );
+      listDisciplines
+          .addAll(await request("DernieresNotes", PronoteDisciplineConverter.disciplines, data: jsonData, onglet: 198));
       listDisciplines.forEach((element) {
         element.period = period.name;
       });
       listDisciplines = await refreshDisciplinesListColors(listDisciplines);
     });
-
-    appSys.offline.disciplines.updateDisciplines(listDisciplines);
+    print("Completed disciplines request");
+    await appSys.offline.disciplines.updateDisciplines(listDisciplines);
     appSys.updateSetting(
         appSys.settings["system"], "lastGradeCount", getAllGrades(listDisciplines, overrideLimit: true).length);
+    return listDisciplines;
   }
 
   nextHomework() async {}
@@ -52,12 +50,12 @@ class PronoteMethod {
   Future<List<CloudItem>> cloudFolders() async {}
 
   request(String functionName, Function converter, {var data, var customURL, int onglet}) async {
+    data = Map<dynamic, dynamic>.from(data);
     if (onglet != null) data['_Signature_'] = {'onglet': onglet};
-
     //If it is a parent account
     if (this.account.isParentAccount) data['_Signature_']["membre"] = {'N': this.account.studentID, 'G': 4};
 
-    return await converter(this.client, await this.client.communication.post(functionName, data: data));
+    return await converter(localClient, await localClient.communication.post(functionName, data: data));
   }
 
   //Test if another concurrent task is not running
@@ -73,7 +71,7 @@ class PronoteMethod {
   onlineFetchWithLock(dynamic onlineFetch, lockName) async {
     int req = 0;
     //Time out of 20 seconds. Wait until the task is unlocked
-    while (locks[lockName] && req < 10) {
+    while (testLock(lockName) && req < 10) {
       req++;
       await Future.delayed(const Duration(seconds: 2), () => "1");
     }
@@ -81,16 +79,23 @@ class PronoteMethod {
       try {
         //Lock current function
         locks[lockName] = true;
+        print("Fetching task with name " + lockName);
         var toReturn = await onlineFetch();
         //Unlock it
         locks[lockName] = false;
+        return toReturn;
       } catch (e) {
+        print(e);
         locks[lockName] = false;
         if (!testLock("recursive_" + lockName)) {
           locks["recursive_" + lockName] = true;
           await refreshClient();
+          locks["recursive_" + lockName] = false;
+          this.onlineFetchWithLock(onlineFetch, lockName);
         }
       }
+    } else {
+      return null;
     }
   }
 

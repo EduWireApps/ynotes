@@ -11,6 +11,7 @@ import 'package:ynotes/core/logic/appConfig/controller.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/core/logic/homework/controller.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/logic/shared/loginController.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/hiddenSettings.dart';
 import 'package:ynotes/ui/screens/grades/gradesPage.dart';
@@ -63,22 +64,20 @@ class SummaryPageState extends State<SummaryPage> {
         offset = _pageControllerSummaryPage.offset;
       });
     });
+    appInit();
+  }
 
-    SchedulerBinding.instance.addPostFrameCallback(!mounted
-        ? null
-        : (_) => {
-              initLoginController().then((var f) {
-                if (firstStart == true) {
-                  firstStart = false;
-                }
-              })
-            });
+  appInit() async {
+    //Refresh controllers once (offline)
+    appSys.gradesController.refresh();
+    appSys.homeworkController.refresh();
 
-    //Init controllers
-    appSys.gradesController.refresh(force: false);
-    appSys.homeworkController.refresh(force: false);
-    appSys.gradesController.refresh(force: true);
-    appSys.homeworkController.refresh(force: true);
+    try {
+      await appSys.loginController.init().then((e) async {
+        await appSys.gradesController.refresh(force: true);
+        await appSys.homeworkController.refresh(force: true);
+      });
+    } catch (e) {}
   }
 
   void triggerSettings() {
@@ -89,10 +88,6 @@ class SummaryPageState extends State<SummaryPage> {
   Future<void> refreshControllers() async {
     await appSys.gradesController.refresh(force: true);
     await appSys.homeworkController.refresh(force: true);
-  }
-
-  initLoginController() async {
-    await appSys.loginController.init();
   }
 
   showDialog() async {

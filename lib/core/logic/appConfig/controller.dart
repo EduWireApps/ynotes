@@ -59,13 +59,11 @@ class ApplicationSystem extends ChangeNotifier {
   ///The most important function
   ///It will intialize Offline, APIs and background fetch
   initApp() async {
+    account = SchoolAccount("", "", "", [], []);
     //set settings
-    await _initSettings();
-    //Set theme to default
-    updateTheme(settings["user"]["global"]["theme"]);
+    _initSettings();
     //Set offline
     await _initOffline();
-
     //Set api
     this.api = APIManager(this.offline);
     //Set background fetch
@@ -89,6 +87,8 @@ class ApplicationSystem extends ChangeNotifier {
 
   _initSettings() async {
     settings = await SettingsUtils.getSettings();
+    //Set theme to default
+    updateTheme(settings["user"]["global"]["theme"]);
     notifyListeners();
   }
 
@@ -141,7 +141,7 @@ class ApplicationSystem extends ChangeNotifier {
     await offline.init();
   }
 
-  initControllers() {
+  initControllers() async {
     loginController = LoginController();
     gradesController = GradesController(this.api);
     homeworkController = HomeworkController(this.api);

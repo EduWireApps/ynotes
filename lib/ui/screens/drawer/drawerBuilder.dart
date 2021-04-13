@@ -68,7 +68,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
         "page": SingleChildScrollView(
             physics: NeverScrollableScrollPhysics(),
             child: GradesPage(
-              gradesController: gradesController,
+              gradesController: appSys.gradesController,
             )),
       },
       {
@@ -76,7 +76,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
         "icon": MdiIcons.calendarCheck,
         "page": HomeworkPage(
           key: homeworkPage,
-          hwController: hwcontroller,
+          hwController: appSys.homeworkController,
         ),
         "key": homeworkPage
       },
@@ -117,8 +117,6 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
   bool firstStart = true;
   AnimationController quickMenuAnimationController;
   //controllers
-  HomeworkController hwcontroller;
-  GradesController gradesController;
 
   Animation<double> quickMenuButtonAnimation;
   StreamSubscription tabBarconnexion;
@@ -142,7 +140,6 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
   @override
   void initState() {
     super.initState();
-
     //Init hw controller
     if (firstStart == true) {
       firstStart = false;
@@ -150,7 +147,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
 
     AppNotification.initNotifications(context, _scrollTo);
     //Mvc init
-    initControllers();
+
     initPageControllers();
     //Page sys
     _previousPage = drawerPageViewController.initialPage;
@@ -164,17 +161,14 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
     appSys.offline.dispose();
   }
 
+/*
   initControllers() async {
     hwcontroller = HomeworkController(appSys.api);
     gradesController = GradesController(appSys.api);
     await gradesController.refresh();
     await hwcontroller.refresh();
-
-    //Lazy reloads
-    await gradesController.refresh(force: true);
-    await hwcontroller.refresh(force: true);
   }
-
+*/
   initPageControllers() {
     // this creates the controller
     drawerPageViewController = PageController(

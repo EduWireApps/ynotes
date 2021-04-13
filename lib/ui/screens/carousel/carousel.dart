@@ -709,6 +709,7 @@ class _SlidingCarouselState extends State<SlidingCarousel> {
         });
       });
     _list(_pageOffset, 0);
+    appSys.initControllers();
   }
 
 //set a list of basic infos (colors)

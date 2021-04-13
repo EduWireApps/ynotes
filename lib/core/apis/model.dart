@@ -136,17 +136,19 @@ abstract class API {
 
 class SchoolAccount {
   //Name of the student
-  String name;
+  final String name;
 
   //Class of the student
-  String studentClass;
+  final String studentClass;
 
-  String studentID;
+  final String studentID;
 
   //Tabs the student can access to
-  List<appTabs> availableTabs;
+  final List<appTabs> availableTabs;
 
-  List<Period> studentPeriods;
+  final List<Period> studentPeriods;
 
-  bool isParentAccount;
+  final bool isParentAccount = false;
+
+  SchoolAccount(this.name, this.studentClass, this.studentID, this.availableTabs, this.studentPeriods) : super();
 }
