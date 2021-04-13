@@ -16,10 +16,10 @@ class PronoteDisciplineConverter {
     rawDisciplines.forEach((rawDiscipline) {
       String disciplineName = mapGet(rawDiscipline, ["L"]);
       List<Grade> gradesList = [];
-      String minClassAverage = mapGet(rawDiscipline, ["moyMin", "V"]);
-      String maxClassAverage = mapGet(rawDiscipline, ["moyMax", "V"]);
-      String classAverage = mapGet(rawDiscipline, ["moyClasse", "V"]);
-      String average = mapGet(rawDiscipline, ["moyEleve", "V"]);
+      String minClassAverage = client.utils.gradeTranslate(mapGet(rawDiscipline, ["moyMin", "V"]));
+      String maxClassAverage = client.utils.gradeTranslate(mapGet(rawDiscipline, ["moyMax", "V"]));
+      String classAverage = client.utils.gradeTranslate(mapGet(rawDiscipline, ["moyClasse", "V"]));
+      String average = client.utils.gradeTranslate(mapGet(rawDiscipline, ["moyEleve", "V"]));
       List<String> teachers = [];
       List<String> subdisciplineCode = [];
       disciplines.add(Discipline(
@@ -29,6 +29,7 @@ class PronoteDisciplineConverter {
           minClassAverage: minClassAverage,
           maxClassAverage: maxClassAverage,
           average: average,
+          classAverage: classAverage,
           generalAverage: generalAverage,
           classGeneralAverage: classGeneralAverage,
           subdisciplineCode: subdisciplineCode,

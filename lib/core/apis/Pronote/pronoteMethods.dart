@@ -64,7 +64,7 @@ class PronoteMethod {
     hws.removeWhere((element) => element.date.isBefore(now));
 
     listHW.addAll(hws);
-    /*List<DateTime> pinnedDates = await _offlineController.pinnedHomework.getPinnedHomeworkDates();
+    List<DateTime> pinnedDates = await _offlineController.pinnedHomework.getPinnedHomeworkDates();
     //Add pinned content
     await Future.wait(pinnedDates.map((element) async {
       jsonData = {
@@ -80,7 +80,7 @@ class PronoteMethod {
           listHW.add(pinned);
         }
       });
-    }));*/
+    }));
     //delete duplicates
     listHW = listHW.toSet().toList();
     if (!_offlineController.locked) {
@@ -136,7 +136,7 @@ class PronoteMethod {
           print("Refreshing client");
           locks["recursive_" + lockName] = true;
           await refreshClient();
-          return this.onlineFetchWithLock(onlineFetch, lockName);
+          this.onlineFetchWithLock(onlineFetch, lockName);
         }
       }
     } else {

@@ -38,7 +38,6 @@ class APIPronote extends API {
 
   @override
   Future<List<Discipline>> getGrades({bool forceReload}) async {
-    pronoteMethod = PronoteMethod(localClient, appSys.account, this.offlineController);
     return await pronoteMethod.fetchAnyData(
         pronoteMethod.grades, offlineController.disciplines.getDisciplines, "grades",
         forceFetch: forceReload, isOfflineLocked: offlineController.locked);
@@ -46,7 +45,6 @@ class APIPronote extends API {
 
   @override
   Future<List<Homework>> getNextHomework({bool forceReload}) async {
-    pronoteMethod = PronoteMethod(localClient, appSys.account, this.offlineController);
     return await pronoteMethod.fetchAnyData(
         pronoteMethod.nextHomework, offlineController.homework.getHomework, "homework",
         forceFetch: forceReload, isOfflineLocked: offlineController.locked);

@@ -103,6 +103,7 @@ class ApplicationSystem extends ChangeNotifier {
 //Leave app
   exitApp() async {
     try {
+      this.api = null;
       await this.offline.clearAll();
       //Delete sharedPref
       SharedPreferences preferences = await SharedPreferences.getInstance();
@@ -115,8 +116,6 @@ class ApplicationSystem extends ChangeNotifier {
       //Delete all
       await storage.deleteAll();
       this.updateTheme("clair");
-      //delete hive files
-      this._initOffline();
     } catch (e) {
       print(e);
     }
