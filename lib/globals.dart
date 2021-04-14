@@ -10,4 +10,4 @@ Future spaceAgendaFuture;
 
 Future agendaFuture;
 
-ApplicationSystem appSys = ApplicationSystem();
+ApplicationSystem appSys;

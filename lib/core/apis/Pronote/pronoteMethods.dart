@@ -177,6 +177,7 @@ class PronoteMethod {
         data = await offlineFetch();
       }
       if (data == null) {
+        print("Online fetch because offline is null");
         data = await onlineFetchWithLock(onlineFetch, lockName);
       }
       return data;

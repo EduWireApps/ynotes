@@ -66,7 +66,7 @@ class ApplicationSystem extends ChangeNotifier {
     logger = Logger();
     account = SchoolAccount("", "", "", [], []);
     //set settings
-    _initSettings();
+    await _initSettings();
     //Set offline
     await _initOffline();
     //Set api
@@ -103,7 +103,6 @@ class ApplicationSystem extends ChangeNotifier {
 //Leave app
   exitApp() async {
     try {
-      this.api = null;
       await this.offline.clearAll();
       //Delete sharedPref
       SharedPreferences preferences = await SharedPreferences.getInstance();

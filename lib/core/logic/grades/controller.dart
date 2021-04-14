@@ -62,7 +62,7 @@ class GradesController extends ChangeNotifier {
   }
 
   Future<void> refresh({bool force = false, refreshFromOffline = false}) async {
-    print("Refresh grades");
+    print("Refreshing grades " + (refreshFromOffline ? "from offline" : "online"));
     if (isSimulating && force) {
       isSimulating = false;
     }

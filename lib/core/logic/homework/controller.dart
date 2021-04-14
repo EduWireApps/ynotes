@@ -19,7 +19,7 @@ class HomeworkController extends ChangeNotifier {
   List<Homework> get getHomework => _old;
 
   Future<void> refresh({bool force = false, refreshFromOffline = false}) async {
-    print("Refreshing homework.");
+    print("Refreshing homework " + (refreshFromOffline ? "from offline" : "online"));
     isFetching = true;
     notifyListeners();
     //ED

@@ -692,7 +692,7 @@ class Communication {
     });
     this.client.stepsLogger.add("✅ Posted login request");
 
-    if (getResponse.hasError) {
+    if (getResponse != null && getResponse.hasError) {
       appSys.logger.i("|pImpossible de se connecter à l'adresse fournie");
     }
 
@@ -792,7 +792,7 @@ class Communication {
 
     this.lastPing = (DateTime.now().millisecondsSinceEpoch / 1000);
     this.lastResponse = response;
-    if (response.hasError) {
+    if (response != null && response.hasError) {
       throw "Status code: ${response.statusCode}";
     }
     if (response.content().contains("Erreur")) {

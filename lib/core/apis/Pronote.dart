@@ -31,7 +31,9 @@ class APIPronote extends API {
   PronoteClient localClient;
   PronoteMethod pronoteMethod;
 
-  APIPronote(Offline offlineController) : super(offlineController);
+  APIPronote(Offline offlineController) : super(offlineController) {
+    pronoteMethod = PronoteMethod(localClient, appSys.account, this.offlineController);
+  }
 
   @override
   // TODO: implement listApp
@@ -40,14 +42,14 @@ class APIPronote extends API {
   Future<List<Discipline>> getGrades({bool forceReload}) async {
     return await pronoteMethod.fetchAnyData(
         pronoteMethod.grades, offlineController.disciplines.getDisciplines, "grades",
-        forceFetch: forceReload, isOfflineLocked: offlineController.locked);
+        forceFetch: forceReload, isOfflineLocked: super.offlineController.locked);
   }
 
   @override
   Future<List<Homework>> getNextHomework({bool forceReload}) async {
     return await pronoteMethod.fetchAnyData(
         pronoteMethod.nextHomework, offlineController.homework.getHomework, "homework",
-        forceFetch: forceReload, isOfflineLocked: offlineController.locked);
+        forceFetch: forceReload, isOfflineLocked: super.offlineController.locked);
   }
 
   @override
@@ -116,6 +118,7 @@ class APIPronote extends API {
           this.loggedIn = true;
           loginLock = false;
           pronoteMethod = PronoteMethod(localClient, appSys.account, this.offlineController);
+
           return ([1, "Bienvenue $actualUser!"]);
         } else {
           loginLock = false;
