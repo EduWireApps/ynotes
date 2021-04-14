@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/buttons.dart';
@@ -131,10 +132,24 @@ class _AccountPageState extends State<AccountPage> {
                 ),
               ),
               Expanded(child: SizedBox()),
-              Text(
-                "En savoir plus sur les comptes",
-                style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-              )
+              GestureDetector(
+                onTap: () async {
+                  launch('https://support.ynotes.fr/compte');
+                },
+                child: Text("En savoir plus sur les comptes",
+                    style: TextStyle(
+                      fontFamily: 'Asap',
+                      color: Colors.transparent,
+                      shadows: [Shadow(color: Colors.white, offset: Offset(0, -5))],
+                      fontSize: 14,
+                      decorationColor: Colors.white,
+                      fontWeight: FontWeight.normal,
+                      textBaseline: TextBaseline.alphabetic,
+                      decoration: TextDecoration.underline,
+                      decorationThickness: 2,
+                      decorationStyle: TextDecorationStyle.dashed,
+                    )),
+              ),
             ],
           )),
       appBar: new AppBar(

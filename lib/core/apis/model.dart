@@ -3,6 +3,7 @@ import 'dart:core';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/offline/offline.dart';
@@ -10,10 +11,11 @@ import 'package:ynotes/core/services/space/recurringEvents.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/globals.dart';
 
-enum apiType { EcoleDirecte, Pronote }
+enum API_TYPE { EcoleDirecte, Pronote }
 
 abstract class API {
   bool loggedIn = false;
+  var type;
   final Offline offlineController;
 
   List<SchoolAccount> accounts;
@@ -23,6 +25,8 @@ abstract class API {
   ///Connect to the API
   ///Should return a connection status
   Future<List> login(username, password, {url, cas, mobileCasLogin});
+
+  Future<List<SchoolAccount>> getAccounts();
 
   ///Get years periods
   Future<List<Period>> getPeriods();
@@ -132,10 +136,9 @@ abstract class API {
   }
 
   List<Grade> gradesList;
-
-
 }
 
+@JsonSerializable()
 class SchoolAccount {
   //Name of the student
   final String name;
@@ -152,5 +155,15 @@ class SchoolAccount {
 
   final bool isParentAccount = false;
 
-  SchoolAccount(this.name, this.studentClass, this.studentID, this.availableTabs, this.studentPeriods) : super();
+  ///Configuration credentials
+  Map credentials;
+
+  final API_TYPE type;
+
+  SchoolAccount(this.name, this.studentClass, this.studentID, this.availableTabs, this.studentPeriods, this.type,
+      {this.credentials})
+      : super();
+
+  factory SchoolAccount.fromJson(Map<String, dynamic> json) => _$SchoolAccountFromJson(json);
+  Map<String, dynamic> toJson() => _$SchoolAccountToJson(this);
 }

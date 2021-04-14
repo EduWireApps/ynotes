@@ -58,7 +58,9 @@ List<String> colorList = [
 
 ///The ecole directe api extended from the apiManager.dart API class
 class APIEcoleDirecte extends API {
-  APIEcoleDirecte(Offline offlineController) : super(offlineController);
+  APIEcoleDirecte(Offline offlineController) : super(offlineController) {
+    this.type = API_TYPE.EcoleDirecte;
+  }
 
 //Get connection message and store token
   Future<List> login(username, password, {url, cas, mobileCasLogin}) async {
@@ -85,7 +87,6 @@ class APIEcoleDirecte extends API {
         try {
           //Put the value of the name in a variable
           actualUser = req['data']['accounts'][0]['prenom'] ?? "Invité";
-          ;
           CreateStorage("userFullName", actualUser ?? "");
           String userID = req['data']['accounts'][0]['id'].toString() ?? "";
           String classe;
@@ -281,6 +282,12 @@ class APIEcoleDirecte extends API {
     http.Request request = http.Request('POST', Uri.parse(url));
     request.body = body.toString();
     return request;
+  }
+
+  @override
+  Future<List<SchoolAccount>> getAccounts() {
+    // TODO: implement getAccounts
+    throw UnimplementedError();
   }
 
   ///END OF THE API CLASS

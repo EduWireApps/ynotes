@@ -32,6 +32,7 @@ class APIPronote extends API {
   PronoteMethod pronoteMethod;
 
   APIPronote(Offline offlineController) : super(offlineController) {
+    this.type = API_TYPE.Pronote;
     pronoteMethod = PronoteMethod(localClient, appSys.account, this.offlineController);
   }
 
@@ -423,5 +424,11 @@ class APIPronote extends API {
       listPolls = await appSys.offline.polls.get();
       return listPolls;
     }
+  }
+
+  @override
+  Future<List<SchoolAccount>> getAccounts() {
+    // TODO: implement getAccounts
+    throw UnimplementedError();
   }
 }

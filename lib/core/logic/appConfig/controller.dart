@@ -30,7 +30,11 @@ class ApplicationSystem extends ChangeNotifier {
   Map settings;
 
   SchoolAccount account;
-  List<SchoolAccount> accounts = [SchoolAccount("", "", "", [], []), SchoolAccount("", "", "", [], [])];
+  List<SchoolAccount> accounts = [
+    SchoolAccount("", "", "", [], [], API_TYPE.EcoleDirecte),
+    SchoolAccount("", "", "", [], [], API_TYPE.EcoleDirecte),
+    SchoolAccount("", "", "", [], [], API_TYPE.EcoleDirecte)
+  ];
   updateSetting(Map path, String key, var value) {
     path[key] = value;
     SettingsUtils.setSetting(settings);
@@ -64,7 +68,7 @@ class ApplicationSystem extends ChangeNotifier {
   ///It will intialize Offline, APIs and background fetch
   initApp() async {
     logger = Logger();
-    account = SchoolAccount("", "", "", [], []);
+    account = SchoolAccount("", "", "", [], [], API_TYPE.EcoleDirecte);
     //set settings
     await _initSettings();
     //Set offline
