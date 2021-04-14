@@ -121,7 +121,7 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
                           height: screenSize.size.height / 10 * 8,
                           child: Stack(
                             children: [
-                              FutureBuilder(
+                              FutureBuilder<List<AgendaEvent>?>(
                                   future: spaceAgendaFuture,
                                   builder: (context, snapshot) {
                                     List<AgendaEvent>? lst = snapshot.data;

@@ -487,7 +487,7 @@ class _page4State extends State<page4> {
     if (mounted) {
       setState(() {
         //localClasse = [];
-        specialtiesAvailable = [];
+        specialtiesAvailable = list[0];
       });
     }
   }

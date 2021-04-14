@@ -48,7 +48,7 @@ class _AgendaGridState extends State<AgendaGrid> {
   //The default after school day length
   var minAfterSchoolDayLength = [18, 24];
   void layoutEvents() {
-    var columns = [];
+    List<List<AgendaEvent>> columns = [];
     _events.clear();
     _events.addAll(widget.events!);
     // _events.removeWhere((element) => element.start.hour < _getStartHour(_events).hour || element.start.hour > _getEndHour(_events).hour);
@@ -231,12 +231,12 @@ class _AgendaGridState extends State<AgendaGrid> {
             itemBuilder: (ctxt, index) {
               return Container(
                 margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.2),
-                child: FutureBuilder(
+                child: FutureBuilder<int?>(
                     initialData: 0,
                     future: getRelatedColor(_events.where((element) => element.wholeDay!).toList()[index]),
                     builder: (context, snapshot) {
                       return Material(
-                        color: Color(snapshot.data),
+                        color: Color(snapshot.data ?? 0),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
                         child: InkWell(
                           onLongPress: () async {

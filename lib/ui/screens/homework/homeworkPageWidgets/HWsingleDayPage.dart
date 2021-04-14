@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/ui/animations/FadeAnimation.dart';
 import 'package:ynotes/ui/components/customLoader.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPage.dart';
@@ -37,7 +38,7 @@ class _HomeworkSecondPageState extends State<HomeworkSecondPage> {
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
-    return FutureBuilder(
+    return FutureBuilder<List<Homework>?>(
         future: appSys.api!.getHomeworkFor(dateToUse),
         builder: (context, snapshot) {
           if (snapshot.hasData && snapshot.data != null) {
@@ -128,14 +129,14 @@ class _HomeworkSecondPageState extends State<HomeworkSecondPage> {
                     width: screenSize.size.width / 5 * 4.4,
                     child: snapshot.connectionState == ConnectionState.done
                         ? Container(
-                            child: snapshot.data.length > 0
+                            child: snapshot.data!.length > 0
                                 ? ListView.builder(
                                     addRepaintBoundaries: false,
-                                    itemCount: snapshot.data.length,
+                                    itemCount: snapshot.data!.length,
                                     itemBuilder: (context, index) {
                                       return FadeAnimationLeftToRight(
                                         0.05 + index / 5,
-                                        HomeworkElement(snapshot.data[index], true),
+                                        HomeworkElement(snapshot.data![index], true),
                                       );
                                     })
                                 : Container(

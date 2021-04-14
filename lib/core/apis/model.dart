@@ -55,10 +55,10 @@ abstract class API {
   Future app(String appname, {String? args, String? action, CloudItem? folder});
 
   ///All events
-  Future getEvents(DateTime date, bool afterSchool, {bool forceReload = false}) async {
+  Future<List<AgendaEvent>?> getEvents(DateTime date, bool afterSchool, {bool forceReload = false}) async {
     List<AgendaEvent> events = [];
     List<AgendaEvent>? extracurricularEvents = [];
-    List<Lesson>? lessons = await (appSys.api!.getNextLessons(date, forceReload: forceReload) as Future<List<Lesson>?>);
+    List<Lesson>? lessons = await (appSys.api!.getNextLessons(date, forceReload: forceReload));
     int week = await get_week(date);
     //Add lessons for this day
     if (lessons != null) {
@@ -126,7 +126,7 @@ abstract class API {
 
       events.addAll(recurringEvents);
     } else {}
-    return events;
+    return events as Future<List<AgendaEvent>>;
   }
 
   List<Grade>? gradesList;

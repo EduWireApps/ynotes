@@ -24,7 +24,7 @@ Future? mailsListFuture;
 String dossier = "Reçus";
 enum sortValue { date, reversed_date, author }
 List<PollInfo>? pollsList = [];
-Future? pollsFuture;
+Future<List<PollInfo>>? pollsFuture;
 
 class _PollsAndInfoPageState extends State<PollsAndInfoPage> {
   @override
@@ -36,7 +36,8 @@ class _PollsAndInfoPageState extends State<PollsAndInfoPage> {
 
   Future<void> refreshPolls({bool forced = false}) async {
     setState(() {
-      pollsFuture = appSys.api!.app("polls", action: "get", args: (forced) ? "forced" : null);
+      pollsFuture =
+          appSys.api!.app("polls", action: "get", args: (forced) ? "forced" : null) as Future<List<PollInfo>>?;
     });
     var realFuture = await pollsFuture;
   }
@@ -55,10 +56,10 @@ class _PollsAndInfoPageState extends State<PollsAndInfoPage> {
             child: Container(
                 height: screenSize.size.height / 10 * 8.8,
                 width: (screenSize.size.width / 5) * 4.6,
-                child: FutureBuilder(
+                child: FutureBuilder<List<PollInfo>>(
                     future: pollsFuture,
                     builder: (context, snapshot) {
-                      if (snapshot.hasData && snapshot.data != null && snapshot.data.length != 0) {
+                      if (snapshot.hasData && snapshot.data != null && snapshot.data!.length != 0) {
                         SchedulerBinding.instance!.addPostFrameCallback((_) => mounted
                             ? setState(() {
                                 pollsList = snapshot.data;
@@ -84,17 +85,17 @@ class _PollsAndInfoPageState extends State<PollsAndInfoPage> {
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
                                             AutoSizeText(
-                                              (snapshot.data[index].title != null
-                                                      ? snapshot.data[index].title + " - "
+                                              (snapshot.data![index].title != null
+                                                      ? snapshot.data ?? [][index].title + " - "
                                                       : "") +
-                                                  DateFormat("dd/MM/yyyy").format(snapshot.data[index].datedebut),
+                                                  DateFormat("dd/MM/yyyy").format(snapshot.data ?? [][index].datedebut),
                                               style: TextStyle(
                                                   fontFamily: "Asap",
                                                   fontWeight: FontWeight.bold,
                                                   color: ThemeUtils.textColor()),
                                             ),
                                             AutoSizeText(
-                                              snapshot.data[index].auteur,
+                                              snapshot.data ?? [][index].auteur,
                                               style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                                             ),
                                           ],
@@ -102,7 +103,7 @@ class _PollsAndInfoPageState extends State<PollsAndInfoPage> {
                                         children: [
                                           Column(
                                             children: [
-                                              _buildPollQuestion(snapshot.data[index], screenSize),
+                                              _buildPollQuestion(snapshot.data ?? [][index], screenSize),
                                               FittedBox(
                                                 child: Row(
                                                   children: [
@@ -203,10 +204,12 @@ Widget _buildPollChoices(Map data, screenSize, PollInfo pollinfo) {
           children: [
             CircularCheckBox(
               value: response!.contains(i + 1),
-              /* onChanged: (value) async {
-                  await refreshPolls(forced: true);
-                  await appSys.api.app("polls", action: "answer", args: jsonEncode(data) + "/ynsplit" + jsonEncode(pollinfo.data) + "/ynsplit" + (i + 1).toString());
-                },*/
+              onChanged: (value) async {
+                /* await refreshPolls(forced: true);
+                await appSys.api.app("polls",
+                    action: "answer",
+                    args: jsonEncode(data) + "/ynsplit" + jsonEncode(pollinfo.data) + "/ynsplit" + (i + 1).toString());*/
+              },
             ),
             Text(choices[i]["L"])
           ],

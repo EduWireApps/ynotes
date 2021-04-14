@@ -21,7 +21,7 @@ class CloudPage extends StatefulWidget {
   }
 }
 
-Future? cloudFolderFuture;
+Future<List<CloudItem>?>? cloudFolderFuture;
 
 String dossier = "Reçus";
 enum sortValue { date, reversed_date, author }
@@ -39,7 +39,7 @@ class _CloudPageState extends State<CloudPage> {
 
   Future<void> refreshLocalCloudItemsList() async {
     setState(() {
-      cloudFolderFuture = appSys.api!.app("cloud", args: path, action: "CD");
+      cloudFolderFuture = appSys.api!.app("cloud", args: path, action: "CD") as Future<List<CloudItem>?>?;
       isLoading = true;
     });
     var realdisciplinesListFuture = await cloudFolderFuture;
@@ -52,7 +52,7 @@ class _CloudPageState extends State<CloudPage> {
   changeDirectory(CloudItem? item) async {
     print(path);
     setState(() {
-      cloudFolderFuture = appSys.api!.app("cloud", args: path, action: "CD", folder: item);
+      cloudFolderFuture = appSys.api!.app("cloud", args: path, action: "CD", folder: item) as Future<List<CloudItem>?>?;
       isLoading = true;
     });
     var realdisciplinesListFuture = await cloudFolderFuture;
@@ -147,7 +147,7 @@ class _CloudPageState extends State<CloudPage> {
                         height: screenSize.size.height / 10 * 8.3,
                         child: RefreshIndicator(
                           onRefresh: refreshLocalCloudItemsList,
-                          child: FutureBuilder(
+                          child: FutureBuilder<List<CloudItem>?>(
                               future: cloudFolderFuture,
                               builder: (context, snapshot) {
                                 if (snapshot.hasData && snapshot.connectionState == ConnectionState.done) {
@@ -235,7 +235,7 @@ class _CloudPageState extends State<CloudPage> {
                                                             margin: EdgeInsets.all(0),
                                                             child: Row(
                                                               children: <Widget>[
-                                                                FutureBuilder(
+                                                                FutureBuilder<bool>(
                                                                     future: model
                                                                         .fileExists(localFoldersList![index].title),
                                                                     initialData: false,
@@ -246,7 +246,7 @@ class _CloudPageState extends State<CloudPage> {
                                                                         child: Icon(
                                                                           (localFoldersList![index].type == "FOLDER")
                                                                               ? MdiIcons.folder
-                                                                              : (snapshot.data ||
+                                                                              : (snapshot.data! ||
                                                                                       model.downloadProgress == 100
                                                                                   ? MdiIcons.fileCheck
                                                                                   : MdiIcons.file),

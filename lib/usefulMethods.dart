@@ -128,9 +128,7 @@ List<Grade>? getAllGrades(List<Discipline>? list, {bool overrideLimit = false, b
           });
         }
       });
-      if (appSys.api!.gradesList != null &&
-          appSys.api!.gradesList!.length > 0 &&
-          listToReturn == appSys.api!.gradesList) {
+      if (appSys.api!.gradesList != null && appSys.api!.gradesList!.length > 0 && listToReturn == appSys.api!.gradesList) {
         return appSys.api!.gradesList;
       }
 
@@ -138,8 +136,8 @@ List<Grade>? getAllGrades(List<Discipline>? list, {bool overrideLimit = false, b
       if (listToReturn != null) {
         //sort grades
         if (sortByWritingDate) {
-          listToReturn.sort(
-              (a, b) => (a.entryDate != null && b.entryDate != null) ? (a.entryDate!.compareTo(b.entryDate!)) : 1);
+          listToReturn
+              .sort((a, b) => (a.entryDate != null && b.entryDate != null) ? (a.entryDate!.compareTo(b.entryDate!)) : 1);
         }
 
         //remove duplicates

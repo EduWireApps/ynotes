@@ -259,13 +259,14 @@ class HomeworkPageState extends State<HomeworkPage> {
   }
 }
 
-getDates(List<Homework> list) {
+getDates(List<Homework>? list) {
   List<DateTime?> listtoReturn = [];
-  list.forEach((element) {
-    if (!listtoReturn.contains(element.date)) {
-      listtoReturn.add(element.date);
-    }
-  });
+  list ??
+      [].forEach((element) {
+        if (!listtoReturn.contains(element.date)) {
+          listtoReturn.add(element.date);
+        }
+      });
   listtoReturn.sort();
   return listtoReturn;
 }

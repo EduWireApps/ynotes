@@ -357,13 +357,13 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
                 padding: EdgeInsets.only(left: 5, right: 5, top: 20, bottom: 20),
                 child: Column(
                   children: <Widget>[
-                    FutureBuilder(
+                    FutureBuilder<List>(
                       future: connectionData,
                       builder: (context, snapshot) {
                         if (snapshot.hasData &&
                             snapshot.data != null &&
-                            snapshot.data?.length > 0 &&
-                            snapshot.data[0] == 1) {
+                            snapshot.data!.length > 0 &&
+                            snapshot.data![0] == 1) {
                           Future.delayed(const Duration(milliseconds: 500), () {
                             Navigator.pop(context);
 
@@ -377,12 +377,12 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
                                 color: Colors.lightGreen,
                               ),
                               Text(
-                                snapshot.data[1].toString(),
+                                snapshot.data![1].toString(),
                                 textAlign: TextAlign.center,
                               )
                             ],
                           );
-                        } else if (snapshot.hasData && snapshot.data[0] == 0) {
+                        } else if (snapshot.hasData && snapshot.data![0] == 0) {
                           print(snapshot.data);
                           return Column(
                             children: <Widget>[
@@ -392,10 +392,10 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
                                 color: Colors.redAccent,
                               ),
                               Text(
-                                snapshot.data[1].toString(),
+                                snapshot.data![1].toString(),
                                 textAlign: TextAlign.center,
                               ),
-                              if (snapshot.data.length > 2 && snapshot.data[2] != null && snapshot.data[2].length > 0)
+                              if (snapshot.data!.length > 2 && snapshot.data![2] != null && snapshot.data![2].length > 0)
                                 Container(
                                   margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
                                   child: CustomButtons.materialButton(
@@ -403,7 +403,7 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
                                     MediaQuery.of(context).size.width / 5 * 1.5,
                                     null,
                                     () async {
-                                      List stepLogger = snapshot.data[2];
+                                      List stepLogger = snapshot.data![2];
                                       try {
                                         //add step logs to clip board
                                         await Clipboard.setData(new ClipboardData(text: stepLogger.join("\n")));
@@ -541,10 +541,10 @@ class _LoginPageState extends State<LoginPage> {
                 padding: EdgeInsets.only(left: 5, right: 5, top: 20, bottom: 20),
                 child: Column(
                   children: <Widget>[
-                    FutureBuilder(
+                    FutureBuilder<List>(
                       future: connectionData,
                       builder: (context, snapshot) {
-                        if (snapshot.hasData && snapshot.data[0] == 1) {
+                        if (snapshot.hasData && snapshot.data![0] == 1) {
                           Future.delayed(const Duration(milliseconds: 500), () {
                             Navigator.pop(context);
                             if (_isFirstUse == true) {
@@ -561,12 +561,12 @@ class _LoginPageState extends State<LoginPage> {
                                 color: Colors.lightGreen,
                               ),
                               Text(
-                                snapshot.data[1].toString(),
+                                snapshot.data![1].toString(),
                                 textAlign: TextAlign.center,
                               )
                             ],
                           );
-                        } else if (snapshot.hasData && snapshot.data[0] == 0) {
+                        } else if (snapshot.hasData && snapshot.data![0] == 0) {
                           print(snapshot.data);
                           return Column(
                             children: <Widget>[
@@ -576,10 +576,10 @@ class _LoginPageState extends State<LoginPage> {
                                 color: Colors.redAccent,
                               ),
                               Text(
-                                snapshot.data[1].toString(),
+                                snapshot.data![1].toString(),
                                 textAlign: TextAlign.center,
                               ),
-                              if (snapshot.data.length > 2 && snapshot.data[2] != null && snapshot.data[2].length > 0)
+                              if (snapshot.data!.length > 2 && snapshot.data![2] != null && snapshot.data![2].length > 0)
                                 Container(
                                   margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
                                   child: CustomButtons.materialButton(
@@ -587,7 +587,7 @@ class _LoginPageState extends State<LoginPage> {
                                     MediaQuery.of(context).size.width / 5 * 1.5,
                                     null,
                                     () async {
-                                      List stepLogger = snapshot.data[2];
+                                      List stepLogger = snapshot.data![2];
                                       try {
                                         //add step logs to clip board
                                         await Clipboard.setData(new ClipboardData(text: stepLogger.join("\n")));

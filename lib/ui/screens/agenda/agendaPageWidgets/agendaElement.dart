@@ -70,13 +70,13 @@ class _AgendaElementState extends State<AgendaElement> {
     return Stack(
       children: [
         Container(
-          child: FutureBuilder(
+          child: FutureBuilder<int?>(
               future: _getRelatedColor(),
               initialData: 0,
               builder: (context, snapshot) {
                 Color color = Colors.white;
                 if (snapshot.data != null) {
-                  color = Color(snapshot.data);
+                  color = Color(snapshot.data ?? 0);
                 }
                 final f = new DateFormat('H:mm');
                 return Container(

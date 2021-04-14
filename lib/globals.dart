@@ -7,8 +7,8 @@ import 'package:ynotes/core/logic/homework/controller.dart';
 //Futures
 Future? disciplinesListFuture;
 
-Future? spaceAgendaFuture;
+Future<List<AgendaEvent>?>? spaceAgendaFuture;
 
-Future<List<AgendaEvent>>? agendaFuture;
+Future<List<AgendaEvent>?>? agendaFuture;
 
 ApplicationSystem appSys = ApplicationSystem();

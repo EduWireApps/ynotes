@@ -56,7 +56,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
   Widget build(BuildContext context) {
     print(this.widget.mail.id);
     MediaQueryData screenSize = MediaQuery.of(context);
-    return FutureBuilder<String>(
+    return FutureBuilder<String?>(
         future: readMail(this.widget.mail.id, this.widget.mail.read),
         builder: (context, snapshot) {
           return Container(
@@ -384,6 +384,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                                                                   ),
                                                                                 ));
                                                                               }
+                                                                              return Container();
                                                                             });
                                                                       }),
                                                                 ],

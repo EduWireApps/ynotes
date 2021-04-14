@@ -83,11 +83,11 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
 
     return Container(
       margin: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.1),
-      child: FutureBuilder(
+      child: FutureBuilder<int>(
           future: getColor(this.widget.homeworkForThisDay!.disciplineCode ?? ""),
           initialData: 0,
           builder: (context, snapshot) {
-            Color color = Color(snapshot.data);
+            Color color = Color(snapshot.data ?? 0);
 
             return Stack(
               children: <Widget>[
@@ -323,8 +323,8 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                                             child: Marquee(
                                                                 text: (segmentedControlIndex == 0
                                                                         ? widget.homeworkForThisDay!.documents
-                                                                        : widget
-                                                                            .homeworkForThisDay!.sessionDocuments)![index]
+                                                                        : widget.homeworkForThisDay!
+                                                                            .sessionDocuments)![index]
                                                                     .documentName!,
                                                                 blankSpace: screenSize.size.width / 5 * 0.2,
                                                                 style:
@@ -458,6 +458,7 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                                                               },
                                                                             ));
                                                                       }
+                                                                      return Container();
                                                                     });
                                                               }),
                                                         ),
@@ -606,7 +607,7 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                         width: screenSize.size.width / 5 * 0.5,
                                         height: screenSize.size.width / 5 * 0.5,
                                         child: FittedBox(
-                                          child: FutureBuilder(
+                                          child: FutureBuilder<bool>(
                                               future: appSys.offline!.doneHomework
                                                   .getHWCompletion(widget.homeworkForThisDay!.id ?? ''),
                                               initialData: false,

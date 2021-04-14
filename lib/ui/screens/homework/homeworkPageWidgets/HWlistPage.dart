@@ -43,18 +43,18 @@ class _HomeworkFirstPageState extends State<HomeworkFirstPage> {
           return RefreshIndicator(
               onRefresh: refreshLocalHomeworkList,
               child: model.getHomework != null
-                  ? (model.getHomework.length != 0)
+                  ? (model.getHomework!.length != 0)
                       ? Stack(
                           children: <Widget>[
                             Container(
                               margin: EdgeInsets.only(top: (screenSize.size.height / 10 * 8.8) / 10 * 0.1),
                               child: ListView.builder(
-                                  itemCount: getDates(model.getHomework).length,
+                                  itemCount: getDates(model.getHomework!).length,
                                   padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
                                   itemBuilder: (BuildContext context, int index) {
                                     return Column(
                                       children: <Widget>[
-                                        if (getWeeksRelation(index, model.getHomework) != null)
+                                        if (getWeeksRelation(index, model.getHomework!) != null)
                                           Row(children: <Widget>[
                                             Expanded(
                                               child: new Container(
@@ -65,7 +65,7 @@ class _HomeworkFirstPageState extends State<HomeworkFirstPage> {
                                                   )),
                                             ),
                                             Text(
-                                              getWeeksRelation(index, model.getHomework),
+                                              getWeeksRelation(index, model.getHomework!),
                                               style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
                                             ),
                                             Expanded(
@@ -78,7 +78,7 @@ class _HomeworkFirstPageState extends State<HomeworkFirstPage> {
                                             ),
                                           ]),
                                         HomeworkContainer(
-                                            getDates(model.getHomework)[index], this.callback, model.getHomework),
+                                            getDates(model.getHomework!)[index], this.callback, model.getHomework!),
                                       ],
                                     );
                                   }),

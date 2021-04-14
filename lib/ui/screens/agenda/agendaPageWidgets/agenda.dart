@@ -224,7 +224,7 @@ class _AgendaState extends State<Agenda> {
                           height: screenSize.size.height / 10 * 8,
                           child: Stack(
                             children: [
-                              FutureBuilder<List<AgendaEvent>>(
+                              FutureBuilder<List<AgendaEvent>?>(
                                   future: agendaFuture,
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData &&
@@ -237,7 +237,7 @@ class _AgendaState extends State<Agenda> {
                                             initState,
                                           ));
                                     }
-                                    if (snapshot.data != null && snapshot.data.length == 0) {
+                                    if (snapshot.data != null && snapshot.data!.length == 0) {
                                       return Center(
                                         child: FittedBox(
                                           child: Column(

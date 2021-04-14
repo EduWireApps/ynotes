@@ -18,7 +18,7 @@ class DownloadsExplorer extends StatefulWidget {
   _DownloadsExplorerState createState() => _DownloadsExplorerState();
 }
 
-Future? filesListFuture;
+late Future<List<FileInfo>> filesListFuture;
 bool selectionMode = false;
 List<FileInfo> selectedFiles = [];
 
@@ -488,11 +488,11 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                 horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.height / 10 * 0.02),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-              child: FutureBuilder(
+              child: FutureBuilder<List<FileInfo>>(
                 future: filesListFuture,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    if (snapshot.data.length != 0) {
+                    if ((snapshot.data ?? []).length != 0) {
                       _listFiles = snapshot.data;
                       return Container(
                         height: screenSize.size.height / 10 * 7.3,
@@ -579,18 +579,18 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                                                           Container(
                                                             width: screenSize.size.width / 5 * 3.25,
                                                             child: Text(
-                                                              snapshot.data[index].fileName ?? "",
+                                                              (snapshot.data ?? [])[index].fileName ?? "",
                                                               style: TextStyle(
                                                                   fontFamily: "Asap",
                                                                   fontSize: screenSize.size.height / 10 * 0.2,
                                                                   color: ThemeUtils.textColor()),
                                                             ),
                                                           ),
-                                                          if (snapshot.data[index].lastModifiedDate != null)
+                                                          if ((snapshot.data ?? [])[index].lastModifiedDate != null)
                                                             FittedBox(
                                                               child: Text(
-                                                                DateFormat("yyyy-MM-dd HH:mm")
-                                                                    .format(snapshot.data[index].lastModifiedDate),
+                                                                DateFormat("yyyy-MM-dd HH:mm").format(
+                                                                    (snapshot.data ?? [])[index].lastModifiedDate!),
                                                                 textAlign: TextAlign.left,
                                                                 style: TextStyle(
                                                                     fontFamily: "Asap",

@@ -20,7 +20,7 @@ class MailPage extends StatefulWidget {
 }
 
 List<Mail> localList = [];
-Future? mailsListFuture;
+Future<List<Mail>?>? mailsListFuture;
 String? dossier = "Reçus";
 enum sortValue { date, reversed_date, author }
 
@@ -30,13 +30,13 @@ class _MailPageState extends State<MailPage> {
   var actualSort = sortValue.date;
   void initState() {
     WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() {
-          mailsListFuture = appSys.api!.app("mail");
+          mailsListFuture = appSys.api!.app("mail") as Future<List<Mail>?>?;
         }));
   }
 
   Future<void> refreshLocalMailsList() async {
     setState(() {
-      mailsListFuture = appSys.api!.app("mail");
+      mailsListFuture = appSys.api!.app("mail") as Future<List<Mail>?>?;
     });
     var realdisciplinesListFuture = await mailsListFuture;
   }
@@ -206,7 +206,7 @@ class _MailPageState extends State<MailPage> {
                       height: screenSize.size.height / 10 * 8.35,
                       child: RefreshIndicator(
                         onRefresh: refreshLocalMailsList,
-                        child: FutureBuilder(
+                        child: FutureBuilder<List<Mail>?>(
                             //Get all the mails
                             future: mailsListFuture,
                             builder: (context, snapshot) {
