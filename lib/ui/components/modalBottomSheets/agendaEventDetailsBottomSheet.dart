@@ -200,7 +200,7 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                       return GestureDetector(
                         onTap: () async {
                           AgendaReminder? reminder = await (agendaEventEdit(context, false, lessonID: widget.event.id)
-                              as FutureOr<AgendaReminder?>);
+                              as Future<AgendaReminder?>);
                           if (reminder != null) {
                             setState(() {
                               reminders.add(reminder);
@@ -234,7 +234,7 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                                         onPressed: () async {
                                           AgendaReminder? reminder =
                                               await (agendaEventEdit(context, false, lessonID: widget.event.id)
-                                                  as FutureOr<AgendaReminder?>);
+                                                  as Future<AgendaReminder?>);
                                           if (reminder != null) {
                                             setState(() {
                                               reminders.add(reminder);

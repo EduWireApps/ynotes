@@ -167,7 +167,8 @@ class _QuickMenuState extends State<QuickMenu> with TickerProviderStateMixin {
                                             padding: EdgeInsets.all(0.0),
                                             itemCount: listFiles.length,
                                             itemBuilder: (context, index) {
-                                              final item = [];
+                                              final item = listFiles[index].fileName;
+                                              ;
                                               return Dismissible(
                                                 direction: DismissDirection.endToStart,
                                                 background: Container(color: Colors.red),

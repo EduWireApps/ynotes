@@ -221,7 +221,7 @@ class AppNotification {
           ledColor: Colors.white)
     ]);
     List<AgendaReminder> reminders =
-        await (appSys.offline!.reminders.getReminders(event.lesson!.id) as FutureOr<List<AgendaReminder>>);
+        await (appSys.offline!.reminders.getReminders(event.lesson!.id) as Future<List<AgendaReminder>>);
     await Future.forEach(reminders, (AgendaReminder rmd) async {
       //Unschedule existing
       if (rmd.alarm == alarmType.none) {
@@ -366,7 +366,7 @@ class AppNotification {
       }
     } else if (api.loggedIn) {
       try {
-        lessons = await (api.getNextLessons(date) as FutureOr<List<Lesson>>);
+        lessons = await (api.getNextLessons(date) as Future<List<Lesson>>);
       } catch (e) {
         print("Error while collecting online lessons. ${e.toString()}");
 
@@ -460,7 +460,7 @@ class AppNotification {
       }
     } else if (api.loggedIn) {
       try {
-        lessons = await (api.getNextLessons(date) as FutureOr<List<Lesson>>);
+        lessons = await (api.getNextLessons(date) as Future<List<Lesson>>);
       } catch (e) {
         print("Error while collecting online lessons. ${e.toString()}");
 
@@ -487,7 +487,7 @@ class AppNotification {
       lesson = nextLesson;
       await showOngoingNotification(lesson);
     } else {
-      final prefs = await (SharedPreferences.getInstance() as FutureOr<SharedPreferences>);
+      final prefs = await (SharedPreferences.getInstance() as Future<SharedPreferences>);
       bool? value = prefs.getBool("disableAtDayEnd");
       print(value);
       print(appSys.settings!["user"]["agendaPage"]["disableAtDayEnd"]);

@@ -471,7 +471,7 @@ class _page4State extends State<page4> {
   }
 
   void getAuth() async {
-    if ((await (BatteryOptimization.isIgnoringBatteryOptimizations() as FutureOr<bool>))) {
+    if ((await (BatteryOptimization.isIgnoringBatteryOptimizations() as Future<bool>))) {
       setState(() {
         isIgnoringBatteryOptimization = true;
       });
@@ -604,7 +604,7 @@ class _page4State extends State<page4> {
                                         context,
                                         "la configuration d'optimisation de batterie",
                                         "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")
-                                    as FutureOr<bool?>) ??
+                                    as Future<bool?>) ??
                                 false) {
                               if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
                                 model.updateSetting(appSys.settings!["user"]["global"], "notificationNewGrade", value);
@@ -630,7 +630,7 @@ class _page4State extends State<page4> {
                                       context,
                                       "la configuration d'optimisation de batterie",
                                       "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")
-                                  as FutureOr<bool?>) ??
+                                  as Future<bool?>) ??
                               false) {
                             if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
                               appSys.updateSetting(appSys.settings!["user"]["global"], "notificationNewMail", value);
@@ -653,12 +653,12 @@ class _page4State extends State<page4> {
                         var classe = await specialtiesSelectionAvailable();
                         if (classe[0] && chosenSpecialties.length == (classe[1] == "Première" ? 3 : 2)) {
                           CreateStorage("agreedTermsAndConfiguredApp", "true");
-                          final prefs = await (SharedPreferences.getInstance() as FutureOr<SharedPreferences>);
+                          final prefs = await (SharedPreferences.getInstance() as Future<SharedPreferences>);
                           prefs.setStringList("listSpecialties", chosenSpecialties);
                           Navigator.of(context).pushReplacement(router(homePage()));
                         } else if (!classe[0]) {
                           CreateStorage("agreedTermsAndConfiguredApp", "true");
-                          final prefs = await (SharedPreferences.getInstance() as FutureOr<SharedPreferences>);
+                          final prefs = await (SharedPreferences.getInstance() as Future<SharedPreferences>);
                           prefs.setStringList("listSpecialties", chosenSpecialties);
                           Navigator.of(context).pushReplacement(router(homePage()));
                         } else {

@@ -43,7 +43,7 @@ class APIPronote extends API {
         offlineGrades != null) {
       print("Loading grades from offline storage.");
 
-      var toReturn = await (appSys.offline!.disciplines.getDisciplines() as FutureOr<List<Discipline>>);
+      var toReturn = await (appSys.offline!.disciplines.getDisciplines() as Future<List<Discipline>>);
       toReturn = await refreshDisciplinesListColors(toReturn);
       return toReturn;
     } else {
@@ -93,11 +93,11 @@ class APIPronote extends API {
                 listDisciplineEl.period != element.periodName)) {
               listDisciplines.add(Discipline(
                   disciplineCode: element.disciplineCode,
-                  subdisciplineCode: List(),
+                  subdisciplineCode: [],
                   disciplineName: element.disciplineName,
                   period: element.periodName,
-                  gradesList: List(),
-                  teachers: List(),
+                  gradesList: [],
+                  teachers: [],
                   average: averages[z][0],
                   maxClassAverage: averages[z][1],
                   minClassAverage: averages[z][2],
@@ -163,7 +163,7 @@ class APIPronote extends API {
         hwRefreshRecursive = false;
         return listHW;
       } catch (e) {
-        print("Error while getting homework" + e);
+        print("Error while getting homework" + e.toString());
         List<Homework> listHW = [];
         hwLock = false;
 
@@ -171,7 +171,7 @@ class APIPronote extends API {
           await refreshClient();
           hwRefreshRecursive = true;
 
-          listHW.addAll(await (getHomeworkFor(dateHomework) as FutureOr<Iterable<Homework>>));
+          listHW.addAll(await (getHomeworkFor(dateHomework) as Future<Iterable<Homework>>));
         }
       }
     } else {
@@ -197,7 +197,7 @@ class APIPronote extends API {
       print("Loading homework inline.");
       List<Homework> toReturn = await getNextHomeworkFromInternet();
       if (toReturn == null) {
-        toReturn = await (appSys.offline!.homework.getHomework() as FutureOr<List<Homework>>);
+        toReturn = await (appSys.offline!.homework.getHomework() as Future<List<Homework>>);
       }
       toReturn.sort((a, b) => a.date!.compareTo(b.date!));
       return toReturn;
@@ -329,6 +329,7 @@ class APIPronote extends API {
       }
     } else {
       loginReqNumber++;
+      return ([0, "Locked", localClient.stepsLogger]);
     }
   }
 
@@ -427,7 +428,7 @@ class APIPronote extends API {
     try {
       return await getOfflinePeriods();
     } catch (e) {
-      print("Erreur while getting offline period " + e);
+      print("Erreur while getting offline period " + e.toString());
       if (connectivityResult != ConnectivityResult.none) {
         if (localClient.loggedIn) {
           print("getting periods online");
@@ -596,11 +597,11 @@ class APIPronote extends API {
                 listDisciplineEl.period != element.periodName)) {
               listDisciplines.add(Discipline(
                   disciplineCode: element.disciplineCode,
-                  subdisciplineCode: List(),
+                  subdisciplineCode: [],
                   disciplineName: element.disciplineName,
                   period: element.periodName,
-                  gradesList: List(),
-                  teachers: List(),
+                  gradesList: [],
+                  teachers: [],
                   average: averages[z][0],
                   maxClassAverage: averages[z][1],
                   classAverage: element.classAverage,

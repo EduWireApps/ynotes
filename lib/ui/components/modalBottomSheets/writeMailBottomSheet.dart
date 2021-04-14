@@ -76,7 +76,7 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                           onPressed: () async {
                             if (await (CustomDialogs.showConfirmationDialog(context, null,
                                 alternativeText: "Êtes vous sûr de vouloir supprimer ce mail ?",
-                                alternativeButtonConfirmText: "Supprimer ce mail") as FutureOr<bool>)) {
+                                alternativeButtonConfirmText: "Supprimer ce mail") as Future<bool>)) {
                               Navigator.pop(context);
                             }
                           },
@@ -182,7 +182,7 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                         onPressed: () async {
                           //Get the recipients
                           List<Recipient>? recipients =
-                              await (appSys.api!.app("mailRecipients") as FutureOr<List<Recipient>?>);
+                              await (appSys.api!.app("mailRecipients") as Future<List<Recipient>?>);
                           List<String> recipientsName = [];
                           if (recipients != null) {
                             recipients.forEach((element) {
@@ -200,7 +200,7 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                           });
                           List<int>? selection = await (CustomDialogs.showMultipleChoicesDialog(
                               context, recipientsName, alreadySelected,
-                              singleChoice: false) as FutureOr<List<int>?>);
+                              singleChoice: false) as Future<List<int>?>);
                           if (selection != null) {
                             print(selection);
                             setState(() {

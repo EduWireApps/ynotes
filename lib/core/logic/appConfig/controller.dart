@@ -95,7 +95,7 @@ class ApplicationSystem extends ChangeNotifier {
     try {
       await this.offline!.clearAll();
       //Delete sharedPref
-      SharedPreferences preferences = await (SharedPreferences.getInstance() as FutureOr<SharedPreferences>);
+      SharedPreferences preferences = await (SharedPreferences.getInstance() as Future<SharedPreferences>);
       await preferences.clear();
       //delte local setings and init them
       this.settings!.clear();

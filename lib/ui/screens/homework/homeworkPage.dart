@@ -273,10 +273,10 @@ getDates(List<Homework> list) {
 //Function that returns string like "In two weeks" with time relation
 getWeeksRelation(int index, List<Homework> list) {
   try {
-    DateTime dateToUse = [];
+    DateTime? dateToUse = list[index].date;
 
     var now = new DateFormat("yyyy-MM-dd").format(DateTime.now());
-    var difference = dateToUse.difference(DateTime.parse(now)).inDays;
+    var difference = dateToUse!.difference(DateTime.parse(now)).inDays;
 
 //Next week tester
     if (difference >= 7 - (DateTime.now().weekday - 1) && difference <= 7) {

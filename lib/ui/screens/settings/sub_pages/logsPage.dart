@@ -27,7 +27,8 @@ class _LogsPageState extends State<LogsPage> {
               icon: new Icon(Icons.delete),
               onPressed: () async {
                 if (await (CustomDialogs.showConfirmationDialog(context, null,
-                    alternativeText: "Voulez vous vraiment supprimer l'intégralité des logs (irréversible) ?") as FutureOr<bool>)) {
+                        alternativeText: "Voulez vous vraiment supprimer l'intégralité des logs (irréversible) ?")
+                    as Future<bool>)) {
                   await removeLogFile();
                   setState(() {});
                 }
@@ -84,7 +85,6 @@ Future<String> getFileData() async {
     return "";
   }
 }
-
 
 logFile(String error) async {
   print("logging");

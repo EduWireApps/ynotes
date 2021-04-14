@@ -36,7 +36,7 @@ class BackgroundService {
 
         Mail mail = await testNewMails();
         if (mail != null) {
-          String content = await (readMail(mail.id, mail.read) as FutureOr<String>);
+          String content = await (readMail(mail.id, mail.read) as Future<String>);
           await AppNotification.showNewMailNotification(mail, content);
         } else {
           print("Nothing updated");
@@ -82,7 +82,7 @@ class BackgroundService {
 
       print("Online grade length is ${listOnlineGrades!.length}");
       if (oldGradesLength != null && oldGradesLength != 0 && oldGradesLength < listOnlineGrades.length) {
-        final prefs = await (SharedPreferences.getInstance() as FutureOr<SharedPreferences>);
+        final prefs = await (SharedPreferences.getInstance() as Future<SharedPreferences>);
         await prefs.setInt("gradesNumber", listOnlineGrades.length);
         return true;
       } else {
@@ -101,7 +101,7 @@ class BackgroundService {
       var oldMailLength = appSys.settings!["system"]["lastMailCount"];
       print("Old length is $oldMailLength");
       //Get new mails
-      List<Mail> mails = await (getMails() as FutureOr<List<Mail>>);
+      List<Mail> mails = await (getMails() as Future<List<Mail>>);
       //filter mails by type
       mails.retainWhere((element) => element.mtype == "received");
       mails.sort((a, b) {
@@ -116,7 +116,7 @@ class BackgroundService {
       if (oldMailLength != 0) {
         if (oldMailLength < (newMailLength != null ? newMailLength : 0)) {
           //Manually set the new mail number
-          final prefs = await (SharedPreferences.getInstance() as FutureOr<SharedPreferences>);
+          final prefs = await (SharedPreferences.getInstance() as Future<SharedPreferences>);
           await prefs.setInt("mailNumber", newMailLength);
           return mails.last;
         } else {

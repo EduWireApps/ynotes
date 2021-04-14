@@ -156,7 +156,7 @@ class _LoginWebViewState extends State<LoginWebView> {
     print("Getting metas");
     //Injected function to get metas
     String metaGetFunction = "(function(){return document.body.innerText;})()";
-    String? metaGetResult = await (widget.controller!.evaluateJavascript(source: metaGetFunction) as FutureOr<String?>);
+    String? metaGetResult = await (widget.controller!.evaluateJavascript(source: metaGetFunction) as Future<String?>);
     if (metaGetResult != null && metaGetResult.length > 0) {
       loginData = json.decode(metaGetResult);
       setState(() {
@@ -210,13 +210,15 @@ class _LoginWebViewState extends State<LoginWebView> {
         'return "ok";' +
         '} else return "ko";' +
         '} catch(e){return "ko";}})();';
-    String? cookieFunctionResult = await (widget.controller!.evaluateJavascript(source: cookieFunction) as FutureOr<String?>);
+    String? cookieFunctionResult =
+        await (widget.controller!.evaluateJavascript(source: cookieFunction) as Future<String?>);
     if (cookieFunctionResult == "ok") {
       String authFunction = 'location.assign("' + widget.url! + '?fd=1")';
       setState(() {
         step = 4;
       });
-      String? authFunctionResult = await (widget.controller!.evaluateJavascript(source: authFunction) as FutureOr<String?>);
+      String? authFunctionResult =
+          await (widget.controller!.evaluateJavascript(source: authFunction) as Future<String?>);
 
       stepper();
     }
@@ -232,14 +234,16 @@ class _LoginWebViewState extends State<LoginWebView> {
       });
       String loginDataProcess =
           "(function(){return window && window.loginState ? JSON.stringify(window.loginState) : \'\';})();";
-      String? loginDataProcessResult = await (widget.controller!.evaluateJavascript(source: loginDataProcess) as FutureOr<String?>);
+      String? loginDataProcessResult =
+          await (widget.controller!.evaluateJavascript(source: loginDataProcess) as Future<String?>);
       getCreds(loginDataProcessResult);
       if (loginStatus != null) {
         setState(() {
           step = 5;
         });
         //url: widget.url + "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335"
-        await widget.controller!.loadUrl(urlRequest: URLRequest(url: Uri.parse( widget.url! + "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335")));
+        await widget.controller!.loadUrl(
+            urlRequest: URLRequest(url: Uri.parse(widget.url! + "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335")));
       }
     });
   }

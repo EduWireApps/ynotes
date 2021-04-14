@@ -112,9 +112,10 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
                   }
                 } else {
                   if (await (CustomDialogs.showAuthorizationsDialog(
-                          context,
-                          "la configuration d'optimisation de batterie",
-                          "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") as FutureOr<bool?>) ??
+                              context,
+                              "la configuration d'optimisation de batterie",
+                              "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")
+                          as Future<bool?>) ??
                       false) {
                     if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
                       appSys.updateSetting(appSys.settings!["user"]["agendaPage"], "agendaOnGoingNotification", value);
@@ -143,13 +144,16 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
                   style: TextStyle(
                       fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.20)),
               onChanged: (value) async {
-                if (value && (await getCurrentLesson(await (appSys.api!.getNextLessons(DateTime.now()) as FutureOr<List<Lesson>?>))) != null) {
+                if (value &&
+                    (await getCurrentLesson(
+                            await (appSys.api!.getNextLessons(DateTime.now()) as Future<List<Lesson>?>))) !=
+                        null) {
                   if (await FlutterDnd.isNotificationPolicyAccessGranted) {
                     await FlutterDnd.setInterruptionFilter(
                         FlutterDnd.INTERRUPTION_FILTER_NONE); // Turn on DND - All notifications are suppressed.
                   } else {
                     if (await (CustomDialogs.showAuthorizationsDialog(context, "mode ne pas déranger",
-                        "Allumer ou éteindre le mode ne pas déranger dans la journée.") as FutureOr<bool>)) {
+                        "Allumer ou éteindre le mode ne pas déranger dans la journée.") as Future<bool>)) {
                       await FlutterDnd.gotoPolicySettings();
                     }
                   }
@@ -186,9 +190,12 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
                     fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.16),
               ),
               onTap: () async {
-                if (!(await (BatteryOptimization.isIgnoringBatteryOptimizations() as FutureOr<bool>)) &&
-                    await (CustomDialogs.showAuthorizationsDialog(context, "la configuration d'optimisation de batterie",
-                        "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") as FutureOr<bool>)) {
+                if (!(await (BatteryOptimization.isIgnoringBatteryOptimizations() as Future<bool>)) &&
+                    await (CustomDialogs.showAuthorizationsDialog(
+                            context,
+                            "la configuration d'optimisation de batterie",
+                            "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")
+                        as Future<bool>)) {
                   await BatteryOptimization.openBatteryOptimizationSettings();
                 }
                 await getAuth();

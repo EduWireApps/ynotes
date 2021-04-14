@@ -65,12 +65,14 @@ void disciplineModalBottomSheet(context, Discipline? discipline, Function? callb
                                   radius: 25,
                                   onTap: () async {
                                     Navigator.pop(context);
-                                    Color? color = await CustomDialogs.showColorPicker(context, Color(discipline.color!));
+                                    Color? color =
+                                        await CustomDialogs.showColorPicker(context, Color(discipline.color!));
 
                                     if (color != null) {
                                       String test = color.toString();
                                       String finalColor = "#" + test.toString().substring(10, test.length - 1);
-                                      final prefs = await (SharedPreferences.getInstance() as FutureOr<SharedPreferences>);
+                                      final prefs =
+                                          await (SharedPreferences.getInstance() as Future<SharedPreferences>);
                                       await prefs.setString(discipline.disciplineCode, finalColor);
                                       discipline.setcolor = color;
                                       //Call set state

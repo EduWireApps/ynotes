@@ -87,7 +87,7 @@ class SettingsUtils {
   }
 
   static Future<Map?> getSavedSettings() async {
-    final prefs = await (SharedPreferences.getInstance() as FutureOr<SharedPreferences>);
+    final prefs = await (SharedPreferences.getInstance() as Future<SharedPreferences>);
     String? settings = prefs.getString("settings");
 
     if (settings == null) {
@@ -99,21 +99,21 @@ class SettingsUtils {
   }
 
   static setSetting(Map? newMap) async {
-    final prefs = await (SharedPreferences.getInstance() as FutureOr<SharedPreferences>);
+    final prefs = await (SharedPreferences.getInstance() as Future<SharedPreferences>);
     String encoded = json.encode(newMap);
     await prefs.setString("settings", encoded);
   }
 
   ///Deprecated
   static Future<bool?> getBoolSetting(String setting) async {
-    final prefs = await (SharedPreferences.getInstance() as FutureOr<SharedPreferences>);
+    final prefs = await (SharedPreferences.getInstance() as Future<SharedPreferences>);
     bool? value = prefs.getBool(setting);
     return value;
   }
 
   //Deprecated
   static Future<int> getIntSetting(String setting) async {
-    final prefs = await (SharedPreferences.getInstance() as FutureOr<SharedPreferences>);
+    final prefs = await (SharedPreferences.getInstance() as Future<SharedPreferences>);
     var value = prefs.getInt(setting);
     if (value == null) {
       value = 0;

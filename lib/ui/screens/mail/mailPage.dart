@@ -92,6 +92,7 @@ class _MailPageState extends State<MailPage> {
             return b.from["nom"].compareTo(a.from["nom"]);
             break;
         }
+        return 1;
       });
       return toReturn;
     } else {

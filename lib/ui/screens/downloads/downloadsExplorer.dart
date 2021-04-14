@@ -332,8 +332,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                         borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                         onTap: () async {
                           if (selectionMode) {
-                            bool response =
-                                await (CustomDialogs.showConfirmationDialog(context, null) as FutureOr<bool>);
+                            bool response = await (CustomDialogs.showConfirmationDialog(context, null) as Future<bool>);
                             if (response) {
                               await Future.forEach(_listFiles!.where((element) => element.selected),
                                   (dynamic fileinfo) async {

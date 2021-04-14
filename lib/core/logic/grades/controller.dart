@@ -152,7 +152,7 @@ class GradesController extends ChangeNotifier {
 
   ///Get specialties list
   _setListSpecialties() async {
-    final prefs = await (SharedPreferences.getInstance() as FutureOr<SharedPreferences>);
+    final prefs = await (SharedPreferences.getInstance() as Future<SharedPreferences>);
     {
       specialties = prefs.getStringList("listSpecialties");
       notifyListeners();

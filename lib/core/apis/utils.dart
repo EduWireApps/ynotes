@@ -52,7 +52,9 @@ getRootAddress(addr) {
 
 get_week(DateTime date) async {
   final storage = new FlutterSecureStorage();
-  return (1 + (date.difference(DateTime.parse(await (storage.read(key: "startday") as FutureOr<String>))).inDays / 7).floor()).round();
+  return (1 +
+          (date.difference(DateTime.parse(await (storage.read(key: "startday") as Future<String>))).inDays / 7).floor())
+      .round();
 }
 
 checkPronoteURL(String url) async {
@@ -125,7 +127,7 @@ void createStack() {
 }
 
 Future<int> getColor(String? disciplineName) async {
-  SharedPreferences prefs = await (SharedPreferences.getInstance() as FutureOr<SharedPreferences>);
+  SharedPreferences prefs = await (SharedPreferences.getInstance() as Future<SharedPreferences>);
   if (prefs.containsKey(disciplineName)) {
     String color = prefs.getString(disciplineName)!;
     return HexColor(color).value;

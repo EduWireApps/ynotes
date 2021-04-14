@@ -7,7 +7,7 @@ import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/services/notifications.dart';
 
 addEvent(context) async {
-  AgendaEvent? temp = await (agendaEventEdit(context, true, defaultDate: agendaDate) as FutureOr<AgendaEvent?>);
+  AgendaEvent? temp = await (agendaEventEdit(context, true, defaultDate: agendaDate) as Future<AgendaEvent?>);
   if (temp != null) {
     print(temp.recurrenceScheme);
     if (temp.recurrenceScheme != null && temp.recurrenceScheme != "0") {

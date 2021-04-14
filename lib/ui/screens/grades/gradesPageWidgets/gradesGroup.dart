@@ -55,7 +55,7 @@ class _GradesGroupState extends State<GradesGroup> {
         if (nomsProfesseurs != null) {
           widget.discipline!.teachers!.forEach((element) {
             if (widget.discipline!.teachers!.indexOf(element) > 0) {
-              nomsProfesseurs += " / " + element!;
+              nomsProfesseurs = nomsProfesseurs! + " / " + element!;
             }
           });
         }

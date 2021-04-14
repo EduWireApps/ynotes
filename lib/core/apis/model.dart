@@ -59,7 +59,7 @@ abstract class API {
     List<AgendaEvent> events = [];
     List<AgendaEvent>? extracurricularEvents = [];
     List<Lesson>? lessons =
-        await (appSys.api!.getNextLessons(date, forceReload: forceReload) as FutureOr<List<Lesson>?>);
+        await (appSys.api!.getNextLessons(date, forceReload: forceReload) as Future<List<Lesson>?>);
     int week = await get_week(date);
     //Add lessons for this day
     if (lessons != null) {
@@ -68,7 +68,7 @@ abstract class API {
       lessons.sort((a, b) => a.end!.compareTo(b.end!));
     }
     if (!afterSchool) {
-      extracurricularEvents = await (appSys.offline!.agendaEvents.getAgendaEvents(week) as FutureOr<List<AgendaEvent>>);
+      extracurricularEvents = await (appSys.offline!.agendaEvents.getAgendaEvents(week) as Future<List<AgendaEvent>>);
       if (extracurricularEvents != null) {
         if (lessons != null && lessons.length > 0) {
           //Last date
@@ -88,7 +88,7 @@ abstract class API {
         }
       }
     } else {
-      extracurricularEvents = await (appSys.offline!.agendaEvents.getAgendaEvents(week) as FutureOr<List<AgendaEvent>>);
+      extracurricularEvents = await (appSys.offline!.agendaEvents.getAgendaEvents(week) as Future<List<AgendaEvent>>);
 
       if (extracurricularEvents != null) {
         //extracurricularEvents.removeWhere((element) => element.isLesson);

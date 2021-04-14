@@ -197,9 +197,10 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                           _appSys.updateSetting(_appSys.settings!["user"]["global"], "notificationNewMail", value);
                         } else {
                           if (await (CustomDialogs.showAuthorizationsDialog(
-                                  context,
-                                  "la configuration d'optimisation de batterie",
-                                  "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") as FutureOr<bool?>) ??
+                                      context,
+                                      "la configuration d'optimisation de batterie",
+                                      "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")
+                                  as Future<bool?>) ??
                               false) {
                             if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
                               _appSys.updateSetting(_appSys.settings!["user"]["global"], "notificationNewMail", value);
@@ -222,9 +223,10 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                           _appSys.updateSetting(_appSys.settings!["user"]["global"], "notificationNewGrade", value);
                         } else {
                           if (await (CustomDialogs.showAuthorizationsDialog(
-                                  context,
-                                  "la configuration d'optimisation de batterie",
-                                  "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") as FutureOr<bool?>) ??
+                                      context,
+                                      "la configuration d'optimisation de batterie",
+                                      "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")
+                                  as Future<bool?>) ??
                               false) {
                             if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
                               _appSys.updateSetting(_appSys.settings!["user"]["global"], "notificationNewGrade", value);
@@ -240,17 +242,19 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                         //Check battery optimization setting
                         if (!await Permission.ignoreBatteryOptimizations.isGranted &&
                                 await (CustomDialogs.showAuthorizationsDialog(
-                                    context,
-                                    "la configuration d'optimisation de batterie",
-                                    "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") as FutureOr<bool>) ??
+                                        context,
+                                        "la configuration d'optimisation de batterie",
+                                        "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")
+                                    as Future<bool>) ??
                             false) {
                           await Permission.ignoreBatteryOptimizations.request().isGranted;
                         }
 
                         if (await (CustomDialogs.showAuthorizationsDialog(
-                                context,
-                                "la liste blanche de lancement en arrière plan / démarrage",
-                                "Pouvoir lancer yNotes au démarrage de l'appareil et ainsi régulièrement rafraichir en arrière plan.") as FutureOr<bool?>) ??
+                                    context,
+                                    "la liste blanche de lancement en arrière plan / démarrage",
+                                    "Pouvoir lancer yNotes au démarrage de l'appareil et ainsi régulièrement rafraichir en arrière plan.")
+                                as Future<bool?>) ??
                             false) {
                           await AndroidPlatformChannel.openAutoStartSettings();
                         }
@@ -354,7 +358,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                       onTap: () async {
                         if (await (CustomDialogs.showConfirmationDialog(context, null,
                             alternativeText: "Etes-vous sûr de vouloir réinitialiser le tutoriel ?",
-                            alternativeButtonConfirmText: "confirmer") as FutureOr<bool>)) {
+                            alternativeButtonConfirmText: "confirmer") as Future<bool>)) {
                           await HelpDialog.resetEveryHelpDialog();
                         }
                         HelpDialog.resetEveryHelpDialog();
@@ -370,8 +374,9 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                       leading: Icon(MdiIcons.deleteAlert, color: ThemeUtils.textColor()),
                       onTap: () async {
                         if (await (CustomDialogs.showConfirmationDialog(context, null,
-                            alternativeText:
-                                "Etes-vous sûr de vouloir supprimer les données hors ligne ? (irréversible)") as FutureOr<bool>)) {
+                                alternativeText:
+                                    "Etes-vous sûr de vouloir supprimer les données hors ligne ? (irréversible)")
+                            as Future<bool>)) {
                           await _appSys.offline!.clearAll();
                         }
                       },

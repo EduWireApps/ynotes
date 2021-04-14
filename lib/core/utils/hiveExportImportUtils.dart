@@ -96,7 +96,7 @@ class HiveBackUpManager {
     final params = OpenFileDialogParams(
       dialogType: OpenFileDialogType.document,
     );
-    final filePath = await (FlutterFileDialog.pickFile(params: params) as FutureOr<String>);
+    final filePath = await (FlutterFileDialog.pickFile(params: params) as Future<String>);
     final File file = File(filePath);
     String data = await file.readAsString();
     return data;

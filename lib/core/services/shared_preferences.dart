@@ -58,7 +58,7 @@ class SharedPreferences {
           // TODO(amirh): remove this on when the invokeMethod update makes it to stable Flutter.
           // https://github.com/flutter/flutter/issues/26431
           // ignore: strong_mode_implicit_dynamic_method
-          await (_kChannel.invokeMethod('getAll') as FutureOr<Map<Object, Object>>);
+          await (_kChannel.invokeMethod('getAll') as Future<Map<Object, Object>>);
       assert(fromSystem != null);
       // Strip the flutter. prefix from the returned preferences.
       final Map<String, Object?> preferencesMap = <String, Object?>{};

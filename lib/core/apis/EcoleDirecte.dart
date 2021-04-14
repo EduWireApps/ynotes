@@ -180,7 +180,7 @@ class APIEcoleDirecte extends API {
       case "mail":
         {
           print("Returning mails");
-          List<Mail> mails = await (getMails() as FutureOr<List<Mail>>);
+          List<Mail> mails = await (getMails() as Future<List<Mail>>);
 
           return mails;
         }

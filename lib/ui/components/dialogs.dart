@@ -303,7 +303,8 @@ class CustomDialogs {
         transitionDuration: Duration(milliseconds: 200),
         barrierDismissible: true,
         barrierLabel: '',
-        pageBuilder: (context, animation1, animation2) {} as Widget Function(BuildContext, Animation<double>, Animation<double>));
+        pageBuilder: (context, animation1, animation2) {} as Widget Function(
+            BuildContext, Animation<double>, Animation<double>));
   }
 
   static showNewRecipientDialog(BuildContext context) {
@@ -327,7 +328,8 @@ class CustomDialogs {
         transitionDuration: Duration(milliseconds: 200),
         barrierDismissible: true,
         barrierLabel: '',
-        pageBuilder: (context, animation1, animation2) {} as Widget Function(BuildContext, Animation<double>, Animation<double>));
+        pageBuilder: (context, animation1, animation2) {} as Widget Function(
+            BuildContext, Animation<double>, Animation<double>));
   }
 
   static Future<void> showHomeworkDetailsDialog(BuildContext context, Homework? hw) async {
@@ -337,7 +339,8 @@ class CustomDialogs {
         transitionDuration: Duration(milliseconds: 200),
         barrierDismissible: true,
         barrierLabel: '',
-        pageBuilder: (context, animation1, animation2) {} as Widget Function(BuildContext, Animation<double>, Animation<double>),
+        pageBuilder:
+            (context, animation1, animation2) {} as Widget Function(BuildContext, Animation<double>, Animation<double>),
         transitionBuilder: (context, a1, a2, widget) {
           MediaQueryData screenSize;
           screenSize = MediaQuery.of(context);
@@ -352,7 +355,8 @@ class CustomDialogs {
         transitionDuration: Duration(milliseconds: 200),
         barrierDismissible: true,
         barrierLabel: '',
-        pageBuilder: (context, animation1, animation2) {} as Widget Function(BuildContext, Animation<double>, Animation<double>),
+        pageBuilder:
+            (context, animation1, animation2) {} as Widget Function(BuildContext, Animation<double>, Animation<double>),
         transitionBuilder: (context, a1, a2, widget) {
           MediaQueryData screenSize;
           screenSize = MediaQuery.of(context);
@@ -401,13 +405,13 @@ class HelpDialog {
 
   ///Set if the dialog as already been watched
   setAlreadyViewed() async {
-    SharedPreferences preferences = await (SharedPreferences.getInstance() as FutureOr<SharedPreferences>);
+    SharedPreferences preferences = await (SharedPreferences.getInstance() as Future<SharedPreferences>);
     await preferences.setBool("alreadyViewedHelpDialog" + this.id.toString(), true);
   }
 
   ///Check if the dialog as already been watched
   checkAlreadyViewed() async {
-    SharedPreferences preferences = await (SharedPreferences.getInstance() as FutureOr<SharedPreferences>);
+    SharedPreferences preferences = await (SharedPreferences.getInstance() as Future<SharedPreferences>);
     bool? viewed = preferences.getBool("alreadyViewedHelpDialog" + this.id.toString());
 
     return viewed != null ? viewed : false;

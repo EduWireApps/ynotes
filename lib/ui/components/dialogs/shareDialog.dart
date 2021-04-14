@@ -32,7 +32,7 @@ class _ShareBoxState extends State<ShareBox> {
     try {
       RenderRepaintBoundary boundary = _globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
       ui.Image image = await boundary.toImage(pixelRatio: 2.0);
-      ByteData byteData = await (image.toByteData(format: ui.ImageByteFormat.png) as FutureOr<ByteData>);
+      ByteData byteData = await (image.toByteData(format: ui.ImageByteFormat.png) as Future<ByteData>);
       var pngBytes = byteData.buffer.asUint8List();
       final directory = (await getExternalStorageDirectory())!.path;
       File imgFile = new File('$directory/screenshot.png');
@@ -108,7 +108,8 @@ class _ShareBoxState extends State<ShareBox> {
                                 children: <Widget>[
                                   Text(
                                       widget.grade.date != null
-                                          ? ("Note du " + DateFormat("dd MMMM yyyy", "fr_FR").format(widget.grade.date!))
+                                          ? ("Note du " +
+                                              DateFormat("dd MMMM yyyy", "fr_FR").format(widget.grade.date!))
                                           : "",
                                       style: TextStyle(
                                         fontFamily: "Asap",

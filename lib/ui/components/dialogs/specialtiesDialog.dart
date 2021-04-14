@@ -24,7 +24,7 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
 
   getChosenSpecialties() async {
     var other = await specialtiesSelectionAvailable();
-    final prefs = await (SharedPreferences.getInstance() as FutureOr<SharedPreferences>);
+    final prefs = await (SharedPreferences.getInstance() as Future<SharedPreferences>);
     if (prefs.getStringList("listSpecialties") != null) {
       setState(() {
         chosenSpecialties = prefs.getStringList("listSpecialties");
@@ -34,7 +34,7 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
   }
 
   setChosenSpecialties() async {
-    final prefs = await (SharedPreferences.getInstance() as FutureOr<SharedPreferences>);
+    final prefs = await (SharedPreferences.getInstance() as Future<SharedPreferences>);
     prefs.setStringList("listSpecialties", chosenSpecialties);
     print(prefs.getStringList("listSpecialties"));
   }

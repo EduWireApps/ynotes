@@ -299,7 +299,7 @@ class EcoleDirecteMethod {
   static request(String data, String rootUrl, String urlMethod, Function converter, String onErrorBody,
       {Map<String, String>? headers, bool ignoreMethodAndId = false, bool getRequest = false}) async {
     try {
-      String id = await (storage.read(key: "userID") as FutureOr<String>);
+      String id = await (storage.read(key: "userID") as Future<String>);
 
       String finalUrl = rootUrl + id + "/" + urlMethod;
       if (ignoreMethodAndId) {

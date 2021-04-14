@@ -50,7 +50,8 @@ class HomeworkController extends ChangeNotifier {
     }
     if (list != null) {
       //Number of elements in list
-      int total = [];
+      int total = list.length;
+    
       if (total == 0) {
         _hwCompletion = [100, 0, 0];
         notifyListeners();
@@ -75,7 +76,7 @@ class HomeworkController extends ChangeNotifier {
   }
 
   //Load all events
-  void loadAll() async {
+  Future<void> loadAll() async {
     try {
       isFetching = true;
       notifyListeners();
@@ -102,7 +103,7 @@ class HomeworkController extends ChangeNotifier {
     }
   }
 
-  void prepareOld(List<Homework> oldHW) async {
+  Future<void> prepareOld(List<Homework> oldHW) async {
     oldHW.forEach((element) {
       //remove duplicates
       if (!element.loaded! &&

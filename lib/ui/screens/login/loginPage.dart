@@ -360,7 +360,10 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
                     FutureBuilder(
                       future: connectionData,
                       builder: (context, snapshot) {
-                        if (snapshot.hasData && snapshot.data!= null && snapshot.data?.length> 0 && snapshot.data[0] == 1) {
+                        if (snapshot.hasData &&
+                            snapshot.data != null &&
+                            snapshot.data?.length > 0 &&
+                            snapshot.data[0] == 1) {
                           Future.delayed(const Duration(milliseconds: 500), () {
                             Navigator.pop(context);
 
@@ -491,7 +494,7 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   getFirstUse() async {
-    final prefs = await (SharedPreferences.getInstance() as FutureOr<SharedPreferences>);
+    final prefs = await (SharedPreferences.getInstance() as Future<SharedPreferences>);
     if (prefs.getBool('firstUse') == true && storage.read(key: 'agreedTermsAndConfiguredApp') == null) {
       _isFirstUse = true;
     }

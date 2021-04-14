@@ -12,7 +12,7 @@ class EcoleDirecteConverter {
     String id = mailData["id"].toString() ?? "";
     String messageType = mailData["mtype"] ?? "";
     bool isMailRead = mailData["read"] ?? false;
-    String idClasseur = mailData["idClasseur"].toString() ?? null;
+    String? idClasseur = mailData["idClasseur"].toString();
     Map from = mailData["from"] ?? "" as Map<dynamic, dynamic>;
     String subject = mailData["subject"] ?? "";
     String? date = mailData["date"];

@@ -271,6 +271,8 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
           ],
         ),
       );
+    } else {
+      return Container();
     }
   }
 }
