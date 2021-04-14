@@ -57,12 +57,16 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
       child: FutureBuilder(
           future: disciplinesFuture,
           builder: (context, snapshot) {
+            if (snapshot.data == null) {
+              return Container();
+            }
             if (snapshot.hasData) {
-              snapshot.data.forEach((element) {
-                if (!disciplines.contains(element.disciplineName)) {
-                  disciplines.add(element.disciplineName);
-                }
-              });
+              snapshot.data ??
+                  [].forEach((element) {
+                    if (!disciplines.contains(element.disciplineName)) {
+                      disciplines.add(element.disciplineName);
+                    }
+                  });
 
               return AlertDialog(
                   backgroundColor: Theme.of(context).primaryColor,

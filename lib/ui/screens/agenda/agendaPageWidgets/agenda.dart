@@ -88,11 +88,11 @@ class _AgendaState extends State<Agenda> {
 
   _buildActualLesson(BuildContext context, Lesson lesson) {
     MediaQueryData screenSize = MediaQuery.of(context);
-    return FutureBuilder(
+    return FutureBuilder<int>(
         future: getColor(lesson.disciplineCode),
         initialData: 0,
         builder: (context, snapshot) {
-          Color color = Color(snapshot.data);
+          Color color = Color((snapshot.data) ?? 0);
           return Container(
             width: screenSize.size.width / 5 * 4.5,
             child: Column(
@@ -224,10 +224,12 @@ class _AgendaState extends State<Agenda> {
                           height: screenSize.size.height / 10 * 8,
                           child: Stack(
                             children: [
-                              FutureBuilder(
+                              FutureBuilder<List<AgendaEvent>>(
                                   future: agendaFuture,
                                   builder: (context, snapshot) {
-                                    if (snapshot.hasData && snapshot.data != null && snapshot.data.length != 0) {
+                                    if (snapshot.hasData &&
+                                        snapshot.data != null &&
+                                        (snapshot.data ?? []).length != 0) {
                                       return RefreshIndicator(
                                           onRefresh: refreshAgendaFutures,
                                           child: AgendaGrid(

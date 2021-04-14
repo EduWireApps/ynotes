@@ -226,7 +226,7 @@ class APIEcoleDirecte extends API {
   }
 
   @override
-  Future getNextLessons(DateTime dateToUse, {bool? forceReload = false}) async {
+  Future<List<Lesson>?> getNextLessons(DateTime dateToUse, {bool? forceReload = false}) async {
     try {
       print("Getting next lessons");
       int week = await get_week(dateToUse);
@@ -377,7 +377,7 @@ Future getMails({bool? checking}) async {
   }
 }
 
-Future readMail(String mailId, bool read) async {
+Future<String?> readMail(String mailId, bool read) async {
   await EcoleDirecteMethod(appSys.offline).testToken();
   String? id = await storage.read(key: "userID");
   var url = 'https://api.ecoledirecte.com/v3/eleves/$id/messages/$mailId.awp?verbe=get&mode=destinataire';

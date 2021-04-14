@@ -17,7 +17,7 @@ class SummaryChart extends StatefulWidget {
 }
 
 class SummaryChartState extends State<SummaryChart> {
-  List<Grade> _grades = [];
+  List<Grade>? _grades = [];
   void initState() {
     super.initState();
     initGrades();
@@ -26,13 +26,13 @@ class SummaryChartState extends State<SummaryChart> {
   initGrades() {
     if (widget.lastGrades != null) {
       setState(() {
-        _grades.clear();
-        _grades.addAll(widget.lastGrades!);
-        _grades.sort((a, b) => a.entryDate!.compareTo(b.entryDate!));
-        _grades.removeWhere(
+        _grades!.clear();
+        _grades!.addAll(widget.lastGrades!);
+        _grades!.sort((a, b) => a.entryDate!.compareTo(b.entryDate!));
+        _grades!.removeWhere(
             (element) => element.value == null || element.notSignificant! || element.simulated! || element.letters!);
-        if (_grades.length > 10) {
-          _grades = _grades.sublist(_grades.length - 10, _grades.length);
+        if (_grades!.length > 10) {
+          _grades = _grades!.sublist(_grades!.length - 10, _grades!.length);
         }
       });
     }
@@ -45,7 +45,7 @@ class SummaryChartState extends State<SummaryChart> {
   }
 
   getMax() {
-    List<double?> values = _grades.map((grade) {
+    List<double> values = (_grades ?? []).map((grade) {
       double a;
       try {
         a = double.tryParse(grade.value!.replaceAll(',', '.'))! *
@@ -53,9 +53,9 @@ class SummaryChartState extends State<SummaryChart> {
             double.tryParse(grade.scale!.replaceAll(',', '.'))!;
         return a;
       } catch (e) {}
-    }).toList();
+    }).toList() as List<double>;
     //Reduce values size
-    values = values.sublist(0, (_grades.length > 10 ? 10 : _grades.length));
+    values = values.sublist(0, (_grades!.length > 10 ? 10 : _grades!.length));
     values.removeWhere((element) => element == null);
 
     if (values != null && values.length > 0) {
@@ -66,7 +66,7 @@ class SummaryChartState extends State<SummaryChart> {
   }
 
   getMin() {
-    List<double> values = _grades.map((grade) {
+    List<double> values = (_grades ?? []).map((grade) {
       double a;
       try {
         a = double.tryParse(grade.value!.replaceAll(',', '.'))! *
@@ -74,9 +74,9 @@ class SummaryChartState extends State<SummaryChart> {
             double.tryParse(grade.scale!.replaceAll(',', '.'))!;
         return a;
       } catch (e) {}
-    }).toList();
+    }).toList() as List<double>;
     //Reduce values size
-    values = values.sublist(0, (_grades.length > 10 ? 10 : _grades.length));
+    values = values.sublist(0, (_grades!.length > 10 ? 10 : _grades!.length));
     values.removeWhere((element) => element == null);
     if (values != null && values.length > 0) {
       return values.reduce(min) ?? 0;
@@ -104,7 +104,7 @@ class SummaryChartState extends State<SummaryChart> {
       color: Colors.transparent,
       elevation: 0,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-      child: (_grades != null && (_grades.length != 0))
+      child: (_grades != null && (_grades!.length != 0))
           ? Container(
               height: screenSize.size.height / 10 * 3,
               child: Column(
@@ -184,13 +184,13 @@ class SummaryChartState extends State<SummaryChart> {
       axisTitleData: FlAxisTitleData(topTitle: AxisTitle()),
       borderData: FlBorderData(show: false, border: Border.all(color: const Color(0xff37434d), width: 1)),
       minX: 0,
-      maxX: (_grades.length > 10 ? 10 : _grades.length).toDouble(),
+      maxX: (_grades!.length > 10 ? 10 : _grades!.length).toDouble(),
       minY: getMin() > 0 ? ((getMin() ?? 1) - 1) : getMin(),
       maxY: getMax() + 2,
       lineBarsData: [
         LineChartBarData(
-          spots: List.generate(
-              _grades.length > 10 ? 10 : _grades.length, (index) => FlSpot(index.toDouble(), toDouble(_grades[index]))),
+          spots: List.generate(_grades!.length > 10 ? 10 : _grades!.length,
+              (index) => FlSpot(index.toDouble(), toDouble(_grades ?? [][index]))),
           isCurved: true,
           colors: [
             ColorTween(begin: gradientColors[0], end: gradientColors[0]).lerp(0.2)!,

@@ -49,7 +49,7 @@ class _LogsPageState extends State<LogsPage> {
             removeTop: true,
             child: SingleChildScrollView(
               padding: EdgeInsets.zero,
-              child: FutureBuilder(
+              child: FutureBuilder<String>(
                   future: getFileData(),
                   builder: (BuildContext context, snapshot) {
                     if (snapshot.hasData) {
@@ -61,7 +61,7 @@ class _LogsPageState extends State<LogsPage> {
                                 padding: EdgeInsets.zero,
                                 reverse: true,
                                 child: SelectableText(
-                                  snapshot.data,
+                                  snapshot.data ?? "",
                                   style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                                 ),
                               )));

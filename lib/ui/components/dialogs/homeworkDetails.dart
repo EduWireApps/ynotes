@@ -109,11 +109,11 @@ class _DialogHomeworkState extends State<DialogHomework> {
               ),
             ),
           ),
-          FutureBuilder(
+          FutureBuilder<int>(
               future: getColor(this.widget.hw!.disciplineCode),
               initialData: 0,
               builder: (context, snapshot) {
-                Color color = Color(snapshot.data);
+                Color color = Color(snapshot.data ?? 0);
                 return Material(
                   type: MaterialType.transparency,
                   child: Container(

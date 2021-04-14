@@ -28,7 +28,7 @@ class ShareBox extends StatefulWidget {
 
 class _ShareBoxState extends State<ShareBox> {
   GlobalKey _globalKey = new GlobalKey();
-  Future<Uint8List> _capturePng() async {
+  Future<Uint8List?> _capturePng() async {
     try {
       RenderRepaintBoundary boundary = _globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
       ui.Image image = await boundary.toImage(pixelRatio: 2.0);
@@ -78,7 +78,7 @@ class _ShareBoxState extends State<ShareBox> {
                       child: Stack(
                         children: [
                           Column(mainAxisSize: MainAxisSize.max, children: <Widget>[
-                            FutureBuilder(
+                            FutureBuilder<int>(
                                 initialData: 0,
                                 future: getColor(widget.grade.disciplineCode),
                                 builder: (context, snapshot) {
@@ -94,7 +94,7 @@ class _ShareBoxState extends State<ShareBox> {
                                       decoration: BoxDecoration(
                                           borderRadius: BorderRadius.only(
                                               topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
-                                          color: Color(snapshot.data)));
+                                          color: Color(snapshot.data ?? 0)));
                                 }),
                             Container(
                               width: screenSize.size.width / 5 * 5,

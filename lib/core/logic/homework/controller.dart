@@ -7,7 +7,7 @@ import 'package:ynotes/globals.dart';
 
 class HomeworkController extends ChangeNotifier {
   final api;
-  List<Homework> _old = [];
+  List<Homework>? _old = [];
   List _hwCompletion = [100, 0, 0];
   List<Homework> unloadedHW = [];
   API? _api;
@@ -16,7 +16,7 @@ class HomeworkController extends ChangeNotifier {
 
   ///Returns [donePercent, doneLength, length]
   List get homeworkCompletion => _hwCompletion;
-  List<Homework> get getHomework => _old;
+  List<Homework>? get getHomework => _old;
 
   Future<void> refresh({bool force = false, refreshFromOffline = false}) async {
     print("Refreshing homework.");
@@ -25,15 +25,15 @@ class HomeworkController extends ChangeNotifier {
     //ED
     if (refreshFromOffline) {
       _old = await HomeworkUtils.getReducedListHomework();
-      _old.sort((a, b) => a.date!.compareTo(b.date!));
+      _old!.sort((a, b) => a.date!.compareTo(b.date!));
       notifyListeners();
     } else {
       _old = await HomeworkUtils.getReducedListHomework(forceReload: force);
-      _old.sort((a, b) => a.date!.compareTo(b.date!));
+      _old!.sort((a, b) => a.date!.compareTo(b.date!));
       notifyListeners();
     }
 
-    await prepareOld(_old);
+    await prepareOld(_old!);
     isFetching = false;
     notifyListeners();
   }
@@ -41,7 +41,7 @@ class HomeworkController extends ChangeNotifier {
   void getHomeworkDonePercent() async {
     List<Homework> list = [];
     if (_old != null) {
-      list.addAll(_old);
+      list.addAll(_old!);
     }
     //Remove antecedent hw
     if (list != null) {
@@ -120,7 +120,7 @@ class HomeworkController extends ChangeNotifier {
   }
 
   void prepareExamsCount() {
-    List<Homework> hwList = getHomework;
+    List<Homework> hwList = getHomework!;
     if (hwList != null) {
       examsCount = hwList.where((element) => element.isATest!).length;
       notifyListeners();

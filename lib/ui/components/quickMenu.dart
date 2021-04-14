@@ -155,20 +155,20 @@ class _QuickMenuState extends State<QuickMenu> with TickerProviderStateMixin {
                               ///PAGE 2
                               Material(
                                 color: Theme.of(context).primaryColor,
-                                child: FutureBuilder(
+                                child: FutureBuilder<List<FileInfo>>(
                                   future: FileAppUtil.getFilesList(""),
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
-                                      if (snapshot.data.length != 0) {
-                                        List<FileInfo> listFiles = snapshot.data;
+                                      if ((snapshot.data ?? []).length != 0) {
+                                        List<FileInfo>? listFiles = snapshot.data;
                                         return Container(
                                           height: screenSize.size.height / 10 * 8,
                                           child: ListView.builder(
                                             padding: EdgeInsets.all(0.0),
-                                            itemCount: listFiles.length,
+                                            itemCount: listFiles!.length,
                                             itemBuilder: (context, index) {
                                               final item = listFiles[index].fileName;
-                                              ;
+
                                               return Dismissible(
                                                 direction: DismissDirection.endToStart,
                                                 background: Container(color: Colors.red),
@@ -185,7 +185,7 @@ class _QuickMenuState extends State<QuickMenu> with TickerProviderStateMixin {
                                                     listFiles.removeAt(index);
                                                   });
                                                 },
-                                                key: Key(item),
+                                                key: Key(item ?? ""),
                                                 child: Container(
                                                   child: Column(
                                                     children: <Widget>[
@@ -216,7 +216,7 @@ class _QuickMenuState extends State<QuickMenu> with TickerProviderStateMixin {
                                                                         Align(
                                                                           alignment: Alignment.centerLeft,
                                                                           child: Text(
-                                                                            snapshot.data[index].fileName,
+                                                                            snapshot.data ?? [][index].fileName,
                                                                             style: TextStyle(
                                                                                 fontFamily: "Asap",
                                                                                 fontSize:
@@ -230,7 +230,8 @@ class _QuickMenuState extends State<QuickMenu> with TickerProviderStateMixin {
                                                                       alignment: Alignment.centerLeft,
                                                                       child: Text(
                                                                         DateFormat("yyyy-MM-dd HH:mm").format(
-                                                                            snapshot.data[index].lastModifiedDate),
+                                                                            snapshot.data ??
+                                                                                [][index].lastModifiedDate),
                                                                         style: TextStyle(
                                                                             fontFamily: "Asap",
                                                                             fontSize: screenSize.size.height / 10 * 0.2,

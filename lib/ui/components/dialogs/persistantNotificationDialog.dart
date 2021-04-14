@@ -144,17 +144,14 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
                   style: TextStyle(
                       fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.20)),
               onChanged: (value) async {
-                if (value &&
-                    (await getCurrentLesson(
-                            await (appSys.api!.getNextLessons(DateTime.now()) as Future<List<Lesson>?>))) !=
-                        null) {
+                if (value && (getCurrentLesson(await (appSys.api!.getNextLessons(DateTime.now())))) != null) {
                   if (await FlutterDnd.isNotificationPolicyAccessGranted) {
                     await FlutterDnd.setInterruptionFilter(
                         FlutterDnd.INTERRUPTION_FILTER_NONE); // Turn on DND - All notifications are suppressed.
                   } else {
                     if (await (CustomDialogs.showAuthorizationsDialog(context, "mode ne pas déranger",
                         "Allumer ou éteindre le mode ne pas déranger dans la journée.") as Future<bool>)) {
-                      await FlutterDnd.gotoPolicySettings();
+                      FlutterDnd.gotoPolicySettings();
                     }
                   }
                 }

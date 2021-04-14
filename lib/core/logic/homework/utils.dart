@@ -6,10 +6,10 @@ import 'package:ynotes/usefulMethods.dart';
 
 class HomeworkUtils {
   static Future<List<int>> getHomeworkDonePercent() async {
-    List list = await getReducedListHomework();
+    List? list = await getReducedListHomework();
     if (list != null) {
       //Number of elements in list
-      int total = [];
+      int total = list.length;
       if (total == 0) {
         return [100, 0, 0];
       } else {
@@ -30,7 +30,7 @@ class HomeworkUtils {
     }
   }
 
-  static Future<List<Homework>> getReducedListHomework({forceReload = false}) async {
+  static Future<List<Homework>?> getReducedListHomework({forceReload = false}) async {
     int? reduce = await appSys.settings!["user"]["summaryPage"]["summaryQuickHomework"];
     if (reduce == 11) {
       reduce = 770;

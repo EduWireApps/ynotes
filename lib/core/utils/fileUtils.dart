@@ -188,5 +188,6 @@ class FileAppUtil {
       List<FileInfo> listFiles = [];
       return listFiles;
     }
+    return [];
   }
 }

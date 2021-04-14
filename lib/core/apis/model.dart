@@ -40,7 +40,7 @@ abstract class API {
   Future<List<Homework>?> getHomeworkFor(DateTime? dateHomework);
 
   //Get a list of lessons for the agenda part
-  Future getNextLessons(DateTime from, {bool? forceReload});
+  Future<List<Lesson>?> getNextLessons(DateTime from, {bool? forceReload});
 
   ///Test to know if there are new grades
   Future<bool?> testNewGrades();
@@ -58,8 +58,7 @@ abstract class API {
   Future getEvents(DateTime date, bool afterSchool, {bool forceReload = false}) async {
     List<AgendaEvent> events = [];
     List<AgendaEvent>? extracurricularEvents = [];
-    List<Lesson>? lessons =
-        await (appSys.api!.getNextLessons(date, forceReload: forceReload) as Future<List<Lesson>?>);
+    List<Lesson>? lessons = await (appSys.api!.getNextLessons(date, forceReload: forceReload) as Future<List<Lesson>?>);
     int week = await get_week(date);
     //Add lessons for this day
     if (lessons != null) {

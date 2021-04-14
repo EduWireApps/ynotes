@@ -447,7 +447,7 @@ class APIPronote extends API {
   }
 
   @override
-  Future getNextLessons(DateTime dateToUse, {bool? forceReload}) async {
+  Future<List<Lesson>?>  getNextLessons(DateTime dateToUse, {bool? forceReload}) async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     List<Lesson>? toReturn;
     int req = 0;

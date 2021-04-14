@@ -129,5 +129,6 @@ class SettingsUtils {
 
   static Map getAppSettings() {
     //App settings
+    return {};
   }
 }

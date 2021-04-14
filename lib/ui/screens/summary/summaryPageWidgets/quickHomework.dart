@@ -215,39 +215,31 @@ class _QuickHomeworkState extends State<QuickHomework> {
                               value: this.widget.hwcontroller,
                               child: Consumer<HomeworkController>(
                                 builder: (context, model, child) {
-                                  if (model.getHomework != null && model.getHomework.length != 0) {
+                                  if (model.getHomework != null && (model.getHomework ?? []).length != 0) {
                                     return Padding(
                                       padding: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.4),
                                       child: ColumnBuilder(
-                                          itemCount: model.getHomework.length,
+                                          itemCount: (model.getHomework ?? []).length,
                                           itemBuilder: (context, index) {
-                                            return FutureBuilder(
+                                            return FutureBuilder<int>(
                                               initialData: 0,
-                                              future: getColor(model.getHomework[index].disciplineCode),
+                                              future: getColor((model.getHomework ?? [])[index].disciplineCode),
                                               builder: (context, color) => Column(
                                                 children: <Widget>[
                                                   if (index == 0 ||
-                                                      model.getHomework[index - 1].date !=
-                                                          model.getHomework[index].date)
+                                                      (model.getHomework ?? [])[index - 1].date !=
+                                                          (model.getHomework ?? [])[index].date)
                                                     Container(
                                                       margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.25),
                                                       child: Row(children: <Widget>[
                                                         Text(
                                                           DateFormat("EEEE d", "fr_FR")
-                                                                  .format(this
-                                                                      .widget
-                                                                      .hwcontroller!
-                                                                      .getHomework[index]
-                                                                      .date!)
+                                                                  .format((model.getHomework ?? [])[index].date!)
                                                                   .toString()
                                                                   .capitalize() +
                                                               " " +
                                                               DateFormat("MMMM", "fr_FR")
-                                                                  .format(this
-                                                                      .widget
-                                                                      .hwcontroller!
-                                                                      .getHomework[index]
-                                                                      .date!)
+                                                                  .format((model.getHomework ?? [])[index].date!)
                                                                   .toString()
                                                                   .capitalize(),
                                                           style: TextStyle(
@@ -260,11 +252,11 @@ class _QuickHomeworkState extends State<QuickHomework> {
                                                     ),
                                                   SizedBox(height: screenSize.size.height / 10 * 0.1),
                                                   HomeworkTicket(
-                                                      model.getHomework[index],
-                                                      Color(color.data),
+                                                      (model.getHomework ?? [])[index],
+                                                      Color(color.data ?? 0),
                                                       widget.switchPage,
                                                       this.widget.hwcontroller!.refresh,
-                                                      model.isFetching && !model.getHomework[index].loaded!),
+                                                      model.isFetching && !(model.getHomework ?? [])[index].loaded!),
                                                 ],
                                               ),
                                             );
@@ -382,11 +374,11 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
                   children: <Widget>[
                     Container(
                       width: screenSize.size.width / 5 * 0.8,
-                      child: FutureBuilder(
+                      child: FutureBuilder<bool>(
                           future: appSys.offline!.doneHomework.getHWCompletion(widget._homework.id ?? ''),
                           initialData: false,
                           builder: (context, snapshot) {
-                            bool? done = snapshot.data;
+                            bool? done = snapshot.data ?? false;
                             return CircularCheckBox(
                               activeColor: Color(0xff15803D),
                               value: done,

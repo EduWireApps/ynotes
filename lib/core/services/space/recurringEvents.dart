@@ -19,6 +19,7 @@ class RecurringEventSchemes {
     schemes.add("${parity}d$day");
     //Get day event every week
     schemes.add("0d$day");
+    return schemes;
   }
 
   DateTime? date;

@@ -184,7 +184,7 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                             }
                           }
                           if (this.widget.reminder != null) {
-                            await appSys.offline!.reminders.remove(id);
+                            appSys.offline!.reminders.remove(id);
                           }
                           Navigator.of(context).pop("removed");
                         },
@@ -385,8 +385,8 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                                             context: context, initialTime: TimeOfDay.fromDateTime(end!));
                                         if (tempDate != null) {
                                           setState(() {
-                                            end =
-                                                DateTime(end!.year, end!.month, end!.day, tempDate.hour, tempDate.minute);
+                                            end = DateTime(
+                                                end!.year, end!.month, end!.day, tempDate.hour, tempDate.minute);
                                             if (end!.isBefore(start!)) {
                                               start = end!.subtract(Duration(minutes: 30));
                                             }
@@ -463,7 +463,8 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                     if (widget.isCustomEvent) Divider(height: screenSize.size.height / 10 * 0.4),
                     GestureDetector(
                       onTap: () async {
-                        var choice = await CustomDialogs.showMultipleChoicesDialog(context, alarmChoices, [alarm!.index],
+                        var choice = await CustomDialogs.showMultipleChoicesDialog(
+                            context, alarmChoices, [alarm!.index],
                             singleChoice: true);
                         if (choice != null && choice.length == 1) {
                           setState(() {

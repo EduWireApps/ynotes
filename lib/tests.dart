@@ -1,4 +1,3 @@
-
 enum appEnvs { prod, beta, dev }
 
 ///Here are some tests values, as mocking variables or beta app
@@ -21,5 +20,6 @@ class Tests {
     } else {
       return appEnvs.prod;
     }
+    return appEnvs.dev;
   }
 }

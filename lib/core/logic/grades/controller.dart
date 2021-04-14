@@ -34,11 +34,11 @@ class GradesController extends ChangeNotifier {
     refresh();
   }
 
-  get period => _period;
+  String? get period => _period;
 
-  get sorter => _sorter;
+  String get sorter => _sorter;
 
-  get isSimulating => _isSimulating;
+  bool get isSimulating => _isSimulating;
 
   set isSimulating(bool newState) {
     _isSimulating = newState;
