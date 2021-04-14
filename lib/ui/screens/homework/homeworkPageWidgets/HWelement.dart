@@ -614,7 +614,6 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                                 bool done = snapshot.data;
                                                 return CircularCheckBox(
                                                   activeColor: Colors.blue,
-                                                  inactiveColor: Colors.white,
                                                   value: done,
                                                   materialTapTargetSize: MaterialTapTargetSize.padded,
                                                   onChanged: (bool x) async {

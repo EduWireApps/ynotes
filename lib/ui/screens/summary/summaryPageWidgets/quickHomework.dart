@@ -383,8 +383,6 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
                             bool done = snapshot.data;
                             return CircularCheckBox(
                               activeColor: Color(0xff15803D),
-                              disabledColor: Colors.grey.withOpacity(0.4),
-                              inactiveColor: Colors.white,
                               value: done,
                               materialTapTargetSize: MaterialTapTargetSize.padded,
                               onChanged: this

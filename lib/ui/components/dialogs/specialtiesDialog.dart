@@ -115,7 +115,6 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
                                             child: Row(
                                               children: <Widget>[
                                                 CircularCheckBox(
-                                                  inactiveColor: ThemeUtils.textColor(),
                                                   onChanged: (value) {
                                                     if (chosenSpecialties.contains(disciplines[index])) {
                                                       setState(() {

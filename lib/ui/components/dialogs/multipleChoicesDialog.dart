@@ -105,7 +105,6 @@ class _MultipleChoicesDialogState extends State<MultipleChoicesDialog> {
                             child: Row(
                               children: <Widget>[
                                 CircularCheckBox(
-                                  inactiveColor: ThemeUtils.textColor(),
                                   onChanged: (value) {
                                     if (widget.singleChoice) {
                                       indexsSelected.clear();
