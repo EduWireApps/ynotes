@@ -80,7 +80,7 @@ class LoginController extends ChangeNotifier {
 
       var z = await storage.read(key: "agreedTermsAndConfiguredApp");
       if (u != null && p != null && z != null) {
-        await appSys.api!.login(u, p, url: url, mobileCasLogin: iscas ?? false, cas: cas).then((List loginValues) {
+        await appSys.api!.login(u, p, url: url, mobileCasLogin: iscas, cas: cas).then((List loginValues) {
           if (loginValues == null) {
             _actualState = loginStatus.loggedOff;
             _details = "Connexion à l'API...";

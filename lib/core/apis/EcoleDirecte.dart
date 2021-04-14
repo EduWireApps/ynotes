@@ -87,7 +87,7 @@ class APIEcoleDirecte extends API {
           actualUser = req['data']['accounts'][0]['prenom'] ?? "Invité";
           ;
           CreateStorage("userFullName", actualUser ?? "");
-          String userID = req['data']['accounts'][0]['id'].toString() ?? "";
+          String userID = req['data']['accounts'][0]['id'].toString();
           String classe;
           try {
             classe = req['data']['accounts'][0]['profile']["classe"]["libelle"] ?? "";
@@ -101,8 +101,8 @@ class APIEcoleDirecte extends API {
           CreateStorage("password", password ?? "");
           CreateStorage("username", username ?? "");
           //IMPORTANT ! store the user ID
-          CreateStorage("userID", userID ?? "");
-          CreateStorage("classe", classe ?? "");
+          CreateStorage("userID", userID);
+          CreateStorage("classe", classe);
           //random date
           CreateStorage("startday", DateTime.parse("2020-02-02").toString());
 

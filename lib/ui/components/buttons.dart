@@ -29,7 +29,7 @@ class CustomButtons {
                       ),
                     if (label != null)
                       Text(
-                        label ?? "",
+                        label,
                         style: TextStyle(
                           fontFamily: "Asap",
                           color: textColor ?? ThemeUtils.textColor(),

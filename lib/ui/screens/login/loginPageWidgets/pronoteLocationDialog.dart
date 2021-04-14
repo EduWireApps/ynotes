@@ -100,8 +100,7 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
 
   filterSchools(List<PronoteSchool>? schools) {
     if (searchCon!.text != null && schools != null && schools.length != 0) {
-      return schools.where((element) => element.name!.toUpperCase().contains(searchCon!.text.toUpperCase())).toList() ??
-          [];
+      return schools.where((element) => element.name!.toUpperCase().contains(searchCon!.text.toUpperCase())).toList();
     }
     return schools;
   }

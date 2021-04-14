@@ -720,7 +720,7 @@ class _AlertBoxWidgetState extends State<AlertBoxWidget> {
                                     print(snapshot.error);
                                   }
                                   return Text(
-                                    snapshot.data.toString() ?? "",
+                                    snapshot.data.toString(),
                                     style: TextStyle(
                                       fontFamily: "Asap",
                                     ),

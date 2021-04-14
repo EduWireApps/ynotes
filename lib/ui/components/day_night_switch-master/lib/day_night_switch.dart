@@ -27,7 +27,7 @@ class DayNightSwitch extends StatefulWidget {
   });
 
   final bool value;
-  final ValueChanged<bool> onChanged;
+  final ValueChanged<bool?>? onChanged;
   final DragStartBehavior dragStartBehavior;
   final double? height;
   final ImageProvider? sunImage;
@@ -161,7 +161,7 @@ class _RenderSwitch extends RenderToggleable {
     ValueChanged<bool?>? onChanged,
     required TickerProvider vSync,
     required DragStartBehavior dragStartBehavior,
-  })  : assert(textDirection != null),
+  })   : assert(textDirection != null),
         _activeThumbImage = moonImage,
         _inactiveThumbImage = sunImage,
         _activeTrackColor = activeTrackColor,
@@ -175,6 +175,7 @@ class _RenderSwitch extends RenderToggleable {
           inactiveColor: inactiveColor,
           onChanged: onChanged,
           additionalConstraints: additionalConstraints,
+          splashRadius: 0.0,
           vsync: vSync,
         ) {
     _drag = HorizontalDragGestureRecognizer()
@@ -262,7 +263,7 @@ class _RenderSwitch extends RenderToggleable {
   void _handleDragUpdate(DragUpdateDetails details) {
     if (isInteractive) {
       position
-        ..curve = null
+        ..curve = Curves.easeIn
         ..reverseCurve = null;
       final double delta = details.primaryDelta! / _trackInnerLength;
       switch (textDirection) {
@@ -342,11 +343,13 @@ class _RenderSwitch extends RenderToggleable {
         break;
     }
 
-    final Color trackColor = isEnabled ? Color.lerp(inactiveTrackColor, activeTrackColor, currentValue)! : inactiveTrackColor;
+    final Color trackColor =
+        isEnabled ? Color.lerp(inactiveTrackColor, activeTrackColor, currentValue)! : inactiveTrackColor;
 
     final Color? thumbColor = isEnabled ? Color.lerp(inactiveColor, activeColor, currentValue) : inactiveColor;
 
-    final ImageProvider? thumbImage = isEnabled ? (currentValue < 0.5 ? inactiveThumbImage : activeThumbImage) : inactiveThumbImage;
+    final ImageProvider? thumbImage =
+        isEnabled ? (currentValue < 0.5 ? inactiveThumbImage : activeThumbImage) : inactiveThumbImage;
 
     // Paint the track
     final Paint paint = Paint()..color = trackColor;
@@ -403,7 +406,8 @@ class _RenderSwitch extends RenderToggleable {
       if (_cachedThumbPainter == null || thumbColor != _cachedThumbColor || thumbImage != _cachedThumbImage) {
         _cachedThumbColor = thumbColor;
         _cachedThumbImage = thumbImage;
-        _cachedThumbPainter = _createDefaultThumbDecoration(thumbColor, thumbImage).createBoxPainter(_handleDecorationChanged);
+        _cachedThumbPainter =
+            _createDefaultThumbDecoration(thumbColor, thumbImage).createBoxPainter(_handleDecorationChanged);
       }
       thumbPainter = _cachedThumbPainter;
 
@@ -421,7 +425,8 @@ class _RenderSwitch extends RenderToggleable {
 
     canvas.drawLine(
       Offset(offset.dx + _kSwitchWidth * 0.3, offset.dy + _kSwitchHeight * 0.5),
-      Offset(offset.dx + (_kSwitchWidth * 0.3) + (_kSwitchWidth / 2 * (1 - currentValue)), offset.dy + _kSwitchHeight * 0.5),
+      Offset(offset.dx + (_kSwitchWidth * 0.3) + (_kSwitchWidth / 2 * (1 - currentValue)),
+          offset.dy + _kSwitchHeight * 0.5),
       linePaint,
     );
   }

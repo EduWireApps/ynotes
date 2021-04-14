@@ -9,7 +9,7 @@ import 'package:ynotes/core/logic/shared/models.dart';
 class EcoleDirecteConverter {
   static Mail mail(Map<String, dynamic> mailData) {
     var to = mailData["to"];
-    String id = mailData["id"].toString() ?? "";
+    String id = mailData["id"].toString();
     String messageType = mailData["mtype"] ?? "";
     bool isMailRead = mailData["read"] ?? false;
     String? idClasseur = mailData["idClasseur"].toString();

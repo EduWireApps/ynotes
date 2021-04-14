@@ -240,7 +240,7 @@ class CustomDialogs {
       duration: Duration(seconds: 2),
       margin: EdgeInsets.all(8),
       messageText: Text(
-        text ?? "Une erreur a eu lieu.",
+        text,
         style: TextStyle(fontFamily: "Asap", color: Colors.white),
       ),
       icon: Icon(

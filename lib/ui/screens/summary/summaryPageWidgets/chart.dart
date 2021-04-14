@@ -59,7 +59,7 @@ class SummaryChartState extends State<SummaryChart> {
     values.removeWhere((element) => element == null);
 
     if (values != null && values.length > 0) {
-      return values.reduce(max) ?? 20;
+      return values.reduce(max);
     } else {
       return 20;
     }
@@ -79,7 +79,7 @@ class SummaryChartState extends State<SummaryChart> {
     values = values.sublist(0, (_grades!.length > 10 ? 10 : _grades!.length));
     values.removeWhere((element) => element == null);
     if (values != null && values.length > 0) {
-      return values.reduce(min) ?? 0;
+      return values.reduce(min);
     } else {
       return 0;
     }

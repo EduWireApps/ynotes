@@ -122,8 +122,7 @@ class PronoteClient {
             "+" +
             packageInfo.buildNumber +
             " T" +
-            Tests.testVersion ??
-        "");
+            Tests.testVersion);
 
     var attributesandfunctions = await this.communication!.initialise();
     this.stepsLogger!.add("✅ Initialized");

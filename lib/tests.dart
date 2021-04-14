@@ -11,6 +11,7 @@ class Tests {
   static const gradeMockUrl = String.fromEnvironment("GRADEMOCKURL");
 
   appEnvs get globalAppEnv {
+    // ignore: unnecessary_null_comparison
     if (env != null) {
       for (appEnvs appEnv in appEnvs.values) {
         if (appEnv.toString().split('.').last == env) {

@@ -245,8 +245,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                                         context,
                                         "la configuration d'optimisation de batterie",
                                         "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")
-                                    as Future<bool>) ??
-                            false) {
+                                    as Future<bool>)) {
                           await Permission.ignoreBatteryOptimizations.request().isGranted;
                         }
 
@@ -412,7 +411,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                             ),
                             applicationName: "yNotes",
                             applicationVersion:
-                                packageInfo.version + "+" + packageInfo.buildNumber + " T" + Tests.testVersion ?? "",
+                                packageInfo.version + "+" + packageInfo.buildNumber + " T" + Tests.testVersion,
                             applicationLegalese:
                                 "Developpé avec amour en France.\nAPI Pronote adaptée à l'aide de l'API pronotepy développée par Bain sous licence MIT.\nJe remercie la participation des bêta testeurs et des développeurs ayant participé au développement de l'application.");
                       },

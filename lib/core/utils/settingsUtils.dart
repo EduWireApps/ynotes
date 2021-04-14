@@ -48,19 +48,19 @@ class SettingsUtils {
     (_settings["user"] as Map).keys.forEach((key1) {
       (_settings["user"][key1] as Map).forEach((key2, value) {
         if (value.runtimeType == int) {
-          value = getIntSetting(key2) ?? value;
+          value = getIntSetting(key2);
         }
         if (value.runtimeType == bool) {
-          value = getBoolSetting(key2) ?? value;
+          value = getBoolSetting(key2);
         }
       });
     });
     (_settings["system"] as Map).forEach((key, value) {
       if (value.runtimeType == int) {
-        value = getIntSetting(key) ?? value;
+        value = getIntSetting(key);
       }
       if (value.runtimeType == bool) {
-        value = getBoolSetting(key) ?? value;
+        value = getBoolSetting(key);
       }
     });
     print(_settings);

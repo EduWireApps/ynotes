@@ -466,10 +466,7 @@ class APIPronote extends API {
           toReturn.addAll(offlineLesson);
 
           //filter lessons
-          toReturn ??
-              [].removeWhere((lesson) =>
-                  DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) !=
-                  DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)));
+          toReturn;
         }
         //Check if needed to force refresh if not offline
         if ((forceReload == true || toReturn == null) && connectivityResult != ConnectivityResult.none) {

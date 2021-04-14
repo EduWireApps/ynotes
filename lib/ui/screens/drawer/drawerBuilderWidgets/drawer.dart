@@ -20,7 +20,7 @@ class CustomDrawer extends StatefulWidget {
     Key? key,
     required ValueNotifier<int> notifier,
     required this.drawerPageViewController,
-  })  : _notifier = notifier,
+  })   : _notifier = notifier,
         super(key: key);
 
   final ValueNotifier<int> _notifier;
@@ -74,7 +74,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               value: ThemeUtils.isThemeDark,
                               dragStartBehavior: DragStartBehavior.start,
                               onChanged: (val) async {
-                                appSys.updateTheme(val ? "sombre" : "clair");
+                                appSys.updateTheme((val ?? false) ? "sombre" : "clair");
                               },
                             ),
                           ),

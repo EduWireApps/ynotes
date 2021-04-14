@@ -158,7 +158,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
 
   @override
   void dispose() {
-    _notifier?.dispose();
+    _notifier.dispose();
     drawerPageViewController!.dispose();
     super.dispose();
     appSys.offline!.dispose();
@@ -199,7 +199,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
   }
 
   _onPageViewUpdate() {
-    _notifier?.value = drawerPageViewController!.page!.round();
+    _notifier.value = drawerPageViewController!.page!.round();
   }
 
   bool wiredashShown = false;

@@ -354,8 +354,8 @@ class ExpandableBottomSheetState extends State<ExpandableBottomSheet> with Ticke
     _oldStatus = AnimationStatus.reverse;
     _controller.animateTo(
       1.0,
-      duration: widget.animationDurationContract ?? widget.animationDurationExtend,
-      curve: widget.animationCurveContract ?? widget.animationCurveExpand,
+      duration: widget.animationDurationContract,
+      curve: widget.animationCurveContract,
     );
   }
 
@@ -378,8 +378,8 @@ class ExpandableBottomSheetState extends State<ExpandableBottomSheet> with Ticke
     _oldStatus = AnimationStatus.forward;
     _controller.animateTo(
       0.0,
-      duration: widget.animationDurationContract ?? widget.animationDurationExtend,
-      curve: widget.animationCurveContract ?? widget.animationCurveExpand,
+      duration: widget.animationDurationContract,
+      curve: widget.animationCurveContract,
     );
   }
 

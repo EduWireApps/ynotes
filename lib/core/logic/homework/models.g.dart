@@ -90,16 +90,18 @@ Homework _$HomeworkFromJson(Map<String, dynamic> json) {
     json['id'] as String?,
     json['rawContent'] as String?,
     json['sessionRawContent'] as String?,
-    DateTime.parse(json['date'] as String),
-    DateTime.parse(json['entryDate'] as String),
+    json['date'] == null ? null : DateTime.parse(json['date'] as String),
+    json['entryDate'] == null
+        ? null
+        : DateTime.parse(json['entryDate'] as String),
     json['done'] as bool?,
     json['toReturn'] as bool?,
     json['isATest'] as bool?,
-    (json['documents'] as List)
-        .map((e) => Document.fromJson(e as Map<String, dynamic>))
+    (json['documents'] as List<dynamic>?)
+        ?.map((e) => Document.fromJson(e as Map<String, dynamic>))
         .toList(),
-    (json['sessionDocuments'] as List)
-        .map((e) => Document.fromJson(e as Map<String, dynamic>))
+    (json['sessionDocuments'] as List<dynamic>?)
+        ?.map((e) => Document.fromJson(e as Map<String, dynamic>))
         .toList(),
     json['teacherName'] as String?,
     json['loaded'] as bool?,
@@ -112,8 +114,8 @@ Map<String, dynamic> _$HomeworkToJson(Homework instance) => <String, dynamic>{
       'id': instance.id,
       'rawContent': instance.rawContent,
       'sessionRawContent': instance.sessionRawContent,
-      'date': instance.date!.toIso8601String(),
-      'entryDate': instance.entryDate!.toIso8601String(),
+      'date': instance.date?.toIso8601String(),
+      'entryDate': instance.entryDate?.toIso8601String(),
       'done': instance.done,
       'toReturn': instance.toReturn,
       'isATest': instance.isATest,

@@ -13,7 +13,7 @@ buildKeyValuesInfo(BuildContext context, String key, List<String?>? values) {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Text(key ?? "", style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor())),
+              Text(key, style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor())),
               Container(
                 margin: EdgeInsets.only(left: (screenSize.size.width / 5) * 0.2),
                 decoration: BoxDecoration(
