@@ -30,7 +30,7 @@ class ApplicationSystem extends ChangeNotifier {
   Map settings;
 
   SchoolAccount account;
-
+  List<SchoolAccount> accounts = [SchoolAccount("", "", "", [], []), SchoolAccount("", "", "", [], [])];
   updateSetting(Map path, String key, var value) {
     path[key] = value;
     SettingsUtils.setSetting(settings);

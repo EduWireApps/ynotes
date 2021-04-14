@@ -199,6 +199,7 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                       width: screenSize.size.width / 5 * 4.5,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                           buildKeyValuesInfo(context, "Moyenne de la classe :", [
                             widget.grade.classAverage != "" && widget.grade.classAverage != null

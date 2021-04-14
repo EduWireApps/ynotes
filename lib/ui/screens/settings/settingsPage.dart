@@ -15,6 +15,7 @@ import 'package:ynotes/core/logic/appConfig/controller.dart';
 import 'package:ynotes/core/services/platform.dart';
 import 'package:ynotes/core/utils/nullSafeMap.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
+import 'package:ynotes/ui/screens/settings/sub_pages/accountPage.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/exportPage.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
 import 'package:ynotes/core/apis/EcoleDirecte/ecoleDirecteConverters.dart';
@@ -113,7 +114,9 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                               ThemeUtils.isThemeDark ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
                       subtitle: '${actualUser.length > 0 ? actualUser : "Invité"}',
                       leading: Icon(MdiIcons.account, color: ThemeUtils.textColor()),
-                      onTap: () {},
+                      onPressed: (context) {
+                        Navigator.of(context).push(router(AccountPage()));
+                      },
                     ),
                     SettingsTile(
                       title: 'Déconnexion',

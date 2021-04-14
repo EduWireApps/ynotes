@@ -99,6 +99,7 @@ void disciplineModalBottomSheet(context, Discipline discipline, Function callbac
                       width: screenSize.size.width / 5 * 4.5,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                           buildKeyValuesInfo(context, "Votre moyenne", [
                             (appSys.settings["system"]["chosenParser"] == 1)
