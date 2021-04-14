@@ -8,7 +8,7 @@ import 'package:ynotes/main.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 
-import 'package:html_editor/html_editor.dart';
+import 'package:html_editor_enhanced/html_editor.dart';
 import '../dialogs.dart';
 import '../../../usefulMethods.dart';
 
@@ -35,7 +35,7 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
   }
 
   var subjectController = TextEditingController(text: "");
-  GlobalKey<HtmlEditorState> keyEditor = GlobalKey();
+  HtmlEditorController controller = HtmlEditorController();
 
   @override
   void initState() {
@@ -102,7 +102,7 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                             if (!selectedRecipients.isEmpty) {
                               Navigator.pop(context, [
                                 subjectController.text,
-                                await keyEditor.currentState.getText(),
+                                await controller.getText(),
                                 selectedRecipients,
                               ]);
                             } else {
@@ -248,8 +248,7 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
               child: ClipRRect(
                 child: HtmlEditor(
                   hint: "Saisissez votre mail ici..",
-                  key: keyEditor,
-                  showBottomToolbar: false,
+                  controller: controller,
                 ),
               ),
             ),

@@ -21,8 +21,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  html_editor:
-    path: ./lib/ui/components/flutter-html-editor
+  html_editor_enhanced: ^1.8.0
   requests:
     git:
       url: https://github.com/tlkops/requests
@@ -38,15 +37,22 @@ dependencies:
   android_alarm_manager: ^2.0.0
   animated_text_kit: ^4.1.1
   auto_size_text: ^3.0.0-nullsafety.0
-  awesome_notifications: ^0.0.5+2
+  awesome_notifications:
+    git: 
+      url: https://github.com/aaqibism/awesome_notifications
+      ref: master
   background_fetch: ^1.0.0-nullsafety.2
   badges: ^2.0.0-nullsafety.1
-  battery_optimization: ^0.1.0
+  battery_optimization:
+    git:
+      url: https://github.com/ChangJoo-Park/battery_optimization
+      ref: master
   build_resolvers: ^2.0.0
   calendar_time: ^2.0.0-nullsafety.0
-  catex: ^0.0.1+7
-  charts_flutter: ^0.8.1
-  circular_check_box: ^1.0.1
+  circular_check_box:
+    git:
+      url: https://github.com/Supercaly/circular_check_box
+      ref: master
   connectivity: ^3.0.3
   csv: ^5.0.0
   device_apps: ^2.0.2
@@ -54,11 +60,13 @@ dependencies:
   dotted_line: ^3.0.0
   encrypt: ^5.0.0
   expandable: ^5.0.1
-  ext_storage: ^1.0.3
+  ext_storage:
+    git:
+      url: https://github.com/GitJournal/ext_storage
+      ref: master
   fl_chart: ^0.35.0
   flare_flutter: ^3.0.0
-  floating_action_bubble: ^1.1.2
-  flushbar: ^1.10.4
+  another_flushbar: ^1.10.17
   flutter_dnd: ^0.1.3
   flutter_file_dialog: ^2.0.0
   flutter_inappwebview: ^5.3.2
@@ -66,7 +74,7 @@ dependencies:
   flutter_secure_storage: ^4.1.0
   flutter_slidable: ^0.6.0-nullsafety.0
   flutter_spinkit: ^5.0.0
-  flutter_tex: ^3.6.7
+  flutter_tex: ^4.0.1
   flutter_widget_from_html_core: ^0.6.0-rc.2021031201
   geolocator: ^7.0.1
   hive: ^2.0.2
@@ -74,7 +82,7 @@ dependencies:
   http: ^0.13.0
   intl: ^0.16.1
   json_annotation: ^4.0.1
-  liquid_progress_indicator: ^0.3.2
+  liquid_progress_indicator_ns: ^1.0.0
   marquee: ^2.0.0
   material_design_icons_flutter: ^5.0.5955-rc.1
   open_file: ^3.0.1
@@ -83,9 +91,7 @@ dependencies:
   percent_indicator: ^3.3.0-nullsafety.1
   permission_handler: ^6.1.1
   pointycastle: ^3.0.1
-  popup_menu: ^1.0.5
   provider: ^5.0.0
-  pull_to_refresh: ^1.6.4
   rive: ^0.7.0
   rxdart: ^0.26.0
   scrollable_positioned_list: ^0.2.0-nullsafety.0
@@ -96,7 +102,10 @@ dependencies:
   stack: ^0.2.1
   stacked: ^2.0.2
   supercharged: ^2.0.0
-  tinycolor: ^1.0.2
+  tinycolor:
+    git:
+      url: https://github.com/lslv1243/tinycolor
+      ref: master
     
   url_launcher: ^6.0.3
   uuid: ^3.0.3

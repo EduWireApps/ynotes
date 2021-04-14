@@ -1,4 +1,4 @@
-import 'package:flushbar/flushbar.dart';
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
@@ -227,7 +227,7 @@ class CustomDialogs {
           style: TextStyle(color: Colors.blue, fontFamily: "Asap"),
         ),
       ),
-      borderRadius: 8,
+      borderRadius: BorderRadius.circular(8),
     )..show(context);
   }
 
@@ -247,7 +247,7 @@ class CustomDialogs {
         Icons.error,
         color: Colors.white,
       ),
-      borderRadius: 8,
+      borderRadius: BorderRadius.circular(8),
       mainButton: Text(
         "Copier les logs",
         style: TextStyle(fontFamily: "Asap", color: Colors.blueGrey),
@@ -276,7 +276,7 @@ class CustomDialogs {
         text,
         style: TextStyle(fontFamily: "Asap"),
       ),
-      borderRadius: 8,
+      borderRadius: BorderRadius.circular(8),
     )..show(context);
   }
 

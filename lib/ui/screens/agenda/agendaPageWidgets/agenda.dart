@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart' as ptr;
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/agenda/addEvent.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
@@ -185,7 +184,6 @@ class _AgendaState extends State<Agenda> {
     // monitor network fetch
     await Future.delayed(Duration(milliseconds: 1000));
     // if failed,use refreshFailed()
-    _refreshController.refreshCompleted();
   }
 
   void _onLoading() async {
@@ -195,7 +193,6 @@ class _AgendaState extends State<Agenda> {
   }
 
   List<String> items = ["1", "2", "3", "4", "5", "6", "7", "8"];
-  ptr.RefreshController _refreshController = ptr.RefreshController(initialRefresh: false);
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);

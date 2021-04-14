@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flushbar/flushbar.dart';
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -275,7 +275,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                               style: TextStyle(color: Colors.blue, fontFamily: "Asap"),
                             ),
                           ),
-                          borderRadius: 8,
+                          borderRadius: BorderRadius.circular(8),
                         )..show(context);
                       },
                       titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
