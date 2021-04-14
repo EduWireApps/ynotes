@@ -19,24 +19,24 @@ class MailPage extends StatefulWidget {
   _MailPageState createState() => _MailPageState();
 }
 
-List<Mail> localList = List();
-Future mailsListFuture;
-String dossier = "Reçus";
+List<Mail> localList = [];
+Future? mailsListFuture;
+String? dossier = "Reçus";
 enum sortValue { date, reversed_date, author }
 
-StreamSubscription loginconnexion;
+StreamSubscription? loginconnexion;
 
 class _MailPageState extends State<MailPage> {
   var actualSort = sortValue.date;
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {
-          mailsListFuture = appSys.api.app("mail");
+    WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() {
+          mailsListFuture = appSys.api!.app("mail");
         }));
   }
 
   Future<void> refreshLocalMailsList() async {
     setState(() {
-      mailsListFuture = appSys.api.app("mail");
+      mailsListFuture = appSys.api!.app("mail");
     });
     var realdisciplinesListFuture = await mailsListFuture;
   }
@@ -61,9 +61,9 @@ class _MailPageState extends State<MailPage> {
     );
   }
 
-  getCorrespondingClasseur(dossier, List<Mail> list) {
-    String trad;
-    List<Mail> toReturn = List<Mail>();
+  getCorrespondingClasseur(dossier, List<Mail>? list) {
+    String? trad;
+    List<Mail> toReturn = [];
     switch (dossier) {
       case "Reçus":
         trad = "received";
@@ -79,8 +79,8 @@ class _MailPageState extends State<MailPage> {
         }
       });
       toReturn.sort((a, b) {
-        DateTime datea = DateTime.parse(a.date);
-        DateTime dateb = DateTime.parse(b.date);
+        DateTime datea = DateTime.parse(a.date!);
+        DateTime dateb = DateTime.parse(b.date!);
         switch (actualSort) {
           case (sortValue.date):
             return dateb.compareTo(datea);
@@ -138,7 +138,7 @@ class _MailPageState extends State<MailPage> {
                                     iconSize: (screenSize.size.width / 5) * 0.3,
                                     iconEnabledColor: ThemeUtils.textColor(),
                                     style: TextStyle(fontSize: 18, fontFamily: "Asap", color: ThemeUtils.textColor()),
-                                    onChanged: (String newValue) {
+                                    onChanged: (String? newValue) {
                                       setState(() {
                                         dossier = newValue;
                                       });
@@ -209,7 +209,7 @@ class _MailPageState extends State<MailPage> {
                             //Get all the mails
                             future: mailsListFuture,
                             builder: (context, snapshot) {
-                              if (appSys.loginController.actualState == loginStatus.offline) {
+                              if (appSys.loginController!.actualState == loginStatus.offline) {
                                 return Center(
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -295,7 +295,7 @@ class _MailPageState extends State<MailPage> {
                                                               Row(
                                                                 children: <Widget>[
                                                                   Text(
-                                                                    localList[index].date,
+                                                                    localList[index].date!,
                                                                     textAlign: TextAlign.start,
                                                                     style: TextStyle(
                                                                       fontFamily: "Asap",
@@ -306,7 +306,7 @@ class _MailPageState extends State<MailPage> {
                                                                     ),
                                                                     overflow: TextOverflow.ellipsis,
                                                                   ),
-                                                                  if (localList[index].files.length > 0)
+                                                                  if (localList[index].files!.length > 0)
                                                                     Icon(
                                                                       MdiIcons.attachment,
                                                                       color: ThemeUtils.isThemeDark
@@ -401,7 +401,7 @@ class _MailPageState extends State<MailPage> {
   }
 }
 
-void mailModalBottomSheet(context, Mail mail, {int index}) {
+void mailModalBottomSheet(context, Mail mail, {int? index}) {
   showModalBottomSheet(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),

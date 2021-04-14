@@ -9,10 +9,10 @@ import 'package:ynotes/main.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/usefulMethods.dart';
 
-Animation<double> chosenAnimation1;
-Animation<double> chosenAnimation2;
-AnimationController chosenAnimation1Controller;
-AnimationController chosenAnimation2Controller;
+late Animation<double> chosenAnimation1;
+late Animation<double> chosenAnimation2;
+late AnimationController chosenAnimation1Controller;
+late AnimationController chosenAnimation2Controller;
 
 class SchoolAPIChoice extends StatefulWidget {
   State<StatefulWidget> createState() {
@@ -20,7 +20,7 @@ class SchoolAPIChoice extends StatefulWidget {
   }
 }
 
-int chosen;
+int? chosen;
 
 class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderStateMixin {
   @override
@@ -42,7 +42,7 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
 
   getLocalChosen() async {
     setState(() {
-      chosen = appSys.settings["system"]["chosenParser"];
+      chosen = appSys.settings!["system"]["chosenParser"];
     });
     if (chosen == 0) {
       chosenAnimation2Controller.reverse();
@@ -92,7 +92,7 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
                     ),
                     AnimatedBuilder(
                       animation: chosenAnimation1,
-                      builder: (BuildContext context, Widget child) {
+                      builder: (BuildContext context, Widget? child) {
                         return Transform.scale(
                           scale: chosenAnimation1.value,
                           child: child,
@@ -145,7 +145,7 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
                     ),
                     AnimatedBuilder(
                       animation: chosenAnimation2,
-                      builder: (BuildContext context, Widget child) {
+                      builder: (BuildContext context, Widget? child) {
                         return Transform.scale(
                           scale: chosenAnimation2.value,
                           child: child,

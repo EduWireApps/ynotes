@@ -25,10 +25,10 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 
 ///First page to access quickly to last grades, homework and
 class SummaryPage extends StatefulWidget {
-  final Function switchPage;
+  final Function? switchPage;
 
   const SummaryPage({
-    Key key,
+    Key? key,
     this.switchPage,
   }) : super(key: key);
   State<StatefulWidget> createState() {
@@ -37,18 +37,18 @@ class SummaryPage extends StatefulWidget {
 }
 
 bool firstStart = true;
-Future donePercentFuture;
+Future? donePercentFuture;
 
 //Global keys used in showcase
 GlobalKey _gradeChartGB = GlobalKey();
 GlobalKey _quickGradeGB = GlobalKey();
 
 class SummaryPageState extends State<SummaryPage> {
-  double actualPage;
-  PageController _pageControllerSummaryPage;
-  PageController todoSettingsController;
+  double? actualPage;
+  late PageController _pageControllerSummaryPage;
+  PageController? todoSettingsController;
   bool done2 = false;
-  double offset;
+  double? offset;
   ExpandableController alertExpandableDialogController = ExpandableController();
   PageController summarySettingsController = PageController(initialPage: 1);
 
@@ -64,7 +64,7 @@ class SummaryPageState extends State<SummaryPage> {
       });
     });
 
-    SchedulerBinding.instance.addPostFrameCallback(!mounted
+    SchedulerBinding.instance!.addPostFrameCallback((!mounted
         ? null
         : (_) => {
               initLoginController().then((var f) {
@@ -72,13 +72,13 @@ class SummaryPageState extends State<SummaryPage> {
                   firstStart = false;
                 }
               })
-            });
+            })!);
 
     //Init controllers
-    appSys.gradesController.refresh(force: false);
-    appSys.homeworkController.refresh(force: false);
-    appSys.gradesController.refresh(force: true);
-    appSys.homeworkController.refresh(force: true);
+    appSys.gradesController!.refresh(force: false);
+    appSys.homeworkController!.refresh(force: false);
+    appSys.gradesController!.refresh(force: true);
+    appSys.homeworkController!.refresh(force: true);
   }
 
   void triggerSettings() {
@@ -87,12 +87,12 @@ class SummaryPageState extends State<SummaryPage> {
   }
 
   Future<void> refreshControllers() async {
-    await appSys.gradesController.refresh(force: true);
-    await appSys.homeworkController.refresh(force: true);
+    await appSys.gradesController!.refresh(force: true);
+    await appSys.homeworkController!.refresh(force: true);
   }
 
   initLoginController() async {
-    await appSys.loginController.init();
+    await appSys.loginController!.init();
   }
 
   showDialog() async {
@@ -101,10 +101,10 @@ class SummaryPageState extends State<SummaryPage> {
   }
 
   showUpdateNote() async {
-    if ((await appSys.settings["system"]["lastReadUpdateNote"] != "0.9.2")) {
+    if ((await appSys.settings!["system"]["lastReadUpdateNote"] != "0.9.2")) {
       await CustomDialogs.showUpdateNoteDialog(context);
 
-      appSys.updateSetting(appSys.settings["system"], "lastReadUpdateNote", "0.9.2");
+      appSys.updateSetting(appSys.settings!["system"], "lastReadUpdateNote", "0.9.2");
     }
   }
 

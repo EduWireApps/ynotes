@@ -23,9 +23,9 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 
 class ReadMailBottomSheet extends StatefulWidget {
   final Mail mail;
-  final int index;
+  final int? index;
 
-  const ReadMailBottomSheet(this.mail, this.index, {Key key}) : super(key: key);
+  const ReadMailBottomSheet(this.mail, this.index, {Key? key}) : super(key: key);
 
   @override
   _ReadMailBottomSheetState createState() => _ReadMailBottomSheetState();
@@ -36,12 +36,12 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
   DateFormat format = DateFormat("dd-MM-yyyy HH:hh");
 
   //Get monochromatic colors or not
-  htmlColors(String html) {
+  htmlColors(String? html) {
     if (!monochromatic) {
       return html;
     }
     String color = ThemeUtils.isThemeDark ? "white" : "black";
-    String finalHTML = html.replaceAll("color", color);
+    String finalHTML = html!.replaceAll("color", color);
     return finalHTML;
   }
 
@@ -152,7 +152,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                             overflow: TextOverflow.ellipsis,
                                           ),
                                           Text(
-                                            format.format(DateTime.parse(widget.mail.date)),
+                                            format.format(DateTime.parse(widget.mail.date!)),
                                             style: TextStyle(
                                                 fontFamily: "Asap",
                                                 color: ThemeUtils.isThemeDark
@@ -211,9 +211,9 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                       AnimatedContainer(
                                         duration: Duration(milliseconds: 75),
                                         width: screenSize.size.width / 5 * 4.4,
-                                        height: this.widget.mail.files.length * (screenSize.size.height / 10 * 0.7),
+                                        height: this.widget.mail.files!.length * (screenSize.size.height / 10 * 0.7),
                                         child: ListView.builder(
-                                            itemCount: this.widget.mail.files.length,
+                                            itemCount: this.widget.mail.files!.length,
                                             itemBuilder: (BuildContext context, int index) {
                                               return Container(
                                                 margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.2),
@@ -239,7 +239,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                                               width: screenSize.size.width / 5 * 2.8,
                                                               child: ClipRRect(
                                                                 child: Marquee(
-                                                                    text: this.widget.mail.files[index].documentName,
+                                                                    text: this.widget.mail.files![index].documentName!,
                                                                     blankSpace: screenSize.size.width / 5 * 0.2,
                                                                     style: TextStyle(
                                                                         fontFamily: "Asap", color: Colors.white)),
@@ -264,7 +264,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                                                             future: model.fileExists(this
                                                                                 .widget
                                                                                 .mail
-                                                                                .files[index]
+                                                                                .files![index]
                                                                                 .documentName),
                                                                             initialData: false,
                                                                             builder: (context, snapshot) {
@@ -315,7 +315,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                                                                             this
                                                                                                 .widget
                                                                                                 .mail
-                                                                                                .files[index]
+                                                                                                .files![index]
                                                                                                 .documentName,
                                                                                             usingFileName: true);
                                                                                       },
@@ -324,7 +324,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                                                                         await model.download(this
                                                                                             .widget
                                                                                             .mail
-                                                                                            .files[index]);
+                                                                                            .files![index]);
                                                                                       },
                                                                                       child: Container(
                                                                                         width: screenSize.size.width /
@@ -350,7 +350,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                                                                       await model.download(this
                                                                                           .widget
                                                                                           .mail
-                                                                                          .files[index]);
+                                                                                          .files![index]);
                                                                                     },
                                                                                   );
                                                                                 }
@@ -365,14 +365,14 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                                                                         this
                                                                                             .widget
                                                                                             .mail
-                                                                                            .files[index]
+                                                                                            .files![index]
                                                                                             .documentName,
                                                                                         usingFileName: true);
                                                                                   },
                                                                                   //Force download
                                                                                   onLongPress: () async {
                                                                                     await model.download(
-                                                                                        this.widget.mail.files[index]);
+                                                                                        this.widget.mail.files![index]);
                                                                                   },
                                                                                   child: Container(
                                                                                     width:

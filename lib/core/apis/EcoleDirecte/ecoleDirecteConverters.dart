@@ -6,7 +6,6 @@ import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/shared/models.dart';
 
-
 class EcoleDirecteConverter {
   static Mail mail(Map<String, dynamic> mailData) {
     var to = mailData["to"];
@@ -14,22 +13,23 @@ class EcoleDirecteConverter {
     String messageType = mailData["mtype"] ?? "";
     bool isMailRead = mailData["read"] ?? false;
     String idClasseur = mailData["idClasseur"].toString() ?? null;
-    Map from = mailData["from"] ?? "";
+    Map from = mailData["from"] ?? "" as Map<dynamic, dynamic>;
     String subject = mailData["subject"] ?? "";
-    String date = mailData["date"];
+    String? date = mailData["date"];
     String loadedContent = "";
     List<Map<String, dynamic>> filesData = mailData["files"].cast<Map<String, dynamic>>();
     List<Document> files = documents(filesData);
-    Mail mail = Mail(id, messageType, isMailRead, idClasseur, from, subject, date, to: to, files: files);
+    Mail mail = Mail(id, messageType, isMailRead, idClasseur, from as Map<String, dynamic>, subject, date,
+        to: to, files: files);
     return mail;
   }
 
 //Returns discipline with grades
   static List<Discipline> disciplines(Map<String, dynamic> disciplinesData) {
-    List<Discipline> disciplinesList = List();
+    List<Discipline> disciplinesList = [];
     List periodes = disciplinesData['data']['periodes'];
-    List gradesData = disciplinesData['data']['notes'];
-    Map<String, dynamic> settings = disciplinesData['data']['parametrage'];
+    List? gradesData = disciplinesData['data']['notes'];
+    Map<String, dynamic>? settings = disciplinesData['data']['parametrage'];
 
     periodes.forEach((periodeElement) {
       try {
@@ -38,7 +38,7 @@ class EcoleDirecteConverter {
         List disciplines = periodeElement["ensembleMatieres"]["disciplines"];
         disciplines.forEach((rawData) {
           List profs = rawData['professeurs'];
-          List<String> teachersNames = List<String>();
+          List<String?> teachersNames = [];
 
           profs.forEach((e) {
             teachersNames.add(e["nom"]);
@@ -53,7 +53,7 @@ class EcoleDirecteConverter {
                 bmoyenneClasse: periodeElement["ensembleMatieres"]["moyenneMax"],
                 moyenneClasse: periodeElement["ensembleMatieres"]["moyenneClasse"],
                 color: Colors.blue,
-                showrank: settings["moyenneRang"] ?? false,
+                showrank: settings!["moyenneRang"] ?? false,
                 effectifClasse: periodeElement["ensembleMatieres"]["effectif"],
                 rangGeneral: (settings["moyenneRang"] ?? false) ? periodeElement["ensembleMatieres"]["rang"] : null));
           }
@@ -63,7 +63,7 @@ class EcoleDirecteConverter {
               disciplinesList[disciplinesList.lastIndexWhere((disciplinesList) =>
                       disciplinesList.disciplineCode == rawData['codeMatiere'] &&
                       disciplinesList.period == periodeElement["periode"])]
-                  .subdisciplineCode
+                  .subdisciplineCode!
                   .add(rawData['codeSousMatiere']);
             } catch (e) {
               print(e);
@@ -73,12 +73,12 @@ class EcoleDirecteConverter {
         //Retrieve related grades for each discipline
         disciplinesList.forEach((discipline) {
           if (discipline.period == periodeElement["periode"]) {
-            List<Grade> localGradesList = List<Grade>();
+            List<Grade> localGradesList = [];
 
-            gradesData.forEach((element) {
+            gradesData!.forEach((element) {
               if (element["codeMatiere"] == discipline.disciplineCode &&
                   element["codePeriode"] == periodeElement["idPeriode"]) {
-                String nomPeriode = periodeElement["periode"];
+                String? nomPeriode = periodeElement["periode"];
                 localGradesList.add(Grade.fromEcoleDirecteJson(element, nomPeriode));
               }
             });
@@ -95,7 +95,7 @@ class EcoleDirecteConverter {
 
   static List<Period> periods(Map<String, dynamic> periodsData) {
     List rawPeriods = periodsData['data']['periodes'];
-    List<Period> periods = List();
+    List<Period> periods = [];
     rawPeriods.forEach((element) {
       periods.add(Period(element["periode"], element["idPeriode"]));
     });
@@ -104,7 +104,7 @@ class EcoleDirecteConverter {
 
   static List<DateTime> homeworkDates(Map<String, dynamic> hwDatesData) {
     Map<String, dynamic> datesData = hwDatesData['data'];
-    List<DateTime> dates = List();
+    List<DateTime> dates = [];
     datesData.forEach((key, value) {
       dates.add(DateTime.parse(key));
     });
@@ -113,12 +113,12 @@ class EcoleDirecteConverter {
 
   static List<Homework> unloadedHomework(Map<String, dynamic> uhwData) {
     Map<String, dynamic> hwData = uhwData['data'];
-    List<Homework> unloadedHWList = List();
+    List<Homework> unloadedHWList = [];
     hwData.forEach((key, value) {
       value.forEach((var hw) {
         Map mappedHomework = hw;
         bool loaded = false;
-        String matiere = mappedHomework["matiere"];
+        String? matiere = mappedHomework["matiere"];
         String codeMatiere = mappedHomework["codeMatiere"].toString();
         String id = mappedHomework["idDevoir"].toString();
         DateTime date = DateTime.parse(key);
@@ -136,16 +136,16 @@ class EcoleDirecteConverter {
 
   static List<Homework> homework(Map<String, dynamic> hwData) {
     List rawData = hwData['data']['matieres'];
-    List<Homework> homeworkList = List();
+    List<Homework> homeworkList = [];
     rawData.forEach((homework) {
       try {
         if (homework['aFaire'] != null) {
-          String encodedContent = "";
-          String aFaireEncoded = "";
-          bool rendreEnLigne = false;
-          bool interrogation = false;
-          List<Document> documentsAFaire = List<Document>();
-          List<Document> documentsContenuDeCours = List<Document>();
+          String? encodedContent = "";
+          String? aFaireEncoded = "";
+          bool? rendreEnLigne = false;
+          bool? interrogation = false;
+          List<Document> documentsAFaire = [];
+          List<Document> documentsContenuDeCours = [];
           encodedContent = homework['aFaire']['contenu'];
           rendreEnLigne = homework['aFaire']['rendreEnLigne'];
           aFaireEncoded = homework['aFaire']['contenuDeSeance']['contenu'];
@@ -162,10 +162,10 @@ class EcoleDirecteConverter {
           interrogation = homework['interrogation'];
           String decodedContent = "";
           String decodedContenuDeSeance = "";
-          decodedContent = utf8.decode(base64.decode(encodedContent));
-          decodedContenuDeSeance = utf8.decode(base64.decode(aFaireEncoded));
-          String matiere = homework['matiere'];
-          String codeMatiere = homework['codeMatiere'];
+          decodedContent = utf8.decode(base64.decode(encodedContent!));
+          decodedContenuDeSeance = utf8.decode(base64.decode(aFaireEncoded!));
+          String? matiere = homework['matiere'];
+          String? codeMatiere = homework['codeMatiere'];
           String id = homework['id'].toString();
 
           decodedContent = decodedContent.replaceAllMapped(
@@ -175,7 +175,7 @@ class EcoleDirecteConverter {
 
           DateTime editingDate = DateTime.parse(homework['aFaire']['donneLe']);
           bool done = homework['aFaire']['effectue'] == 'true';
-          String teacherName = homework['nomProf'];
+          String? teacherName = homework['nomProf'];
           homeworkList.add(new Homework(
               matiere,
               codeMatiere,
@@ -200,10 +200,10 @@ class EcoleDirecteConverter {
   }
 
   static Future<List<Lesson>> lessons(Map<String, dynamic> lessonData) async {
-    List<Lesson> lessons = List();
-    await Future.forEach(lessonData["data"], (lesson) async {
+    List<Lesson> lessons = [];
+    await Future.forEach(lessonData["data"], (dynamic lesson) async {
       String room = lesson["salle"].toString();
-      List<String> teachers = [lesson["prof"]];
+      List<String?> teachers = [lesson["prof"]];
       DateTime start = DateFormat("yyyy-MM-dd HH:mm").parse(lesson["start_date"]);
       DateTime end = DateFormat("yyyy-MM-dd HH:mm").parse(lesson["end_date"]);
       bool canceled = lesson["isAnnule"] == true;
@@ -225,11 +225,11 @@ class EcoleDirecteConverter {
   }
 
   static List<Document> documents(var filesData) {
-    List<Document> documents = List();
+    List<Document> documents = [];
     filesData.forEach((fileData) {
-      String libelle = fileData["libelle"];
+      String? libelle = fileData["libelle"];
       String id = fileData["id"].toString();
-      String type = fileData["type"];
+      String? type = fileData["type"];
 
       ///TO DO : replace length
       int length = 0;
@@ -239,18 +239,18 @@ class EcoleDirecteConverter {
   }
 
   static List<CloudItem> cloudFolders(var cloudFoldersData) {
-    List<CloudItem> cloudFolders = List();
+    List<CloudItem> cloudFolders = [];
     cloudFoldersData["data"].forEach((folderData) {
       String date = folderData["creeLe"];
       try {
         var split = date.split(" ");
         date = split[0];
       } catch (e) {}
-      String title = folderData["titre"];
+      String? title = folderData["titre"];
       String elementType = "FOLDER";
-      String author = folderData["creePar"];
+      String? author = folderData["creePar"];
       bool isRootDir = true;
-      bool isMemberOf = folderData["estMembre"];
+      bool? isMemberOf = folderData["estMembre"];
       String id = folderData["id"].toString();
       cloudFolders.add(CloudItem(
         title,
@@ -266,7 +266,7 @@ class EcoleDirecteConverter {
   }
 
   static List<Recipient> recipients(var recipientsData) {
-    List<Recipient> recipients = List();
+    List<Recipient> recipients = [];
     recipientsData["data"]["contacts"].forEach((recipientData) {
       String id = recipientData["id"].toString();
       String name = recipientData["prenom"].toString();
@@ -280,13 +280,13 @@ class EcoleDirecteConverter {
 
   static List<SchoolLifeTicket> schoolLife(Map<String, dynamic> schoolLifeData) {
     List rawschoolLife = schoolLifeData['data']['abscencesRetards'];
-    List<SchoolLifeTicket> schoolLifeList = List();
+    List<SchoolLifeTicket> schoolLifeList = [];
     rawschoolLife.forEach((element) {
-      String libelle = element["libelle"];
-      String displayDate = element["displayDate"];
-      String motif = element["motif"];
-      String type = element["typeElement"];
-      bool isJustified = element["justifie"];
+      String? libelle = element["libelle"];
+      String? displayDate = element["displayDate"];
+      String? motif = element["motif"];
+      String? type = element["typeElement"];
+      bool? isJustified = element["justifie"];
       schoolLifeList.add(SchoolLifeTicket(libelle, displayDate, motif, type, isJustified));
     });
     return schoolLifeList;

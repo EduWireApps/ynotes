@@ -8,11 +8,11 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 
 class PronoteSchoolsController extends ChangeNotifier {
   bool geolocating = false;
-  PronoteSchool school;
-  String error;
-  List<PronoteSchool> schools;
-  List<PronoteSpace> spaces;
-  set chosenSchool(PronoteSchool _school) {
+  PronoteSchool? school;
+  String? error;
+  List<PronoteSchool>? schools;
+  List<PronoteSpace>? spaces;
+  set chosenSchool(PronoteSchool? _school) {
     school = _school;
     notifyListeners();
   }
@@ -30,26 +30,26 @@ class PronoteSchoolsController extends ChangeNotifier {
 
   getSpaces() async {
     try {
-      if (school != null && school.url != null) {
+      if (school != null && school!.url != null) {
         String url;
 
         //Weird address to get metas
-        url = school.url +
-            (school.url[school.url.length - 1] == "/" ? "" : "/") +
+        url = school!.url! +
+            (school!.url![school!.url!.length - 1] == "/" ? "" : "/") +
             "InfoMobileApp.json?id=0D264427-EEFC-4810-A9E9-346942A862A4";
         var response = await http.get(Uri.parse(url)).catchError((e) {
           return "Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.";
         });
         if (response.body != null) {
-          List<PronoteSpace> _spaces = List();
+          List<PronoteSpace> _spaces = [];
           var data = json.decode(response.body);
           data["espaces"].forEach((space) {
             print(space["nom"].toUpperCase());
             if (space["nom"].toUpperCase().contains("ÉLÈVES"))
               _spaces.add(PronoteSpace(
                   name: space["nom"],
-                  url: school.url + (school.url[school.url.length - 1] == "/" ? "" : "/") + space["URL"],
-                  originUrl: school.url));
+                  url: school!.url! + (school!.url![school!.url!.length - 1] == "/" ? "" : "/") + space["URL"],
+                  originUrl: school!.url));
           });
           spaces = _spaces;
           notifyListeners();
@@ -82,22 +82,22 @@ class PronoteSchoolsController extends ChangeNotifier {
 
   convertToSchool(String body, double long, double lat) {
     var decodedData = json.decode(body);
-    List<PronoteSchool> _schools = List();
+    List<PronoteSchool> _schools = [];
     decodedData.forEach((rawData) {
       _schools.add(PronoteSchool(
           name: rawData["nomEtab"],
           coordinates: [
             rawData["lat"].toString(),
             rawData["long"].toString(),
-            Geolocator.distanceBetween(double.tryParse(rawData["lat"]), double.tryParse(rawData["long"]), lat, long)
+            Geolocator.distanceBetween(double.tryParse(rawData["lat"])!, double.tryParse(rawData["long"])!, lat, long)
                 .toString()
           ],
           url: rawData["url"],
           postalCode: rawData["cp"].toString()));
     });
     //sort schools by distance
-    _schools
-        .sort((a, b) => (double.tryParse(a.coordinates[2]) ?? 0.0).compareTo(double.tryParse(b.coordinates[2]) ?? 0.0));
+    _schools.sort(
+        (a, b) => (double.tryParse(a.coordinates![2]) ?? 0.0).compareTo(double.tryParse(b.coordinates![2]) ?? 0.0));
     schools = _schools;
   }
 

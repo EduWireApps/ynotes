@@ -6,18 +6,18 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'dart:math';
 
 class SummaryChart extends StatefulWidget {
-  final List<Grade> lastGrades;
+  final List<Grade>? lastGrades;
 
   SummaryChart(
     this.lastGrades, {
-    Key key,
+    Key? key,
   }) : super(key: key);
   @override
   SummaryChartState createState() => SummaryChartState();
 }
 
 class SummaryChartState extends State<SummaryChart> {
-  List<Grade> _grades = List();
+  List<Grade> _grades = [];
   void initState() {
     super.initState();
     initGrades();
@@ -27,10 +27,10 @@ class SummaryChartState extends State<SummaryChart> {
     if (widget.lastGrades != null) {
       setState(() {
         _grades.clear();
-        _grades.addAll(widget.lastGrades);
-        _grades.sort((a, b) => a.entryDate.compareTo(b.entryDate));
+        _grades.addAll(widget.lastGrades!);
+        _grades.sort((a, b) => a.entryDate!.compareTo(b.entryDate!));
         _grades.removeWhere(
-            (element) => element.value == null || element.notSignificant || element.simulated || element.letters);
+            (element) => element.value == null || element.notSignificant! || element.simulated! || element.letters!);
         if (_grades.length > 10) {
           _grades = _grades.sublist(_grades.length - 10, _grades.length);
         }
@@ -45,10 +45,12 @@ class SummaryChartState extends State<SummaryChart> {
   }
 
   getMax() {
-    List<double> values = _grades.map((grade) {
+    List<double?> values = _grades.map((grade) {
       double a;
       try {
-        a = double.tryParse(grade.value.replaceAll(',', '.')) * 20 / double.tryParse(grade.scale.replaceAll(',', '.'));
+        a = double.tryParse(grade.value!.replaceAll(',', '.'))! *
+            20 /
+            double.tryParse(grade.scale!.replaceAll(',', '.'))!;
         return a;
       } catch (e) {}
     }).toList();
@@ -67,7 +69,9 @@ class SummaryChartState extends State<SummaryChart> {
     List<double> values = _grades.map((grade) {
       double a;
       try {
-        a = double.tryParse(grade.value.replaceAll(',', '.')) * 20 / double.tryParse(grade.scale.replaceAll(',', '.'));
+        a = double.tryParse(grade.value!.replaceAll(',', '.'))! *
+            20 /
+            double.tryParse(grade.scale!.replaceAll(',', '.'))!;
         return a;
       } catch (e) {}
     }).toList();
@@ -83,11 +87,11 @@ class SummaryChartState extends State<SummaryChart> {
 
   toDouble(Grade grade) {
     double toReturn;
-    if (!grade.letters) {
+    if (!grade.letters!) {
       try {
-        toReturn = (double.tryParse(grade.value.replaceAll(",", ".")) *
+        toReturn = (double.tryParse(grade.value!.replaceAll(",", "."))! *
             20 /
-            double.tryParse(grade.scale.replaceAll(",", ".")));
+            double.tryParse(grade.scale!.replaceAll(",", "."))!);
         return double.parse(toReturn.toStringAsFixed(2));
       } catch (e) {}
     }
@@ -189,8 +193,8 @@ class SummaryChartState extends State<SummaryChart> {
               _grades.length > 10 ? 10 : _grades.length, (index) => FlSpot(index.toDouble(), toDouble(_grades[index]))),
           isCurved: true,
           colors: [
-            ColorTween(begin: gradientColors[0], end: gradientColors[0]).lerp(0.2),
-            ColorTween(begin: gradientColors[1], end: gradientColors[1]).lerp(0.2),
+            ColorTween(begin: gradientColors[0], end: gradientColors[0]).lerp(0.2)!,
+            ColorTween(begin: gradientColors[1], end: gradientColors[1]).lerp(0.2)!,
           ],
           barWidth: 5,
           isStrokeCapRound: true,

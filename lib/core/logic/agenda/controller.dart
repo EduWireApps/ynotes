@@ -9,28 +9,28 @@ enum eventTypes { spaceEvents, dayEvents }
 
 class AgendaController extends ChangeNotifier {
   final String _dbKey = 'todoList';
-  Box<dynamic> _db;
-  DateTime _date;
-  DateTime _oldDate;
-  Map<dynamic, List<AgendaEvent>> _cachedAgendaEvents;
+  late Box<dynamic> _db;
+  DateTime? _date;
+  DateTime? _oldDate;
+  Map<dynamic, List<AgendaEvent>>? _cachedAgendaEvents;
   bool _yesterdayLoaded = false;
   bool _todayLoaded = false;
   bool _tomorrowLoaded = false;
-  API _api;
-  List<AgendaEvent> _yesterday;
-  List<AgendaEvent> _today;
-  List<AgendaEvent> _tomorrow;
+  late API _api;
+  List<AgendaEvent>? _yesterday;
+  List<AgendaEvent>? _today;
+  List<AgendaEvent>? _tomorrow;
 
-  List<AgendaEvent> get yesterday => _yesterday;
-  List<AgendaEvent> get today => _today;
-  List<AgendaEvent> get tomorrow => _tomorrow;
+  List<AgendaEvent>? get yesterday => _yesterday;
+  List<AgendaEvent>? get today => _today;
+  List<AgendaEvent>? get tomorrow => _tomorrow;
   bool get todayLoaded => _yesterdayLoaded;
   bool get tomorrowLoaded => _todayLoaded;
   bool get yesterdayLoaded => _tomorrowLoaded;
 
-  List week = List();
-  List<bool> loaded = List();
-  List cachedEvents = List();
+  List week = [];
+  List<bool> loaded = [];
+  List cachedEvents = [];
 
   //Constructor
   AgendaController(Box<dynamic> db, API api) {
@@ -46,26 +46,26 @@ class AgendaController extends ChangeNotifier {
   }
 
   filterEvents(eventTypes eventType, List<AgendaEvent> events) {
-    List<AgendaEvent> dayEvents = List();
-    DateTime dayEventsEnd;
+    List<AgendaEvent> dayEvents = [];
+    DateTime? dayEventsEnd;
 
     events.forEach((event) {
-      if (event.isLesson) {
+      if (event.isLesson!) {
         dayEvents.add(event);
       }
     });
     if (dayEvents != null) {
-      dayEvents.sort((a, b) => a.end.compareTo(b.end));
+      dayEvents.sort((a, b) => a.end!.compareTo(b.end!));
       dayEventsEnd = dayEvents.last.end;
     }
 
     if (eventType == eventTypes.dayEvents) {
       return events.where((event) =>
-          event.end.isAfter(dayEventsEnd) ||
-          event.start.isAfter(dayEventsEnd) ||
-          event.start.isAtSameMomentAs(dayEventsEnd));
+          event.end!.isAfter(dayEventsEnd!) ||
+          event.start!.isAfter(dayEventsEnd) ||
+          event.start!.isAtSameMomentAs(dayEventsEnd));
     } else {
-      return events.where((event) => event.start.isBefore(dayEventsEnd));
+      return events.where((event) => event.start!.isBefore(dayEventsEnd!));
     }
   }
 
@@ -84,13 +84,13 @@ class AgendaController extends ChangeNotifier {
   }
 
   getAgendaEvents() async {
-    if (CalendarTime(_oldDate).startOfDay == _date.subtract(Duration(days: 1))) {}
+    if (CalendarTime(_oldDate).startOfDay == _date!.subtract(Duration(days: 1))) {}
 
     cachedEvents[3] = await _api.getEvents(CalendarTime(_date).startOfDay, false);
     loaded[3] = true;
     int i = 0;
 
-    await Future.forEach(week, (date) async {
+    await Future.forEach(week, (dynamic date) async {
       if (i != 3) {
         cachedEvents[i] = await _api.getEvents(date, false);
         loaded[i] = true;

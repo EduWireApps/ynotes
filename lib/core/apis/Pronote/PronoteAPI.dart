@@ -38,51 +38,51 @@ class PronoteClient {
   var username;
   var password;
   var pronote_url;
-  Communication communication;
+  Communication? communication;
   var attributes;
   var funcOptions;
 
-  bool ent;
+  bool? ent;
 
-  Encryption encryption;
+  late Encryption encryption;
 
-  double lastPing;
+  double? lastPing;
 
-  DateTime date;
+  DateTime? date;
 
-  DateTime startDay;
+  DateTime? startDay;
 
   var week;
 
   var localPeriods;
 
-  bool expired;
+  bool? expired;
 
   var authResponse;
 
-  bool loggedIn;
+  late bool loggedIn;
 
   var authCookie;
-  var paramsUser;
+  late var paramsUser;
 
-  DateTime hourEnd;
+  late DateTime hourEnd;
 
-  DateTime hourStart;
+  late DateTime hourStart;
 
-  int oneHourDuration;
+  int? oneHourDuration;
 
-  List<String> stepsLogger;
-  bool mobileLogin;
+  List<String>? stepsLogger;
+  bool? mobileLogin;
   refresh() async {
     print("Reinitialisation");
 
     this.communication = Communication(this.pronote_url, null, this);
-    var future = await this.communication.initialise();
+    var future = await this.communication!.initialise();
 
     this.attributes = future[0];
     this.funcOptions = future[1];
     this.encryption = Encryption();
-    this.encryption.aesIV = this.communication.encryption.aesIV;
+    this.encryption.aesIV = this.communication!.encryption.aesIV;
     await this._login();
     this.localPeriods = null;
     this.localPeriods = this.periods();
@@ -99,7 +99,7 @@ class PronoteClient {
     this.expired = true;
   }
 
-  PronoteClient(String pronote_url, {String username, String password, var cookies, bool mobileLogin}) {
+  PronoteClient(String pronote_url, {String? username, String? password, var cookies, bool? mobileLogin}) {
     if (cookies == null && password == null && username == null) {
       throw 'Please provide login credentials. Cookies are None, and username and password are empty.';
     }
@@ -114,8 +114,8 @@ class PronoteClient {
   Future init() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
-    this.stepsLogger = List();
-    this.stepsLogger.add("ⓘ " +
+    this.stepsLogger = [];
+    this.stepsLogger!.add("ⓘ " +
             DateFormat("dd/MM/yyyy hh:mm:ss").format(DateTime.now()) +
             " Started login - yNotes version is : " +
             packageInfo.version +
@@ -125,8 +125,8 @@ class PronoteClient {
             Tests.testVersion ??
         "");
 
-    var attributesandfunctions = await this.communication.initialise();
-    this.stepsLogger.add("✅ Initialized");
+    var attributesandfunctions = await this.communication!.initialise();
+    this.stepsLogger!.add("✅ Initialized");
 
     this.attributes = attributesandfunctions[0];
     this.funcOptions = attributesandfunctions[1];
@@ -138,10 +138,10 @@ class PronoteClient {
       print("LOGIN AS REGULAR USER");
       this.ent = false;
     }
-    this.stepsLogger.add("✅ Login passed : using " + ((this.ent ?? false) ? "ent" : "direct") + "connection");
+    this.stepsLogger!.add("✅ Login passed : using " + ((this.ent ?? false) ? "ent" : "direct") + "connection");
     //set up encryption
     this.encryption = Encryption();
-    this.encryption.aesIV = this.communication.encryption.aesIV;
+    this.encryption.aesIV = this.communication!.encryption.aesIV;
 
     //some other attribute creation
     this.lastPing = DateTime.now().millisecondsSinceEpoch / 1000;
@@ -155,7 +155,7 @@ class PronoteClient {
     this.week = await get_week(DateTime.now());
 
     this.localPeriods = this.periods;
-    this.stepsLogger.add("✅ Created attributes");
+    this.stepsLogger!.add("✅ Created attributes");
 
     this.loggedIn = await this._login();
 
@@ -172,11 +172,11 @@ class PronoteClient {
     try {
       final storage = new FlutterSecureStorage();
       await storage.write(key: "username", value: this.username);
-      if (!mobileLogin) {
+      if (!mobileLogin!) {
         await storage.write(key: "password", value: this.password);
       }
       //In case password changed
-      if (mobileLogin && (await storage.read(key: "password")) != null) {
+      if (mobileLogin! && (await storage.read(key: "password")) != null) {
         password = await storage.read(key: "password");
       }
       await storage.write(key: "pronoteurl", value: this.pronote_url);
@@ -185,7 +185,7 @@ class PronoteClient {
     } catch (e) {
       print("failed to write values");
     }
-    if (this.ent != null && this.ent) {
+    if (this.ent != null && this.ent!) {
       this.username = this.attributes['e'];
       this.password = this.attributes['f'];
     }
@@ -202,14 +202,14 @@ class PronoteClient {
       "uuidAppliMobile": "121567895313231",
       "loginTokenSAV": ""
     };
-    var idr = await this.communication.post("Identification", data: {'donnees': ident_json});
-    this.stepsLogger.add("✅ Posted identification successfully");
+    var idr = await this.communication!.post("Identification", data: {'donnees': ident_json});
+    this.stepsLogger!.add("✅ Posted identification successfully");
 
     print("Identification");
 
     var challenge = idr['donneesSec']['donnees']['challenge'];
     var e = Encryption();
-    e.aesSetIV(this.communication.encryption.aesIV);
+    e.aesSetIV(this.communication!.encryption.aesIV);
     var motdepasse;
 
     if (this.ent != null && this.ent == true) {
@@ -227,14 +227,14 @@ class PronoteClient {
         print("LOWER CASE ID");
         print(idr['donneesSec']['donnees']['modeCompLog']);
         u = u.toString().toLowerCase();
-        this.stepsLogger.add("ⓘ Lowercased id");
+        this.stepsLogger!.add("ⓘ Lowercased id");
       }
 
       if (idr['donneesSec']['donnees']['modeCompMdp'] != null && idr['donneesSec']['donnees']['modeCompMdp'] != 0) {
         print("LOWER CASE PASSWORD");
         print(idr['donneesSec']['donnees']['modeCompMdp']);
         p = p.toString().toLowerCase();
-        this.stepsLogger.add("ⓘ Lowercased password");
+        this.stepsLogger!.add("ⓘ Lowercased password");
       }
 
       var alea = idr['donneesSec']['donnees']['alea'];
@@ -246,59 +246,59 @@ class PronoteClient {
     }
 
     var rawChallenge = e.aesDecrypt(conv.hex.decode(challenge));
-    this.stepsLogger.add("✅ Decrypted challenge");
+    this.stepsLogger!.add("✅ Decrypted challenge");
 
     var rawChallengeWithoutAlea = removeAlea(rawChallenge);
-    this.stepsLogger.add("✅ Removed alea");
+    this.stepsLogger!.add("✅ Removed alea");
 
     var encryptedChallenge = e.aesEncrypt(conv.utf8.encode(rawChallengeWithoutAlea));
-    this.stepsLogger.add("✅ Encrypted credentials");
+    this.stepsLogger!.add("✅ Encrypted credentials");
 
     Map authentificationJson = {
       "connexion": 0,
       "challenge": encryptedChallenge,
       "espace": int.parse(this.attributes['a'])
     };
-    this.stepsLogger.add("✅ Identification passed");
+    this.stepsLogger!.add("✅ Identification passed");
 
     try {
       print("Authentification");
       this.authResponse = await this
-          .communication
+          .communication!
           .post("Authentification", data: {'donnees': authentificationJson, 'identifiantNav': ''});
     } catch (e) {
-      this.stepsLogger.add("❌  Authentification failed : " + e.toString());
+      this.stepsLogger!.add("❌  Authentification failed : " + e.toString());
       throw ("Error during auth" + e.toString());
     }
 
     try {
-      if (mobileLogin) {
+      if (mobileLogin!) {
         print("Saving token");
         await storage.write(
             key: "password", value: this.authResponse['donneesSec']['donnees']["jetonConnexionAppliMobile"]);
         this.password = this.authResponse['donneesSec']['donnees']["jetonConnexionAppliMobile"];
       }
       if (this.authResponse['donneesSec']['donnees'].toString().contains("cle")) {
-        await this.communication.afterAuth(this.communication.lastResponse, this.authResponse, e.aesKey);
+        await this.communication!.afterAuth(this.communication!.lastResponse, this.authResponse, e.aesKey);
         if (isOldAPIUsed == false) {
           try {
-            paramsUser = await this.communication.post("ParametresUtilisateur", data: {'donnees': {}});
+            paramsUser = await this.communication!.post("ParametresUtilisateur", data: {'donnees': {}});
 
-            this.communication.authorizedTabs = prepareTabs(paramsUser['donneesSec']['donnees']['listeOnglets']);
-            this.stepsLogger.add("✅ Prepared tabs");
+            this.communication!.authorizedTabs = prepareTabs(paramsUser['donneesSec']['donnees']['listeOnglets']);
+            this.stepsLogger!.add("✅ Prepared tabs");
 
             try {
               CreateStorage("classe", paramsUser['donneesSec']['donnees']['ressource']["classeDEleve"]["L"] ?? "");
               CreateStorage("userFullName", paramsUser['donneesSec']['donnees']['ressource']["L"] ?? "");
               actualUser = paramsUser['donneesSec']['donnees']['ressource']["L"];
             } catch (e) {
-              this.stepsLogger.add("❌ Failed to register UserInfos");
+              this.stepsLogger!.add("❌ Failed to register UserInfos");
 
               print("Failed to register UserInfos");
               print(e);
             }
           } catch (e) {
-            this.stepsLogger.add("ⓘ Using old api ");
+            this.stepsLogger!.add("ⓘ Using old api ");
 
             print("Surely using OLD API");
           }
@@ -321,11 +321,11 @@ class PronoteClient {
 
   downloadUrl(Document document) {
     try {
-      Map data = {"N": document.id, "G": int.parse(document.type)};
+      Map data = {"N": document.id, "G": int.parse(document.type!)};
       //Used by pronote to encrypt the data (I don't know why)
       var magic_stuff = this.encryption.aesEncryptFromString(conv.jsonEncode(data));
-      String libelle = Uri.encodeComponent(Uri.encodeComponent(document.documentName));
-      String url = this.communication.rootSite +
+      String libelle = Uri.encodeComponent(Uri.encodeComponent(document.documentName!));
+      String? url = this.communication!.rootSite +
           '/FichiersExternes/' +
           magic_stuff +
           '/' +
@@ -339,7 +339,7 @@ class PronoteClient {
     }
   }
 
-  homework(DateTime date_from, {DateTime date_to}) async {
+  homework(DateTime date_from, {DateTime? date_to}) async {
     print(date_from);
     if (date_to == null) {
       final f = new DateFormat('dd/MM/yyyy');
@@ -351,7 +351,7 @@ class PronoteClient {
       },
       '_Signature_': {'onglet': 88}
     };
-    var response = await this.communication.post("PageCahierDeTexte", data: json_data);
+    var response = await this.communication!.post("PageCahierDeTexte", data: json_data);
     var json_data_contenu = {
       'donnees': {
         'domaine': {'_T': 8, 'V': "[${1}..${62}]"}
@@ -359,14 +359,14 @@ class PronoteClient {
       '_Signature_': {'onglet': 89}
     };
     //Get "Contenu de cours"
-    var responseContent = await this.communication.post("PageCahierDeTexte", data: json_data_contenu);
+    var responseContent = await this.communication!.post("PageCahierDeTexte", data: json_data_contenu);
 
     var c_list = responseContent['donneesSec']['donnees']['ListeCahierDeTextes']['V'];
     //Content homework
-    List<Homework> listCHW = List();
+    List<Homework> listCHW = [];
 
     c_list.forEach((h) {
-      List<Document> listDocs = List();
+      List<Document> listDocs = [];
       //description
       String description = "";
       h["listeContenus"]["V"].forEach((value) {
@@ -401,7 +401,7 @@ class PronoteClient {
 
     //Homework(matiere, codeMatiere, idDevoir, contenu, contenuDeSeance, date, datePost, done, rendreEnLigne, interrogation, documents, documentsContenuDeSeance, nomProf)
     var homeworkList = response['donneesSec']['donnees']['ListeTravauxAFaire']['V'];
-    List<Homework> parsedHomeworkList = List();
+    List<Homework> parsedHomeworkList = [];
     homeworkList.forEach((h) {
       //set a generated ID (Pronote ID is never the same)
       String idDevoir =
@@ -449,7 +449,7 @@ class PronoteClient {
       print("ERROR WHILE PARSING JSON " + e.toString());
     }
 
-    List<PronotePeriod> toReturn = List();
+    List<PronotePeriod> toReturn = [];
     json.forEach((j) {
       toReturn.add(PronotePeriod(this, j));
     });
@@ -461,11 +461,11 @@ class PronoteClient {
     Map data = {
       "_Signature_": {"onglet": 8},
     };
-    var response = await this.communication.post('PageActualites', data: data);
+    var response = await this.communication!.post('PageActualites', data: data);
     var listActus = response['donneesSec']['donnees']['listeActualites']["V"];
-    List<PollInfo> listInfosPolls = List();
+    List<PollInfo> listInfosPolls = [];
     listActus.forEach((element) {
-      List<Document> documents = List();
+      List<Document> documents = [];
       try {
         element["listePiecesJointes"]["V"].forEach((pj) {
           documents.add(Document(pj["L"], pj["N"], pj["G"], 0));
@@ -474,8 +474,8 @@ class PronoteClient {
       try {
         //PollInfo(this.auteur, this.datedebut, this.questions, this.read);
 
-        List<String> questions = List();
-        List<Map> choices = List();
+        List<String> questions = [];
+        List<Map> choices = [];
         element["listeQuestions"]["V"].forEach((question) {
           questions.add(conv.jsonEncode(question));
         });
@@ -518,7 +518,7 @@ class PronoteClient {
       }
     };
 
-    var response = await this.communication.post('SaisieActualites', data: data);
+    var response = await this.communication!.post('SaisieActualites', data: data);
     print(response);
   }
 
@@ -555,17 +555,17 @@ class PronoteClient {
           "saisieActualite": false
         }
       };
-      var response = await this.communication.post('SaisieActualites', data: data);
+      var response = await this.communication!.post('SaisieActualites', data: data);
       print(response);
     } catch (e) {
       print(e);
     }
   }
 
-  lessons(DateTime date_from, {DateTime date_to}) async {
+  lessons(DateTime date_from, {DateTime? date_to}) async {
     initializeDateFormatting();
     var user = this.paramsUser['donneesSec']['donnees']['ressource'];
-    List<Lesson> listToReturn = List();
+    List<Lesson> listToReturn = [];
     //Set request
     Map data = {
       "_Signature_": {"onglet": 16},
@@ -590,7 +590,7 @@ class PronoteClient {
     for (int week = firstWeek; lastWeek < lastWeek + 1; ++lastWeek) {
       data["donnees"]["NumeroSemaine"] = lastWeek;
       data["donnees"]["numeroSemaine"] = lastWeek;
-      var response = await this.communication.post('PageEmploiDuTemps', data: data);
+      var response = await this.communication!.post('PageEmploiDuTemps', data: data);
 
       var lessonsList = response['donneesSec']['donnees']['ListeCours'];
       lessonsList.forEach((lesson) {
@@ -608,7 +608,7 @@ class PronoteClient {
 
 //Remove some random security in challenge
 removeAlea(String text) {
-  List sansalea = List();
+  List sansalea = [];
   int i = 0;
   text.runes.forEach((int rune) {
     var character = new String.fromCharCode(rune);
@@ -624,18 +624,18 @@ removeAlea(String text) {
 ///Communication class used to send requests to Pronote
 class Communication {
   var cookies;
-  var client;
+  late var client;
   var htmlPage;
   var rootSite;
-  Encryption encryption;
-  Map attributes;
-  int requestNumber;
-  List authorizedTabs;
-  bool shouldCompressRequests;
-  double lastPing;
-  bool shouldEncryptRequests;
+  late Encryption encryption;
+  Map? attributes;
+  late int requestNumber;
+  List? authorizedTabs;
+  late bool shouldCompressRequests;
+  late double lastPing;
+  late bool shouldEncryptRequests;
   var lastResponse;
-  Requests session;
+  Requests? session;
   var requests;
 
   Communication(String site, var cookies, var client) {
@@ -654,7 +654,7 @@ class Communication {
     this.lastResponse = null;
   }
 
-  Future<List<Object>> initialise() async {
+  Future<List<Object?>> initialise() async {
     print("Getting hostname");
     // get rsa keys and session id
     String hostName = Requests.getHostname(this.rootSite + "/" + this.htmlPage);
@@ -696,18 +696,18 @@ class Communication {
     this.attributes = this.parseHtml(getResponse.content());
     this.client.stepsLogger.add("✅ Parsed HTML");
     //uuid
-    this.encryption.rsaKeys = {'MR': this.attributes['MR'], 'ER': this.attributes['ER']};
+    this.encryption.rsaKeys = {'MR': this.attributes!['MR'], 'ER': this.attributes!['ER']};
     var uuid = conv.base64.encode(await this.encryption.rsaEncrypt(this.encryption.aesIVTemp.bytes));
     this.client.stepsLogger.add("✅ Encrypted IV");
 
     //uuid
     var jsonPost = {'Uuid': uuid, 'identifiantNav': null};
-    this.shouldEncryptRequests = (this.attributes["sCrA"] == null);
-    if (this.attributes["sCrA"] == null) {
+    this.shouldEncryptRequests = (this.attributes!["sCrA"] == null);
+    if (this.attributes!["sCrA"] == null) {
       this.client.stepsLogger.add("ⓘ" + " Requests will be encrypted");
     }
-    this.shouldCompressRequests = (this.attributes["sCoA"] == null);
-    if (this.attributes["sCoA"] == null) {
+    this.shouldCompressRequests = (this.attributes!["sCoA"] == null);
+    if (this.attributes!["sCoA"] == null) {
       this.client.stepsLogger.add("ⓘ" + " Requests will be compressed");
     }
     var initialResponse = await this.post('FonctionParametres',
@@ -724,7 +724,7 @@ class Communication {
     String onloadC;
     print(onload);
     if (onload != null) {
-      onloadC = onload.attributes["onload"].substring(14, onload.attributes["onload"].length - 37);
+      onloadC = onload.attributes["onload"]!.substring(14, onload.attributes["onload"]!.length - 37);
     } else {
       if (html.contains("IP")) {
         throw ('Your IP address is suspended.');
@@ -769,18 +769,18 @@ class Communication {
     var rNumber = encryption.aesEncrypt(conv.utf8.encode(this.requestNumber.toString()));
 
     var json = {
-      'session': int.parse(this.attributes['h']),
+      'session': int.parse(this.attributes!['h']),
       'numeroOrdre': rNumber,
       'nom': functionName,
       'donneesSec': data
     };
     String p_site =
-        this.rootSite + '/appelfonction/' + this.attributes['a'] + '/' + this.attributes['h'] + '/' + rNumber;
+        this.rootSite + '/appelfonction/' + this.attributes!['a'] + '/' + this.attributes!['h'] + '/' + rNumber;
     print(p_site);
 
     this.requestNumber += 2;
     if (requestNumber > 190) {
-      print("WELL DUH" +requestNumber.toString());
+      print("WELL DUH" + requestNumber.toString());
       await this.client.refresh();
     }
 
@@ -802,8 +802,8 @@ class Communication {
         throw error_messages["22"];
       }
       if (responseJson["Erreur"]['G'] == 10) {
-        appSys.loginController.details = "Connexion expirée";
-        appSys.loginController.actualState = loginStatus.error;
+        appSys.loginController!.details = "Connexion expirée";
+        appSys.loginController!.actualState = loginStatus.error;
 
         throw error_messages["10"];
       }
@@ -891,7 +891,7 @@ class Communication {
 }
 
 prepareTabs(var tabsList) {
-  List output = List();
+  List output = [];
   if (tabsList.runtimeType != List) {
     return [tabsList];
   }
@@ -905,13 +905,13 @@ prepareTabs(var tabsList) {
 }
 
 class Encryption {
-  IV aesIV;
+  IV? aesIV;
 
-  IV aesIVTemp;
+  late IV aesIVTemp;
 
   var aesKey;
 
-  Map rsaKeys;
+  late Map rsaKeys;
 
   Encryption() {
     this.aesIV = IV.fromLength(16);
@@ -1003,9 +1003,9 @@ class Encryption {
 }
 
 class KeepAlive {
-  Communication _connection;
+  Communication? _connection;
 
-  bool keepAlive;
+  late bool keepAlive;
 
   void init(PronoteClient client) {
     this._connection = client.communication;
@@ -1014,8 +1014,8 @@ class KeepAlive {
 
   void alive() async {
     while (this.keepAlive) {
-      if (DateTime.now().millisecondsSinceEpoch / 1000 - this._connection.lastPing >= 300) {
-        this._connection.post("Presence", data: {
+      if (DateTime.now().millisecondsSinceEpoch / 1000 - this._connection!.lastPing >= 300) {
+        this._connection!.post("Presence", data: {
           '_Signature_': {'onglet': 7}
         });
       }
@@ -1027,9 +1027,9 @@ class KeepAlive {
 Uint8List int32BigEndianBytes(int value) => Uint8List(4)..buffer.asByteData().setInt32(0, value, Endian.big);
 
 class PronotePeriod {
-  DateTime end;
+  DateTime? end;
 
-  DateTime start;
+  DateTime? start;
 
   var name;
 
@@ -1038,7 +1038,7 @@ class PronotePeriod {
   var moyenneGenerale;
   var moyenneGeneraleClasse;
 
-  PronoteClient _client;
+  late PronoteClient _client;
 
   // Represents a period of the school year. You shouldn't have to create this class manually.
 
@@ -1106,7 +1106,7 @@ class PronotePeriod {
 
   grades(int codePeriode) async {
     //Get grades from the period.
-    List<Grade> list = List();
+    List<Grade> list = [];
     var jsonData = {
       'donnees': {
         'Periode': {'N': this.id, 'L': this.name}
@@ -1120,13 +1120,13 @@ class PronotePeriod {
 
     var response = (codePeriode == 2) ? a.json() : {};
     */
-    var response = await _client.communication.post('DernieresNotes', data: jsonData);
+    var response = await _client.communication!.post('DernieresNotes', data: jsonData);
     var grades = mapGet(response, ['donneesSec', 'donnees', 'listeDevoirs', 'V']) ?? [];
     this.moyenneGenerale = gradeTranslate(mapGet(response, ['donneesSec', 'donnees', 'moyGenerale', 'V']) ?? "");
     this.moyenneGeneraleClasse =
         gradeTranslate(mapGet(response, ['donneesSec', 'donnees', 'moyGeneraleClasse', 'V']) ?? "");
 
-    var other = List();
+    var other = [];
     grades.forEach((element) async {
       list.add(Grade(
           value: this.gradeTranslate(mapGet(element, ["note", "V"]) ?? ""),

@@ -14,8 +14,8 @@ import 'package:ynotes/ui/screens/grades/gradesPageWidgets/gradesGroup.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 
 class GradesPage extends StatefulWidget {
-  final GradesController gradesController;
-  const GradesPage({Key key, this.gradesController}) : super(key: key);
+  final GradesController? gradesController;
+  const GradesPage({Key? key, this.gradesController}) : super(key: key);
   State<StatefulWidget> createState() {
     return _GradesPageState();
   }
@@ -26,7 +26,7 @@ bool newGrades = false;
 //If true, show a carousel
 bool firstStart = true;
 int initialIndexGradesOffset = 0;
-List specialties;
+List? specialties;
 
 class _GradesPageState extends State<GradesPage> {
   void initState() {
@@ -36,7 +36,7 @@ class _GradesPageState extends State<GradesPage> {
   }
 
   Future<void> forceRefreshGrades() async {
-    await widget.gradesController.refresh(force: true);
+    await widget.gradesController!.refresh(force: true);
   }
 
   _buildBackground(BuildContext context, GradesController model) {
@@ -83,9 +83,9 @@ class _GradesPageState extends State<GradesPage> {
               decoration: BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
             ),
             onPressed: () async {
-              Grade a = await simulatorModalBottomSheet(this.widget.gradesController, context);
+              Grade? a = await simulatorModalBottomSheet(this.widget.gradesController, context);
               if (a != null) {
-                widget.gradesController.simulationAdd(a);
+                widget.gradesController!.simulationAdd(a);
               }
             },
           ),
@@ -281,7 +281,7 @@ class _GradesPageState extends State<GradesPage> {
     ScrollController controller = ScrollController();
 
     return Container(
-      child: ChangeNotifierProvider<GradesController>.value(
+      child: ChangeNotifierProvider<GradesController?>.value(
         value: widget.gradesController,
         child: Consumer<GradesController>(builder: (context, model, child) {
           return Stack(
@@ -333,7 +333,7 @@ class _GradesPageState extends State<GradesPage> {
                                               ),
                                               child: (model.periods == null ||
                                                       model.period == "" ||
-                                                      model.periods.length == 0)
+                                                      model.periods!.length == 0)
                                                   ? Container(
                                                       child: Text(
                                                         "Pas de periode",
@@ -349,17 +349,17 @@ class _GradesPageState extends State<GradesPage> {
                                                             fontSize: 18,
                                                             fontFamily: "Asap",
                                                             color: ThemeUtils.textColor()),
-                                                        onChanged: (String newValue) {
+                                                        onChanged: (String? newValue) {
                                                           model.period = newValue;
                                                         },
                                                         focusColor: Theme.of(context).primaryColor,
-                                                        items: model.periods
+                                                        items: model.periods!
                                                             .toSet()
                                                             .map<DropdownMenuItem<String>>((Period period) {
                                                           return DropdownMenuItem<String>(
                                                             value: period != null ? period.name : "-",
                                                             child: Text(
-                                                              period != null ? period.name : "-",
+                                                              period != null ? period.name! : "-",
                                                               textAlign: TextAlign.center,
                                                               style: TextStyle(
                                                                   fontSize: 18,
@@ -464,8 +464,8 @@ class _GradesPageState extends State<GradesPage> {
                                           child: Consumer<GradesController>(builder: (context, model, child) {
                                             if (!model.isFetching) {
                                               if (model
-                                                  .disciplines()
-                                                  .any((Discipline element) => (element.gradesList.length > 0))) {
+                                                  .disciplines()!
+                                                  .any((Discipline element) => (element.gradesList!.length > 0))) {
                                                 return Column(
                                                   children: [
                                                     if (model.isSimulating) _buildResetButton(model),
@@ -473,13 +473,13 @@ class _GradesPageState extends State<GradesPage> {
                                                       child: Container(
                                                         child: ListView.builder(
                                                             physics: AlwaysScrollableScrollPhysics(),
-                                                            itemCount: model.disciplines().length,
+                                                            itemCount: model.disciplines()!.length,
                                                             padding: EdgeInsets.symmetric(
                                                                 vertical: screenSize.size.width / 5 * 0.1,
                                                                 horizontal: screenSize.size.width / 5 * 0.05),
                                                             itemBuilder: (BuildContext context, int index) {
                                                               return GradesGroup(
-                                                                  discipline: model.disciplines()[index],
+                                                                  discipline: model.disciplines()![index],
                                                                   gradesController: model);
                                                             }),
                                                       ),
@@ -579,11 +579,11 @@ class _GradesPageState extends State<GradesPage> {
                           child: ClipRRect(
                               borderRadius: BorderRadius.circular(15),
                               child: Consumer<GradesController>(builder: (context, model, child) {
-                                Discipline lastDiscipline;
+                                Discipline? lastDiscipline;
                                 if (model.disciplines != null) {
                                   try {
                                     lastDiscipline = model
-                                        .disciplines()
+                                        .disciplines()!
                                         .lastWhere((disciplinesList) => disciplinesList.period == model.period);
                                   } catch (exception) {}
 
@@ -642,7 +642,7 @@ class _GradesPageState extends State<GradesPage> {
                                                                   child: Text(
                                                                     (lastDiscipline != null &&
                                                                             lastDiscipline.classGeneralAverage != null
-                                                                        ? lastDiscipline.classGeneralAverage
+                                                                        ? lastDiscipline.classGeneralAverage!
                                                                         : "-"),
                                                                     style: TextStyle(
                                                                         fontFamily: "Asap",
@@ -707,9 +707,9 @@ class _GradesPageState extends State<GradesPage> {
                                                                   child: Text(
                                                                     (lastDiscipline.generalRank != null &&
                                                                             lastDiscipline.classNumber != null)
-                                                                        ? lastDiscipline.generalRank +
+                                                                        ? lastDiscipline.generalRank! +
                                                                             "/" +
-                                                                            lastDiscipline.classNumber
+                                                                            lastDiscipline.classNumber!
                                                                         : "- / -",
                                                                     style: TextStyle(
                                                                         fontFamily: "Asap",

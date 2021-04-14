@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 
 class CustomButtons {
-  static Widget materialButton(BuildContext context, double width, double height, Function onTap,
-      {IconData icon, String label, Color backgroundColor, Color textColor, Color iconColor, Function onLongPress}) {
+  static Widget materialButton(BuildContext context, double? width, double? height, Function? onTap,
+      {IconData? icon, String? label, Color? backgroundColor, Color? textColor, Color? iconColor, Function? onLongPress}) {
     var screenSize = MediaQuery.of(context);
     return Container(
       width: width,
@@ -13,8 +13,8 @@ class CustomButtons {
         borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
         child: InkWell(
           borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-          onTap: onTap,
-          onLongPress: onLongPress ?? null,
+          onTap: onTap as void Function()?,
+          onLongPress: onLongPress as void Function()? ?? null,
           child: Container(
               height: height,
               padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),

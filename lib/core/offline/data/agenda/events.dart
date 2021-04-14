@@ -3,23 +3,23 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/offline/offline.dart';
 
 class AgendaEventsOffline extends Offline {
-  Offline parent;
+  late Offline parent;
   AgendaEventsOffline(bool locked, Offline _parent) : super(locked) {
     parent = _parent;
   }
 
-  Future<List<AgendaEvent>> getAgendaEvents(int week, {var selector}) async {
+  Future<List<AgendaEvent>?> getAgendaEvents(int week, {var selector}) async {
     try {
       if (selector == null) {
-        if (parent.agendaEventsData != null && parent.agendaEventsData[week] != null) {
-          List<AgendaEvent> agendaEvents = List();
-          agendaEvents.addAll(parent.agendaEventsData[week].cast<AgendaEvent>());
+        if (parent.agendaEventsData != null && parent.agendaEventsData![week] != null) {
+          List<AgendaEvent> agendaEvents = [];
+          agendaEvents.addAll(parent.agendaEventsData![week].cast<AgendaEvent>());
           return agendaEvents;
         } else {
           await parent.refreshData();
-          if (parent.agendaEventsData != null && parent.agendaEventsData[week] != null) {
-            List<AgendaEvent> agendaEvents = List();
-            agendaEvents.addAll(parent.agendaEventsData[week].cast<AgendaEvent>());
+          if (parent.agendaEventsData != null && parent.agendaEventsData![week] != null) {
+            List<AgendaEvent> agendaEvents = [];
+            agendaEvents.addAll(parent.agendaEventsData![week].cast<AgendaEvent>());
             return agendaEvents;
           } else {
             return null;
@@ -27,13 +27,13 @@ class AgendaEventsOffline extends Offline {
         }
       } else {
         if (parent.agendaEventsData != null) {
-          var values = parent.agendaEventsData.keys;
+          var values = parent.agendaEventsData!.keys;
           var selectedValues = values.where(await selector);
           if (selectedValues != null) {
-            List<AgendaEvent> agendaEvents = List();
+            List<AgendaEvent> agendaEvents = [];
 
             selectedValues.forEach((element) {
-              agendaEvents.addAll(parent.agendaEventsData[element].cast<AgendaEvent>());
+              agendaEvents.addAll(parent.agendaEventsData![element].cast<AgendaEvent>());
               print(agendaEvents);
             });
             return agendaEvents;
@@ -43,13 +43,13 @@ class AgendaEventsOffline extends Offline {
         } else {
           await parent.refreshData();
           if (parent.agendaEventsData != null) {
-            var values = parent.agendaEventsData.keys;
+            var values = parent.agendaEventsData!.keys;
             var selectedValues = values.where(await selector);
             if (selectedValues != null) {
-              List<AgendaEvent> agendaEvents = List();
+              List<AgendaEvent> agendaEvents = [];
 
               selectedValues.forEach((element) {
-                agendaEvents.addAll(parent.agendaEventsData[element].cast<AgendaEvent>());
+                agendaEvents.addAll(parent.agendaEventsData![element].cast<AgendaEvent>());
               });
               return agendaEvents;
             }
@@ -65,12 +65,12 @@ class AgendaEventsOffline extends Offline {
   }
 
   ///Remove an agenda event with a given `id` and at a given `week`
-  removeAgendaEvent(String id, var fetchID) async {
+  removeAgendaEvent(String? id, var fetchID) async {
     if (!locked) {
       try {
         Map<dynamic, dynamic> timeTable = Map();
         var offline = await parent.agendaBox.get("agendaEvents");
-        List<AgendaEvent> events = List();
+        List<AgendaEvent> events = [];
         if (offline != null) {
           timeTable = Map<dynamic, dynamic>.from(await parent.agendaBox.get("agendaEvents"));
         }
@@ -100,7 +100,7 @@ class AgendaEventsOffline extends Offline {
         if (newData != null) {
           Map<dynamic, dynamic> timeTable = Map();
           var offline = await parent.agendaBox.get("agendaEvents");
-          List<AgendaEvent> events = List();
+          List<AgendaEvent> events = [];
           if (offline != null) {
             timeTable = Map<dynamic, dynamic>.from(await parent.agendaBox.get("agendaEvents"));
           }

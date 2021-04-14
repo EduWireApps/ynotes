@@ -19,12 +19,12 @@ class PollsAndInfoPage extends StatefulWidget {
   _PollsAndInfoPageState createState() => _PollsAndInfoPageState();
 }
 
-List<Mail> localList = List();
-Future mailsListFuture;
+List<Mail> localList = [];
+Future? mailsListFuture;
 String dossier = "Reçus";
 enum sortValue { date, reversed_date, author }
-List<PollInfo> pollsList = List();
-Future pollsFuture;
+List<PollInfo>? pollsList = [];
+Future? pollsFuture;
 
 class _PollsAndInfoPageState extends State<PollsAndInfoPage> {
   @override
@@ -36,7 +36,7 @@ class _PollsAndInfoPageState extends State<PollsAndInfoPage> {
 
   Future<void> refreshPolls({bool forced = false}) async {
     setState(() {
-      pollsFuture = appSys.api.app("polls", action: "get", args: (forced) ? "forced" : null);
+      pollsFuture = appSys.api!.app("polls", action: "get", args: (forced) ? "forced" : null);
     });
     var realFuture = await pollsFuture;
   }
@@ -59,7 +59,7 @@ class _PollsAndInfoPageState extends State<PollsAndInfoPage> {
                     future: pollsFuture,
                     builder: (context, snapshot) {
                       if (snapshot.hasData && snapshot.data != null && snapshot.data.length != 0) {
-                        SchedulerBinding.instance.addPostFrameCallback((_) => mounted
+                        SchedulerBinding.instance!.addPostFrameCallback((_) => mounted
                             ? setState(() {
                                 pollsList = snapshot.data;
                               })
@@ -69,7 +69,7 @@ class _PollsAndInfoPageState extends State<PollsAndInfoPage> {
                           onRefresh: () => refreshPolls(forced: true),
                           child: ListView.builder(
                               physics: AlwaysScrollableScrollPhysics(),
-                              itemCount: pollsList.length,
+                              itemCount: pollsList!.length,
                               itemBuilder: (BuildContext context, int index) {
                                 return ClipRRect(
                                   borderRadius: BorderRadius.circular(11),
@@ -110,22 +110,22 @@ class _PollsAndInfoPageState extends State<PollsAndInfoPage> {
                                                       onChanged: (value) async {
                                                         await refreshPolls(forced: true);
                                                         setState(() {
-                                                          pollsList[index].read = value;
+                                                          pollsList![index].read = value;
                                                         });
 
-                                                        String userID = pollsList[index].data["public"]["V"]["N"];
+                                                        String userID = pollsList![index].data!["public"]["V"]["N"];
                                                         //Pass args (that's messy but it works lel)
-                                                        await appSys.api.app("polls",
+                                                        await appSys.api!.app("polls",
                                                             action: "read",
-                                                            args: pollsList[index].id +
+                                                            args: pollsList![index].id! +
                                                                 "/" +
-                                                                pollsList[index].title +
+                                                                pollsList![index].title! +
                                                                 "/" +
                                                                 value.toString() +
                                                                 "/" +
                                                                 userID);
                                                       },
-                                                      value: pollsList[index].read,
+                                                      value: pollsList![index].read,
                                                     ),
                                                     AutoSizeText(
                                                       "J'ai pris connaissance de cette information",
@@ -158,7 +158,7 @@ class _PollsAndInfoPageState extends State<PollsAndInfoPage> {
 }
 
 Widget _buildPollQuestion(var data, screenSize) {
-  List<Widget> list = new List<Widget>();
+  List<Widget> list = [];
   for (var i = 0; i < data.questions.length; i++) {
     Map mapQuestions = jsonDecode(data.questions[i]);
     list.add(Container(
@@ -183,7 +183,7 @@ Widget _buildPollQuestion(var data, screenSize) {
 
 Widget _buildPollChoices(Map data, screenSize, PollInfo pollinfo) {
   List choices = data["listeChoix"]["V"];
-  List response = List();
+  List? response = [];
   try {
     if (data["reponse"] != null &&
         data["reponse"]["V"] != null &&
@@ -195,14 +195,14 @@ Widget _buildPollChoices(Map data, screenSize, PollInfo pollinfo) {
     print(e);
   }
   //user info
-  List<Widget> list = new List<Widget>();
+  List<Widget> list = [];
   for (var i = 0; i < choices.length; i++) {
     list.add(Container(
         padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
         child: Row(
           children: [
             CircularCheckBox(
-              value: response.contains(i + 1),
+              value: response!.contains(i + 1),
               /* onChanged: (value) async {
                   await refreshPolls(forced: true);
                   await appSys.api.app("polls", action: "answer", args: jsonEncode(data) + "/ynsplit" + jsonEncode(pollinfo.data) + "/ynsplit" + (i + 1).toString());

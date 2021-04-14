@@ -29,7 +29,7 @@ import '../../../tests.dart';
 import '../../../usefulMethods.dart';
 
 class SettingsPage extends StatefulWidget {
-  const SettingsPage({Key key}) : super(key: key);
+  const SettingsPage({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -37,19 +37,19 @@ class SettingsPage extends StatefulWidget {
   }
 }
 
-bool isFirstAvatarSelected;
+bool? isFirstAvatarSelected;
 final storage = new FlutterSecureStorage();
 
 class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMixin {
-  AnimationController leftToRightAnimation;
-  AnimationController rightToLeftAnimation;
+  late AnimationController leftToRightAnimation;
+  late AnimationController rightToLeftAnimation;
   //Avatar's animations :
-  Animation<double> movingRow;
+  Animation<double>? movingRow;
   //To use by the actual image when switching
-  Animation<double> avatarSize;
+  Animation<double>? avatarSize;
 
   //Disable new grades when battery saver is enabled
-  bool disableNotification;
+  bool? disableNotification;
   @override
   void initState() {
     setState(() {
@@ -111,7 +111,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                           fontFamily: "Asap",
                           color:
                               ThemeUtils.isThemeDark ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
-                      subtitle: '${actualUser.length > 0 ? actualUser : "Invité"}',
+                      subtitle: '${actualUser!.length > 0 ? actualUser : "Invité"}',
                       leading: Icon(MdiIcons.account, color: ThemeUtils.textColor()),
                       onTap: () {},
                     ),
@@ -156,9 +156,9 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                           color:
                               ThemeUtils.isThemeDark ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
                       leading: Icon(MdiIcons.batteryHeart, color: ThemeUtils.textColor()),
-                      switchValue: _appSys.settings["user"]["global"]["batterySaver"],
+                      switchValue: _appSys.settings!["user"]["global"]["batterySaver"],
                       onToggle: (value) async {
-                        _appSys.updateSetting(_appSys.settings["user"]["global"], "batterySaver", value);
+                        _appSys.updateSetting(_appSys.settings!["user"]["global"], "batterySaver", value);
                       },
                     ),
                     SettingsTile.switchTile(
@@ -173,9 +173,9 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                           color:
                               ThemeUtils.isThemeDark ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
                       leading: Icon(MdiIcons.arrowCollapseLeft, color: ThemeUtils.textColor()),
-                      switchValue: _appSys.settings["user"]["global"]["autoCloseDrawer"],
+                      switchValue: _appSys.settings!["user"]["global"]["autoCloseDrawer"],
                       onToggle: (value) async {
-                        _appSys.updateSetting(_appSys.settings["user"]["global"], "autoCloseDrawer", value);
+                        _appSys.updateSetting(_appSys.settings!["user"]["global"], "autoCloseDrawer", value);
                       },
                     ),
                   ],
@@ -185,24 +185,24 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                   tiles: [
                     SettingsTile.switchTile(
                       title: 'Notification de nouveau mail',
-                      enabled: !_appSys.settings["user"]["global"]["batterySaver"],
+                      enabled: !_appSys.settings!["user"]["global"]["batterySaver"],
                       titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                       subtitleTextStyle: TextStyle(
                           fontFamily: "Asap",
                           color:
                               ThemeUtils.isThemeDark ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
-                      switchValue: _appSys.settings["user"]["global"]["notificationNewMail"],
+                      switchValue: _appSys.settings!["user"]["global"]["notificationNewMail"],
                       onToggle: (bool value) async {
                         if (value == false || (await Permission.ignoreBatteryOptimizations.isGranted)) {
-                          _appSys.updateSetting(_appSys.settings["user"]["global"], "notificationNewMail", value);
+                          _appSys.updateSetting(_appSys.settings!["user"]["global"], "notificationNewMail", value);
                         } else {
-                          if (await CustomDialogs.showAuthorizationsDialog(
+                          if (await (CustomDialogs.showAuthorizationsDialog(
                                   context,
                                   "la configuration d'optimisation de batterie",
-                                  "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ??
+                                  "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") as FutureOr<bool?>) ??
                               false) {
                             if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
-                              _appSys.updateSetting(_appSys.settings["user"]["global"], "notificationNewMail", value);
+                              _appSys.updateSetting(_appSys.settings!["user"]["global"], "notificationNewMail", value);
                             }
                           }
                         }
@@ -210,24 +210,24 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     ),
                     SettingsTile.switchTile(
                       title: 'Notification de nouvelle note',
-                      enabled: !_appSys.settings["user"]["global"]["batterySaver"],
+                      enabled: !_appSys.settings!["user"]["global"]["batterySaver"],
                       titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                       subtitleTextStyle: TextStyle(
                           fontFamily: "Asap",
                           color:
                               ThemeUtils.isThemeDark ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
-                      switchValue: _appSys.settings["user"]["global"]["notificationNewGrade"],
+                      switchValue: _appSys.settings!["user"]["global"]["notificationNewGrade"],
                       onToggle: (bool value) async {
                         if (value == false || (await Permission.ignoreBatteryOptimizations.isGranted)) {
-                          _appSys.updateSetting(_appSys.settings["user"]["global"], "notificationNewGrade", value);
+                          _appSys.updateSetting(_appSys.settings!["user"]["global"], "notificationNewGrade", value);
                         } else {
-                          if (await CustomDialogs.showAuthorizationsDialog(
+                          if (await (CustomDialogs.showAuthorizationsDialog(
                                   context,
                                   "la configuration d'optimisation de batterie",
-                                  "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ??
+                                  "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") as FutureOr<bool?>) ??
                               false) {
                             if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
-                              _appSys.updateSetting(_appSys.settings["user"]["global"], "notificationNewGrade", value);
+                              _appSys.updateSetting(_appSys.settings!["user"]["global"], "notificationNewGrade", value);
                             }
                           }
                         }
@@ -239,18 +239,18 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                       onTap: () async {
                         //Check battery optimization setting
                         if (!await Permission.ignoreBatteryOptimizations.isGranted &&
-                                await CustomDialogs.showAuthorizationsDialog(
+                                await (CustomDialogs.showAuthorizationsDialog(
                                     context,
                                     "la configuration d'optimisation de batterie",
-                                    "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ??
+                                    "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") as FutureOr<bool>) ??
                             false) {
                           await Permission.ignoreBatteryOptimizations.request().isGranted;
                         }
 
-                        if (await CustomDialogs.showAuthorizationsDialog(
+                        if (await (CustomDialogs.showAuthorizationsDialog(
                                 context,
                                 "la liste blanche de lancement en arrière plan / démarrage",
-                                "Pouvoir lancer yNotes au démarrage de l'appareil et ainsi régulièrement rafraichir en arrière plan.") ??
+                                "Pouvoir lancer yNotes au démarrage de l'appareil et ainsi régulièrement rafraichir en arrière plan.") as FutureOr<bool?>) ??
                             false) {
                           await AndroidPlatformChannel.openAutoStartSettings();
                         }
@@ -323,7 +323,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                       subtitle: 'Ou nous recommander quelque chose',
                       leading: Icon(MdiIcons.commentAlert, color: ThemeUtils.textColor()),
                       onTap: () {
-                        Wiredash.of(context).show();
+                        Wiredash.of(context)!.show();
                       },
                       titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                       subtitleTextStyle: TextStyle(
@@ -352,9 +352,9 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                       title: 'Réinitialiser le tutoriel',
                       leading: Icon(MdiIcons.restore, color: ThemeUtils.textColor()),
                       onTap: () async {
-                        if (await CustomDialogs.showConfirmationDialog(context, null,
+                        if (await (CustomDialogs.showConfirmationDialog(context, null,
                             alternativeText: "Etes-vous sûr de vouloir réinitialiser le tutoriel ?",
-                            alternativeButtonConfirmText: "confirmer")) {
+                            alternativeButtonConfirmText: "confirmer") as FutureOr<bool>)) {
                           await HelpDialog.resetEveryHelpDialog();
                         }
                         HelpDialog.resetEveryHelpDialog();
@@ -369,10 +369,10 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                       title: 'Supprimer les données hors ligne',
                       leading: Icon(MdiIcons.deleteAlert, color: ThemeUtils.textColor()),
                       onTap: () async {
-                        if (await CustomDialogs.showConfirmationDialog(context, null,
+                        if (await (CustomDialogs.showConfirmationDialog(context, null,
                             alternativeText:
-                                "Etes-vous sûr de vouloir supprimer les données hors ligne ? (irréversible)")) {
-                          await _appSys.offline.clearAll();
+                                "Etes-vous sûr de vouloir supprimer les données hors ligne ? (irréversible)") as FutureOr<bool>)) {
+                          await _appSys.offline!.clearAll();
                         }
                       },
                       titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
@@ -449,7 +449,7 @@ showExitDialog(BuildContext context) {
 
 class ExitDialogWidget extends StatefulWidget {
   const ExitDialogWidget({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -488,7 +488,7 @@ class _ExitDialogWidgetState extends State<ExitDialogWidget> {
             ),
             onPressed: () async {
               await appSys.exitApp();
-              appSys.api.gradesList.clear();
+              appSys.api!.gradesList!.clear();
               setState(() {});
               try {
                 appSys.updateTheme("clair");

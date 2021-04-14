@@ -8,17 +8,17 @@ import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 class LoadingPage extends StatefulWidget {
-  const LoadingPage({Key key}) : super(key: key);
+  const LoadingPage({Key? key}) : super(key: key);
 
   @override
   _LoadingPageState createState() => _LoadingPageState();
 }
 
 class _LoadingPageState extends State<LoadingPage> {
-  Future<String> connectionData;
-  String u;
-  String p;
-  String z;
+  Future<String>? connectionData;
+  String? u;
+  String? p;
+  String? z;
   @override
   void initState() {
     tryToConnect();
@@ -33,7 +33,7 @@ class _LoadingPageState extends State<LoadingPage> {
     bool iscas = (await ReadStorage("ispronotecas") == "true");
 
     z = await storage.read(key: "agreedTermsAndConfiguredApp");
-    if (u != null && p != null && z != null && appSys.settings["system"]["chosenParser"] != null) {
+    if (u != null && p != null && z != null && appSys.settings!["system"]["chosenParser"] != null) {
       Navigator.of(context).pushReplacement(router(homePage()));
     } else {
       Navigator.of(context).pushReplacement(router(login()));

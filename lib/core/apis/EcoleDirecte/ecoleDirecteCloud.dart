@@ -19,7 +19,7 @@ changeFolder(String path) async {
   var url = 'https://api.ecoledirecte.com/v3/cloud/W/${cloudUsedFolder}.awp?verbe=get&idFolder=${concatenate}';
   url = Uri.encodeFull(url);
   print(url);
-  List<CloudItem> toReturn = List();
+  List<CloudItem> toReturn = [];
 
   Map<String, String> headers = {"Content-type": "text/plain"};
   String data = 'data={"token": "$token"}';
@@ -53,6 +53,6 @@ changeFolder(String path) async {
   } else {
     throw "Erreur durant la récupération des éléments du cloud ${response.body}";
   }
-  toReturn.sort((a, b) => a.date.compareTo(b.date));
+  toReturn.sort((a, b) => a.date!.compareTo(b.date!));
   return toReturn;
 }

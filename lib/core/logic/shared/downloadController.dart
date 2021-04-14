@@ -11,7 +11,7 @@ import 'package:ynotes/globals.dart';
 ///Class download to notify view when download is ended
 class DownloadController extends ChangeNotifier {
   bool _isDownloading = false;
-  double _progress = 0;
+  double? _progress = 0;
   get downloadProgress => _progress;
   get isDownloading => _isDownloading;
 
@@ -24,7 +24,7 @@ class DownloadController extends ChangeNotifier {
         Directory downloadsDir = Directory("$dir/yNotesDownloads/");
         List<FileSystemEntity> list = downloadsDir.listSync();
         bool toReturn = false;
-        await Future.forEach(list, (element) async {
+        await Future.forEach(list, (dynamic element) async {
           if (filename == await FileAppUtil.getFileNameWithExtension(element)) {
             toReturn = true;
           }
@@ -43,9 +43,9 @@ class DownloadController extends ChangeNotifier {
   download(Document document) async {
     _isDownloading = true;
     _progress = null;
-    String filename = document.documentName;
+    String? filename = document.documentName;
     notifyListeners();
-    Request request = await appSys.api.downloadRequest(document);
+    Request request = await appSys.api!.downloadRequest(document);
     //Make a response client
     final StreamedResponse response = await Client().send(request);
     final contentLength = response.contentLength;
@@ -61,7 +61,7 @@ class DownloadController extends ChangeNotifier {
       (List<int> newBytes) {
         bytes.addAll(newBytes);
         final downloadedLength = bytes.length;
-        _progress = downloadedLength / contentLength;
+        _progress = downloadedLength / contentLength!;
 
         notifyListeners();
       },

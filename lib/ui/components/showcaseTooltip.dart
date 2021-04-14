@@ -6,9 +6,9 @@ class ShowCaseToolTip extends StatelessWidget {
   final String title;
   final String desc;
   const ShowCaseToolTip({
-    Key key,
-    @required this.title,
-    @required this.desc,
+    Key? key,
+    required this.title,
+    required this.desc,
   }) : super(key: key);
 
   @override

@@ -67,7 +67,7 @@ class CustomDialogs {
             ));
   }
 
-  static Future<bool> showConfirmationDialog(BuildContext context, Function show,
+  static Future<bool?> showConfirmationDialog(BuildContext context, Function? show,
       {String alternativeText = "Voulez vous vraiment supprimer cet élément (irréversible) ?",
       String alternativeButtonConfirmText = "SUPPRIMER"}) {
     // set up the AlertDialog
@@ -134,7 +134,7 @@ class CustomDialogs {
     );
   }
 
-  static Future<Color> showColorPicker(BuildContext context, Color defaultColor) {
+  static Future<Color?> showColorPicker(BuildContext context, Color defaultColor) {
     // show the dialog
     return showDialog<Color>(
       barrierDismissible: false,
@@ -145,7 +145,7 @@ class CustomDialogs {
     );
   }
 
-  static Future<String> showTextChoiceDialog(BuildContext context, {String text = "", String defaultText = ""}) {
+  static Future<String?> showTextChoiceDialog(BuildContext context, {String text = "", String? defaultText = ""}) {
     // show the dialog
     return showDialog<String>(
       barrierDismissible: false,
@@ -156,8 +156,8 @@ class CustomDialogs {
     );
   }
 
-  static Future<bool> showNewFolderDialog(
-      BuildContext context, String path, List<FileInfo> files, bool selectionMode, Function callback) {
+  static Future<bool?> showNewFolderDialog(
+      BuildContext context, String path, List<FileInfo>? files, bool selectionMode, Function callback) {
     // show the dialog
     return showDialog<bool>(
       barrierDismissible: false,
@@ -180,7 +180,7 @@ class CustomDialogs {
     );
   }
 
-  static Future showRecurringEventDialog(BuildContext context, String scheme) {
+  static Future showRecurringEventDialog(BuildContext context, String? scheme) {
     // show the dialog
     return showDialog(
       barrierDismissible: true,
@@ -303,7 +303,7 @@ class CustomDialogs {
         transitionDuration: Duration(milliseconds: 200),
         barrierDismissible: true,
         barrierLabel: '',
-        pageBuilder: (context, animation1, animation2) {});
+        pageBuilder: (context, animation1, animation2) {} as Widget Function(BuildContext, Animation<double>, Animation<double>));
   }
 
   static showNewRecipientDialog(BuildContext context) {
@@ -327,17 +327,17 @@ class CustomDialogs {
         transitionDuration: Duration(milliseconds: 200),
         barrierDismissible: true,
         barrierLabel: '',
-        pageBuilder: (context, animation1, animation2) {});
+        pageBuilder: (context, animation1, animation2) {} as Widget Function(BuildContext, Animation<double>, Animation<double>));
   }
 
-  static Future<void> showHomeworkDetailsDialog(BuildContext context, Homework hw) async {
-    String returnVal = await showGeneralDialog(
+  static Future<void> showHomeworkDetailsDialog(BuildContext context, Homework? hw) async {
+    String? returnVal = await showGeneralDialog(
         context: context,
         barrierColor: Colors.black.withOpacity(0.5),
         transitionDuration: Duration(milliseconds: 200),
         barrierDismissible: true,
         barrierLabel: '',
-        pageBuilder: (context, animation1, animation2) {},
+        pageBuilder: (context, animation1, animation2) {} as Widget Function(BuildContext, Animation<double>, Animation<double>),
         transitionBuilder: (context, a1, a2, widget) {
           MediaQueryData screenSize;
           screenSize = MediaQuery.of(context);
@@ -345,14 +345,14 @@ class CustomDialogs {
         });
   }
 
-  static Future<PronoteSpace> showPronoteSchoolGeolocationDialog(BuildContext context) async {
+  static Future<PronoteSpace?> showPronoteSchoolGeolocationDialog(BuildContext context) async {
     return await showGeneralDialog(
         context: context,
         barrierColor: Colors.black.withOpacity(0.5),
         transitionDuration: Duration(milliseconds: 200),
         barrierDismissible: true,
         barrierLabel: '',
-        pageBuilder: (context, animation1, animation2) {},
+        pageBuilder: (context, animation1, animation2) {} as Widget Function(BuildContext, Animation<double>, Animation<double>),
         transitionBuilder: (context, a1, a2, widget) {
           MediaQueryData screenSize;
           screenSize = MediaQuery.of(context);
@@ -360,7 +360,7 @@ class CustomDialogs {
         });
   }
 
-  static Future writeModalBottomSheet(context, {List<Recipient> defaultListRecipients, defaultSubject}) async {
+  static Future writeModalBottomSheet(context, {List<Recipient>? defaultListRecipients, defaultSubject}) async {
     var mailData = await showModalBottomSheet(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
@@ -385,7 +385,7 @@ class CustomDialogs {
 //The help dialog class
 class HelpDialog {
   final int id;
-  final GlobalKey key;
+  final GlobalKey? key;
   final String title;
   final List<String> description;
   final String gifPath;
@@ -401,31 +401,31 @@ class HelpDialog {
 
   ///Set if the dialog as already been watched
   setAlreadyViewed() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
+    SharedPreferences preferences = await (SharedPreferences.getInstance() as FutureOr<SharedPreferences>);
     await preferences.setBool("alreadyViewedHelpDialog" + this.id.toString(), true);
   }
 
   ///Check if the dialog as already been watched
   checkAlreadyViewed() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    bool viewed = preferences.getBool("alreadyViewedHelpDialog" + this.id.toString());
+    SharedPreferences preferences = await (SharedPreferences.getInstance() as FutureOr<SharedPreferences>);
+    bool? viewed = preferences.getBool("alreadyViewedHelpDialog" + this.id.toString());
 
     return viewed != null ? viewed : false;
   }
 
   ///Skip every dialogs (already seen)
   skipEveryHelpDialog() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
+    SharedPreferences? preferences = await SharedPreferences.getInstance();
     for (int i = 0; i < helpDialogs.length; i++) {
-      await preferences.setBool("alreadyViewedHelpDialog" + i.toString(), true);
+      await preferences!.setBool("alreadyViewedHelpDialog" + i.toString(), true);
     }
   }
 
   ///Skip every dialogs (already seen)
   static resetEveryHelpDialog() async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
+    SharedPreferences? preferences = await SharedPreferences.getInstance();
     for (int i = 0; i < helpDialogs.length; i++) {
-      await preferences.setBool("alreadyViewedHelpDialog" + i.toString(), false);
+      await preferences!.setBool("alreadyViewedHelpDialog" + i.toString(), false);
     }
   }
 

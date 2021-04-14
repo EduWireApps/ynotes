@@ -23,11 +23,11 @@ class QuickMenu extends StatefulWidget {
 bool visibility = true;
 
 class _QuickMenuState extends State<QuickMenu> with TickerProviderStateMixin {
-  OverlayEntry overlayEntry;
+  OverlayEntry? overlayEntry;
   PageController _pageController = PageController(initialPage: 0);
 
-  Animation<double> quickMenuShowAnimation;
-  AnimationController quickMenuController;
+  late Animation<double> quickMenuShowAnimation;
+  late AnimationController quickMenuController;
 
   @override
   void initState() {
@@ -167,7 +167,7 @@ class _QuickMenuState extends State<QuickMenu> with TickerProviderStateMixin {
                                             padding: EdgeInsets.all(0.0),
                                             itemCount: listFiles.length,
                                             itemBuilder: (context, index) {
-                                              final item = listFiles[index].fileName;
+                                              final item = [];
                                               return Dismissible(
                                                 direction: DismissDirection.endToStart,
                                                 background: Container(color: Colors.red),

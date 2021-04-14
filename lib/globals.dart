@@ -4,10 +4,10 @@ import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/logic/homework/controller.dart';
 
 //Futures
-Future disciplinesListFuture;
+Future? disciplinesListFuture;
 
-Future spaceAgendaFuture;
+Future? spaceAgendaFuture;
 
-Future agendaFuture;
+Future? agendaFuture;
 
 ApplicationSystem appSys = ApplicationSystem();

@@ -18,7 +18,7 @@ import 'package:ynotes/usefulMethods.dart';
 ///If this is a reminder `lessonID` can't be null otherwise it will throw an exception.
 ///It will return, "created", "edited" or "removed"
 Future agendaEventEdit(context, isCustomEvent,
-    {AgendaEvent customEvent, AgendaReminder reminder, String lessonID, DateTime defaultDate}) async {
+    {AgendaEvent? customEvent, AgendaReminder? reminder, String? lessonID, DateTime? defaultDate}) async {
   Color colorGroup;
 
   MediaQueryData screenSize = MediaQuery.of(context);
@@ -49,11 +49,11 @@ Future agendaEventEdit(context, isCustomEvent,
 class agendaEventEditLayout extends StatefulWidget {
   bool isCustomEvent;
   //Reminder stuff
-  AgendaReminder reminder;
-  String lessonID;
-  DateTime defaultDate;
+  AgendaReminder? reminder;
+  String? lessonID;
+  DateTime? defaultDate;
   //Custom event stuff
-  AgendaEvent customEvent;
+  AgendaEvent? customEvent;
 
   agendaEventEditLayout(this.isCustomEvent, {this.reminder, this.lessonID, this.customEvent, this.defaultDate});
 
@@ -71,14 +71,14 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
     if (start == null && widget.isCustomEvent) {
       print(widget.defaultDate);
       setState(() {
-        widget.defaultDate = DateTime.parse(DateFormat("yyyy-MM-dd").format(widget.defaultDate));
-        start = widget.defaultDate.add(Duration(hours: 8));
+        widget.defaultDate = DateTime.parse(DateFormat("yyyy-MM-dd").format(widget.defaultDate!));
+        start = widget.defaultDate!.add(Duration(hours: 8));
       });
     }
     if (end == null && widget.isCustomEvent) {
       setState(() {
-        widget.defaultDate = DateTime.parse(DateFormat("yyyy-MM-dd").format(widget.defaultDate));
-        end = widget.defaultDate.add(Duration(hours: 9));
+        widget.defaultDate = DateTime.parse(DateFormat("yyyy-MM-dd").format(widget.defaultDate!));
+        end = widget.defaultDate!.add(Duration(hours: 9));
       });
     }
     settingExistingReminder();
@@ -93,33 +93,33 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
 //If this bottom sheet is called to edit an existing reminder
   void settingExistingReminder() {
     if (this.widget.reminder != null) {
-      title = this.widget.reminder.name;
-      titleController.text = title;
-      description = this.widget.reminder.description;
-      descriptionController.text = description;
-      alarm = this.widget.reminder.alarm;
-      id = this.widget.reminder.id;
-      tagColor = this.widget.reminder.realTagColor;
+      title = this.widget.reminder!.name;
+      titleController.text = title!;
+      description = this.widget.reminder!.description;
+      descriptionController.text = description!;
+      alarm = this.widget.reminder!.alarm;
+      id = this.widget.reminder!.id;
+      tagColor = this.widget.reminder!.realTagColor;
     }
   }
 
 //If this bottom sheet is called to edit an existing reminder
   void settingExistingCustomEvent() {
     if (this.widget.customEvent != null) {
-      title = this.widget.customEvent.name;
-      titleController.text = title;
-      description = this.widget.customEvent.description;
-      descriptionController.text = description;
-      alarm = this.widget.customEvent.alarm ?? alarmType.none;
-      id = this.widget.customEvent.id;
-      tagColor = this.widget.customEvent.realColor;
-      wholeDay = this.widget.customEvent.wholeDay;
-      start = this.widget.customEvent.start;
-      end = this.widget.customEvent.end;
-      lesson = this.widget.customEvent.lesson;
-      location = this.widget.customEvent.location;
-      canceled = this.widget.customEvent.canceled;
-      recurringScheme = this.widget.customEvent.recurrenceScheme;
+      title = this.widget.customEvent!.name;
+      titleController.text = title!;
+      description = this.widget.customEvent!.description;
+      descriptionController.text = description!;
+      alarm = this.widget.customEvent!.alarm ?? alarmType.none;
+      id = this.widget.customEvent!.id;
+      tagColor = this.widget.customEvent!.realColor;
+      wholeDay = this.widget.customEvent!.wholeDay;
+      start = this.widget.customEvent!.start;
+      end = this.widget.customEvent!.end;
+      lesson = this.widget.customEvent!.lesson;
+      location = this.widget.customEvent!.location;
+      canceled = this.widget.customEvent!.canceled;
+      recurringScheme = this.widget.customEvent!.recurrenceScheme;
     }
   }
 
@@ -131,18 +131,18 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
     "30 minutes avant",
     "La veille"
   ];
-  String title;
+  String? title;
   Color tagColor = Colors.orange;
-  DateTime start;
-  DateTime end;
-  alarmType alarm = alarmType.none;
-  String description;
-  bool wholeDay = true;
-  String id;
-  bool canceled = false;
-  String location;
-  Lesson lesson;
-  String recurringScheme;
+  DateTime? start;
+  DateTime? end;
+  alarmType? alarm = alarmType.none;
+  String? description;
+  bool? wholeDay = true;
+  String? id;
+  bool? canceled = false;
+  String? location;
+  Lesson? lesson;
+  String? recurringScheme;
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
@@ -172,19 +172,19 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                     GestureDetector(
                         onTap: () async {
                           if (this.widget.customEvent != null) {
-                            if (this.widget.customEvent.recurrenceScheme != null &&
-                                this.widget.customEvent.recurrenceScheme != "0") {
-                              await appSys.offline.agendaEvents
-                                  .removeAgendaEvent(id, await get_week(this.widget.customEvent.start));
-                              await appSys.offline.agendaEvents
-                                  .removeAgendaEvent(id, this.widget.customEvent.recurrenceScheme);
+                            if (this.widget.customEvent!.recurrenceScheme != null &&
+                                this.widget.customEvent!.recurrenceScheme != "0") {
+                              await appSys.offline!.agendaEvents
+                                  .removeAgendaEvent(id, await get_week(this.widget.customEvent!.start!));
+                              await appSys.offline!.agendaEvents
+                                  .removeAgendaEvent(id, this.widget.customEvent!.recurrenceScheme);
                             } else {
-                              await appSys.offline.agendaEvents
-                                  .removeAgendaEvent(id, await get_week(this.widget.customEvent.start));
+                              await appSys.offline!.agendaEvents
+                                  .removeAgendaEvent(id, await get_week(this.widget.customEvent!.start!));
                             }
                           }
                           if (this.widget.reminder != null) {
-                            await appSys.offline.reminders.remove(id);
+                            await appSys.offline!.reminders.remove(id);
                           }
                           Navigator.of(context).pop("removed");
                         },
@@ -193,28 +193,28 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                             height: (screenSize.size.height / 10 * 8.8) / 10 * 0.75,
                             width: screenSize.size.width / 5 * 1,
                             child: Icon(
-                                (this.widget.isCustomEvent && this.widget.customEvent.isLesson)
+                                (this.widget.isCustomEvent && this.widget.customEvent!.isLesson!)
                                     ? MdiIcons.restore
                                     : MdiIcons.trashCan,
                                 color: Colors.deepOrange))),
                   GestureDetector(
                       onTap: () {
                         //Exit with a value
-                        if (widget.isCustomEvent && !wholeDay && start.isAtSameMomentAs(end)) {
+                        if (widget.isCustomEvent && !wholeDay! && start!.isAtSameMomentAs(end!)) {
                           CustomDialogs.showAnyDialog(
                               context, "Le début et la fin ne peuvent pas être au même moment.");
                         } else {
                           if (!widget.isCustomEvent) {
                             AgendaReminder reminder = AgendaReminder(
-                                widget.lessonID, titleController.text, alarm, id ?? (widget.lessonID + "1"),
+                                widget.lessonID, titleController.text, alarm, id ?? (widget.lessonID! + "1"),
                                 description: descriptionController.text, tagColor: tagColor.value);
                             Navigator.of(context).pop(reminder);
                           }
                           if (widget.isCustomEvent) {
-                            if (wholeDay) {}
+                            if (wholeDay!) {}
                             AgendaEvent event = AgendaEvent(
-                                wholeDay ? widget.defaultDate : start,
-                                wholeDay ? widget.defaultDate : end,
+                                wholeDay! ? widget.defaultDate : start,
+                                wholeDay! ? widget.defaultDate : end,
                                 titleController.text.trim(),
                                 location,
                                 null,
@@ -263,7 +263,7 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                     Divider(height: screenSize.size.height / 10 * 0.4),
                     GestureDetector(
                       onTap: () async {
-                        Color color = await CustomDialogs.showColorPicker(context, tagColor);
+                        Color? color = await CustomDialogs.showColorPicker(context, tagColor);
                         if (color != null) {
                           setState(() {
                             tagColor = color;
@@ -312,7 +312,7 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                                       color: ThemeUtils.textColor().withOpacity(0.8),
                                       fontSize: screenSize.size.width / 5 * 0.25),
                                 ),
-                                value: canceled,
+                                value: canceled!,
                                 onChanged: (nValue) {
                                   setState(() {
                                     canceled = nValue;
@@ -327,13 +327,13 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                                       color: ThemeUtils.textColor().withOpacity(0.8),
                                       fontSize: screenSize.size.width / 5 * 0.25),
                                 ),
-                                value: wholeDay,
+                                value: wholeDay!,
                                 onChanged: (nValue) {
                                   setState(() {
                                     wholeDay = nValue;
                                   });
                                 }),
-                            if (!wholeDay)
+                            if (!wholeDay!)
                               Column(
                                 children: [
                                   Material(
@@ -341,13 +341,13 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                                     child: InkWell(
                                       onTap: () async {
                                         var tempDate = await showTimePicker(
-                                            context: context, initialTime: TimeOfDay.fromDateTime(start));
+                                            context: context, initialTime: TimeOfDay.fromDateTime(start!));
                                         if (tempDate != null) {
                                           setState(() {
                                             start = DateTime(
-                                                start.year, start.month, start.day, tempDate.hour, tempDate.minute);
-                                            if (start.isAfter(end)) {
-                                              end = start.add(Duration(minutes: 30));
+                                                start!.year, start!.month, start!.day, tempDate.hour, tempDate.minute);
+                                            if (start!.isAfter(end!)) {
+                                              end = start!.add(Duration(minutes: 30));
                                             }
                                           });
                                         }
@@ -366,7 +366,7 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                                           ),
                                           SizedBox(width: screenSize.size.width / 5 * 0.1),
                                           Text(
-                                            'Début ${DateFormat.Hm().format(start)}',
+                                            'Début ${DateFormat.Hm().format(start!)}',
                                             style: TextStyle(
                                                 fontFamily: "Asap",
                                                 color: ThemeUtils.textColor().withOpacity(0.8),
@@ -382,13 +382,13 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                                     child: InkWell(
                                       onTap: () async {
                                         var tempDate = await showTimePicker(
-                                            context: context, initialTime: TimeOfDay.fromDateTime(end));
+                                            context: context, initialTime: TimeOfDay.fromDateTime(end!));
                                         if (tempDate != null) {
                                           setState(() {
                                             end =
-                                                DateTime(end.year, end.month, end.day, tempDate.hour, tempDate.minute);
-                                            if (end.isBefore(start)) {
-                                              start = end.subtract(Duration(minutes: 30));
+                                                DateTime(end!.year, end!.month, end!.day, tempDate.hour, tempDate.minute);
+                                            if (end!.isBefore(start!)) {
+                                              start = end!.subtract(Duration(minutes: 30));
                                             }
                                           });
                                         }
@@ -407,7 +407,7 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                                           ),
                                           SizedBox(width: screenSize.size.width / 5 * 0.1),
                                           Text(
-                                            'Fin  ${DateFormat.Hm().format(end)}',
+                                            'Fin  ${DateFormat.Hm().format(end!)}',
                                             style: TextStyle(
                                                 fontFamily: "Asap",
                                                 color: ThemeUtils.textColor().withOpacity(0.8),
@@ -463,7 +463,7 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                     if (widget.isCustomEvent) Divider(height: screenSize.size.height / 10 * 0.4),
                     GestureDetector(
                       onTap: () async {
-                        var choice = await CustomDialogs.showMultipleChoicesDialog(context, alarmChoices, [alarm.index],
+                        var choice = await CustomDialogs.showMultipleChoicesDialog(context, alarmChoices, [alarm!.index],
                             singleChoice: true);
                         if (choice != null && choice.length == 1) {
                           setState(() {
@@ -487,7 +487,7 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                             ),
                             SizedBox(width: screenSize.size.width / 5 * 0.1),
                             Text(
-                              alarmChoices[alarm.index],
+                              alarmChoices[alarm!.index],
                               style: TextStyle(
                                   fontFamily: "Asap",
                                   color: ThemeUtils.textColor().withOpacity(0.8),

@@ -48,7 +48,7 @@ Route router(Widget widget) {
 
 ///Color theme switcher, actually 0 for darkmode and 1 for lightmode
 int colorTheme = 0;
-String actualUser = "";
+String? actualUser = "";
 
 //Connectivity  classs
 
@@ -115,42 +115,44 @@ class ConnectionStatusSingleton {
 }
 
 //Get only grades as a list
-List<Grade> getAllGrades(List<Discipline> list, {bool overrideLimit = false, bool sortByWritingDate = true}) {
+List<Grade>? getAllGrades(List<Discipline>? list, {bool overrideLimit = false, bool sortByWritingDate = true}) {
   if (appSys.api != null) {
-    List<Grade> listToReturn = List();
+    List<Grade> listToReturn = [];
     if (list != null) {
       list.forEach((element) {
         if (element != null) {
-          element.gradesList.forEach((grade) {
+          element.gradesList!.forEach((grade) {
             if (!listToReturn.contains(grade)) {
               listToReturn.add(grade);
             }
           });
         }
       });
-      if (appSys.api.gradesList != null && appSys.api.gradesList.length > 0 && listToReturn == appSys.api.gradesList) {
-        return appSys.api.gradesList;
+      if (appSys.api!.gradesList != null &&
+          appSys.api!.gradesList!.length > 0 &&
+          listToReturn == appSys.api!.gradesList) {
+        return appSys.api!.gradesList;
       }
 
-      listToReturn = listToReturn.toSet().toList();
+      listToReturn = [];
       if (listToReturn != null) {
         //sort grades
         if (sortByWritingDate) {
-          listToReturn
-              .sort((a, b) => (a.entryDate != null && b.entryDate != null) ? (a.entryDate.compareTo(b.entryDate)) : 1);
+          listToReturn.sort(
+              (a, b) => (a.entryDate != null && b.entryDate != null) ? (a.entryDate!.compareTo(b.entryDate!)) : 1);
         }
 
         //remove duplicates
-        listToReturn = listToReturn.toSet().toList();
-        listToReturn = listToReturn.reversed.toList();
-        if (appSys.api.gradesList == null) {
-          appSys.api.gradesList = List<Grade>();
+        listToReturn = [];
+        listToReturn = [];
+        if (appSys.api!.gradesList == null) {
+          appSys.api!.gradesList = [];
         }
-        appSys.api.gradesList.clear();
-        appSys.api.gradesList.addAll(listToReturn);
+        appSys.api!.gradesList!.clear();
+        appSys.api!.gradesList!.addAll(listToReturn);
 
         if (overrideLimit == false && listToReturn != null) {
-          listToReturn = listToReturn.sublist(0, (listToReturn.length >= 5) ? 5 : listToReturn.length);
+          listToReturn = [];
         }
       }
       return listToReturn;
@@ -163,10 +165,10 @@ List<Grade> getAllGrades(List<Discipline> list, {bool overrideLimit = false, boo
 }
 
 //Redefine the switch statement
-TValue case2<TOptionType, TValue>(
+TValue? case2<TOptionType, TValue>(
   TOptionType selectedOption,
   Map<TOptionType, TValue> branches, [
-  TValue defaultValue = null,
+  TValue? defaultValue = null,
 ]) {
   if (!branches.containsKey(selectedOption)) {
     return defaultValue;
@@ -175,10 +177,10 @@ TValue case2<TOptionType, TValue>(
   return branches[selectedOption];
 }
 
-List<Discipline> specialities = List<Discipline>();
+List<Discipline> specialities = [];
 //Refresh colors
 Future<List<Discipline>> refreshDisciplinesListColors(List<Discipline> list) async {
-  List<Discipline> newList = List<Discipline>();
+  List<Discipline> newList = [];
   list.forEach((f) async {
     f.color = await getColor(f.disciplineCode);
     newList.add(f);
@@ -188,8 +190,8 @@ Future<List<Discipline>> refreshDisciplinesListColors(List<Discipline> list) asy
 
 specialtiesSelectionAvailable() async {
   return [false];
-  if (appSys.settings["system"]["chosenParser"] == 0) {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
+  if (appSys.settings!["system"]["chosenParser"] == 0) {
+    SharedPreferences? preferences = await SharedPreferences.getInstance();
     String classe = await storage.read(key: "classe") ?? "";
 
 //E.G : It is always something like "Première blabla"
@@ -206,7 +208,7 @@ specialtiesSelectionAvailable() async {
 }
 
 ReadStorage(_key) async {
-  String u = await storage.read(key: _key);
+  String? u = await storage.read(key: _key);
 
   return u;
 }

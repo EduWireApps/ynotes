@@ -41,24 +41,24 @@ class _SummaryPageSettingsState extends State<SummaryPageSettings> {
                 padding: const EdgeInsets.only(left: 20.0, right: 20.0, top: 10),
                 children: <Widget>[
                   CupertinoSlider(
-                      value: appSys.settings["user"]["summaryPage"]["summaryQuickHomework"].toDouble(),
+                      value: appSys.settings!["user"]["summaryPage"]["summaryQuickHomework"].toDouble(),
                       min: 1.0,
                       max: 11.0,
                       divisions: 11,
                       onChanged: (double newValue) async {
                         appSys.updateSetting(
-                            appSys.settings["user"]["summaryPage"], "summaryQuickHomework", newValue.round());
+                            appSys.settings!["user"]["summaryPage"], "summaryQuickHomework", newValue.round());
                         setState(() {});
                       }),
                   Container(
                     margin: EdgeInsets.only(top: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
                     child: AutoSizeText(
                       "Devoirs sur :\n" +
-                          (appSys.settings["user"]["summaryPage"]["summaryQuickHomework"].toString() == "11"
+                          (appSys.settings!["user"]["summaryPage"]["summaryQuickHomework"].toString() == "11"
                               ? "∞"
-                              : appSys.settings["user"]["summaryPage"]["summaryQuickHomework"].toString()) +
+                              : appSys.settings!["user"]["summaryPage"]["summaryQuickHomework"].toString()) +
                           " jour" +
-                          (appSys.settings["user"]["summaryPage"]["summaryQuickHomework"] > 1 ? "s" : ""),
+                          (appSys.settings!["user"]["summaryPage"]["summaryQuickHomework"] > 1 ? "s" : ""),
                       textAlign: TextAlign.center,
                       style: TextStyle(fontFamily: "Asap", fontSize: 15, color: ThemeUtils.textColor()),
                     ),

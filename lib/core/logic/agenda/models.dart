@@ -8,36 +8,37 @@ part 'models.g.dart';
 class Lesson {
   //E.G : Salle 215
   @HiveField(0)
-  final String room;
+  final String? room;
   //E.G : Monsieur machin
   @HiveField(1)
-  final List<String> teachers;
+  final List<String?>? teachers;
   //E.G : 9h30
   @HiveField(2)
-  final DateTime start;
+  final DateTime? start;
   //E.G : 10h30
   @HiveField(3)
-  final DateTime end;
+  final DateTime? end;
+
   ///E.G : 45 (minutes)
   @HiveField(4)
-  final int duration;
+  final int? duration;
   @HiveField(5)
-  final bool canceled;
+  final bool? canceled;
   //E.G : cours déplacé
   @HiveField(6)
-  final String status;
+  final String? status;
   //E.G : groupe C
   @HiveField(7)
-  final List<String> groups;
+  final List<String>? groups;
   //Description
   @HiveField(8)
-  final String content;
+  final String? content;
   @HiveField(9)
-  final String discipline;
+  final String? discipline;
   @HiveField(10)
-  final String disciplineCode;
+  final String? disciplineCode;
   @HiveField(11)
-  final String id;
+  final String? id;
 
   Lesson({
     this.room,
@@ -57,25 +58,24 @@ class Lesson {
   Map<String, dynamic> toJson() => _$LessonToJson(this);
 }
 
-
 @JsonSerializable(nullable: false)
 @HiveType(typeId: 6)
 //Associated with a lesson
 class AgendaReminder {
   @HiveField(0)
-  String lessonID;
+  String? lessonID;
   @HiveField(1)
-  String name;
+  String? name;
   @HiveField(2)
-  String description;
+  String? description;
   @HiveField(3)
-  alarmType alarm;
+  alarmType? alarm;
   @HiveField(4)
-  int tagColor;
+  int? tagColor;
   @HiveField(5)
-  String id;
+  String? id;
   Color get realTagColor {
-    return Color(tagColor);
+    return Color(tagColor!);
   }
 
   AgendaReminder(this.lessonID, this.name, this.alarm, this.id, {this.description, this.tagColor});
@@ -107,50 +107,50 @@ enum alarmType {
 @JsonSerializable(nullable: false)
 class AgendaEvent {
   @HiveField(0)
-  DateTime start;
+  DateTime? start;
   @HiveField(1)
-  DateTime end;
+  DateTime? end;
   @HiveField(2)
-  final String name;
+  final String? name;
   //Place or room
   @HiveField(3)
-  final String location;
+  final String? location;
   @HiveField(4)
-  double left;
+  double? left;
   @HiveField(5)
-  final double height;
+  final double? height;
   @HiveField(6)
-  double width;
+  double? width;
   @HiveField(7)
-  final bool canceled;
+  final bool? canceled;
   @HiveField(8)
-  final String id;
+  final String? id;
   @HiveField(9)
-  final List<AgendaReminder> reminders;
+  final List<AgendaReminder>? reminders;
   @HiveField(10)
-  final bool isLesson;
+  final bool? isLesson;
   @HiveField(11)
-  final Lesson lesson;
+  final Lesson? lesson;
   @HiveField(12)
-  final String description;
+  final String? description;
   @HiveField(13)
-  final alarmType alarm;
+  final alarmType? alarm;
   @HiveField(14)
-  final bool wholeDay;
+  final bool? wholeDay;
   @HiveField(15)
-  int color;
+  int? color;
   @HiveField(16)
-  String recurrenceScheme;
+  String? recurrenceScheme;
 
   bool collidesWith(AgendaEvent other) {
-    return end.isAfter(other.start) && start.isBefore(other.end);
+    return end!.isAfter(other.start!) && start!.isBefore(other.end!);
   }
 
   static eventsFromLessons(List<Lesson> data) {
-    List<AgendaEvent> events = List();
+    List<AgendaEvent> events = [];
     for (Lesson lesson in data) {
       bool wholeDay = false;
-      if (lesson.start.hour == 0 && lesson.end.hour == 0) {
+      if (lesson.start!.hour == 0 && lesson.end!.hour == 0) {
         wholeDay = true;
       }
       events.add(AgendaEvent(
@@ -161,7 +161,7 @@ class AgendaEvent {
   }
 
   Color get realColor {
-    return Color(color);
+    return Color(color!);
   }
 
   AgendaEvent(

@@ -41,7 +41,7 @@ class DrawerBuilder extends StatefulWidget {
     return _DrawerBuilderState();
   }
 
-  DrawerBuilder({Key key}) : super(key: key);
+  DrawerBuilder({Key? key}) : super(key: key);
 }
 
 int _currentIndex = 0;
@@ -110,33 +110,33 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
     ];
   }
 
-  PageController drawerPageViewController;
+  PageController? drawerPageViewController;
   ValueNotifier<int> _notifier = ValueNotifier<int>(0);
   //Boolean
   bool isChanging = false;
   bool firstStart = true;
-  AnimationController quickMenuAnimationController;
+  late AnimationController quickMenuAnimationController;
   //controllers
-  HomeworkController hwcontroller;
-  GradesController gradesController;
+  HomeworkController? hwcontroller;
+  GradesController? gradesController;
 
-  Animation<double> quickMenuButtonAnimation;
-  StreamSubscription tabBarconnexion;
+  Animation<double>? quickMenuButtonAnimation;
+  StreamSubscription? tabBarconnexion;
   GlobalKey<AgendaPageState> agendaPage = new GlobalKey();
   GlobalKey<SummaryPageState> summaryPage = new GlobalKey();
   GlobalKey<HomeworkPageState> homeworkPage = new GlobalKey();
   bool isOffline = false;
-  Animation<double> showLoginControllerStatus;
-  AnimationController showLoginControllerStatusController;
+  late Animation<double> showLoginControllerStatus;
+  late AnimationController showLoginControllerStatusController;
   final Duration drawerAnimationDuration = Duration(milliseconds: 150);
-  AnimationController bodyController;
-  Animation<double> bodyScaleAnimation;
-  Animation<Offset> bodyOffsetAnimation;
-  Animation<Offset> buttonOffsetAnimation;
-  Animation<double> buttonScaleAnimation;
-  Animation<double> fadeAnimation;
+  AnimationController? bodyController;
+  Animation<double>? bodyScaleAnimation;
+  Animation<Offset>? bodyOffsetAnimation;
+  Animation<Offset>? buttonOffsetAnimation;
+  Animation<double>? buttonScaleAnimation;
+  Animation<double>? fadeAnimation;
   bool isDrawerCollapsed = true;
-  int _previousPage;
+  int? _previousPage;
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
 
   @override
@@ -153,26 +153,26 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
     initControllers();
     initPageControllers();
     //Page sys
-    _previousPage = drawerPageViewController.initialPage;
+    _previousPage = drawerPageViewController!.initialPage;
   }
 
   @override
   void dispose() {
     _notifier?.dispose();
-    drawerPageViewController.dispose();
+    drawerPageViewController!.dispose();
     super.dispose();
-    appSys.offline.dispose();
+    appSys.offline!.dispose();
   }
 
   initControllers() async {
     hwcontroller = HomeworkController(appSys.api);
     gradesController = GradesController(appSys.api);
-    await gradesController.refresh();
-    await hwcontroller.refresh();
+    await gradesController!.refresh();
+    await hwcontroller!.refresh();
 
     //Lazy reloads
-    await gradesController.refresh(force: true);
-    await hwcontroller.refresh(force: true);
+    await gradesController!.refresh(force: true);
+    await hwcontroller!.refresh(force: true);
   }
 
   initPageControllers() {
@@ -199,7 +199,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
   }
 
   _onPageViewUpdate() {
-    _notifier?.value = drawerPageViewController.page.round();
+    _notifier?.value = drawerPageViewController!.page!.round();
   }
 
   bool wiredashShown = false;
@@ -234,7 +234,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                   child: Drawer(
                     child: ValueListenableBuilder(
                         valueListenable: _notifier,
-                        builder: (context, value, child) {
+                        builder: (context, dynamic value, child) {
                           return CustomDrawer(
                             entries(),
                             notifier: _notifier,
@@ -254,7 +254,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                     preferredSize: Size.fromHeight(screenSize.size.height / 10 * 0.7),
                     child: ValueListenableBuilder(
                         valueListenable: _notifier,
-                        builder: (context, value, child) {
+                        builder: (context, dynamic value, child) {
                           return AppBar(
                               shadowColor: Colors.transparent,
                               backgroundColor: ThemeUtils.isThemeDark
@@ -276,7 +276,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                                 color: Colors.transparent,
                                 child: Icon(MdiIcons.menu, color: ThemeUtils.isThemeDark ? Colors.white : Colors.black),
                                 onPressed: () async {
-                                  _drawerKey.currentState.openDrawer(); //
+                                  _drawerKey.currentState!.openDrawer(); //
                                 },
                               ));
                         }),
@@ -325,7 +325,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                               child: FittedBox(
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
+                                  (children: <Widget?>[
                                     case2(
                                       model.actualState,
                                       {
@@ -359,7 +359,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                                         color: Theme.of(context).primaryColorDark,
                                       ),
                                     ),
-                                  ],
+                                  ]) as List<Widget>,
                                 ),
                               ),
                             ),
@@ -379,6 +379,6 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
 
   _scrollTo(int index) {
     // scroll the calculated ammount
-    drawerPageViewController.jumpToPage(index);
+    drawerPageViewController!.jumpToPage(index);
   }
 }

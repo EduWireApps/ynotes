@@ -9,8 +9,8 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 ///Bottom windows with some infos on the discipline and the possibility to change the discipline color
-void disciplineModalBottomSheet(context, Discipline discipline, Function callback, var widget) {
-  Color colorGroup;
+void disciplineModalBottomSheet(context, Discipline? discipline, Function? callback, var widget) {
+  Color? colorGroup;
 
   if (widget.discipline == null) {
     colorGroup = Colors.blueAccent;
@@ -47,7 +47,7 @@ void disciplineModalBottomSheet(context, Discipline discipline, Function callbac
                           padding: EdgeInsets.all(5),
                           child: FittedBox(
                             child: Text(
-                              discipline.disciplineName,
+                              discipline!.disciplineName!,
                               style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w700),
                               textAlign: TextAlign.center,
                             ),
@@ -65,16 +65,16 @@ void disciplineModalBottomSheet(context, Discipline discipline, Function callbac
                                   radius: 25,
                                   onTap: () async {
                                     Navigator.pop(context);
-                                    Color color = await CustomDialogs.showColorPicker(context, Color(discipline.color));
+                                    Color? color = await CustomDialogs.showColorPicker(context, Color(discipline.color!));
 
                                     if (color != null) {
                                       String test = color.toString();
                                       String finalColor = "#" + test.toString().substring(10, test.length - 1);
-                                      final prefs = await SharedPreferences.getInstance();
+                                      final prefs = await (SharedPreferences.getInstance() as FutureOr<SharedPreferences>);
                                       await prefs.setString(discipline.disciplineCode, finalColor);
                                       discipline.setcolor = color;
                                       //Call set state
-                                      callback();
+                                      callback!();
                                     }
                                   },
                                   splashColor: Colors.grey,
@@ -101,7 +101,7 @@ void disciplineModalBottomSheet(context, Discipline discipline, Function callbac
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           buildKeyValuesInfo(context, "Votre moyenne", [
-                            (appSys.settings["system"]["chosenParser"] == 1)
+                            (appSys.settings!["system"]["chosenParser"] == 1)
                                 ? (widget.discipline.average ?? "-")
                                 : ((!widget.discipline.getAverage().isNaN)
                                     ? widget.discipline.getAverage().toString()

@@ -21,7 +21,7 @@ import 'package:ynotes/ui/components/buttons.dart';
 class ShareBox extends StatefulWidget {
   final Grade grade;
 
-  const ShareBox(this.grade, {Key key}) : super(key: key);
+  const ShareBox(this.grade, {Key? key}) : super(key: key);
   @override
   _ShareBoxState createState() => _ShareBoxState();
 }
@@ -30,15 +30,15 @@ class _ShareBoxState extends State<ShareBox> {
   GlobalKey _globalKey = new GlobalKey();
   Future<Uint8List> _capturePng() async {
     try {
-      RenderRepaintBoundary boundary = _globalKey.currentContext.findRenderObject();
+      RenderRepaintBoundary boundary = _globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
       ui.Image image = await boundary.toImage(pixelRatio: 2.0);
-      ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      ByteData byteData = await (image.toByteData(format: ui.ImageByteFormat.png) as FutureOr<ByteData>);
       var pngBytes = byteData.buffer.asUint8List();
-      final directory = (await getExternalStorageDirectory()).path;
+      final directory = (await getExternalStorageDirectory())!.path;
       File imgFile = new File('$directory/screenshot.png');
       imgFile.writeAsBytes(pngBytes);
 
-      final RenderBox box = context.findRenderObject();
+      final RenderBox box = context.findRenderObject() as RenderBox;
       Share.shareFiles(['$directory/screenshot.png'],
           subject: '', text: '', sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
       setState(() {});
@@ -85,7 +85,7 @@ class _ShareBoxState extends State<ShareBox> {
                                   return Container(
                                       child: Center(
                                         child: Text(
-                                          widget.grade.disciplineName,
+                                          widget.grade.disciplineName!,
                                           style: TextStyle(fontFamily: "Asap", color: Colors.black),
                                         ),
                                       ),
@@ -108,7 +108,7 @@ class _ShareBoxState extends State<ShareBox> {
                                 children: <Widget>[
                                   Text(
                                       widget.grade.date != null
-                                          ? ("Note du " + DateFormat("dd MMMM yyyy", "fr_FR").format(widget.grade.date))
+                                          ? ("Note du " + DateFormat("dd MMMM yyyy", "fr_FR").format(widget.grade.date!))
                                           : "",
                                       style: TextStyle(
                                         fontFamily: "Asap",
@@ -116,7 +116,7 @@ class _ShareBoxState extends State<ShareBox> {
                                       )),
                                   Text(
                                       widget.grade.testName ??
-                                          (widget.grade.simulated ? "(note simulée)" : "(sans nom)"),
+                                          (widget.grade.simulated! ? "(note simulée)" : "(sans nom)"),
                                       style: TextStyle(
                                           fontFamily: "Asap",
                                           color: ThemeUtils.textColor(),
@@ -153,7 +153,7 @@ class _ShareBoxState extends State<ShareBox> {
 
                                               //MARK ON
                                               TextSpan(
-                                                  text: '/' + widget.grade.scale,
+                                                  text: '/' + widget.grade.scale!,
                                                   style: TextStyle(
                                                       color: ThemeUtils.textColor(),
                                                       fontWeight: FontWeight.bold,

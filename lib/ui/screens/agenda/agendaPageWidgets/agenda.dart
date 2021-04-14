@@ -25,7 +25,7 @@ class Agenda extends StatefulWidget {
 bool extended = false;
 
 class _AgendaState extends State<Agenda> {
-  List<FileInfo> listFiles;
+  List<FileInfo>? listFiles;
   @override
   void initState() {
     if (agendaDate == null) {
@@ -38,15 +38,15 @@ class _AgendaState extends State<Agenda> {
   }
 
   //Force get date
-  getLessons(DateTime date) async {
+  getLessons(DateTime? date) async {
     await refreshAgendaFutures(force: false);
   }
 
   Future<void> refreshAgendaFutures({bool force = true}) async {
     if (mounted) {
       setState(() {
-        spaceAgendaFuture = appSys.api.getEvents(agendaDate, true, forceReload: force);
-        agendaFuture = appSys.api.getEvents(agendaDate, false, forceReload: false);
+        spaceAgendaFuture = appSys.api!.getEvents(agendaDate!, true, forceReload: force);
+        agendaFuture = appSys.api!.getEvents(agendaDate!, false, forceReload: false);
       });
     }
     var realSAF = await agendaFuture;
@@ -56,8 +56,8 @@ class _AgendaState extends State<Agenda> {
   Future<void> refreshAgendaFuture() async {
     if (mounted) {
       setState(() {
-        spaceAgendaFuture = appSys.api.getEvents(agendaDate, true);
-        agendaFuture = appSys.api.getEvents(agendaDate, false);
+        spaceAgendaFuture = appSys.api!.getEvents(agendaDate!, true);
+        agendaFuture = appSys.api!.getEvents(agendaDate!, false);
       });
     }
     var realAF = await spaceAgendaFuture;
@@ -116,19 +116,19 @@ class _AgendaState extends State<Agenda> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
-                                lesson.discipline,
+                                lesson.discipline!,
                                 style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w800),
                                 maxLines: 4,
                                 textAlign: TextAlign.center,
                               ),
                               Text(
-                                lesson.teachers[0],
+                                lesson.teachers![0]!,
                                 style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w600),
                                 textAlign: TextAlign.center,
                                 maxLines: 4,
                               ),
                               Text(
-                                lesson.room,
+                                lesson.room!,
                                 style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w500),
                                 textAlign: TextAlign.center,
                                 maxLines: 4,
@@ -149,13 +149,13 @@ class _AgendaState extends State<Agenda> {
                           child: Row(
                             children: [
                               Text(
-                                DateFormat.Hm().format(lesson.start),
+                                DateFormat.Hm().format(lesson.start!),
                                 style: TextStyle(
                                     fontFamily: "Asap", fontWeight: FontWeight.bold, color: ThemeUtils.textColor()),
                               ),
                               Icon(MdiIcons.arrowRight, color: ThemeUtils.textColor()),
                               Text(
-                                DateFormat.Hm().format(lesson.end),
+                                DateFormat.Hm().format(lesson.end!),
                                 style: TextStyle(
                                     fontFamily: "Asap", fontWeight: FontWeight.bold, color: ThemeUtils.textColor()),
                               )
@@ -307,20 +307,20 @@ class _AgendaState extends State<Agenda> {
   }
 }
 
-Lesson getCurrentLesson(List<Lesson> lessons, {DateTime now}) {
-  List<Lesson> dailyLessons = List();
-  Lesson lesson;
+Lesson? getCurrentLesson(List<Lesson>? lessons, {DateTime? now}) {
+  List<Lesson> dailyLessons = [];
+  Lesson? lesson;
   if (lessons != null) {
     dailyLessons = lessons
         .where((lesson) =>
-            DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) ==
+            DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start!)) ==
             DateTime.parse(DateFormat("yyyy-MM-dd").format(now ?? DateTime.now())))
         .toList();
     if (dailyLessons != null && dailyLessons.length != 0) {
       //Get current lesson
       try {
-        lesson = dailyLessons.firstWhere(
-            (lesson) => (now ?? DateTime.now()).isBefore(lesson.end) && (now ?? DateTime.now()).isAfter(lesson.start));
+        lesson = dailyLessons.firstWhere((lesson) =>
+            (now ?? DateTime.now()).isBefore(lesson.end!) && (now ?? DateTime.now()).isAfter(lesson.start!));
       } catch (e) {
         print(lessons);
       }
@@ -334,20 +334,20 @@ Lesson getCurrentLesson(List<Lesson> lessons, {DateTime now}) {
   }
 }
 
-getNextLesson(List<Lesson> lessons) {
-  List<Lesson> dailyLessons = List();
-  Lesson lesson;
+getNextLesson(List<Lesson>? lessons) {
+  List<Lesson> dailyLessons = [];
+  Lesson? lesson;
   if (lessons != null) {
     dailyLessons = lessons
         .where((lesson) =>
-            DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) ==
+            DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start!)) ==
             DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now())))
         .toList();
     if (dailyLessons != null && dailyLessons.length != 0) {
       //Get current lesson
       try {
-        dailyLessons.sort((a, b) => a.start.compareTo(b.start));
-        lesson = dailyLessons.firstWhere((lesson) => DateTime.now().isBefore(lesson.start));
+        dailyLessons.sort((a, b) => a.start!.compareTo(b.start!));
+        lesson = dailyLessons.firstWhere((lesson) => DateTime.now().isBefore(lesson.start!));
       } catch (e) {
         print(e.toString());
       }

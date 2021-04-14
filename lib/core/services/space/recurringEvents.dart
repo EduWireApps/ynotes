@@ -10,7 +10,7 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 class RecurringEventSchemes {
   //Get schemes
   static Future<List> toScheme(DateTime date) async {
-    List schemes = List();
+    List schemes = [];
     int parity = ((await get_week(date)).isEven) ? 1 : 2;
     int day = date.day;
     //Get all week event
@@ -21,14 +21,14 @@ class RecurringEventSchemes {
     schemes.add("0d$day");
   }
 
-  DateTime date;
-  int week;
+  DateTime? date;
+  int? week;
   //Get where function request
   bool testRequest(var scheme) {
     assert(date != null && week != null, "Date and week shouldn't be null");
     var stringScheme = scheme.toString();
-    int parity = (week.isEven) ? 1 : 2;
-    List selectedDays = List();
+    int parity = (week!.isEven) ? 1 : 2;
+    List selectedDays = [];
     for (int i = 2; i < stringScheme.runes.length; i++) {
       if (stringScheme[i] == "1") {
         selectedDays.add(i - 1);
@@ -37,16 +37,16 @@ class RecurringEventSchemes {
     print(selectedDays);
     print(date);
     return (stringScheme.length == 9 &&
-        (((stringScheme[0] == "0" || stringScheme[0] == parity.toString()) && selectedDays.contains(date.weekday)) ||
+        (((stringScheme[0] == "0" || stringScheme[0] == parity.toString()) && selectedDays.contains(date!.weekday)) ||
             stringScheme[1] == "1"));
   }
 
   String toCron(int scheme) {
-    TimeOfDay tod = TimeOfDay.fromDateTime(this.date);
-    List selectedDays;
+    TimeOfDay tod = TimeOfDay.fromDateTime(this.date!);
+    late List selectedDays;
     var stringScheme = scheme.toString();
     for (int i = 2; i < stringScheme.runes.length; i++) {
-      selectedDays = List();
+      selectedDays = [];
       if (stringScheme[i] == "1") {
         selectedDays.add(i - 1);
       }
@@ -61,7 +61,7 @@ class RecurringEventSchemes {
     List daysList = ["lundis", "mardis", "mercredis", "jeudis", "vendredis", "samedis", "dimanches"];
     String parsed = scheme.toString();
     String weekRoot = "";
-    List days = List();
+    List days = [];
     String end = "";
     switch (parsed[0]) {
       case "0":

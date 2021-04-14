@@ -7,13 +7,13 @@ import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/services/notifications.dart';
 
 addEvent(context) async {
-  AgendaEvent temp = await agendaEventEdit(context, true, defaultDate: agendaDate);
+  AgendaEvent? temp = await (agendaEventEdit(context, true, defaultDate: agendaDate) as FutureOr<AgendaEvent?>);
   if (temp != null) {
     print(temp.recurrenceScheme);
     if (temp.recurrenceScheme != null && temp.recurrenceScheme != "0") {
-      await appSys.offline.agendaEvents.addAgendaEvent(temp, temp.recurrenceScheme);
+      await appSys.offline!.agendaEvents.addAgendaEvent(temp, temp.recurrenceScheme);
     } else {
-      await appSys.offline.agendaEvents.addAgendaEvent(temp, await get_week(temp.start));
+      await appSys.offline!.agendaEvents.addAgendaEvent(temp, await get_week(temp.start!));
     }
     await AppNotification.scheduleAgendaReminders(temp);
   }

@@ -36,15 +36,15 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
   }
 
   //Force get date
-  getLessons(DateTime date) async {
+  getLessons(DateTime? date) async {
     await refreshAgendaFutures(force: false);
   }
 
   Future<void> refreshAgendaFutures({bool force = true}) async {
     if (mounted) {
       setState(() {
-        spaceAgendaFuture = appSys.api.getEvents(agendaDate, true, forceReload: false);
-        agendaFuture = appSys.api.getEvents(agendaDate, false, forceReload: force);
+        spaceAgendaFuture = appSys.api!.getEvents(agendaDate!, true, forceReload: false);
+        agendaFuture = appSys.api!.getEvents(agendaDate!, false, forceReload: force);
       });
     }
     var realAF = await spaceAgendaFuture;
@@ -124,14 +124,14 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
                               FutureBuilder(
                                   future: spaceAgendaFuture,
                                   builder: (context, snapshot) {
-                                    List<AgendaEvent> lst = snapshot.data;
+                                    List<AgendaEvent>? lst = snapshot.data;
                                     if (lst != null) {
-                                      lst.removeWhere((element) => element.start.isAfter(element.end));
+                                      lst.removeWhere((element) => element.start!.isAfter(element.end!));
                                     }
                                     if (snapshot.hasData &&
                                         snapshot.data != null &&
-                                        lst.length != 0 &&
-                                        lst.where((element) => !element.isLesson).toList().length != 0) {
+                                        lst!.length != 0 &&
+                                        lst.where((element) => !element.isLesson!).toList().length != 0) {
                                       return RefreshIndicator(
                                           onRefresh: refreshAgendaFutures,
                                           child: AgendaGrid(
@@ -141,8 +141,8 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
                                           ));
                                     }
                                     if (snapshot.data != null &&
-                                        (lst.length == 0 ||
-                                            lst.where((element) => !element.isLesson).toList().length == 0)) {
+                                        (lst!.length == 0 ||
+                                            lst.where((element) => !element.isLesson!).toList().length == 0)) {
                                       return Center(
                                         child: FittedBox(
                                           child: Column(

@@ -16,7 +16,7 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:html/parser.dart';
 
 class DialogHomework extends StatefulWidget {
-  final Homework hw;
+  final Homework? hw;
 
   const DialogHomework(this.hw);
   State<StatefulWidget> createState() {
@@ -33,9 +33,9 @@ class _DialogHomeworkState extends State<DialogHomework> {
   Widget build(BuildContext context) {
     TextStyle textStyle = TextStyle(backgroundColor: Colors.yellow.shade100);
 
-    var document = parse(segmentedControlIndex == 0 ? widget.hw.rawContent : widget.hw.sessionRawContent);
+    var document = parse(segmentedControlIndex == 0 ? widget.hw!.rawContent : widget.hw!.sessionRawContent);
 
-    String parsedHtml = parse(document.body.text).documentElement.text;
+    String parsedHtml = parse(document.body!.text).documentElement!.text;
     MediaQueryData screenSize;
     screenSize = MediaQuery.of(context);
     return Container(
@@ -62,7 +62,7 @@ class _DialogHomeworkState extends State<DialogHomework> {
               ),
             ],
           ),
-          if (widget.hw.sessionRawContent != null && widget.hw.sessionRawContent != "")
+          if (widget.hw!.sessionRawContent != null && widget.hw!.sessionRawContent != "")
             Material(
               color: Colors.transparent,
               child: Container(
@@ -110,7 +110,7 @@ class _DialogHomeworkState extends State<DialogHomework> {
             ),
           ),
           FutureBuilder(
-              future: getColor(this.widget.hw.disciplineCode),
+              future: getColor(this.widget.hw!.disciplineCode),
               initialData: 0,
               builder: (context, snapshot) {
                 Color color = Color(snapshot.data);
@@ -126,7 +126,7 @@ class _DialogHomeworkState extends State<DialogHomework> {
                       child: Column(
                         children: [
                           Text(
-                            this.widget.hw.discipline,
+                            this.widget.hw!.discipline!,
                             textAlign: TextAlign.left,
                             style: TextStyle(
                                 fontFamily: "Asap",

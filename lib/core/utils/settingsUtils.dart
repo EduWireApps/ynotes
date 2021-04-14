@@ -71,7 +71,7 @@ class SettingsUtils {
   static getSettings() async {
     Map _settings;
     Map _oldSettings;
-    Map _newSettings;
+    Map? _newSettings;
     _oldSettings = getOldSettings();
     print(_oldSettings == null);
     _newSettings = await getSavedSettings();
@@ -86,34 +86,34 @@ class SettingsUtils {
     return _settings;
   }
 
-  static Future<Map> getSavedSettings() async {
-    final prefs = await SharedPreferences.getInstance();
-    String settings = prefs.getString("settings");
+  static Future<Map?> getSavedSettings() async {
+    final prefs = await (SharedPreferences.getInstance() as FutureOr<SharedPreferences>);
+    String? settings = prefs.getString("settings");
 
     if (settings == null) {
       settings = json.encode(settingsForm);
     }
     print(settings);
-    Map _settings = json.decode(settings);
+    Map? _settings = json.decode(settings);
     return _settings;
   }
 
-  static setSetting(Map newMap) async {
-    final prefs = await SharedPreferences.getInstance();
+  static setSetting(Map? newMap) async {
+    final prefs = await (SharedPreferences.getInstance() as FutureOr<SharedPreferences>);
     String encoded = json.encode(newMap);
     await prefs.setString("settings", encoded);
   }
 
   ///Deprecated
-  static Future<bool> getBoolSetting(String setting) async {
-    final prefs = await SharedPreferences.getInstance();
-    bool value = prefs.getBool(setting);
+  static Future<bool?> getBoolSetting(String setting) async {
+    final prefs = await (SharedPreferences.getInstance() as FutureOr<SharedPreferences>);
+    bool? value = prefs.getBool(setting);
     return value;
   }
 
   //Deprecated
   static Future<int> getIntSetting(String setting) async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = await (SharedPreferences.getInstance() as FutureOr<SharedPreferences>);
     var value = prefs.getInt(setting);
     if (value == null) {
       value = 0;

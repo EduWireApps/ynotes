@@ -23,7 +23,7 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 
 //Represents the element containing details about homework
 class HomeworkElement extends StatefulWidget {
-  final Homework homeworkForThisDay;
+  final Homework? homeworkForThisDay;
   final bool initialExpansion;
   HomeworkElement(this.homeworkForThisDay, this.initialExpansion);
 
@@ -38,7 +38,7 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
   /// Show a small label if the main label doesn't show a date
   bool showSmallLabel = true;
 
-  bool isExpanded = false;
+  bool? isExpanded = false;
 
   ///Expand document part or not
   bool isDocumentExpanded = false;
@@ -46,8 +46,8 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
   //The index of the segmented control (travail à faire / contenu de cours)
   int segmentedControlIndex = 0;
 
-  AnimationController _rotationController;
-  Animation<double> _rotationAnimation;
+  late AnimationController _rotationController;
+  late Animation<double> _rotationAnimation;
   @override
   void initState() {
     super.initState();
@@ -67,7 +67,7 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
   }
 
   void getDefaultValue() async {
-    var defaultValue = appSys.settings["user"]["homeworkPage"]["isExpandedByDefault"];
+    var defaultValue = appSys.settings!["user"]["homeworkPage"]["isExpandedByDefault"];
 
     setState(() {
       isExpanded = defaultValue;
@@ -84,7 +84,7 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
     return Container(
       margin: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.1),
       child: FutureBuilder(
-          future: getColor(this.widget.homeworkForThisDay.disciplineCode ?? ""),
+          future: getColor(this.widget.homeworkForThisDay!.disciplineCode ?? ""),
           initialData: 0,
           builder: (context, snapshot) {
             Color color = Color(snapshot.data);
@@ -109,9 +109,9 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                             BorderRadius.only(bottomLeft: Radius.circular(11), bottomRight: Radius.circular(11)),
                         child: Column(
                           children: <Widget>[
-                            if (this.widget.homeworkForThisDay.isATest == true &&
-                                isExpanded &&
-                                this.widget.homeworkForThisDay.loaded)
+                            if (this.widget.homeworkForThisDay!.isATest == true &&
+                                isExpanded! &&
+                                this.widget.homeworkForThisDay!.loaded!)
                               Container(
                                 margin: EdgeInsets.only(top: screenSize.size.width / 10 * 0.15),
                                 padding: EdgeInsets.all(screenSize.size.width / 10 * 0.01),
@@ -151,16 +151,16 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                 ),
                               ),
                             ),*/
-                            if (this.widget.homeworkForThisDay.loaded)
+                            if (this.widget.homeworkForThisDay!.loaded!)
                               Container(
                                 color: ThemeUtils.isThemeDark
                                     ? ThemeUtils.darken(Theme.of(context).primaryColorDark, forceAmount: 0.1)
                                     : ThemeUtils.darken(Theme.of(context).primaryColor, forceAmount: 0.03),
                                 width: screenSize.size.width / 5 * 4.5,
-                                height: isExpanded ? null : 0,
+                                height: isExpanded! ? null : 0,
                                 child: Container(
                                   decoration: BoxDecoration(border: Border.all(width: 0, color: Colors.transparent)),
-                                  padding: isExpanded
+                                  padding: isExpanded!
                                       ? EdgeInsets.only(
                                           left: screenSize.size.height / 10 * 0.1,
                                           top: screenSize.size.height / 10 * 0.1,
@@ -168,10 +168,10 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                       : null,
                                   child: Column(
                                     children: <Widget>[
-                                      if ((widget.homeworkForThisDay.sessionRawContent != null &&
-                                              widget.homeworkForThisDay.sessionRawContent != "") ||
-                                          (widget.homeworkForThisDay.sessionDocuments != null &&
-                                              widget.homeworkForThisDay.sessionDocuments.length > 0))
+                                      if ((widget.homeworkForThisDay!.sessionRawContent != null &&
+                                              widget.homeworkForThisDay!.sessionRawContent != "") ||
+                                          (widget.homeworkForThisDay!.sessionDocuments != null &&
+                                              widget.homeworkForThisDay!.sessionDocuments!.length > 0))
                                         Container(
                                           height: screenSize.size.height / 10 * 0.6,
                                           width: screenSize.size.width / 5 * 4.5,
@@ -194,23 +194,23 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                                 ),
                                               }),
                                         ),
-                                      if (this.widget.homeworkForThisDay.teacherName.length > 0)
+                                      if (this.widget.homeworkForThisDay!.teacherName!.length > 0)
                                         Container(
                                             child: Text(
-                                          this.widget.homeworkForThisDay.teacherName,
+                                          this.widget.homeworkForThisDay!.teacherName!,
                                           style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                                         )),
                                       HtmlWidget(
                                           segmentedControlIndex == 0
-                                              ? this.widget.homeworkForThisDay.rawContent
-                                              : this.widget.homeworkForThisDay.sessionRawContent,
+                                              ? this.widget.homeworkForThisDay!.rawContent!
+                                              : this.widget.homeworkForThisDay!.sessionRawContent!,
                                           textStyle: TextStyle(
                                               color: ThemeUtils.textColor(),
                                               fontFamily: "Asap",
                                               backgroundColor: Colors.transparent),
                                           customStylesBuilder: (element) {
                                             if (element.attributes['style'] != null &&
-                                                element.attributes['style'].contains("background")) {
+                                                element.attributes['style']!.contains("background")) {
                                               element.attributes['style'] = "";
                                               if (ThemeUtils.isThemeDark) {
                                                 return {'background': '#CF7545', 'color': 'white'};
@@ -248,18 +248,18 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                   ),
                                 ),
                               ),
-                            if (this.widget.homeworkForThisDay.loaded &&
-                                this.widget.homeworkForThisDay.documents != null &&
+                            if (this.widget.homeworkForThisDay!.loaded! &&
+                                this.widget.homeworkForThisDay!.documents != null &&
                                 (segmentedControlIndex == 0
-                                        ? this.widget.homeworkForThisDay.documents.length
-                                        : this.widget.homeworkForThisDay.sessionDocuments.length) !=
+                                        ? this.widget.homeworkForThisDay!.documents!.length
+                                        : this.widget.homeworkForThisDay!.sessionDocuments!.length) !=
                                     0 &&
-                                isExpanded)
+                                isExpanded!)
                               Container(
                                 width: screenSize.size.width / 5 * 4.5,
                                 child: Column(
                                   children: <Widget>[
-                                    if (this.widget.homeworkForThisDay.loaded)
+                                    if (this.widget.homeworkForThisDay!.loaded!)
                                       Material(
                                         color: Color(0xff2874A6),
                                         child: InkWell(
@@ -293,14 +293,14 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                       width: screenSize.size.width / 5 * 4.5,
                                       height: isDocumentExpanded
                                           ? (segmentedControlIndex == 0
-                                                  ? widget.homeworkForThisDay.documents.length
-                                                  : widget.homeworkForThisDay.sessionDocuments.length) *
+                                                  ? widget.homeworkForThisDay!.documents!.length
+                                                  : widget.homeworkForThisDay!.sessionDocuments!.length) *
                                               (screenSize.size.height / 10 * 0.7)
                                           : 0,
                                       child: ListView.builder(
                                           itemCount: segmentedControlIndex == 0
-                                              ? widget.homeworkForThisDay.documents.length
-                                              : widget.homeworkForThisDay.sessionDocuments.length,
+                                              ? widget.homeworkForThisDay!.documents!.length
+                                              : widget.homeworkForThisDay!.sessionDocuments!.length,
                                           itemBuilder: (BuildContext context, int index) {
                                             return Material(
                                               color: Color(0xff5FA9DA),
@@ -322,10 +322,10 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                                           child: ClipRRect(
                                                             child: Marquee(
                                                                 text: (segmentedControlIndex == 0
-                                                                        ? widget.homeworkForThisDay.documents
+                                                                        ? widget.homeworkForThisDay!.documents
                                                                         : widget
-                                                                            .homeworkForThisDay.sessionDocuments)[index]
-                                                                    .documentName,
+                                                                            .homeworkForThisDay!.sessionDocuments)![index]
+                                                                    .documentName!,
                                                                 blankSpace: screenSize.size.width / 5 * 0.2,
                                                                 style:
                                                                     TextStyle(fontFamily: "Asap", color: Colors.white)),
@@ -345,9 +345,9 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                                               builder: (context, model, child) {
                                                                 return FutureBuilder(
                                                                     future: model.fileExists((segmentedControlIndex == 0
-                                                                            ? widget.homeworkForThisDay.documents
-                                                                            : widget.homeworkForThisDay
-                                                                                .sessionDocuments)[index]
+                                                                            ? widget.homeworkForThisDay!.documents
+                                                                            : widget.homeworkForThisDay!
+                                                                                .sessionDocuments)![index]
                                                                         .documentName),
                                                                     initialData: false,
                                                                     builder: (context, snapshot) {
@@ -397,17 +397,17 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                                                               ),
                                                                               onPressed: () async {
                                                                                 print((segmentedControlIndex == 0
-                                                                                        ? widget.homeworkForThisDay
+                                                                                        ? widget.homeworkForThisDay!
                                                                                             .documents
-                                                                                        : widget.homeworkForThisDay
-                                                                                            .sessionDocuments)[index]
+                                                                                        : widget.homeworkForThisDay!
+                                                                                            .sessionDocuments)![index]
                                                                                     .documentName);
                                                                                 FileAppUtil.openFile(
                                                                                     (segmentedControlIndex == 0
-                                                                                            ? widget.homeworkForThisDay
+                                                                                            ? widget.homeworkForThisDay!
                                                                                                 .documents
-                                                                                            : widget.homeworkForThisDay
-                                                                                                .sessionDocuments)[index]
+                                                                                            : widget.homeworkForThisDay!
+                                                                                                .sessionDocuments)![index]
                                                                                         .documentName,
                                                                                     usingFileName: true);
                                                                               },
@@ -427,9 +427,9 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                                                               await model.download(
                                                                                   (segmentedControlIndex == 0
                                                                                       ? widget
-                                                                                          .homeworkForThisDay.documents
-                                                                                      : widget.homeworkForThisDay
-                                                                                          .sessionDocuments)[index]);
+                                                                                          .homeworkForThisDay!.documents
+                                                                                      : widget.homeworkForThisDay!
+                                                                                          .sessionDocuments)![index]);
                                                                             },
                                                                           );
                                                                         }
@@ -449,10 +449,10 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                                                               onPressed: () async {
                                                                                 FileAppUtil.openFile(
                                                                                     (segmentedControlIndex == 0
-                                                                                            ? widget.homeworkForThisDay
+                                                                                            ? widget.homeworkForThisDay!
                                                                                                 .documents
-                                                                                            : widget.homeworkForThisDay
-                                                                                                .sessionDocuments)[index]
+                                                                                            : widget.homeworkForThisDay!
+                                                                                                .sessionDocuments)![index]
                                                                                         .documentName,
                                                                                     usingFileName: true);
                                                                               },
@@ -474,9 +474,9 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                               ),
 
                             //Show a button to send homework
-                            if (this.widget.homeworkForThisDay.loaded &&
-                                this.widget.homeworkForThisDay.toReturn == true &&
-                                isExpanded)
+                            if (this.widget.homeworkForThisDay!.loaded! &&
+                                this.widget.homeworkForThisDay!.toReturn == true &&
+                                isExpanded!)
                               Material(
                                 color: Color(0xff63A86A),
                                 child: InkWell(
@@ -510,9 +510,9 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                 child: InkWell(
                                     onTap: () {
                                       setState(() {
-                                        isExpanded = !isExpanded;
+                                        isExpanded = !isExpanded!;
                                       });
-                                      if (isExpanded) {
+                                      if (isExpanded!) {
                                         _rotationController.forward();
                                       } else {
                                         _rotationController.reverse();
@@ -524,7 +524,7 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                         ),
                                         width: screenSize.size.width / 5 * 4.5,
                                         height: screenSize.size.height / 10 * 0.4,
-                                        child: widget.homeworkForThisDay.loaded
+                                        child: widget.homeworkForThisDay!.loaded!
                                             ? Center(
                                                 child: AnimatedBuilder(
                                                     animation: _rotationAnimation,
@@ -548,9 +548,9 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                     child: InkWell(
                       onTap: () {
                         setState(() {
-                          isExpanded = !isExpanded;
+                          isExpanded = !isExpanded!;
                         });
-                        if (isExpanded) {
+                        if (isExpanded!) {
                           _rotationController.forward();
                         } else {
                           _rotationController.reverse();
@@ -568,7 +568,7 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                             border: Border.all(width: 0, color: Colors.transparent),
                           ),
                           width: screenSize.size.width / 5 * 4.5,
-                          height: isExpanded
+                          height: isExpanded!
                               ? (screenSize.size.height / 10 * 8.8) / 10 * 0.6
                               : (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
                           child: Stack(children: <Widget>[
@@ -583,19 +583,19 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                   Row(
                                     children: <Widget>[
                                       Text(
-                                        this.widget.homeworkForThisDay.discipline,
+                                        this.widget.homeworkForThisDay!.discipline!,
                                         overflow: TextOverflow.ellipsis,
                                         textAlign: TextAlign.center,
                                         style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.normal),
                                       ),
-                                      if (widget.homeworkForThisDay.isATest == true)
+                                      if (widget.homeworkForThisDay!.isATest == true)
                                         Container(
                                           margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.15),
                                           width: screenSize.size.width / 5 * 0.15,
                                           height: screenSize.size.width / 5 * 0.15,
                                           decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.orangeAccent),
                                         ),
-                                      if (widget.homeworkForThisDay.toReturn == true)
+                                      if (widget.homeworkForThisDay!.toReturn == true)
                                         Container(
                                           margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.15),
                                           width: screenSize.size.width / 5 * 0.15,
@@ -607,22 +607,22 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                         height: screenSize.size.width / 5 * 0.5,
                                         child: FittedBox(
                                           child: FutureBuilder(
-                                              future: appSys.offline.doneHomework
-                                                  .getHWCompletion(widget.homeworkForThisDay.id ?? ''),
+                                              future: appSys.offline!.doneHomework
+                                                  .getHWCompletion(widget.homeworkForThisDay!.id ?? ''),
                                               initialData: false,
                                               builder: (context, snapshot) {
-                                                bool done = snapshot.data;
+                                                bool? done = snapshot.data;
                                                 return CircularCheckBox(
                                                   activeColor: Colors.blue,
                                                   value: done,
                                                   materialTapTargetSize: MaterialTapTargetSize.padded,
-                                                  onChanged: (bool x) async {
+                                                  onChanged: (bool? x) async {
                                                     setState(() {
-                                                      done = !done;
+                                                      done = !done!;
                                                       donePercentFuture = HomeworkUtils.getHomeworkDonePercent();
                                                     });
-                                                    appSys.offline.doneHomework
-                                                        .setHWCompletion(widget.homeworkForThisDay.id, x);
+                                                    appSys.offline!.doneHomework
+                                                        .setHWCompletion(widget.homeworkForThisDay!.id, x);
                                                   },
                                                 );
                                               }),

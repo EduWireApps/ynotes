@@ -7,7 +7,7 @@ import 'package:requests/requests.dart';
 
 ///Redirect to the good CAS
 ///Return type : cookies as Map
-callCas(String cas, String username, String password, String url) async {
+callCas(String? cas, String username, String? password, String url) async {
   final storage = new FlutterSecureStorage();
   await storage.write(key: "pronotecas", value: cas);
   if (cas == null) {
@@ -32,7 +32,7 @@ callCas(String cas, String username, String password, String url) async {
   }
 }
 
-atrium_sud(String username, String password) async {
+atrium_sud(String username, String? password) async {
   // ENT / PRONOTE required URLs
   var ent_login =
       'https://www.atrium-sud.fr/connexion/login?service=https:%2F%2F0060013G.index-education.net%2Fpronote%2F';
@@ -83,7 +83,7 @@ void printWrapped(String text) {
   pattern.allMatches(text).forEach((match) => print(match.group(0)));
 }
 
-idf(String username, String password, String url) async {
+idf(String username, String? password, String url) async {
   var headers = {
     'connection': 'keep-alive',
     'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/73.0'
@@ -96,7 +96,7 @@ idf(String username, String password, String url) async {
   request.followRedirects = false;
   final response = await request.close();
   //Get location from headers
-  String redirectedUrl = response.headers.value(HttpHeaders.locationHeader);
+  String redirectedUrl = response.headers.value(HttpHeaders.locationHeader)!;
   String service = Uri.encodeComponent(url);
 
   if (redirectedUrl.startsWith('http') && redirectedUrl.contains('service=')) {
@@ -138,7 +138,7 @@ class Session {
   }
 
   void updateCookie(http.Response response) {
-    String rawCookie = response.headers['set-cookie'];
+    String? rawCookie = response.headers['set-cookie'];
     if (rawCookie != null) {
       int index = rawCookie.indexOf(';');
       headers['cookie'] = (index == -1) ? rawCookie : rawCookie.substring(0, index);

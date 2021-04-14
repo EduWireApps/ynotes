@@ -16,7 +16,7 @@ class MultipleChoicesDialog extends StatefulWidget {
 }
 
 class _MultipleChoicesDialogState extends State<MultipleChoicesDialog> {
-  List<int> indexsSelected = List();
+  List<int> indexsSelected = [];
   @override
   void initState() {
     // TODO: implement initState

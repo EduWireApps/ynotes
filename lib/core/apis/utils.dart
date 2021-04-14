@@ -12,9 +12,9 @@ import 'package:ynotes/globals.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 //Return the good API (will be extended to Pronote)
-APIManager(Offline _offline) {
+APIManager(Offline? _offline) {
   //The parser list index corresponding to the user choice
-  switch (appSys.settings["system"]["chosenParser"]) {
+  switch (appSys.settings!["system"]["chosenParser"]) {
     case 0:
       return APIEcoleDirecte(_offline);
 
@@ -23,8 +23,8 @@ APIManager(Offline _offline) {
   }
 }
 
-setChosenParser(int chosen) async {
-  appSys.updateSetting(appSys.settings["system"], "chosenParser", chosen);
+setChosenParser(int? chosen) async {
+  appSys.updateSetting(appSys.settings!["system"], "chosenParser", chosen);
 }
 
 testIfPronoteCas(String url) async {
@@ -52,7 +52,7 @@ getRootAddress(addr) {
 
 get_week(DateTime date) async {
   final storage = new FlutterSecureStorage();
-  return (1 + (date.difference(DateTime.parse(await storage.read(key: "startday"))).inDays / 7).floor()).round();
+  return (1 + (date.difference(DateTime.parse(await (storage.read(key: "startday") as FutureOr<String>))).inDays / 7).floor()).round();
 }
 
 checkPronoteURL(String url) async {
@@ -124,17 +124,17 @@ void createStack() {
   });
 }
 
-Future<int> getColor(String disciplineName) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
+Future<int> getColor(String? disciplineName) async {
+  SharedPreferences prefs = await (SharedPreferences.getInstance() as FutureOr<SharedPreferences>);
   if (prefs.containsKey(disciplineName)) {
-    String color = prefs.getString(disciplineName);
+    String color = prefs.getString(disciplineName)!;
     return HexColor(color).value;
   } else {
     if (Colorstack.isEmpty) {
       createStack();
     }
     await prefs.setString(disciplineName, Colorstack.pop());
-    String color = prefs.getString(disciplineName);
+    String color = prefs.getString(disciplineName)!;
     return HexColor(color).value;
   }
 }

@@ -13,16 +13,16 @@ import '../dialogs.dart';
 import '../../../usefulMethods.dart';
 
 class WriteMailBottomSheet extends StatefulWidget {
-  final List<Recipient> defaultRecipients;
-  final String defaultSubject;
-  const WriteMailBottomSheet({Key key, this.defaultRecipients, this.defaultSubject}) : super(key: key);
+  final List<Recipient>? defaultRecipients;
+  final String? defaultSubject;
+  const WriteMailBottomSheet({Key? key, this.defaultRecipients, this.defaultSubject}) : super(key: key);
 
   @override
   _WriteMailBottomSheetState createState() => _WriteMailBottomSheetState();
 }
 
 class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
-  List<Recipient> selectedRecipients = List();
+  List<Recipient>? selectedRecipients = [];
   bool monochromatic = false;
   DateFormat format = DateFormat("dd-MM-yyyy HH:hh");
   getMonochromaticColors(String html) {
@@ -42,7 +42,7 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
     // TODO: implement initState
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {
+    WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() {
           if (this.widget.defaultRecipients != null) {
             selectedRecipients = this.widget.defaultRecipients;
           }
@@ -74,9 +74,9 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                         alignment: Alignment.centerLeft,
                         child: IconButton(
                           onPressed: () async {
-                            if (await CustomDialogs.showConfirmationDialog(context, null,
+                            if (await (CustomDialogs.showConfirmationDialog(context, null,
                                 alternativeText: "Êtes vous sûr de vouloir supprimer ce mail ?",
-                                alternativeButtonConfirmText: "Supprimer ce mail")) {
+                                alternativeButtonConfirmText: "Supprimer ce mail") as FutureOr<bool>)) {
                               Navigator.pop(context);
                             }
                           },
@@ -99,7 +99,7 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                       children: [
                         IconButton(
                           onPressed: () async {
-                            if (!selectedRecipients.isEmpty) {
+                            if (!selectedRecipients!.isEmpty) {
                               Navigator.pop(context, [
                                 subjectController.text,
                                 await controller.getText(),
@@ -130,7 +130,7 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                         scrollDirection: Axis.horizontal,
                         child: Row(
                           children: [
-                            if (selectedRecipients.length == 0)
+                            if (selectedRecipients!.length == 0)
                               Container(
                                 margin: EdgeInsets.only(right: screenSize.size.width / 5 * 0.1),
                                 child: Chip(
@@ -139,17 +139,17 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                                       style: TextStyle(fontFamily: "Asap", color: Colors.white)),
                                 ),
                               ),
-                            for (Recipient recipient in selectedRecipients)
+                            for (Recipient recipient in selectedRecipients!)
                               Container(
                                 margin: EdgeInsets.only(right: screenSize.size.width / 5 * 0.1),
                                 child: Chip(
                                   deleteIcon: Icon(Icons.delete),
                                   onDeleted: () {
                                     setState(() {
-                                      selectedRecipients.remove(recipient);
+                                      selectedRecipients!.remove(recipient);
                                     });
                                   },
-                                  label: Text(recipient.name + " " + recipient.surname),
+                                  label: Text(recipient.name! + " " + recipient.surname!),
                                 ),
                               )
                           ],
@@ -166,7 +166,7 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                           var recipient = await CustomDialogs.showNewRecipientDialog(context);
                           if (recipient != null) {
                             setState(() {
-                              selectedRecipients.add(recipient);
+                              selectedRecipients!.add(recipient);
                             });
                           }
                         },
@@ -181,8 +181,9 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                       child: IconButton(
                         onPressed: () async {
                           //Get the recipients
-                          List<Recipient> recipients = await appSys.api.app("mailRecipients");
-                          List<String> recipientsName = List();
+                          List<Recipient>? recipients =
+                              await (appSys.api!.app("mailRecipients") as FutureOr<List<Recipient>?>);
+                          List<String> recipientsName = [];
                           if (recipients != null) {
                             recipients.forEach((element) {
                               print(element.id);
@@ -193,19 +194,19 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                               recipientsName.add(toAdd);
                             });
                           }
-                          List<int> alreadySelected = List();
-                          selectedRecipients.forEach((selected) {
-                            if (recipients.indexOf(selected) >= 0) alreadySelected.add(recipients.indexOf(selected));
+                          List<int> alreadySelected = [];
+                          selectedRecipients!.forEach((selected) {
+                            if (recipients!.indexOf(selected) >= 0) alreadySelected.add(recipients.indexOf(selected));
                           });
-                          List<int> selection = await CustomDialogs.showMultipleChoicesDialog(
+                          List<int>? selection = await (CustomDialogs.showMultipleChoicesDialog(
                               context, recipientsName, alreadySelected,
-                              singleChoice: false);
+                              singleChoice: false) as FutureOr<List<int>?>);
                           if (selection != null) {
                             print(selection);
                             setState(() {
                               selection.forEach((index) {
-                                if (!selectedRecipients.contains(recipients[index]))
-                                  selectedRecipients.add(recipients[index]);
+                                if (!selectedRecipients!.contains(recipients![index]))
+                                  selectedRecipients!.add(recipients[index]);
                               });
                             });
                           }

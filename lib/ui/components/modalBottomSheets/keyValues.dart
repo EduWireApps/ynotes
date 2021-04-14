@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 
-buildKeyValuesInfo(BuildContext context, String key, List<String> values) {
+buildKeyValuesInfo(BuildContext context, String key, List<String?>? values) {
   if (values != null) {
     MediaQueryData screenSize = MediaQuery.of(context);
     if (values.length == 1) {
@@ -58,7 +58,7 @@ buildKeyValuesInfo(BuildContext context, String key, List<String> values) {
                               horizontal: (screenSize.size.width / 5) * 0.2,
                               vertical: (screenSize.size.width / 5) * 0.1),
                           child: Text(
-                            values[index],
+                            values[index]!,
                             style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                           ),
                         );

@@ -44,9 +44,9 @@ class LoginController extends ChangeNotifier {
       _details = "Vous êtes hors ligne";
       notifyListeners();
     }
-    if (_actualState != loginStatus.offline && appSys.api.loggedIn == false) {
+    if (_actualState != loginStatus.offline && appSys.api!.loggedIn == false) {
       await login();
-    } else if (appSys.api.loggedIn) {
+    } else if (appSys.api!.loggedIn) {
       _details = "Connecté";
       _actualState = loginStatus.loggedIn;
       notifyListeners();
@@ -80,7 +80,7 @@ class LoginController extends ChangeNotifier {
 
       var z = await storage.read(key: "agreedTermsAndConfiguredApp");
       if (u != null && p != null && z != null) {
-        await appSys.api.login(u, p, url: url, mobileCasLogin: iscas ?? false, cas: cas).then((List loginValues) {
+        await appSys.api!.login(u, p, url: url, mobileCasLogin: iscas ?? false, cas: cas).then((List loginValues) {
           if (loginValues == null) {
             _actualState = loginStatus.loggedOff;
             _details = "Connexion à l'API...";

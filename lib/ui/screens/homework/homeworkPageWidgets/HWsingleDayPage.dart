@@ -22,10 +22,10 @@ class HomeworkSecondPage extends StatefulWidget {
 }
 
 class _HomeworkSecondPageState extends State<HomeworkSecondPage> {
-  Future homeworkListFuture;
+  Future? homeworkListFuture;
   Future<void> refreshLocalHomeworkList() async {
     setState(() {
-      homeworkListFuture = appSys.api.getNextHomework(forceReload: true);
+      homeworkListFuture = appSys.api!.getNextHomework(forceReload: true);
     });
     var realHW = await homeworkListFuture;
   }
@@ -38,7 +38,7 @@ class _HomeworkSecondPageState extends State<HomeworkSecondPage> {
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
     return FutureBuilder(
-        future: appSys.api.getHomeworkFor(dateToUse),
+        future: appSys.api!.getHomeworkFor(dateToUse),
         builder: (context, snapshot) {
           if (snapshot.hasData && snapshot.data != null) {
             localListHomeworkDateToUse = snapshot.data;
@@ -60,18 +60,18 @@ class _HomeworkSecondPageState extends State<HomeworkSecondPage> {
                                 ? null
                                 : () {
                                     setState(() {
-                                      isPinnedDateToUse = !isPinnedDateToUse;
-                                      appSys.offline.pinnedHomework.set(dateToUse.toString(), isPinnedDateToUse);
+                                      isPinnedDateToUse = !isPinnedDateToUse!;
+                                      appSys.offline!.pinnedHomework.set(dateToUse.toString(), isPinnedDateToUse);
                                     });
-                                    if (isPinnedDateToUse) {
-                                      appSys.offline.homework.updateHomework(localListHomeworkDateToUse, add: true);
+                                    if (isPinnedDateToUse!) {
+                                      appSys.offline!.homework.updateHomework(localListHomeworkDateToUse, add: true);
                                     }
                                   },
                             child: Container(
                                 padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
                                 child: Icon(
                                   MdiIcons.pin,
-                                  color: isPinnedDateToUse ? Colors.green : Colors.white,
+                                  color: isPinnedDateToUse! ? Colors.green : Colors.white,
                                   size: screenSize.size.width / 5 * 0.4,
                                 )),
                           )),
@@ -93,7 +93,7 @@ class _HomeworkSecondPageState extends State<HomeworkSecondPage> {
                             child: Text(
                                 (dateToUse != null
                                     ? toBeginningOfSentenceCase(
-                                        DateFormat("EEEE d MMMM", "fr_FR").format(dateToUse).toString())
+                                        DateFormat("EEEE d MMMM", "fr_FR").format(dateToUse!).toString())!
                                     : ""),
                                 style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor())),
                           ),

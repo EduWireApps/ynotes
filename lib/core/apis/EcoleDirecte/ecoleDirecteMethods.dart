@@ -13,7 +13,7 @@ import 'package:ynotes/core/apis/utils.dart';
 import '../EcoleDirecte.dart';
 
 class EcoleDirecteMethod {
-  final Offline _offlineController;
+  final Offline? _offlineController;
 
   EcoleDirecteMethod(this._offlineController);
   lessons(DateTime dateToUse, int week) async {
@@ -26,7 +26,7 @@ class EcoleDirecteMethod {
     String method = "emploidutemps.awp?verbe=get&";
     List<Lesson> lessonsList =
         await request(data, rootUrl, method, EcoleDirecteConverter.lessons, "Lessons request returned an error:");
-    await appSys.offline.lessons.updateLessons(lessonsList, week);
+    await appSys.offline!.lessons.updateLessons(lessonsList, week);
     return lessonsList;
   }
 
@@ -69,13 +69,13 @@ class EcoleDirecteMethod {
     //Update colors;
     disciplinesList = await refreshDisciplinesListColors(disciplinesList);
 
-    if (!_offlineController.locked) {
-      await _offlineController.disciplines.updateDisciplines(disciplinesList);
+    if (!_offlineController!.locked) {
+      await _offlineController!.disciplines.updateDisciplines(disciplinesList);
     }
     createStack();
     if (disciplinesList != null) {
       appSys.updateSetting(
-          appSys.settings["system"], "lastGradeCount", getAllGrades(disciplinesList, overrideLimit: true).length);
+          appSys.settings!["system"], "lastGradeCount", getAllGrades(disciplinesList, overrideLimit: true)!.length);
     }
     return disciplinesList;
   }
@@ -96,7 +96,7 @@ class EcoleDirecteMethod {
         7);
 
     //Get pinned dates
-    List<DateTime> pinnedDates = await appSys.offline.pinnedHomework.getPinnedHomeworkDates();
+    List<DateTime> pinnedDates = await appSys.offline!.pinnedHomework.getPinnedHomeworkDates();
     //Combine lists
     pinnedDates.forEach((element) {
       if (!homeworkDates.any((hwlistelement) => hwlistelement == element)) {
@@ -110,19 +110,19 @@ class EcoleDirecteMethod {
   nextHomework() async {
     await this.testToken();
 
-    List<Homework> homeworkList = List<Homework>();
+    List<Homework> homeworkList = [];
     String rootUrl = 'https://api.ecoledirecte.com/v3/Eleves/';
     String method = "cahierdetexte.awp?verbe=get&";
     String data = 'data={"token": "$token"}';
     homeworkList = await request(
         data, rootUrl, method, EcoleDirecteConverter.unloadedHomework, "UHomework request returned an error:");
-    await appSys.offline.homework.updateHomework(homeworkList);
-    List<DateTime> pinnedDates = await appSys.offline.pinnedHomework.getPinnedHomeworkDates();
+    await appSys.offline!.homework.updateHomework(homeworkList);
+    List<DateTime> pinnedDates = await appSys.offline!.pinnedHomework.getPinnedHomeworkDates();
 
     //Add pinned content
     await Future.wait(pinnedDates.map((element) async {
       List<Homework> pinnedHomework = await homeworkFor(element);
-      pinnedHomework.removeWhere((pinnedHWElement) => element.day != pinnedHWElement.date.day);
+      pinnedHomework.removeWhere((pinnedHWElement) => element.day != pinnedHWElement.date!.day);
       pinnedHomework.forEach((pinned) {
         if (!homeworkList.any((hw) => hw.id == pinned.id)) {
           homeworkList.add(pinned);
@@ -143,7 +143,7 @@ class EcoleDirecteMethod {
     homework.forEach((hw) {
       hw.date = date;
     });
-    await appSys.offline.homework.updateHomework(homework, add: true, forceAdd: true);
+    await appSys.offline!.homework.updateHomework(homework, add: true, forceAdd: true);
     return homework;
   }
 
@@ -165,7 +165,7 @@ class EcoleDirecteMethod {
         data, rootUrl, "", EcoleDirecteConverter.recipients, "Recipients request returned an error:",
         ignoreMethodAndId: true);
     if (recipients != null) {
-      await appSys.offline.recipients.recipients.updateRecipients(recipients);
+      await appSys.offline!.recipients.recipients.updateRecipients(recipients);
     }
     return recipients;
   }
@@ -186,7 +186,7 @@ class EcoleDirecteMethod {
       await EcoleDirecteMethod.refreshToken();
       return false;
     } else {
-      String id = await storage.read(key: "userID");
+      String? id = await storage.read(key: "userID");
 
       var url = 'https://api.ecoledirecte.com/v3/$id/login.awp';
       Map<String, String> headers = {"Content-type": "text/plain"};
@@ -212,14 +212,14 @@ class EcoleDirecteMethod {
     }
   }
 
-  static Future sendMail(String subject, String content, List<Recipient> recipientsList) async {
+  static Future sendMail(String? subject, String content, List<Recipient> recipientsList) async {
     String recipients = "";
     String parsedContent = base64.encode(utf8.encode(content));
     recipientsList.forEach((element) {
-      String eOrp = element.isTeacher ? "P" : "E";
-      int id = int.tryParse(element.id);
-      String surname = element.surname;
-      String name = element.name;
+      String eOrp = element.isTeacher! ? "P" : "E";
+      int? id = int.tryParse(element.id!);
+      String? surname = element.surname;
+      String? name = element.name;
 
       recipients += """{
                         "to_cc_cci": "to",
@@ -248,7 +248,7 @@ class EcoleDirecteMethod {
     });
 
     await EcoleDirecteMethod(appSys.offline).testToken();
-    String id = await storage.read(key: "userID");
+    String? id = await storage.read(key: "userID");
     var url = 'https://api.ecoledirecte.com/v3/eleves/$id/messages.awp?verbe=post';
 
     Map<String, String> headers = {"Content-type": "text/plain"};
@@ -297,9 +297,9 @@ class EcoleDirecteMethod {
   }
 
   static request(String data, String rootUrl, String urlMethod, Function converter, String onErrorBody,
-      {Map<String, String> headers, bool ignoreMethodAndId = false, bool getRequest = false}) async {
+      {Map<String, String>? headers, bool ignoreMethodAndId = false, bool getRequest = false}) async {
     try {
-      String id = await storage.read(key: "userID");
+      String id = await (storage.read(key: "userID") as FutureOr<String>);
 
       String finalUrl = rootUrl + id + "/" + urlMethod;
       if (ignoreMethodAndId) {
@@ -315,7 +315,7 @@ class EcoleDirecteMethod {
         response = await http.post(Uri.parse(finalUrl), headers: headers, body: data);
       }
       printWrapped(finalUrl);
-      Map<String, dynamic> responseData = json.decode(utf8.decode(response.bodyBytes));
+      Map<String, dynamic>? responseData = json.decode(utf8.decode(response.bodyBytes));
       if (response.statusCode == 200 &&
           responseData != null &&
           responseData['code'] != null &&
@@ -339,8 +339,8 @@ class EcoleDirecteMethod {
 //Refresh the token if expired
   static refreshToken() async {
 //Get the password in the secure storage
-    String password = await storage.read(key: "password");
-    String username = await storage.read(key: "username");
+    String? password = await storage.read(key: "password");
+    String? username = await storage.read(key: "username");
     var url = 'https://api.ecoledirecte.com/v3/login.awp';
     Map<String, String> headers = {"Content-type": "text/plain"};
     String data = 'data={"identifiant": "$username", "motdepasse": "$password"}';

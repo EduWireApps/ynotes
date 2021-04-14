@@ -19,8 +19,8 @@ import 'package:ynotes/ui/screens/grades/gradesPage.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 class GradesGroup extends StatefulWidget {
-  final Discipline discipline;
-  final GradesController gradesController;
+  final Discipline? discipline;
+  final GradesController? gradesController;
   const GradesGroup({this.discipline, this.gradesController});
 
   State<StatefulWidget> createState() {
@@ -31,12 +31,12 @@ class GradesGroup extends StatefulWidget {
 class _GradesGroupState extends State<GradesGroup> {
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
-    String capitalizedNomDiscipline;
-    String nomsProfesseurs;
-    Color colorGroup;
+    String? capitalizedNomDiscipline;
+    String? nomsProfesseurs;
+    Color? colorGroup;
     void callback() {
       setState(() {
-        colorGroup = Color(widget.discipline.color);
+        colorGroup = Color(widget.discipline!.color!);
       });
     }
 
@@ -45,17 +45,17 @@ class _GradesGroupState extends State<GradesGroup> {
       nomsProfesseurs = null;
       capitalizedNomDiscipline = null;
     } else {
-      String nomDiscipline = widget.discipline.disciplineName.toLowerCase();
+      String nomDiscipline = widget.discipline!.disciplineName!.toLowerCase();
       capitalizedNomDiscipline = "${nomDiscipline[0].toUpperCase()}${nomDiscipline.substring(1)}";
-      if (widget.discipline.color != null) {
-        colorGroup = Color(widget.discipline.color);
+      if (widget.discipline!.color != null) {
+        colorGroup = Color(widget.discipline!.color!);
       }
-      if (widget.discipline.teachers.length > 0) {
-        nomsProfesseurs = widget.discipline.teachers[0];
+      if (widget.discipline!.teachers!.length > 0) {
+        nomsProfesseurs = widget.discipline!.teachers![0];
         if (nomsProfesseurs != null) {
-          widget.discipline.teachers.forEach((element) {
-            if (widget.discipline.teachers.indexOf(element) > 0) {
-              nomsProfesseurs += " / " + element;
+          widget.discipline!.teachers!.forEach((element) {
+            if (widget.discipline!.teachers!.indexOf(element) > 0) {
+              nomsProfesseurs += " / " + element!;
             }
           });
         }
@@ -113,7 +113,7 @@ class _GradesGroupState extends State<GradesGroup> {
                                       decoration: BoxDecoration(borderRadius: BorderRadius.circular(0)),
                                       child: ClipRRect(
                                         borderRadius: BorderRadius.circular(0),
-                                        child: Text(nomsProfesseurs,
+                                        child: Text(nomsProfesseurs!,
                                             textAlign: TextAlign.left,
                                             overflow: TextOverflow.ellipsis,
                                             style: TextStyle(
@@ -129,18 +129,18 @@ class _GradesGroupState extends State<GradesGroup> {
                                       borderRadius: BorderRadius.circular(0),
                                       child: Text(
                                         "Moyenne : " +
-                                            ((appSys.settings["system"]["chosenParser"] == 1)
-                                                ? (widget.discipline.average ?? "-")
-                                                : ((!widget.discipline.getAverage().isNaN)
-                                                    ? widget.discipline.getAverage().toString()
-                                                    : widget.discipline.average ?? "-")),
+                                            ((appSys.settings!["system"]["chosenParser"] == 1)
+                                                ? (widget.discipline!.average ?? "-")
+                                                : ((!widget.discipline!.getAverage().isNaN)
+                                                    ? widget.discipline!.getAverage().toString()
+                                                    : widget.discipline!.average ?? "-")),
                                         style: TextStyle(
                                             fontFamily: "Asap",
                                             fontSize: screenSize.size.height / 10 * 0.17,
                                             fontStyle: FontStyle.italic),
                                       ),
                                     )),
-                                if (widget.discipline.weight != null && widget.discipline.weight != "1")
+                                if (widget.discipline!.weight != null && widget.discipline!.weight != "1")
                                   Container(
                                       padding: EdgeInsets.all(screenSize.size.width / 5 * 0.03),
                                       margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.09),
@@ -152,7 +152,7 @@ class _GradesGroupState extends State<GradesGroup> {
                                       ),
                                       child: FittedBox(
                                           child: AutoSizeText(
-                                        widget.discipline.weight ?? "",
+                                        widget.discipline!.weight ?? "",
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                             fontFamily: "Asap", color: Colors.white, fontWeight: FontWeight.bold),
@@ -202,7 +202,7 @@ class _GradesGroupState extends State<GradesGroup> {
                   mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
                     if (widget.discipline != null)
-                      if (widget.discipline.subdisciplineCode.length > 0)
+                      if (widget.discipline!.subdisciplineCode!.length > 0)
                         Container(
                             margin: EdgeInsets.only(top: 5),
                             child: Text(
@@ -212,18 +212,19 @@ class _GradesGroupState extends State<GradesGroup> {
                                 color: ThemeUtils.textColor(),
                               ),
                             )),
-                    gradesList(0, widget.gradesController.period),
+                    gradesList(0, widget.gradesController!.period),
                     if (widget.discipline != null)
-                      if (widget.discipline.subdisciplineCode.length > 0) Divider(thickness: 2),
+                      if (widget.discipline!.subdisciplineCode!.length > 0) Divider(thickness: 2),
                     if (widget.discipline != null)
-                      if (widget.discipline.subdisciplineCode.length > 0)
+                      if (widget.discipline!.subdisciplineCode!.length > 0)
                         Text("Oral",
                             style: TextStyle(
                               fontFamily: "Asap",
                               color: ThemeUtils.textColor(),
                             )),
                     if (widget.discipline != null)
-                      if (widget.discipline.subdisciplineCode.length > 0) gradesList(1, widget.gradesController.period),
+                      if (widget.discipline!.subdisciplineCode!.length > 0)
+                        gradesList(1, widget.gradesController!.period),
                   ],
                 ),
               ))
@@ -232,14 +233,14 @@ class _GradesGroupState extends State<GradesGroup> {
     );
   }
 
-  List<Grade> getGradesForDiscipline(int sousMatiereIndex, String chosenPeriode) {
-    List<Grade> toReturn = List();
+  List<Grade>? getGradesForDiscipline(int sousMatiereIndex, String? chosenPeriode) {
+    List<Grade> toReturn = [];
 
     if (widget.discipline != null) {
-      widget.discipline.gradesList.forEach((element) {
+      widget.discipline!.gradesList!.forEach((element) {
         if (element.periodName == chosenPeriode) {
-          if (widget.discipline.subdisciplineCode.length > 1) {
-            if (element.subdisciplineCode == widget.discipline.subdisciplineCode[sousMatiereIndex]) {
+          if (widget.discipline!.subdisciplineCode!.length > 1) {
+            if (element.subdisciplineCode == widget.discipline!.subdisciplineCode![sousMatiereIndex]) {
               toReturn.add(element);
             }
           } else {
@@ -254,15 +255,15 @@ class _GradesGroupState extends State<GradesGroup> {
   }
 
   //MARKS LIST VIEW
-  gradesList(int sousMatiereIndex, String periodName) {
+  gradesList(int sousMatiereIndex, String? periodName) {
     void callback() {
       setState(() {});
     }
 
     bool canShow = false;
-    List<Grade> gradesForSelectedDiscipline = getGradesForDiscipline(sousMatiereIndex, periodName);
+    List<Grade>? gradesForSelectedDiscipline = getGradesForDiscipline(sousMatiereIndex, periodName);
     if (gradesForSelectedDiscipline != null) {
-      gradesForSelectedDiscipline.sort((a, b) => b.entryDate.compareTo(a.entryDate));
+      gradesForSelectedDiscipline.sort((a, b) => b.entryDate!.compareTo(a.entryDate!));
     }
     if (gradesForSelectedDiscipline != null) {
       gradesForSelectedDiscipline = gradesForSelectedDiscipline.reversed.toList();
@@ -273,12 +274,12 @@ class _GradesGroupState extends State<GradesGroup> {
       if (gradesForSelectedDiscipline.length > 2) canShow = true;
     }
 
-    Color colorGroup;
+    Color? colorGroup;
     if (widget.discipline == null) {
       colorGroup = Theme.of(context).primaryColorDark;
     } else {
-      if (widget.discipline.color != null) {
-        colorGroup = Color(widget.discipline.color);
+      if (widget.discipline!.color != null) {
+        colorGroup = Color(widget.discipline!.color!);
       }
     }
     MediaQueryData screenSize = MediaQuery.of(context);
@@ -298,7 +299,7 @@ class _GradesGroupState extends State<GradesGroup> {
                     // marksColumnController.animateTo(localList.length * screenSize.size.width / 5 * 1.2, duration: new Duration(microseconds: 5), curve: Curves.ease);
                   }
                 } catch (e) {}
-                if (DateFormat('yyyy-MM-dd').format(gradesForSelectedDiscipline[index].entryDate) ==
+                if (DateFormat('yyyy-MM-dd').format(gradesForSelectedDiscipline[index].entryDate!) ==
                     DateFormat('yyyy-MM-dd').format(DateTime.now())) {
                   newGrades = true;
                 }
@@ -309,9 +310,9 @@ class _GradesGroupState extends State<GradesGroup> {
                 toAnimate: true,
                 elevation: 0,
                 showBadge: (gradesForSelectedDiscipline != null) &&
-                    (DateFormat('yyyy-MM-dd').format(gradesForSelectedDiscipline[index].entryDate) ==
+                    (DateFormat('yyyy-MM-dd').format(gradesForSelectedDiscipline[index].entryDate!) ==
                             DateFormat('yyyy-MM-dd').format(DateTime.now()) &&
-                        !gradesForSelectedDiscipline[index].simulated),
+                        !gradesForSelectedDiscipline[index].simulated!),
                 position: BadgePosition.topEnd(top: 0, end: 0),
                 badgeColor: Colors.blue,
                 child: Container(
@@ -322,7 +323,7 @@ class _GradesGroupState extends State<GradesGroup> {
                     borderType: BorderType.RRect,
                     color: getGradesForDiscipline(sousMatiereIndex, periodName) == null
                         ? Colors.transparent
-                        : (gradesForSelectedDiscipline[index].simulated ? Colors.blue : Colors.transparent),
+                        : (gradesForSelectedDiscipline![index].simulated! ? Colors.blue : Colors.transparent),
                     strokeWidth: 1,
                     radius: Radius.circular(11),
                     child: Material(
@@ -331,8 +332,8 @@ class _GradesGroupState extends State<GradesGroup> {
                       borderOnForeground: false,
                       color: (getGradesForDiscipline(sousMatiereIndex, periodName) == null)
                           ? Colors.transparent
-                          : ((gradesForSelectedDiscipline[index].simulated != null &&
-                                  gradesForSelectedDiscipline[index].simulated)
+                          : ((gradesForSelectedDiscipline![index].simulated != null &&
+                                  gradesForSelectedDiscipline[index].simulated!)
                               ? Colors.blue.withOpacity(0.7)
                               : colorGroup),
                       child: InkWell(
@@ -340,14 +341,14 @@ class _GradesGroupState extends State<GradesGroup> {
                         splashColor: colorGroup,
                         onTap: () async {
                           GradesStats stats = GradesStats(
-                              gradesForSelectedDiscipline[index],
-                              getAllGrades(widget.gradesController.disciplines(),
+                              gradesForSelectedDiscipline![index],
+                              getAllGrades(widget.gradesController!.disciplines(),
                                   overrideLimit: true, sortByWritingDate: false));
                           gradesModalBottomSheet(context, gradesForSelectedDiscipline[index], stats, widget.discipline,
                               callback, this.widget, widget.gradesController);
                         },
                         onLongPress: () {
-                          CustomDialogs.showShareGradeDialog(context, gradesForSelectedDiscipline[index]);
+                          CustomDialogs.showShareGradeDialog(context, gradesForSelectedDiscipline![index]);
                         },
                         child: ClipRRect(
                           child: Stack(
@@ -357,7 +358,7 @@ class _GradesGroupState extends State<GradesGroup> {
                                 Container(
                                   decoration: BoxDecoration(
                                     //don't show it if simulator enabled
-                                    border: gradesForSelectedDiscipline[index].simulated
+                                    border: gradesForSelectedDiscipline[index].simulated!
                                         ? null
                                         : Border.all(width: 1.2, color: Colors.black),
                                     borderRadius: BorderRadius.circular(11),
@@ -373,8 +374,8 @@ class _GradesGroupState extends State<GradesGroup> {
                                         child: AutoSizeText.rich(
                                           //MARK
                                           TextSpan(
-                                            text: (gradesForSelectedDiscipline[index].notSignificant
-                                                ? "(" + gradesForSelectedDiscipline[index].value
+                                            text: (gradesForSelectedDiscipline[index].notSignificant!
+                                                ? "(" + gradesForSelectedDiscipline[index].value!
                                                 : gradesForSelectedDiscipline[index].value),
                                             style: TextStyle(
                                                 color: Colors.black,
@@ -386,7 +387,7 @@ class _GradesGroupState extends State<GradesGroup> {
 
                                                 //MARK ON
                                                 TextSpan(
-                                                    text: '/' + gradesForSelectedDiscipline[index].scale,
+                                                    text: '/' + gradesForSelectedDiscipline[index].scale!,
                                                     style: TextStyle(
                                                         color: Colors.black,
                                                         fontWeight: FontWeight.bold,
@@ -415,7 +416,7 @@ class _GradesGroupState extends State<GradesGroup> {
                                             ),
                                             child: FittedBox(
                                                 child: AutoSizeText(
-                                              gradesForSelectedDiscipline[index].weight,
+                                              gradesForSelectedDiscipline[index].weight!,
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
                                                   fontFamily: "Asap", color: Colors.white, fontWeight: FontWeight.bold),

@@ -21,27 +21,27 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 
 import 'homeworkPageWidgets/HWsettingsPage.dart';
 
-List<Homework> localListHomeworkDateToUse;
+List<Homework>? localListHomeworkDateToUse;
 
 class HomeworkPage extends StatefulWidget {
-  final HomeworkController hwController;
-  HomeworkPage({Key key, @required this.hwController}) : super(key: key);
+  final HomeworkController? hwController;
+  HomeworkPage({Key? key, required this.hwController}) : super(key: key);
   State<StatefulWidget> createState() {
     return HomeworkPageState();
   }
 }
 
 //The date the user want to see
-DateTime dateToUse;
+DateTime? dateToUse;
 bool firstStart = true;
 
-bool isPinnedDateToUse = false;
+bool? isPinnedDateToUse = false;
 //Public list of dates to be easily deleted
-List dates = List();
+List dates = [];
 //Only use to add homework to database
 
 class HomeworkPageState extends State<HomeworkPage> {
-  PageController _pageControllerHW;
+  PageController? _pageControllerHW;
   void initState() {
     super.initState();
     _pageControllerHW = PageController(initialPage: 0);
@@ -59,7 +59,7 @@ class HomeworkPageState extends State<HomeworkPage> {
 
   getPinnedStateDayToUse() async {
     print(dateToUse);
-    var pinnedStatus = await appSys.offline.pinnedHomework.getPinnedHomeworkSingleDate(dateToUse.toString());
+    var pinnedStatus = await appSys.offline!.pinnedHomework.getPinnedHomeworkSingleDate(dateToUse.toString());
     if (mounted) {
       setState(() {
         isPinnedDateToUse = pinnedStatus;
@@ -72,7 +72,7 @@ class HomeworkPageState extends State<HomeworkPage> {
   }
 
   animateToPage(int index) {
-    _pageControllerHW.animateToPage(index, duration: Duration(milliseconds: 250), curve: Curves.ease);
+    _pageControllerHW!.animateToPage(index, duration: Duration(milliseconds: 250), curve: Curves.ease);
   }
 
   showDialog() async {
@@ -188,19 +188,19 @@ class HomeworkPageState extends State<HomeworkPage> {
                             child: InkWell(
                               borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                               onTap: () async {
-                                DateTime someDate = await showDatePicker(
+                                DateTime? someDate = await showDatePicker(
                                   locale: Locale('fr', 'FR'),
                                   context: context,
                                   initialDate: DateTime.now(),
                                   firstDate: DateTime(2018),
                                   lastDate: DateTime(2030),
                                   helpText: "",
-                                  builder: (BuildContext context, Widget child) {
+                                  builder: (BuildContext context, Widget? child) {
                                     return FittedBox(
                                       child: Material(
                                         color: Colors.transparent,
                                         child: Theme(
-                                          data: appSys.theme,
+                                          data: appSys.theme!,
                                           child: Column(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: <Widget>[SizedBox(child: child)],
@@ -220,8 +220,8 @@ class HomeworkPageState extends State<HomeworkPage> {
                                     getPinnedStateDayToUse();
                                   });
 
-                                  _pageControllerHW.animateToPage(2,
-                                      duration: Duration(milliseconds: 200), curve: Curves.easeIn);
+                                  _pageControllerHW!
+                                      .animateToPage(2, duration: Duration(milliseconds: 200), curve: Curves.easeIn);
                                 }
                               },
                               child: Container(
@@ -260,7 +260,7 @@ class HomeworkPageState extends State<HomeworkPage> {
 }
 
 getDates(List<Homework> list) {
-  List<DateTime> listtoReturn = List<DateTime>();
+  List<DateTime?> listtoReturn = [];
   list.forEach((element) {
     if (!listtoReturn.contains(element.date)) {
       listtoReturn.add(element.date);
@@ -273,7 +273,7 @@ getDates(List<Homework> list) {
 //Function that returns string like "In two weeks" with time relation
 getWeeksRelation(int index, List<Homework> list) {
   try {
-    DateTime dateToUse = list[index].date;
+    DateTime dateToUse = [];
 
     var now = new DateFormat("yyyy-MM-dd").format(DateTime.now());
     var difference = dateToUse.difference(DateTime.parse(now)).inDays;

@@ -6,9 +6,9 @@ import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/screens/login/loginPageWidgets/textField.dart';
 
 class PronoteSetupPart extends StatefulWidget {
-  final Function callback;
+  final Function? callback;
 
-  const PronoteSetupPart({Key key, this.callback}) : super(key: key);
+  const PronoteSetupPart({Key? key, this.callback}) : super(key: key);
   @override
   _PronoteSetupPartState createState() => _PronoteSetupPartState();
 }
@@ -23,7 +23,7 @@ class _PronoteSetupPartState extends State<PronoteSetupPart> {
       child: InkWell(
         borderRadius: BorderRadius.circular(18),
         onTap: () {
-          widget.callback(id);
+          widget.callback!(id);
         },
         child: Container(
           width: screenSize.size.width / 5 * 4,
@@ -93,11 +93,11 @@ class _PronoteSetupPartState extends State<PronoteSetupPart> {
 }
 
 class PronoteUrlFieldPart extends StatefulWidget {
-  final Function loginCallback;
-  final Function backButton;
-  final Function onLongPressCallback;
-  final TextEditingController pronoteUrl;
-  PronoteUrlFieldPart({Key key, this.pronoteUrl, this.loginCallback, this.backButton, this.onLongPressCallback})
+  final Function? loginCallback;
+  final Function? backButton;
+  final Function? onLongPressCallback;
+  final TextEditingController? pronoteUrl;
+  PronoteUrlFieldPart({Key? key, this.pronoteUrl, this.loginCallback, this.backButton, this.onLongPressCallback})
       : super(key: key);
   @override
   _PronoteUrlFieldPartState createState() => _PronoteUrlFieldPartState();
@@ -105,7 +105,7 @@ class PronoteUrlFieldPart extends StatefulWidget {
 
 class _PronoteUrlFieldPartState extends State<PronoteUrlFieldPart> {
   bool useEnt = false;
-  TextEditingController _url = TextEditingController();
+  TextEditingController? _url = TextEditingController();
   @override
   void initState() {
     // TODO: implement initState

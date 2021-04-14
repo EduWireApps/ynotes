@@ -14,22 +14,22 @@ class PronoteGeolocationDialog extends StatefulWidget {
 }
 
 class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
-  PronoteSchoolsController con;
-  Artboard _riveArtboard;
-  RiveAnimationController _controller;
-  PronoteSchool selectedSchool;
-  TextEditingController searchCon;
-  PronoteSpace space;
+  PronoteSchoolsController? con;
+  Artboard? _riveArtboard;
+  RiveAnimationController? _controller;
+  PronoteSchool? selectedSchool;
+  TextEditingController? searchCon;
+  PronoteSpace? space;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     searchCon = TextEditingController();
-    searchCon.addListener(() {
+    searchCon!.addListener(() {
       setState(() {});
     });
     con = PronoteSchoolsController();
-    con.geolocateSchools();
+    con!.geolocateSchools();
     rootBundle.load('assets/animations/geolocating.riv').then(
       (data) async {
         final file = RiveFile.import(data);
@@ -56,10 +56,10 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
         Container(
           decoration: BoxDecoration(color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(18)),
           height: screenSize.size.height / 10 * 2.5,
-          child: _riveArtboard == null ? const SizedBox() : Rive(artboard: _riveArtboard),
+          child: _riveArtboard == null ? const SizedBox() : Rive(artboard: _riveArtboard!),
         ),
         Text(
-          con.geolocating ? "Géolocalisation des établissements à proximité..." : "Recherche des status disponibles",
+          con!.geolocating ? "Géolocalisation des établissements à proximité..." : "Recherche des status disponibles",
           style: TextStyle(fontFamily: "Asap", color: Colors.black),
           textAlign: TextAlign.center,
         ),
@@ -67,7 +67,7 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
     );
   }
 
-  Widget buildError(String error) {
+  Widget buildError(String? error) {
     var screenSize = MediaQuery.of(context);
 
     return Column(
@@ -91,16 +91,16 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
         Container(
           margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
           child: CustomButtons.materialButton(context, null, null, () async {
-            await con.reset();
+            await con!.reset();
           }, label: "Recommencer"),
         )
       ],
     );
   }
 
-  filterSchools(List<PronoteSchool> schools) {
-    if (searchCon.text != null && schools != null && schools.length != 0) {
-      return schools.where((element) => element.name.toUpperCase().contains(searchCon.text.toUpperCase())).toList() ??
+  filterSchools(List<PronoteSchool>? schools) {
+    if (searchCon!.text != null && schools != null && schools.length != 0) {
+      return schools.where((element) => element.name!.toUpperCase().contains(searchCon!.text.toUpperCase())).toList() ??
           [];
     }
     return schools;
@@ -117,7 +117,7 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
     );
   }
 
-  Widget buildSchools(List schools) {
+  Widget buildSchools(List? schools) {
     var screenSize = MediaQuery.of(context);
 
     return Container(
@@ -133,7 +133,7 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
           SizedBox(height: screenSize.size.height / 10 * 0.1),
           Container(
               height: screenSize.size.height / 10 * 5,
-              child: filterSchools(schools).length != 0
+              child: filterSchools(schools as List<PronoteSchool>?).length != 0
                   ? ListView.builder(
                       itemCount: filterSchools(schools).length,
                       padding: EdgeInsets.zero,
@@ -160,8 +160,8 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
                       null,
                       selectedSchool != null
                           ? () async {
-                              con.chosenSchool = selectedSchool;
-                              await con.getSpaces();
+                              con!.chosenSchool = selectedSchool;
+                              await con!.getSpaces();
                             }
                           : null,
                       label: "Continuer",
@@ -176,7 +176,7 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
     );
   }
 
-  Widget buildStatusRequest(List<PronoteSpace> spaces) {
+  Widget buildStatusRequest(List<PronoteSpace>? spaces) {
     var screenSize = MediaQuery.of(context);
 
     return Container(
@@ -192,7 +192,7 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
             child: AnimatedList(
               initialItemCount: spaces != null ? spaces.length : 0,
               itemBuilder: (context, index, animation) {
-                return slidingSpace(context, spaces[index], animation);
+                return slidingSpace(context, spaces![index], animation);
               },
             ),
           ),
@@ -232,7 +232,7 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
   Widget slidingSpace(BuildContext context, PronoteSpace _space, animation) {
     var screenSize = MediaQuery.of(context);
 
-    TextStyle textStyle = Theme.of(context).textTheme.headline4;
+    TextStyle? textStyle = Theme.of(context).textTheme.headline4;
     return SlideTransition(
       position: Tween<Offset>(
         begin: const Offset(-1, 0),
@@ -282,16 +282,16 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
 
   Widget slidingSchool(BuildContext context, PronoteSchool school) {
     var screenSize = MediaQuery.of(context);
-    String distance;
-    if (school.coordinates.length > 2) {
+    late String distance;
+    if (school.coordinates!.length > 2) {
       try {
-        double val = double.tryParse(school.coordinates[2]) / 1000;
+        double val = double.tryParse(school.coordinates![2])! / 1000;
         distance = "à " + val.toStringAsPrecision(2) + " kilomètres";
       } catch (e) {
         distance = "(distance non définie)";
       }
     }
-    TextStyle textStyle = Theme.of(context).textTheme.headline4;
+    TextStyle? textStyle = Theme.of(context).textTheme.headline4;
     return SizedBox(
       // Actual widget to display
       height: screenSize.size.height / 10 * 0.9,
@@ -352,7 +352,7 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
     }
   }
 
-  Widget loadingWidget;
+  Widget? loadingWidget;
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
@@ -363,7 +363,7 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
       insetPadding: EdgeInsets.all(0),
       content: SingleChildScrollView(
         scrollDirection: Axis.vertical,
-        child: ChangeNotifierProvider<PronoteSchoolsController>.value(
+        child: ChangeNotifierProvider<PronoteSchoolsController?>.value(
           value: con,
           child: Consumer<PronoteSchoolsController>(builder: (context, model, child) {
             return Container(

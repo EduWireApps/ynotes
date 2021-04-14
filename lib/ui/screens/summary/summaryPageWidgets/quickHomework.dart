@@ -23,9 +23,9 @@ import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/screens/summary/summaryPageWidgets/quickHomeworkCurvedContainer.dart';
 
 class QuickHomework extends StatefulWidget {
-  final Function switchPage;
-  final HomeworkController hwcontroller;
-  const QuickHomework({Key key, this.switchPage, @required this.hwcontroller}) : super(key: key);
+  final Function? switchPage;
+  final HomeworkController? hwcontroller;
+  const QuickHomework({Key? key, this.switchPage, required this.hwcontroller}) : super(key: key);
   @override
   _QuickHomeworkState createState() => _QuickHomeworkState();
 }
@@ -38,7 +38,7 @@ class _QuickHomeworkState extends State<QuickHomework> {
   }
 
   Future<void> forceRefreshModel() async {
-    await this.widget.hwcontroller.refresh(force: true);
+    await this.widget.hwcontroller!.refresh(force: true);
   }
 
   @override
@@ -49,7 +49,7 @@ class _QuickHomeworkState extends State<QuickHomework> {
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
-    return ChangeNotifierProvider<HomeworkController>.value(
+    return ChangeNotifierProvider<HomeworkController?>.value(
         value: this.widget.hwcontroller,
         child: Consumer<HomeworkController>(builder: (context, model, child) {
           return Card(
@@ -169,7 +169,7 @@ class _QuickHomeworkState extends State<QuickHomework> {
                                                     color: Color(0xff27272A),
                                                     borderRadius: BorderRadius.circular(500),
                                                   )),
-                                              ChangeNotifierProvider<HomeworkController>.value(
+                                              ChangeNotifierProvider<HomeworkController?>.value(
                                                 value: this.widget.hwcontroller,
                                                 child: Consumer<HomeworkController>(builder: (context, model, child) {
                                                   return Container(
@@ -211,7 +211,7 @@ class _QuickHomeworkState extends State<QuickHomework> {
                         child: RefreshIndicator(
                           onRefresh: model.refresh,
                           child: CupertinoScrollbar(
-                            child: ChangeNotifierProvider<HomeworkController>.value(
+                            child: ChangeNotifierProvider<HomeworkController?>.value(
                               value: this.widget.hwcontroller,
                               child: Consumer<HomeworkController>(
                                 builder: (context, model, child) {
@@ -234,14 +234,20 @@ class _QuickHomeworkState extends State<QuickHomework> {
                                                       child: Row(children: <Widget>[
                                                         Text(
                                                           DateFormat("EEEE d", "fr_FR")
-                                                                  .format(
-                                                                      this.widget.hwcontroller.getHomework[index].date)
+                                                                  .format(this
+                                                                      .widget
+                                                                      .hwcontroller!
+                                                                      .getHomework[index]
+                                                                      .date!)
                                                                   .toString()
                                                                   .capitalize() +
                                                               " " +
                                                               DateFormat("MMMM", "fr_FR")
-                                                                  .format(
-                                                                      this.widget.hwcontroller.getHomework[index].date)
+                                                                  .format(this
+                                                                      .widget
+                                                                      .hwcontroller!
+                                                                      .getHomework[index]
+                                                                      .date!)
                                                                   .toString()
                                                                   .capitalize(),
                                                           style: TextStyle(
@@ -257,8 +263,8 @@ class _QuickHomeworkState extends State<QuickHomework> {
                                                       model.getHomework[index],
                                                       Color(color.data),
                                                       widget.switchPage,
-                                                      this.widget.hwcontroller.refresh,
-                                                      model.isFetching && !model.getHomework[index].loaded),
+                                                      this.widget.hwcontroller!.refresh,
+                                                      model.isFetching && !model.getHomework[index].loaded!),
                                                 ],
                                               ),
                                             );
@@ -335,7 +341,7 @@ class HomeworkTicket extends StatefulWidget {
   final Color color;
   final Function refreshCallback;
   final bool load;
-  final Function pageSwitcher;
+  final Function? pageSwitcher;
   const HomeworkTicket(this._homework, this.color, this.pageSwitcher, this.refreshCallback, this.load);
   State<StatefulWidget> createState() {
     return _HomeworkTicketState();
@@ -358,9 +364,9 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
             child: InkWell(
               borderRadius: BorderRadius.circular(8),
               onTap: () {
-                widget.pageSwitcher(2);
+                widget.pageSwitcher!(2);
               },
-              onLongPress: !widget._homework.loaded
+              onLongPress: !widget._homework.loaded!
                   ? null
                   : () async {
                       await CustomDialogs.showHomeworkDetailsDialog(context, this.widget._homework);
@@ -377,10 +383,10 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
                     Container(
                       width: screenSize.size.width / 5 * 0.8,
                       child: FutureBuilder(
-                          future: appSys.offline.doneHomework.getHWCompletion(widget._homework.id ?? ''),
+                          future: appSys.offline!.doneHomework.getHWCompletion(widget._homework.id ?? ''),
                           initialData: false,
                           builder: (context, snapshot) {
-                            bool done = snapshot.data;
+                            bool? done = snapshot.data;
                             return CircularCheckBox(
                               activeColor: Color(0xff15803D),
                               value: done,
@@ -388,12 +394,12 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
                               onChanged: this
                                       .widget
                                       ._homework
-                                      .date
+                                      .date!
                                       .isBefore(DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now())))
                                   ? null
-                                  : (bool x) async {
+                                  : (bool? x) async {
                                       widget.refreshCallback();
-                                      await appSys.offline.doneHomework.setHWCompletion(widget._homework.id, x);
+                                      await appSys.offline!.doneHomework.setHWCompletion(widget._homework.id, x);
                                     },
                             );
                           }),
@@ -409,7 +415,7 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
                                 children: [
                                   Container(
                                     width: screenSize.size.width / 5 * 3,
-                                    child: AutoSizeText(widget._homework.discipline,
+                                    child: AutoSizeText(widget._homework.discipline!,
                                         textScaleFactor: 1.0,
                                         textAlign: TextAlign.left,
                                         overflow: TextOverflow.ellipsis,
@@ -426,11 +432,11 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
                                         )),
                                 ],
                               )),
-                          if (widget._homework.loaded)
+                          if (widget._homework.loaded!)
                             Container(
                               width: screenSize.size.width / 5 * 2.7,
                               child: AutoSizeText(
-                                parse(widget._homework.rawContent ?? "").documentElement.text,
+                                parse(widget._homework.rawContent ?? "").documentElement!.text,
                                 style: TextStyle(fontFamily: "Asap"),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -444,7 +450,7 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
               ),
             ),
           ),
-          if (widget._homework.isATest)
+          if (widget._homework.isATest!)
             Container(
                 height: (screenSize.size.height / 10 * 8.8) / 10 * 0.8,
                 width: screenSize.size.width / 5 * 0.2,

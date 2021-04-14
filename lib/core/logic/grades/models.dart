@@ -7,41 +7,41 @@ part 'models.g.dart';
 //Discipline class
 class Discipline {
   @HiveField(0)
-  final String generalAverage;
+  final String? generalAverage;
   @HiveField(1)
-  final String maxClassGeneralAverage;
+  final String? maxClassGeneralAverage;
   @HiveField(2)
-  final String classGeneralAverage;
+  final String? classGeneralAverage;
   @HiveField(3)
-  final String disciplineCode;
+  final String? disciplineCode;
   @HiveField(4)
-  final List<String> subdisciplineCode;
+  final List<String?>? subdisciplineCode;
   @HiveField(5)
-  final String disciplineName;
+  final String? disciplineName;
   @HiveField(6)
-  final String average;
+  final String? average;
   @HiveField(7)
-  final String classAverage;
+  final String? classAverage;
   @HiveField(8)
-  final String minClassAverage;
+  final String? minClassAverage;
   @HiveField(9)
-  final String maxClassAverage;
+  final String? maxClassAverage;
   @HiveField(10)
-  final List<String> teachers;
+  final List<String?>? teachers;
   @HiveField(11)
-  final String period;
+  final String? period;
   @HiveField(12)
-  List<Grade> gradesList;
+  List<Grade>? gradesList;
   @HiveField(13)
-  int color;
+  int? color;
   @HiveField(14)
-  final int disciplineRank;
+  final int? disciplineRank;
   @HiveField(15)
-  final String classNumber;
+  final String? classNumber;
   @HiveField(16)
-  final String generalRank;
+  final String? generalRank;
   @HiveField(17)
-  final String weight;
+  final String? weight;
   Discipline({
     this.gradesList,
     this.maxClassGeneralAverage,
@@ -68,7 +68,7 @@ class Discipline {
   }
 
   set setGradeList(List<Grade> list) {
-    gradesList = list;
+    gradesList = [];
   }
 
   double getAverage() {
@@ -77,14 +77,14 @@ class Discipline {
     double average = 0.0;
     double counter = 0;
 
-    gradesList.forEach((Grade grade) {
-      if (!grade.notSignificant && (!grade.letters || grade.countAsZero) && grade.periodName == this.period) {
-        counter += double.parse(grade.weight);
-        String gradeStringValue = grade.countAsZero ? "0" : grade.value;
+    gradesList!.forEach((Grade grade) {
+      if (!grade.notSignificant! && (!grade.letters! || grade.countAsZero!) && grade.periodName == this.period) {
+        counter += double.parse(grade.weight!);
+        String gradeStringValue = grade.countAsZero! ? "0" : grade.value!;
         average += double.parse(gradeStringValue.replaceAll(',', '.')) *
             20 /
-            double.parse(grade.scale.replaceAll(',', '.')) *
-            double.parse(grade.weight.replaceAll(',', '.'));
+            double.parse(grade.scale!.replaceAll(',', '.')) *
+            double.parse(grade.weight!.replaceAll(',', '.'));
       }
     });
     print(counter);
@@ -96,16 +96,16 @@ class Discipline {
 //disciplinesList.add(Discipline.fromJson(element, teachersNames, element['codeMatiere'], periodeElement["idPeriode"], Colors.blue, periodeElement["ensembleMatieres"]["moyenneGenerale"], periodeElement["ensembleMatieres"]["moyenneMax"], periodeElement["ensembleMatieres"]["moyenneClasse"]));
 
   factory Discipline.fromEcoleDirecteJson(
-      {@required Map<String, dynamic> json,
-      @required List<String> profs,
-      @required String periode,
-      @required String moyenneG,
-      @required String bmoyenneClasse,
-      @required String moyenneClasse,
-      @required Color color,
+      {required Map<String, dynamic> json,
+      required List<String?> profs,
+      required String? periode,
+      required String? moyenneG,
+      required String? bmoyenneClasse,
+      required String? moyenneClasse,
+      required Color color,
       bool showrank = false,
-      String effectifClasse = "0",
-      String rangGeneral = "0"}) {
+      String? effectifClasse = "0",
+      String? rangGeneral = "0"}) {
     return Discipline(
         subdisciplineCode: [],
         disciplineCode: json['codeMatiere'],
@@ -139,58 +139,58 @@ class Discipline {
 class Grade {
   //E.G : "génétique"
   @HiveField(0)
-  final String testName;
+  final String? testName;
   //E.G : "A001"
   @HiveField(1)
-  final String periodCode;
+  final String? periodCode;
   //E.G : "SVT"
   @HiveField(2)
-  final String disciplineCode;
+  final String? disciplineCode;
   //E.G : "ECR"
   @HiveField(3)
-  final String subdisciplineCode;
+  final String? subdisciplineCode;
   //E.G : "Français"
   @HiveField(4)
-  final String disciplineName;
+  final String? disciplineName;
   //E.G : true (affichage en lettres)
   @HiveField(5)
-  final bool letters;
+  final bool? letters;
   //E.G : "18"
   @HiveField(6)
-  final String value;
+  final String? value;
   //E.G : "1"
   @HiveField(7)
-  final String weight;
+  final String? weight;
   //E.G : "10" (affichage en lettres)
   @HiveField(8)
-  final String scale;
+  final String? scale;
   //E.G : "" (affichage en lettres)
   @HiveField(9)
-  final String classAverage;
+  final String? classAverage;
   //E.G : "Devoir sur table"
   @HiveField(10)
-  final String testType;
+  final String? testType;
   //E.G : 16/02
   @HiveField(16)
-  final DateTime date;
+  final DateTime? date;
   //E.G : 16/02
   @HiveField(15)
-  final DateTime entryDate;
+  final DateTime? entryDate;
   @HiveField(13)
-  final bool notSignificant;
+  final bool? notSignificant;
   @HiveField(14)
   //E.G : Trimestre 1
-  final String periodName;
+  final String? periodName;
 
   @HiveField(17)
-  final String max;
+  final String? max;
   @HiveField(18)
-  final String min;
+  final String? min;
 
   @HiveField(19)
-  final bool simulated;
+  final bool? simulated;
   @HiveField(20)
-  final bool countAsZero;
+  final bool? countAsZero;
   Grade({
     this.max,
     this.min,
@@ -213,7 +213,7 @@ class Grade {
     this.countAsZero = false,
   });
 
-  factory Grade.fromEcoleDirecteJson(Map<String, dynamic> json, String nomPeriode) {
+  factory Grade.fromEcoleDirecteJson(Map<String, dynamic> json, String? nomPeriode) {
     return Grade(
       min: json["minClasse"],
       max: json["maxClasse"],
@@ -253,8 +253,8 @@ class Grade {
 }
 
 class Period {
-  final String name;
-  final String id;
+  final String? name;
+  final String? id;
 
   Period(this.name, this.id);
 }

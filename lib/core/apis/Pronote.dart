@@ -14,7 +14,7 @@ import 'package:ynotes/core/logic/shared/loginController.dart';
 
 import 'package:ynotes/usefulMethods.dart';
 
-PronoteClient localClient;
+late PronoteClient localClient;
 //Locks are use to prohibit the app to send too much requests while collecting data and ensure there are made one by one
 //They are ABSOLUTELY needed or user will be quickly IP suspended
 bool gradeLock = false;
@@ -28,33 +28,34 @@ bool lessonsRefreshRecursive = false;
 bool pollsRefreshRecursive = false;
 
 class APIPronote extends API {
-  APIPronote(Offline offlineController) : super(offlineController);
+  APIPronote(Offline? offlineController) : super(offlineController);
 
   @override
   // TODO: implement listApp
 
   @override
-  Future<List<Discipline>> getGrades({bool forceReload}) async {
+  Future<List<Discipline>> getGrades({bool? forceReload}) async {
     var connectivityResult = await (Connectivity().checkConnectivity());
-    var offlineGrades = await appSys.offline.disciplines.getDisciplines();
+    var offlineGrades = await appSys.offline!.disciplines.getDisciplines();
 
     //If force reload enabled the grades will be loaded online
     if ((connectivityResult == ConnectivityResult.none || forceReload == false || forceReload == null) &&
         offlineGrades != null) {
       print("Loading grades from offline storage.");
 
-      var toReturn = await appSys.offline.disciplines.getDisciplines();
+      var toReturn = await (appSys.offline!.disciplines.getDisciplines() as FutureOr<List<Discipline>>);
       toReturn = await refreshDisciplinesListColors(toReturn);
       return toReturn;
     } else {
       print("Loading grades inline.");
       var toReturn = await getGradesFromInternet();
       if (toReturn == null) {
-        toReturn = await appSys.offline.disciplines.getDisciplines();
+        toReturn = await appSys.offline!.disciplines.getDisciplines();
       }
       toReturn = await refreshDisciplinesListColors(toReturn);
       if (toReturn != null) {
-        appSys.updateSetting(appSys.settings["system"], "lastGradeCount", getAllGrades(toReturn, overrideLimit: true).length);
+        appSys.updateSetting(
+            appSys.settings!["system"], "lastGradeCount", getAllGrades(toReturn, overrideLimit: true)!.length);
       }
 
       return toReturn;
@@ -75,9 +76,9 @@ class APIPronote extends API {
       try {
         List<PronotePeriod> periods = await localClient.periods();
 
-        List<Grade> grades = List<Grade>();
-        List averages = List();
-        List<Discipline> listDisciplines = List<Discipline>();
+        List<Grade> grades = [];
+        List averages = [];
+        List<Discipline> listDisciplines = [];
         for (var i = 0; i < periods.length; i++) {
           //Grades and average
           List data = await periods[i].grades(i + 1);
@@ -109,18 +110,18 @@ class APIPronote extends API {
         }
         this.gradesList = null;
         listDisciplines.forEach((element) {
-          element.gradesList.addAll(grades.where((grade) => grade.disciplineName == element.disciplineName));
+          element.gradesList!.addAll(grades.where((grade) => grade.disciplineName == element.disciplineName));
         });
         int index = 0;
         listDisciplines = await refreshDisciplinesListColors(listDisciplines);
         gradeLock = false;
         gradeRefreshRecursive = false;
-        appSys.offline.disciplines.updateDisciplines(listDisciplines);
+        appSys.offline!.disciplines.updateDisciplines(listDisciplines);
         return listDisciplines;
       } catch (e) {
         gradeLock = false;
         print(e.toString());
-        List<Discipline> listDisciplines = List<Discipline>();
+        List<Discipline> listDisciplines = [];
         if (gradeRefreshRecursive == false) {
           await refreshClient();
           gradeRefreshRecursive = true;
@@ -132,13 +133,13 @@ class APIPronote extends API {
       }
     } else {
       print("GRADES WERE LOCKED");
-      List<Discipline> listDisciplines = List<Discipline>();
+      List<Discipline> listDisciplines = [];
       return listDisciplines;
     }
   }
 
   @override
-  Future<List<Homework>> getHomeworkFor(DateTime dateHomework) async {
+  Future<List<Homework>?> getHomeworkFor(DateTime? dateHomework) async {
     int req = 0;
     //Time out of 20 seconds. Wait until the task is unlocked
     while (hwLock == true && req < 10) {
@@ -150,55 +151,55 @@ class APIPronote extends API {
         print("GETTING HOMEWORK");
         hwLock = true;
 
-        List<Homework> listHW = List<Homework>();
-        var hws = await localClient.homework(dateHomework, date_to: dateHomework);
+        List<Homework> listHW = [];
+        var hws = await localClient.homework(dateHomework!, date_to: dateHomework);
 
         //This returns all the week
         listHW.addAll(hws);
         //Remove the others
-        listHW.removeWhere((element) => element.date.day != dateHomework.day);
+        listHW.removeWhere((element) => element.date!.day != dateHomework.day);
 
         hwLock = false;
         hwRefreshRecursive = false;
         return listHW;
       } catch (e) {
         print("Error while getting homework" + e);
-        List<Homework> listHW = List<Homework>();
+        List<Homework> listHW = [];
         hwLock = false;
 
         if (hwRefreshRecursive == false) {
           await refreshClient();
           hwRefreshRecursive = true;
 
-          listHW.addAll(await getHomeworkFor(dateHomework));
+          listHW.addAll(await (getHomeworkFor(dateHomework) as FutureOr<Iterable<Homework>>));
         }
       }
     } else {
       print("HOMEWORK WERE LOCKED");
-      List<Homework> listHW = List<Homework>();
+      List<Homework> listHW = [];
       return listHW;
     }
     return null;
   }
 
   @override
-  Future<List<Homework>> getNextHomework({bool forceReload}) async {
+  Future<List<Homework>> getNextHomework({bool? forceReload}) async {
     var connectivityResult = await (Connectivity().checkConnectivity());
-    var offlineHomework = await appSys.offline.homework.getHomework();
+    var offlineHomework = await appSys.offline!.homework.getHomework();
 
     //If force reload enabled the grades will be loaded online
     if ((connectivityResult == ConnectivityResult.none || forceReload == false || forceReload == null) &&
         offlineHomework != null) {
       print("Loading homework from offline storage.");
-      offlineHomework.sort((a, b) => a.date.compareTo(b.date));
+      offlineHomework.sort((a, b) => a.date!.compareTo(b.date!));
       return offlineHomework;
     } else {
       print("Loading homework inline.");
       List<Homework> toReturn = await getNextHomeworkFromInternet();
       if (toReturn == null) {
-        toReturn = await appSys.offline.homework.getHomework();
+        toReturn = await (appSys.offline!.homework.getHomework() as FutureOr<List<Homework>>);
       }
-      toReturn.sort((a, b) => a.date.compareTo(b.date));
+      toReturn.sort((a, b) => a.date!.compareTo(b.date!));
       return toReturn;
     }
   }
@@ -215,15 +216,15 @@ class APIPronote extends API {
         print("GETTING HOMEWORK");
         hwLock = true;
         DateTime now = DateTime.now();
-        List<Homework> listHW = List<Homework>();
+        List<Homework> listHW = [];
         List<Homework> hws = await localClient.homework(now);
-        hws.removeWhere((element) => element.date.isBefore(now));
+        hws.removeWhere((element) => element.date!.isBefore(now));
         listHW.addAll(hws);
-        List<DateTime> pinnedDates = await appSys.offline.pinnedHomework.getPinnedHomeworkDates();
+        List<DateTime> pinnedDates = await appSys.offline!.pinnedHomework.getPinnedHomeworkDates();
         //Add pinned content
         await Future.wait(pinnedDates.map((element) async {
           List<Homework> pinnedHomework = await localClient.homework(element, date_to: element);
-          pinnedHomework.removeWhere((pinnedHWElement) => element.day != pinnedHWElement.date.day);
+          pinnedHomework.removeWhere((pinnedHWElement) => element.day != pinnedHWElement.date!.day);
           pinnedHomework.forEach((pinned) {
             if (!listHW.any((hw) => hw.id == pinned.id)) {
               listHW.add(pinned);
@@ -232,17 +233,17 @@ class APIPronote extends API {
         }));
 
         //delete duplicates
-        listHW = listHW.toSet().toList();
+        listHW = [];
 
         hwLock = false;
         hwRefreshRecursive = false;
-        appSys.offline.homework.updateHomework(listHW);
+        appSys.offline!.homework.updateHomework(listHW);
 
         return listHW;
       } catch (e) {
         hwLock = false;
         print("Error while getting homework" + e.toString());
-        List<Homework> listHW = List<Homework>();
+        List<Homework> listHW = [];
 
         if (hwRefreshRecursive == false) {
           await refreshClient();
@@ -252,7 +253,7 @@ class APIPronote extends API {
       }
     } else {
       print("HOMEWORK WERE LOCKED");
-      List<Homework> listHW = List<Homework>();
+      List<Homework> listHW = [];
       return listHW;
     }
   }
@@ -271,7 +272,8 @@ class APIPronote extends API {
       loginLock = true;
       try {
         var cookies = await callCas(cas, username, password, url ?? "");
-        localClient = PronoteClient(url, username: username, password: password, mobileLogin: mobileCasLogin, cookies: cookies);
+        localClient =
+            PronoteClient(url, username: username, password: password, mobileLogin: mobileCasLogin, cookies: cookies);
 
         await localClient.init();
         if (localClient.loggedIn) {
@@ -288,7 +290,7 @@ class APIPronote extends API {
         }
       } catch (e) {
         loginLock = false;
-        localClient.stepsLogger.add("❌ Pronote login failed : " + e.toString());
+        localClient.stepsLogger!.add("❌ Pronote login failed : " + e.toString());
         print(e);
         String error = "Une erreur a eu lieu. " + e.toString();
         if (e.toString().contains("invalid url")) {
@@ -331,12 +333,12 @@ class APIPronote extends API {
   }
 
   @override
-  Future<bool> testNewGrades() async {
+  Future<bool?> testNewGrades() async {
     return null;
   }
 
   @override
-  Future app(String appname, {String args, String action, CloudItem folder}) async {
+  Future app(String appname, {String? args, String? action, CloudItem? folder}) async {
     switch (appname) {
       case "polls":
         {
@@ -349,7 +351,7 @@ class APIPronote extends API {
             if (pollsLock == false) {
               try {
                 pollsLock = true;
-                List<PollInfo> toReturn = await getPronotePolls(args == "forced");
+                List<PollInfo>? toReturn = await getPronotePolls(args == "forced");
                 pollsLock = false;
                 return toReturn;
               } catch (e) {
@@ -357,7 +359,7 @@ class APIPronote extends API {
                   pollsRefreshRecursive = true;
                   pollsLock = false;
                   await refreshClient();
-                  List<PollInfo> toReturn = await getPronotePolls(args == "forced");
+                  List<PollInfo>? toReturn = await getPronotePolls(args == "forced");
 
                   return toReturn;
                 }
@@ -374,13 +376,13 @@ class APIPronote extends API {
             }
             try {
               pollsLock = true;
-              await localClient.setPollRead(args);
+              await localClient.setPollRead(args!);
               pollsLock = false;
             } catch (e) {
               pollsLock = false;
               if (!pollsRefreshRecursive) {
                 await refreshClient();
-                await localClient.setPollRead(args);
+                await localClient.setPollRead(args!);
               }
             }
           }
@@ -392,13 +394,13 @@ class APIPronote extends API {
             }
             try {
               pollsLock = true;
-              await localClient.setPollResponse(args);
+              await localClient.setPollResponse(args!);
               pollsLock = false;
             } catch (e) {
               pollsLock = false;
               if (!pollsRefreshRecursive) {
                 await refreshClient();
-                await localClient.setPollResponse(args);
+                await localClient.setPollResponse(args!);
               }
             }
           }
@@ -444,9 +446,9 @@ class APIPronote extends API {
   }
 
   @override
-  Future getNextLessons(DateTime dateToUse, {bool forceReload}) async {
+  Future getNextLessons(DateTime dateToUse, {bool? forceReload}) async {
     var connectivityResult = await (Connectivity().checkConnectivity());
-    List<Lesson> toReturn;
+    List<Lesson>? toReturn;
     int req = 0;
     while (lessonsLock == true && req < 10) {
       req++;
@@ -457,9 +459,9 @@ class APIPronote extends API {
       lessonsLock = true;
       try {
         //get lessons from offline storage
-        var offlineLesson = await appSys.offline.lessons.get(await get_week(dateToUse));
+        var offlineLesson = await appSys.offline!.lessons.get(await get_week(dateToUse));
         if (offlineLesson != null) {
-          toReturn = List();
+          toReturn = [];
           toReturn.addAll(offlineLesson);
 
           //filter lessons
@@ -473,7 +475,7 @@ class APIPronote extends API {
           try {
             List<Lesson> onlineLessons = await localClient.lessons(dateToUse);
 
-            await appSys.offline.lessons.updateLessons(onlineLessons, await get_week(dateToUse));
+            await appSys.offline!.lessons.updateLessons(onlineLessons, await get_week(dateToUse));
 
             toReturn = onlineLessons;
           } catch (e) {
@@ -483,9 +485,9 @@ class APIPronote extends API {
 
         lessonsLock = false;
         toReturn ?? [].sort((a, b) => a.start.compareTo(b.start));
-        return toReturn
+        return toReturn!
             .where((lesson) =>
-                DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) ==
+                DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start!)) ==
                 DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)))
             .toList();
       } catch (e) {
@@ -512,16 +514,16 @@ class APIPronote extends API {
 
   getOfflinePeriods() async {
     try {
-      List<Period> listPeriods = List();
-      List<Discipline> disciplines = await appSys.offline.disciplines.getDisciplines();
-      List<Grade> grades = getAllGrades(disciplines, overrideLimit: true);
+      List<Period> listPeriods = [];
+      List<Discipline>? disciplines = await appSys.offline!.disciplines.getDisciplines();
+      List<Grade> grades = getAllGrades(disciplines, overrideLimit: true)!;
       grades.forEach((grade) {
         if (!listPeriods.any((period) => period.name == grade.periodName && period.id == grade.periodCode)) {
           listPeriods.add(Period(grade.periodName, grade.periodCode));
         }
       });
 
-      listPeriods.sort((a, b) => a.name.compareTo(b.name));
+      listPeriods.sort((a, b) => a.name!.compareTo(b.name!));
 
       return listPeriods;
     } catch (e) {
@@ -531,7 +533,7 @@ class APIPronote extends API {
 
   getOnlinePeriods() async {
     try {
-      List<Period> listPeriod = List<Period>();
+      List<Period> listPeriod = [];
       if (localClient.localPeriods != null) {
         localClient.localPeriods.forEach((pronotePeriod) {
           listPeriod.add(Period(pronotePeriod.name, pronotePeriod.id));
@@ -541,7 +543,7 @@ class APIPronote extends API {
       } else {
         var listPronotePeriods = await localClient.periods();
         //refresh local pronote periods
-        localClient.localPeriods = listPronotePeriods;
+        localClient.localPeriods = [];
         listPronotePeriods.forEach((pronotePeriod) {
           listPeriod.add(Period(pronotePeriod.name, pronotePeriod.id));
         });
@@ -553,9 +555,9 @@ class APIPronote extends API {
   }
 
   refreshClient() async {
-    await appSys.loginController.login();
+    await appSys.loginController!.login();
     //reset all recursives
-    if (appSys.loginController.actualState == loginStatus.loggedIn) {
+    if (appSys.loginController!.actualState == loginStatus.loggedIn) {
       gradeRefreshRecursive = false;
       hwRefreshRecursive = false;
       lessonsRefreshRecursive = false;
@@ -577,9 +579,9 @@ class APIPronote extends API {
       try {
         List periods = await localClient.periods();
 
-        List<Grade> grades = List<Grade>();
-        List averages = List();
-        List<Discipline> listDisciplines = List<Discipline>();
+        List<Grade> grades = [];
+        List averages = [];
+        List<Discipline> listDisciplines = [];
         for (var i = 0; i < periods.length; i++) {
           //Grades and average
           List data = await periods[i].disciplines(i + 1);
@@ -610,20 +612,20 @@ class APIPronote extends API {
         }
 
         listDisciplines.forEach((element) {
-          element.gradesList.addAll(grades.where((grade) => grade.disciplineName == element.disciplineName));
+          element.gradesList!.addAll(grades.where((grade) => grade.disciplineName == element.disciplineName));
         });
         int index = 0;
         listDisciplines = await refreshDisciplinesListColors(listDisciplines);
         gradeLock = false;
         gradeRefreshRecursive = false;
-        appSys.offline.disciplines.updateDisciplines(listDisciplines);
+        appSys.offline!.disciplines.updateDisciplines(listDisciplines);
         return listDisciplines;
       } catch (e) {
         gradeLock = false;
       }
     } else {
       print("GRADES WERE LOCKED");
-      List<Discipline> listDisciplines = List<Discipline>();
+      List<Discipline> listDisciplines = [];
       return listDisciplines;
     }
   }
@@ -636,26 +638,26 @@ class APIPronote extends API {
   }
 }
 
-Future<List<PollInfo>> getPronotePolls(bool forced) async {
-  List<PollInfo> listPolls;
+Future<List<PollInfo>?> getPronotePolls(bool forced) async {
+  List<PollInfo>? listPolls;
   try {
     if (forced) {
       listPolls = await localClient.polls() as List<PollInfo>;
-      await appSys.offline.polls.update(listPolls);
+      await appSys.offline!.polls.update(listPolls);
       return listPolls;
     } else {
-      listPolls = await appSys.offline.polls.get();
+      listPolls = await appSys.offline!.polls.get();
       if (listPolls == null) {
         print("Error while returning offline polls");
         listPolls = await localClient.polls() as List<PollInfo>;
-        await appSys.offline.polls.update(listPolls);
+        await appSys.offline!.polls.update(listPolls);
         return listPolls;
       } else {
         return listPolls;
       }
     }
   } catch (e) {
-    listPolls = await appSys.offline.polls.get();
+    listPolls = await appSys.offline!.polls.get();
     return listPolls;
   }
 }

@@ -10,7 +10,7 @@ import '../../../usefulMethods.dart';
 class FolderChoiceDialog extends StatefulWidget {
   BuildContext context;
   String path;
-  List<FileInfo> files = List();
+  List<FileInfo>? files = [];
   bool selectionMode;
   Function callback;
   FolderChoiceDialog(this.context, this.path, this.files, this.selectionMode, this.callback);
@@ -22,18 +22,18 @@ class FolderChoiceDialog extends StatefulWidget {
 class _FolderChoiceDialogState extends State<FolderChoiceDialog> {
   TextEditingController textController = TextEditingController(text: "");
 
-  String value = "";
-  String dropDownValue = "Aucun";
-  List<String> folderNames = List();
-  List<FileInfo> filesToMove = List();
+  String? value = "";
+  String? dropDownValue = "Aucun";
+  List<String?> folderNames = [];
+  List<FileInfo> filesToMove = [];
   @override
   void initState() {
     // TODO: implement initState
-    List<FileInfo> folderList = List();
+    List<FileInfo> folderList = [];
     if (widget.files != null) {
-      folderList = widget.files.where((element) => element.element is Directory).toList();
+      folderList = widget.files!.where((element) => element.element is Directory).toList();
 
-      filesToMove = widget.files.where((element) => element.selected).toList();
+      filesToMove = widget.files!.where((element) => element.selected).toList();
     }
 
     folderNames.add("Aucun");
@@ -115,16 +115,16 @@ class _FolderChoiceDialogState extends State<FolderChoiceDialog> {
                     height: screenSize.size.height / 10 * 0.02,
                     color: ThemeUtils.textColor(),
                   ),
-                  onChanged: (String newValue) {
+                  onChanged: (String? newValue) {
                     setState(() {
                       dropDownValue = newValue;
                       if (newValue != "Aucun") {
                         value = newValue;
-                        textController.text = newValue;
+                        textController.text = newValue!;
                       }
                     });
                   },
-                  items: folderNames.map<DropdownMenuItem<String>>((String value) {
+                  items: folderNames.map<DropdownMenuItem<String>>((String? value) {
                     return DropdownMenuItem<String>(
                       value: value ?? "",
                       child: Text(
@@ -153,21 +153,25 @@ class _FolderChoiceDialogState extends State<FolderChoiceDialog> {
           ),
           onPressed: () async {
             if (widget.selectionMode) {
-              await Future.forEach(filesToMove, (element) async {
+              await Future.forEach(filesToMove, (dynamic element) async {
                 try {
-                  await element.element.copy(
-                      widget.path + "/" + value + '/' + element.fileName + ((element.element is Directory) ? "/" : ""));
+                  await element.element.copy(widget.path +
+                      "/" +
+                      value! +
+                      '/' +
+                      element.fileName +
+                      ((element.element is Directory) ? "/" : ""));
                   await element.element.delete(recursive: true);
                 } catch (e) {
                   if (Platform.isAndroid) {
                     print("Trying with commandlines");
-                    await Process.run('cp', ['-r', element.element.path, widget.path + "/" + value]);
+                    await Process.run('cp', ['-r', element.element.path, widget.path + "/" + value!]);
                     await element.element.delete(recursive: true);
                   }
                 }
               });
             } else {
-              await FolderAppUtil.createDirectory(widget.path + "/" + value + "/");
+              await FolderAppUtil.createDirectory(widget.path + "/" + value! + "/");
             }
             await widget.callback();
             Navigator.pop(context, true);

@@ -20,19 +20,19 @@ import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 
 class QuickGrades extends StatefulWidget {
-  final Function switchPage;
-  final GradesController gradesController;
-  const QuickGrades({Key key, this.gradesController, this.switchPage}) : super(key: key);
+  final Function? switchPage;
+  final GradesController? gradesController;
+  const QuickGrades({Key? key, this.gradesController, this.switchPage}) : super(key: key);
   @override
   _QuickGradesState createState() => _QuickGradesState();
 }
 
 class _QuickGradesState extends State<QuickGrades> {
   Future<void> forceRefreshModel() async {
-    await this.widget.gradesController.refresh(force: true);
+    await this.widget.gradesController!.refresh(force: true);
   }
 
-  Widget buildCHart(BuildContext context, List<Discipline> disciplines, bool fetching) {
+  Widget buildCHart(BuildContext context, List<Discipline>? disciplines, bool fetching) {
     var screenSize = MediaQuery.of(context);
 
     //First division (gauge)
@@ -83,7 +83,7 @@ class _QuickGradesState extends State<QuickGrades> {
         child: AutoSizeText.rich(
           //MARK
           TextSpan(
-            text: (grade.notSignificant ? "(" + grade.value : grade.value),
+            text: (grade.notSignificant! ? "(" + grade.value! : grade.value),
             style: TextStyle(
                 color: (ThemeUtils.textColor()),
                 fontFamily: "Asap",
@@ -93,7 +93,7 @@ class _QuickGradesState extends State<QuickGrades> {
               if (grade.scale != "20")
                 //MARK ON
                 TextSpan(
-                    text: '/' + grade.scale,
+                    text: '/' + grade.scale!,
                     style: TextStyle(
                         color: (ThemeUtils.textColor()),
                         fontWeight: FontWeight.normal,
@@ -145,7 +145,7 @@ class _QuickGradesState extends State<QuickGrades> {
                 ),
               if (grade.date != null)
                 Text(
-                  grade.date != null ? df.format(grade.entryDate) : "",
+                  grade.date != null ? df.format(grade.entryDate!) : "",
                   style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.left,
@@ -157,7 +157,7 @@ class _QuickGradesState extends State<QuickGrades> {
     );
   }
 
-  buildGradesList(BuildContext context, List<Grade> grades) {
+  buildGradesList(BuildContext context, List<Grade>? grades) {
     var screenSize = MediaQuery.of(context);
     if (grades == null || grades.length == 0) {
       return Container(
@@ -192,7 +192,7 @@ class _QuickGradesState extends State<QuickGrades> {
                       CustomDialogs.showShareGradeDialog(context, grades[index]);
                     },
                     onTap: () {
-                      widget.switchPage(1);
+                      widget.switchPage!(1);
                     },
                     child: Container(
                       padding: EdgeInsets.symmetric(
@@ -210,7 +210,7 @@ class _QuickGradesState extends State<QuickGrades> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<GradesController>.value(
+    return ChangeNotifierProvider<GradesController?>.value(
       value: widget.gradesController,
       child: Consumer<GradesController>(builder: (context, model, child) {
         return Column(children: [

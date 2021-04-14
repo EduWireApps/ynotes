@@ -9,14 +9,14 @@ class HomeworkUtils {
     List list = await getReducedListHomework();
     if (list != null) {
       //Number of elements in list
-      int total = list.length;
+      int total = [];
       if (total == 0) {
         return [100, 0, 0];
       } else {
         int done = 0;
 
-        await Future.forEach(list, (element) async {
-          bool isDone = await appSys.offline.doneHomework.getHWCompletion(element.id);
+        await Future.forEach(list, (dynamic element) async {
+          bool isDone = await appSys.offline!.doneHomework.getHWCompletion(element.id);
           if (isDone) {
             done++;
           }
@@ -31,19 +31,19 @@ class HomeworkUtils {
   }
 
   static Future<List<Homework>> getReducedListHomework({forceReload = false}) async {
-    int reduce = await appSys.settings["user"]["summaryPage"]["summaryQuickHomework"];
+    int? reduce = await appSys.settings!["user"]["summaryPage"]["summaryQuickHomework"];
     if (reduce == 11) {
       reduce = 770;
     }
-    List<Homework> localList = await appSys.api.getNextHomework(forceReload: forceReload);
+    List<Homework> localList = await appSys.api!.getNextHomework(forceReload: forceReload);
     if (localList != null) {
-      List<Homework> listToReturn = List<Homework>();
+      List<Homework> listToReturn = [];
       localList.forEach((element) {
         var now = DateTime.now();
-        var date = element.date;
+        var date = element.date!;
 
         //ensure that the list doesn't contain the pinned homework
-        if (date.difference(now).inDays < reduce) {
+        if (date.difference(now).inDays < reduce!) {
           listToReturn.add(element);
         }
       });

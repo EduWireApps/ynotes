@@ -22,7 +22,7 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'EcoleDirecte/ecoleDirecteMethods.dart';
 
 //Create a secure storage
-void CreateStorage(String key, String data) async {
+void CreateStorage(String key, String? data) async {
   await storage.write(key: key, value: data);
 }
 
@@ -38,7 +38,7 @@ class HexColor extends Color {
   HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
 }
 
-String token;
+String? token;
 
 final storage = new FlutterSecureStorage();
 List<String> colorList = [
@@ -58,7 +58,7 @@ List<String> colorList = [
 
 ///The ecole directe api extended from the apiManager.dart API class
 class APIEcoleDirecte extends API {
-  APIEcoleDirecte(Offline offlineController) : super(offlineController);
+  APIEcoleDirecte(Offline? offlineController) : super(offlineController);
 
 //Get connection message and store token
   Future<List> login(username, password, {url, cas, mobileCasLogin}) async {
@@ -107,18 +107,18 @@ class APIEcoleDirecte extends API {
           CreateStorage("startday", DateTime.parse("2020-02-02").toString());
 
           //Ensure that the user will not see the carousel anymore
-          prefs.setBool('firstUse', false);
+          prefs!.setBool('firstUse', false);
         } catch (e) {
           print("Error while getting user info " + e.toString());
           //log in file
           logFile(e.toString());
         }
         this.loggedIn = true;
-        return [1, "Bienvenue ${actualUser[0].toUpperCase()}${actualUser.substring(1).toLowerCase()} !"];
+        return [1, "Bienvenue ${actualUser![0].toUpperCase()}${actualUser!.substring(1).toLowerCase()} !"];
       }
       //Return an error
       else {
-        String message = req['message'];
+        String? message = req['message'];
         return [0, "Oups ! Une erreur a eu lieu :\n$message"];
       }
     } else {
@@ -129,15 +129,15 @@ class APIEcoleDirecte extends API {
   @override
   Future<List<Period>> getPeriods() async {
     return await EcoleDirecteMethod.fetchAnyData(
-        EcoleDirecteMethod(this.offlineController).periods, offlineController.disciplines.getPeriods);
+        EcoleDirecteMethod(this.offlineController).periods, offlineController!.disciplines.getPeriods);
   }
 
   @override
 //Getting grades
-  Future<List<Discipline>> getGrades({bool forceReload}) async {
+  Future<List<Discipline>> getGrades({bool? forceReload}) async {
     return await EcoleDirecteMethod.fetchAnyData(
-        EcoleDirecteMethod(this.offlineController).grades, offlineController.disciplines.getDisciplines,
-        forceFetch: forceReload ?? false, isOfflineLocked: this.offlineController.locked);
+        EcoleDirecteMethod(this.offlineController).grades, offlineController!.disciplines.getDisciplines,
+        forceFetch: forceReload ?? false, isOfflineLocked: this.offlineController!.locked);
   }
 
   Future<List<DateTime>> getDatesNextHomework() async {
@@ -145,27 +145,27 @@ class APIEcoleDirecte extends API {
   }
 
 //Get dates of the the next homework (based on the EcoleDirecte API)
-  Future<List<Homework>> getNextHomework({bool forceReload}) async {
+  Future<List<Homework>> getNextHomework({bool? forceReload}) async {
     return await EcoleDirecteMethod.fetchAnyData(
-        EcoleDirecteMethod(this.offlineController).nextHomework, offlineController.homework.getHomework,
+        EcoleDirecteMethod(this.offlineController).nextHomework, offlineController!.homework.getHomework,
         forceFetch: forceReload ?? false);
   }
 
 //Get homeworks for a specific date
-  Future<List<Homework>> getHomeworkFor(DateTime dateHomework) async {
-    return await EcoleDirecteMethod(this.offlineController).homeworkFor(dateHomework);
+  Future<List<Homework>> getHomeworkFor(DateTime? dateHomework) async {
+    return await EcoleDirecteMethod(this.offlineController).homeworkFor(dateHomework!);
   }
 
   @override
-  Future<bool> testNewGrades() async {
+  Future<bool?> testNewGrades() async {
     try {
       //Getting the offline count of grades
       List<Grade> listOfflineGrades =
-          getAllGrades(await appSys.offline.disciplines.getDisciplines(), overrideLimit: true);
+          getAllGrades(await appSys.offline!.disciplines.getDisciplines(), overrideLimit: true)!;
       print("Offline length is ${listOfflineGrades.length}");
       //Getting the online count of grades
       List<Grade> listOnlineGrades =
-          getAllGrades(await EcoleDirecteMethod(this.offlineController).grades(), overrideLimit: true);
+          getAllGrades(await EcoleDirecteMethod(this.offlineController).grades(), overrideLimit: true)!;
       print("Online length is ${listOnlineGrades.length}");
       return (listOfflineGrades.length < listOnlineGrades.length);
     } catch (e) {
@@ -175,12 +175,12 @@ class APIEcoleDirecte extends API {
   }
 
   @override
-  Future app(String appname, {String args, String action, CloudItem folder}) async {
+  Future app(String appname, {String? args, String? action, CloudItem? folder}) async {
     switch (appname) {
       case "mail":
         {
           print("Returning mails");
-          List<Mail> mails = await getMails();
+          List<Mail> mails = await (getMails() as FutureOr<List<Mail>>);
 
           return mails;
         }
@@ -195,7 +195,7 @@ class APIEcoleDirecte extends API {
         {
           print("Returing mail recipients");
           return (await EcoleDirecteMethod.fetchAnyData(
-              EcoleDirecteMethod(this.offlineController).recipients, offlineController.recipients.getRecipients));
+              EcoleDirecteMethod(this.offlineController).recipients, offlineController!.recipients.getRecipients));
         }
         break;
     }
@@ -226,22 +226,22 @@ class APIEcoleDirecte extends API {
   }
 
   @override
-  Future getNextLessons(DateTime dateToUse, {bool forceReload = false}) async {
+  Future getNextLessons(DateTime dateToUse, {bool? forceReload = false}) async {
     try {
       print("Getting next lessons");
       int week = await get_week(dateToUse);
-      List<Lesson> toReturn;
+      List<Lesson>? toReturn;
       var connectivityResult = await (Connectivity().checkConnectivity());
       //get lessons from offline storage
-      var offlineLesson = await offlineController.lessons.get(week);
+      var offlineLesson = await offlineController!.lessons.get(week);
       if (offlineLesson != null) {
         //Important init to return
-        toReturn = List();
+        toReturn = [];
 
         toReturn.addAll(offlineLesson);
         //filter lessons
         toReturn.removeWhere((lesson) =>
-            DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) !=
+            DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start!)) !=
             DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)));
       } else {
         toReturn = null;
@@ -252,7 +252,7 @@ class APIEcoleDirecte extends API {
           print("Getting next lessons from online");
           List<Lesson> onlineLessons = await EcoleDirecteMethod(this.offlineController).lessons(dateToUse, week);
 
-          await offlineController.lessons.updateLessons(onlineLessons, week);
+          await offlineController!.lessons.updateLessons(onlineLessons, week);
 
           toReturn = onlineLessons;
         } catch (e) {
@@ -260,10 +260,10 @@ class APIEcoleDirecte extends API {
         }
       }
 
-      toReturn.sort((a, b) => a.start.compareTo(b.start));
+      toReturn!.sort((a, b) => a.start!.compareTo(b.start!));
       return toReturn
           .where((lesson) =>
-              DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) ==
+              DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start!)) ==
               DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)))
           .toList();
     } catch (e) {
@@ -275,8 +275,8 @@ class APIEcoleDirecte extends API {
     var url = 'https://api.ecoledirecte.com/v3/telechargement.awp?verbe=get';
     await EcoleDirecteMethod.refreshToken();
     Map<String, String> headers = {"Content-type": "x"};
-    String type = document.type;
-    String id = document.id;
+    String? type = document.type;
+    String? id = document.id;
     String body = "leTypeDeFichier=$type&fichierId=$id&token=$token";
     http.Request request = http.Request('POST', Uri.parse(url));
     request.body = body.toString();
@@ -293,7 +293,7 @@ class APIEcoleDirecte extends API {
 ///     E.G : "CD" navigate to the path and return the files and folder existing in it : ESPACES DE TRAVAILS and PERSONNAL CLOUDS are considered as folders
 ///      E.G : "PUSH" add a file to the path if it doesn't exist
 ///       E.G : "RM" remove a file to the path
-Future getCloud(String args, String action, CloudItem item) async {
+Future getCloud(String? args, String? action, CloudItem? item) async {
   if (action == "CD") {
     switch (args) {
       //Default repository. Every folder have to be followed by / => "/CLOUD/FOLDER/"
@@ -306,7 +306,7 @@ Future getCloud(String args, String action, CloudItem item) async {
         break;
       default:
         {
-          return changeFolder(args);
+          return changeFolder(args!);
         }
         break;
     }
@@ -314,9 +314,9 @@ Future getCloud(String args, String action, CloudItem item) async {
 }
 
 ///Returning Ecole Directe Mails, **checking** bool is used to only returns old mail number
-Future getMails({bool checking}) async {
+Future getMails({bool? checking}) async {
   await EcoleDirecteMethod(appSys.offline).testToken();
-  String id = await storage.read(key: "userID");
+  String? id = await storage.read(key: "userID");
   var url = 'https://api.ecoledirecte.com/v3/eleves/$id/messages.awp?verbe=getall&typeRecuperation=all';
 
   Map<String, String> headers = {"Content-type": "text/plain"};
@@ -332,8 +332,8 @@ Future getMails({bool checking}) async {
     Map<String, dynamic> req = jsonDecode(utf8.decode(response.bodyBytes));
     if (req['code'] == 200) {
       print("Mail request succeeded");
-      List<Mail> mailsList = List<Mail>();
-      List<Classeur> classeursList = List<Classeur>();
+      List<Mail> mailsList = [];
+      List<Classeur> classeursList = [];
 
       //add the classeurs
       if (req['data']['classeurs'] != null) {
@@ -342,7 +342,7 @@ Future getMails({bool checking}) async {
           classeursList.add(Classeur(element["libelle"], element["id"]));
         });
       }
-      List messagesList = List();
+      List messagesList = [];
       if (req['data']['messages'] != null) {
         Map messages = req['data']['messages'];
         messages.forEach((key, value) {
@@ -361,7 +361,7 @@ Future getMails({bool checking}) async {
       if (checking == null) {
         print("checking mails");
         List<Mail> receivedMails = mailsList.where((element) => element.mtype == "received").toList();
-        appSys.updateSetting(appSys.settings["system"], "lastMailCount", receivedMails.length);
+        appSys.updateSetting(appSys.settings!["system"], "lastMailCount", receivedMails.length);
         print("checked mails");
       }
 
@@ -379,7 +379,7 @@ Future getMails({bool checking}) async {
 
 Future readMail(String mailId, bool read) async {
   await EcoleDirecteMethod(appSys.offline).testToken();
-  String id = await storage.read(key: "userID");
+  String? id = await storage.read(key: "userID");
   var url = 'https://api.ecoledirecte.com/v3/eleves/$id/messages/$mailId.awp?verbe=get&mode=destinataire';
 
   Map<String, String> headers = {"Content-type": "text/plain"};

@@ -30,38 +30,38 @@ class Offline {
   final bool locked;
 
   //Return disciplines + grades
-  List<Discipline> disciplinesData;
+  List<Discipline>? disciplinesData;
   //Return homework
-  List<Homework> homeworkData;
+  List<Homework>? homeworkData;
   //Return lessons
-  Map<dynamic, dynamic> lessonsData;
+  Map<dynamic, dynamic>? lessonsData;
   //Return polls
-  List<PollInfo> pollsData;
+  List<PollInfo>? pollsData;
   //Return agenda reminder
-  List<AgendaReminder> remindersData;
+  List<AgendaReminder>? remindersData;
   //Return agenda event
-  Map<dynamic, dynamic> agendaEventsData;
+  Map<dynamic, dynamic>? agendaEventsData;
   //Return recipients
-  List<Recipient> recipientsData;
+  List<Recipient>? recipientsData;
   //Boxes containing offline data
-  Box offlineBox;
-  Box homeworkDoneBox;
-  Box pinnedHomeworkBox;
-  Box agendaBox;
+  Box? offlineBox;
+  Box? homeworkDoneBox;
+  Box? pinnedHomeworkBox;
+  late Box agendaBox;
 
 //Imports
-  HomeworkOffline homework;
-  DoneHomeworkOffline doneHomework;
-  PinnedHomeworkOffline pinnedHomework;
-  AgendaEventsOffline agendaEvents;
-  RemindersOffline reminders;
-  LessonsOffline lessons;
+  late HomeworkOffline homework;
+  late DoneHomeworkOffline doneHomework;
+  late PinnedHomeworkOffline pinnedHomework;
+  late AgendaEventsOffline agendaEvents;
+  late RemindersOffline reminders;
+  late LessonsOffline lessons;
 
-  DisciplinesOffline disciplines;
+  late DisciplinesOffline disciplines;
 
-  PollsOffline polls;
+  late PollsOffline polls;
 
-  RecipientsOffline recipients;
+  late RecipientsOffline recipients;
 
   Offline(this.locked);
   //Called on dispose
@@ -153,12 +153,12 @@ class Offline {
       try {
         //Get data and cast it
         var offlineLessonsData = await agendaBox.get("lessons");
-        var offlineDisciplinesData = await offlineBox.get("disciplines");
-        var offlinehomeworkData = await offlineBox.get("homework");
-        var offlinePollsData = await offlineBox.get("polls");
+        var offlineDisciplinesData = await offlineBox!.get("disciplines");
+        var offlinehomeworkData = await offlineBox!.get("homework");
+        var offlinePollsData = await offlineBox!.get("polls");
         var offlineRemindersData = await agendaBox.get("reminders");
         var offlineAgendaEventsData = await agendaBox.get("agendaEvents");
-        var offlineRecipientsData = await offlineBox.get("recipients");
+        var offlineRecipientsData = await offlineBox!.get("recipients");
         //ensure that fetched data isn't null and if not, add it to the final value
         if (offlineLessonsData != null) {
           this.lessonsData = Map<dynamic, dynamic>.from(offlineLessonsData);
@@ -190,19 +190,19 @@ class Offline {
   //Clear all databases
   clearAll() async {
     try {
-      if (offlineBox == null || !offlineBox.isOpen) {
+      if (offlineBox == null || !offlineBox!.isOpen) {
         offlineBox = await Hive.openBox("offlineData");
       }
-      if (homeworkDoneBox == null || !homeworkDoneBox.isOpen) {
+      if (homeworkDoneBox == null || !homeworkDoneBox!.isOpen) {
         homeworkDoneBox = await Hive.openBox("doneHomework");
       }
-      if (pinnedHomeworkBox == null || !pinnedHomeworkBox.isOpen) {
+      if (pinnedHomeworkBox == null || !pinnedHomeworkBox!.isOpen) {
         pinnedHomeworkBox = await Hive.openBox('pinnedHomework');
       }
 
-      await offlineBox.deleteFromDisk();
-      await homeworkDoneBox.deleteFromDisk();
-      await pinnedHomeworkBox.deleteFromDisk();
+      await offlineBox!.deleteFromDisk();
+      await homeworkDoneBox!.deleteFromDisk();
+      await pinnedHomeworkBox!.deleteFromDisk();
       disciplinesData?.clear();
       homeworkData?.clear();
       lessonsData?.clear();
