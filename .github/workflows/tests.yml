@@ -19,12 +19,21 @@ jobs:
       with:
         xcode-version: latest-stable
     
-    - name: Install SSH key
-      uses: shimataro/ssh-key-action@v2
-      with:
-        key: ${{ secrets.SSH_KEY }}
-        known_hosts: ${{ secrets.KNOWN_HOSTS }}
-      working-directory: ios/fastlane 
+    - name: Setup SSH Keys and known_hosts for fastlane match
+      run: |
+          SSH_PATH="$HOME/.ssh"
+          mkdir -p "$SSH_PATH"
+          touch "$SSH_PATH/known_hosts"    
+          echo "$PRIVATE_KEY" > "$SSH_PATH/id_rsa"    
+          chmod 700 "$SSH_PATH"
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          chmod 600 "$SSH_PATH/known_hosts"
+          chmod 600 "$SSH_PATH/id_rsa"    
+          eval $(ssh-agent)
+          ssh-add "$SSH_PATH/id_rsa"
+      env:
+        PRIVATE_KEY: ${{ secrets.SSH_KEY }}
+
 
 
     - name: Setup ruby
