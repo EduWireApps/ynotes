@@ -21,18 +21,18 @@ abstract class API {
   Future<List> login(username, password, {url, cas, mobileCasLogin});
 
   ///Get years periods
-  Future<List<Period>> getPeriods();
+  Future<List<Period>?> getPeriods();
 
   ///Get marks
-  Future<List<Discipline>> getGrades({bool? forceReload});
+  Future<List<Discipline>?> getGrades({bool? forceReload});
 
   ///Get the dates of next homework (deprecated)
-  Future<List<DateTime>> getDatesNextHomework();
+  Future<List<DateTime>?> getDatesNextHomework();
 
   ///Get the list of all the next homework (sent by specifics API).
   ///
   ///Caution : `EcoleDirecte` api returns a list of unloaded homework
-  Future<List<Homework>> getNextHomework({bool? forceReload});
+  Future<List<Homework>?> getNextHomework({bool? forceReload});
 
   ///Get the list of homework only for a specific day (time travel feature)
   Future<List<Homework>?> getHomeworkFor(DateTime? dateHomework);

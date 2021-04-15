@@ -1,16 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:requests/requests.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:uuid/uuid.dart';
-import 'package:ynotes/core/apis/Pronote.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
 import 'package:ynotes/core/apis/utils.dart';
-import 'package:ynotes/main.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 
 class LoginWebView extends StatefulWidget {
@@ -34,31 +29,30 @@ class _LoginWebViewState extends State<LoginWebView> {
   String? espaceUrl;
   bool auth = false;
   int step = 3;
-  _buildText(String text) {
-    return SelectableText(text);
-  }
+  String randomUUID = "121567895313231";
 
-  _buildFloatingButton(BuildContext context) {
-    var screenSize = MediaQuery.of(context);
-    return Container(
-      margin: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
-      child: FloatingActionButton(
-        heroTag: "btn2",
-        backgroundColor: Colors.transparent,
-        child: Container(
-          width: screenSize.size.width / 5 * 0.8,
-          height: screenSize.size.width / 5 * 0.8,
-          child: Icon(
-            MdiIcons.exitRun,
-            size: screenSize.size.width / 5 * 0.5,
-          ),
-          decoration: BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
-        ),
-        onPressed: () async {
-          Navigator.of(context).pop();
-        },
-      ),
-    );
+  authAndValidateProfile() async {
+    print("Validating profile");
+    //navigate to address
+
+    Timer(new Duration(milliseconds: 1500), () async {
+      setState(() {
+        auth = true;
+      });
+      String loginDataProcess =
+          "(function(){return window && window.loginState ? JSON.stringify(window.loginState) : \'\';})();";
+      String? loginDataProcessResult =
+          await (widget.controller!.evaluateJavascript(source: loginDataProcess));
+      getCreds(loginDataProcessResult);
+      if (loginStatus != null) {
+        setState(() {
+          step = 5;
+        });
+        //url: widget.url + "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335"
+        await widget.controller!.loadUrl(
+            urlRequest: URLRequest(url: Uri.parse(widget.url! + "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335")));
+      }
+    });
   }
 
   @override
@@ -120,35 +114,19 @@ class _LoginWebViewState extends State<LoginWebView> {
     );
   }
 
-  ///called on load stop
-  stepper() async {
-    switch (step) {
-      //Get url metas
-      case 1:
-        {
-          await getMetas();
-        }
-        break;
-      //It should let the user chose its space...
-      case 2:
-        {
-          await selectProfile();
-        }
-        break;
-      case 3:
-        {
-          await setCookie();
-        }
-        break;
-      case 4:
-        {
-          await authAndValidateProfile();
-        }
-        break;
-      case 5:
-        {
-          await loginTest();
-        }
+  getCookie() {}
+
+  getCreds(String? credsData) {
+    if (credsData != null && credsData.length > 0) {
+      printWrapped(credsData);
+      Map temp = json.decode(credsData);
+      print(temp["status"]);
+      if (temp != null && temp["status"] == 0) {
+        loginStatus = temp;
+        Navigator.of(context).pop(loginStatus);
+      } else {}
+    } else {
+      print("NULL");
     }
   }
 
@@ -156,7 +134,7 @@ class _LoginWebViewState extends State<LoginWebView> {
     print("Getting metas");
     //Injected function to get metas
     String metaGetFunction = "(function(){return document.body.innerText;})()";
-    String? metaGetResult = await (widget.controller!.evaluateJavascript(source: metaGetFunction) as Future<String?>);
+    String? metaGetResult = await (widget.controller!.evaluateJavascript(source: metaGetFunction));
     if (metaGetResult != null && metaGetResult.length > 0) {
       loginData = json.decode(metaGetResult);
       setState(() {
@@ -166,86 +144,6 @@ class _LoginWebViewState extends State<LoginWebView> {
     } else {
       print("Failed to get metas");
     }
-  }
-
-  selectProfile() async {
-    print("Selecting profile");
-
-    //lets hardcode the profile
-    currentProfile = Map();
-
-    ///TO DO NOT HARCODE
-    currentProfile["serverUrl"] = widget.url;
-    currentProfile["espaceUrl"] = loginData["espaces"][5]["URL"];
-    currentProfile["nomEsp"] = loginData["espaces"][5]["nom"];
-    currentProfile["nomEtab"] = loginData["nomEtab"];
-    currentProfile["estCAS"] = loginData["CAS"]["actif"];
-    currentProfile["casURL"] = loginData["CAS"]["casURL"];
-    currentProfile["login"] = "";
-    currentProfile["jeton"] = "";
-
-    setState(() {
-      step = 3;
-    });
-    stepper();
-  }
-
-  String randomUUID = "121567895313231";
-  setCookie() async {
-    print("Setting cookie");
-
-    //set cookie
-    String cookieFunction = '(function(){try{' +
-        'var lJetonCas = "", lJson = JSON.parse(document.body.innerText);' +
-        'lJetonCas = !!lJson && !!lJson.CAS && lJson.CAS.jetonCAS;' +
-        'document.cookie = "appliMobile=;expires=" + new Date(0).toUTCString();' +
-        'if(!!lJetonCas) {' +
-        'document.cookie = "validationAppliMobile="+lJetonCas+";expires=" + new Date(new Date().getTime() + (5*60*1000)).toUTCString();' +
-        'document.cookie = "uuidAppliMobile=' +
-        randomUUID +
-        ';expires=" + new Date(new Date().getTime() + (5*60*1000)).toUTCString();' +
-        'document.cookie = "ielang=' +
-        "1036" +
-        ';expires=" + new Date(new Date().getTime() + (365*24*60*60*1000)).toUTCString();' +
-        'return "ok";' +
-        '} else return "ko";' +
-        '} catch(e){return "ko";}})();';
-    String? cookieFunctionResult =
-        await (widget.controller!.evaluateJavascript(source: cookieFunction) as Future<String?>);
-    if (cookieFunctionResult == "ok") {
-      String authFunction = 'location.assign("' + widget.url! + '?fd=1")';
-      setState(() {
-        step = 4;
-      });
-      String? authFunctionResult =
-          await (widget.controller!.evaluateJavascript(source: authFunction) as Future<String?>);
-
-      stepper();
-    }
-  }
-
-  authAndValidateProfile() async {
-    print("Validating profile");
-    //navigate to address
-
-    Timer(new Duration(milliseconds: 1500), () async {
-      setState(() {
-        auth = true;
-      });
-      String loginDataProcess =
-          "(function(){return window && window.loginState ? JSON.stringify(window.loginState) : \'\';})();";
-      String? loginDataProcessResult =
-          await (widget.controller!.evaluateJavascript(source: loginDataProcess) as Future<String?>);
-      getCreds(loginDataProcessResult);
-      if (loginStatus != null) {
-        setState(() {
-          step = 5;
-        });
-        //url: widget.url + "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335"
-        await widget.controller!.loadUrl(
-            urlRequest: URLRequest(url: Uri.parse(widget.url! + "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335")));
-      }
-    });
   }
 
   loginTest() async {
@@ -309,22 +207,119 @@ class _LoginWebViewState extends State<LoginWebView> {
     });
   }
 
-  _validateUrl() {}
-  getCreds(String? credsData) {
-    if (credsData != null && credsData.length > 0) {
-      printWrapped(credsData);
-      Map temp = json.decode(credsData);
-      print(temp["status"]);
-      if (temp != null && temp["status"] == 0) {
-        loginStatus = temp;
-        Navigator.of(context).pop(loginStatus);
-      } else {}
-    } else {
-      print("NULL");
+  selectProfile() async {
+    print("Selecting profile");
+
+    //lets hardcode the profile
+    currentProfile = Map();
+
+    ///TO DO NOT HARCODE
+    currentProfile["serverUrl"] = widget.url;
+    currentProfile["espaceUrl"] = loginData["espaces"][5]["URL"];
+    currentProfile["nomEsp"] = loginData["espaces"][5]["nom"];
+    currentProfile["nomEtab"] = loginData["nomEtab"];
+    currentProfile["estCAS"] = loginData["CAS"]["actif"];
+    currentProfile["casURL"] = loginData["CAS"]["casURL"];
+    currentProfile["login"] = "";
+    currentProfile["jeton"] = "";
+
+    setState(() {
+      step = 3;
+    });
+    stepper();
+  }
+
+  setCookie() async {
+    print("Setting cookie");
+
+    //set cookie
+    String cookieFunction = '(function(){try{' +
+        'var lJetonCas = "", lJson = JSON.parse(document.body.innerText);' +
+        'lJetonCas = !!lJson && !!lJson.CAS && lJson.CAS.jetonCAS;' +
+        'document.cookie = "appliMobile=;expires=" + new Date(0).toUTCString();' +
+        'if(!!lJetonCas) {' +
+        'document.cookie = "validationAppliMobile="+lJetonCas+";expires=" + new Date(new Date().getTime() + (5*60*1000)).toUTCString();' +
+        'document.cookie = "uuidAppliMobile=' +
+        randomUUID +
+        ';expires=" + new Date(new Date().getTime() + (5*60*1000)).toUTCString();' +
+        'document.cookie = "ielang=' +
+        "1036" +
+        ';expires=" + new Date(new Date().getTime() + (365*24*60*60*1000)).toUTCString();' +
+        'return "ok";' +
+        '} else return "ko";' +
+        '} catch(e){return "ko";}})();';
+    String? cookieFunctionResult = await (widget.controller!.evaluateJavascript(source: cookieFunction));
+    if (cookieFunctionResult == "ok") {
+      String authFunction = 'location.assign("' + widget.url! + '?fd=1")';
+      setState(() {
+        step = 4;
+      });
+      String? authFunctionResult = await (widget.controller!.evaluateJavascript(source: authFunction));
+
+      stepper();
     }
   }
 
-  getCookie() {}
+  ///called on load stop
+  stepper() async {
+    switch (step) {
+      //Get url metas
+      case 1:
+        {
+          await getMetas();
+        }
+        break;
+      //It should let the user chose its space...
+      case 2:
+        {
+          await selectProfile();
+        }
+        break;
+      case 3:
+        {
+          await setCookie();
+        }
+        break;
+      case 4:
+        {
+          await authAndValidateProfile();
+        }
+        break;
+      case 5:
+        {
+          await loginTest();
+        }
+    }
+  }
+
+  _buildFloatingButton(BuildContext context) {
+    var screenSize = MediaQuery.of(context);
+    return Container(
+      margin: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
+      child: FloatingActionButton(
+        heroTag: "btn2",
+        backgroundColor: Colors.transparent,
+        child: Container(
+          width: screenSize.size.width / 5 * 0.8,
+          height: screenSize.size.width / 5 * 0.8,
+          child: Icon(
+            MdiIcons.exitRun,
+            size: screenSize.size.width / 5 * 0.5,
+          ),
+          decoration: BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
+        ),
+        onPressed: () async {
+          Navigator.of(context).pop();
+        },
+      ),
+    );
+  }
+
+  _buildText(String text) {
+    return SelectableText(text);
+  }
+
+  _validateUrl() {}
 
   //I have to get an address like that
   //https://0782540m.index-education.net/pronote/InfoMobileApp.json?id=0D264427-EEFC-4810-A9E9-346942A862A4
