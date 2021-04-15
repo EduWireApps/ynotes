@@ -24,6 +24,8 @@ jobs:
       with:
         key: ${{ secrets.SSH_KEY }}
         known_hosts: ${{ secrets.KNOWN_HOSTS }}
+      working-directory: ios/fastlane 
+
 
     - name: Setup ruby
       uses: ruby/setup-ruby@v1
