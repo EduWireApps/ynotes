@@ -10,7 +10,7 @@ platform :ios do
     lane :beta do
         setup_ci
         match(type: "appstore", readonly: is_ci)
-        build_app(workspace: "App.xcworkspace", scheme: "iOS") # Change name of workspace
+        build_app(workspace: "Runner.xcworkspace", scheme: "Runner") # Change name of workspace
         upload_to_testflight(changelog: ENV["CHANGELOG"] || "No changelog provided")
     end
     desc "Sets the version of the bundle to a RELEASE_VERSION passed in as an environment variable"
