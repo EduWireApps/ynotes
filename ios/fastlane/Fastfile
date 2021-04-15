@@ -11,15 +11,16 @@ platform :ios do
         setup_ci
         match(type: "appstore", readonly: is_ci)
         build_app(workspace: "Runner.xcworkspace", scheme: "Runner") # Change name of workspace
-        upload_to_testflight(changelog: ENV["CHANGELOG"] || "No changelog provided")
+        upload_to_testflight(changelog: ENV["CHANGELOG"] || "Pas de note de mise à jour fournie. Merci de consulter le changelog in-app.")
     end
     desc "Sets the version of the bundle to a RELEASE_VERSION passed in as an environment variable"
     lane :set_release_version do
-        version = ENV["RELEASE_VERSION"]
+        version  = flutter_version()["version_name"]
         if version 
+            build_number = number_of_commits()
             UI.message("Setting version to #{version}")
             increment_version_number(version_number: version)
-            increment_build_number(build_number: Time.now.to_i)
+            increment_build_number(build_number: build_number)
         else
             UI.user_error!("Environment variable RELEASE_VERSION not set")
         end
