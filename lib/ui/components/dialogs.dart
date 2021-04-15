@@ -1,10 +1,10 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/pronote/schoolsModel.dart';
 import 'package:ynotes/ui/components/dialogs/homeworkDetails.dart';
-import 'package:ynotes/core/services/shared_preferences.dart';
 import 'package:ynotes/ui/components/dialogs/authorizationsDialog.dart';
 import 'package:ynotes/ui/components/dialogs/colorPicker.dart';
 import 'package:ynotes/ui/components/dialogs/persistantNotificationDialog.dart';

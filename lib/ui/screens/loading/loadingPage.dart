@@ -26,11 +26,11 @@ class _LoadingPageState extends State<LoadingPage> {
 
   tryToConnect() async {
     await Future.delayed(const Duration(milliseconds: 500), () => "1");
-    String u = await ReadStorage("username");
-    String p = await ReadStorage("password");
-    String url = await ReadStorage("pronoteurl");
-    String cas = await ReadStorage("pronotecas");
-    bool iscas = (await ReadStorage("ispronotecas") == "true");
+    String? u = await ReadStorage("username");
+    String? p = await ReadStorage("password");
+    String? url = await ReadStorage("pronoteurl");
+    String? cas = await ReadStorage("pronotecas");
+    bool? iscas = (await ReadStorage("ispronotecas") == "true");
 
     z = await storage.read(key: "agreedTermsAndConfiguredApp");
     if (u != null && p != null && z != null && appSys.settings!["system"]["chosenParser"] != null) {

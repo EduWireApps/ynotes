@@ -4,11 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:ynotes/core/services/shared_preferences.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 
-import '../../../main.dart';
 import '../../../usefulMethods.dart';
 
 class DialogSpecialties extends StatefulWidget {
@@ -21,31 +20,6 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
   List<String?>? chosenSpecialties = [];
   var classe;
   Future? disciplinesFuture;
-
-  getChosenSpecialties() async {
-    var other = await specialtiesSelectionAvailable();
-    final prefs = await (SharedPreferences.getInstance() as Future<SharedPreferences>);
-    if (prefs.getStringList("listSpecialties") != null) {
-      setState(() {
-        chosenSpecialties = prefs.getStringList("listSpecialties");
-        classe = other;
-      });
-    }
-  }
-
-  setChosenSpecialties() async {
-    final prefs = await (SharedPreferences.getInstance() as Future<SharedPreferences>);
-    prefs.setStringList("listSpecialties", chosenSpecialties);
-    print(prefs.getStringList("listSpecialties"));
-  }
-
-  initState() {
-    super.initState();
-    getChosenSpecialties();
-    setState(() {
-      disciplinesFuture = appSys.api!.getGrades(forceReload: true);
-    });
-  }
 
   Widget build(BuildContext context) {
     List disciplines = [];
@@ -175,5 +149,32 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
             }
           }),
     );
+  }
+
+  getChosenSpecialties() async {
+    var other = await specialtiesSelectionAvailable();
+    final prefs = await (SharedPreferences.getInstance());
+    if (prefs.getStringList("listSpecialties") != null) {
+      setState(() {
+        chosenSpecialties = prefs.getStringList("listSpecialties");
+        classe = other;
+      });
+    }
+  }
+
+  initState() {
+    super.initState();
+    getChosenSpecialties();
+    setState(() {
+      disciplinesFuture = appSys.api!.getGrades(forceReload: true);
+    });
+  }
+
+  setChosenSpecialties() async {
+    final prefs = await (SharedPreferences.getInstance());
+    if (chosenSpecialties != null && chosenSpecialties!.every((element) => element != null)) {
+      prefs.setStringList("listSpecialties", chosenSpecialties as List<String>);
+    }
+    print(prefs.getStringList("listSpecialties"));
   }
 }

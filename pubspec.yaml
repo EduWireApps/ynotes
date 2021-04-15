@@ -106,6 +106,7 @@ dependencies:
   scrollable_positioned_list: ^0.2.0-nullsafety.0
   settings_ui: ^1.0.0-nullsafety.2
   share: ^2.0.1
+  shared_preferences: ^2.0.5
   shimmer: ^2.0.0-nullsafety.0
   smooth_page_indicator: ^0.3.0-nullsafety.0
   stack: ^0.2.1

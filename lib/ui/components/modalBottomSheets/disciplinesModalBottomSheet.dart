@@ -1,12 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:ynotes/core/services/shared_preferences.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/keyValues.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/usefulMethods.dart';
 
 ///Bottom windows with some infos on the discipline and the possibility to change the discipline color
 void disciplineModalBottomSheet(context, Discipline? discipline, Function? callback, var widget) {
@@ -71,9 +70,8 @@ void disciplineModalBottomSheet(context, Discipline? discipline, Function? callb
                                     if (color != null) {
                                       String test = color.toString();
                                       String finalColor = "#" + test.toString().substring(10, test.length - 1);
-                                      final prefs =
-                                          await (SharedPreferences.getInstance() as Future<SharedPreferences>);
-                                      await prefs.setString(discipline.disciplineCode, finalColor);
+                                      final prefs = await (SharedPreferences.getInstance());
+                                      await prefs.setString(discipline.disciplineCode ?? "", finalColor);
                                       discipline.setcolor = color;
                                       //Call set state
                                       callback!();

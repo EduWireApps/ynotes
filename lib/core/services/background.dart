@@ -1,14 +1,14 @@
 import 'dart:async';
 
-import 'package:ynotes/core/services/notifications.dart';
-import 'package:ynotes/core/services/shared_preferences.dart';
-import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/offline/offline.dart';
+import 'package:ynotes/core/services/notifications.dart';
+import 'package:ynotes/globals.dart';
+import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 //The main class for everything done in background
