@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+import 'package:stack/stack.dart' as sta;
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/apis/Pronote.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/shared_preferences.dart';
-
-import 'package:stack/stack.dart' as sta;
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/usefulMethods.dart';
 
 //Return the good API (will be extended to Pronote)
 APIManager(Offline? _offline) {

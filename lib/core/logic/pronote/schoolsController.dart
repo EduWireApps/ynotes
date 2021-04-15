@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
-import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 
 class PronoteSchoolsController extends ChangeNotifier {
@@ -18,68 +17,6 @@ class PronoteSchoolsController extends ChangeNotifier {
   }
 
   get getChosenSchool => school;
-  reset() async {
-    geolocating = false;
-    school = null;
-    error = null;
-    schools = null;
-    spaces = null;
-    notifyListeners();
-    await geolocateSchools();
-  }
-
-  getSpaces() async {
-    try {
-      if (school != null && school!.url != null) {
-        String url;
-
-        //Weird address to get metas
-        url = school!.url! +
-            (school!.url![school!.url!.length - 1] == "/" ? "" : "/") +
-            "InfoMobileApp.json?id=0D264427-EEFC-4810-A9E9-346942A862A4";
-        var response = await http.get(Uri.parse(url)).catchError((e) {
-          return "Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.";
-        });
-        if (response.body != null) {
-          List<PronoteSpace> _spaces = [];
-          var data = json.decode(response.body);
-          data["espaces"].forEach((space) {
-            print(space["nom"].toUpperCase());
-            if (space["nom"].toUpperCase().contains("ÉLÈVES"))
-              _spaces.add(PronoteSpace(
-                  name: space["nom"],
-                  url: school!.url! + (school!.url![school!.url!.length - 1] == "/" ? "" : "/") + space["URL"],
-                  originUrl: school!.url));
-          });
-          spaces = _spaces;
-          notifyListeners();
-        } else {
-          throw "Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.";
-        }
-      }
-    } catch (e) {
-      error = e.toString();
-      notifyListeners();
-    }
-  }
-
-  //Request to pronote to get schools around
-  schoolRequest(double long, double lat) async {
-    String url = "https://www.index-education.com/swie/geoloc.php";
-    Map<String, String> headers = {"Content-Type": "application/x-www-form-urlencoded"};
-
-    var body = 'data=%7B%22nomFonction%22%3A%22geoLoc%22%2C%22lat%22%3A$lat%2C%22long%22%3A$long%7D';
-    var response = await http.post(Uri.parse(url), headers: headers, body: body).catchError((e) {
-      return "Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.";
-    });
-    if (response.statusCode == 200) {
-      convertToSchool(response.body, long, lat);
-    } else {
-      throw "Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.";
-    }
-    print(response.statusCode);
-  }
-
   convertToSchool(String body, double long, double lat) {
     var decodedData = json.decode(body);
     List<PronoteSchool> _schools = [];
@@ -101,7 +38,6 @@ class PronoteSchoolsController extends ChangeNotifier {
     schools = _schools;
   }
 
-  //Locating schools around
   geolocateSchools() async {
     geolocating = true;
     error = null;
@@ -154,5 +90,68 @@ class PronoteSchoolsController extends ChangeNotifier {
     }
     geolocating = false;
     notifyListeners();
+  }
+
+  //Request to pronote to get schools around
+  getSpaces() async {
+    try {
+      if (school != null && school!.url != null) {
+        String url;
+
+        //Weird address to get metas
+        url = school!.url! +
+            (school!.url![school!.url!.length - 1] == "/" ? "" : "/") +
+            "InfoMobileApp.json?id=0D264427-EEFC-4810-A9E9-346942A862A4";
+        var response = await http.get(Uri.parse(url)).catchError((e) {
+          return "Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.";
+        });
+        if (response.body != null) {
+          List<PronoteSpace> _spaces = [];
+          var data = json.decode(response.body);
+          data["espaces"].forEach((space) {
+            print(space["nom"].toUpperCase());
+            if (space["nom"].toUpperCase().contains("ÉLÈVES"))
+              _spaces.add(PronoteSpace(
+                  name: space["nom"],
+                  url: school!.url! + (school!.url![school!.url!.length - 1] == "/" ? "" : "/") + space["URL"],
+                  originUrl: school!.url));
+          });
+          spaces = _spaces;
+          notifyListeners();
+        } else {
+          throw "Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.";
+        }
+      }
+    } catch (e) {
+      error = e.toString();
+      notifyListeners();
+    }
+  }
+
+  reset() async {
+    geolocating = false;
+    school = null;
+    error = null;
+    schools = null;
+    spaces = null;
+    notifyListeners();
+    await geolocateSchools();
+  }
+
+  //Locating schools around
+  schoolRequest(double long, double lat) async {
+    String url = "https://www.index-education.com/swie/geoloc.php";
+    Map<String, String> headers = {"Content-Type": "application/x-www-form-urlencoded"};
+
+    var body = 'data=%7B%22nomFonction%22%3A%22geoLoc%22%2C%22lat%22%3A$lat%2C%22long%22%3A$long%7D';
+    var response = await http.post(Uri.parse(url), headers: headers, body: body).catchError((e) {
+      return "Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.";
+    });
+    if (response.statusCode == 200) {
+      convertToSchool(response.body, long, lat);
+    } else {
+      throw "Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.";
+    }
+    print(response.statusCode);
   }
 }

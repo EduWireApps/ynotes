@@ -1,10 +1,12 @@
+import 'dart:convert' as conv;
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:html/parser.dart' show parse;
+
 import 'package:convert/convert.dart' as conv;
 import 'package:crypto/crypto.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:html/parser.dart' show parse;
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:package_info/package_info.dart';
@@ -16,14 +18,10 @@ import 'package:requests/requests.dart';
 import 'package:ynotes/core/apis/Pronote/pronoteConverters.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
-
 import 'package:ynotes/core/utils/nullSafeMap.dart';
-import 'package:ynotes/main.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
 import 'package:ynotes/tests.dart';
 import 'package:ynotes/usefulMethods.dart';
-import 'dart:convert' as conv;
 
 import '../EcoleDirecte.dart';
 import '../utils.dart';

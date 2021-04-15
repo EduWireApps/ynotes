@@ -1,17 +1,15 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:ynotes/core/apis/model.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/main.dart';
-import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteAPI.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
+import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
-import 'package:ynotes/core/offline/offline.dart';
+import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
-
+import 'package:ynotes/core/offline/offline.dart';
+import 'package:ynotes/globals.dart';
+import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 late PronoteClient localClient;

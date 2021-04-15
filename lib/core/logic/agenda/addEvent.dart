@@ -1,10 +1,9 @@
-import 'package:ynotes/ui/components/modalBottomSheets/agendaEventEditBottomSheet.dart';
-import 'package:ynotes/ui/screens/agenda/agendaPage.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/main.dart';
-import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/services/notifications.dart';
+import 'package:ynotes/globals.dart';
+import 'package:ynotes/ui/components/modalBottomSheets/agendaEventEditBottomSheet.dart';
+import 'package:ynotes/ui/screens/agenda/agendaPage.dart';
 
 addEvent(context) async {
   AgendaEvent? temp = await (agendaEventEdit(context, true, defaultDate: agendaDate) as Future<AgendaEvent?>);

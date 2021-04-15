@@ -1,13 +1,11 @@
 import 'dart:core';
 
-import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/space/recurringEvents.dart';
-import 'package:ynotes/main.dart';
 import 'package:ynotes/globals.dart';
 
 enum apiType { EcoleDirecte, Pronote }

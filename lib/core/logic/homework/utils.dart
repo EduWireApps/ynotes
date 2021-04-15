@@ -1,8 +1,5 @@
-import 'package:intl/intl.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/main.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/usefulMethods.dart';
 
 class HomeworkUtils {
   static Future<List<int>> getHomeworkDonePercent() async {

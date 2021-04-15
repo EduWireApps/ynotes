@@ -36,6 +36,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.10.17"
+  app_settings:
+    dependency: "direct main"
+    description:
+      name: app_settings
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.1.0"
   args:
     dependency: "direct overridden"
     description:
@@ -392,13 +399,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_dnd:
-    dependency: "direct main"
-    description:
-      name: flutter_dnd
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.1.3"
   flutter_file_dialog:
     dependency: "direct main"
     description:
@@ -651,7 +651,7 @@ packages:
       name: markdown
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.0.0"
+    version: "4.0.0"
   marquee:
     dependency: "direct main"
     description:
@@ -866,11 +866,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: master
-      resolved-ref: a2ffe10c46fd1942000ffe5cc0fc8f39ec890040
-      url: "https://github.com/tlkops/requests"
+      ref: "feature/null-safety"
+      resolved-ref: e32da17be9a42ec272e4a63971269c48b3362fd1
+      url: "https://github.com/ianmaciel/requests"
     source: git
-    version: "3.3.0"
+    version: "4.0.0-nullsafety.0"
   rive:
     dependency: "direct main"
     description:

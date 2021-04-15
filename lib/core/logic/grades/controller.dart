@@ -3,7 +3,6 @@ import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/services/shared_preferences.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/usefulMethods.dart';
 
 ///To use to collect grades in a view
 class GradesController extends ChangeNotifier {

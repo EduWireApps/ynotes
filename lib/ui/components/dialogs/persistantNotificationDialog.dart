@@ -2,18 +2,12 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:battery_optimization/battery_optimization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dnd/flutter_dnd.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:ynotes/core/services/notifications.dart';
-import 'package:ynotes/ui/components/dialogs.dart';
-import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/agenda.dart';
-
-import 'package:ynotes/main.dart';
-import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
-
-import '../../../usefulMethods.dart';
+import 'package:ynotes/globals.dart';
+import 'package:ynotes/ui/components/dialogs.dart';
 
 class PersistantNotificationConfigDialog extends StatefulWidget {
   @override
@@ -22,28 +16,6 @@ class PersistantNotificationConfigDialog extends StatefulWidget {
 
 class _PersistantNotificationConfigDialogState extends State<PersistantNotificationConfigDialog> {
   String perm = "Permissions accordées.";
-  void initState() {
-    // TODO: implement initState
-
-    getAuth();
-  }
-
-  getAuth() async {
-    await BatteryOptimization.isIgnoringBatteryOptimizations().then((onValue) {
-      setState(() {
-        if (onValue!) {
-          setState(() {
-            perm = "";
-          });
-        } else {
-          setState(() {
-            perm = "L'application n'ignore pas les optimisations de batterie !";
-          });
-        }
-      });
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize;
@@ -144,17 +116,6 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
                   style: TextStyle(
                       fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.20)),
               onChanged: (value) async {
-                if (value && (getCurrentLesson(await (appSys.api!.getNextLessons(DateTime.now())))) != null) {
-                  if (await FlutterDnd.isNotificationPolicyAccessGranted) {
-                    await FlutterDnd.setInterruptionFilter(
-                        FlutterDnd.INTERRUPTION_FILTER_NONE); // Turn on DND - All notifications are suppressed.
-                  } else {
-                    if (await (CustomDialogs.showAuthorizationsDialog(context, "mode ne pas déranger",
-                        "Allumer ou éteindre le mode ne pas déranger dans la journée.") as Future<bool>)) {
-                      FlutterDnd.gotoPolicySettings();
-                    }
-                  }
-                }
                 appSys.updateSetting(appSys.settings!["user"]["agendaPage"], "enableDNDWhenOnGoingNotifEnabled", value);
               },
               secondary: Icon(
@@ -206,5 +167,27 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
         ),
       ),
     );
+  }
+
+  getAuth() async {
+    await BatteryOptimization.isIgnoringBatteryOptimizations().then((onValue) {
+      setState(() {
+        if (onValue!) {
+          setState(() {
+            perm = "";
+          });
+        } else {
+          setState(() {
+            perm = "L'application n'ignore pas les optimisations de batterie !";
+          });
+        }
+      });
+    });
+  }
+
+  void initState() {
+    // TODO: implement initState
+
+    getAuth();
   }
 }

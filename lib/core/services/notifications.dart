@@ -4,19 +4,18 @@ import 'package:android_alarm_manager/android_alarm_manager.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dnd/flutter_dnd.dart';
 import 'package:hive/hive.dart';
 import 'package:html/parser.dart';
 import 'package:intl/intl.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/offline/offline.dart';
+import 'package:ynotes/core/services/platform.dart';
+import 'package:ynotes/core/services/shared_preferences.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
-import 'package:ynotes/main.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/core/offline/offline.dart';
-import 'package:ynotes/core/services/shared_preferences.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/agenda.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
@@ -24,25 +23,101 @@ import 'package:ynotes/usefulMethods.dart';
 
 ///The notifications class
 class AppNotification {
-  static initNotifications(BuildContext context, Function navigatorCallback) async {
-    AwesomeNotifications().initialize(null, [
-      NotificationChannel(
-          channelKey: 'alarm',
-          defaultPrivacy: NotificationPrivacy.Private,
-          channelName: 'Alarmes',
-          importance: NotificationImportance.High,
-          channelDescription: "Alarmes et rappels de l'application yNotes",
-          defaultColor: Color(0xFF9D50DD),
-          ledColor: Colors.white)
-    ]);
+  static Future<void> callback() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    List<Lesson>? lessons = [];
+    //Lock offline data
+    Offline _offline = Offline(true);
+    API api = APIManager(_offline);
+    //Login creds
+    String u = await ReadStorage("username");
+    String p = await ReadStorage("password");
+    String url = await ReadStorage("pronoteurl");
+    String cas = await ReadStorage("pronotecas");
+    if (connectivityResult != ConnectivityResult.none) {
+      try {
+        await api.login(u, p, url: url, cas: cas);
+      } catch (e) {
+        print("Error while logging");
+      }
+    }
+    var date = DateTime.now();
+    int week = await get_week(date);
+    final dir = await FolderAppUtil.getDirectory();
+    Hive.init("${dir.path}/offline");
+    //Register adapters once
     try {
-      AwesomeNotifications().actionStream.listen((receivedNotification) async {
-        await getRelatedAction(receivedNotification, context, navigatorCallback);
-      });
-    } catch (e) {}
+      Hive.registerAdapter(GradeAdapter());
+      Hive.registerAdapter(DisciplineAdapter());
+      Hive.registerAdapter(DocumentAdapter());
+      Hive.registerAdapter(HomeworkAdapter());
+      Hive.registerAdapter(LessonAdapter());
+      Hive.registerAdapter(PollInfoAdapter());
+    } catch (e) {
+      print("Error while registring adapter");
+    }
+    if (connectivityResult == ConnectivityResult.none || !api.loggedIn) {
+      Box _offlineBox = await Hive.openBox("offlineData");
+      var offlineLessons = await _offlineBox.get("lessons");
+      if (offlineLessons[week] != null) {
+        lessons = offlineLessons[week].cast<Lesson>();
+      }
+    } else if (api.loggedIn) {
+      try {
+        lessons = await (api.getNextLessons(date) as Future<List<Lesson>>);
+      } catch (e) {
+        print("Error while collecting online lessons. ${e.toString()}");
+
+        Box _offlineBox = await Hive.openBox("offlineData");
+        var offlineLessons = await _offlineBox.get("lessons");
+        if (offlineLessons[week] != null) {
+          lessons = offlineLessons[week].cast<Lesson>();
+        }
+      }
+    }
+    Lesson? currentLesson = getCurrentLesson(lessons);
+    Lesson? nextLesson = getNextLesson(lessons);
+    Lesson? lesson;
+    //Show next lesson if this one is after current datetime
+    if (nextLesson != null && nextLesson.start!.isAfter(DateTime.now())) {
+      if (await appSys.settings!["user"]["agendaPage"]["enableDNDWhenOnGoingNotifEnabled"]) {
+        AndroidPlatformChannel.enableDND();
+      }
+      lesson = nextLesson;
+      await showOngoingNotification(lesson);
+    } else {
+      final prefs = await (SharedPreferences.getInstance() as Future<SharedPreferences>);
+      bool? value = prefs.getBool("disableAtDayEnd");
+      print(value);
+      print(appSys.settings!["user"]["agendaPage"]["disableAtDayEnd"]);
+      if (appSys.settings!["user"]["agendaPage"]["disableAtDayEnd"]) {
+        await cancelOnGoingNotification();
+      } else {
+        lesson = currentLesson;
+        await showOngoingNotification(lesson);
+      }
+    }
+    //Logs for tests
+    if (lesson != null) {
+      await logFile(
+          "Persistant notification next lesson callback triggered for the lesson ${lesson.disciplineCode} ${lesson.room}");
+    } else {
+      await logFile("Persistant notification next lesson callback triggered : you are in break.");
+    }
   }
 
 //Chose which triggered action to use
+  static Future<void> cancelNotification(int id) async {
+    await AwesomeNotifications().cancel(id);
+    print("Unscheduled $id");
+  }
+
+  static Future<void> cancelOnGoingNotification() async {
+    await cancelNotification(333);
+
+    print("Cancelled on going notification");
+  }
+
   static getRelatedAction(
       ReceivedNotification receivedNotification, BuildContext context, Function navigatorCallback) async {
     if (receivedNotification.channelKey == "newmail" && receivedNotification.toMap()["buttonKeyPressed"] == "REPLY") {
@@ -76,6 +151,24 @@ class AppNotification {
       await AppNotification.cancelOnGoingNotification();
       return;
     }
+  }
+
+  static initNotifications(BuildContext context, Function navigatorCallback) async {
+    AwesomeNotifications().initialize(null, [
+      NotificationChannel(
+          channelKey: 'alarm',
+          defaultPrivacy: NotificationPrivacy.Private,
+          channelName: 'Alarmes',
+          importance: NotificationImportance.High,
+          channelDescription: "Alarmes et rappels de l'application yNotes",
+          defaultColor: Color(0xFF9D50DD),
+          ledColor: Colors.white)
+    ]);
+    try {
+      AwesomeNotifications().actionStream.listen((receivedNotification) async {
+        await getRelatedAction(receivedNotification, context, navigatorCallback);
+      });
+    } catch (e) {}
   }
 
   static Future<void> scheduleAgendaReminders(AgendaEvent event) async {
@@ -128,87 +221,6 @@ class AppNotification {
     }
   }
 
-  ///Shows a debug notification, useful for development purposes
-  static showDebugNotification() async {
-    await AwesomeNotifications().initialize(null, [
-      NotificationChannel(
-          channelKey: 'debug',
-          defaultPrivacy: NotificationPrivacy.Public,
-          channelShowBadge: true,
-          channelName: 'Notification de déboguage',
-          importance: NotificationImportance.High,
-          channelDescription: "Notification à usage de développement",
-          defaultColor: ThemeUtils.spaceColor(),
-          ledColor: Colors.white)
-    ]);
-
-    AwesomeNotifications().createNotification(
-        content: NotificationContent(
-      id: 0,
-      channelKey: 'debug',
-      title: 'Notification de test',
-      notificationLayout: NotificationLayout.BigText,
-      body: "Si vous voyez cette notification, alors yNotes est bien autorisé à vous envoyer des notifications.",
-    ));
-  }
-
-  static showNewMailNotification(Mail mail, String content) async {
-    await AwesomeNotifications().initialize('resource://drawable/mail', [
-      NotificationChannel(
-          channelKey: 'newmail',
-          defaultPrivacy: NotificationPrivacy.Public,
-          channelShowBadge: true,
-          channelName: 'Nouveau mail',
-          importance: NotificationImportance.High,
-          groupKey: "mailsGroup",
-          channelDescription: "Nouveau mail",
-          ledColor: Colors.white)
-    ]);
-
-    AwesomeNotifications().createNotification(
-      content: NotificationContent(
-          id: int.parse(mail.id),
-          notificationLayout: parse(content).documentElement!.text.length < 49 ? null : NotificationLayout.BigText,
-          channelKey: 'newmail',
-          title: 'Nouveau mail de ${mail.from["name"]}',
-          summary: 'Nouveau mail de ${mail.from["name"]}',
-          body: content,
-          payload: {
-            "name": mail.from["prenom"],
-            "surname": mail.from["nom"],
-            "id": mail.id.toString(),
-            "isTeacher": (mail.from["type"] == "P").toString(),
-            "subject": mail.subject
-          }),
-      actionButtons: [
-        NotificationActionButton(
-            key: "REPLY", label: "Répondre", autoCancel: true, buttonType: ActionButtonType.Default),
-      ],
-    );
-  }
-
-  static showNewGradeNotification() async {
-    await AwesomeNotifications().initialize('resource://drawable/newgradeicon', [
-      NotificationChannel(
-          channelKey: 'newgrade',
-          defaultPrivacy: NotificationPrivacy.Public,
-          channelName: 'Nouvelle note',
-          importance: NotificationImportance.High,
-          channelDescription: "Nouvelles notes",
-          defaultColor: ThemeUtils.spaceColor(),
-          ledColor: Colors.white)
-    ]);
-
-    AwesomeNotifications().createNotification(
-      content: NotificationContent(
-          id: 0,
-          channelKey: 'newgrade',
-          title: 'Vous avez une ou plusieurs nouvelles notes !',
-          summary: "Tapez pour consulter",
-          showWhen: false),
-    );
-  }
-
   static Future<void> scheduleReminders(AgendaEvent event) async {
     await AwesomeNotifications().initialize('resource://drawable/clock', [
       NotificationChannel(
@@ -259,68 +271,6 @@ class AppNotification {
             schedule: NotificationSchedule(preciseSchedules: [event.start!.subtract(delay).toUtc()]));
       }
     });
-  }
-
-  static Future<void> showOngoingNotification(Lesson? lesson) async {
-    var id = 333;
-
-    if (appSys.settings!["user"]["agendaPage"]["agendaOnGoingNotification"]) {
-      await AwesomeNotifications().initialize('resource://drawable/tfiche', [
-        NotificationChannel(
-            channelKey: 'persisnotif',
-            defaultPrivacy: NotificationPrivacy.Public,
-            channelName: 'Rappel de cours constant',
-            importance: NotificationImportance.Low,
-            channelDescription: "Notification persistante de cours",
-            defaultColor: ThemeUtils.spaceColor(),
-            ledColor: Colors.white,
-            onlyAlertOnce: true)
-      ]);
-
-      String defaultSentence = "";
-      if (lesson != null) {
-        defaultSentence = 'Vous êtes en <b>${lesson.discipline}</b> dans la salle <b>${lesson.room}</b>';
-        if (lesson.room == null || lesson.room == "") {
-          defaultSentence = "Vous êtes en ${lesson.discipline}";
-        }
-      } else {
-        defaultSentence = "Vous êtes en pause";
-      }
-
-      var sentence = defaultSentence;
-      try {
-        if (lesson!.canceled!) {
-          sentence = "Votre cours a été annulé.";
-        }
-      } catch (e) {}
-      try {
-        print(parse(sentence).documentElement!.text.length);
-        await AwesomeNotifications().createNotification(
-          content: NotificationContent(
-            id: id,
-            notificationLayout: parse(sentence).documentElement!.text.length < 49 ? null : NotificationLayout.BigText,
-            channelKey: 'persisnotif',
-            title: 'Rappel de cours constant',
-            body: sentence,
-            locked: true,
-            autoCancel: false,
-          ),
-          actionButtons: [
-            NotificationActionButton(
-                key: "REFRESH", label: "Actualiser", autoCancel: false, buttonType: ActionButtonType.KeepOnTop),
-            NotificationActionButton(
-                key: "KILL", label: "Désactiver", autoCancel: true, buttonType: ActionButtonType.Default),
-          ],
-        );
-      } catch (e) {
-        print(e);
-      }
-    }
-  }
-
-  static Future<void> cancelNotification(int id) async {
-    await AwesomeNotifications().cancel(id);
-    print("Unscheduled $id");
   }
 
   ///Set an on going notification which is automatically refreshed (online or not) each hour
@@ -381,12 +331,7 @@ class AppNotification {
       Lesson? getActualLesson = getCurrentLesson(lessons);
       if (!dontShowActual) {
         if (appSys.settings!["user"]["agendaPage"]["enableDNDWhenOnGoingNotifEnabled"]) {
-          if (await FlutterDnd.isNotificationPolicyAccessGranted) {
-            await FlutterDnd.setInterruptionFilter(
-                FlutterDnd.INTERRUPTION_FILTER_NONE); // Turn on DND - All notifications are suppressed.
-          } else {
-            await logFile("Couldn't enabled DND");
-          }
+          AndroidPlatformChannel.enableDND(); // Turn on DND - All notifications are suppressed.
         }
         await showOngoingNotification(getActualLesson);
       }
@@ -413,97 +358,141 @@ class AppNotification {
     }
   }
 
-  static Future<void> cancelOnGoingNotification() async {
-    await cancelNotification(333);
+  ///Shows a debug notification, useful for development purposes
+  static showDebugNotification() async {
+    await AwesomeNotifications().initialize(null, [
+      NotificationChannel(
+          channelKey: 'debug',
+          defaultPrivacy: NotificationPrivacy.Public,
+          channelShowBadge: true,
+          channelName: 'Notification de déboguage',
+          importance: NotificationImportance.High,
+          channelDescription: "Notification à usage de développement",
+          defaultColor: ThemeUtils.spaceColor(),
+          ledColor: Colors.white)
+    ]);
 
-    print("Cancelled on going notification");
+    AwesomeNotifications().createNotification(
+        content: NotificationContent(
+      id: 0,
+      channelKey: 'debug',
+      title: 'Notification de test',
+      notificationLayout: NotificationLayout.BigText,
+      body: "Si vous voyez cette notification, alors yNotes est bien autorisé à vous envoyer des notifications.",
+    ));
   }
 
-  static Future<void> callback() async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    List<Lesson>? lessons = [];
-    //Lock offline data
-    Offline _offline = Offline(true);
-    API api = APIManager(_offline);
-    //Login creds
-    String u = await ReadStorage("username");
-    String p = await ReadStorage("password");
-    String url = await ReadStorage("pronoteurl");
-    String cas = await ReadStorage("pronotecas");
-    if (connectivityResult != ConnectivityResult.none) {
-      try {
-        await api.login(u, p, url: url, cas: cas);
-      } catch (e) {
-        print("Error while logging");
-      }
-    }
-    var date = DateTime.now();
-    int week = await get_week(date);
-    final dir = await FolderAppUtil.getDirectory();
-    Hive.init("${dir.path}/offline");
-    //Register adapters once
-    try {
-      Hive.registerAdapter(GradeAdapter());
-      Hive.registerAdapter(DisciplineAdapter());
-      Hive.registerAdapter(DocumentAdapter());
-      Hive.registerAdapter(HomeworkAdapter());
-      Hive.registerAdapter(LessonAdapter());
-      Hive.registerAdapter(PollInfoAdapter());
-    } catch (e) {
-      print("Error while registring adapter");
-    }
-    if (connectivityResult == ConnectivityResult.none || !api.loggedIn) {
-      Box _offlineBox = await Hive.openBox("offlineData");
-      var offlineLessons = await _offlineBox.get("lessons");
-      if (offlineLessons[week] != null) {
-        lessons = offlineLessons[week].cast<Lesson>();
-      }
-    } else if (api.loggedIn) {
-      try {
-        lessons = await (api.getNextLessons(date) as Future<List<Lesson>>);
-      } catch (e) {
-        print("Error while collecting online lessons. ${e.toString()}");
+  static showNewGradeNotification() async {
+    await AwesomeNotifications().initialize('resource://drawable/newgradeicon', [
+      NotificationChannel(
+          channelKey: 'newgrade',
+          defaultPrivacy: NotificationPrivacy.Public,
+          channelName: 'Nouvelle note',
+          importance: NotificationImportance.High,
+          channelDescription: "Nouvelles notes",
+          defaultColor: ThemeUtils.spaceColor(),
+          ledColor: Colors.white)
+    ]);
 
-        Box _offlineBox = await Hive.openBox("offlineData");
-        var offlineLessons = await _offlineBox.get("lessons");
-        if (offlineLessons[week] != null) {
-          lessons = offlineLessons[week].cast<Lesson>();
+    AwesomeNotifications().createNotification(
+      content: NotificationContent(
+          id: 0,
+          channelKey: 'newgrade',
+          title: 'Vous avez une ou plusieurs nouvelles notes !',
+          summary: "Tapez pour consulter",
+          showWhen: false),
+    );
+  }
+
+  static showNewMailNotification(Mail mail, String content) async {
+    await AwesomeNotifications().initialize('resource://drawable/mail', [
+      NotificationChannel(
+          channelKey: 'newmail',
+          defaultPrivacy: NotificationPrivacy.Public,
+          channelShowBadge: true,
+          channelName: 'Nouveau mail',
+          importance: NotificationImportance.High,
+          groupKey: "mailsGroup",
+          channelDescription: "Nouveau mail",
+          ledColor: Colors.white)
+    ]);
+
+    AwesomeNotifications().createNotification(
+      content: NotificationContent(
+          id: int.parse(mail.id),
+          notificationLayout: parse(content).documentElement!.text.length < 49 ? null : NotificationLayout.BigText,
+          channelKey: 'newmail',
+          title: 'Nouveau mail de ${mail.from["name"]}',
+          summary: 'Nouveau mail de ${mail.from["name"]}',
+          body: content,
+          payload: {
+            "name": mail.from["prenom"],
+            "surname": mail.from["nom"],
+            "id": mail.id.toString(),
+            "isTeacher": (mail.from["type"] == "P").toString(),
+            "subject": mail.subject
+          }),
+      actionButtons: [
+        NotificationActionButton(
+            key: "REPLY", label: "Répondre", autoCancel: true, buttonType: ActionButtonType.Default),
+      ],
+    );
+  }
+
+  static Future<void> showOngoingNotification(Lesson? lesson) async {
+    var id = 333;
+
+    if (appSys.settings!["user"]["agendaPage"]["agendaOnGoingNotification"]) {
+      await AwesomeNotifications().initialize('resource://drawable/tfiche', [
+        NotificationChannel(
+            channelKey: 'persisnotif',
+            defaultPrivacy: NotificationPrivacy.Public,
+            channelName: 'Rappel de cours constant',
+            importance: NotificationImportance.Low,
+            channelDescription: "Notification persistante de cours",
+            defaultColor: ThemeUtils.spaceColor(),
+            ledColor: Colors.white,
+            onlyAlertOnce: true)
+      ]);
+
+      String defaultSentence = "";
+      if (lesson != null) {
+        defaultSentence = 'Vous êtes en <b>${lesson.discipline}</b> dans la salle <b>${lesson.room}</b>';
+        if (lesson.room == null || lesson.room == "") {
+          defaultSentence = "Vous êtes en ${lesson.discipline}";
         }
-      }
-    }
-    Lesson? currentLesson = getCurrentLesson(lessons);
-    Lesson? nextLesson = getNextLesson(lessons);
-    Lesson? lesson;
-    //Show next lesson if this one is after current datetime
-    if (nextLesson != null && nextLesson.start!.isAfter(DateTime.now())) {
-      if (await appSys.settings!["user"]["agendaPage"]["enableDNDWhenOnGoingNotifEnabled"]) {
-        if (await FlutterDnd.isNotificationPolicyAccessGranted) {
-          await FlutterDnd.setInterruptionFilter(
-              FlutterDnd.INTERRUPTION_FILTER_NONE); // Turn on DND - All notifications are suppressed.
-        } else {
-          await logFile("Couldn't enabled DND");
-        }
-      }
-      lesson = nextLesson;
-      await showOngoingNotification(lesson);
-    } else {
-      final prefs = await (SharedPreferences.getInstance() as Future<SharedPreferences>);
-      bool? value = prefs.getBool("disableAtDayEnd");
-      print(value);
-      print(appSys.settings!["user"]["agendaPage"]["disableAtDayEnd"]);
-      if (appSys.settings!["user"]["agendaPage"]["disableAtDayEnd"]) {
-        await cancelOnGoingNotification();
       } else {
-        lesson = currentLesson;
-        await showOngoingNotification(lesson);
+        defaultSentence = "Vous êtes en pause";
       }
-    }
-    //Logs for tests
-    if (lesson != null) {
-      await logFile(
-          "Persistant notification next lesson callback triggered for the lesson ${lesson.disciplineCode} ${lesson.room}");
-    } else {
-      await logFile("Persistant notification next lesson callback triggered : you are in break.");
+
+      var sentence = defaultSentence;
+      try {
+        if (lesson!.canceled!) {
+          sentence = "Votre cours a été annulé.";
+        }
+      } catch (e) {}
+      try {
+        print(parse(sentence).documentElement!.text.length);
+        await AwesomeNotifications().createNotification(
+          content: NotificationContent(
+            id: id,
+            notificationLayout: parse(sentence).documentElement!.text.length < 49 ? null : NotificationLayout.BigText,
+            channelKey: 'persisnotif',
+            title: 'Rappel de cours constant',
+            body: sentence,
+            locked: true,
+            autoCancel: false,
+          ),
+          actionButtons: [
+            NotificationActionButton(
+                key: "REFRESH", label: "Actualiser", autoCancel: false, buttonType: ActionButtonType.KeepOnTop),
+            NotificationActionButton(
+                key: "KILL", label: "Désactiver", autoCancel: true, buttonType: ActionButtonType.Default),
+          ],
+        );
+      } catch (e) {
+        print(e);
+      }
     }
   }
 }
