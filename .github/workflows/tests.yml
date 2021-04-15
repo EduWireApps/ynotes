@@ -71,7 +71,7 @@ jobs:
       working-directory: ios/fastlane
 
     - name: Update to test flight
-      working-directory: ios/fastlane 
+      working-directory: ios
       run: |
         export LC_ALL=fr_FR.UTF-8
         export LANG=fr_FR.UTF-8
