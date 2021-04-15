@@ -52,10 +52,6 @@ jobs:
         bundle install   
       working-directory: ios/fastlane
 
-    - name: Run tests
-      working-directory: ios/fastlane 
-      run: |
-        bundle exec fastlane tests
     - name: Update to test flight
       working-directory: ios/fastlane 
       run: |
