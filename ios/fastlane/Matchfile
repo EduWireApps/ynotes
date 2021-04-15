@@ -1,4 +1,4 @@
-git_url("https://github.com/ynotesapp/ynotes_certificates")
+git_url("git@github.com:ynotesapp/ynotes_certificates.git")
 
 storage_mode("git")
 
