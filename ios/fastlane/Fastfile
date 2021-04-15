@@ -4,7 +4,7 @@ default_platform(:ios)
 platform :ios do
     desc "Run tests"
     lane :tests do
-        run_tests(scheme: "iOS")
+        run_tests(scheme: "Runner")
     end
     desc "Push a new beta build to TestFlight"
     lane :beta do
