@@ -3,6 +3,7 @@ import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'models.g.dart';
 
+// ignore: deprecated_member_use
 @JsonSerializable(nullable: false)
 @HiveType(typeId: 4)
 class Lesson {
@@ -58,6 +59,7 @@ class Lesson {
   Map<String, dynamic> toJson() => _$LessonToJson(this);
 }
 
+// ignore: deprecated_member_use
 @JsonSerializable(nullable: false)
 @HiveType(typeId: 6)
 //Associated with a lesson
@@ -104,6 +106,7 @@ enum alarmType {
 
 ///The agenda event, ALL events (lessons, custom events) should be converted in this class
 @HiveType(typeId: 8)
+// ignore: deprecated_member_use
 @JsonSerializable(nullable: false)
 class AgendaEvent {
   @HiveField(0)

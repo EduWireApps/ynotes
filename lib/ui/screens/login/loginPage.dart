@@ -494,18 +494,18 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   getFirstUse() async {
-    final prefs = await (SharedPreferences.getInstance() as Future<SharedPreferences>);
+    final prefs = await (SharedPreferences.getInstance());
     if (prefs.getBool('firstUse') == true && storage.read(key: 'agreedTermsAndConfiguredApp') == null) {
       _isFirstUse = true;
     }
   }
 
   tryToConnect() async {
-    String u = await ReadStorage("username");
-    String p = await ReadStorage("password");
-    String url = await ReadStorage("pronoteurl");
-    String cas = await ReadStorage("pronotecas");
-    String isCas = await ReadStorage("pronotecas");
+    String? u = await ReadStorage("username");
+    String? p = await ReadStorage("password");
+    String? url = await ReadStorage("pronoteurl");
+    String? cas = await ReadStorage("pronotecas");
+    String? isCas = await ReadStorage("pronotecas");
 
     String? z = await storage.read(key: "agreedTermsAndConfiguredApp");
 

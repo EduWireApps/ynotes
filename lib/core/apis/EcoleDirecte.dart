@@ -106,7 +106,7 @@ class APIEcoleDirecte extends API {
           CreateStorage("startday", DateTime.parse("2020-02-02").toString());
 
           //Ensure that the user will not see the carousel anymore
-          prefs!.setBool('firstUse', false);
+          prefs.setBool('firstUse', false);
         } catch (e) {
           print("Error while getting user info " + e.toString());
           //log in file
