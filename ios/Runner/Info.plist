@@ -61,5 +61,9 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+    <key>BGTaskSchedulerPermittedIdentifiers</key>
+    <array>
+        <string>fr.ynotesapp.ynotes</string>
+    </array>
 </dict>
 </plist>
