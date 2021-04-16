@@ -2,15 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-    <key>NSAppTransportSecurity</key>
-    <dict>
-        <key>NSAllowsArbitraryLoads</key>
-           <true/>
-           <key>NSAllowsArbitraryLoadsInWebContent</key>
-           <true/>
-    </dict>
-    <key>NSLocationWhenInUseUsageDescription</key>
-    <string>Your location is required for locating schools around you and to get their Pronote addresses.</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
@@ -33,6 +24,24 @@
 	<true/>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+		<key>NSAllowsArbitraryLoadsInWebContent</key>
+		<true/>
+	</dict>
+	<key>NSCalendarsUsageDescription</key>
+	<string>yNotes needs access to your calendar to schedule reminders or events notifications.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>yNotes needs access to your location in order to locate schools around you and to get their Pronote URL addresses.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>yNotes needs access to your photos in order to let you insert them in the messages you send to teachers or other students.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>processing</string>
+	</array>
 	<key>UIFileSharingEnabled</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
