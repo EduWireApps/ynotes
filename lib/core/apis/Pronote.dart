@@ -342,7 +342,7 @@ class APIPronote extends API {
         }));
 
         //delete duplicates
-        listHW = [];
+        listHW = listHW.toSet().toList();
 
         hwLock = false;
         hwRefreshRecursive = false;
