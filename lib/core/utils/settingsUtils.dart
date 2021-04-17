@@ -50,13 +50,13 @@ class SettingsUtils {
   ///Deprecated
   static Future<bool?> getBoolSetting(String setting) async {
     final prefs = await SharedPreferences.getInstance();
-    bool? value = prefs?.getBool(setting);
+    bool? value = prefs.getBool(setting);
     return value;
   }
 
   static Future<int> getIntSetting(String setting) async {
     final prefs = await SharedPreferences.getInstance();
-    var value = prefs?.getInt(setting);
+    var value = prefs.getInt(setting);
     if (value == null) {
       value = 0;
       if (setting == "summaryQuickHomework") {
@@ -96,7 +96,7 @@ class SettingsUtils {
 
   static Future<Map?> getSavedSettings() async {
     final prefs = await SharedPreferences.getInstance();
-    String? settings = prefs?.getString("settings");
+    String? settings = prefs.getString("settings");
 
     if (settings == null) {
       settings = json.encode(settingsForm);
@@ -128,6 +128,6 @@ class SettingsUtils {
   static setSetting(Map? newMap) async {
     final prefs = await SharedPreferences.getInstance();
     String encoded = json.encode(newMap);
-    await prefs?.setString("settings", encoded);
+    await prefs.setString("settings", encoded);
   }
 }

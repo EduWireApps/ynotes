@@ -455,7 +455,7 @@ class HelpDialog {
   skipEveryHelpDialog() async {
     SharedPreferences? preferences = await SharedPreferences.getInstance();
     for (int i = 0; i < helpDialogs.length; i++) {
-      await preferences!.setBool("alreadyViewedHelpDialog" + i.toString(), true);
+      await preferences.setBool("alreadyViewedHelpDialog" + i.toString(), true);
     }
   }
 
@@ -463,7 +463,7 @@ class HelpDialog {
   static resetEveryHelpDialog() async {
     SharedPreferences? preferences = await SharedPreferences.getInstance();
     for (int i = 0; i < helpDialogs.length; i++) {
-      await preferences!.setBool("alreadyViewedHelpDialog" + i.toString(), false);
+      await preferences.setBool("alreadyViewedHelpDialog" + i.toString(), false);
     }
   }
 }

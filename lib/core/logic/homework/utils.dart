@@ -32,7 +32,7 @@ class HomeworkUtils {
     if (reduce == 11) {
       reduce = 770;
     }
-    List<Homework> localList = await appSys.api!.getNextHomework(forceReload: forceReload);
+    List<Homework>? localList = await appSys.api?.getNextHomework(forceReload: forceReload);
     if (localList != null) {
       List<Homework> listToReturn = [];
       localList.forEach((element) {
