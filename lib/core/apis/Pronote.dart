@@ -551,9 +551,9 @@ class APIPronote extends API {
   }
 
   refreshClient() async {
-    await appSys.loginController!.login();
+    await appSys.loginController.login();
     //reset all recursives
-    if (appSys.loginController!.actualState == loginStatus.loggedIn) {
+    if (appSys.loginController.actualState == loginStatus.loggedIn) {
       gradeRefreshRecursive = false;
       hwRefreshRecursive = false;
       lessonsRefreshRecursive = false;

@@ -31,7 +31,7 @@ class RemindersOffline extends Offline {
     if (!locked) {
       print("Update reminders");
       try {
-        var old = await parent.agendaBox.get("reminders");
+        var old = await parent.agendaBox?.get("reminders");
         List<AgendaReminder>? offline = [];
         if (old != null) {
           offline = old.cast<AgendaReminder>();
@@ -40,7 +40,7 @@ class RemindersOffline extends Offline {
           offline.removeWhere((a) => a.id == newData.id);
         }
         offline!.add(newData);
-        await parent.agendaBox.put("reminders", offline);
+        await parent.agendaBox?.put("reminders", offline);
         await parent.refreshData();
         print("Updated reminders");
       } catch (e) {
@@ -53,7 +53,7 @@ class RemindersOffline extends Offline {
   removeAll(String? lessonId) async {
     if (!locked) {
       try {
-        var old = await parent.agendaBox.get("reminders");
+        var old = await parent.agendaBox?.get("reminders");
         List<AgendaReminder>? offline = [];
         if (old != null) {
           offline = old.cast<AgendaReminder>();
@@ -61,7 +61,7 @@ class RemindersOffline extends Offline {
         if (offline != null) {
           offline.removeWhere((element) => element.lessonID == lessonId);
         }
-        await parent.agendaBox.put("reminders", offline);
+        await parent.agendaBox?.put("reminders", offline);
         await parent.refreshData();
       } catch (e) {
         print("Error while removing reminder " + e.toString());
@@ -73,7 +73,7 @@ class RemindersOffline extends Offline {
   void remove(String? id) async {
     if (!locked) {
       try {
-        var old = await parent.agendaBox.get("reminders");
+        var old = await parent.agendaBox?.get("reminders");
         List<AgendaReminder>? offline = [];
         if (old != null) {
           offline = old.cast<AgendaReminder>();
@@ -81,7 +81,7 @@ class RemindersOffline extends Offline {
         if (offline != null) {
           offline.removeWhere((a) => a.id == id);
         }
-        await parent.agendaBox.put("reminders", offline);
+        await parent.agendaBox?.put("reminders", offline);
         await parent.refreshData();
       } catch (e) {
         print("Error while removing reminder " + e.toString());

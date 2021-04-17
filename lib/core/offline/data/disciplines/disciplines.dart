@@ -1,4 +1,3 @@
-import 'package:hive/hive.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/usefulMethods.dart';
@@ -26,32 +25,19 @@ class DisciplinesOffline extends Offline {
     }
   }
 
-  ///Update existing disciplines (clear old data) with passed data
-  updateDisciplines(List<Discipline> newData) async {
-    if (!locked) {
-      try {
-        print("Updating disciplines");
-        await parent.offlineBox!.delete("disciplines");
-        await parent.offlineBox!.put("disciplines", newData);
-        await refreshData();
-      } catch (e) {
-        print("Error while updating disciplines " + e.toString());
-      }
-    }
-  }
-
   ///Get periods from DB (a little bit messy but totally functional)
   getPeriods() async {
     try {
       List<Period> listPeriods = [];
       List<Discipline>? disciplines = await this.getDisciplines();
-      List<Grade> grades = getAllGrades(disciplines, overrideLimit: true)!;
-
-      grades.forEach((grade) {
+      List<Grade>? grades = getAllGrades(disciplines, overrideLimit: true);
+      grades?.forEach((grade) {
         if (!listPeriods.any((period) => period.name == grade.periodName || period.id == grade.periodCode)) {
           if (grade.periodName != null && grade.periodName != "") {
             listPeriods.add(Period(grade.periodName, grade.periodCode));
           } else {}
+        } else {
+          print("w");
         }
       });
       try {
@@ -63,6 +49,20 @@ class DisciplinesOffline extends Offline {
       return listPeriods;
     } catch (e) {
       throw ("Error while collecting offline periods " + e.toString());
+    }
+  }
+
+  ///Update existing disciplines (clear old data) with passed data
+  updateDisciplines(List<Discipline> newData) async {
+    if (!locked) {
+      try {
+        print("Updating disciplines");
+        await parent.offlineBox!.delete("disciplines");
+        await parent.offlineBox!.put("disciplines", newData);
+        await refreshData();
+      } catch (e) {
+        print("Error while updating disciplines " + e.toString());
+      }
     }
   }
 }

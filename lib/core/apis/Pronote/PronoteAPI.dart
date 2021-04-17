@@ -274,8 +274,8 @@ class Communication {
         throw error_messages["22"];
       }
       if (responseJson["Erreur"]['G'] == 10) {
-        appSys.loginController!.details = "Connexion expirée";
-        appSys.loginController!.actualState = loginStatus.error;
+        appSys.loginController.details = "Connexion expirée";
+        appSys.loginController.actualState = loginStatus.error;
 
         throw error_messages["10"];
       }

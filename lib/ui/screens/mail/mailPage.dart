@@ -210,7 +210,7 @@ class _MailPageState extends State<MailPage> {
                             //Get all the mails
                             future: mailsListFuture,
                             builder: (context, snapshot) {
-                              if (appSys.loginController!.actualState == loginStatus.offline) {
+                              if (appSys.loginController.actualState == loginStatus.offline) {
                                 return Center(
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,

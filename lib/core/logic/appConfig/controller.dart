@@ -49,9 +49,9 @@ class ApplicationSystem extends ChangeNotifier {
 
   ///All the app controllers
 
-  LoginController? loginController;
-  GradesController? gradesController;
-  HomeworkController? homeworkController;
+ late LoginController loginController;
+ late GradesController gradesController;
+late HomeworkController homeworkController;
 
   ///The most important function
   ///It will intialize Offline, APIs and background fetch

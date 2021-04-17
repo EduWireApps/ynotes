@@ -73,16 +73,16 @@ class BackgroundService {
 
       List<Grade>? listOnlineGrades = [];
       //Login creds
-      String u = await ReadStorage("username");
-      String p = await ReadStorage("password");
-      String url = await ReadStorage("pronoteurl");
-      String cas = await ReadStorage("pronotecas");
+      String? u = await ReadStorage("username");
+      String? p = await ReadStorage("password");
+      String? url = await ReadStorage("pronoteurl");
+      String? cas = await ReadStorage("pronotecas");
       await backgroundFetchApi.login(u, p, url: url, cas: cas);
       listOnlineGrades = getAllGrades(await backgroundFetchApi.getGrades(forceReload: true), overrideLimit: true);
 
       print("Online grade length is ${listOnlineGrades!.length}");
       if (oldGradesLength != null && oldGradesLength != 0 && oldGradesLength < listOnlineGrades.length) {
-        final prefs = await (SharedPreferences.getInstance() as Future<SharedPreferences>);
+        final prefs = await (SharedPreferences.getInstance());
         await prefs.setInt("gradesNumber", listOnlineGrades.length);
         return true;
       } else {
@@ -116,7 +116,7 @@ class BackgroundService {
       if (oldMailLength != 0) {
         if (oldMailLength < (newMailLength != null ? newMailLength : 0)) {
           //Manually set the new mail number
-          final prefs = await (SharedPreferences.getInstance() as Future<SharedPreferences>);
+          final prefs = await (SharedPreferences.getInstance());
           await prefs.setInt("mailNumber", newMailLength);
           return mails.last;
         } else {

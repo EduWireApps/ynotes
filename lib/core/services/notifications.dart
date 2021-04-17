@@ -30,10 +30,10 @@ class AppNotification {
     Offline _offline = Offline(true);
     API api = APIManager(_offline);
     //Login creds
-    String u = await ReadStorage("username");
-    String p = await ReadStorage("password");
-    String url = await ReadStorage("pronoteurl");
-    String cas = await ReadStorage("pronotecas");
+    String? u = await ReadStorage("username");
+    String? p = await ReadStorage("password");
+    String? url = await ReadStorage("pronoteurl");
+    String? cas = await ReadStorage("pronotecas");
     if (connectivityResult != ConnectivityResult.none) {
       try {
         await api.login(u, p, url: url, cas: cas);
@@ -282,10 +282,10 @@ class AppNotification {
     List<Lesson>? lessons = [];
     API api = APIManager(appSys.offline);
     //Login creds
-    String u = await ReadStorage("username");
-    String p = await ReadStorage("password");
-    String url = await ReadStorage("pronoteurl");
-    String cas = await ReadStorage("pronotecas");
+    String? u = await ReadStorage("username");
+    String? p = await ReadStorage("password");
+    String? url = await ReadStorage("pronoteurl");
+    String? cas = await ReadStorage("pronotecas");
     if (connectivityResult != ConnectivityResult.none) {
       try {
         await api.login(u, p, url: url, cas: cas);

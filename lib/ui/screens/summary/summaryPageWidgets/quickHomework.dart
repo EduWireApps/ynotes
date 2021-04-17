@@ -11,21 +11,19 @@ import 'package:intl/intl.dart';
 import 'package:liquid_progress_indicator_ns/liquid_progress_indicator.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:ynotes/ui/components/columnGenerator.dart';
-import 'package:ynotes/core/logic/homework/controller.dart';
-import 'package:ynotes/core/logic/homework/utils.dart';
-import 'package:ynotes/core/utils/themeUtils.dart';
-import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/core/apis/utils.dart';
+import 'package:ynotes/core/logic/homework/controller.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/main.dart';
+import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
+import 'package:ynotes/main.dart';
+import 'package:ynotes/ui/components/columnGenerator.dart';
+import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/screens/summary/summaryPageWidgets/quickHomeworkCurvedContainer.dart';
 
 class QuickHomework extends StatefulWidget {
   final Function? switchPage;
-  final HomeworkController? hwcontroller;
-  const QuickHomework({Key? key, this.switchPage, required this.hwcontroller}) : super(key: key);
+    const QuickHomework({Key? key, this.switchPage}) : super(key: key);
   @override
   _QuickHomeworkState createState() => _QuickHomeworkState();
 }
@@ -38,7 +36,7 @@ class _QuickHomeworkState extends State<QuickHomework> {
   }
 
   Future<void> forceRefreshModel() async {
-    await this.widget.hwcontroller!.refresh(force: true);
+    await appSys.homeworkController.refresh(force: true);
   }
 
   @override
@@ -49,8 +47,8 @@ class _QuickHomeworkState extends State<QuickHomework> {
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
-    return ChangeNotifierProvider<HomeworkController?>.value(
-        value: this.widget.hwcontroller,
+    return ChangeNotifierProvider<HomeworkController>.value(
+        value: appSys.homeworkController,
         child: Consumer<HomeworkController>(builder: (context, model, child) {
           return Card(
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -170,7 +168,7 @@ class _QuickHomeworkState extends State<QuickHomework> {
                                                     borderRadius: BorderRadius.circular(500),
                                                   )),
                                               ChangeNotifierProvider<HomeworkController?>.value(
-                                                value: this.widget.hwcontroller,
+                                                value: appSys.homeworkController,
                                                 child: Consumer<HomeworkController>(builder: (context, model, child) {
                                                   return Container(
                                                     margin: EdgeInsets.only(
@@ -211,8 +209,8 @@ class _QuickHomeworkState extends State<QuickHomework> {
                         child: RefreshIndicator(
                           onRefresh: model.refresh,
                           child: CupertinoScrollbar(
-                            child: ChangeNotifierProvider<HomeworkController?>.value(
-                              value: this.widget.hwcontroller,
+                            child: ChangeNotifierProvider<HomeworkController>.value(
+                              value: appSys.homeworkController,
                               child: Consumer<HomeworkController>(
                                 builder: (context, model, child) {
                                   if (model.getHomework != null && (model.getHomework ?? []).length != 0) {
@@ -255,7 +253,7 @@ class _QuickHomeworkState extends State<QuickHomework> {
                                                       (model.getHomework ?? [])[index],
                                                       Color(color.data ?? 0),
                                                       widget.switchPage,
-                                                      this.widget.hwcontroller!.refresh,
+                                                      appSys.homeworkController.refresh,
                                                       model.isFetching && !(model.getHomework ?? [])[index].loaded!),
                                                 ],
                                               ),

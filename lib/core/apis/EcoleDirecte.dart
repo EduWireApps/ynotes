@@ -21,25 +21,6 @@ import 'package:ynotes/usefulMethods.dart';
 import 'EcoleDirecte/ecoleDirecteMethods.dart';
 
 //Create a secure storage
-void CreateStorage(String key, String? data) async {
-  await storage.write(key: key, value: data);
-}
-
-class HexColor extends Color {
-  static int _getColorFromHex(String hexColor) {
-    hexColor = hexColor.toUpperCase().replaceAll("#", "");
-    if (hexColor.length == 6) {
-      hexColor = "FF" + hexColor;
-    }
-    return int.parse(hexColor, radix: 16);
-  }
-
-  HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
-}
-
-String? token;
-
-final storage = new FlutterSecureStorage();
 List<String> colorList = [
   "#f07aa0",
   "#17d0c9",
@@ -55,234 +36,12 @@ List<String> colorList = [
   "#8ac6d1"
 ];
 
-///The ecole directe api extended from the apiManager.dart API class
-class APIEcoleDirecte extends API {
-  APIEcoleDirecte(Offline? offlineController) : super(offlineController);
+final storage = new FlutterSecureStorage();
 
-//Get connection message and store token
-  Future<List> login(username, password, {url, cas, mobileCasLogin}) async {
-    final prefs = await SharedPreferences.getInstance();
-    if (username == null) {
-      username = "";
-    }
-    if (password == null) {
-      password = "";
-    }
+String? token;
 
-    var url = 'https://api.ecoledirecte.com/v3/login.awp';
-    Map<String, String> headers = {"Content-type": "text/plain"};
-    String data = 'data={"identifiant": "$username", "motdepasse": "$password"}';
-    //encode Map to JSON
-    var body = data;
-    var response = await http.post(Uri.parse(url), headers: headers, body: body).catchError((e) {
-      return "Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.";
-    });
-
-    if (response.statusCode == 200) {
-      Map<String, dynamic> req = jsonDecode(response.body);
-      if (req['code'] == 200) {
-        try {
-          //Put the value of the name in a variable
-          actualUser = req['data']['accounts'][0]['prenom'] ?? "Invité";
-          ;
-          CreateStorage("userFullName", actualUser ?? "");
-          String userID = req['data']['accounts'][0]['id'].toString();
-          String classe;
-          try {
-            classe = req['data']['accounts'][0]['profile']["classe"]["libelle"] ?? "";
-          } catch (e) {
-            classe = "";
-          }
-          //Store the token
-          token = req['token'];
-          //Create secure storage for credentials
-
-          CreateStorage("password", password ?? "");
-          CreateStorage("username", username ?? "");
-          //IMPORTANT ! store the user ID
-          CreateStorage("userID", userID);
-          CreateStorage("classe", classe);
-          //random date
-          CreateStorage("startday", DateTime.parse("2020-02-02").toString());
-
-          //Ensure that the user will not see the carousel anymore
-          prefs.setBool('firstUse', false);
-        } catch (e) {
-          print("Error while getting user info " + e.toString());
-          //log in file
-          logFile(e.toString());
-        }
-        this.loggedIn = true;
-        return [1, "Bienvenue ${actualUser![0].toUpperCase()}${actualUser!.substring(1).toLowerCase()} !"];
-      }
-      //Return an error
-      else {
-        String? message = req['message'];
-        return [0, "Oups ! Une erreur a eu lieu :\n$message"];
-      }
-    } else {
-      return [0, "Erreur"];
-    }
-  }
-
-  @override
-  Future<List<Period>> getPeriods() async {
-    return await EcoleDirecteMethod.fetchAnyData(
-        EcoleDirecteMethod(this.offlineController).periods, offlineController!.disciplines.getPeriods);
-  }
-
-  @override
-//Getting grades
-  Future<List<Discipline>> getGrades({bool? forceReload}) async {
-    return await EcoleDirecteMethod.fetchAnyData(
-        EcoleDirecteMethod(this.offlineController).grades, offlineController!.disciplines.getDisciplines,
-        forceFetch: forceReload ?? false, isOfflineLocked: this.offlineController!.locked);
-  }
-
-  Future<List<DateTime>> getDatesNextHomework() async {
-    return await EcoleDirecteMethod(this.offlineController).homeworkDates();
-  }
-
-//Get dates of the the next homework (based on the EcoleDirecte API)
-  Future<List<Homework>> getNextHomework({bool? forceReload}) async {
-    return await EcoleDirecteMethod.fetchAnyData(
-        EcoleDirecteMethod(this.offlineController).nextHomework, offlineController!.homework.getHomework,
-        forceFetch: forceReload ?? false);
-  }
-
-//Get homeworks for a specific date
-  Future<List<Homework>> getHomeworkFor(DateTime? dateHomework) async {
-    return await EcoleDirecteMethod(this.offlineController).homeworkFor(dateHomework!);
-  }
-
-  @override
-  Future<bool?> testNewGrades() async {
-    try {
-      //Getting the offline count of grades
-      List<Grade> listOfflineGrades =
-          getAllGrades(await appSys.offline!.disciplines.getDisciplines(), overrideLimit: true)!;
-      print("Offline length is ${listOfflineGrades.length}");
-      //Getting the online count of grades
-      List<Grade> listOnlineGrades =
-          getAllGrades(await EcoleDirecteMethod(this.offlineController).grades(), overrideLimit: true)!;
-      print("Online length is ${listOnlineGrades.length}");
-      return (listOfflineGrades.length < listOnlineGrades.length);
-    } catch (e) {
-      print(e);
-      return null;
-    }
-  }
-
-  @override
-  Future app(String appname, {String? args, String? action, CloudItem? folder}) async {
-    switch (appname) {
-      case "mail":
-        {
-          print("Returning mails");
-          List<Mail> mails = await (getMails() as Future<List<Mail>>);
-
-          return mails;
-        }
-        break;
-      case "cloud":
-        {
-          print("Returning cloud");
-          return await getCloud(args, action, folder);
-        }
-        break;
-      case "mailRecipients":
-        {
-          print("Returing mail recipients");
-          return (await EcoleDirecteMethod.fetchAnyData(
-              EcoleDirecteMethod(this.offlineController).recipients, offlineController!.recipients.getRecipients));
-        }
-        break;
-    }
-  }
-
-  @override
-  Future uploadFile(String contexte, String id, String filepath) async {
-    switch (contexte) {
-      case ("CDT"):
-        {
-          var altClient = HttpClient();
-
-          //Ensure that token is refreshed
-          await EcoleDirecteMethod(this.offlineController).testToken();
-          var uri = Uri.parse('https://api.ecoledirecte.com/v3/televersement.awp?verbe=post&mode=CDT');
-          var request = http.MultipartRequest('POST', uri)
-            ..headers["user-agent"] = "PostmanRuntime/7.25.0"
-            ..headers["accept"] = "*/*"
-            ..fields['asap'] = '\nContent-Disposition: form-data; name="data"\n\n{"token":"$token","idContexte":$id}';
-
-          var response = await request.send();
-          if (response.statusCode == 200) print('Uploaded!');
-          response.stream.transform(utf8.decoder).listen((value) {
-            print(value);
-          });
-        }
-    }
-  }
-
-  @override
-  Future<List<Lesson>?> getNextLessons(DateTime dateToUse, {bool? forceReload = false}) async {
-    try {
-      print("Getting next lessons");
-      int week = await get_week(dateToUse);
-      List<Lesson>? toReturn;
-      var connectivityResult = await (Connectivity().checkConnectivity());
-      //get lessons from offline storage
-      var offlineLesson = await offlineController!.lessons.get(week);
-      if (offlineLesson != null) {
-        //Important init to return
-        toReturn = [];
-
-        toReturn.addAll(offlineLesson);
-        //filter lessons
-        toReturn.removeWhere((lesson) =>
-            DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start!)) !=
-            DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)));
-      } else {
-        toReturn = null;
-      }
-      //Check if needed to force refresh if not offline
-      if ((forceReload == true || toReturn == null) && connectivityResult != ConnectivityResult.none) {
-        try {
-          print("Getting next lessons from online");
-          List<Lesson> onlineLessons = await EcoleDirecteMethod(this.offlineController).lessons(dateToUse, week);
-
-          await offlineController!.lessons.updateLessons(onlineLessons, week);
-
-          toReturn = onlineLessons;
-        } catch (e) {
-          print(e.toString());
-        }
-      }
-
-      toReturn!.sort((a, b) => a.start!.compareTo(b.start!));
-      return toReturn
-          .where((lesson) =>
-              DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start!)) ==
-              DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)))
-          .toList();
-    } catch (e) {
-      print("Error while getting next lessons " + e.toString());
-    }
-  }
-
-  Future<http.Request> downloadRequest(Document document) async {
-    var url = 'https://api.ecoledirecte.com/v3/telechargement.awp?verbe=get';
-    await EcoleDirecteMethod.refreshToken();
-    Map<String, String> headers = {"Content-type": "x"};
-    String? type = document.type;
-    String? id = document.id;
-    String body = "leTypeDeFichier=$type&fichierId=$id&token=$token";
-    http.Request request = http.Request('POST', Uri.parse(url));
-    request.body = body.toString();
-    return request;
-  }
-
-  ///END OF THE API CLASS
+void CreateStorage(String key, String? data) async {
+  await storage.write(key: key, value: data);
 }
 
 ///  CLOUD SUB API
@@ -410,5 +169,252 @@ Future<String?> readMail(String mailId, bool read) async {
     }
   } catch (e) {
     print("error during the mail reading $e");
+  }
+}
+
+///The ecole directe api extended from the apiManager.dart API class
+class APIEcoleDirecte extends API {
+  APIEcoleDirecte(Offline? offlineController) : super(offlineController);
+
+//Get connection message and store token
+  @override
+  Future app(String appname, {String? args, String? action, CloudItem? folder}) async {
+    switch (appname) {
+      case "mail":
+        {
+          print("Returning mails");
+          List<Mail> mails = await (getMails() as Future<List<Mail>>);
+
+          return mails;
+        }
+        break;
+      case "cloud":
+        {
+          print("Returning cloud");
+          return await getCloud(args, action, folder);
+        }
+        break;
+      case "mailRecipients":
+        {
+          print("Returing mail recipients");
+          return (await EcoleDirecteMethod.fetchAnyData(
+              EcoleDirecteMethod(this.offlineController).recipients, offlineController!.recipients.getRecipients));
+        }
+        break;
+    }
+  }
+
+  Future<http.Request> downloadRequest(Document document) async {
+    var url = 'https://api.ecoledirecte.com/v3/telechargement.awp?verbe=get';
+    await EcoleDirecteMethod.refreshToken();
+    Map<String, String> headers = {"Content-type": "x"};
+    String? type = document.type;
+    String? id = document.id;
+    String body = "leTypeDeFichier=$type&fichierId=$id&token=$token";
+    http.Request request = http.Request('POST', Uri.parse(url));
+    request.body = body.toString();
+    return request;
+  }
+
+  Future<List<DateTime>> getDatesNextHomework() async {
+    return await EcoleDirecteMethod(this.offlineController).homeworkDates();
+  }
+
+  @override
+//Getting grades
+  Future<List<Discipline>> getGrades({bool? forceReload}) async {
+    return await EcoleDirecteMethod.fetchAnyData(
+        EcoleDirecteMethod(this.offlineController).grades, offlineController!.disciplines.getDisciplines,
+        forceFetch: forceReload ?? false, isOfflineLocked: this.offlineController!.locked);
+  }
+
+//Get dates of the the next homework (based on the EcoleDirecte API)
+  Future<List<Homework>> getHomeworkFor(DateTime? dateHomework) async {
+    return await EcoleDirecteMethod(this.offlineController).homeworkFor(dateHomework!);
+  }
+
+//Get homeworks for a specific date
+  Future<List<Homework>> getNextHomework({bool? forceReload}) async {
+    return await EcoleDirecteMethod.fetchAnyData(
+        EcoleDirecteMethod(this.offlineController).nextHomework, offlineController!.homework.getHomework,
+        forceFetch: forceReload ?? false);
+  }
+
+  @override
+  Future<List<Lesson>?> getNextLessons(DateTime dateToUse, {bool? forceReload = false}) async {
+    try {
+      print("Getting next lessons");
+      int week = await get_week(dateToUse);
+      List<Lesson>? toReturn;
+      var connectivityResult = await (Connectivity().checkConnectivity());
+      //get lessons from offline storage
+      var offlineLesson = await offlineController!.lessons.get(week);
+      if (offlineLesson != null) {
+        //Important init to return
+        toReturn = [];
+
+        toReturn.addAll(offlineLesson);
+        //filter lessons
+        toReturn.removeWhere((lesson) =>
+            DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start!)) !=
+            DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)));
+      } else {
+        toReturn = null;
+      }
+      //Check if needed to force refresh if not offline
+      if ((forceReload == true || toReturn == null) && connectivityResult != ConnectivityResult.none) {
+        try {
+          print("Getting next lessons from online");
+          List<Lesson> onlineLessons = await EcoleDirecteMethod(this.offlineController).lessons(dateToUse, week);
+
+          await offlineController!.lessons.updateLessons(onlineLessons, week);
+
+          toReturn = onlineLessons;
+        } catch (e) {
+          print(e.toString());
+        }
+      }
+
+      toReturn!.sort((a, b) => a.start!.compareTo(b.start!));
+      return toReturn
+          .where((lesson) =>
+              DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start!)) ==
+              DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)))
+          .toList();
+    } catch (e) {
+      print("Error while getting next lessons " + e.toString());
+    }
+  }
+
+  @override
+  Future<List<Period>?> getPeriods() async {
+    try {
+      var a = await EcoleDirecteMethod.fetchAnyData(
+          EcoleDirecteMethod(this.offlineController).periods, offlineController!.disciplines.getPeriods);
+      return a;
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<List> login(username, password, {url, cas, mobileCasLogin}) async {
+    final prefs = await SharedPreferences.getInstance();
+    if (username == null) {
+      username = "";
+    }
+    if (password == null) {
+      password = "";
+    }
+
+    var url = 'https://api.ecoledirecte.com/v3/login.awp';
+    Map<String, String> headers = {"Content-type": "text/plain"};
+    String data = 'data={"identifiant": "$username", "motdepasse": "$password"}';
+    //encode Map to JSON
+    var body = data;
+    var response = await http.post(Uri.parse(url), headers: headers, body: body).catchError((e) {
+      return "Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.";
+    });
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> req = jsonDecode(response.body);
+      if (req['code'] == 200) {
+        try {
+          //Put the value of the name in a variable
+          actualUser = req['data']['accounts'][0]['prenom'] ?? "Invité";
+          ;
+          CreateStorage("userFullName", actualUser ?? "");
+          String userID = req['data']['accounts'][0]['id'].toString();
+          String classe;
+          try {
+            classe = req['data']['accounts'][0]['profile']["classe"]["libelle"] ?? "";
+          } catch (e) {
+            classe = "";
+          }
+          //Store the token
+          token = req['token'];
+          //Create secure storage for credentials
+
+          CreateStorage("password", password ?? "");
+          CreateStorage("username", username ?? "");
+          //IMPORTANT ! store the user ID
+          CreateStorage("userID", userID);
+          CreateStorage("classe", classe);
+          //random date
+          CreateStorage("startday", DateTime.parse("2020-02-02").toString());
+
+          //Ensure that the user will not see the carousel anymore
+          prefs.setBool('firstUse', false);
+        } catch (e) {
+          print("Error while getting user info " + e.toString());
+          //log in file
+          logFile(e.toString());
+        }
+        this.loggedIn = true;
+        return [1, "Bienvenue ${actualUser![0].toUpperCase()}${actualUser!.substring(1).toLowerCase()} !"];
+      }
+      //Return an error
+      else {
+        String? message = req['message'];
+        return [0, "Oups ! Une erreur a eu lieu :\n$message"];
+      }
+    } else {
+      return [0, "Erreur"];
+    }
+  }
+
+  @override
+  Future<bool?> testNewGrades() async {
+    try {
+      //Getting the offline count of grades
+      List<Grade> listOfflineGrades =
+          getAllGrades(await appSys.offline!.disciplines.getDisciplines(), overrideLimit: true)!;
+      print("Offline length is ${listOfflineGrades.length}");
+      //Getting the online count of grades
+      List<Grade> listOnlineGrades =
+          getAllGrades(await EcoleDirecteMethod(this.offlineController).grades(), overrideLimit: true)!;
+      print("Online length is ${listOnlineGrades.length}");
+      return (listOfflineGrades.length < listOnlineGrades.length);
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
+  @override
+  Future uploadFile(String contexte, String id, String filepath) async {
+    switch (contexte) {
+      case ("CDT"):
+        {
+          var altClient = HttpClient();
+
+          //Ensure that token is refreshed
+          await EcoleDirecteMethod(this.offlineController).testToken();
+          var uri = Uri.parse('https://api.ecoledirecte.com/v3/televersement.awp?verbe=post&mode=CDT');
+          var request = http.MultipartRequest('POST', uri)
+            ..headers["user-agent"] = "PostmanRuntime/7.25.0"
+            ..headers["accept"] = "*/*"
+            ..fields['asap'] = '\nContent-Disposition: form-data; name="data"\n\n{"token":"$token","idContexte":$id}';
+
+          var response = await request.send();
+          if (response.statusCode == 200) print('Uploaded!');
+          response.stream.transform(utf8.decoder).listen((value) {
+            print(value);
+          });
+        }
+    }
+  }
+
+  ///END OF THE API CLASS
+}
+
+class HexColor extends Color {
+  HexColor(final String hexColor) : super(_getColorFromHex(hexColor));
+
+  static int _getColorFromHex(String hexColor) {
+    hexColor = hexColor.toUpperCase().replaceAll("#", "");
+    if (hexColor.length == 6) {
+      hexColor = "FF" + hexColor;
+    }
+    return int.parse(hexColor, radix: 16);
   }
 }

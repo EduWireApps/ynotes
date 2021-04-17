@@ -139,7 +139,7 @@ class CustomDialogs {
     );
 
     // show the dialog
-    return showDialog<bool>(
+    return showDialog<bool?>(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {

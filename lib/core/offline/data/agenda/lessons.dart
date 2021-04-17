@@ -41,9 +41,9 @@ class LessonsOffline extends Offline {
         if (newData != null) {
           print("Update offline lessons (week : $week, length : ${newData.length})");
           Map<dynamic, dynamic> timeTable = Map();
-          var offline = await parent.agendaBox.get("lessons");
+          var offline = await parent.agendaBox?.get("lessons");
           if (offline != null) {
-            timeTable = Map<dynamic, dynamic>.from(await parent.agendaBox.get("lessons"));
+            timeTable = Map<dynamic, dynamic>.from(await parent.agendaBox?.get("lessons"));
           }
 
           if (timeTable == null) {
@@ -63,7 +63,7 @@ class LessonsOffline extends Offline {
           }
           //Update the timetable
           timeTable.update(week, (value) => newData, ifAbsent: () => newData);
-          await parent.agendaBox.put("lessons", timeTable);
+          await parent.agendaBox?.put("lessons", timeTable);
           await parent.refreshData();
         }
 

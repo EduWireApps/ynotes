@@ -4,24 +4,23 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:showcaseview/showcaseview.dart';
 import 'package:visibility_detector/visibility_detector.dart';
-import 'package:ynotes/core/logic/appConfig/controller.dart';
-import 'package:ynotes/core/logic/grades/controller.dart';
-import 'package:ynotes/core/logic/homework/controller.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/hiddenSettings.dart';
 import 'package:ynotes/ui/screens/grades/gradesPage.dart';
-import 'package:ynotes/globals.dart';
-import 'package:ynotes/main.dart';
-import 'package:ynotes/ui/screens/summary/summaryPageWidgets/chart.dart';
 import 'package:ynotes/ui/screens/summary/summaryPageWidgets/quickGrades.dart';
 import 'package:ynotes/ui/screens/summary/summaryPageWidgets/quickHomework.dart';
 import 'package:ynotes/ui/screens/summary/summaryPageWidgets/summaryPageSettings.dart';
-import 'package:ynotes/usefulMethods.dart';
-import 'package:ynotes/core/utils/themeUtils.dart';
+
+Future? donePercentFuture;
+
+bool firstStart = true;
+GlobalKey _gradeChartGB = GlobalKey();
+
+//Global keys used in showcase
+GlobalKey _quickGradeGB = GlobalKey();
 
 ///First page to access quickly to last grades, homework and
 class SummaryPage extends StatefulWidget {
@@ -36,13 +35,6 @@ class SummaryPage extends StatefulWidget {
   }
 }
 
-bool firstStart = true;
-Future? donePercentFuture;
-
-//Global keys used in showcase
-GlobalKey _gradeChartGB = GlobalKey();
-GlobalKey _quickGradeGB = GlobalKey();
-
 class SummaryPageState extends State<SummaryPage> {
   double? actualPage;
   late PageController _pageControllerSummaryPage;
@@ -51,81 +43,6 @@ class SummaryPageState extends State<SummaryPage> {
   double? offset;
   ExpandableController alertExpandableDialogController = ExpandableController();
   PageController summarySettingsController = PageController(initialPage: 1);
-
-  initState() {
-    super.initState();
-    todoSettingsController = new PageController(initialPage: 0);
-    initialIndexGradesOffset = 0;
-    _pageControllerSummaryPage = PageController();
-    _pageControllerSummaryPage.addListener(() {
-      setState(() {
-        actualPage = _pageControllerSummaryPage.page;
-        offset = _pageControllerSummaryPage.offset;
-      });
-    });
-
-    SchedulerBinding.instance!.addPostFrameCallback((!mounted
-        ? null
-        : (_) => {
-              initLoginController().then((var f) {
-                if (firstStart == true) {
-                  firstStart = false;
-                }
-              })
-            })!);
-
-    //Init controllers
-    appSys.gradesController!.refresh(force: false);
-    appSys.homeworkController!.refresh(force: false);
-    appSys.gradesController!.refresh(force: true);
-    appSys.homeworkController!.refresh(force: true);
-  }
-
-  void triggerSettings() {
-    summarySettingsController.animateToPage(summarySettingsController.page == 1 ? 0 : 1,
-        duration: Duration(milliseconds: 300), curve: Curves.ease);
-  }
-
-  Future<void> refreshControllers() async {
-    await appSys.gradesController!.refresh(force: true);
-    await appSys.homeworkController!.refresh(force: true);
-  }
-
-  initLoginController() async {
-    await appSys.loginController!.init();
-  }
-
-  showDialog() async {
-    await helpDialogs[0].showDialog(context);
-    await showUpdateNote();
-  }
-
-  showUpdateNote() async {
-    if ((await appSys.settings!["system"]["lastReadUpdateNote"] != "0.9.2")) {
-      await CustomDialogs.showUpdateNoteDialog(context);
-
-      appSys.updateSetting(appSys.settings!["system"], "lastReadUpdateNote", "0.9.2");
-    }
-  }
-
-  Widget separator(BuildContext context, String text) {
-    MediaQueryData screenSize = MediaQuery.of(context);
-
-    return Container(
-      margin: EdgeInsets.only(
-        top: screenSize.size.height / 10 * 0.1,
-        left: screenSize.size.width / 5 * 0.25,
-        bottom: screenSize.size.height / 10 * 0.1,
-      ),
-      child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
-        Text(
-          text,
-          style:
-              TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontSize: 25, fontWeight: FontWeight.w600),
-        ),
-      ]),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -167,12 +84,10 @@ class SummaryPageState extends State<SummaryPage> {
                       separator(context, "Notes"),
                       QuickGrades(
                         switchPage: widget.switchPage,
-                        gradesController: appSys.gradesController,
                       ),
                       separator(context, "Devoirs"),
                       QuickHomework(
                         switchPage: widget.switchPage,
-                        hwcontroller: appSys.homeworkController,
                       )
                     ],
                   ),
@@ -181,5 +96,80 @@ class SummaryPageState extends State<SummaryPage> {
             ),
           )),
     );
+  }
+
+  initLoginController() async {
+    await appSys.loginController.init();
+  }
+
+  initState() {
+    super.initState();
+    todoSettingsController = new PageController(initialPage: 0);
+    initialIndexGradesOffset = 0;
+    _pageControllerSummaryPage = PageController();
+    _pageControllerSummaryPage.addListener(() {
+      setState(() {
+        actualPage = _pageControllerSummaryPage.page;
+        offset = _pageControllerSummaryPage.offset;
+      });
+    });
+
+    SchedulerBinding.instance!.addPostFrameCallback((!mounted
+        ? null
+        : (_) => {
+              initLoginController().then((var f) {
+                if (firstStart == true) {
+                  firstStart = false;
+                }
+              })
+            })!);
+
+    //Init controllers
+    appSys.gradesController.refresh(force: false);
+    appSys.homeworkController.refresh(force: false);
+    appSys.gradesController.refresh(force: true);
+    appSys.homeworkController.refresh(force: true);
+  }
+
+  Future<void> refreshControllers() async {
+    await appSys.gradesController.refresh(force: true);
+    await appSys.homeworkController.refresh(force: true);
+  }
+
+  Widget separator(BuildContext context, String text) {
+    MediaQueryData screenSize = MediaQuery.of(context);
+
+    return Container(
+      margin: EdgeInsets.only(
+        top: screenSize.size.height / 10 * 0.1,
+        left: screenSize.size.width / 5 * 0.25,
+        bottom: screenSize.size.height / 10 * 0.1,
+      ),
+      child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
+        Text(
+          text,
+          style:
+              TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontSize: 25, fontWeight: FontWeight.w600),
+        ),
+      ]),
+    );
+  }
+
+  showDialog() async {
+    await helpDialogs[0].showDialog(context);
+    await showUpdateNote();
+  }
+
+  showUpdateNote() async {
+    if ((await appSys.settings!["system"]["lastReadUpdateNote"] != "0.9.2")) {
+      await CustomDialogs.showUpdateNoteDialog(context);
+
+      appSys.updateSetting(appSys.settings!["system"], "lastReadUpdateNote", "0.9.2");
+    }
+  }
+
+  void triggerSettings() {
+    summarySettingsController.animateToPage(summarySettingsController.page == 1 ? 0 : 1,
+        duration: Duration(milliseconds: 300), curve: Curves.ease);
   }
 }

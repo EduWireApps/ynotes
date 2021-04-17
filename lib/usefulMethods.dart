@@ -3,21 +3,87 @@ import 'dart:io';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/core/utils/fileUtils.dart';
-import 'package:ynotes/main.dart';
 import 'package:ynotes/globals.dart';
 
-import 'package:ynotes/ui/screens/summary/summaryPage.dart';
+String? actualUser = "";
 
-import 'ui/screens/summary/summaryPage.dart';
+//Parsers list
+///Color theme switcher, actually 0 for darkmode and 1 for lightmode
+int colorTheme = 0;
 
+List parsers = ["EcoleDirecte", "Pronote"];
+
+List<Discipline> specialities = [];
+TValue? case2<TOptionType, TValue>(
+  TOptionType selectedOption,
+  Map<TOptionType, TValue> branches, [
+  TValue? defaultValue = null,
+]) {
+  if (!branches.containsKey(selectedOption)) {
+    return defaultValue;
+  }
+
+  return branches[selectedOption];
+}
+
+//Connectivity  classs
+
+List<Grade>? getAllGrades(List<Discipline>? list, {bool overrideLimit = false, bool sortByWritingDate = true}) {
+  if (appSys.api != null) {
+    List<Grade> listToReturn = [];
+    if (list != null) {
+      list.forEach((element) {
+        if (element != null) {
+          element.gradesList?.forEach((grade) {
+            if (!listToReturn.contains(grade)) {
+              listToReturn.add(grade);
+            }
+          });
+        }
+      });
+      if (appSys.api!.gradesList != null &&
+          (appSys.api!.gradesList ?? []).length > 0 &&
+          listToReturn == appSys.api!.gradesList) {
+        return appSys.api!.gradesList;
+      }
+
+      listToReturn = listToReturn.toSet().toList();
+
+      if (listToReturn != null) {
+        //sort grades
+        if (sortByWritingDate) {
+          listToReturn.sort(
+              (a, b) => (a.entryDate != null && b.entryDate != null) ? (a.entryDate!.compareTo(b.entryDate!)) : 1);
+        }
+
+        //remove duplicates
+        listToReturn = listToReturn.toSet().toList();
+        listToReturn = listToReturn.reversed.toList();
+        if (appSys.api!.gradesList == null) {
+          appSys.api!.gradesList = [];
+        }
+        appSys.api!.gradesList?.clear();
+        appSys.api!.gradesList?.addAll(listToReturn);
+
+        if (overrideLimit == false && listToReturn != null) {
+          listToReturn == listToReturn.sublist(0, (listToReturn.length >= 5) ? 5 : listToReturn.length);
+        }
+      }
+      return listToReturn;
+    } else {
+      return [];
+    }
+  } else {
+    return [];
+  }
+}
+
+//Get only grades as a list
 launchURL(url) async {
   if (await canLaunch(url)) {
     await launch(url);
@@ -26,9 +92,23 @@ launchURL(url) async {
   }
 }
 
-//Parsers list
-List parsers = ["EcoleDirecte", "Pronote"];
+//Redefine the switch statement
+Future<String?> ReadStorage(_key) async {
+  String? u = await storage.read(key: _key);
 
+  return u;
+}
+
+Future<List<Discipline>> refreshDisciplinesListColors(List<Discipline> list) async {
+  List<Discipline> newList = [];
+  list.forEach((f) async {
+    f.color = await getColor(f.disciplineCode);
+    newList.add(f);
+  });
+  return newList;
+}
+
+//Refresh colors
 Route router(Widget widget) {
   return PageRouteBuilder(
     pageBuilder: (context, animation, secondaryAnimation) => widget,
@@ -45,146 +125,6 @@ Route router(Widget widget) {
       );
     },
   );
-}
-
-///Color theme switcher, actually 0 for darkmode and 1 for lightmode
-int colorTheme = 0;
-String? actualUser = "";
-
-//Connectivity  classs
-
-class ConnectionStatusSingleton {
-  //This creates the single instance by calling the `_internal` constructor specified below
-  static final ConnectionStatusSingleton _singleton = new ConnectionStatusSingleton._internal();
-  ConnectionStatusSingleton._internal();
-
-  //This is what's used to retrieve the instance through the app
-  static ConnectionStatusSingleton getInstance() => _singleton;
-
-  //This tracks the current connection status
-  bool hasConnection = false;
-
-  //This is how we'll allow subscribing to connection changes
-  StreamController connectionChangeController = new StreamController.broadcast();
-
-  //flutter_connectivity
-  final Connectivity _connectivity = Connectivity();
-
-  //Hook into flutter_connectivity's Stream to listen for changes
-  //And check the connection status out of the gate
-  void initialize() {
-    _connectivity.onConnectivityChanged.listen(_connectionChange);
-    checkConnection();
-  }
-
-  Stream get connectionChange => connectionChangeController.stream;
-
-  //A clean up method to close our StreamController
-  //   Because this is meant to exist through the entire application life cycle this isn't
-  //   really an issue
-  void dispose() {
-    connectionChangeController.close();
-  }
-
-  //flutter_connectivity's listener
-  void _connectionChange(ConnectivityResult result) {
-    checkConnection();
-  }
-
-  //The test to actually see if there is a connection
-  Future<bool> checkConnection() async {
-    bool previousConnection = hasConnection;
-
-    try {
-      final result = await InternetAddress.lookup('google.com');
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        hasConnection = true;
-      } else {
-        hasConnection = false;
-      }
-    } on SocketException catch (_) {
-      hasConnection = false;
-    }
-
-    //The connection status changed send out an update to all listeners
-    if (previousConnection != hasConnection) {
-      connectionChangeController.add(hasConnection);
-    }
-
-    return hasConnection;
-  }
-}
-
-//Get only grades as a list
-List<Grade>? getAllGrades(List<Discipline>? list, {bool overrideLimit = false, bool sortByWritingDate = true}) {
-  if (appSys.api != null) {
-    List<Grade> listToReturn = [];
-    if (list != null) {
-      list.forEach((element) {
-        if (element != null) {
-          element.gradesList!.forEach((grade) {
-            if (!listToReturn.contains(grade)) {
-              listToReturn.add(grade);
-            }
-          });
-        }
-      });
-      if (appSys.api!.gradesList != null && appSys.api!.gradesList!.length > 0 && listToReturn == appSys.api!.gradesList) {
-        return appSys.api!.gradesList;
-      }
-
-      listToReturn = [];
-      if (listToReturn != null) {
-        //sort grades
-        if (sortByWritingDate) {
-          listToReturn
-              .sort((a, b) => (a.entryDate != null && b.entryDate != null) ? (a.entryDate!.compareTo(b.entryDate!)) : 1);
-        }
-
-        //remove duplicates
-        listToReturn = [];
-        listToReturn = [];
-        if (appSys.api!.gradesList == null) {
-          appSys.api!.gradesList = [];
-        }
-        appSys.api!.gradesList!.clear();
-        appSys.api!.gradesList!.addAll(listToReturn);
-
-        if (overrideLimit == false && listToReturn != null) {
-          listToReturn = [];
-        }
-      }
-      return listToReturn;
-    } else {
-      return [];
-    }
-  } else {
-    return [];
-  }
-}
-
-//Redefine the switch statement
-TValue? case2<TOptionType, TValue>(
-  TOptionType selectedOption,
-  Map<TOptionType, TValue> branches, [
-  TValue? defaultValue = null,
-]) {
-  if (!branches.containsKey(selectedOption)) {
-    return defaultValue;
-  }
-
-  return branches[selectedOption];
-}
-
-List<Discipline> specialities = [];
-//Refresh colors
-Future<List<Discipline>> refreshDisciplinesListColors(List<Discipline> list) async {
-  List<Discipline> newList = [];
-  list.forEach((f) async {
-    f.color = await getColor(f.disciplineCode);
-    newList.add(f);
-  });
-  return newList;
 }
 
 specialtiesSelectionAvailable() async {
@@ -206,8 +146,64 @@ specialtiesSelectionAvailable() async {
   }
 }
 
-ReadStorage(_key) async {
-  String? u = await storage.read(key: _key);
+class ConnectionStatusSingleton {
+  //This creates the single instance by calling the `_internal` constructor specified below
+  static final ConnectionStatusSingleton _singleton = new ConnectionStatusSingleton._internal();
+  bool hasConnection = false;
 
-  return u;
+  //This is what's used to retrieve the instance through the app
+  StreamController connectionChangeController = new StreamController.broadcast();
+
+  //This tracks the current connection status
+  final Connectivity _connectivity = Connectivity();
+
+  //This is how we'll allow subscribing to connection changes
+  ConnectionStatusSingleton._internal();
+
+  //flutter_connectivity
+  Stream get connectionChange => connectionChangeController.stream;
+
+  //Hook into flutter_connectivity's Stream to listen for changes
+  //And check the connection status out of the gate
+  Future<bool> checkConnection() async {
+    bool previousConnection = hasConnection;
+
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        hasConnection = true;
+      } else {
+        hasConnection = false;
+      }
+    } on SocketException catch (_) {
+      hasConnection = false;
+    }
+
+    //The connection status changed send out an update to all listeners
+    if (previousConnection != hasConnection) {
+      connectionChangeController.add(hasConnection);
+    }
+
+    return hasConnection;
+  }
+
+  void dispose() {
+    connectionChangeController.close();
+  }
+
+  //A clean up method to close our StreamController
+  //   Because this is meant to exist through the entire application life cycle this isn't
+  //   really an issue
+  void initialize() {
+    _connectivity.onConnectivityChanged.listen(_connectionChange);
+    checkConnection();
+  }
+
+  //flutter_connectivity's listener
+  void _connectionChange(ConnectivityResult result) {
+    checkConnection();
+  }
+
+  //The test to actually see if there is a connection
+  static ConnectionStatusSingleton getInstance() => _singleton;
 }

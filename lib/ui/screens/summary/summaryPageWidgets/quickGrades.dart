@@ -1,35 +1,52 @@
-import 'dart:math';
-
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
-import 'package:ynotes/ui/animations/FadeAnimation.dart';
+import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/customLoader.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
-import 'package:ynotes/ui/screens/grades/gradesPage.dart';
-import 'package:ynotes/core/apis/Pronote.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/globals.dart';
-import 'package:ynotes/main.dart';
 import 'package:ynotes/ui/screens/summary/summaryPageWidgets/chart.dart';
 import 'package:ynotes/usefulMethods.dart';
-import 'package:ynotes/core/utils/themeUtils.dart';
+
+class CustomHalfCircleClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final Path path = new Path();
+    path.lineTo(0.0, size.height / 2);
+    path.lineTo(size.width, size.height / 2);
+    path.lineTo(size.width, 0);
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) {
+    return true;
+  }
+}
 
 class QuickGrades extends StatefulWidget {
   final Function? switchPage;
-  final GradesController? gradesController;
-  const QuickGrades({Key? key, this.gradesController, this.switchPage}) : super(key: key);
+  QuickGrades({Key? key, this.switchPage}) : super(key: key);
   @override
   _QuickGradesState createState() => _QuickGradesState();
 }
 
 class _QuickGradesState extends State<QuickGrades> {
-  Future<void> forceRefreshModel() async {
-    await this.widget.gradesController!.refresh(force: true);
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider<GradesController>.value(
+      value: appSys.gradesController,
+      child: Consumer<GradesController>(builder: (context, model, child) {
+        return Column(children: [
+          buildCHart(context, model.disciplines(showAll: true), model.isFetching),
+          buildGradesList(
+              context, getAllGrades(model.disciplines(showAll: true), overrideLimit: true, sortByWritingDate: true)),
+        ]);
+      }),
+    );
   }
 
   Widget buildCHart(BuildContext context, List<Discipline>? disciplines, bool fetching) {
@@ -208,33 +225,7 @@ class _QuickGradesState extends State<QuickGrades> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider<GradesController?>.value(
-      value: widget.gradesController,
-      child: Consumer<GradesController>(builder: (context, model, child) {
-        return Column(children: [
-          buildCHart(context, model.disciplines(showAll: true), model.isFetching),
-          buildGradesList(
-              context, getAllGrades(model.disciplines(showAll: true), overrideLimit: true, sortByWritingDate: true)),
-        ]);
-      }),
-    );
-  }
-}
-
-class CustomHalfCircleClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    final Path path = new Path();
-    path.lineTo(0.0, size.height / 2);
-    path.lineTo(size.width, size.height / 2);
-    path.lineTo(size.width, 0);
-    return path;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) {
-    return true;
+  Future<void> forceRefreshModel() async {
+    await appSys.gradesController.refresh(force: true);
   }
 }

@@ -69,10 +69,10 @@ class AgendaEventsOffline extends Offline {
     if (!locked) {
       try {
         Map<dynamic, dynamic> timeTable = Map();
-        var offline = await parent.agendaBox.get("agendaEvents");
+        var offline = await parent.agendaBox?.get("agendaEvents");
         List<AgendaEvent> events = [];
         if (offline != null) {
-          timeTable = Map<dynamic, dynamic>.from(await parent.agendaBox.get("agendaEvents"));
+          timeTable = Map<dynamic, dynamic>.from(await parent.agendaBox?.get("agendaEvents"));
         }
         if (timeTable == null) {
           timeTable = Map();
@@ -85,7 +85,7 @@ class AgendaEventsOffline extends Offline {
         }
         //Update the timetable
         timeTable.update(fetchID, (value) => events, ifAbsent: () => events);
-        await parent.agendaBox.put("agendaEvents", timeTable);
+        await parent.agendaBox?.put("agendaEvents", timeTable);
         await parent.refreshData();
       } catch (e) {
         print("Error while removing offline agenda events " + e.toString());
@@ -99,10 +99,10 @@ class AgendaEventsOffline extends Offline {
       try {
         if (newData != null) {
           Map<dynamic, dynamic> timeTable = Map();
-          var offline = await parent.agendaBox.get("agendaEvents");
+          var offline = await parent.agendaBox?.get("agendaEvents");
           List<AgendaEvent> events = [];
           if (offline != null) {
-            timeTable = Map<dynamic, dynamic>.from(await parent.agendaBox.get("agendaEvents"));
+            timeTable = Map<dynamic, dynamic>.from(await parent.agendaBox?.get("agendaEvents"));
           }
           if (timeTable == null) {
             timeTable = Map();
@@ -115,7 +115,7 @@ class AgendaEventsOffline extends Offline {
           events.add(newData);
           //Update the timetable
           timeTable.update(id, (value) => events, ifAbsent: () => events);
-          await parent.agendaBox.put("agendaEvents", timeTable);
+          await parent.agendaBox?.put("agendaEvents", timeTable);
           await parent.refreshData();
         }
         print("Update offline agenda events (id : $id)");

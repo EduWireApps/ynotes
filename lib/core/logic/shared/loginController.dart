@@ -1,14 +1,9 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
-import 'package:ynotes/core/apis/utils.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/apis/Pronote.dart';
-import 'package:ynotes/main.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/usefulMethods.dart';
-
-enum loginStatus { loggedIn, loggedOff, offline, error }
 
 ///Login change notifier
 class LoginController extends ChangeNotifier {
@@ -19,6 +14,11 @@ class LoginController extends ChangeNotifier {
   //Error logs
   String _logs = "";
   //getters
+  Connectivity _connectivity = Connectivity();
+  LoginController() {
+    _connectivity.onConnectivityChanged.listen(connectionChanged);
+  }
+
   get actualState => _actualState;
   set actualState(loginStatus) {
     _actualState = loginStatus;
@@ -31,11 +31,20 @@ class LoginController extends ChangeNotifier {
     notifyListeners();
   }
 
-  Connectivity _connectivity = Connectivity();
-  LoginController() {
-    _connectivity.onConnectivityChanged.listen(connectionChanged);
+  void connectionChanged(dynamic hasConnection) {
+    if (hasConnection == ConnectivityResult.none) {
+      _actualState = loginStatus.offline;
+      _details = "Vous êtes hors ligne";
+      notifyListeners();
+    } else {
+      _actualState = loginStatus.loggedOff;
+      _details = "Reconnecté";
+      notifyListeners();
+      login();
+    }
   }
 
+//on connection change
   init() async {
     print("Init connection status");
 
@@ -53,34 +62,21 @@ class LoginController extends ChangeNotifier {
     }
   }
 
-//on connection change
-  void connectionChanged(dynamic hasConnection) {
-    if (hasConnection == ConnectivityResult.none) {
-      _actualState = loginStatus.offline;
-      _details = "Vous êtes hors ligne";
-      notifyListeners();
-    } else {
-      _actualState = loginStatus.loggedOff;
-      _details = "Reconnecté";
-      notifyListeners();
-      login();
-    }
-  }
-
   login() async {
     try {
       _actualState = loginStatus.loggedOff;
       _details = "Connexion à l'API...";
       notifyListeners();
-      String u = await ReadStorage("username");
-      String p = await ReadStorage("password");
-      String url = await ReadStorage("pronoteurl");
-      String cas = await ReadStorage("pronotecas");
-      bool iscas = (await ReadStorage("ispronotecas") == "true");
+      String? u = await ReadStorage("username");
+      String? p = await ReadStorage("password");
+      String? url = await ReadStorage("pronoteurl");
+      String? cas = await ReadStorage("pronotecas");
+      bool? iscas = (await ReadStorage("ispronotecas") == "true");
 
       var z = await storage.read(key: "agreedTermsAndConfiguredApp");
       if (u != null && p != null && z != null) {
         await appSys.api!.login(u, p, url: url, mobileCasLogin: iscas, cas: cas).then((List loginValues) {
+          // ignore: unnecessary_null_comparison
           if (loginValues == null) {
             _actualState = loginStatus.loggedOff;
             _details = "Connexion à l'API...";
@@ -114,3 +110,5 @@ class LoginController extends ChangeNotifier {
     } catch (e) {}
   }
 }
+
+enum loginStatus { loggedIn, loggedOff, offline, error }

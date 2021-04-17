@@ -8,272 +8,27 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:provider/provider.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/simulatorModalBottomSheet/simulatorModalBottomSheet.dart';
 import 'package:ynotes/ui/screens/grades/gradesPageWidgets/gradesGroup.dart';
-import 'package:ynotes/core/utils/themeUtils.dart';
 
+bool firstStart = true;
+
+//This boolean show a little badge if true
+int initialIndexGradesOffset = 0;
+//If true, show a carousel
+bool newGrades = false;
+List? specialties;
 class GradesPage extends StatefulWidget {
-  final GradesController? gradesController;
-  const GradesPage({Key? key, this.gradesController}) : super(key: key);
+  final GradesController gradesController;
+  const GradesPage(this.gradesController,{Key? key }) : super(key: key);
   State<StatefulWidget> createState() {
     return _GradesPageState();
   }
 }
 
-//This boolean show a little badge if true
-bool newGrades = false;
-//If true, show a carousel
-bool firstStart = true;
-int initialIndexGradesOffset = 0;
-List? specialties;
-
 class _GradesPageState extends State<GradesPage> {
-  void initState() {
-    super.initState();
-
-    initializeDateFormatting("fr_FR", null);
-  }
-
-  Future<void> forceRefreshGrades() async {
-    await widget.gradesController!.refresh(force: true);
-  }
-
-  _buildBackground(BuildContext context, GradesController model) {
-    var screenSize = MediaQuery.of(context);
-
-    return AnimatedContainer(
-      duration: Duration(milliseconds: 250),
-      decoration: BoxDecoration(
-        color: Colors.blue,
-      ),
-      width: model.isSimulating ? screenSize.size.height : 0,
-      height: model.isSimulating ? screenSize.size.height : 0,
-    );
-  }
-
-  _buildResetButton(GradesController controller) {
-    var screenSize = MediaQuery.of(context);
-    return Container(
-      margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.1),
-      child:
-          CustomButtons.materialButton(context, screenSize.size.width / 5 * 3.2, screenSize.size.height / 10 * 0.5, () {
-        controller.simulationReset();
-      }, label: "Réinitialiser les notes", textColor: Colors.white, backgroundColor: Colors.blue),
-    );
-  }
-
-  _buildFloatingButton(BuildContext context) {
-    var screenSize = MediaQuery.of(context);
-    return Container(
-      margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.1),
-      child: Align(
-        alignment: Alignment.bottomRight,
-        child: Container(
-          child: FloatingActionButton(
-            heroTag: "simulBtn",
-            backgroundColor: Colors.transparent,
-            child: Container(
-              width: screenSize.size.width / 5 * 0.8,
-              height: screenSize.size.width / 5 * 0.8,
-              child: Icon(
-                Icons.add,
-                size: screenSize.size.width / 5 * 0.5,
-              ),
-              decoration: BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
-            ),
-            onPressed: () async {
-              Grade? a = await simulatorModalBottomSheet(this.widget.gradesController, context);
-              if (a != null) {
-                widget.gradesController!.simulationAdd(a);
-              }
-            },
-          ),
-        ),
-      ),
-    );
-  }
-
-  openSortBox(GradesController gradesController) {
-    MediaQueryData screenSize;
-    screenSize = MediaQuery.of(context);
-    return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            backgroundColor: Theme.of(context).primaryColor,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0))),
-            contentPadding: EdgeInsets.only(top: 10.0),
-            content: Container(
-              height: screenSize.size.height / 10 * 4,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Container(
-                    margin:
-                        EdgeInsets.only(left: screenSize.size.width / 5 * 0.1, right: screenSize.size.width / 5 * 0.1),
-                    height: screenSize.size.height / 10 * 0.8,
-                    decoration: BoxDecoration(),
-                    child: Material(
-                      color: Color(0xff252B62),
-                      borderRadius: BorderRadius.all(Radius.circular(30)),
-                      child: InkWell(
-                        borderRadius: BorderRadius.all(Radius.circular(30)),
-                        onTap: () {
-                          gradesController.sorter = "spécialités";
-                          Navigator.pop(context);
-                        },
-                        child: Row(
-                          children: <Widget>[
-                            Image(
-                              image: AssetImage('assets/images/space/space.png'),
-                              width: screenSize.size.width / 5 * 0.8,
-                            ),
-                            Container(
-                              width: screenSize.size.width / 5 * 2.5,
-                              child: FittedBox(
-                                fit: BoxFit.fitWidth,
-                                child: Text(
-                                  "Mes spécialités",
-                                  style: TextStyle(
-                                      fontSize: screenSize.size.width / 5 * 0.3,
-                                      fontWeight: FontWeight.w500,
-                                      fontFamily: "Asap",
-                                      color: Colors.white),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    margin:
-                        EdgeInsets.only(left: screenSize.size.width / 5 * 0.1, right: screenSize.size.width / 5 * 0.1),
-                    height: screenSize.size.height / 10 * 0.8,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(30)),
-                    ),
-                    child: Material(
-                      color: Color(0xff42735B),
-                      borderRadius: BorderRadius.all(Radius.circular(30)),
-                      child: InkWell(
-                        borderRadius: BorderRadius.all(Radius.circular(30)),
-                        onTap: () {
-                          gradesController.sorter = "sciences";
-                          Navigator.pop(context);
-                        },
-                        child: Row(
-                          children: <Widget>[
-                            Container(
-                                margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
-                                child: Icon(
-                                  MdiIcons.atomVariant,
-                                  size: screenSize.size.width / 5 * 0.5,
-                                  color: Colors.white,
-                                )),
-                            Container(
-                              margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.2),
-                              child: Text(
-                                "Sciences",
-                                style: TextStyle(
-                                    fontSize: screenSize.size.width / 5 * 0.3,
-                                    fontWeight: FontWeight.w500,
-                                    fontFamily: "Asap",
-                                    color: Colors.white),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    margin:
-                        EdgeInsets.only(left: screenSize.size.width / 5 * 0.1, right: screenSize.size.width / 5 * 0.1),
-                    height: screenSize.size.height / 10 * 0.8,
-                    decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(30))),
-                    child: Material(
-                      color: Color(0xff6C4273),
-                      borderRadius: BorderRadius.all(Radius.circular(30)),
-                      child: InkWell(
-                        borderRadius: BorderRadius.all(Radius.circular(30)),
-                        onTap: () {
-                          gradesController.sorter = "littérature";
-                          Navigator.pop(context);
-                        },
-                        child: Row(
-                          children: <Widget>[
-                            Container(
-                                margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
-                                child: Icon(
-                                  MdiIcons.bookOpenVariant,
-                                  size: screenSize.size.width / 5 * 0.5,
-                                  color: Colors.white,
-                                )),
-                            Container(
-                              margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.2),
-                              child: Text(
-                                "Littérature",
-                                style: TextStyle(
-                                    fontSize: screenSize.size.width / 5 * 0.3,
-                                    fontWeight: FontWeight.w500,
-                                    fontFamily: "Asap",
-                                    color: Colors.white),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    margin:
-                        EdgeInsets.only(left: screenSize.size.width / 5 * 0.1, right: screenSize.size.width / 5 * 0.1),
-                    height: screenSize.size.height / 10 * 0.8,
-                    decoration: BoxDecoration(),
-                    child: Material(
-                      color: ThemeUtils.isThemeDark ? Colors.white10 : Colors.grey,
-                      borderRadius: BorderRadius.all(Radius.circular(30)),
-                      child: InkWell(
-                        borderRadius: BorderRadius.all(Radius.circular(30)),
-                        onTap: () {
-                          gradesController.sorter = "all";
-                          Navigator.pop(context);
-                        },
-                        child: Row(
-                          children: <Widget>[
-                            Container(
-                                margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
-                                child: Icon(
-                                  MdiIcons.borderNoneVariant,
-                                  size: screenSize.size.width / 5 * 0.5,
-                                  color: ThemeUtils.textColor(),
-                                )),
-                            Container(
-                              margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.2),
-                              child: Text(
-                                "Aucun filtre",
-                                style: TextStyle(
-                                    fontSize: screenSize.size.width / 5 * 0.3,
-                                    fontWeight: FontWeight.w500,
-                                    fontFamily: "Asap",
-                                    color: ThemeUtils.textColor()),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          );
-        });
-  }
-
   ///Start building grades box from here
   @override
   Widget build(BuildContext context) {
@@ -281,7 +36,7 @@ class _GradesPageState extends State<GradesPage> {
     ScrollController controller = ScrollController();
 
     return Container(
-      child: ChangeNotifierProvider<GradesController?>.value(
+      child: ChangeNotifierProvider<GradesController>.value(
         value: widget.gradesController,
         child: Consumer<GradesController>(builder: (context, model, child) {
           return Stack(
@@ -822,5 +577,250 @@ class _GradesPageState extends State<GradesPage> {
   @override
   void dispose() {
     super.dispose();
+  }
+
+  Future<void> forceRefreshGrades() async {
+    await widget.gradesController.refresh(force: true);
+  }
+
+  void initState() {
+    super.initState();
+
+    initializeDateFormatting("fr_FR", null);
+  }
+
+  openSortBox(GradesController gradesController) {
+    MediaQueryData screenSize;
+    screenSize = MediaQuery.of(context);
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Theme.of(context).primaryColor,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0))),
+            contentPadding: EdgeInsets.only(top: 10.0),
+            content: Container(
+              height: screenSize.size.height / 10 * 4,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Container(
+                    margin:
+                        EdgeInsets.only(left: screenSize.size.width / 5 * 0.1, right: screenSize.size.width / 5 * 0.1),
+                    height: screenSize.size.height / 10 * 0.8,
+                    decoration: BoxDecoration(),
+                    child: Material(
+                      color: Color(0xff252B62),
+                      borderRadius: BorderRadius.all(Radius.circular(30)),
+                      child: InkWell(
+                        borderRadius: BorderRadius.all(Radius.circular(30)),
+                        onTap: () {
+                          gradesController.sorter = "spécialités";
+                          Navigator.pop(context);
+                        },
+                        child: Row(
+                          children: <Widget>[
+                            Image(
+                              image: AssetImage('assets/images/space/space.png'),
+                              width: screenSize.size.width / 5 * 0.8,
+                            ),
+                            Container(
+                              width: screenSize.size.width / 5 * 2.5,
+                              child: FittedBox(
+                                fit: BoxFit.fitWidth,
+                                child: Text(
+                                  "Mes spécialités",
+                                  style: TextStyle(
+                                      fontSize: screenSize.size.width / 5 * 0.3,
+                                      fontWeight: FontWeight.w500,
+                                      fontFamily: "Asap",
+                                      color: Colors.white),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin:
+                        EdgeInsets.only(left: screenSize.size.width / 5 * 0.1, right: screenSize.size.width / 5 * 0.1),
+                    height: screenSize.size.height / 10 * 0.8,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(30)),
+                    ),
+                    child: Material(
+                      color: Color(0xff42735B),
+                      borderRadius: BorderRadius.all(Radius.circular(30)),
+                      child: InkWell(
+                        borderRadius: BorderRadius.all(Radius.circular(30)),
+                        onTap: () {
+                          gradesController.sorter = "sciences";
+                          Navigator.pop(context);
+                        },
+                        child: Row(
+                          children: <Widget>[
+                            Container(
+                                margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
+                                child: Icon(
+                                  MdiIcons.atomVariant,
+                                  size: screenSize.size.width / 5 * 0.5,
+                                  color: Colors.white,
+                                )),
+                            Container(
+                              margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.2),
+                              child: Text(
+                                "Sciences",
+                                style: TextStyle(
+                                    fontSize: screenSize.size.width / 5 * 0.3,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: "Asap",
+                                    color: Colors.white),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin:
+                        EdgeInsets.only(left: screenSize.size.width / 5 * 0.1, right: screenSize.size.width / 5 * 0.1),
+                    height: screenSize.size.height / 10 * 0.8,
+                    decoration: BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(30))),
+                    child: Material(
+                      color: Color(0xff6C4273),
+                      borderRadius: BorderRadius.all(Radius.circular(30)),
+                      child: InkWell(
+                        borderRadius: BorderRadius.all(Radius.circular(30)),
+                        onTap: () {
+                          gradesController.sorter = "littérature";
+                          Navigator.pop(context);
+                        },
+                        child: Row(
+                          children: <Widget>[
+                            Container(
+                                margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
+                                child: Icon(
+                                  MdiIcons.bookOpenVariant,
+                                  size: screenSize.size.width / 5 * 0.5,
+                                  color: Colors.white,
+                                )),
+                            Container(
+                              margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.2),
+                              child: Text(
+                                "Littérature",
+                                style: TextStyle(
+                                    fontSize: screenSize.size.width / 5 * 0.3,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: "Asap",
+                                    color: Colors.white),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin:
+                        EdgeInsets.only(left: screenSize.size.width / 5 * 0.1, right: screenSize.size.width / 5 * 0.1),
+                    height: screenSize.size.height / 10 * 0.8,
+                    decoration: BoxDecoration(),
+                    child: Material(
+                      color: ThemeUtils.isThemeDark ? Colors.white10 : Colors.grey,
+                      borderRadius: BorderRadius.all(Radius.circular(30)),
+                      child: InkWell(
+                        borderRadius: BorderRadius.all(Radius.circular(30)),
+                        onTap: () {
+                          gradesController.sorter = "all";
+                          Navigator.pop(context);
+                        },
+                        child: Row(
+                          children: <Widget>[
+                            Container(
+                                margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
+                                child: Icon(
+                                  MdiIcons.borderNoneVariant,
+                                  size: screenSize.size.width / 5 * 0.5,
+                                  color: ThemeUtils.textColor(),
+                                )),
+                            Container(
+                              margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.2),
+                              child: Text(
+                                "Aucun filtre",
+                                style: TextStyle(
+                                    fontSize: screenSize.size.width / 5 * 0.3,
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: "Asap",
+                                    color: ThemeUtils.textColor()),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  _buildBackground(BuildContext context, GradesController model) {
+    var screenSize = MediaQuery.of(context);
+
+    return AnimatedContainer(
+      duration: Duration(milliseconds: 250),
+      decoration: BoxDecoration(
+        color: Colors.blue,
+      ),
+      width: model.isSimulating ? screenSize.size.height : 0,
+      height: model.isSimulating ? screenSize.size.height : 0,
+    );
+  }
+
+  _buildFloatingButton(BuildContext context) {
+    var screenSize = MediaQuery.of(context);
+    return Container(
+      margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.1),
+      child: Align(
+        alignment: Alignment.bottomRight,
+        child: Container(
+          child: FloatingActionButton(
+            heroTag: "simulBtn",
+            backgroundColor: Colors.transparent,
+            child: Container(
+              width: screenSize.size.width / 5 * 0.8,
+              height: screenSize.size.width / 5 * 0.8,
+              child: Icon(
+                Icons.add,
+                size: screenSize.size.width / 5 * 0.5,
+              ),
+              decoration: BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
+            ),
+            onPressed: () async {
+              Grade? a = await simulatorModalBottomSheet(this.widget.gradesController, context);
+              if (a != null) {
+                widget.gradesController.simulationAdd(a);
+              }
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  _buildResetButton(GradesController controller) {
+    var screenSize = MediaQuery.of(context);
+    return Container(
+      margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.1),
+      child:
+          CustomButtons.materialButton(context, screenSize.size.width / 5 * 3.2, screenSize.size.height / 10 * 0.5, () {
+        controller.simulationReset();
+      }, label: "Réinitialiser les notes", textColor: Colors.white, backgroundColor: Colors.blue),
+    );
   }
 }
