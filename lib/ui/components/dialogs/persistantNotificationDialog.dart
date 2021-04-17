@@ -148,7 +148,7 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
                     fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.16),
               ),
               onTap: () async {
-                if (!(await (BatteryOptimization.isIgnoringBatteryOptimizations() as Future<bool>)) &&
+                if (!((await BatteryOptimization.isIgnoringBatteryOptimizations()) ?? false) &&
                     await (CustomDialogs.showAuthorizationsDialog(
                             context,
                             "la configuration d'optimisation de batterie",

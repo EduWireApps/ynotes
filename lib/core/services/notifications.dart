@@ -309,7 +309,7 @@ class AppNotification {
       print("Error while registring adapter");
     }
     if (connectivityResult == ConnectivityResult.none || !api.loggedIn) {
-      Box _offlineBox = await Hive.openBox("offlineData");
+      Box _offlineBox = await Hive.openBox("agenda");
       var offlineLessons = await _offlineBox.get("lessons");
       if (offlineLessons[week] != null) {
         lessons = offlineLessons[week].cast<Lesson>();
@@ -336,12 +336,12 @@ class AppNotification {
         await showOngoingNotification(getActualLesson);
       }
 
-      int minutes = appSys.settings!["user"]["agendaPage"]["lastMailCount"];
+      int? minutes = appSys.settings!["system"]["lastMailCount"];
       await Future.forEach(lessons!, (Lesson lesson) async {
         if (lesson.start!.isAfter(date)) {
           try {
             if (await AndroidAlarmManager.oneShotAt(
-                lesson.start!.subtract(Duration(minutes: minutes)), lesson.start.hashCode, callback,
+                lesson.start!.subtract(Duration(minutes: minutes ?? 15)), lesson.start.hashCode, callback,
                 allowWhileIdle: true, rescheduleOnReboot: true))
               print("scheduled " + lesson.start.hashCode.toString() + " $minutes minutes before.");
           } catch (e) {
@@ -351,7 +351,7 @@ class AppNotification {
       });
       try {
         if (await AndroidAlarmManager.oneShotAt(
-            lessons.last.end!.subtract(Duration(minutes: minutes)), lessons.last.end.hashCode, callback,
+            lessons.last.end!.subtract(Duration(minutes: minutes ?? 15)), lessons.last.end.hashCode, callback,
             allowWhileIdle: true, rescheduleOnReboot: true)) print("Scheduled last lesson");
       } catch (e) {}
       print("Success !");

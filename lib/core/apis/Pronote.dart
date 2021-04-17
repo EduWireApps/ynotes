@@ -143,7 +143,7 @@ class APIPronote extends API {
   // TODO: implement listApp
 
   @override
-  Future<List<Discipline>> getGrades({bool? forceReload}) async {
+  Future<List<Discipline>?> getGrades({bool? forceReload}) async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     var offlineGrades = await appSys.offline!.disciplines.getDisciplines();
 
@@ -152,8 +152,8 @@ class APIPronote extends API {
         offlineGrades != null) {
       print("Loading grades from offline storage.");
 
-      var toReturn = await (appSys.offline!.disciplines.getDisciplines() as Future<List<Discipline>>);
-      toReturn = await refreshDisciplinesListColors(toReturn);
+      var toReturn = await appSys.offline!.disciplines.getDisciplines();
+      toReturn = await refreshDisciplinesListColors(toReturn ?? []);
       return toReturn;
     } else {
       print("Loading grades inline.");
@@ -235,7 +235,7 @@ class APIPronote extends API {
           await refreshClient();
           gradeRefreshRecursive = true;
 
-          listDisciplines.addAll(await getGrades());
+          listDisciplines.addAll((await getGrades()) ?? []);
         }
 
         return listDisciplines;
@@ -306,9 +306,9 @@ class APIPronote extends API {
       print("Loading homework inline.");
       List<Homework>? toReturn = await getNextHomeworkFromInternet();
       if (toReturn == null) {
-        toReturn = await (appSys.offline!.homework.getHomework() as Future<List<Homework>>);
+        toReturn = await appSys.offline!.homework.getHomework();
       }
-      toReturn.sort((a, b) => a.date!.compareTo(b.date!));
+      (toReturn ?? []).sort((a, b) => a.date!.compareTo(b.date!));
       return toReturn;
     }
   }

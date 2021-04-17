@@ -67,7 +67,9 @@ class Offline {
       if (pinnedHomeworkBox == null || !pinnedHomeworkBox!.isOpen) {
         pinnedHomeworkBox = await Hive.openBox('pinnedHomework');
       }
-
+      if (agendaBox == null || !agendaBox!.isOpen) {
+        agendaBox = await Hive.openBox("agenda");
+      }
       await offlineBox!.deleteFromDisk();
       await homeworkDoneBox!.deleteFromDisk();
       await pinnedHomeworkBox!.deleteFromDisk();
