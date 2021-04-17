@@ -6,22 +6,22 @@ part 'models.g.dart';
 class PollInfo {
   //E.G : M. Delaruelle
   @HiveField(0)
-  final String auteur;
+  final String? auteur;
   @HiveField(1)
-  final DateTime datedebut;
+  final DateTime? datedebut;
   @HiveField(2)
-  final List<String> questions;
+  final List<String>? questions;
   @HiveField(3)
-  bool read;
+  bool? read;
   @HiveField(4)
-  final String title;
+  final String? title;
   @HiveField(5)
-  final String id;
+  final String? id;
   @HiveField(6)
-  final List<Document> documents;
+  final List<Document>? documents;
   //Brut data
   @HiveField(7)
-  final Map data;
+  final Map? data;
 
   PollInfo(this.auteur, this.datedebut, this.questions, this.read, this.title, this.id, this.documents, this.data);
 }

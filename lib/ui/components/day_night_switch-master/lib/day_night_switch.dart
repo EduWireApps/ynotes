@@ -14,8 +14,8 @@ const double _kSwitchHeight = 2 * kRadialReactionRadius + 8.0;
 
 class DayNightSwitch extends StatefulWidget {
   const DayNightSwitch({
-    @required this.value,
-    @required this.onChanged,
+    required this.value,
+    required this.onChanged,
     this.dragStartBehavior = DragStartBehavior.start,
     this.height,
     this.moonImage,
@@ -27,15 +27,15 @@ class DayNightSwitch extends StatefulWidget {
   });
 
   final bool value;
-  final ValueChanged<bool> onChanged;
+  final ValueChanged<bool?>? onChanged;
   final DragStartBehavior dragStartBehavior;
-  final double height;
-  final ImageProvider sunImage;
-  final ImageProvider moonImage;
-  final Color sunColor;
-  final Color moonColor;
-  final Color dayColor;
-  final Color nightColor;
+  final double? height;
+  final ImageProvider? sunImage;
+  final ImageProvider? moonImage;
+  final Color? sunColor;
+  final Color? moonColor;
+  final Color? dayColor;
+  final Color? nightColor;
 
   @override
   _DayNightSwitchState createState() => _DayNightSwitchState();
@@ -80,7 +80,7 @@ class _DayNightSwitchState extends State<DayNightSwitch> with TickerProviderStat
 
 class _SwitchRenderObjectWidget extends LeafRenderObjectWidget {
   const _SwitchRenderObjectWidget({
-    Key key,
+    Key? key,
     this.value,
     this.activeColor,
     this.inactiveColor,
@@ -95,26 +95,26 @@ class _SwitchRenderObjectWidget extends LeafRenderObjectWidget {
     this.dragStartBehavior,
   }) : super(key: key);
 
-  final bool value;
-  final Color activeColor;
-  final Color inactiveColor;
-  final ImageProvider moonImage;
-  final ImageProvider sunImage;
-  final Color activeTrackColor;
-  final Color inactiveTrackColor;
-  final ImageConfiguration configuration;
-  final ValueChanged<bool> onChanged;
-  final TickerProvider vsync;
-  final BoxConstraints additionalConstraints;
-  final DragStartBehavior dragStartBehavior;
+  final bool? value;
+  final Color? activeColor;
+  final Color? inactiveColor;
+  final ImageProvider? moonImage;
+  final ImageProvider? sunImage;
+  final Color? activeTrackColor;
+  final Color? inactiveTrackColor;
+  final ImageConfiguration? configuration;
+  final ValueChanged<bool?>? onChanged;
+  final TickerProvider? vsync;
+  final BoxConstraints? additionalConstraints;
+  final DragStartBehavior? dragStartBehavior;
 
   @override
   _RenderSwitch createRenderObject(BuildContext context) {
     return _RenderSwitch(
-      dragStartBehavior: dragStartBehavior,
+      dragStartBehavior: dragStartBehavior!,
       value: value,
-      activeColor: activeColor,
-      inactiveColor: inactiveColor,
+      activeColor: activeColor!,
+      inactiveColor: inactiveColor!,
       moonImage: moonImage,
       sunImage: sunImage,
       activeTrackColor: activeTrackColor,
@@ -122,8 +122,8 @@ class _SwitchRenderObjectWidget extends LeafRenderObjectWidget {
       configuration: configuration,
       onChanged: onChanged,
       textDirection: Directionality.of(context),
-      additionalConstraints: additionalConstraints,
-      vSync: vsync,
+      additionalConstraints: additionalConstraints!,
+      vSync: vsync!,
     );
   }
 
@@ -131,37 +131,37 @@ class _SwitchRenderObjectWidget extends LeafRenderObjectWidget {
   void updateRenderObject(BuildContext context, _RenderSwitch renderObject) {
     renderObject
       ..value = value
-      ..activeColor = activeColor
-      ..inactiveColor = inactiveColor
+      ..activeColor = activeColor!
+      ..inactiveColor = inactiveColor!
       ..activeThumbImage = moonImage
       ..inactiveThumbImage = sunImage
-      ..activeTrackColor = activeTrackColor
-      ..inactiveTrackColor = inactiveTrackColor
-      ..configuration = configuration
+      ..activeTrackColor = activeTrackColor!
+      ..inactiveTrackColor = inactiveTrackColor!
+      ..configuration = configuration!
       ..onChanged = onChanged
       ..textDirection = Directionality.of(context)
-      ..additionalConstraints = additionalConstraints
-      ..dragStartBehavior = dragStartBehavior
-      ..vsync = vsync;
+      ..additionalConstraints = additionalConstraints!
+      ..dragStartBehavior = dragStartBehavior!
+      ..vsync = vsync!;
   }
 }
 
 class _RenderSwitch extends RenderToggleable {
   _RenderSwitch({
-    bool value,
-    Color activeColor,
-    Color inactiveColor,
-    ImageProvider moonImage,
-    ImageProvider sunImage,
-    Color activeTrackColor,
-    Color inactiveTrackColor,
-    ImageConfiguration configuration,
-    BoxConstraints additionalConstraints,
-    @required TextDirection textDirection,
-    ValueChanged<bool> onChanged,
-    @required TickerProvider vSync,
-    DragStartBehavior dragStartBehavior,
-  })  : assert(textDirection != null),
+    bool? value,
+    required Color activeColor,
+    required Color inactiveColor,
+    ImageProvider? moonImage,
+    ImageProvider? sunImage,
+    Color? activeTrackColor,
+    Color? inactiveTrackColor,
+    ImageConfiguration? configuration,
+    required BoxConstraints additionalConstraints,
+    required TextDirection textDirection,
+    ValueChanged<bool?>? onChanged,
+    required TickerProvider vSync,
+    required DragStartBehavior dragStartBehavior,
+  })   : assert(textDirection != null),
         _activeThumbImage = moonImage,
         _inactiveThumbImage = sunImage,
         _activeTrackColor = activeTrackColor,
@@ -175,6 +175,7 @@ class _RenderSwitch extends RenderToggleable {
           inactiveColor: inactiveColor,
           onChanged: onChanged,
           additionalConstraints: additionalConstraints,
+          splashRadius: 0.0,
           vsync: vSync,
         ) {
     _drag = HorizontalDragGestureRecognizer()
@@ -184,24 +185,24 @@ class _RenderSwitch extends RenderToggleable {
       ..dragStartBehavior = dragStartBehavior;
   }
 
-  ImageProvider get activeThumbImage => _activeThumbImage;
-  ImageProvider _activeThumbImage;
-  set activeThumbImage(ImageProvider value) {
+  ImageProvider? get activeThumbImage => _activeThumbImage;
+  ImageProvider? _activeThumbImage;
+  set activeThumbImage(ImageProvider? value) {
     if (value == _activeThumbImage) return;
     _activeThumbImage = value;
     markNeedsPaint();
   }
 
-  ImageProvider get inactiveThumbImage => _inactiveThumbImage;
-  ImageProvider _inactiveThumbImage;
-  set inactiveThumbImage(ImageProvider value) {
+  ImageProvider? get inactiveThumbImage => _inactiveThumbImage;
+  ImageProvider? _inactiveThumbImage;
+  set inactiveThumbImage(ImageProvider? value) {
     if (value == _inactiveThumbImage) return;
     _inactiveThumbImage = value;
     markNeedsPaint();
   }
 
-  Color get activeTrackColor => _activeTrackColor;
-  Color _activeTrackColor;
+  Color get activeTrackColor => _activeTrackColor!;
+  Color? _activeTrackColor;
   set activeTrackColor(Color value) {
     assert(value != null);
     if (value == _activeTrackColor) return;
@@ -209,8 +210,8 @@ class _RenderSwitch extends RenderToggleable {
     markNeedsPaint();
   }
 
-  Color get inactiveTrackColor => _inactiveTrackColor;
-  Color _inactiveTrackColor;
+  Color get inactiveTrackColor => _inactiveTrackColor!;
+  Color? _inactiveTrackColor;
   set inactiveTrackColor(Color value) {
     assert(value != null);
     if (value == _inactiveTrackColor) return;
@@ -218,8 +219,8 @@ class _RenderSwitch extends RenderToggleable {
     markNeedsPaint();
   }
 
-  ImageConfiguration get configuration => _configuration;
-  ImageConfiguration _configuration;
+  ImageConfiguration get configuration => _configuration!;
+  ImageConfiguration? _configuration;
   set configuration(ImageConfiguration value) {
     assert(value != null);
     if (value == _configuration) return;
@@ -253,7 +254,7 @@ class _RenderSwitch extends RenderToggleable {
 
   double get _trackInnerLength => size.width - 2.0 * kRadialReactionRadius;
 
-  HorizontalDragGestureRecognizer _drag;
+  late HorizontalDragGestureRecognizer _drag;
 
   void _handleDragStart(DragStartDetails details) {
     if (isInteractive) reactionController.forward();
@@ -262,9 +263,9 @@ class _RenderSwitch extends RenderToggleable {
   void _handleDragUpdate(DragUpdateDetails details) {
     if (isInteractive) {
       position
-        ..curve = null
+        ..curve = Curves.easeIn
         ..reverseCurve = null;
-      final double delta = details.primaryDelta / _trackInnerLength;
+      final double delta = details.primaryDelta! / _trackInnerLength;
       switch (textDirection) {
         case TextDirection.rtl:
           positionController.value -= delta;
@@ -279,12 +280,12 @@ class _RenderSwitch extends RenderToggleable {
   void _handleDragEnd(DragEndDetails details) {
     if (position.value >= 0.5) {
       positionController.forward();
-      onChanged(true);
+      onChanged!(true);
       //markNeedsPaint();
     } else {
       positionController.reverse();
       reactionController.reverse();
-      onChanged(false);
+      onChanged!(false);
       //markNeedsPaint();
     }
   }
@@ -296,11 +297,11 @@ class _RenderSwitch extends RenderToggleable {
     super.handleEvent(event, entry);
   }
 
-  Color _cachedThumbColor;
-  ImageProvider _cachedThumbImage;
-  BoxPainter _cachedThumbPainter;
+  Color? _cachedThumbColor;
+  ImageProvider? _cachedThumbImage;
+  BoxPainter? _cachedThumbPainter;
 
-  BoxDecoration _createDefaultThumbDecoration(Color color, ImageProvider image) {
+  BoxDecoration _createDefaultThumbDecoration(Color? color, ImageProvider? image) {
     return BoxDecoration(
       color: color,
       image: image == null ? null : DecorationImage(image: image),
@@ -332,7 +333,7 @@ class _RenderSwitch extends RenderToggleable {
     final bool isEnabled = onChanged != null;
     final double currentValue = position.value;
 
-    double visualPosition;
+    late double visualPosition;
     switch (textDirection) {
       case TextDirection.rtl:
         visualPosition = 1.0 - currentValue;
@@ -342,11 +343,13 @@ class _RenderSwitch extends RenderToggleable {
         break;
     }
 
-    final Color trackColor = isEnabled ? Color.lerp(inactiveTrackColor, activeTrackColor, currentValue) : inactiveTrackColor;
+    final Color trackColor =
+        isEnabled ? Color.lerp(inactiveTrackColor, activeTrackColor, currentValue)! : inactiveTrackColor;
 
-    final Color thumbColor = isEnabled ? Color.lerp(inactiveColor, activeColor, currentValue) : inactiveColor;
+    final Color? thumbColor = isEnabled ? Color.lerp(inactiveColor, activeColor, currentValue) : inactiveColor;
 
-    final ImageProvider thumbImage = isEnabled ? (currentValue < 0.5 ? inactiveThumbImage : activeThumbImage) : inactiveThumbImage;
+    final ImageProvider? thumbImage =
+        isEnabled ? (currentValue < 0.5 ? inactiveThumbImage : activeThumbImage) : inactiveThumbImage;
 
     // Paint the track
     final Paint paint = Paint()..color = trackColor;
@@ -399,18 +402,19 @@ class _RenderSwitch extends RenderToggleable {
 
     try {
       _isPainting = true;
-      BoxPainter thumbPainter;
+      BoxPainter? thumbPainter;
       if (_cachedThumbPainter == null || thumbColor != _cachedThumbColor || thumbImage != _cachedThumbImage) {
         _cachedThumbColor = thumbColor;
         _cachedThumbImage = thumbImage;
-        _cachedThumbPainter = _createDefaultThumbDecoration(thumbColor, thumbImage).createBoxPainter(_handleDecorationChanged);
+        _cachedThumbPainter =
+            _createDefaultThumbDecoration(thumbColor, thumbImage).createBoxPainter(_handleDecorationChanged);
       }
       thumbPainter = _cachedThumbPainter;
 
       // The thumb contracts slightly during the animation
       final double inset = 1.0 - (currentValue - 0.5).abs() * 2.0;
       final double radius = _kThumbRadius - inset;
-      thumbPainter.paint(
+      thumbPainter!.paint(
         canvas,
         thumbPosition + offset - Offset(radius, radius),
         configuration.copyWith(size: Size.fromRadius(radius)),
@@ -421,7 +425,8 @@ class _RenderSwitch extends RenderToggleable {
 
     canvas.drawLine(
       Offset(offset.dx + _kSwitchWidth * 0.3, offset.dy + _kSwitchHeight * 0.5),
-      Offset(offset.dx + (_kSwitchWidth * 0.3) + (_kSwitchWidth / 2 * (1 - currentValue)), offset.dy + _kSwitchHeight * 0.5),
+      Offset(offset.dx + (_kSwitchWidth * 0.3) + (_kSwitchWidth / 2 * (1 - currentValue)),
+          offset.dy + _kSwitchHeight * 0.5),
       linePaint,
     );
   }

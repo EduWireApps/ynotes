@@ -12,9 +12,10 @@ import android.content.ComponentName
 import android.content.pm.PackageManager
 import android.content.ContextWrapper
 import android.util.Log
+import android.app.NotificationManager
 import android.os.PowerManager
 class MainActivity: FlutterActivity() {
-    private val CHANNEL = "fr.ynotes/autostart";
+    private val CHANNEL = "fr.ynotes/funcs";
 
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
         GeneratedPluginRegistrant.registerWith(flutterEngine);
@@ -39,10 +40,20 @@ if ((wl != null) &&           // we have a WakeLock
                 openAutostartSettings()
                 result.success(true)
             }
-
+            if (call.method == "enableDND") {
+                enableDND()
+                result.success(true)
+            }
             // Note: this method is invoked on the main thread.
             // TODO
           }
+    }
+    fun enableDND()
+    {
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+
+        notificationManager.setInterruptionFilter(NotificationManager.INTERRUPTION_FILTER_PRIORITY)
+
     }
     fun openAutostartSettings(){
         try {

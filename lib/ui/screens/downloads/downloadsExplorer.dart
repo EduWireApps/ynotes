@@ -18,24 +18,24 @@ class DownloadsExplorer extends StatefulWidget {
   _DownloadsExplorerState createState() => _DownloadsExplorerState();
 }
 
-Future filesListFuture;
+late Future<List<FileInfo>> filesListFuture;
 bool selectionMode = false;
-List<FileInfo> selectedFiles = List();
+List<FileInfo> selectedFiles = [];
 
 enum explorerSortValue { date, reversed_date, name }
 
 class _DownloadsExplorerState extends State<DownloadsExplorer> {
   String path = "";
-  String initialPath = "";
+  String? initialPath = "";
   var actualSort = explorerSortValue.date;
-  List<FileInfo> clipboard = List();
+  List<FileInfo> clipboard = [];
   @override
-  List<FileInfo> _listFiles;
+  List<FileInfo>? _listFiles;
   // ignore: must_call_super
   void initState() {
     // TODO: implement initState
 
-    SchedulerBinding.instance.addPostFrameCallback((_) => mounted
+    SchedulerBinding.instance!.addPostFrameCallback((_) => mounted
         ? setState(() {
             getInitialPath();
           })
@@ -62,15 +62,15 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
       switch (actualSort) {
         case explorerSortValue.name:
           setState(() {
-            _listFiles.sort((a, b) => (a.fileName.toLowerCase()).compareTo(b.fileName.toLowerCase()));
+            _listFiles!.sort((a, b) => (a.fileName!.toLowerCase()).compareTo(b.fileName!.toLowerCase()));
           });
 
           break;
         case explorerSortValue.date:
           setState(() {
             try {
-              _listFiles.sort((a, b) {
-                return a.lastModifiedDate.compareTo(b.lastModifiedDate);
+              _listFiles!.sort((a, b) {
+                return a.lastModifiedDate!.compareTo(b.lastModifiedDate!);
               });
             } catch (e) {}
           });
@@ -79,8 +79,8 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
         case explorerSortValue.reversed_date:
           setState(() {
             try {
-              _listFiles.sort((a, b) {
-                return b.lastModifiedDate.compareTo(a.lastModifiedDate);
+              _listFiles!.sort((a, b) {
+                return b.lastModifiedDate!.compareTo(a.lastModifiedDate!);
               });
             } catch (e) {}
           });
@@ -93,7 +93,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
   refreshFileListFuture() async {
     selectionMode = false;
     setState(() {
-      filesListFuture = FileAppUtil.getFilesList(initialPath + path);
+      filesListFuture = FileAppUtil.getFilesList(initialPath! + path);
     });
     var realLF = await filesListFuture;
   }
@@ -130,7 +130,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                     transitionBuilder: (Widget child, Animation<double> animation) {
                       return ScaleTransition(child: child, scale: animation);
                     },
-                    child: initialPath + path == initialPath
+                    child: initialPath! + path == initialPath
                         ? Container()
                         : Container(
                             key: ValueKey<bool>(selectionMode),
@@ -141,7 +141,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                               child: InkWell(
                                 borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                                 onTap: () async {
-                                  if (initialPath + path != initialPath) {
+                                  if (initialPath! + path != initialPath) {
                                     var splits = path.split("/");
                                     print(splits.length);
                                     if (splits.length > 1) {
@@ -167,7 +167,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
 
                                       await refreshFileListFuture();
                                     }
-                                    _listFiles.forEach((element) {
+                                    _listFiles!.forEach((element) {
                                       setState(() {
                                         element.selected = false;
                                       });
@@ -213,7 +213,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                                   setState(() {
                                     selectionMode = false;
                                   });
-                                  _listFiles.forEach((element) {
+                                  _listFiles!.forEach((element) {
                                     setState(() {
                                       element.selected = false;
                                     });
@@ -249,7 +249,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                         borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                         onTap: () async {
                           CustomDialogs.showNewFolderDialog(
-                              context, initialPath + path, _listFiles, selectionMode, refreshFileListFuture);
+                              context, initialPath! + path, _listFiles, selectionMode, refreshFileListFuture);
 
                           await refreshFileListFuture();
                         },
@@ -276,10 +276,10 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                     transitionBuilder: (Widget child, Animation<double> animation) {
                       return ScaleTransition(child: child, scale: animation);
                     },
-                    child: (_listFiles == null || _listFiles.where((element) => element.selected).length != 1)
+                    child: (_listFiles == null || _listFiles!.where((element) => element.selected).length != 1)
                         ? Container()
                         : Container(
-                            key: ValueKey<List>(_listFiles),
+                            key: ValueKey<List?>(_listFiles),
                             margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
                             child: Material(
                               color: Theme.of(context).primaryColorDark,
@@ -287,17 +287,17 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                               child: InkWell(
                                 borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                                 onTap: () async {
-                                  String newName = await CustomDialogs.showTextChoiceDialog(context,
+                                  String? newName = await CustomDialogs.showTextChoiceDialog(context,
                                       text: "un nom pour l'élément",
                                       defaultText: await FileAppUtil.getFileNameWithExtension(
-                                          _listFiles.firstWhere((element) => element.selected).element));
+                                          _listFiles!.firstWhere((element) => element.selected).element));
                                   if (newName != null) {
                                     String dir = pathPackage
-                                        .dirname(_listFiles.firstWhere((element) => element.selected).element.path);
+                                        .dirname(_listFiles!.firstWhere((element) => element.selected).element.path);
                                     String newPath = pathPackage.join(dir, newName);
-                                    await _listFiles.firstWhere((element) => element.selected).element.rename(newPath);
+                                    await _listFiles!.firstWhere((element) => element.selected).element.rename(newPath);
                                   }
-                                  _listFiles.forEach((element) {
+                                  _listFiles!.forEach((element) {
                                     setState(() {
                                       element.selected = false;
                                     });
@@ -332,9 +332,10 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                         borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                         onTap: () async {
                           if (selectionMode) {
-                            bool response = await CustomDialogs.showConfirmationDialog(context, null);
+                            bool response = await (CustomDialogs.showConfirmationDialog(context, null) as Future<bool>);
                             if (response) {
-                              await Future.forEach(_listFiles.where((element) => element.selected), (fileinfo) async {
+                              await Future.forEach(_listFiles!.where((element) => element.selected),
+                                  (dynamic fileinfo) async {
                                 await FileAppUtil.remove(fileinfo.element);
                               });
                               await refreshFileListFuture();
@@ -401,7 +402,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                                 onTap: () {
                                   setState(() {
                                     clipboard.clear();
-                                    clipboard.addAll(_listFiles.where((element) => element.selected));
+                                    clipboard.addAll(_listFiles!.where((element) => element.selected));
                                   });
                                 },
                                 child: Container(
@@ -441,11 +442,12 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                               : () async {
                                   await Future.forEach(clipboard, (FileInfo element) async {
                                     try {
-                                      await element.element.copy(initialPath + path + "/" + element.fileName);
+                                      await element.element.copy(initialPath! + path + "/" + element.fileName!);
                                     } catch (e) {
                                       if (Platform.isAndroid) {
                                         print("try to paste");
-                                        await Process.run('cp', ['-r', element.element.path, initialPath + path + "/"]);
+                                        await Process.run(
+                                            'cp', ['-r', element.element.path, initialPath! + path + "/"]);
                                       }
                                     }
                                   });
@@ -486,11 +488,11 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                 horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.height / 10 * 0.02),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-              child: FutureBuilder(
+              child: FutureBuilder<List<FileInfo>>(
                 future: filesListFuture,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    if (snapshot.data.length != 0) {
+                    if ((snapshot.data ?? []).length != 0) {
                       _listFiles = snapshot.data;
                       return Container(
                         height: screenSize.size.height / 10 * 7.3,
@@ -498,9 +500,9 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                           onRefresh: () => refreshFileListFuture(),
                           child: ListView.builder(
                             padding: EdgeInsets.all(0.0),
-                            itemCount: _listFiles.length,
+                            itemCount: _listFiles!.length,
                             itemBuilder: (context, index) {
-                              final item = _listFiles[index].fileName;
+                              final item = _listFiles![index].fileName!;
                               bool selected = false;
                               return Dismissible(
                                 direction: DismissDirection.endToStart,
@@ -510,10 +512,10 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                                   return await CustomDialogs.showConfirmationDialog(context, null) == true;
                                 },
                                 onDismissed: (direction) async {
-                                  await FileAppUtil.remove(_listFiles[index].element);
+                                  await FileAppUtil.remove(_listFiles![index].element);
 
                                   setState(() {
-                                    _listFiles.removeAt(index);
+                                    _listFiles!.removeAt(index);
                                   });
                                 },
                                 key: Key(item),
@@ -527,7 +529,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                                         child: Container(
                                           margin: EdgeInsets.only(bottom: (screenSize.size.height / 10 * 0.008)),
                                           child: Material(
-                                            color: _listFiles[index].selected
+                                            color: _listFiles![index].selected
                                                 ? Colors.blue
                                                 : Theme.of(context).primaryColorDark,
                                             child: InkWell(
@@ -535,22 +537,22 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                                               onLongPress: () {
                                                 setState(() {
                                                   selectionMode = true;
-                                                  _listFiles[index].selected = true;
+                                                  _listFiles![index].selected = true;
                                                 });
                                               },
                                               onTap: () async {
                                                 if (selectionMode) {
                                                   print(selectedFiles.length);
-                                                  _listFiles[index].selected = !_listFiles[index].selected;
+                                                  _listFiles![index].selected = !_listFiles![index].selected;
                                                   setState(() {});
                                                 } else {
-                                                  if (_listFiles[index].element is Directory) {
+                                                  if (_listFiles![index].element is Directory) {
                                                     setState(() {
-                                                      path = path + "/" + _listFiles[index].fileName;
+                                                      path = path + "/" + _listFiles![index].fileName!;
                                                     });
                                                     await refreshFileListFuture();
                                                   } else {
-                                                    await FileAppUtil.openFile(_listFiles[index].element.path);
+                                                    await FileAppUtil.openFile(_listFiles![index].element.path);
                                                   }
                                                 }
                                               },
@@ -564,10 +566,10 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                     children: <Widget>[
                                                       Icon(
-                                                        (_listFiles[index].element is Directory)
+                                                        (_listFiles![index].element is Directory)
                                                             ? MdiIcons.folder
                                                             : MdiIcons.file,
-                                                        color: (_listFiles[index].element is Directory)
+                                                        color: (_listFiles![index].element is Directory)
                                                             ? Colors.yellow.shade100
                                                             : ThemeUtils.textColor().withOpacity(0.5),
                                                       ),
@@ -577,18 +579,18 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                                                           Container(
                                                             width: screenSize.size.width / 5 * 3.25,
                                                             child: Text(
-                                                              snapshot.data[index].fileName ?? "",
+                                                              (snapshot.data ?? [])[index].fileName ?? "",
                                                               style: TextStyle(
                                                                   fontFamily: "Asap",
                                                                   fontSize: screenSize.size.height / 10 * 0.2,
                                                                   color: ThemeUtils.textColor()),
                                                             ),
                                                           ),
-                                                          if (snapshot.data[index].lastModifiedDate != null)
+                                                          if ((snapshot.data ?? [])[index].lastModifiedDate != null)
                                                             FittedBox(
                                                               child: Text(
-                                                                DateFormat("yyyy-MM-dd HH:mm")
-                                                                    .format(snapshot.data[index].lastModifiedDate),
+                                                                DateFormat("yyyy-MM-dd HH:mm").format(
+                                                                    (snapshot.data ?? [])[index].lastModifiedDate!),
                                                                 textAlign: TextAlign.left,
                                                                 style: TextStyle(
                                                                     fontFamily: "Asap",
@@ -642,7 +644,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                     }
                   } else {
                     if (snapshot.hasError) {
-                      print("Erreur " + snapshot.error);
+                      print("Erreur " + (snapshot.error as String));
                     }
                     return SpinKitFadingFour(
                       color: Theme.of(context).primaryColorDark,

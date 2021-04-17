@@ -7,13 +7,13 @@ part 'models.g.dart';
 @HiveType(typeId: 1)
 class Document {
   @HiveField(0)
-  final String documentName;
+  final String? documentName;
   @HiveField(1)
-  final String id;
+  final String? id;
   @HiveField(2)
-  final String type;
+  final String? type;
   @HiveField(3)
-  final int length;
+  final int? length;
   Document(this.documentName, this.id, this.type, this.length);
   factory Document.fromJson(Map<String, dynamic> json) => _$DocumentFromJson(json);
   Map<String, dynamic> toJson() => _$DocumentToJson(this);

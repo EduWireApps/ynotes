@@ -17,20 +17,20 @@ class HomeworkAdapter extends TypeAdapter<Homework> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Homework(
-      fields[0] as String,
-      fields[1] as String,
-      fields[2] as String,
-      fields[3] as String,
-      fields[4] as String,
-      fields[5] as DateTime,
-      fields[6] as DateTime,
-      fields[7] as bool,
-      fields[8] as bool,
-      fields[9] as bool,
-      (fields[10] as List)?.cast<Document>(),
-      (fields[11] as List)?.cast<Document>(),
-      fields[12] as String,
-      fields[13] as bool,
+      fields[0] as String?,
+      fields[1] as String?,
+      fields[2] as String?,
+      fields[3] as String?,
+      fields[4] as String?,
+      fields[5] as DateTime?,
+      fields[6] as DateTime?,
+      fields[7] as bool?,
+      fields[8] as bool?,
+      fields[9] as bool?,
+      (fields[10] as List?)?.cast<Document>(),
+      (fields[11] as List?)?.cast<Document>(),
+      fields[12] as String?,
+      fields[13] as bool?,
     );
   }
 
@@ -78,3 +78,49 @@ class HomeworkAdapter extends TypeAdapter<Homework> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+Homework _$HomeworkFromJson(Map<String, dynamic> json) {
+  return Homework(
+    json['discipline'] as String?,
+    json['disciplineCode'] as String?,
+    json['id'] as String?,
+    json['rawContent'] as String?,
+    json['sessionRawContent'] as String?,
+    json['date'] == null ? null : DateTime.parse(json['date'] as String),
+    json['entryDate'] == null
+        ? null
+        : DateTime.parse(json['entryDate'] as String),
+    json['done'] as bool?,
+    json['toReturn'] as bool?,
+    json['isATest'] as bool?,
+    (json['documents'] as List<dynamic>?)
+        ?.map((e) => Document.fromJson(e as Map<String, dynamic>))
+        .toList(),
+    (json['sessionDocuments'] as List<dynamic>?)
+        ?.map((e) => Document.fromJson(e as Map<String, dynamic>))
+        .toList(),
+    json['teacherName'] as String?,
+    json['loaded'] as bool?,
+  );
+}
+
+Map<String, dynamic> _$HomeworkToJson(Homework instance) => <String, dynamic>{
+      'discipline': instance.discipline,
+      'disciplineCode': instance.disciplineCode,
+      'id': instance.id,
+      'rawContent': instance.rawContent,
+      'sessionRawContent': instance.sessionRawContent,
+      'date': instance.date?.toIso8601String(),
+      'entryDate': instance.entryDate?.toIso8601String(),
+      'done': instance.done,
+      'toReturn': instance.toReturn,
+      'isATest': instance.isATest,
+      'documents': instance.documents,
+      'sessionDocuments': instance.sessionDocuments,
+      'teacherName': instance.teacherName,
+      'loaded': instance.loaded,
+    };

@@ -14,60 +14,52 @@ class PronoteGeolocationDialog extends StatefulWidget {
 }
 
 class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
-  PronoteSchoolsController con;
-  Artboard _riveArtboard;
-  RiveAnimationController _controller;
-  PronoteSchool selectedSchool;
-  TextEditingController searchCon;
-  PronoteSpace space;
+  PronoteSchoolsController pronoteSchoolsCon = PronoteSchoolsController();
+
+  Artboard? _riveArtboard;
+  RiveAnimationController? _controller;
+  PronoteSchool? selectedSchool;
+  TextEditingController? searchCon;
+  PronoteSpace? space;
+  Widget? loadingWidget;
+
   @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    searchCon = TextEditingController();
-    searchCon.addListener(() {
-      setState(() {});
-    });
-    con = PronoteSchoolsController();
-    con.geolocateSchools();
-    rootBundle.load('assets/animations/geolocating.riv').then(
-      (data) async {
-        final file = RiveFile.import(data);
-
-        // Load the RiveFile from the binary data.
-
-        // The artboard is the root of the animation and gets drawn in the
-        // Rive widget.
-        final artboard = file.mainArtboard;
-        // Add a controller to play back a known animation on the main/default
-        // artboard.We store a reference to it so we can toggle playback.
-        artboard.addController(_controller = SimpleAnimation('Locating'));
-        setState(() => _riveArtboard = artboard);
-      },
-    );
-  }
-
-  Widget buildGeolocating() {
+  Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
 
-    return Column(
-      key: ValueKey<int>(0),
-      children: [
-        Container(
-          decoration: BoxDecoration(color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(18)),
-          height: screenSize.size.height / 10 * 2.5,
-          child: _riveArtboard == null ? const SizedBox() : Rive(artboard: _riveArtboard),
+    return AlertDialog(
+      elevation: 50,
+      backgroundColor: Theme.of(context).primaryColor,
+      insetPadding: EdgeInsets.all(0),
+      content: SingleChildScrollView(
+        scrollDirection: Axis.vertical,
+        child: ChangeNotifierProvider<PronoteSchoolsController>.value(
+          value: pronoteSchoolsCon,
+          child: Consumer<PronoteSchoolsController>(builder: (context, _model, child) {
+            return Container(
+              height: screenSize.size.height / 10 * 7,
+              width: screenSize.size.width / 5 * 4,
+              decoration: BoxDecoration(color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(18)),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  AnimatedSwitcher(
+                    duration: Duration(milliseconds: 200),
+                    transitionBuilder: (Widget child, Animation<double> animation) {
+                      return ScaleTransition(child: child, scale: animation);
+                    },
+                    child: getView(_model),
+                  )
+                ],
+              ),
+            );
+          }),
         ),
-        Text(
-          con.geolocating ? "Géolocalisation des établissements à proximité..." : "Recherche des status disponibles",
-          style: TextStyle(fontFamily: "Asap", color: Colors.black),
-          textAlign: TextAlign.center,
-        ),
-      ],
+      ),
     );
   }
 
-  Widget buildError(String error) {
+  Widget buildError(String? error) {
     var screenSize = MediaQuery.of(context);
 
     return Column(
@@ -91,19 +83,31 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
         Container(
           margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
           child: CustomButtons.materialButton(context, null, null, () async {
-            await con.reset();
+            await pronoteSchoolsCon.reset();
           }, label: "Recommencer"),
         )
       ],
     );
   }
 
-  filterSchools(List<PronoteSchool> schools) {
-    if (searchCon.text != null && schools != null && schools.length != 0) {
-      return schools.where((element) => element.name.toUpperCase().contains(searchCon.text.toUpperCase())).toList() ??
-          [];
-    }
-    return schools;
+  Widget buildGeolocating() {
+    var screenSize = MediaQuery.of(context);
+
+    return Column(
+      key: ValueKey<int>(0),
+      children: [
+        Container(
+          decoration: BoxDecoration(color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(18)),
+          height: screenSize.size.height / 10 * 2.5,
+          child: _riveArtboard == null ? const SizedBox() : Rive(artboard: _riveArtboard!),
+        ),
+        Text(
+          pronoteSchoolsCon.geolocating ? "Géolocalisation des établissements à proximité..." : "Recherche des status disponibles",
+          style: TextStyle(fontFamily: "Asap", color: Colors.black),
+          textAlign: TextAlign.center,
+        ),
+      ],
+    );
   }
 
   Widget buildNoSchoolFound() {
@@ -117,7 +121,7 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
     );
   }
 
-  Widget buildSchools(List schools) {
+  Widget buildSchools(List? schools) {
     var screenSize = MediaQuery.of(context);
 
     return Container(
@@ -133,7 +137,7 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
           SizedBox(height: screenSize.size.height / 10 * 0.1),
           Container(
               height: screenSize.size.height / 10 * 5,
-              child: filterSchools(schools).length != 0
+              child: filterSchools(schools as List<PronoteSchool>?).length != 0
                   ? ListView.builder(
                       itemCount: filterSchools(schools).length,
                       padding: EdgeInsets.zero,
@@ -160,8 +164,8 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
                       null,
                       selectedSchool != null
                           ? () async {
-                              con.chosenSchool = selectedSchool;
-                              await con.getSpaces();
+                              pronoteSchoolsCon.chosenSchool = selectedSchool;
+                              await pronoteSchoolsCon.getSpaces();
                             }
                           : null,
                       label: "Continuer",
@@ -176,7 +180,7 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
     );
   }
 
-  Widget buildStatusRequest(List<PronoteSpace> spaces) {
+  Widget buildStatusRequest(List<PronoteSpace>? spaces) {
     var screenSize = MediaQuery.of(context);
 
     return Container(
@@ -192,7 +196,7 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
             child: AnimatedList(
               initialItemCount: spaces != null ? spaces.length : 0,
               itemBuilder: (context, index, animation) {
-                return slidingSpace(context, spaces[index], animation);
+                return slidingSpace(context, spaces![index], animation);
               },
             ),
           ),
@@ -229,69 +233,63 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
     );
   }
 
-  Widget slidingSpace(BuildContext context, PronoteSpace _space, animation) {
-    var screenSize = MediaQuery.of(context);
+  filterSchools(List<PronoteSchool>? schools) {
+    if (searchCon!.text != null && schools != null && schools.length != 0) {
+      return schools.where((element) => element.name!.toUpperCase().contains(searchCon!.text.toUpperCase())).toList();
+    }
+    return schools;
+  }
 
-    TextStyle textStyle = Theme.of(context).textTheme.headline4;
-    return SlideTransition(
-      position: Tween<Offset>(
-        begin: const Offset(-1, 0),
-        end: Offset(0, 0),
-      ).animate(animation),
-      child: SizedBox(
-        // Actual widget to display
-        height: screenSize.size.height / 10 * 0.9,
-        child: GestureDetector(
-          onTap: () {
-            setState(() {
-              space = _space;
-            });
-          },
-          child: Card(
-            color: Theme.of(context).primaryColorDark,
-            child: Row(
-              children: [
-                SizedBox(width: screenSize.size.width / 10 * 0.1),
-                CircularCheckBox(
-                    value: space == _space,
-                    onChanged: (newValue) {
-                      setState(() {
-                        space = _space;
-                      });
-                    }),
-                SizedBox(width: screenSize.size.width / 10 * 0.1),
-                Expanded(
-                  child: Wrap(
-                    spacing: screenSize.size.width / 5 * 0.05,
-                    children: [
-                      Text(
-                        _space.name ?? "",
-                        style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(width: screenSize.size.width / 10 * 0.1),
-              ],
-            ),
-          ),
-        ),
-      ),
+  getView(PronoteSchoolsController model) {
+    if (((model.school != null && model.spaces == null && !model.geolocating) || model.geolocating) &&
+        model.error == null) {
+      return buildGeolocating();
+    } else if (model.school != null) {
+      return (model.error != null ? buildError(model.error) : buildStatusRequest(model.spaces));
+    } else {
+      return (model.error != null ? buildError(model.error) : buildSchools(model.schools));
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    searchCon = TextEditingController();
+
+    searchCon!.addListener(() {
+      setState(() {});
+    });
+    pronoteSchoolsCon.geolocateSchools();
+    rootBundle.load('assets/animations/geolocating.riv').then(
+      (data) async {
+        final file = RiveFile.import(data);
+
+        // Load the RiveFile from the binary data.
+
+        // The artboard is the root of the animation and gets drawn in the
+        // Rive widget.
+        final artboard = file.mainArtboard;
+        // Add a controller to play back a known animation on the main/default
+        // artboard.We store a reference to it so we can toggle playback.
+        artboard.addController(_controller = SimpleAnimation('Locating'));
+        setState(() => _riveArtboard = artboard);
+      },
     );
   }
 
   Widget slidingSchool(BuildContext context, PronoteSchool school) {
     var screenSize = MediaQuery.of(context);
-    String distance;
-    if (school.coordinates.length > 2) {
+    late String distance;
+    if (school.coordinates!.length > 2) {
       try {
-        double val = double.tryParse(school.coordinates[2]) / 1000;
+        double val = double.tryParse(school.coordinates![2])! / 1000;
         distance = "à " + val.toStringAsPrecision(2) + " kilomètres";
       } catch (e) {
         distance = "(distance non définie)";
       }
     }
-    TextStyle textStyle = Theme.of(context).textTheme.headline4;
+    TextStyle? textStyle = Theme.of(context).textTheme.headline4;
     return SizedBox(
       // Actual widget to display
       height: screenSize.size.height / 10 * 0.9,
@@ -341,49 +339,52 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
     );
   }
 
-  getView(PronoteSchoolsController model) {
-    if (((model.school != null && model.spaces == null && !model.geolocating) || model.geolocating) &&
-        model.error == null) {
-      return buildGeolocating();
-    } else if (model.school != null) {
-      return (model.error != null ? buildError(model.error) : buildStatusRequest(model.spaces));
-    } else {
-      return (model.error != null ? buildError(model.error) : buildSchools(model.schools));
-    }
-  }
-
-  Widget loadingWidget;
-  @override
-  Widget build(BuildContext context) {
+  Widget slidingSpace(BuildContext context, PronoteSpace _space, animation) {
     var screenSize = MediaQuery.of(context);
 
-    return AlertDialog(
-      elevation: 50,
-      backgroundColor: Theme.of(context).primaryColor,
-      insetPadding: EdgeInsets.all(0),
-      content: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
-        child: ChangeNotifierProvider<PronoteSchoolsController>.value(
-          value: con,
-          child: Consumer<PronoteSchoolsController>(builder: (context, model, child) {
-            return Container(
-              height: screenSize.size.height / 10 * 7,
-              width: screenSize.size.width / 5 * 4,
-              decoration: BoxDecoration(color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(18)),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  AnimatedSwitcher(
-                    duration: Duration(milliseconds: 200),
-                    transitionBuilder: (Widget child, Animation<double> animation) {
-                      return ScaleTransition(child: child, scale: animation);
-                    },
-                    child: getView(model),
-                  )
-                ],
-              ),
-            );
-          }),
+    TextStyle? textStyle = Theme.of(context).textTheme.headline4;
+    return SlideTransition(
+      position: Tween<Offset>(
+        begin: const Offset(-1, 0),
+        end: Offset(0, 0),
+      ).animate(animation),
+      child: SizedBox(
+        // Actual widget to display
+        height: screenSize.size.height / 10 * 0.9,
+        child: GestureDetector(
+          onTap: () {
+            setState(() {
+              space = _space;
+            });
+          },
+          child: Card(
+            color: Theme.of(context).primaryColorDark,
+            child: Row(
+              children: [
+                SizedBox(width: screenSize.size.width / 10 * 0.1),
+                CircularCheckBox(
+                    value: space == _space,
+                    onChanged: (newValue) {
+                      setState(() {
+                        space = _space;
+                      });
+                    }),
+                SizedBox(width: screenSize.size.width / 10 * 0.1),
+                Expanded(
+                  child: Wrap(
+                    spacing: screenSize.size.width / 5 * 0.05,
+                    children: [
+                      Text(
+                        _space.name ?? "",
+                        style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(width: screenSize.size.width / 10 * 0.1),
+              ],
+            ),
+          ),
         ),
       ),
     );

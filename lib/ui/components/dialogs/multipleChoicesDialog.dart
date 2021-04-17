@@ -16,7 +16,7 @@ class MultipleChoicesDialog extends StatefulWidget {
 }
 
 class _MultipleChoicesDialogState extends State<MultipleChoicesDialog> {
-  List<int> indexsSelected = List();
+  List<int> indexsSelected = [];
   @override
   void initState() {
     // TODO: implement initState
@@ -105,7 +105,6 @@ class _MultipleChoicesDialogState extends State<MultipleChoicesDialog> {
                             child: Row(
                               children: <Widget>[
                                 CircularCheckBox(
-                                  inactiveColor: ThemeUtils.textColor(),
                                   onChanged: (value) {
                                     if (widget.singleChoice) {
                                       indexsSelected.clear();

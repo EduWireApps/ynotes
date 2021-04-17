@@ -20,7 +20,7 @@ class HSVColorPainter extends CustomPainter {
   const HSVColorPainter(this.hsvColor, {this.pointerColor});
 
   final HSVColor hsvColor;
-  final Color pointerColor;
+  final Color? pointerColor;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -62,7 +62,7 @@ class HSLColorPainter extends CustomPainter {
   const HSLColorPainter(this.hslColor, {this.pointerColor});
 
   final HSLColor hslColor;
-  final Color pointerColor;
+  final Color? pointerColor;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -244,7 +244,7 @@ class TrackPainter extends CustomPainter {
 class ThumbPainter extends CustomPainter {
   const ThumbPainter({this.thumbColor, this.fullThumbColor: false});
 
-  final Color thumbColor;
+  final Color? thumbColor;
   final bool fullThumbColor;
 
   @override
@@ -269,7 +269,7 @@ class ThumbPainter extends CustomPainter {
           Offset(0.0, size.height * 0.4),
           size.height * (fullThumbColor ? 1.0 : 0.65),
           Paint()
-            ..color = thumbColor
+            ..color = thumbColor!
             ..style = PaintingStyle.fill);
     }
   }
@@ -342,9 +342,9 @@ class ColorPickerLabel extends StatefulWidget {
 
   final HSVColor hsvColor;
   final bool enableAlpha;
-  final TextStyle textStyle;
+  final TextStyle? textStyle;
   final bool editable;
-  final ValueChanged<HSVColor> onColorChanged;
+  final ValueChanged<HSVColor>? onColorChanged;
 
   @override
   _ColorPickerLabelState createState() => _ColorPickerLabelState();
@@ -413,7 +413,7 @@ class _ColorPickerLabelState extends State<ColorPickerLabel> {
                   SizedBox(height: 10.0),
                   Expanded(
                     child: Text(
-                      colorValue(widget.hsvColor, _colorType)[_colorTypes[_colorType].indexOf(item)],
+                      colorValue(widget.hsvColor, _colorType)[_colorTypes[_colorType]!.indexOf(item)],
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
@@ -429,7 +429,7 @@ class _ColorPickerLabelState extends State<ColorPickerLabel> {
     return Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
       DropdownButton(
         value: _colorType,
-        onChanged: (ColorModel type) {
+        onChanged: (ColorModel? type) {
           if (type != null) {
             setState(() => _colorType = type);
           }
@@ -503,7 +503,7 @@ class ColorPickerSlider extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (BuildContext context, BoxConstraints box) {
       double thumbOffset = 15.0;
-      Color thumbColor;
+      Color? thumbColor;
       switch (trackType) {
         case TrackType.hue:
           thumbOffset += (box.maxWidth - 30.0) * hsvColor.hue / 360;
@@ -573,7 +573,7 @@ class ColorPickerSlider extends StatelessWidget {
             id: _SliderLayout.gestureContainer,
             child: LayoutBuilder(
               builder: (BuildContext context, BoxConstraints box) {
-                RenderBox getBox = context.findRenderObject() as RenderBox;
+                RenderBox? getBox = context.findRenderObject() as RenderBox?;
                 return GestureDetector(
                   onPanDown: (DragDownDetails details) =>
                       getBox != null ? slideEvent(getBox, box, details.globalPosition) : null,
@@ -642,7 +642,7 @@ class ColorPickerArea extends StatelessWidget {
   }
 
   void _handleGesture(Offset position, BuildContext context, double height, double width) {
-    RenderBox getBox = context.findRenderObject() as RenderBox;
+    RenderBox? getBox = context.findRenderObject() as RenderBox?;
     if (getBox == null) {
       return;
     }

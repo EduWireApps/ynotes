@@ -11,13 +11,13 @@ import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/spaceAgenda.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 
 class AgendaPage extends StatefulWidget {
-  AgendaPage({Key key}) : super(key: key);
+  AgendaPage({Key? key}) : super(key: key);
 
   @override
   AgendaPageState createState() => AgendaPageState();
 }
 
-DateTime agendaDate;
+DateTime? agendaDate;
 
 class AgendaPageState extends State<AgendaPage> {
   PageController agendaPageSettingsController = PageController(initialPage: 1);

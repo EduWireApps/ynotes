@@ -17,14 +17,14 @@ class CustomDrawer extends StatefulWidget {
   final List entries;
   const CustomDrawer(
     this.entries, {
-    Key key,
-    @required ValueNotifier<int> notifier,
-    @required this.drawerPageViewController,
-  })  : _notifier = notifier,
+    Key? key,
+    required ValueNotifier<int> notifier,
+    required this.drawerPageViewController,
+  })   : _notifier = notifier,
         super(key: key);
 
   final ValueNotifier<int> _notifier;
-  final PageController drawerPageViewController;
+  final PageController? drawerPageViewController;
 
   @override
   _CustomDrawerState createState() => _CustomDrawerState();
@@ -74,7 +74,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                               value: ThemeUtils.isThemeDark,
                               dragStartBehavior: DragStartBehavior.start,
                               onChanged: (val) async {
-                                appSys.updateTheme(val ? "sombre" : "clair");
+                                appSys.updateTheme((val ?? false) ? "sombre" : "clair");
                               },
                             ),
                           ),
@@ -89,14 +89,14 @@ class _CustomDrawerState extends State<CustomDrawer> {
               ),
               for (var entry in this.widget.entries)
                 if (entry["relatedApi"] == null ||
-                    entry["relatedApi"] == appSys.settings["system"]["chosenParser"] ||
+                    entry["relatedApi"] == appSys.settings!["system"]["chosenParser"] ||
                     (entry["relatedApi"] == -1 && !kReleaseMode))
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       ValueListenableBuilder(
                           valueListenable: widget._notifier,
-                          builder: (context, value, child) {
+                          builder: (context, dynamic value, child) {
                             return Material(
                               borderRadius:
                                   BorderRadius.only(topRight: Radius.circular(11), bottomRight: Radius.circular(11)),
@@ -107,10 +107,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 splashFactory: InkRipple.splashFactory,
                                 onTap: () {
                                   //Close drawer
-                                  if (appSys.settings["user"]["global"]["autoCloseDrawer"]) {
+                                  if (appSys.settings!["user"]["global"]["autoCloseDrawer"]) {
                                     Navigator.of(context).pop();
                                   }
-                                  widget.drawerPageViewController.jumpToPage(this.widget.entries.indexOf(entry));
+                                  widget.drawerPageViewController!.jumpToPage(this.widget.entries.indexOf(entry));
                                 },
                                 borderRadius:
                                     BorderRadius.only(topRight: Radius.circular(11), bottomRight: Radius.circular(11)),
@@ -156,7 +156,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
               child: InkWell(
                 splashFactory: InkRipple.splashFactory,
                 onTap: () {
-                  Wiredash.of(context).show();
+                  Wiredash.of(context)!.show();
                 },
                 borderRadius: BorderRadius.only(topRight: Radius.circular(11), bottomRight: Radius.circular(11)),
                 child: Container(

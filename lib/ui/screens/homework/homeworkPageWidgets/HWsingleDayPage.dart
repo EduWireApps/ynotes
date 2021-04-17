@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/ui/animations/FadeAnimation.dart';
 import 'package:ynotes/ui/components/customLoader.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPage.dart';
@@ -22,10 +23,10 @@ class HomeworkSecondPage extends StatefulWidget {
 }
 
 class _HomeworkSecondPageState extends State<HomeworkSecondPage> {
-  Future homeworkListFuture;
+  Future? homeworkListFuture;
   Future<void> refreshLocalHomeworkList() async {
     setState(() {
-      homeworkListFuture = appSys.api.getNextHomework(forceReload: true);
+      homeworkListFuture = appSys.api!.getNextHomework(forceReload: true);
     });
     var realHW = await homeworkListFuture;
   }
@@ -37,8 +38,8 @@ class _HomeworkSecondPageState extends State<HomeworkSecondPage> {
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
-    return FutureBuilder(
-        future: appSys.api.getHomeworkFor(dateToUse),
+    return FutureBuilder<List<Homework>?>(
+        future: appSys.api!.getHomeworkFor(dateToUse),
         builder: (context, snapshot) {
           if (snapshot.hasData && snapshot.data != null) {
             localListHomeworkDateToUse = snapshot.data;
@@ -60,18 +61,18 @@ class _HomeworkSecondPageState extends State<HomeworkSecondPage> {
                                 ? null
                                 : () {
                                     setState(() {
-                                      isPinnedDateToUse = !isPinnedDateToUse;
-                                      appSys.offline.pinnedHomework.set(dateToUse.toString(), isPinnedDateToUse);
+                                      isPinnedDateToUse = !isPinnedDateToUse!;
+                                      appSys.offline!.pinnedHomework.set(dateToUse.toString(), isPinnedDateToUse);
                                     });
-                                    if (isPinnedDateToUse) {
-                                      appSys.offline.homework.updateHomework(localListHomeworkDateToUse, add: true);
+                                    if (isPinnedDateToUse!) {
+                                      appSys.offline!.homework.updateHomework(localListHomeworkDateToUse, add: true);
                                     }
                                   },
                             child: Container(
                                 padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
                                 child: Icon(
                                   MdiIcons.pin,
-                                  color: isPinnedDateToUse ? Colors.green : Colors.white,
+                                  color: isPinnedDateToUse! ? Colors.green : Colors.white,
                                   size: screenSize.size.width / 5 * 0.4,
                                 )),
                           )),
@@ -93,7 +94,7 @@ class _HomeworkSecondPageState extends State<HomeworkSecondPage> {
                             child: Text(
                                 (dateToUse != null
                                     ? toBeginningOfSentenceCase(
-                                        DateFormat("EEEE d MMMM", "fr_FR").format(dateToUse).toString())
+                                        DateFormat("EEEE d MMMM", "fr_FR").format(dateToUse!).toString())!
                                     : ""),
                                 style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor())),
                           ),
@@ -128,14 +129,14 @@ class _HomeworkSecondPageState extends State<HomeworkSecondPage> {
                     width: screenSize.size.width / 5 * 4.4,
                     child: snapshot.connectionState == ConnectionState.done
                         ? Container(
-                            child: snapshot.data.length > 0
+                            child: snapshot.data!.length > 0
                                 ? ListView.builder(
                                     addRepaintBoundaries: false,
-                                    itemCount: snapshot.data.length,
+                                    itemCount: snapshot.data!.length,
                                     itemBuilder: (context, index) {
                                       return FadeAnimationLeftToRight(
                                         0.05 + index / 5,
-                                        HomeworkElement(snapshot.data[index], true),
+                                        HomeworkElement(snapshot.data![index], true),
                                       );
                                     })
                                 : Container(

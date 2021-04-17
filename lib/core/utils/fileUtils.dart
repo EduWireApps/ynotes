@@ -13,8 +13,8 @@ import 'package:ynotes/ui/components/dialogs.dart';
 
 class FileInfo {
   final element;
-  final DateTime lastModifiedDate;
-  final String fileName;
+  final DateTime? lastModifiedDate;
+  final String? fileName;
   bool selected;
   FileInfo(this.element, this.lastModifiedDate, this.fileName, {this.selected = false});
 }
@@ -29,7 +29,7 @@ class FolderAppUtil {
     if (Platform.isAndroid) {
       var dir = await getExternalStorageDirectory();
 
-      return download ? dir.path : dir;
+      return download ? dir!.path : dir;
     }
     if (Platform.isIOS) {
       var dir = await getApplicationDocumentsDirectory();
@@ -68,7 +68,7 @@ class FileAppUtil {
     }
   }
 
-  static Future<String> getFileNameWithExtension(var file) async {
+  static Future<String?> getFileNameWithExtension(var file) async {
     if (await file.exists()) {
       return path.basename(file.path);
     } else {
@@ -77,12 +77,12 @@ class FileAppUtil {
   }
 
   ///Get new file path
-  static Future<File> getFilePath(String filename) async {
+  static Future<File> getFilePath(String? filename) async {
     final dir = await FolderAppUtil.getDirectory(download: true);
     return File("$dir/yNotesDownloads/$filename");
   }
 
-  static Future<DateTime> getLastModifiedDate(var item) async {
+  static Future<DateTime?> getLastModifiedDate(var item) async {
     try {
       if (await item.exists()) {
         return await item.lastModified();
@@ -108,9 +108,9 @@ class FileAppUtil {
     //create an element rows of type list of list. All the above data set are stored in associate list
 //Let associate be a model class with attributes name,gender and age and associateList be a list of associate model class.
 
-    List<List<dynamic>> rows = List<List<dynamic>>();
+    List<List<dynamic>> rows = [];
     for (int i = 0; i < associateGradeList.length; i++) {
-      List<dynamic> row = List();
+      List<dynamic> row = [];
 
       //row refer to each column of a row in csv file and rows refer to each row in a file
       row.add(associateGradeList[i].value);
@@ -129,7 +129,7 @@ class FileAppUtil {
 
 //store file in documents folder
 
-    String dir = (await getExternalStorageDirectory()).absolute.path + "/";
+    String dir = (await getExternalStorageDirectory())!.absolute.path + "/";
     var file = "$dir";
     File f = new File(file + "filename.csv");
 
@@ -140,9 +140,9 @@ class FileAppUtil {
   }
 
 //Open a file
-  static Future<void> openFile(String filePath, {bool usingFileName = false}) async {
+  static Future<void> openFile(String? filePath, {bool usingFileName = false}) async {
     try {
-      var path = "";
+      String? path = "";
 
       //Get root dir path
       if (usingFileName) {
@@ -152,7 +152,7 @@ class FileAppUtil {
         path = filePath;
       }
 
-      await OpenFile.open(path);
+      await OpenFile.open(path!);
     } catch (e) {
       print("Failed to open file : " + e.toString());
     }
@@ -161,7 +161,7 @@ class FileAppUtil {
   static Future<List<FileInfo>> getFilesList(String path) async {
     try {
       String directory;
-      List file = new List();
+      List file = [];
 
       if (await Permission.storage.request().isGranted) {
         try {
@@ -170,9 +170,9 @@ class FileAppUtil {
           print("Error while getting file list " + e.toString());
         }
         //use your folder name insted of resume.
-        List<FileInfo> listFiles = List<FileInfo>();
+        List<FileInfo> listFiles = [];
 
-        await Future.forEach(file, (element) async {
+        await Future.forEach(file, (dynamic element) async {
           try {
             listFiles.add(new FileInfo(element, await FileAppUtil.getLastModifiedDate(element),
                 await FileAppUtil.getFileNameWithExtension(element)));
@@ -181,12 +181,13 @@ class FileAppUtil {
           }
         });
 
-        listFiles = listFiles.reversed.toList();
+        listFiles = [];
         return listFiles;
       }
     } catch (e) {
-      List<FileInfo> listFiles = List<FileInfo>();
+      List<FileInfo> listFiles = [];
       return listFiles;
     }
+    return [];
   }
 }

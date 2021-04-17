@@ -4,7 +4,7 @@ import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:logger/logger.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
@@ -12,14 +12,12 @@ import 'package:ynotes/core/logic/homework/controller.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/background.dart';
-import 'package:ynotes/core/services/notifications.dart';
-import 'package:ynotes/core/services/shared_preferences.dart';
 import 'package:ynotes/core/utils/settingsUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/ui/themes/themesList.dart';
 
 class Test {
-  Map settings;
+  Map? settings;
   Test() {
     settings = SettingsUtils.getAppSettings();
   }
@@ -27,7 +25,7 @@ class Test {
 
 ///Top level application sytem class
 class ApplicationSystem extends ChangeNotifier {
-  Map settings;
+  Map? settings;
 
   SchoolAccount account;
   List<SchoolAccount> accounts = [
@@ -42,27 +40,27 @@ class ApplicationSystem extends ChangeNotifier {
   }
 
   ///A boolean representing the use of the application
-  bool isFirstUse;
+  bool? isFirstUse;
 
   ///The color theme used in the application
-  ThemeData theme;
+  ThemeData? theme;
 
-  String themeName;
-
-  ///The chosen API
-  API api;
+  String? themeName;
 
   ///The chosen API
-  Offline offline;
+  API? api;
+
+  ///The chosen API
+  Offline? offline;
 
   ///App logger
   Logger logger;
 
   ///All the app controllers
 
-  LoginController loginController;
-  GradesController gradesController;
-  HomeworkController homeworkController;
+ late LoginController loginController;
+ late GradesController gradesController;
+late HomeworkController homeworkController;
 
   ///The most important function
   ///It will intialize Offline, APIs and background fetch
@@ -71,6 +69,8 @@ class ApplicationSystem extends ChangeNotifier {
     account = SchoolAccount("", "", "", [], [], API_TYPE.EcoleDirecte);
     //set settings
     await _initSettings();
+    //Set theme to default
+    updateTheme(settings!["user"]["global"]["theme"]);
     //Set offline
     await _initOffline();
     //Set api
@@ -88,9 +88,9 @@ class ApplicationSystem extends ChangeNotifier {
     print("Updating theme to " + themeName);
     theme = appThemes[themeName];
     this.themeName = themeName;
-    updateSetting(this.settings["user"]["global"], "theme", themeName);
+    updateSetting(this.settings!["user"]["global"], "theme", themeName);
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        systemNavigationBarColor: ThemeUtils.isThemeDark ? theme.primaryColorLight : theme.primaryColorDark,
+        systemNavigationBarColor: ThemeUtils.isThemeDark ? theme!.primaryColorLight : theme!.primaryColorDark,
         statusBarColor: Colors.transparent // navigation bar color
         // status bar color
         ));
@@ -107,12 +107,12 @@ class ApplicationSystem extends ChangeNotifier {
 //Leave app
   exitApp() async {
     try {
-      await this.offline.clearAll();
+      await this.offline!.clearAll();
       //Delete sharedPref
-      SharedPreferences preferences = await SharedPreferences.getInstance();
+      SharedPreferences preferences = await (SharedPreferences.getInstance() as Future<SharedPreferences>);
       await preferences.clear();
       //delte local setings and init them
-      this.settings.clear();
+      this.settings!.clear();
       this._initSettings();
       //Import secureStorage
       final storage = new FlutterSecureStorage();
@@ -146,7 +146,7 @@ class ApplicationSystem extends ChangeNotifier {
   _initOffline() async {
     //Initiate an unlocked offline controller
     offline = Offline(false);
-    await offline.init();
+    await offline!.init();
   }
 
   initControllers() async {

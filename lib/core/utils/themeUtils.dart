@@ -20,11 +20,11 @@ class ThemeUtils {
     }
   }
 
-  static get isThemeDark => appSys.themeName.contains("sombre");
+  static get isThemeDark => appSys.themeName!.contains("sombre");
   Color test() => Colors.blue;
 
   ///Make the selected color darker
-  static Color darken(Color color, {double forceAmount}) {
+  static Color darken(Color color, {double? forceAmount}) {
     double amount = 0.05;
     var ColorTest = TinyColor(color);
     //Test if the color is not too light

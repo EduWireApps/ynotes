@@ -5,11 +5,11 @@ import 'package:ynotes/core/utils/nullSafeMap.dart';
 
 class PronoteConverter {
   static Lesson lesson(PronoteClient client, Map<String, dynamic> lessonData) {
-    String matiere = mapGet(lessonData, ["ListeContenus", "V", 0, "L"]);
+    String? matiere = mapGet(lessonData, ["ListeContenus", "V", 0, "L"]);
 
     DateTime start = DateFormat("dd/MM/yyyy HH:mm:ss", "fr_FR").parse(mapGet(lessonData, ["DateDuCours", "V"]));
 
-    DateTime end;
+    DateTime? end;
     var endPlace = (mapGet(lessonData, ['place']) %
             ((client.funcOptions['donneesSec']['donnees']['General']['ListeHeuresFin']['V']).length - 1)) +
         (mapGet(lessonData, ['duree']) - 1);
@@ -19,13 +19,13 @@ class PronoteConverter {
     ///hours in a day we can get the "place" when the hour starts. Then we just add the duration (and substract 1)
     for (var endTime in (mapGet(client.funcOptions, ['donneesSec', 'donnees', 'General', 'ListeHeuresFin', 'V']))) {
       if (mapGet(endTime, ['G']) == endPlace) {
-        print(matiere + " " + "START " + start.toString() + " END " + endTime["L"]);
+        print(matiere! + " " + "START " + start.toString() + " END " + endTime["L"]);
         endTime = DateFormat("""HH'h'mm""").parse(mapGet(endTime, ["L"]));
         end = DateTime(start.year, start.month, start.day, endTime.hour, endTime.minute);
       }
     }
 
-    String room;
+    String? room;
     try {
       var roomContainer = mapGet(lessonData, ["ListeContenus", "V"]) ?? [].firstWhere((element) => element["G"] == 17);
       room = mapGet(roomContainer, ["L"]);
@@ -33,7 +33,7 @@ class PronoteConverter {
 
     //Sort of null aware
     catch (e) {}
-    List<String> teachers = List();
+    List<String?> teachers = [];
     try {
       mapGet(lessonData, ["ListeContenus", "V"]).forEach((element) {
         if (element["G"] == 3) {
@@ -46,10 +46,10 @@ class PronoteConverter {
     //Some attributes
     String codeMatiere = mapGet(lessonData, ["ListeContenus", "V", 0, "L"]).hashCode.toString();
 
-    String id = mapGet(lessonData, ["N"]);
+    String? id = mapGet(lessonData, ["N"]);
 
-    String status;
-    bool canceled = false;
+    String? status;
+    bool? canceled = false;
 
     //Set lesson status
     if (mapGet(lessonData, ["Statut"]) != null) {
@@ -66,7 +66,7 @@ class PronoteConverter {
         teachers: teachers,
         start: start,
         end: end,
-        duration: end.difference(start).inMinutes,
+        duration: end!.difference(start).inMinutes,
         canceled: canceled,
         status: status,
         discipline: matiere,

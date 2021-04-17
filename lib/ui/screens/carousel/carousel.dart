@@ -1,71 +1,77 @@
-import 'package:permission_handler/permission_handler.dart';
-import 'package:ynotes/core/logic/appConfig/controller.dart';
-import 'package:ynotes/core/utils/fileUtils.dart';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:battery_optimization/battery_optimization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'package:ynotes/core/services/shared_preferences.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:ynotes/ui/components/dialogs.dart';
-import 'package:ynotes/core/utils/themeUtils.dart';
-import 'package:ynotes/main.dart';
-import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
+import 'package:ynotes/core/logic/appConfig/controller.dart';
+import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/globals.dart';
+import 'package:ynotes/main.dart';
+import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/usefulMethods.dart';
 
-class SlidingCarousel extends StatefulWidget {
-  SlidingCarousel({Key key}) : super(key: key);
-  _SlidingCarouselState createState() => _SlidingCarouselState();
-}
-
-//Create states of each page
 class page1 extends StatefulWidget {
-  final double offset;
-  final int idx;
-  page1({Key key, this.offset, this.idx}) : super(key: key);
+  final double? offset;
+  final int? idx;
+  page1({Key? key, this.offset, this.idx}) : super(key: key);
   _page1State createState() => _page1State();
 }
 
+//Create states of each page
 class page2 extends StatefulWidget {
-  final double offset;
-  final int idx;
-  page2({Key key, this.offset, this.idx}) : super(key: key);
+  final double? offset;
+  final int? idx;
+  page2({Key? key, this.offset, this.idx}) : super(key: key);
   _page2State createState() => _page2State();
 }
 
 class page3 extends StatefulWidget {
-  final double offset;
-  final int idx;
-  page3({Key key, this.offset, this.idx}) : super(key: key);
+  final double? offset;
+  final int? idx;
+  page3({Key? key, this.offset, this.idx}) : super(key: key);
 
   _page3State createState() => _page3State();
 }
 
 class page4 extends StatefulWidget {
-  final double offset;
-  final int idx;
-  page4({Key key, this.offset, this.idx}) : super(key: key);
+  final double? offset;
+  final int? idx;
+  page4({Key? key, this.offset, this.idx}) : super(key: key);
 
   _page4State createState() => _page4State();
 }
 
+class PageInfo {
+  //Widget Used
+  Widget? widget;
+  //BG used
+  Color? backgroundColor;
+  PageInfo({this.widget, this.backgroundColor});
+}
+
 //PAGE1 STATE
+class SlidingCarousel extends StatefulWidget {
+  SlidingCarousel({Key? key}) : super(key: key);
+  _SlidingCarouselState createState() => _SlidingCarouselState();
+}
+
+//PAGE2 STATE
 class _page1State extends State<page1> {
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
         Transform.translate(
-          offset: Offset(-(widget.offset) * 400 - 75 + 75 * widget.offset, -135 + 135 * widget.offset),
+          offset: Offset(-widget.offset! * 400 - 75 + 75 * widget.offset!, -135 + 135 * widget.offset!),
           child: Align(
               alignment: Alignment.center,
               child: Transform.rotate(
-                angle: -0.4 + widget.offset * 0.4,
+                angle: -0.4 + widget.offset! * 0.4,
                 child: Icon(
                   Icons.star,
                   color: Color(0xFFE7D928),
@@ -78,7 +84,7 @@ class _page1State extends State<page1> {
           height: 90,
           width: MediaQuery.of(context).size.width,
           child: Transform.translate(
-              offset: Offset(-(widget.offset) * 200, 0),
+              offset: Offset(-widget.offset! * 200, 0),
               child: SizedBox(
                   width: 50,
                   height: 140.0,
@@ -93,7 +99,7 @@ class _page1State extends State<page1> {
                       style: TextStyle(fontFamily: "Asap", fontSize: 30.0)))),
         ),
         Transform.translate(
-          offset: Offset(-(widget.offset) * 60, 0),
+          offset: Offset(-widget.offset! * 60, 0),
           child: Stack(
             children: <Widget>[
               Transform.rotate(
@@ -101,9 +107,9 @@ class _page1State extends State<page1> {
                   -(MediaQuery.of(context).size.width / 5),
                   (MediaQuery.of(context).size.width / 4),
                 ),
-                angle: 0.1 - (widget.offset / 10),
+                angle: 0.1 - (widget.offset! / 10),
                 child: Transform.translate(
-                  offset: Offset(15, -50 + (widget.offset * 50)),
+                  offset: Offset(15, -50 + (widget.offset! * 50)),
                   child: Stack(
                     children: <Widget>[
                       Align(
@@ -151,7 +157,7 @@ class _page1State extends State<page1> {
                   -(MediaQuery.of(context).size.width / 5),
                   (MediaQuery.of(context).size.width / 4),
                 ),
-                angle: 0.4 - (widget.offset / 2.5),
+                angle: 0.4 - (widget.offset! / 2.5),
                 child: Stack(
                   children: <Widget>[
                     Align(
@@ -193,11 +199,11 @@ class _page1State extends State<page1> {
                 ),
               ),
               Transform.translate(
-                offset: Offset(-(widget.offset) * 300 + 125, 50),
+                offset: Offset(-widget.offset! * 300 + 125, 50),
                 child: Align(
                     alignment: Alignment.center,
                     child: Transform.rotate(
-                      angle: 0.6 - (widget.offset / 1.6),
+                      angle: 0.6 - (widget.offset! / 1.6),
                       child: Icon(
                         Icons.book,
                         color: Color(0xFF606060),
@@ -210,7 +216,7 @@ class _page1State extends State<page1> {
                   -(MediaQuery.of(context).size.width / 5),
                   (MediaQuery.of(context).size.width / 4),
                 ),
-                angle: -0.2 + (widget.offset * 0.2),
+                angle: -0.2 + (widget.offset! * 0.2),
                 child: Stack(
                   children: <Widget>[
                     Align(
@@ -259,7 +265,7 @@ class _page1State extends State<page1> {
           bottom: MediaQuery.of(context).size.height / 15,
           height: 90,
           child: Transform.translate(
-              offset: Offset(-(widget.offset) * 200, 0),
+              offset: Offset(-widget.offset! * 200, 0),
               child: Container(
                   padding: EdgeInsets.only(left: 5, right: 5),
                   width: 50,
@@ -281,7 +287,6 @@ class _page1State extends State<page1> {
   }
 }
 
-//PAGE2 STATE
 class _page2State extends State<page2> {
   @override
   Widget build(BuildContext context) {
@@ -295,28 +300,28 @@ class _page2State extends State<page2> {
             child: Stack(
               children: <Widget>[
                 Transform.translate(
-                  offset: Offset(200 - (widget.offset - 1) * 20, 57),
+                  offset: Offset(200 - (widget.offset! - 1) * 20, 57),
                   child: Container(
                       height: 100,
                       width: 100,
                       child: FittedBox(fit: BoxFit.fill, child: Image.asset('assets/images/shelves/calendar.png'))),
                 ),
                 Transform.translate(
-                  offset: Offset(70 - (widget.offset - 1) * 20, -157),
+                  offset: Offset(70 - (widget.offset! - 1) * 20, -157),
                   child: Container(
                       height: 120,
                       width: 120,
                       child: FittedBox(fit: BoxFit.fill, child: Image.asset('assets/images/shelves/clock.png'))),
                 ),
                 Transform.translate(
-                  offset: Offset(0 - (widget.offset - 1) * 400, -90),
+                  offset: Offset(0 - (widget.offset! - 1) * 400, -90),
                   child: Container(
                       height: 170,
                       width: 320,
                       child: FittedBox(fit: BoxFit.fill, child: Image.asset('assets/images/shelves/shelve1.png'))),
                 ),
                 Transform.translate(
-                  offset: Offset(0 - (widget.offset - 1) * 300, 90),
+                  offset: Offset(0 - (widget.offset! - 1) * 300, 90),
                   child: Container(
                       height: 90,
                       width: 320,
@@ -330,7 +335,7 @@ class _page2State extends State<page2> {
             height: 90,
             width: MediaQuery.of(context).size.width,
             child: Transform.translate(
-                offset: Offset(-(widget.offset - 1) * 200, 0),
+                offset: Offset(-(widget.offset! - 1) * 200, 0),
                 child: Container(
                     padding: EdgeInsets.only(left: 5, right: 5),
                     width: 50,
@@ -359,13 +364,13 @@ class _page3State extends State<page3> {
     return Stack(
       children: <Widget>[
         Positioned(
-          left: MediaQuery.of(context).size.width / 8 - (widget.offset - 2) * 250,
+          left: MediaQuery.of(context).size.width / 8 - (widget.offset! - 2) * 250,
           child: Align(
               alignment: Alignment.center,
               child: Opacity(
                 opacity: opacityvalue,
                 child: Transform.rotate(
-                  angle: 6 - (widget.offset - 2),
+                  angle: 6 - (widget.offset! - 2),
                   child: Icon(
                     Icons.star,
                     color: Colors.white,
@@ -375,14 +380,14 @@ class _page3State extends State<page3> {
               )),
         ),
         Positioned(
-          right: MediaQuery.of(context).size.width / 8 + (widget.offset - 2) * 70,
+          right: MediaQuery.of(context).size.width / 8 + (widget.offset! - 2) * 70,
           top: MediaQuery.of(context).size.height / 5,
           child: Align(
               alignment: Alignment.center,
               child: Opacity(
                 opacity: opacityvalue,
                 child: Transform.rotate(
-                  angle: 1.2 - (widget.offset - 2) * 1.2,
+                  angle: 1.2 - (widget.offset! - 2) * 1.2,
                   child: Icon(
                     Icons.star,
                     color: Colors.white,
@@ -392,14 +397,14 @@ class _page3State extends State<page3> {
               )),
         ),
         Positioned(
-          left: MediaQuery.of(context).size.width / 3.5 - (widget.offset - 2) * 310,
+          left: MediaQuery.of(context).size.width / 3.5 - (widget.offset! - 2) * 310,
           top: MediaQuery.of(context).size.height / 2.3,
           child: Align(
               alignment: Alignment.center,
               child: Opacity(
                 opacity: opacityvalue,
                 child: Transform.rotate(
-                  angle: 4 - (widget.offset - 2) * 1.4,
+                  angle: 4 - (widget.offset! - 2) * 1.4,
                   child: Icon(
                     Icons.star,
                     color: Colors.white,
@@ -409,14 +414,14 @@ class _page3State extends State<page3> {
               )),
         ),
         Positioned(
-          left: MediaQuery.of(context).size.width / 12 - (widget.offset - 2) * 280,
+          left: MediaQuery.of(context).size.width / 12 - (widget.offset! - 2) * 280,
           top: MediaQuery.of(context).size.height / 4,
           child: Align(
               alignment: Alignment.center,
               child: Opacity(
                 opacity: opacityvalue,
                 child: Transform.rotate(
-                  angle: 2 - (widget.offset - 2) * 1.5,
+                  angle: 2 - (widget.offset! - 2) * 1.5,
                   child: Icon(
                     Icons.star,
                     color: Colors.white,
@@ -430,7 +435,7 @@ class _page3State extends State<page3> {
           height: 90,
           width: MediaQuery.of(context).size.width,
           child: Transform.translate(
-              offset: Offset(-(widget.offset - 2) * 200, 0),
+              offset: Offset(-(widget.offset! - 2) * 200, 0),
               child: Container(
                   padding: EdgeInsets.only(left: 5, right: 5),
                   width: 50,
@@ -453,52 +458,17 @@ class _page3State extends State<page3> {
 
 class _page4State extends State<page4> {
   bool isIgnoringBatteryOptimization = false;
-  bool specialtiesAvailable = false;
-  Future carouselDisciplineListFuture;
-  String localClasse;
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    getSpecialitiesChoiceAvailability();
-    getAuth();
-  }
+  bool? specialtiesAvailable = false;
+  Future? carouselDisciplineListFuture;
+  String? localClasse;
+  List<String> chosenSpecialties = [];
 
-  void refreshCarouselDLFuture() {
-    setState(() {
-      carouselDisciplineListFuture = appSys.api.getGrades();
-    });
-  }
-
-  void getAuth() async {
-    if ((await BatteryOptimization.isIgnoringBatteryOptimizations())) {
-      setState(() {
-        isIgnoringBatteryOptimization = true;
-      });
-    } else {
-      setState(() {
-        isIgnoringBatteryOptimization = false;
-      });
-    }
-  }
-
-  void getSpecialitiesChoiceAvailability() async {
-    var list = await specialtiesSelectionAvailable();
-    if (mounted) {
-      setState(() {
-        //localClasse = list[1];
-        specialtiesAvailable = list[0];
-      });
-    }
-  }
-
-  List<String> chosenSpecialties = List();
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
     double opacityvalue = 0;
-    if (widget.offset - 1 > 0 && widget.offset - 1 < 1) {
-      opacityvalue = widget.offset - 1;
+    if (widget.offset! - 1 > 0 && widget.offset! - 1 < 1) {
+      opacityvalue = widget.offset! - 1;
     } else {
       opacityvalue = 0;
     }
@@ -584,7 +554,7 @@ class _page4State extends State<page4> {
                     ),
                     Divider(),
                     SwitchListTile(
-                        value: model.settings["user"]["global"]["notificationNewGrade"],
+                        value: model.settings!["user"]["global"]["notificationNewGrade"],
                         title: Text(
                           "Notification de nouvelle note",
                           style: TextStyle(
@@ -598,22 +568,23 @@ class _page4State extends State<page4> {
                         ),
                         onChanged: (value) async {
                           if ((await Permission.ignoreBatteryOptimizations.isGranted)) {
-                            model.updateSetting(appSys.settings["user"]["global"], "notificationNewGrade", value);
+                            model.updateSetting(appSys.settings!["user"]["global"], "notificationNewGrade", value);
                           } else {
-                            if (await CustomDialogs.showAuthorizationsDialog(
-                                    context,
-                                    "la configuration d'optimisation de batterie",
-                                    "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ??
+                            if (await (CustomDialogs.showAuthorizationsDialog(
+                                        context,
+                                        "la configuration d'optimisation de batterie",
+                                        "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")
+                                    as Future<bool?>) ??
                                 false) {
                               if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
-                                model.updateSetting(appSys.settings["user"]["global"], "notificationNewGrade", value);
+                                model.updateSetting(appSys.settings!["user"]["global"], "notificationNewGrade", value);
                               }
                             }
                           }
                         }),
                     Divider(),
                     SwitchListTile(
-                      value: appSys.settings["user"]["global"]["notificationNewMail"],
+                      value: appSys.settings!["user"]["global"]["notificationNewMail"],
                       title: Text(
                         "Notification de nouveau mail",
                         style: TextStyle(
@@ -623,15 +594,16 @@ class _page4State extends State<page4> {
                       ),
                       onChanged: (value) async {
                         if ((await Permission.ignoreBatteryOptimizations.isGranted)) {
-                          model.updateSetting(appSys.settings["user"]["global"], "notificationNewMail", value);
+                          model.updateSetting(appSys.settings!["user"]["global"], "notificationNewMail", value);
                         } else {
-                          if (await CustomDialogs.showAuthorizationsDialog(
-                                  context,
-                                  "la configuration d'optimisation de batterie",
-                                  "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ??
+                          if (await (CustomDialogs.showAuthorizationsDialog(
+                                      context,
+                                      "la configuration d'optimisation de batterie",
+                                      "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")
+                                  as Future<bool?>) ??
                               false) {
                             if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
-                              appSys.updateSetting(appSys.settings["user"]["global"], "notificationNewMail", value);
+                              appSys.updateSetting(appSys.settings!["user"]["global"], "notificationNewMail", value);
                             }
                           }
                         }
@@ -651,12 +623,12 @@ class _page4State extends State<page4> {
                         var classe = await specialtiesSelectionAvailable();
                         if (classe[0] && chosenSpecialties.length == (classe[1] == "Première" ? 3 : 2)) {
                           CreateStorage("agreedTermsAndConfiguredApp", "true");
-                          final prefs = await SharedPreferences.getInstance();
+                          final prefs = await (SharedPreferences.getInstance() as Future<SharedPreferences>);
                           prefs.setStringList("listSpecialties", chosenSpecialties);
                           Navigator.of(context).pushReplacement(router(homePage()));
                         } else if (!classe[0]) {
                           CreateStorage("agreedTermsAndConfiguredApp", "true");
-                          final prefs = await SharedPreferences.getInstance();
+                          final prefs = await (SharedPreferences.getInstance() as Future<SharedPreferences>);
                           prefs.setStringList("listSpecialties", chosenSpecialties);
                           Navigator.of(context).pushReplacement(router(homePage()));
                         } else {
@@ -674,25 +646,135 @@ class _page4State extends State<page4> {
       }),
     );
   }
-}
 
-class PageInfo {
-  //Widget Used
-  Widget widget;
-  //BG used
-  Color backgroundColor;
-  PageInfo({this.widget, this.backgroundColor});
+  void getAuth() async {
+    if ((await BatteryOptimization.isIgnoringBatteryOptimizations()) ?? false) {
+      setState(() {
+        isIgnoringBatteryOptimization = true;
+      });
+    } else {
+      setState(() {
+        isIgnoringBatteryOptimization = false;
+      });
+    }
+  }
+
+  void getSpecialitiesChoiceAvailability() async {
+    var list = await specialtiesSelectionAvailable();
+    if (mounted) {
+      setState(() {
+        //localClasse = [];
+        specialtiesAvailable = list[0];
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getSpecialitiesChoiceAvailability();
+    getAuth();
+  }
+
+  void refreshCarouselDLFuture() {
+    setState(() {
+      carouselDisciplineListFuture = appSys.api!.getGrades();
+    });
+  }
 }
 
 class _SlidingCarouselState extends State<SlidingCarousel> {
-  List<PageInfo> _pageInfoList;
+  late List<PageInfo> _pageInfoList;
 
-  PageController _pageController;
+  PageController? _pageController;
 
-  double _pageOffset;
-  int _pageIndex;
-  int _currentPageId;
+  double? _pageOffset;
+  int? _pageIndex;
+  int? _currentPageId;
 
+  @override
+  Widget build(BuildContext context) {
+    var screenSize = MediaQuery.of(context);
+    return Scaffold(
+      backgroundColor: _pageOffset!.toInt() == 3 ? Theme.of(context).backgroundColor : _getBGColor(),
+      body: //Disable back button
+          WillPopScope(
+        onWillPop: () async {
+          Future.value(false);
+          return false;
+        },
+        child: Column(
+          children: <Widget>[
+            Expanded(
+              child: Column(
+                children: <Widget>[
+                  Container(
+                    height: screenSize.size.height / 10 * 8.5,
+                    child: PageView.builder(
+                        controller: _pageController,
+                        itemCount: _pageInfoList.length,
+                        itemBuilder: (context, idx) {
+                          return Container(
+                              height: MediaQuery.of(context).size.height, child: Center(child: _setOffset(idx)));
+                        }),
+                  ),
+                  Container(
+                    width: screenSize.size.width,
+                    height: screenSize.size.height / 10 * 0.5,
+                    child: Stack(
+                      children: <Widget>[
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Visibility(
+                            visible: _pageController!.hasClients ? (_pageIndex != 3) : true,
+                            child: Container(
+                              margin: EdgeInsets.only(
+                                  right: screenSize.size.width / 5 * 0.1, top: screenSize.size.height / 10 * 0.08),
+                              child: OutlineButton(
+                                color: Colors.transparent,
+                                highlightColor: Colors.black,
+                                focusColor: Colors.black,
+                                borderSide: BorderSide(color: Colors.indigo),
+                                shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
+                                highlightedBorderColor: Colors.black,
+                                onPressed: () async {
+                                  _pageController!
+                                      .animateToPage(3, duration: Duration(milliseconds: 250), curve: Curves.easeIn);
+                                },
+                                child: AutoSizeText(
+                                  "Passer",
+                                  style: TextStyle(
+                                      fontFamily: "Asap",
+                                      fontSize: screenSize.size.width / 5 * 0.3,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.indigo),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Align(
+                          alignment: Alignment.center,
+                          child: SmoothPageIndicator(
+                            controller: _pageController!, // PageController
+                            count: 4,
+                            effect: WormEffect(), // your preferred effect
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+//set a list of basic infos (colors)
   void initState() {
     super.initState();
 
@@ -703,16 +785,31 @@ class _SlidingCarouselState extends State<SlidingCarousel> {
     _pageController = PageController()
       ..addListener(() {
         setState(() {
-          _pageOffset = _pageController.page;
+          _pageOffset = _pageController!.page;
 
-          _pageIndex = _pageController.page.round();
+          _pageIndex = _pageController!.page!.round();
         });
       });
     _list(_pageOffset, 0);
-    appSys.initControllers();
   }
 
-//set a list of basic infos (colors)
+  _getBGColor() {
+    if (_pageOffset!.toInt() + 1 < _pageInfoList.length) {
+      //Current background color
+      Color? current = _pageInfoList[_pageOffset!.toInt()].backgroundColor;
+      Color? next = _pageInfoList[_pageOffset!.toInt() + 1].backgroundColor;
+      if (_pageOffset!.toInt() == 2) {
+        next = ThemeUtils.isThemeDark ? Color(0xff313131) : Colors.white;
+      }
+      if (_pageOffset!.toInt() == 3) {
+        current = ThemeUtils.isThemeDark ? Color(0xff313131) : Colors.white;
+      }
+      return Color.lerp(current, next, _pageOffset! - _pageOffset!.toInt());
+    } else {
+      return _pageInfoList.last.backgroundColor;
+    }
+  }
+
   _list(offset, idx) {
     return _pageInfoList = [
       PageInfo(
@@ -748,103 +845,5 @@ class _SlidingCarouselState extends State<SlidingCarousel> {
   _setOffset(idx) {
     _list(_pageOffset, idx);
     return _pageInfoList[idx].widget;
-  }
-
-  _getBGColor() {
-    if (_pageOffset.toInt() + 1 < _pageInfoList.length) {
-      //Current background color
-      Color current = _pageInfoList[_pageOffset.toInt()].backgroundColor;
-      Color next = _pageInfoList[_pageOffset.toInt() + 1].backgroundColor;
-      if (_pageOffset.toInt() == 2) {
-        next = ThemeUtils.isThemeDark ? Color(0xff313131) : Colors.white;
-      }
-      if (_pageOffset.toInt() == 3) {
-        current = ThemeUtils.isThemeDark ? Color(0xff313131) : Colors.white;
-      }
-      return Color.lerp(current, next, _pageOffset - _pageOffset.toInt());
-    } else {
-      return _pageInfoList.last.backgroundColor;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    var screenSize = MediaQuery.of(context);
-    return Scaffold(
-      backgroundColor: _pageOffset.toInt() == 3 ? Theme.of(context).backgroundColor : _getBGColor(),
-      body: //Disable back button
-          WillPopScope(
-        onWillPop: () async {
-          Future.value(false);
-          return false;
-        },
-        child: Column(
-          children: <Widget>[
-            Expanded(
-              child: Column(
-                children: <Widget>[
-                  Container(
-                    height: screenSize.size.height / 10 * 8.5,
-                    child: PageView.builder(
-                        controller: _pageController,
-                        itemCount: _pageInfoList.length,
-                        itemBuilder: (context, idx) {
-                          return Container(
-                              height: MediaQuery.of(context).size.height, child: Center(child: _setOffset(idx)));
-                        }),
-                  ),
-                  Container(
-                    width: screenSize.size.width,
-                    height: screenSize.size.height / 10 * 0.5,
-                    child: Stack(
-                      children: <Widget>[
-                        Align(
-                          alignment: Alignment.centerRight,
-                          child: Visibility(
-                            visible: _pageController.hasClients ? (_pageIndex != 3) : true,
-                            child: Container(
-                              margin: EdgeInsets.only(
-                                  right: screenSize.size.width / 5 * 0.1, top: screenSize.size.height / 10 * 0.08),
-                              child: OutlineButton(
-                                color: Colors.transparent,
-                                highlightColor: Colors.black,
-                                focusColor: Colors.black,
-                                borderSide: BorderSide(color: Colors.indigo),
-                                shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
-                                highlightedBorderColor: Colors.black,
-                                onPressed: () async {
-                                  _pageController.animateToPage(3,
-                                      duration: Duration(milliseconds: 250), curve: Curves.easeIn);
-                                },
-                                child: AutoSizeText(
-                                  "Passer",
-                                  style: TextStyle(
-                                      fontFamily: "Asap",
-                                      fontSize: screenSize.size.width / 5 * 0.3,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.indigo),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                        Align(
-                          alignment: Alignment.center,
-                          child: SmoothPageIndicator(
-                            controller: _pageController, // PageController
-                            count: 4,
-                            effect: WormEffect(), // your preferred effect
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            )
-          ],
-        ),
-      ),
-    );
   }
 }

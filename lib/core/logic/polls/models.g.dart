@@ -17,14 +17,14 @@ class PollInfoAdapter extends TypeAdapter<PollInfo> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return PollInfo(
-      fields[0] as String,
-      fields[1] as DateTime,
-      (fields[2] as List)?.cast<String>(),
-      fields[3] as bool,
-      fields[4] as String,
-      fields[5] as String,
-      (fields[6] as List)?.cast<Document>(),
-      (fields[7] as Map)?.cast<dynamic, dynamic>(),
+      fields[0] as String?,
+      fields[1] as DateTime?,
+      (fields[2] as List?)?.cast<String>(),
+      fields[3] as bool?,
+      fields[4] as String?,
+      fields[5] as String?,
+      (fields[6] as List?)?.cast<Document>(),
+      (fields[7] as Map?)?.cast<dynamic, dynamic>(),
     );
   }
 
