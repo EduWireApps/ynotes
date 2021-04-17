@@ -38,7 +38,7 @@ abstract class API {
       lessons.sort((a, b) => a.end!.compareTo(b.end!));
     }
     if (!afterSchool) {
-      extracurricularEvents = await (appSys.offline!.agendaEvents.getAgendaEvents(week) as Future<List<AgendaEvent>>);
+      extracurricularEvents = await (appSys.offline!.agendaEvents.getAgendaEvents(week));
       if (extracurricularEvents != null) {
         if (lessons != null && lessons.length > 0) {
           //Last date
@@ -58,7 +58,7 @@ abstract class API {
         }
       }
     } else {
-      extracurricularEvents = await (appSys.offline!.agendaEvents.getAgendaEvents(week) as Future<List<AgendaEvent>>);
+      extracurricularEvents = await (appSys.offline!.agendaEvents.getAgendaEvents(week));
 
       if (extracurricularEvents != null) {
         //extracurricularEvents.removeWhere((element) => element.isLesson);
@@ -97,7 +97,7 @@ abstract class API {
 
       events.addAll(recurringEvents);
     } else {}
-    return events as Future<List<AgendaEvent>>;
+    return events;
   }
 
   ///Get marks

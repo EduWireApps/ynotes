@@ -449,9 +449,11 @@ packages:
   flutter_secure_storage:
     dependency: "direct main"
     description:
-      name: flutter_secure_storage
-      url: "https://pub.dartlang.org"
-    source: hosted
+      path: "."
+      ref: develop
+      resolved-ref: "2ad3cf2ea344b93742418af655537d2acc7043ec"
+      url: "https://github.com/mogol/flutter_secure_storage"
+    source: git
     version: "4.1.0"
   flutter_slidable:
     dependency: "direct main"
