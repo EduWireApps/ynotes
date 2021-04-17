@@ -1,29 +1,20 @@
-import 'package:permission_handler/permission_handler.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ynotes/core/logic/appConfig/controller.dart';
-import 'package:ynotes/core/utils/fileUtils.dart';
-
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:battery_optimization/battery_optimization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:ynotes/ui/components/dialogs.dart';
-import 'package:ynotes/core/utils/themeUtils.dart';
-import 'package:ynotes/main.dart';
-import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
+import 'package:ynotes/core/logic/appConfig/controller.dart';
+import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/globals.dart';
+import 'package:ynotes/main.dart';
+import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/usefulMethods.dart';
 
-class SlidingCarousel extends StatefulWidget {
-  SlidingCarousel({Key? key}) : super(key: key);
-  _SlidingCarouselState createState() => _SlidingCarouselState();
-}
-
-//Create states of each page
 class page1 extends StatefulWidget {
   final double? offset;
   final int? idx;
@@ -31,6 +22,7 @@ class page1 extends StatefulWidget {
   _page1State createState() => _page1State();
 }
 
+//Create states of each page
 class page2 extends StatefulWidget {
   final double? offset;
   final int? idx;
@@ -54,7 +46,21 @@ class page4 extends StatefulWidget {
   _page4State createState() => _page4State();
 }
 
+class PageInfo {
+  //Widget Used
+  Widget? widget;
+  //BG used
+  Color? backgroundColor;
+  PageInfo({this.widget, this.backgroundColor});
+}
+
 //PAGE1 STATE
+class SlidingCarousel extends StatefulWidget {
+  SlidingCarousel({Key? key}) : super(key: key);
+  _SlidingCarouselState createState() => _SlidingCarouselState();
+}
+
+//PAGE2 STATE
 class _page1State extends State<page1> {
   @override
   Widget build(BuildContext context) {
@@ -281,7 +287,6 @@ class _page1State extends State<page1> {
   }
 }
 
-//PAGE2 STATE
 class _page2State extends State<page2> {
   @override
   Widget build(BuildContext context) {
@@ -456,43 +461,8 @@ class _page4State extends State<page4> {
   bool? specialtiesAvailable = false;
   Future? carouselDisciplineListFuture;
   String? localClasse;
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    getSpecialitiesChoiceAvailability();
-    getAuth();
-  }
-
-  void refreshCarouselDLFuture() {
-    setState(() {
-      carouselDisciplineListFuture = appSys.api!.getGrades();
-    });
-  }
-
-  void getAuth() async {
-    if ((await (BatteryOptimization.isIgnoringBatteryOptimizations() as Future<bool>))) {
-      setState(() {
-        isIgnoringBatteryOptimization = true;
-      });
-    } else {
-      setState(() {
-        isIgnoringBatteryOptimization = false;
-      });
-    }
-  }
-
-  void getSpecialitiesChoiceAvailability() async {
-    var list = await specialtiesSelectionAvailable();
-    if (mounted) {
-      setState(() {
-        //localClasse = [];
-        specialtiesAvailable = list[0];
-      });
-    }
-  }
-
   List<String> chosenSpecialties = [];
+
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
@@ -676,14 +646,42 @@ class _page4State extends State<page4> {
       }),
     );
   }
-}
 
-class PageInfo {
-  //Widget Used
-  Widget? widget;
-  //BG used
-  Color? backgroundColor;
-  PageInfo({this.widget, this.backgroundColor});
+  void getAuth() async {
+    if ((await BatteryOptimization.isIgnoringBatteryOptimizations()) ?? false) {
+      setState(() {
+        isIgnoringBatteryOptimization = true;
+      });
+    } else {
+      setState(() {
+        isIgnoringBatteryOptimization = false;
+      });
+    }
+  }
+
+  void getSpecialitiesChoiceAvailability() async {
+    var list = await specialtiesSelectionAvailable();
+    if (mounted) {
+      setState(() {
+        //localClasse = [];
+        specialtiesAvailable = list[0];
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getSpecialitiesChoiceAvailability();
+    getAuth();
+  }
+
+  void refreshCarouselDLFuture() {
+    setState(() {
+      carouselDisciplineListFuture = appSys.api!.getGrades();
+    });
+  }
 }
 
 class _SlidingCarouselState extends State<SlidingCarousel> {
@@ -694,79 +692,6 @@ class _SlidingCarouselState extends State<SlidingCarousel> {
   double? _pageOffset;
   int? _pageIndex;
   int? _currentPageId;
-
-  void initState() {
-    super.initState();
-
-    _pageOffset = 0.0;
-
-    _currentPageId = 0;
-
-    _pageController = PageController()
-      ..addListener(() {
-        setState(() {
-          _pageOffset = _pageController!.page;
-
-          _pageIndex = _pageController!.page!.round();
-        });
-      });
-    _list(_pageOffset, 0);
-  }
-
-//set a list of basic infos (colors)
-  _list(offset, idx) {
-    return _pageInfoList = [
-      PageInfo(
-        widget: page1(
-          offset: offset,
-          idx: idx,
-        ),
-        backgroundColor: Color(0xFFECFCFF),
-      ),
-      PageInfo(
-        widget: page2(
-          offset: offset,
-          idx: idx,
-        ),
-        backgroundColor: Color(0xFFE5AE6C),
-      ),
-      PageInfo(
-        widget: page3(
-          offset: offset,
-          idx: idx,
-        ),
-        backgroundColor: Color(0xFF252B62),
-      ),
-      PageInfo(
-          widget: page4(
-            offset: offset,
-            idx: idx,
-          ),
-          backgroundColor: ThemeUtils.isThemeDark ? Color(0xff313131) : Colors.white),
-    ];
-  }
-
-  _setOffset(idx) {
-    _list(_pageOffset, idx);
-    return _pageInfoList[idx].widget;
-  }
-
-  _getBGColor() {
-    if (_pageOffset!.toInt() + 1 < _pageInfoList.length) {
-      //Current background color
-      Color? current = _pageInfoList[_pageOffset!.toInt()].backgroundColor;
-      Color? next = _pageInfoList[_pageOffset!.toInt() + 1].backgroundColor;
-      if (_pageOffset!.toInt() == 2) {
-        next = ThemeUtils.isThemeDark ? Color(0xff313131) : Colors.white;
-      }
-      if (_pageOffset!.toInt() == 3) {
-        current = ThemeUtils.isThemeDark ? Color(0xff313131) : Colors.white;
-      }
-      return Color.lerp(current, next, _pageOffset! - _pageOffset!.toInt());
-    } else {
-      return _pageInfoList.last.backgroundColor;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -847,5 +772,78 @@ class _SlidingCarouselState extends State<SlidingCarousel> {
         ),
       ),
     );
+  }
+
+//set a list of basic infos (colors)
+  void initState() {
+    super.initState();
+
+    _pageOffset = 0.0;
+
+    _currentPageId = 0;
+
+    _pageController = PageController()
+      ..addListener(() {
+        setState(() {
+          _pageOffset = _pageController!.page;
+
+          _pageIndex = _pageController!.page!.round();
+        });
+      });
+    _list(_pageOffset, 0);
+  }
+
+  _getBGColor() {
+    if (_pageOffset!.toInt() + 1 < _pageInfoList.length) {
+      //Current background color
+      Color? current = _pageInfoList[_pageOffset!.toInt()].backgroundColor;
+      Color? next = _pageInfoList[_pageOffset!.toInt() + 1].backgroundColor;
+      if (_pageOffset!.toInt() == 2) {
+        next = ThemeUtils.isThemeDark ? Color(0xff313131) : Colors.white;
+      }
+      if (_pageOffset!.toInt() == 3) {
+        current = ThemeUtils.isThemeDark ? Color(0xff313131) : Colors.white;
+      }
+      return Color.lerp(current, next, _pageOffset! - _pageOffset!.toInt());
+    } else {
+      return _pageInfoList.last.backgroundColor;
+    }
+  }
+
+  _list(offset, idx) {
+    return _pageInfoList = [
+      PageInfo(
+        widget: page1(
+          offset: offset,
+          idx: idx,
+        ),
+        backgroundColor: Color(0xFFECFCFF),
+      ),
+      PageInfo(
+        widget: page2(
+          offset: offset,
+          idx: idx,
+        ),
+        backgroundColor: Color(0xFFE5AE6C),
+      ),
+      PageInfo(
+        widget: page3(
+          offset: offset,
+          idx: idx,
+        ),
+        backgroundColor: Color(0xFF252B62),
+      ),
+      PageInfo(
+          widget: page4(
+            offset: offset,
+            idx: idx,
+          ),
+          backgroundColor: ThemeUtils.isThemeDark ? Color(0xff313131) : Colors.white),
+    ];
+  }
+
+  _setOffset(idx) {
+    _list(_pageOffset, idx);
+    return _pageInfoList[idx].widget;
   }
 }

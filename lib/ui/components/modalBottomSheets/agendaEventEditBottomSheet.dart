@@ -407,7 +407,7 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                       GestureDetector(
                         onTap: () async {
                           var choice = await CustomDialogs.showMultipleChoicesDialog(
-                              context, alarmChoices, [alarm!.index],
+                              context, alarmChoices, [alarm.index],
                               singleChoice: true);
                           if (choice != null && choice.length == 1) {
                             setState(() {
@@ -431,7 +431,7 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                               ),
                               SizedBox(width: screenSize.size.width / 5 * 0.1),
                               Text(
-                                alarmChoices[alarm!.index],
+                                alarmChoices[alarm.index],
                                 style: TextStyle(
                                     fontFamily: "Asap",
                                     color: ThemeUtils.textColor().withOpacity(0.8),
