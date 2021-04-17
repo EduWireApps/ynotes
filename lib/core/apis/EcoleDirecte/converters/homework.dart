@@ -6,7 +6,7 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 class EcoleDirecteHomeworkConverter {
   static List<DateTime> homeworkDates(Map<String, dynamic> hwDatesData) {
     Map<String, dynamic> datesData = hwDatesData['data'];
-    List<DateTime> dates = List();
+    List<DateTime> dates = [];
     datesData.forEach((key, value) {
       dates.add(DateTime.parse(key));
     });
@@ -15,7 +15,7 @@ class EcoleDirecteHomeworkConverter {
 
   static List<Homework> unloadedHomework(Map<String, dynamic> uhwData) {
     Map<String, dynamic> hwData = uhwData['data'];
-    List<Homework> unloadedHWList = List();
+    List<Homework> unloadedHWList = [];
     hwData.forEach((key, value) {
       value.forEach((var hw) {
         Map mappedHomework = hw;
@@ -38,7 +38,7 @@ class EcoleDirecteHomeworkConverter {
 
   static List<Homework> homework(Map<String, dynamic> hwData) {
     List rawData = hwData['data']['matieres'];
-    List<Homework> homeworkList = List();
+    List<Homework> homeworkList = [];
     rawData.forEach((homework) {
       try {
         if (homework['aFaire'] != null) {
@@ -46,8 +46,8 @@ class EcoleDirecteHomeworkConverter {
           String aFaireEncoded = "";
           bool rendreEnLigne = false;
           bool interrogation = false;
-          List<Document> documentsAFaire = List<Document>();
-          List<Document> documentsContenuDeCours = List<Document>();
+          List<Document> documentsAFaire = [];
+          List<Document> documentsContenuDeCours = [];
           encodedContent = homework['aFaire']['contenu'];
           rendreEnLigne = homework['aFaire']['rendreEnLigne'];
           aFaireEncoded = homework['aFaire']['contenuDeSeance']['contenu'];

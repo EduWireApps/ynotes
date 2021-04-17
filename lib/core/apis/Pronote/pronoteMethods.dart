@@ -1,6 +1,5 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:intl/intl.dart';
-import 'package:ynotes/core/apis/Pronote.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteAPI.dart';
 import 'package:ynotes/core/apis/Pronote/convertersExporter.dart';
 import 'package:ynotes/core/apis/model.dart';
@@ -8,7 +7,6 @@ import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
 import 'package:ynotes/core/offline/offline.dart';
-
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/usefulMethods.dart';
 
@@ -22,23 +20,52 @@ class PronoteMethod {
 
   Future<List<SchoolAccount>> accounts() {}
 
-  Future<List<Lesson>> lessons(DateTime dateToUse, int week) {}
+  Future<List<CloudItem>> cloudFolders() async {}
+
+  fetchAnyData(dynamic onlineFetch, dynamic offlineFetch, String lockName,
+      {bool forceFetch = false, isOfflineLocked = false}) async {
+    //Test connection status
+    var connectivityResult = await (Connectivity().checkConnectivity());
+    //Offline
+    if (connectivityResult == ConnectivityResult.none && !isOfflineLocked) {
+      return await offlineFetch();
+    } else if (forceFetch && !isOfflineLocked) {
+      try {
+        return await onlineFetchWithLock(onlineFetch, lockName);
+      } catch (e) {
+        return await offlineFetch();
+      }
+    } else {
+      //Offline data;
+      var data;
+      if (!isOfflineLocked) {
+        data = await offlineFetch();
+      }
+      if (data == null) {
+        print("Online fetch because offline is null");
+        data = await onlineFetchWithLock(onlineFetch, lockName);
+      }
+      return data;
+    }
+  }
 
   Future<List<Discipline>> grades() async {
     List<PronotePeriod> periods = this.client.periods();
-    List<Discipline> listDisciplines = List<Discipline>();
+    List<Discipline> listDisciplines = [];
     await Future.forEach(periods, (period) async {
-      var jsonData = {
-        'donnees': {
-          'Periode': {'N': period.id, 'L': period.name}
-        },
-      };
-      var temp = await request("DernieresNotes", PronoteDisciplineConverter.disciplines, data: jsonData, onglet: 198);
-      temp.forEach((element) {
-        element.period = period.name;
-      });
-      listDisciplines.addAll(temp);
-      listDisciplines = await refreshDisciplinesListColors(listDisciplines);
+      if (period != null) {
+        var jsonData = {
+          'donnees': {
+            'Periode': {'N': period.id, 'L': period.name}
+          },
+        };
+        var temp = await request("DernieresNotes", PronoteDisciplineConverter.disciplines, data: jsonData, onglet: 198);
+        temp.forEach((element) {
+          element.period = period.name;
+        });
+        listDisciplines.addAll(temp);
+        listDisciplines = await refreshDisciplinesListColors(listDisciplines);
+      }
     });
     print("Completed disciplines request");
     if (!_offlineController.locked) {
@@ -49,9 +76,13 @@ class PronoteMethod {
     return listDisciplines;
   }
 
+  Future<List<Homework>> homeworkFor(DateTime date) async {}
+
+  Future<List<Lesson>> lessons(DateTime dateToUse, int week) {}
+
   nextHomework() async {
     DateTime now = DateTime.now();
-    List<Homework> listHW = List<Homework>();
+    List<Homework> listHW =[];
     final f = new DateFormat('dd/MM/yyyy');
     var dateTo = f.parse(this.client.funcOptions['donneesSec']['donnees']['General']['DerniereDate']['V']);
     var jsonData = {
@@ -90,29 +121,7 @@ class PronoteMethod {
     return listHW;
   }
 
-  Future<List<Homework>> homeworkFor(DateTime date) async {}
-
-  Future<List<CloudItem>> cloudFolders() async {}
-
-  request(String functionName, Function converter, {var data, var customURL, int onglet}) async {
-    data = Map<dynamic, dynamic>.from(data);
-    if (onglet != null) data['_Signature_'] = {'onglet': onglet};
-    //If it is a parent account
-    if (this.account.isParentAccount) data['_Signature_']["membre"] = {'N': this.account.studentID, 'G': 4};
-
-    return await converter(this.client, await this.client.communication.post(functionName, data: data));
-  }
-
   //Test if another concurrent task is not running
-  testLock(String key) {
-    if (locks.containsKey(key)) {
-      return locks[key];
-    } else {
-      locks[key] = false;
-      return false;
-    }
-  }
-
   onlineFetchWithLock(dynamic onlineFetch, lockName) async {
     int req = 0;
     //Time out of 20 seconds. Wait until the task is unlocked
@@ -157,30 +166,21 @@ class PronoteMethod {
     }
   }
 
-  fetchAnyData(dynamic onlineFetch, dynamic offlineFetch, String lockName,
-      {bool forceFetch = false, isOfflineLocked = false}) async {
-    //Test connection status
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    //Offline
-    if (connectivityResult == ConnectivityResult.none && !isOfflineLocked) {
-      return await offlineFetch();
-    } else if (forceFetch && !isOfflineLocked) {
-      try {
-        return await onlineFetchWithLock(onlineFetch, lockName);
-      } catch (e) {
-        return await offlineFetch();
-      }
+  request(String functionName, Function converter, {var data, var customURL, int onglet}) async {
+    data = Map<dynamic, dynamic>.from(data);
+    if (onglet != null) data['_Signature_'] = {'onglet': onglet};
+    //If it is a parent account
+    if (this.account.isParentAccount) data['_Signature_']["membre"] = {'N': this.account.studentID, 'G': 4};
+
+    return await converter(this.client, await this.client.communication.post(functionName, data: data));
+  }
+
+  testLock(String key) {
+    if (locks.containsKey(key)) {
+      return locks[key];
     } else {
-      //Offline data;
-      var data;
-      if (!isOfflineLocked) {
-        data = await offlineFetch();
-      }
-      if (data == null) {
-        print("Online fetch because offline is null");
-        data = await onlineFetchWithLock(onlineFetch, lockName);
-      }
-      return data;
+      locks[key] = false;
+      return false;
     }
   }
 }

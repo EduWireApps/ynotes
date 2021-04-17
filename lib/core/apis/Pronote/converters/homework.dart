@@ -6,7 +6,7 @@ import 'package:ynotes/core/utils/nullSafeMap.dart';
 
 class PronoteHomeworkConverter {
   static List<Homework> homework(PronoteClient client, Map homeworkData) {
-    List<Homework> hwList = List();
+    List<Homework> hwList = [];
     List data = mapGet(homeworkData, ['donneesSec', 'donnees', 'ListeTravauxAFaire', 'V']) ?? [];
     data.forEach((singleHomeworkData) {
       String discipline = mapGet(singleHomeworkData, ["Matiere", "V", "L"]);
@@ -15,7 +15,7 @@ class PronoteHomeworkConverter {
           disciplineCode +
           mapGet(singleHomeworkData, ["descriptif", "V"]).hashCode.toString();
       String rawContent = mapGet(singleHomeworkData, ["descriptif", "V"]);
-      String sessionRawContent = null;
+      String? sessionRawContent;
       DateTime date = DateFormat("dd/MM/yyyy").parse(singleHomeworkData["PourLe"]["V"]);
       DateTime entryDate = DateFormat("dd/MM/yyyy").parse(singleHomeworkData["DonneLe"]["V"]);
       bool done = false;

@@ -11,4 +11,4 @@ Future<List<AgendaEvent>?>? spaceAgendaFuture;
 
 Future<List<AgendaEvent>?>? agendaFuture;
 
-ApplicationSystem appSys;
+late ApplicationSystem appSys;

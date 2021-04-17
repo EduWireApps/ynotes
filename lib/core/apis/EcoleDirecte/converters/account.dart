@@ -10,7 +10,7 @@ class EcoleDirecteAccountConverter {
   
   static List<Period> periods(Map<String, dynamic> periodsData) {
     List rawPeriods = periodsData['data']['periodes'];
-    List<Period> periods = List();
+    List<Period> periods = [];
     rawPeriods.forEach((element) {
       periods.add(Period(element["periode"], element["idPeriode"]));
     });

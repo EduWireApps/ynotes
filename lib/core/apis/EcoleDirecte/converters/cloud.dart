@@ -2,7 +2,7 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 
 class EcoleDirecteCloudConverter {
   static List<CloudItem> cloudFolders(var cloudFoldersData) {
-    List<CloudItem> cloudFolders = List();
+    List<CloudItem> cloudFolders = [];
     cloudFoldersData["data"].forEach((folderData) {
       String date = folderData["creeLe"];
       try {

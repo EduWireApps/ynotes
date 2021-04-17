@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/simulatorModalBottomSheet/simulatorModalBottomSheet.dart';
 import 'package:ynotes/ui/screens/grades/gradesPageWidgets/gradesGroup.dart';
@@ -20,9 +21,9 @@ int initialIndexGradesOffset = 0;
 //If true, show a carousel
 bool newGrades = false;
 List? specialties;
+
 class GradesPage extends StatefulWidget {
-  final GradesController gradesController;
-  const GradesPage(this.gradesController,{Key? key }) : super(key: key);
+  const GradesPage({Key? key}) : super(key: key);
   State<StatefulWidget> createState() {
     return _GradesPageState();
   }
@@ -37,7 +38,7 @@ class _GradesPageState extends State<GradesPage> {
 
     return Container(
       child: ChangeNotifierProvider<GradesController>.value(
-        value: widget.gradesController,
+        value: appSys.gradesController,
         child: Consumer<GradesController>(builder: (context, model, child) {
           return Stack(
             children: [
@@ -580,7 +581,7 @@ class _GradesPageState extends State<GradesPage> {
   }
 
   Future<void> forceRefreshGrades() async {
-    await widget.gradesController.refresh(force: true);
+    await appSys.gradesController.refresh(force: true);
   }
 
   void initState() {
@@ -802,9 +803,9 @@ class _GradesPageState extends State<GradesPage> {
               decoration: BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
             ),
             onPressed: () async {
-              Grade? a = await simulatorModalBottomSheet(this.widget.gradesController, context);
+              Grade? a = await simulatorModalBottomSheet(appSys.gradesController, context);
               if (a != null) {
-                widget.gradesController.simulationAdd(a);
+                appSys.gradesController.simulationAdd(a);
               }
             },
           ),

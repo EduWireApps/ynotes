@@ -19,7 +19,7 @@ class EcoleDirecteMailConverter {
   }
 
   static List<Recipient> recipients(var recipientsData) {
-    List<Recipient> recipients = List();
+    List<Recipient> recipients = [];
     recipientsData["data"]["contacts"].forEach((recipientData) {
       String id = recipientData["id"].toString();
       String name = recipientData["prenom"].toString();

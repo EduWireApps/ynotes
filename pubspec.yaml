@@ -95,6 +95,7 @@ dependencies:
   intl: ^0.16.1
   json_annotation: ^4.0.1
   liquid_progress_indicator_ns: ^1.0.0
+  logger: ^1.0.0
   marquee: ^2.0.0
   material_design_icons_flutter: ^5.0.5955-rc.1
   open_file: ^3.0.1

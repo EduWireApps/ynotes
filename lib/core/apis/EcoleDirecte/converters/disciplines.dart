@@ -3,7 +3,7 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 
 class EcoleDirecteDisciplineConverter {
   static List<Discipline> disciplines(Map<String, dynamic> disciplinesData) {
-    List<Discipline> disciplinesList = List();
+    List<Discipline> disciplinesList = [];
     List periodes = disciplinesData['data']['periodes'];
     List gradesData = disciplinesData['data']['notes'];
     Map<String, dynamic> settings = disciplinesData['data']['parametrage'];
@@ -15,7 +15,7 @@ class EcoleDirecteDisciplineConverter {
         List disciplines = periodeElement["ensembleMatieres"]["disciplines"];
         disciplines.forEach((rawData) {
           List profs = rawData['professeurs'];
-          List<String> teachersNames = List<String>();
+          List<String> teachersNames = [];
 
           profs.forEach((e) {
             teachersNames.add(e["nom"]);
@@ -50,7 +50,7 @@ class EcoleDirecteDisciplineConverter {
         //Retrieve related grades for each discipline
         disciplinesList.forEach((discipline) {
           if (discipline.period == periodeElement["periode"]) {
-            List<Grade> localGradesList = List<Grade>();
+            List<Grade> localGradesList = [];
 
             gradesData.forEach((element) {
               if (element["codeMatiere"] == discipline.disciplineCode &&

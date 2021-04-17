@@ -2,7 +2,7 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 
 class PronoteDocumentConverter {
   static documents(var filesData) {
-    List<Document> documents = List();
+    List<Document> documents = [];
     filesData.forEach((document) {
       String documentName = document["L"].toString();
       String id = document["N"].toString();
