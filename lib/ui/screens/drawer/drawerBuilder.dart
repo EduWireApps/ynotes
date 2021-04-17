@@ -281,11 +281,13 @@ class _DrawerBuilderState extends State<DrawerBuilder>
                         valueListenable: _notifier,
                         builder: (context, value, child) {
                           return AppBar(
+                              centerTitle: false,
                               shadowColor: Colors.transparent,
                               backgroundColor: ThemeUtils.isThemeDark
                                   ? Theme.of(context).primaryColorLight
                                   : Theme.of(context).primaryColorDark,
-                              title: Text(entries()[value]["menuName"]),
+                              title: Text(entries()[value]["menuName"],
+                                  textAlign: TextAlign.start),
                               actions: [
                                 if (entries()[value]["key"] != null)
                                   FlatButton(
