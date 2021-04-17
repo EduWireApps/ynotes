@@ -746,7 +746,7 @@ class PronoteClient {
     return toReturn;
   }
 
-  polls() async {
+  Future<List<PollInfo>?> polls() async {
     print("GETTING POLLS");
     Map data = {
       "_Signature_": {"onglet": 8},

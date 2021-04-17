@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'dart:typed_data';
-import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/core/utils/themeUtils.dart';
+import 'dart:ui' as ui;
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
@@ -13,10 +11,11 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:path_provider/path_provider.dart';
 import 'package:share/share.dart';
 import 'package:ynotes/core/apis/utils.dart';
-
-import 'dart:ui' as ui;
-
+import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/ui/components/buttons.dart';
+
+shareBox(Grade grade, Discipline discipline) {}
 
 class ShareBox extends StatefulWidget {
   final Grade grade;
@@ -28,27 +27,8 @@ class ShareBox extends StatefulWidget {
 
 class _ShareBoxState extends State<ShareBox> {
   GlobalKey _globalKey = new GlobalKey();
-  Future<Uint8List?> _capturePng() async {
-    try {
-      RenderRepaintBoundary boundary = _globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
-      ui.Image image = await boundary.toImage(pixelRatio: 2.0);
-      ByteData byteData = await (image.toByteData(format: ui.ImageByteFormat.png) as Future<ByteData>);
-      var pngBytes = byteData.buffer.asUint8List();
-      final directory = (await getExternalStorageDirectory())!.path;
-      File imgFile = new File('$directory/screenshot.png');
-      imgFile.writeAsBytes(pngBytes);
-
-      final RenderBox box = context.findRenderObject() as RenderBox;
-      Share.shareFiles(['$directory/screenshot.png'],
-          subject: '', text: '', sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
-      setState(() {});
-      return pngBytes;
-    } catch (e) {
-      print(e);
-    }
-  }
-
   TextEditingController _label = TextEditingController(text: "");
+
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize;
@@ -196,6 +176,24 @@ class _ShareBoxState extends State<ShareBox> {
       ),
     );
   }
-}
 
-shareBox(Grade grade, Discipline discipline) {}
+  Future<Uint8List?> _capturePng() async {
+    try {
+      RenderRepaintBoundary boundary = _globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+      ui.Image image = await boundary.toImage(pixelRatio: 2.0);
+      ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      var pngBytes = byteData?.buffer.asUint8List();
+      final directory = (await getExternalStorageDirectory())!.path;
+      File imgFile = new File('$directory/screenshot.png');
+      if (pngBytes != null) imgFile.writeAsBytes(pngBytes);
+
+      final RenderBox box = context.findRenderObject() as RenderBox;
+      Share.shareFiles(['$directory/screenshot.png'],
+          subject: '', text: '', sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
+      setState(() {});
+      return pngBytes;
+    } catch (e) {
+      print(e);
+    }
+  }
+}

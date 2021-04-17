@@ -227,11 +227,10 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                         if (value == false || (await Permission.ignoreBatteryOptimizations.isGranted)) {
                           _appSys.updateSetting(_appSys.settings!["user"]["global"], "notificationNewMail", value);
                         } else {
-                          if (await (CustomDialogs.showAuthorizationsDialog(
-                                      context,
-                                      "la configuration d'optimisation de batterie",
-                                      "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")
-                                  as Future<bool?>) ??
+                          if ((await CustomDialogs.showAuthorizationsDialog(
+                                  context,
+                                  "la configuration d'optimisation de batterie",
+                                  "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")) ??
                               false) {
                             if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
                               _appSys.updateSetting(_appSys.settings!["user"]["global"], "notificationNewMail", value);
@@ -253,11 +252,10 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                         if (value == false || (await Permission.ignoreBatteryOptimizations.isGranted)) {
                           _appSys.updateSetting(_appSys.settings!["user"]["global"], "notificationNewGrade", value);
                         } else {
-                          if (await (CustomDialogs.showAuthorizationsDialog(
-                                      context,
-                                      "la configuration d'optimisation de batterie",
-                                      "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")
-                                  as Future<bool?>) ??
+                          if ((await (CustomDialogs.showAuthorizationsDialog(
+                                  context,
+                                  "la configuration d'optimisation de batterie",
+                                  "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android."))) ??
                               false) {
                             if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
                               _appSys.updateSetting(_appSys.settings!["user"]["global"], "notificationNewGrade", value);
@@ -272,19 +270,18 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                       onTap: () async {
                         //Check battery optimization setting
                         if (!await Permission.ignoreBatteryOptimizations.isGranted &&
-                            await (CustomDialogs.showAuthorizationsDialog(
+                            (await (CustomDialogs.showAuthorizationsDialog(
                                     context,
                                     "la configuration d'optimisation de batterie",
-                                    "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")
-                                as Future<bool>)) {
+                                    "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")) ??
+                                false)) {
                           await Permission.ignoreBatteryOptimizations.request().isGranted;
                         }
 
-                        if (await (CustomDialogs.showAuthorizationsDialog(
-                                    context,
-                                    "la liste blanche de lancement en arrière plan / démarrage",
-                                    "Pouvoir lancer yNotes au démarrage de l'appareil et ainsi régulièrement rafraichir en arrière plan.")
-                                as Future<bool?>) ??
+                        if ((await CustomDialogs.showAuthorizationsDialog(
+                                context,
+                                "la liste blanche de lancement en arrière plan / démarrage",
+                                "Pouvoir lancer yNotes au démarrage de l'appareil et ainsi régulièrement rafraichir en arrière plan.")) ??
                             false) {
                           await AndroidPlatformChannel.openAutoStartSettings();
                         }

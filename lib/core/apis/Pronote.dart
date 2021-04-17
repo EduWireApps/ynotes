@@ -29,14 +29,14 @@ Future<List<PollInfo>?> getPronotePolls(bool forced) async {
   List<PollInfo>? listPolls;
   try {
     if (forced) {
-      listPolls = await localClient.polls() as List<PollInfo>;
+      listPolls = await localClient.polls();
       await appSys.offline!.polls.update(listPolls);
       return listPolls;
     } else {
       listPolls = await appSys.offline!.polls.get();
       if (listPolls == null) {
         print("Error while returning offline polls");
-        listPolls = await localClient.polls() as List<PollInfo>;
+        listPolls = await localClient.polls();
         await appSys.offline!.polls.update(listPolls);
         return listPolls;
       } else {
