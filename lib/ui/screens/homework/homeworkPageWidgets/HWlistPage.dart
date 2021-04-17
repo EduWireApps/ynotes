@@ -3,14 +3,13 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:ynotes/core/logic/homework/controller.dart';
+import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPage.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/HWcontainer.dart';
-import 'package:ynotes/core/utils/themeUtils.dart';
 
 class HomeworkFirstPage extends StatefulWidget {
-  final HomeworkController? hwcontroller;
-
-  const HomeworkFirstPage({Key? key, required this.hwcontroller}) : super(key: key);
+  const HomeworkFirstPage({Key? key}) : super(key: key);
 
   State<StatefulWidget> createState() {
     return _HomeworkFirstPageState();
@@ -18,27 +17,11 @@ class HomeworkFirstPage extends StatefulWidget {
 }
 
 class _HomeworkFirstPageState extends State<HomeworkFirstPage> {
-  Future<void> refreshLocalHomeworkList() async {
-    await this.widget.hwcontroller!.refresh(force: true);
-  }
-
-  void callback() {
-    setState(() {});
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    SchedulerBinding.instance!.addPostFrameCallback((_) => mounted ? this.widget.hwcontroller!.refresh() : null);
-  }
-
-
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
-    return ChangeNotifierProvider<HomeworkController?>.value(
-        value: this.widget.hwcontroller,
+    return ChangeNotifierProvider<HomeworkController>.value(
+        value: appSys.homeworkController,
         child: Consumer<HomeworkController>(builder: (context, model, child) {
           return RefreshIndicator(
               onRefresh: refreshLocalHomeworkList,
@@ -127,5 +110,20 @@ class _HomeworkFirstPageState extends State<HomeworkFirstPage> {
                       size: screenSize.size.width / 5 * 1,
                     ));
         }));
+  }
+
+  void callback() {
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    SchedulerBinding.instance!.addPostFrameCallback((_) => mounted ? appSys.homeworkController.refresh() : null);
+  }
+
+  Future<void> refreshLocalHomeworkList() async {
+    await appSys.homeworkController.refresh(force: true);
   }
 }

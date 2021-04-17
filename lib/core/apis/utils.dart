@@ -59,8 +59,7 @@ void createStack() {
 
 get_week(DateTime date) async {
   final storage = new FlutterSecureStorage();
-  return (1 +
-          (date.difference(DateTime.parse(await (storage.read(key: "startday") as Future<String>))).inDays / 7).floor())
+  return (1 + (date.difference(DateTime.parse(await (storage.read(key: "startday")) ?? "")).inDays / 7).floor())
       .round();
 }
 

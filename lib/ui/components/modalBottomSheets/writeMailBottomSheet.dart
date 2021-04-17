@@ -1,16 +1,14 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:html_editor_enhanced/html_editor.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/main.dart';
-import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/globals.dart';
 
-import 'package:html_editor_enhanced/html_editor.dart';
 import '../dialogs.dart';
-import '../../../usefulMethods.dart';
 
 class WriteMailBottomSheet extends StatefulWidget {
   final List<Recipient>? defaultRecipients;
@@ -25,41 +23,19 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
   List<Recipient>? selectedRecipients = [];
   bool monochromatic = false;
   DateFormat format = DateFormat("dd-MM-yyyy HH:hh");
-  getMonochromaticColors(String html) {
-    if (!monochromatic) {
-      return html;
-    }
-    String color = ThemeUtils.isThemeDark ? "white" : "black";
-    String finalHTML = html.replaceAll("color", "");
-    return finalHTML;
-  }
-
   var subjectController = TextEditingController(text: "");
+
   HtmlEditorController controller = HtmlEditorController();
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-
-    WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() {
-          if (this.widget.defaultRecipients != null) {
-            selectedRecipients = this.widget.defaultRecipients;
-          }
-          if (this.widget.defaultSubject != null) {
-            subjectController.text = "Re: [${this.widget.defaultSubject}]";
-          }
-        }));
-  }
-
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
     var toController;
 
     return Container(
-        height: screenSize.size.height,
-        padding: EdgeInsets.all(0),
+      height: screenSize.size.height,
+      color: Theme.of(context).backgroundColor,
+      padding: EdgeInsets.all(0),
+      child: SingleChildScrollView(
         child: new Column(
           children: <Widget>[
             Container(
@@ -74,13 +50,14 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                         alignment: Alignment.centerLeft,
                         child: IconButton(
                           onPressed: () async {
-                            if (await (CustomDialogs.showConfirmationDialog(context, null,
-                                alternativeText: "Êtes vous sûr de vouloir supprimer ce mail ?",
-                                alternativeButtonConfirmText: "Supprimer ce mail") as Future<bool>)) {
+                            if ((await (CustomDialogs.showConfirmationDialog(context, null,
+                                    alternativeText: "Êtes vous sûr de vouloir supprimer ce mail ?",
+                                    alternativeButtonConfirmText: "Supprimer ce mail")) ??
+                                false)) {
                               Navigator.pop(context);
                             }
                           },
-                          icon: Icon(MdiIcons.arrowLeft, color: Colors.black),
+                          icon: Icon(MdiIcons.arrowLeft, color: ThemeUtils.textColor()),
                         ),
                       ),
                       SizedBox(
@@ -88,7 +65,7 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                       ),
                       AutoSizeText(
                         "Ecrire un mail",
-                        style: TextStyle(fontFamily: "Asap", color: Colors.black),
+                        style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                       )
                     ],
                   ),
@@ -109,7 +86,7 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                               CustomDialogs.showAnyDialog(context, "Ajoutez au moins un destinataire.");
                             }
                           },
-                          icon: Icon(Icons.send, color: Colors.black),
+                          icon: Icon(Icons.send, color: ThemeUtils.textColor()),
                         ),
                       ],
                     ),
@@ -134,9 +111,9 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                               Container(
                                 margin: EdgeInsets.only(right: screenSize.size.width / 5 * 0.1),
                                 child: Chip(
-                                  backgroundColor: Colors.grey.shade500,
+                                  backgroundColor: Theme.of(context).primaryColor,
                                   label: Text("(aucun destinataire)",
-                                      style: TextStyle(fontFamily: "Asap", color: Colors.white)),
+                                      style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor())),
                                 ),
                               ),
                             for (Recipient recipient in selectedRecipients!)
@@ -170,7 +147,7 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                             });
                           }
                         },
-                        icon: Icon(Icons.add, color: Colors.black),
+                        icon: Icon(Icons.add, color: ThemeUtils.textColor()),
                       ),
                     ),
                   ),
@@ -211,7 +188,7 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                             });
                           }
                         },
-                        icon: Icon(Icons.contact_page, color: Colors.black),
+                        icon: Icon(Icons.contact_page, color: ThemeUtils.textColor()),
                       ),
                     ),
                   ),
@@ -227,16 +204,17 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
               child: TextField(
                 controller: subjectController,
                 maxLines: 1,
-                style: TextStyle(fontFamily: "Asap", color: Colors.black, fontSize: screenSize.size.width / 5 * 0.35),
+                style: TextStyle(
+                    fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.width / 5 * 0.35),
                 decoration: new InputDecoration(
                   border: OutlineInputBorder(),
                   contentPadding: EdgeInsets.symmetric(
-                      horizontal: screenSize.size.width / 5 * 0.05, vertical: screenSize.size.height / 10 * 0.2),
+                      horizontal: screenSize.size.width / 5 * 0.04, vertical: screenSize.size.height / 10 * 0.1),
                   labelText: 'Sujet',
                   labelStyle: TextStyle(
-                      fontFamily: "Asap",
-                      color: Colors.black.withOpacity(0.5),
-                      fontSize: screenSize.size.width / 5 * 0.35),
+                    fontFamily: "Asap",
+                    color: ThemeUtils.textColor().withOpacity(0.5),
+                  ),
                 ),
               ),
             ),
@@ -244,16 +222,46 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
               height: screenSize.size.height / 10 * 0.1,
             ),
             Container(
-              height: screenSize.size.height / 10 * 7.5,
+              height: screenSize.size.height / 10 * 6.5,
               width: screenSize.size.width,
               child: ClipRRect(
                 child: HtmlEditor(
                   hint: "Saisissez votre mail ici..",
+                  options: HtmlEditorOptions(
+                    darkMode: ThemeUtils.isThemeDark,
+                    showBottomToolbar: false,
+                  ),
                   controller: controller,
                 ),
               ),
             ),
           ],
-        ));
+        ),
+      ),
+    );
+  }
+
+  getMonochromaticColors(String html) {
+    if (!monochromatic) {
+      return html;
+    }
+    String color = ThemeUtils.isThemeDark ? "white" : "black";
+    String finalHTML = html.replaceAll("color", "");
+    return finalHTML;
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() {
+          if (this.widget.defaultRecipients != null) {
+            selectedRecipients = this.widget.defaultRecipients;
+          }
+          if (this.widget.defaultSubject != null) {
+            subjectController.text = "Re: [${this.widget.defaultSubject}]";
+          }
+        }));
   }
 }

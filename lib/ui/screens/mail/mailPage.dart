@@ -4,102 +4,43 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:ynotes/core/apis/EcoleDirecte.dart';
+import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
+import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/customLoader.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/readMailBottomSheet.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/main.dart';
-import 'package:ynotes/globals.dart';
 import 'package:ynotes/usefulMethods.dart';
-import 'package:ynotes/core/utils/themeUtils.dart';
+
+String? dossier = "Reçus";
+
+List<Mail> localList = [];
+StreamSubscription? loginconnexion;
+late Future<List<Mail>?> mailsListFuture;
+void mailModalBottomSheet(context, Mail mail, {int? index}) {
+  showModalBottomSheet(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+      ),
+      backgroundColor: Theme.of(context).primaryColor,
+      context: context,
+      isScrollControlled: true,
+      builder: (BuildContext bc) {
+        return ReadMailBottomSheet(mail, index);
+      });
+}
 
 class MailPage extends StatefulWidget {
   @override
   _MailPageState createState() => _MailPageState();
 }
 
-List<Mail> localList = [];
-Future<List<Mail>?>? mailsListFuture;
-String? dossier = "Reçus";
 enum sortValue { date, reversed_date, author }
-
-StreamSubscription? loginconnexion;
 
 class _MailPageState extends State<MailPage> {
   var actualSort = sortValue.date;
-  void initState() {
-    WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() {
-          mailsListFuture = appSys.api!.app("mail") as Future<List<Mail>?>?;
-        }));
-  }
-
-  Future<void> refreshLocalMailsList() async {
-    setState(() {
-      mailsListFuture = appSys.api!.app("mail") as Future<List<Mail>?>?;
-    });
-    var realdisciplinesListFuture = await mailsListFuture;
-  }
-
-  _buildFloatingButton(BuildContext context) {
-    var screenSize = MediaQuery.of(context);
-    return FloatingActionButton(
-      heroTag: "btn1",
-      backgroundColor: Colors.transparent,
-      child: Container(
-        width: screenSize.size.width / 5 * 0.8,
-        height: screenSize.size.width / 5 * 0.8,
-        child: Icon(
-          Icons.mail_outline,
-          size: screenSize.size.width / 5 * 0.5,
-        ),
-        decoration: BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
-      ),
-      onPressed: () async {
-        await CustomDialogs.writeModalBottomSheet(context);
-      },
-    );
-  }
-
-  getCorrespondingClasseur(dossier, List<Mail>? list) {
-    String? trad;
-    List<Mail> toReturn = [];
-    switch (dossier) {
-      case "Reçus":
-        trad = "received";
-        break;
-      case "Envoyés":
-        trad = "send";
-        break;
-    }
-    if (list != null) {
-      list.forEach((element) {
-        if (element.mtype == trad) {
-          toReturn.add(element);
-        }
-      });
-      toReturn.sort((a, b) {
-        DateTime datea = DateTime.parse(a.date!);
-        DateTime dateb = DateTime.parse(b.date!);
-        switch (actualSort) {
-          case (sortValue.date):
-            return dateb.compareTo(datea);
-            break;
-          case (sortValue.reversed_date):
-            return datea.compareTo(dateb);
-            break;
-          case (sortValue.author):
-            return b.from["nom"].compareTo(a.from["nom"]);
-            break;
-        }
-        return 1;
-      });
-      return toReturn;
-    } else {
-      return toReturn;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
@@ -109,103 +50,103 @@ class _MailPageState extends State<MailPage> {
       child: Stack(
         children: [
           SingleChildScrollView(
-            child: Column(
-              children: [
-                Column(
-                  children: [
-                    Container(
-                      margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
-                      width: (screenSize.size.width / 5) * 2.2,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-                        child: Container(
-                          height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
-                          width: (screenSize.size.width / 5) * 2.2,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-                            color: Theme.of(context).primaryColor,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              Theme(
-                                data: Theme.of(context).copyWith(
-                                  canvasColor: Theme.of(context).primaryColor,
-                                ),
-                                child: DropdownButtonHideUnderline(
-                                  child: DropdownButton<String>(
-                                    value: dossier,
-                                    iconSize: (screenSize.size.width / 5) * 0.3,
-                                    iconEnabledColor: ThemeUtils.textColor(),
-                                    style: TextStyle(fontSize: 18, fontFamily: "Asap", color: ThemeUtils.textColor()),
-                                    onChanged: (String? newValue) {
-                                      setState(() {
-                                        dossier = newValue;
-                                      });
-                                    },
-                                    focusColor: Theme.of(context).primaryColor,
-                                    items: <String>[
-                                      'Reçus',
-                                      'Envoyés',
-                                    ].map<DropdownMenuItem<String>>((String value) {
-                                      return DropdownMenuItem<String>(
-                                        value: value,
-                                        child: Text(
-                                          value,
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                              fontSize: 18, fontFamily: "Asap", color: ThemeUtils.textColor()),
-                                        ),
-                                      );
-                                    }).toList(),
+            child: RefreshIndicator(
+              onRefresh: refreshLocalMailsList,
+              child: Column(
+                children: [
+                  Column(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
+                        width: (screenSize.size.width / 5) * 2.2,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                          child: Container(
+                            height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
+                            width: (screenSize.size.width / 5) * 2.2,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                              color: Theme.of(context).primaryColor,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                Theme(
+                                  data: Theme.of(context).copyWith(
+                                    canvasColor: Theme.of(context).primaryColor,
                                   ),
-                                ),
-                              ),
-                              VerticalDivider(
-                                width: screenSize.size.width / 5 * 0.003,
-                                thickness: screenSize.size.width / 5 * 0.003,
-                                color: ThemeUtils.textColor(),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
-                                child: Material(
-                                  color: Theme.of(context).primaryColor,
-                                  borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-                                  child: InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        int index = sortValue.values.indexOf(actualSort);
-                                        actualSort =
-                                            sortValue.values[index + (index == sortValue.values.length - 1 ? -2 : 1)];
-                                      });
-                                    },
-                                    borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-                                    child: Container(
-                                      height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
-                                      width: (screenSize.size.width / 5) * 0.6,
-                                      child: Icon(
-                                        case2(actualSort, {
-                                          sortValue.date: MdiIcons.sortAscending,
-                                          sortValue.reversed_date: MdiIcons.sortDescending,
-                                          sortValue.author: MdiIcons.account,
-                                        }),
-                                        color: ThemeUtils.textColor(),
-                                      ),
+                                  child: DropdownButtonHideUnderline(
+                                    child: DropdownButton<String>(
+                                      value: dossier,
+                                      iconSize: (screenSize.size.width / 5) * 0.3,
+                                      iconEnabledColor: ThemeUtils.textColor(),
+                                      style: TextStyle(fontSize: 18, fontFamily: "Asap", color: ThemeUtils.textColor()),
+                                      onChanged: (String? newValue) {
+                                        setState(() {
+                                          dossier = newValue;
+                                        });
+                                      },
+                                      focusColor: Theme.of(context).primaryColor,
+                                      items: <String>[
+                                        'Reçus',
+                                        'Envoyés',
+                                      ].map<DropdownMenuItem<String>>((String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(
+                                            value,
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontSize: 18, fontFamily: "Asap", color: ThemeUtils.textColor()),
+                                          ),
+                                        );
+                                      }).toList(),
                                     ),
                                   ),
                                 ),
-                              )
-                            ],
+                                VerticalDivider(
+                                  width: screenSize.size.width / 5 * 0.003,
+                                  thickness: screenSize.size.width / 5 * 0.003,
+                                  color: ThemeUtils.textColor(),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
+                                  child: Material(
+                                    color: Theme.of(context).primaryColor,
+                                    borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                                    child: InkWell(
+                                      onTap: () {
+                                        setState(() {
+                                          int index = sortValue.values.indexOf(actualSort);
+                                          actualSort =
+                                              sortValue.values[index + (index == sortValue.values.length - 1 ? -2 : 1)];
+                                        });
+                                      },
+                                      borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                                      child: Container(
+                                        height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
+                                        width: (screenSize.size.width / 5) * 0.6,
+                                        child: Icon(
+                                          case2(actualSort, {
+                                            sortValue.date: MdiIcons.sortAscending,
+                                            sortValue.reversed_date: MdiIcons.sortDescending,
+                                            sortValue.author: MdiIcons.account,
+                                          }),
+                                          color: ThemeUtils.textColor(),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
-                      height: screenSize.size.height / 10 * 8.35,
-                      child: RefreshIndicator(
-                        onRefresh: refreshLocalMailsList,
+                      Container(
+                        padding: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
+                        height: screenSize.size.height / 10 * 8.35,
                         child: FutureBuilder<List<Mail>?>(
                             //Get all the mails
                             future: mailsListFuture,
@@ -382,10 +323,10 @@ class _MailPageState extends State<MailPage> {
                               }
                             }),
                       ),
-                    ),
-                  ],
-                )
-              ],
+                    ],
+                  )
+                ],
+              ),
             ),
           ),
           Align(
@@ -400,17 +341,75 @@ class _MailPageState extends State<MailPage> {
       ),
     );
   }
-}
 
-void mailModalBottomSheet(context, Mail mail, {int? index}) {
-  showModalBottomSheet(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
-      ),
-      backgroundColor: Theme.of(context).primaryColor,
-      context: context,
-      isScrollControlled: true,
-      builder: (BuildContext bc) {
-        return ReadMailBottomSheet(mail, index);
+  getCorrespondingClasseur(dossier, List<Mail>? list) {
+    String? trad;
+    List<Mail> toReturn = [];
+    switch (dossier) {
+      case "Reçus":
+        trad = "received";
+        break;
+      case "Envoyés":
+        trad = "send";
+        break;
+    }
+    if (list != null) {
+      list.forEach((element) {
+        if (element.mtype == trad) {
+          toReturn.add(element);
+        }
       });
+      toReturn.sort((a, b) {
+        DateTime datea = DateTime.parse(a.date!);
+        DateTime dateb = DateTime.parse(b.date!);
+        switch (actualSort) {
+          case (sortValue.date):
+            return dateb.compareTo(datea);
+            break;
+          case (sortValue.reversed_date):
+            return datea.compareTo(dateb);
+            break;
+          case (sortValue.author):
+            return b.from["nom"].compareTo(a.from["nom"]);
+            break;
+        }
+        return 1;
+      });
+      return toReturn;
+    } else {
+      return toReturn;
+    }
+  }
+
+  void initState() {
+    super.initState();
+    mailsListFuture = getMails();
+  }
+
+  Future<void> refreshLocalMailsList() async {
+    setState(() {
+      mailsListFuture = getMails();
+    });
+    var realdisciplinesListFuture = await mailsListFuture;
+  }
+
+  _buildFloatingButton(BuildContext context) {
+    var screenSize = MediaQuery.of(context);
+    return FloatingActionButton(
+      heroTag: "btn1",
+      backgroundColor: Colors.transparent,
+      child: Container(
+        width: screenSize.size.width / 5 * 0.8,
+        height: screenSize.size.width / 5 * 0.8,
+        child: Icon(
+          Icons.mail_outline,
+          size: screenSize.size.width / 5 * 0.5,
+        ),
+        decoration: BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
+      ),
+      onPressed: () async {
+        await CustomDialogs.writeModalBottomSheet(context);
+      },
+    );
+  }
 }

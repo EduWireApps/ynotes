@@ -2,11 +2,12 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
+import 'package:ynotes/ui/components/customLoader.dart';
 
 import '../../../usefulMethods.dart';
 
@@ -19,7 +20,7 @@ class DialogSpecialties extends StatefulWidget {
 class _DialogSpecialtiesState extends State<DialogSpecialties> {
   List<String?>? chosenSpecialties = [];
   var classe;
-  Future? disciplinesFuture;
+  late Future<List<Discipline>?> disciplinesFuture;
 
   Widget build(BuildContext context) {
     List disciplines = [];
@@ -28,19 +29,18 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
     screenSize = MediaQuery.of(context);
     return Container(
       height: screenSize.size.height / 10 * 4,
-      child: FutureBuilder(
+      child: FutureBuilder<List<Discipline>?>(
           future: disciplinesFuture,
           builder: (context, snapshot) {
             if (snapshot.data == null) {
               return Container();
             }
             if (snapshot.hasData) {
-              snapshot.data ??
-                  [].forEach((element) {
-                    if (!disciplines.contains(element.disciplineName)) {
-                      disciplines.add(element.disciplineName);
-                    }
-                  });
+              (snapshot.data ?? []).forEach((element) {
+                if (!disciplines.contains(element.disciplineName)) {
+                  disciplines.add(element.disciplineName);
+                }
+              });
 
               return AlertDialog(
                   backgroundColor: Theme.of(context).primaryColor,
@@ -134,7 +134,7 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
                                         Icon(MdiIcons.information, color: ThemeUtils.textColor()),
                                         AutoSizeText(
                                           "Pas assez de données pour générer votre liste de spécialités.",
-                                          style: TextStyle(fontFamily: "Asap"),
+                                          style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                                           textAlign: TextAlign.center,
                                         )
                                       ],
@@ -142,10 +142,8 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
                                   )),
                       )));
             } else {
-              return SpinKitFadingFour(
-                color: Theme.of(context).primaryColorDark,
-                size: screenSize.size.width / 5 * 1,
-              );
+              return CustomLoader(
+                  screenSize.size.width / 5 * 1.5, screenSize.size.width / 5 * 1.5, Theme.of(context).primaryColorDark);
             }
           }),
     );

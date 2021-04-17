@@ -7,21 +7,31 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/shared/models.dart';
 
 class EcoleDirecteConverter {
-  static Mail mail(Map<String, dynamic> mailData) {
-    var to = mailData["to"];
-    String id = mailData["id"].toString();
-    String messageType = mailData["mtype"] ?? "";
-    bool isMailRead = mailData["read"] ?? false;
-    String? idClasseur = mailData["idClasseur"].toString();
-    Map from = mailData["from"] ?? "" as Map<dynamic, dynamic>;
-    String subject = mailData["subject"] ?? "";
-    String? date = mailData["date"];
-    String loadedContent = "";
-    List<Map<String, dynamic>> filesData = mailData["files"].cast<Map<String, dynamic>>();
-    List<Document> files = documents(filesData);
-    Mail mail = Mail(id, messageType, isMailRead, idClasseur, from as Map<String, dynamic>, subject, date,
-        to: to, files: files);
-    return mail;
+  static List<CloudItem> cloudFolders(var cloudFoldersData) {
+    List<CloudItem> cloudFolders = [];
+    cloudFoldersData["data"].forEach((folderData) {
+      String? date = folderData["creeLe"];
+      try {
+        var split = date?.split(" ");
+        date = split?[0];
+      } catch (e) {}
+      String? title = folderData["titre"];
+      String elementType = "FOLDER";
+      String? author = folderData["creePar"];
+      bool isRootDir = true;
+      bool? isMemberOf = folderData["estMembre"];
+      String id = folderData["id"].toString();
+      cloudFolders.add(CloudItem(
+        title,
+        elementType,
+        author,
+        isRootDir,
+        date,
+        isMemberOf: isMemberOf,
+        id: id,
+      ));
+    });
+    return cloudFolders;
   }
 
 //Returns discipline with grades
@@ -93,45 +103,18 @@ class EcoleDirecteConverter {
     return disciplinesList;
   }
 
-  static List<Period> periods(Map<String, dynamic> periodsData) {
-    List rawPeriods = periodsData['data']['periodes'];
-    List<Period> periods = [];
-    rawPeriods.forEach((element) {
-      periods.add(Period(element["periode"], element["idPeriode"]));
-    });
-    return periods;
-  }
+  static List<Document> documents(var filesData) {
+    List<Document> documents = [];
+    filesData.forEach((fileData) {
+      String? libelle = fileData["libelle"];
+      String id = fileData["id"].toString();
+      String? type = fileData["type"];
 
-  static List<DateTime> homeworkDates(Map<String, dynamic> hwDatesData) {
-    Map<String, dynamic> datesData = hwDatesData['data'];
-    List<DateTime> dates = [];
-    datesData.forEach((key, value) {
-      dates.add(DateTime.parse(key));
+      ///TO DO : replace length
+      int length = 0;
+      documents.add(Document(libelle, id, type, length));
     });
-    return dates;
-  }
-
-  static List<Homework> unloadedHomework(Map<String, dynamic> uhwData) {
-    Map<String, dynamic> hwData = uhwData['data'];
-    List<Homework> unloadedHWList = [];
-    hwData.forEach((key, value) {
-      value.forEach((var hw) {
-        Map mappedHomework = hw;
-        bool loaded = false;
-        String? matiere = mappedHomework["matiere"];
-        String codeMatiere = mappedHomework["codeMatiere"].toString();
-        String id = mappedHomework["idDevoir"].toString();
-        DateTime date = DateTime.parse(key);
-        DateTime datePost = DateTime.parse(mappedHomework["donneLe"]);
-        bool done = mappedHomework["effectue"] == "true";
-        bool rendreEnLigne = mappedHomework["rendreEnLigne"] == "true";
-        bool interrogation = mappedHomework["interrogation"] == "true";
-
-        unloadedHWList.add(Homework(matiere, codeMatiere, id, null, null, date, null, done, rendreEnLigne,
-            interrogation, null, null, null, loaded));
-      });
-    });
-    return unloadedHWList;
+    return documents;
   }
 
   static List<Homework> homework(Map<String, dynamic> hwData) {
@@ -199,6 +182,15 @@ class EcoleDirecteConverter {
     return homeworkList;
   }
 
+  static List<DateTime> homeworkDates(Map<String, dynamic> hwDatesData) {
+    Map<String, dynamic> datesData = hwDatesData['data'];
+    List<DateTime> dates = [];
+    datesData.forEach((key, value) {
+      dates.add(DateTime.parse(key));
+    });
+    return dates;
+  }
+
   static Future<List<Lesson>> lessons(Map<String, dynamic> lessonData) async {
     List<Lesson> lessons = [];
     await Future.forEach(lessonData["data"], (dynamic lesson) async {
@@ -224,45 +216,30 @@ class EcoleDirecteConverter {
     return lessons;
   }
 
-  static List<Document> documents(var filesData) {
-    List<Document> documents = [];
-    filesData.forEach((fileData) {
-      String? libelle = fileData["libelle"];
-      String id = fileData["id"].toString();
-      String? type = fileData["type"];
-
-      ///TO DO : replace length
-      int length = 0;
-      documents.add(Document(libelle, id, type, length));
-    });
-    return documents;
+  static Mail mail(Map<String, dynamic> mailData) {
+    var to = mailData["to"];
+    String id = mailData["id"].toString();
+    String messageType = mailData["mtype"] ?? "";
+    bool isMailRead = mailData["read"] ?? false;
+    String? idClasseur = mailData["idClasseur"].toString();
+    Map from = mailData["from"] ?? "" as Map<dynamic, dynamic>;
+    String subject = mailData["subject"] ?? "";
+    String? date = mailData["date"];
+    String loadedContent = "";
+    List<Map<String, dynamic>> filesData = mailData["files"].cast<Map<String, dynamic>>();
+    List<Document> files = documents(filesData);
+    Mail mail = Mail(id, messageType, isMailRead, idClasseur, from as Map<String, dynamic>, subject, date,
+        to: to, files: files);
+    return mail;
   }
 
-  static List<CloudItem> cloudFolders(var cloudFoldersData) {
-    List<CloudItem> cloudFolders = [];
-    cloudFoldersData["data"].forEach((folderData) {
-      String date = folderData["creeLe"];
-      try {
-        var split = date.split(" ");
-        date = split[0];
-      } catch (e) {}
-      String? title = folderData["titre"];
-      String elementType = "FOLDER";
-      String? author = folderData["creePar"];
-      bool isRootDir = true;
-      bool? isMemberOf = folderData["estMembre"];
-      String id = folderData["id"].toString();
-      cloudFolders.add(CloudItem(
-        title,
-        elementType,
-        author,
-        isRootDir,
-        date,
-        isMemberOf: isMemberOf,
-        id: id,
-      ));
+  static List<Period> periods(Map<String, dynamic> periodsData) {
+    List rawPeriods = periodsData['data']['periodes'];
+    List<Period> periods = [];
+    rawPeriods.forEach((element) {
+      periods.add(Period(element["periode"], element["idPeriode"]));
     });
-    return cloudFolders;
+    return periods;
   }
 
   static List<Recipient> recipients(var recipientsData) {
@@ -290,5 +267,28 @@ class EcoleDirecteConverter {
       schoolLifeList.add(SchoolLifeTicket(libelle, displayDate, motif, type, isJustified));
     });
     return schoolLifeList;
+  }
+
+  static List<Homework> unloadedHomework(Map<String, dynamic> uhwData) {
+    Map<String, dynamic> hwData = uhwData['data'];
+    List<Homework> unloadedHWList = [];
+    hwData.forEach((key, value) {
+      value.forEach((var hw) {
+        Map mappedHomework = hw;
+        bool loaded = false;
+        String? matiere = mappedHomework["matiere"];
+        String codeMatiere = mappedHomework["codeMatiere"].toString();
+        String id = mappedHomework["idDevoir"].toString();
+        DateTime date = DateTime.parse(key);
+        DateTime datePost = DateTime.parse(mappedHomework["donneLe"]);
+        bool done = mappedHomework["effectue"] == "true";
+        bool rendreEnLigne = mappedHomework["rendreEnLigne"] == "true";
+        bool interrogation = mappedHomework["interrogation"] == "true";
+
+        unloadedHWList.add(Homework(matiere, codeMatiere, id, null, null, date, null, done, rendreEnLigne,
+            interrogation, null, null, null, loaded));
+      });
+    });
+    return unloadedHWList;
   }
 }

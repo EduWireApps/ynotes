@@ -51,7 +51,7 @@ void CreateStorage(String key, String? data) async {
 ///     E.G : "CD" navigate to the path and return the files and folder existing in it : ESPACES DE TRAVAILS and PERSONNAL CLOUDS are considered as folders
 ///      E.G : "PUSH" add a file to the path if it doesn't exist
 ///       E.G : "RM" remove a file to the path
-Future getCloud(String? args, String? action, CloudItem? item) async {
+Future<List<CloudItem>?> getCloud(String? args, String? action, CloudItem? item) async {
   if (action == "CD") {
     switch (args) {
       //Default repository. Every folder have to be followed by / => "/CLOUD/FOLDER/"
@@ -72,7 +72,7 @@ Future getCloud(String? args, String? action, CloudItem? item) async {
 }
 
 ///Returning Ecole Directe Mails, **checking** bool is used to only returns old mail number
-Future getMails({bool? checking}) async {
+Future<List<Mail>?> getMails({bool? checking}) async {
   await EcoleDirecteMethod(appSys.offline).testToken();
   String? id = await storage.read(key: "userID");
   var url = 'https://api.ecoledirecte.com/v3/eleves/$id/messages.awp?verbe=getall&typeRecuperation=all';
@@ -105,7 +105,6 @@ Future getMails({bool? checking}) async {
         Map messages = req['data']['messages'];
         messages.forEach((key, value) {
           //We finally get in message items
-
           value.forEach((e) {
             messagesList.add(e);
           });
@@ -183,7 +182,7 @@ class APIEcoleDirecte extends API {
       case "mail":
         {
           print("Returning mails");
-          List<Mail> mails = await (getMails() as Future<List<Mail>>);
+          List<Mail>? mails = await (getMails());
 
           return mails;
         }

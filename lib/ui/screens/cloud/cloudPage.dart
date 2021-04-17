@@ -3,17 +3,39 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:stacked/stacked.dart';
+import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/shared/downloadController.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
-import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/customLoader.dart';
 
-import '../../../main.dart';
-import '../../../usefulMethods.dart';
+var actualSort = sortValue.date;
+
+late Future<List<CloudItem>?> cloudFolderFuture;
 
 String? cloudUsedFolder = "";
+
+String dossier = "Reçus";
+bool isLoading = false;
+List<CloudItem>? localFoldersList;
+String path = "/";
+sortByGroupMainPage(List<CloudItem> list) {
+  List<CloudItem> toReturn = [];
+  //Make two groups of member of and not member of
+
+  list.forEach((element) {
+    if (element.isMemberOf != null && element.isMemberOf!) {
+      toReturn.add(element);
+    }
+  });
+  list.forEach((element) {
+    if (element.isMemberOf == null || !element.isMemberOf!) {
+      toReturn.add(element);
+    }
+  });
+  return toReturn;
+}
 
 class CloudPage extends StatefulWidget {
   State<StatefulWidget> createState() {
@@ -21,46 +43,10 @@ class CloudPage extends StatefulWidget {
   }
 }
 
-Future<List<CloudItem>?>? cloudFolderFuture;
-
-String dossier = "Reçus";
 enum sortValue { date, reversed_date, author }
-bool isLoading = false;
-var actualSort = sortValue.date;
-List<CloudItem>? localFoldersList;
-String path = "/";
 
+//Sort in the main page
 class _CloudPageState extends State<CloudPage> {
-  void initState() {
-    WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() {
-          refreshLocalCloudItemsList();
-        }));
-  }
-
-  Future<void> refreshLocalCloudItemsList() async {
-    setState(() {
-      cloudFolderFuture = appSys.api!.app("cloud", args: path, action: "CD") as Future<List<CloudItem>?>?;
-      isLoading = true;
-    });
-    var realdisciplinesListFuture = await cloudFolderFuture;
-    setState(() {
-      isLoading = false;
-    });
-  }
-
-  //Change directory action
-  changeDirectory(CloudItem? item) async {
-    print(path);
-    setState(() {
-      cloudFolderFuture = appSys.api!.app("cloud", args: path, action: "CD", folder: item) as Future<List<CloudItem>?>?;
-      isLoading = true;
-    });
-    var realdisciplinesListFuture = await cloudFolderFuture;
-    setState(() {
-      isLoading = false;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
@@ -401,22 +387,35 @@ class _CloudPageState extends State<CloudPage> {
       ),
     );
   }
-}
 
-//Sort in the main page
-sortByGroupMainPage(List<CloudItem> list) {
-  List<CloudItem> toReturn = [];
-  //Make two groups of member of and not member of
+  changeDirectory(CloudItem? item) async {
+    print(path);
+    setState(() {
+      cloudFolderFuture = getCloud(path, "CD", item);
+      isLoading = true;
+    });
+    var realdisciplinesListFuture = await cloudFolderFuture;
+    setState(() {
+      isLoading = false;
+    });
+  }
 
-  list.forEach((element) {
-    if (element.isMemberOf != null && element.isMemberOf!) {
-      toReturn.add(element);
-    }
-  });
-  list.forEach((element) {
-    if (element.isMemberOf == null || !element.isMemberOf!) {
-      toReturn.add(element);
-    }
-  });
-  return toReturn;
+  //Change directory action
+  void initState() {
+    WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() {
+          refreshLocalCloudItemsList();
+        }));
+  }
+
+  Future<void> refreshLocalCloudItemsList() async {
+    setState(() {
+      cloudFolderFuture = getCloud(path, "CD", null);
+
+      isLoading = true;
+    });
+    var realdisciplinesListFuture = await cloudFolderFuture;
+    setState(() {
+      isLoading = false;
+    });
+  }
 }

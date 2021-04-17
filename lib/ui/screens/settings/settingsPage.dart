@@ -386,9 +386,10 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                       title: 'Réinitialiser le tutoriel',
                       leading: Icon(MdiIcons.restore, color: ThemeUtils.textColor()),
                       onTap: () async {
-                        if (await (CustomDialogs.showConfirmationDialog(context, null,
-                            alternativeText: "Etes-vous sûr de vouloir réinitialiser le tutoriel ?",
-                            alternativeButtonConfirmText: "confirmer") as Future<bool>)) {
+                        if ((await (CustomDialogs.showConfirmationDialog(context, null,
+                                alternativeText: "Etes-vous sûr de vouloir réinitialiser le tutoriel ?",
+                                alternativeButtonConfirmText: "confirmer")) ??
+                            false)) {
                           await HelpDialog.resetEveryHelpDialog();
                         }
                         HelpDialog.resetEveryHelpDialog();
@@ -403,10 +404,10 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                       title: 'Supprimer les données hors ligne',
                       leading: Icon(MdiIcons.deleteAlert, color: ThemeUtils.textColor()),
                       onTap: () async {
-                        if (await (CustomDialogs.showConfirmationDialog(context, null,
+                        if ((await (CustomDialogs.showConfirmationDialog(context, null,
                                 alternativeText:
-                                    "Etes-vous sûr de vouloir supprimer les données hors ligne ? (irréversible)")
-                            as Future<bool>)) {
+                                    "Etes-vous sûr de vouloir supprimer les données hors ligne ? (irréversible)")) ??
+                            false)) {
                           await _appSys.offline!.clearAll();
                         }
                       },

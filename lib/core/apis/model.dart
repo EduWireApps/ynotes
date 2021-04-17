@@ -8,49 +8,22 @@ import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/space/recurringEvents.dart';
 import 'package:ynotes/globals.dart';
 
-enum apiType { EcoleDirecte, Pronote }
-
 abstract class API {
   bool loggedIn = false;
   final Offline? offlineController;
 
+  List<Grade>? gradesList;
+
   API(this.offlineController);
 
-  ///Connect to the API
-  ///Should return a connection status
-  Future<List> login(username, password, {url, cas, mobileCasLogin});
-
-  ///Get years periods
-  Future<List<Period>?> getPeriods();
-
-  ///Get marks
-  Future<List<Discipline>?> getGrades({bool? forceReload});
-
-  ///Get the dates of next homework (deprecated)
-  Future<List<DateTime>?> getDatesNextHomework();
-
-  ///Get the list of all the next homework (sent by specifics API).
-  ///
-  ///Caution : `EcoleDirecte` api returns a list of unloaded homework
-  Future<List<Homework>?> getNextHomework({bool? forceReload});
-
-  ///Get the list of homework only for a specific day (time travel feature)
-  Future<List<Homework>?> getHomeworkFor(DateTime? dateHomework);
-
-  //Get a list of lessons for the agenda part
-  Future<List<Lesson>?> getNextLessons(DateTime from, {bool? forceReload});
-
-  ///Test to know if there are new grades
-  Future<bool?> testNewGrades();
-
-  ///Send file to cloud or anywhere
-  Future uploadFile(String context, String id, String filepath);
+  ///Apps
+  app(String appname, {String? args, String? action, CloudItem? folder});
 
   ///Download a file from his name
   Future<Request> downloadRequest(Document document);
 
-  ///Apps
-  Future app(String appname, {String? args, String? action, CloudItem? folder});
+  ///Get the dates of next homework (deprecated)
+  Future<List<DateTime>?> getDatesNextHomework();
 
   ///All events
   Future<List<AgendaEvent>?> getEvents(DateTime date, bool afterSchool, {bool forceReload = false}) async {
@@ -127,5 +100,32 @@ abstract class API {
     return events as Future<List<AgendaEvent>>;
   }
 
-  List<Grade>? gradesList;
+  ///Get marks
+  Future<List<Discipline>?> getGrades({bool? forceReload});
+
+  //Get a list of lessons for the agenda part
+  ///Get the list of homework only for a specific day (time travel feature)
+  Future<List<Homework>?> getHomeworkFor(DateTime? dateHomework);
+
+  ///Get the list of all the next homework (sent by specifics API).
+  ///
+  ///Caution : `EcoleDirecte` api returns a list of unloaded homework
+  Future<List<Homework>?> getNextHomework({bool? forceReload});
+
+  Future<List<Lesson>?> getNextLessons(DateTime from, {bool? forceReload});
+
+  ///Get years periods
+  Future<List<Period>?> getPeriods();
+
+  ///Connect to the API
+  ///Should return a connection status
+  Future<List> login(username, password, {url, cas, mobileCasLogin});
+
+  ///Test to know if there are new grades
+  Future<bool?> testNewGrades();
+
+  ///Send file to cloud or anywhere
+  Future uploadFile(String context, String id, String filepath);
 }
+
+enum apiType { EcoleDirecte, Pronote }

@@ -1,12 +1,12 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:ynotes/ui/screens/cloud/cloudPage.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
+import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/ui/screens/cloud/cloudPage.dart';
 
 //The basical function to change folder
-changeFolder(String path) async {
+Future<List<CloudItem>?> changeFolder(String path) async {
   ///I've chosen to not use their weird "Loaded function", user doesn't care about a little loading
   List paths = path.split("/");
   var finalPath = paths.sublist(2);
