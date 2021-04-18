@@ -34,7 +34,10 @@ jobs:
       env:
         PRIVATE_KEY: ${{ secrets.SSH_KEY }}
 
-
+    - name: Decrypt iOS keys
+      run: sh ./.github/scripts/decrypt_ios_keys.sh
+      env:
+        ANDROID_KEYS_SECRET_PASSPHRASE: ${{ secrets.ANDROID_KEYS_SECRET_PASSPHRASE }}  
 
     - name: Setup ruby
       uses: ruby/setup-ruby@v1
