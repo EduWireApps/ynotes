@@ -45,6 +45,15 @@ jobs:
         ruby-version: 2.7.2
         bundler-cache: true
 
+    
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v1
+      with:
+        flutter-version: '2.0.x'
+
+    - name: Install Flutter dependencies
+      run: flutter pub get
+     
     - name: Install Pods
       working-directory: ios
 
