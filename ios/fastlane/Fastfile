@@ -26,6 +26,7 @@ platform :ios do
             key_id: ENV["APP_STORE_API_KEY_ID"],
             issuer_id: ENV["APP_STORE_API_KEY_ISSUER_ID"],
             key_filepath:  "./AuthKey_5R2MFY6PX4.p8",
+            duration:1200,
             in_house: false, # optional but may be required if using match/sigh
           )
         setup_ci
