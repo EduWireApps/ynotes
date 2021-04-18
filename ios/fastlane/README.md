@@ -26,6 +26,11 @@ Run tests
 fastlane ios beta
 ```
 Push a new beta build to TestFlight
+### ios test
+```
+fastlane ios test
+```
+
 ### ios set_release_version
 ```
 fastlane ios set_release_version
