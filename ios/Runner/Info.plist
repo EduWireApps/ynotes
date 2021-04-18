@@ -63,7 +63,7 @@
 	<false/>
     <key>BGTaskSchedulerPermittedIdentifiers</key>
     <array>
-        <string>fr.ynotesapp.ynotes</string>
+        <string>fr.eduwire.ynotes</string>
     </array>
 </dict>
 </plist>
