@@ -16,7 +16,6 @@
 default_platform(:ios)
 
 platform :ios do
-<<<<<<< Updated upstream
     desc "Run tests"
     lane :tests do
         run_tests(scheme: "Runner")
@@ -48,11 +47,9 @@ platform :ios do
         end
     end
 end
-=======
   desc "Push a new release build to the App Store"
   lane :release do
     build_app(workspace: "Runner.xcworkspace", scheme: "Runner")
     upload_to_app_store
   end
 end
->>>>>>> Stashed changes
