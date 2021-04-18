@@ -9,7 +9,7 @@ platform :ios do
     desc "Push a new beta build to TestFlight"
     lane :beta do
         setup_ci
-        match(type: "appstore", readonly: is_ci)
+        match(type: "appstore")
         build_app(workspace: "Runner.xcworkspace", scheme: "Runner") # Change name of workspace
         api_key = app_store_connect_api_key(
             key_id: ENV["APP_STORE_API_KEY_ID"],
