@@ -12,7 +12,7 @@ import 'package:ynotes/usefulMethods.dart';
 
 class PronoteMethod {
   Map locks = Map();
-  PronoteClient client;
+  PronoteClient? client;
   final SchoolAccount account;
   final Offline _offlineController;
 
@@ -50,7 +50,7 @@ class PronoteMethod {
   }
 
   Future<List<Discipline>> grades() async {
-    List<PronotePeriod> periods = this.client.periods();
+    List<PronotePeriod>? periods = this.client?.periods();
     List<Discipline> listDisciplines = [];
     await Future.forEach(periods, (PronotePeriod period) async {
       if (period != null) {

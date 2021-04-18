@@ -215,7 +215,7 @@ class _PollsAndInfoPageState extends State<PollsAndInfoPage> {
 
   Future<void> refreshPolls({bool forced = false}) async {
     setState(() {
-      pollsFuture = getPronotePolls(forced);
+      pollsFuture =  getPronotePolls(forced);
     });
     var realFuture = await pollsFuture;
   }

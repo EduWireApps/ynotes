@@ -25,9 +25,32 @@ bool loginLock = false;
 bool pollsLock = false;
 bool pollsRefreshRecursive = false;
 
+Future<List<PollInfo>?> getPronotePolls(bool forced) async {
+  List<PollInfo>? listPolls;
+  try {
+    if (forced) {
+      listPolls = await localClient.polls() as List<PollInfo>;
+      await appSys.offline.polls.update(listPolls);
+      return listPolls;
+    } else {
+      listPolls = await appSys.offline.polls.get();
+      if (listPolls == null) {
+        print("Error while returning offline polls");
+        listPolls = await localClient.polls() as List<PollInfo>;
+        await appSys.offline.polls.update(listPolls);
+        return listPolls;
+      } else {
+        return listPolls;
+      }
+    }
+  } catch (e) {
+    listPolls = await appSys.offline.polls.get();
+    return listPolls;
+  }
+}
 
 class APIPronote extends API {
-  late PronoteClient localClient;
+  PronoteClient? localClient;
   late PronoteMethod pronoteMethod;
 
   int loginReqNumber = 0;
@@ -299,27 +322,27 @@ class APIPronote extends API {
     }
   }
 
-  Future<List<PollInfo>?> getPronotePolls(bool forced) async {
-    List<PollInfo>? listPolls;
+  @override
+  Future<List<Period>> getPeriods() async {
+    var connectivityResult = await (Connectivity().checkConnectivity());
     try {
-      if (forced) {
-        listPolls = await localClient.polls() as List<PollInfo>;
-        await appSys.offline.polls.update(listPolls);
-        return listPolls;
-      } else {
-        listPolls = await appSys.offline.polls.get();
-        if (listPolls == null) {
-          print("Error while returning offline polls");
-          listPolls = await localClient.polls() as List<PollInfo>;
-          await appSys.offline.polls.update(listPolls);
-          return listPolls;
+      return await getOfflinePeriods();
+    } catch (e) {
+      print("Erreur while getting offline period " + e.toString());
+      if (connectivityResult != ConnectivityResult.none) {
+        if (localClient.loggedIn) {
+          print("getting periods online");
+          return await getOnlinePeriods();
         } else {
-          return listPolls;
+          throw "Pronote isn't logged in";
+        }
+      } else {
+        try {
+          return await getOfflinePeriods();
+        } catch (e) {
+          throw ("Error while collecting offline periods");
         }
       }
-    } catch (e) {
-      listPolls = await appSys.offline.polls.get();
-      return listPolls;
     }
   }
 
