@@ -1,4 +1,4 @@
-app_identifier("fr.ynotesapp.ynotes") # The bundle identifier of your app
+app_identifier("fr.eduwire.ynotes") # The bundle identifier of your app
 apple_id("androz2091@gmail.com") # Your Apple email address
 
 itc_team_id("122891946") # App Store Connect Team ID
