@@ -41,77 +41,17 @@ class DrawerBuilder extends StatefulWidget {
 }
 
 class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateMixin {
-  ///Apps
-  ///`relatedApi` should be set to null if both APIs can use it
-  ///-1 is only shown in debug mode
-  List<Map> entries() {
-    return [
-      {
-        "menuName": "Résumé",
-        "icon": MdiIcons.home,
-        "page": SummaryPage(
-          switchPage: _switchPage,
-          key: summaryPage,
-        ),
-        "key": summaryPage
-      },
-      {
-        "menuName": "Notes",
-        "icon": MdiIcons.trophy,
-        "page": SingleChildScrollView(
-            physics: NeverScrollableScrollPhysics(),
-            child: GradesPage(
-            ))
-      },
-      {
-        "menuName": "Devoirs",
-        "icon": MdiIcons.calendarCheck,
-        "page": HomeworkPage(
-          key: homeworkPage,
-          hwController: appSys.homeworkController,
-        ),
-        "key": homeworkPage
-      },
-      {"menuName": "Agenda", "icon": MdiIcons.calendar, "page": AgendaPage(key: agendaPage), "key": agendaPage},
-      {
-        "menuName": "Messagerie",
-        "icon": MdiIcons.mail,
-        "relatedApi": 0,
-        "page": MailPage(),
-      },
-      {
-        "menuName": "Vie scolaire",
-        "relatedApi": -1,
-        "icon": MdiIcons.stamper,
-        "page": SingleChildScrollView(physics: NeverScrollableScrollPhysics(), child: SchoolLifePage()),
-      },
-      {"menuName": "Cloud", "icon": MdiIcons.cloud, "relatedApi": 0, "page": CloudPage()},
-      {"menuName": "Sondages", "icon": MdiIcons.poll, "relatedApi": 1, "page": PollsAndInfoPage()},
-      {
-        "menuName": "Fichiers",
-        "icon": MdiIcons.file,
-        "relatedApi": 0,
-        "page": DownloadsExplorer(),
-      },
-      {
-        "menuName": "Statistiques",
-        "icon": MdiIcons.chartBar,
-        "relatedApi": -1,
-        "page": StatsPage(),
-      },
-    ];
-  }
   PageController? drawerPageViewController;
-
   ValueNotifier<int> _notifier = ValueNotifier<int>(0);
-  bool isChanging = false;
-  //Boolean
-  bool firstStart = true;
-  late AnimationController quickMenuAnimationController;
 
+  bool isChanging = false;
+  bool firstStart = true;
+  //Boolean
+  late AnimationController quickMenuAnimationController;
   Animation<double>? quickMenuButtonAnimation;
 
   StreamSubscription? tabBarconnexion;
+
   GlobalKey<AgendaPageState> agendaPage = new GlobalKey();
   GlobalKey<SummaryPageState> summaryPage = new GlobalKey();
   GlobalKey<HomeworkPageState> homeworkPage = new GlobalKey();
@@ -128,57 +68,6 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
   bool isDrawerCollapsed = true;
   int? _previousPage;
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
-
-  @override
-  void initState() {
-    super.initState();
-    //Init hw controller
-    if (firstStart == true) {
-      firstStart = false;
-    }
-
-    AppNotification.initNotifications(context, _scrollTo);
-    //Mvc init
-
-    initPageControllers();
-    //Page sys
-    _previousPage = drawerPageViewController?.initialPage;
-  }
-
-  @override
-  void dispose() {
-    _notifier?.dispose();
-    drawerPageViewController?.dispose();
-    super.dispose();
-  }
-
-  initPageControllers() {
-    // this creates the controller
-    drawerPageViewController = PageController(
-      initialPage: 0,
-    )..addListener(_onPageViewUpdate);
-    bodyController = AnimationController(vsync: this, duration: drawerAnimationDuration);
-
-    showLoginControllerStatusController = AnimationController(vsync: this, duration: Duration(milliseconds: 450));
-    showLoginControllerStatus = new Tween(
-      begin: 1.0,
-      end: 0.0,
-    ).animate(new CurvedAnimation(
-        parent: showLoginControllerStatusController, curve: Interval(0.1, 1.0, curve: Curves.fastOutSlowIn)));
-
-    //Define a controller in order to control  quick menu animation
-    quickMenuAnimationController = AnimationController(vsync: this, duration: Duration(milliseconds: 300));
-    quickMenuButtonAnimation = new Tween(
-      begin: 1.0,
-      end: 1.3,
-    ).animate(
-        new CurvedAnimation(parent: quickMenuAnimationController, curve: Curves.easeIn, reverseCurve: Curves.easeOut));
-  }
-
-  _onPageViewUpdate() {
-    _notifier?.value = drawerPageViewController.page.round();
-  }
-
   bool wiredashShown = false;
 
   @override
@@ -351,7 +240,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
     _notifier.dispose();
     drawerPageViewController!.dispose();
     super.dispose();
-    appSys.offline!.dispose();
+    appSys.offline.dispose();
   }
 
   ///Apps
@@ -371,11 +260,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
       {
         "menuName": "Notes",
         "icon": MdiIcons.trophy,
-        "page": SingleChildScrollView(
-            physics: NeverScrollableScrollPhysics(),
-            child: GradesPage(
-              appSys.gradesController,
-            )),
+        "page": SingleChildScrollView(physics: NeverScrollableScrollPhysics(), child: GradesPage())
       },
       {
         "menuName": "Devoirs",
@@ -451,7 +336,6 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
   @override
   void initState() {
     super.initState();
-
     //Init hw controller
     if (firstStart == true) {
       firstStart = false;
@@ -459,14 +343,16 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
 
     AppNotification.initNotifications(context, _scrollTo);
     //Mvc init
-    initControllers();
+
     initPageControllers();
     //Page sys
-    _previousPage = drawerPageViewController!.initialPage;
+    _previousPage = drawerPageViewController?.initialPage;
   }
 
   _onPageViewUpdate() {
-    _notifier.value = drawerPageViewController!.page!.round();
+    if (drawerPageViewController != null && drawerPageViewController!.page != null) {
+      _notifier.value = drawerPageViewController!.page!.round();
+    }
   }
 
   _scrollTo(int index) {

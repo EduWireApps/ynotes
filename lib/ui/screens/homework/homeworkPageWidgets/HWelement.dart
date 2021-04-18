@@ -608,7 +608,7 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                         height: screenSize.size.width / 5 * 0.5,
                                         child: FittedBox(
                                           child: FutureBuilder<bool>(
-                                              future: appSys.offline!.doneHomework
+                                              future: appSys.offline.doneHomework
                                                   .getHWCompletion(widget.homeworkForThisDay!.id ?? ''),
                                               initialData: false,
                                               builder: (context, snapshot) {
@@ -622,7 +622,7 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                                       done = !done!;
                                                       donePercentFuture = HomeworkUtils.getHomeworkDonePercent();
                                                     });
-                                                    appSys.offline!.doneHomework
+                                                    appSys.offline.doneHomework
                                                         .setHWCompletion(widget.homeworkForThisDay!.id, x);
                                                   },
                                                 );

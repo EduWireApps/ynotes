@@ -27,7 +27,7 @@ List<String> colorList = [
 
 sta.Stack<String> Colorstack = sta.Stack();
 
-APIManager(Offline? _offline) {
+APIManager(Offline _offline) {
   //The parser list index corresponding to the user choice
   switch (appSys.settings!["system"]["chosenParser"]) {
     case 0:

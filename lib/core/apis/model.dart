@@ -11,7 +11,7 @@ import 'package:ynotes/globals.dart';
 
 abstract class API {
   bool loggedIn = false;
-  final Offline? offlineController;
+  final Offline offlineController;
 
   List<Grade>? gradesList;
 
@@ -39,7 +39,7 @@ abstract class API {
       lessons.sort((a, b) => a.end!.compareTo(b.end!));
     }
     if (!afterSchool) {
-      extracurricularEvents = await (appSys.offline!.agendaEvents.getAgendaEvents(week));
+      extracurricularEvents = await (appSys.offline.agendaEvents.getAgendaEvents(week));
       if (extracurricularEvents != null) {
         if (lessons != null && lessons.length > 0) {
           //Last date
@@ -59,7 +59,7 @@ abstract class API {
         }
       }
     } else {
-      extracurricularEvents = await (appSys.offline!.agendaEvents.getAgendaEvents(week));
+      extracurricularEvents = await (appSys.offline.agendaEvents.getAgendaEvents(week));
 
       if (extracurricularEvents != null) {
         //extracurricularEvents.removeWhere((element) => element.isLesson);
@@ -84,7 +84,7 @@ abstract class API {
     RecurringEventSchemes recurr = RecurringEventSchemes();
     recurr.date = date;
     recurr.week = week;
-    var recurringEvents = await appSys.offline!.agendaEvents.getAgendaEvents(week, selector: recurr.testRequest);
+    var recurringEvents = await appSys.offline.agendaEvents.getAgendaEvents(week, selector: recurr.testRequest);
     if (recurringEvents != null && recurringEvents.length != 0) {
       recurringEvents.forEach((recurringEvent) {
         events.removeWhere((element) => element.id == recurringEvent.id);
@@ -129,6 +129,8 @@ abstract class API {
   Future uploadFile(String context, String id, String filepath);
 }
 
+enum API_TYPE { EcoleDirecte, Pronote }
+
 @JsonSerializable()
 class SchoolAccount {
   //Name of the student
@@ -147,7 +149,7 @@ class SchoolAccount {
   final bool isParentAccount = false;
 
   ///Configuration credentials
-  Map credentials;
+  Map? credentials;
 
   final API_TYPE type;
 
@@ -155,6 +157,5 @@ class SchoolAccount {
       {this.credentials})
       : super();
 
-  factory SchoolAccount.fromJson(Map<String, dynamic> json) => _$SchoolAccountFromJson(json);
-  Map<String, dynamic> toJson() => _$SchoolAccountToJson(this);
+
 }

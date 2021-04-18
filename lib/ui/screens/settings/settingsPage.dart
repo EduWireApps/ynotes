@@ -408,7 +408,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                                 alternativeText:
                                     "Etes-vous sûr de vouloir supprimer les données hors ligne ? (irréversible)")) ??
                             false)) {
-                          await _appSys.offline!.clearAll();
+                          await _appSys.offline.clearAll();
                         }
                       },
                       titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),

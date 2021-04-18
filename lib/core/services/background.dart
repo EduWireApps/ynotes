@@ -65,7 +65,7 @@ class BackgroundService {
       //Getting the offline count of grades
       //instanciate an offline controller read only
       Offline _offline = Offline(true);
-      await appSys.offline!.init();
+      await appSys.offline.init();
       API backgroundFetchApi = APIManager(_offline);
 
       print("Old grades length is ${oldGradesLength}");

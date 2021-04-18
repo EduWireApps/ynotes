@@ -114,13 +114,13 @@ class _AgendaElementState extends State<AgendaElement> {
                           if (temp != "removed") {
                             if (temp != null) {
                               if (temp.recurrenceScheme != null && temp.recurrenceScheme != "0") {
-                                await appSys.offline!.agendaEvents.addAgendaEvent(temp, temp.recurrenceScheme);
+                                await appSys.offline.agendaEvents.addAgendaEvent(temp, temp.recurrenceScheme);
 
                                 setState(() {
                                   this.widget.event = temp;
                                 });
                               } else {
-                                await appSys.offline!.agendaEvents.addAgendaEvent(temp, await get_week(temp.start));
+                                await appSys.offline.agendaEvents.addAgendaEvent(temp, await get_week(temp.start));
 
                                 setState(() {
                                   this.widget.event = temp;
@@ -129,7 +129,7 @@ class _AgendaElementState extends State<AgendaElement> {
                               await AppNotification.scheduleAgendaReminders(temp);
                             }
                           } else {
-                            await appSys.offline!.reminders.removeAll(_event.id);
+                            await appSys.offline.reminders.removeAll(_event.id);
                             await AppNotification.cancelNotification(_event.id.hashCode);
                           }
                           await refreshAgendaFuture();

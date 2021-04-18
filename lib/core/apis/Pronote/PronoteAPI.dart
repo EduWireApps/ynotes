@@ -274,8 +274,8 @@ class Communication {
         throw error_messages["22"];
       }
       if (responseJson["Erreur"]['G'] == 10) {
-        appSys.loginController!.details = "Connexion expirée";
-        appSys.loginController!.actualState = loginStatus.error;
+        appSys.loginController.details = "Connexion expirée";
+        appSys.loginController.actualState = loginStatus.error;
 
         throw error_messages["10"];
       }
@@ -414,7 +414,7 @@ class Encryption {
 
   rsaEncrypt(Uint8List data) async {
     try {
-      print( this.rsaKeys);
+      print(this.rsaKeys);
       String? modulusBytes = this.rsaKeys['MR'];
 
       var modulus = BigInt.parse(modulusBytes ?? "", radix: 16);
@@ -461,7 +461,7 @@ class PronoteClient {
   Communication? communication;
   var attributes;
   var funcOptions;
-
+  PronoteUtils utils = PronoteUtils();
   bool? ent;
 
   late Encryption encryption;
@@ -1134,6 +1134,33 @@ class PronotePeriod {
     return [list, other];
   }
 
+  gradeTranslate(String value) {
+    List gradeTranslate = [
+      'Absent',
+      'Dispensé',
+      'Non noté',
+      'Inapte',
+      'Non rendu',
+      'Absent zéro',
+      'Non rendu zéro',
+      'Félicitations'
+    ];
+    if (value.contains("|")) {
+      return gradeTranslate[int.parse(value[1]) - 1];
+    } else {
+      return value;
+    }
+  }
+
+  shouldCountAsZero(String grade) {
+    if (grade == "Absent zéro" || grade == "Non rendu zéro") {
+      return true;
+    } else
+      return false;
+  }
+}
+
+class PronoteUtils {
   gradeTranslate(String value) {
     List gradeTranslate = [
       'Absent',

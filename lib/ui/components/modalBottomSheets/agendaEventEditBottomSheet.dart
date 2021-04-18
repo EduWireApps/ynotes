@@ -117,17 +117,17 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                             if (this.widget.customEvent != null) {
                               if (this.widget.customEvent!.recurrenceScheme != null &&
                                   this.widget.customEvent!.recurrenceScheme != "0") {
-                                await appSys.offline!.agendaEvents
+                                await appSys.offline.agendaEvents
                                     .removeAgendaEvent(id, await get_week(this.widget.customEvent!.start!));
-                                await appSys.offline!.agendaEvents
+                                await appSys.offline.agendaEvents
                                     .removeAgendaEvent(id, this.widget.customEvent!.recurrenceScheme);
                               } else {
-                                await appSys.offline!.agendaEvents
+                                await appSys.offline.agendaEvents
                                     .removeAgendaEvent(id, await get_week(this.widget.customEvent!.start!));
                               }
                             }
                             if (this.widget.reminder != null) {
-                              appSys.offline!.reminders.remove(id);
+                              appSys.offline.reminders.remove(id);
                             }
                             Navigator.of(context).pop("removed");
                           },

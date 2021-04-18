@@ -4,6 +4,7 @@ import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
@@ -16,28 +17,16 @@ import 'package:ynotes/core/utils/settingsUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/ui/themes/themesList.dart';
 
-class Test {
-  Map? settings;
-  Test() {
-    settings = SettingsUtils.getAppSettings();
-  }
-}
-
 ///Top level application sytem class
 class ApplicationSystem extends ChangeNotifier {
   Map? settings;
 
-  SchoolAccount account;
+  late SchoolAccount account;
   List<SchoolAccount> accounts = [
     SchoolAccount("", "", "", [], [], API_TYPE.EcoleDirecte),
     SchoolAccount("", "", "", [], [], API_TYPE.EcoleDirecte),
     SchoolAccount("", "", "", [], [], API_TYPE.EcoleDirecte)
   ];
-  updateSetting(Map path, String key, var value) {
-    path[key] = value;
-    SettingsUtils.setSetting(settings);
-    notifyListeners();
-  }
 
   ///A boolean representing the use of the application
   bool? isFirstUse;
@@ -51,16 +40,35 @@ class ApplicationSystem extends ChangeNotifier {
   API? api;
 
   ///The chosen API
-  Offline? offline;
+  late Offline offline;
 
   ///App logger
-  Logger logger;
+  late Logger logger;
 
   ///All the app controllers
 
- late LoginController loginController;
- late GradesController gradesController;
-late HomeworkController homeworkController;
+  late LoginController loginController;
+
+  late GradesController gradesController;
+  late HomeworkController homeworkController;
+  exitApp() async {
+    try {
+      await this.offline.clearAll();
+      //Delete sharedPref
+      SharedPreferences preferences = await (SharedPreferences.getInstance() as Future<SharedPreferences>);
+      await preferences.clear();
+      //delte local setings and init them
+      this.settings!.clear();
+      this._initSettings();
+      //Import secureStorage
+      final storage = new FlutterSecureStorage();
+      //Delete all
+      await storage.deleteAll();
+      this.updateTheme("clair");
+    } catch (e) {
+      print(e);
+    }
+  }
 
   ///The most important function
   ///It will intialize Offline, APIs and background fetch
@@ -84,6 +92,18 @@ late HomeworkController homeworkController;
     homeworkController = HomeworkController(this.api);
   }
 
+  initControllers() async {
+    await this.gradesController.refresh(force: true);
+    await this.homeworkController.refresh(force: true);
+  }
+
+  updateSetting(Map path, String key, var value) {
+    path[key] = value;
+    SettingsUtils.setSetting(settings);
+    notifyListeners();
+  }
+
+//Leave app
   updateTheme(String themeName) {
     print("Updating theme to " + themeName);
     theme = appThemes[themeName];
@@ -95,33 +115,6 @@ late HomeworkController homeworkController;
         // status bar color
         ));
     notifyListeners();
-  }
-
-  _initSettings() async {
-    settings = await SettingsUtils.getSettings();
-    //Set theme to default
-    updateTheme(settings["user"]["global"]["theme"]);
-    notifyListeners();
-  }
-
-//Leave app
-  exitApp() async {
-    try {
-      await this.offline!.clearAll();
-      //Delete sharedPref
-      SharedPreferences preferences = await (SharedPreferences.getInstance() as Future<SharedPreferences>);
-      await preferences.clear();
-      //delte local setings and init them
-      this.settings!.clear();
-      this._initSettings();
-      //Import secureStorage
-      final storage = new FlutterSecureStorage();
-      //Delete all
-      await storage.deleteAll();
-      this.updateTheme("clair");
-    } catch (e) {
-      print(e);
-    }
   }
 
   _initBackgroundFetch() async {
@@ -146,11 +139,20 @@ late HomeworkController homeworkController;
   _initOffline() async {
     //Initiate an unlocked offline controller
     offline = Offline(false);
-    await offline!.init();
+    await offline.init();
   }
 
-  initControllers() async {
-    await this.gradesController.refresh(force: true);
-    await this.homeworkController.refresh(force: true);
+  _initSettings() async {
+    settings = await SettingsUtils.getSettings();
+    //Set theme to default
+    updateTheme(settings!["user"]["global"]["theme"]);
+    notifyListeners();
+  }
+}
+
+class Test {
+  Map? settings;
+  Test() {
+    settings = SettingsUtils.getAppSettings();
   }
 }

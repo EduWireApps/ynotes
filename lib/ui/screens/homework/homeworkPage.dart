@@ -345,7 +345,7 @@ class HomeworkPageState extends State<HomeworkPage> {
 
   getPinnedStateDayToUse() async {
     print(dateToUse);
-    var pinnedStatus = await appSys.offline!.pinnedHomework.getPinnedHomeworkSingleDate(dateToUse.toString());
+    var pinnedStatus = await appSys.offline.pinnedHomework.getPinnedHomeworkSingleDate(dateToUse.toString());
     if (mounted) {
       setState(() {
         isPinnedDateToUse = pinnedStatus;

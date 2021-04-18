@@ -3,10 +3,10 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteAPI.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
+import 'package:ynotes/core/apis/Pronote/pronoteMethods.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/core/logic/shared/loginController.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
@@ -25,54 +25,116 @@ bool loginLock = false;
 bool pollsLock = false;
 bool pollsRefreshRecursive = false;
 
-Future<List<PollInfo>?> getPronotePolls(bool forced) async {
-  List<PollInfo>? listPolls;
-  try {
-    if (forced) {
-      listPolls = await localClient.polls();
-      await appSys.offline!.polls.update(listPolls);
-      return listPolls;
-    } else {
-      listPolls = await appSys.offline!.polls.get();
-      if (listPolls == null) {
-        print("Error while returning offline polls");
-        listPolls = await localClient.polls();
-        await appSys.offline!.polls.update(listPolls);
-        return listPolls;
-      } else {
-        return listPolls;
-      }
-    }
-  } catch (e) {
-    listPolls = await appSys.offline!.polls.get();
-    return listPolls;
-  }
-}
 
 class APIPronote extends API {
-  PronoteClient localClient;
-  PronoteMethod pronoteMethod;
+  late PronoteClient localClient;
+  late PronoteMethod pronoteMethod;
+
+  int loginReqNumber = 0;
 
   APIPronote(Offline offlineController) : super(offlineController) {
-    this.type = API_TYPE.Pronote;
     pronoteMethod = PronoteMethod(localClient, appSys.account, this.offlineController);
+  }
+
+  @override
+  Future app(String appname, {String? args, String? action, CloudItem? folder}) async {
+    switch (appname) {
+      case "polls":
+        {
+          if (action == "get") {
+            int req = 0;
+            while (pollsLock == true && req < 10) {
+              req++;
+              await Future.delayed(const Duration(seconds: 2), () => "1");
+            }
+            if (pollsLock == false) {
+              try {
+                pollsLock = true;
+                List<PollInfo>? toReturn = await getPronotePolls(args == "forced");
+                pollsLock = false;
+                return toReturn;
+              } catch (e) {
+                if (!pollsRefreshRecursive) {
+                  pollsRefreshRecursive = true;
+                  pollsLock = false;
+                  await pronoteMethod.refreshClient();
+                  List<PollInfo>? toReturn = await getPronotePolls(args == "forced");
+
+                  return toReturn;
+                }
+                pollsLock = false;
+                print("Erreur pendant la collection des sondages/informations " + e.toString());
+              }
+            }
+          }
+          if (action == "read") {
+            int req = 0;
+            while (pollsLock == true && req < 10) {
+              req++;
+              await Future.delayed(const Duration(seconds: 2), () => "1");
+            }
+            try {
+              pollsLock = true;
+              await localClient.setPollRead(args ?? "");
+              pollsLock = false;
+            } catch (e) {
+              pollsLock = false;
+              if (!pollsRefreshRecursive) {
+                await pronoteMethod.refreshClient();
+                await localClient.setPollRead(args ?? "");
+              }
+            }
+          }
+          if (action == "answer") {
+            int req = 0;
+            while (pollsLock == true && req < 10) {
+              req++;
+              await Future.delayed(const Duration(seconds: 2), () => "1");
+            }
+            try {
+              pollsLock = true;
+              await localClient.setPollResponse(args ?? "");
+              pollsLock = false;
+            } catch (e) {
+              pollsLock = false;
+              if (!pollsRefreshRecursive) {
+                await pronoteMethod.refreshClient();
+                await localClient.setPollResponse(args ?? "");
+              }
+            }
+          }
+        }
+        break;
+    }
+  }
+
+  @override
+  Future<http.Request> downloadRequest(Document document) async {
+    String url = await localClient.downloadUrl(document);
+    http.Request request = http.Request('GET', Uri.parse(url));
+    return request;
+  }
+
+  @override
+  Future<List<SchoolAccount>> getAccounts() {
+    // TODO: implement getAccounts
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<DateTime>> getDatesNextHomework() {
+    // TODO: implement getDatesNextHomework
+    throw UnimplementedError();
   }
 
   @override
   // TODO: implement listApp
 
   @override
-  Future<List<Discipline>> getGrades({bool forceReload}) async {
+  Future<List<Discipline>?> getGrades({bool? forceReload}) async {
     return await pronoteMethod.fetchAnyData(
         pronoteMethod.grades, offlineController.disciplines.getDisciplines, "grades",
-        forceFetch: forceReload, isOfflineLocked: super.offlineController.locked);
-  }
-
-  @override
-  Future<List<Homework>> getNextHomework({bool forceReload}) async {
-    return await pronoteMethod.fetchAnyData(
-        pronoteMethod.nextHomework, offlineController.homework.getHomework, "homework",
-        forceFetch: forceReload, isOfflineLocked: super.offlineController.locked);
+        forceFetch: forceReload ?? false, isOfflineLocked: super.offlineController.locked);
   }
 
   @override
@@ -119,173 +181,15 @@ class APIPronote extends API {
     return null;
   }
 
-  int loginReqNumber = 0;
   @override
-  Future<List> login(username, password, {url, cas, mobileCasLogin}) async {
-    print(username + " " + password + " " + url);
-    int req = 0;
-    while (loginLock == true && req < 5) {
-      req++;
-      await Future.delayed(const Duration(seconds: 2), () => "1");
-    }
-    if (loginLock == false && loginReqNumber < 5) {
-      loginReqNumber = 0;
-      loginLock = true;
-      try {
-        var cookies = await callCas(cas, username, password, url ?? "");
-        localClient =
-            PronoteClient(url, username: username, password: password, mobileLogin: mobileCasLogin, cookies: cookies);
-
-        await localClient.init();
-        if (localClient.loggedIn) {
-          this.loggedIn = true;
-          loginLock = false;
-          pronoteMethod = PronoteMethod(localClient, appSys.account, this.offlineController);
-
-          return ([1, "Bienvenue $actualUser!"]);
-        } else {
-          loginLock = false;
-          return ([
-            0,
-            "Oups, une erreur a eu lieu. Vérifiez votre mot de passe et les autres informations de connexion.",
-            localClient.stepsLogger
-          ]);
-        }
-      } catch (e) {
-        loginLock = false;
-        localClient.stepsLogger.add("❌ Pronote login failed : " + e.toString());
-        print(e);
-        String error = "Une erreur a eu lieu. " + e.toString();
-        if (e.toString().contains("invalid url")) {
-          error = "L'URL entrée est invalide";
-        }
-        if (e.toString().contains("split")) {
-          error =
-              "Le format de l'URL entrée est invalide. Vérifiez qu'il correspond bien à celui fourni par votre établissement";
-        }
-        if (e.toString().contains("runes")) {
-          error = "Le mot de passe et/ou l'identifiant saisi(s) est/sont incorrect(s)";
-        }
-        if (e.toString().contains("IP")) {
-          error =
-              "Une erreur inattendue  a eu lieu. Pronote a peut-être temporairement suspendu votre adresse IP. Veuillez recommencer dans quelques minutes.";
-        }
-        if (e.toString().contains("SocketException")) {
-          error = "Impossible de se connecter à l'adresse saisie. Vérifiez cette dernière et votre connexion.";
-        }
-        if (e.toString().contains("Invalid or corrupted pad block")) {
-          error = "Le mot de passe et/ou l'identifiant saisi(s) est/sont incorrect(s)";
-        }
-        if (e.toString().contains("HTML PAGE")) {
-          error = "Problème de page HTML.";
-        }
-        if (e.toString().contains("nombre d'erreurs d'authentification autorisées")) {
-          error =
-              "Vous avez dépassé le nombre d'erreurs d'authentification authorisées ! Réessayez dans quelques minutes.";
-        }
-        if (e.toString().contains("Failed login request")) {
-          error = "Impossible de se connecter à l'URL renseignée. Vérifiez votre connexion et l'URL entrée.";
-        }
-        print("test");
-        await logFile(error);
-        return ([0, error, localClient.stepsLogger]);
-      }
-    } else {
-      loginReqNumber++;
-    }
+  Future<List<Homework>> getNextHomework({bool? forceReload}) async {
+    return await pronoteMethod.fetchAnyData(
+        pronoteMethod.nextHomework, offlineController.homework.getHomework, "homework",
+        forceFetch: forceReload ?? false, isOfflineLocked: super.offlineController.locked);
   }
 
   @override
-  Future<bool> testNewGrades() async {
-    return null;
-  }
-
-  @override
-  Future app(String appname, {String args, String action, CloudItem folder}) async {
-    switch (appname) {
-      case "polls":
-        {
-          if (action == "get") {
-            int req = 0;
-            while (pollsLock == true && req < 10) {
-              req++;
-              await Future.delayed(const Duration(seconds: 2), () => "1");
-            }
-            if (pollsLock == false) {
-              try {
-                pollsLock = true;
-                List<PollInfo> toReturn = await getPronotePolls(args == "forced");
-                pollsLock = false;
-                return toReturn;
-              } catch (e) {
-                if (!pollsRefreshRecursive) {
-                  pollsRefreshRecursive = true;
-                  pollsLock = false;
-                  await pronoteMethod.refreshClient();
-                  List<PollInfo> toReturn = await getPronotePolls(args == "forced");
-
-                  return toReturn;
-                }
-                pollsLock = false;
-                print("Erreur pendant la collection des sondages/informations " + e.toString());
-              }
-            }
-          }
-          if (action == "read") {
-            int req = 0;
-            while (pollsLock == true && req < 10) {
-              req++;
-              await Future.delayed(const Duration(seconds: 2), () => "1");
-            }
-            try {
-              pollsLock = true;
-              await localClient.setPollRead(args);
-              pollsLock = false;
-            } catch (e) {
-              pollsLock = false;
-              if (!pollsRefreshRecursive) {
-                await pronoteMethod.refreshClient();
-                await localClient.setPollRead(args);
-              }
-            }
-          }
-          if (action == "answer") {
-            int req = 0;
-            while (pollsLock == true && req < 10) {
-              req++;
-              await Future.delayed(const Duration(seconds: 2), () => "1");
-            }
-            try {
-              pollsLock = true;
-              await localClient.setPollResponse(args);
-              pollsLock = false;
-            } catch (e) {
-              pollsLock = false;
-              if (!pollsRefreshRecursive) {
-                await pronoteMethod.refreshClient();
-                await localClient.setPollResponse(args);
-              }
-            }
-          }
-        }
-        break;
-    }
-  }
-
-  @override
-  Future uploadFile(String contexte, String id, String filepath) {
-    // TODO: implement sendFile
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<List<DateTime>> getDatesNextHomework() {
-    // TODO: implement getDatesNextHomework
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<List<Period>> getPeriods() async {
+  Future<List<Lesson>?> getNextLessons(DateTime dateToUse, {bool? forceReload}) async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     List<Lesson>? toReturn;
     int req = 0;
@@ -298,7 +202,7 @@ class APIPronote extends API {
       lessonsLock = true;
       try {
         //get lessons from offline storage
-        var offlineLesson = await appSys.offline!.lessons.get(await get_week(dateToUse));
+        var offlineLesson = await appSys.offline.lessons.get(await get_week(dateToUse));
         if (offlineLesson != null) {
           toReturn = [];
           toReturn.addAll(offlineLesson);
@@ -311,7 +215,7 @@ class APIPronote extends API {
           try {
             List<Lesson> onlineLessons = await localClient.lessons(dateToUse);
 
-            await appSys.offline!.lessons.updateLessons(onlineLessons, await get_week(dateToUse));
+            await appSys.offline.lessons.updateLessons(onlineLessons, await get_week(dateToUse));
 
             toReturn = onlineLessons;
           } catch (e) {
@@ -356,7 +260,7 @@ class APIPronote extends API {
   getOfflinePeriods() async {
     try {
       List<Period> listPeriods = [];
-      List<Discipline>? disciplines = await appSys.offline!.disciplines.getDisciplines();
+      List<Discipline>? disciplines = await appSys.offline.disciplines.getDisciplines();
       List<Grade> grades = getAllGrades(disciplines, overrideLimit: true)!;
       grades.forEach((grade) {
         if (!listPeriods.any((period) => period.name == grade.periodName && period.id == grade.periodCode)) {
@@ -395,15 +299,8 @@ class APIPronote extends API {
     }
   }
 
-  @override
-  Future<http.Request> downloadRequest(Document document) async {
-    String url = await localClient.downloadUrl(document);
-    http.Request request = http.Request('GET', Uri.parse(url));
-    return request;
-  }
-
-  Future<List<PollInfo>> getPronotePolls(bool forced) async {
-    List<PollInfo> listPolls;
+  Future<List<PollInfo>?> getPronotePolls(bool forced) async {
+    List<PollInfo>? listPolls;
     try {
       if (forced) {
         listPolls = await localClient.polls() as List<PollInfo>;
@@ -427,8 +324,89 @@ class APIPronote extends API {
   }
 
   @override
-  Future<List<SchoolAccount>> getAccounts() {
-    // TODO: implement getAccounts
+  Future<List> login(username, password, {url, cas, mobileCasLogin}) async {
+    print(username + " " + password + " " + url);
+    int req = 0;
+    while (loginLock == true && req < 5) {
+      req++;
+      await Future.delayed(const Duration(seconds: 2), () => "1");
+    }
+    if (loginLock == false && loginReqNumber < 5) {
+      loginReqNumber = 0;
+      loginLock = true;
+      try {
+        var cookies = await callCas(cas, username, password, url ?? "");
+        localClient =
+            PronoteClient(url, username: username, password: password, mobileLogin: mobileCasLogin, cookies: cookies);
+
+        await localClient.init();
+        if (localClient.loggedIn) {
+          this.loggedIn = true;
+          loginLock = false;
+          pronoteMethod = PronoteMethod(localClient, appSys.account, this.offlineController);
+
+          return ([1, "Bienvenue $actualUser!"]);
+        } else {
+          loginLock = false;
+          return ([
+            0,
+            "Oups, une erreur a eu lieu. Vérifiez votre mot de passe et les autres informations de connexion.",
+            localClient.stepsLogger
+          ]);
+        }
+      } catch (e) {
+        loginLock = false;
+        localClient.stepsLogger?.add("❌ Pronote login failed : " + e.toString());
+        print(e);
+        String error = "Une erreur a eu lieu. " + e.toString();
+        if (e.toString().contains("invalid url")) {
+          error = "L'URL entrée est invalide";
+        }
+        if (e.toString().contains("split")) {
+          error =
+              "Le format de l'URL entrée est invalide. Vérifiez qu'il correspond bien à celui fourni par votre établissement";
+        }
+        if (e.toString().contains("runes")) {
+          error = "Le mot de passe et/ou l'identifiant saisi(s) est/sont incorrect(s)";
+        }
+        if (e.toString().contains("IP")) {
+          error =
+              "Une erreur inattendue  a eu lieu. Pronote a peut-être temporairement suspendu votre adresse IP. Veuillez recommencer dans quelques minutes.";
+        }
+        if (e.toString().contains("SocketException")) {
+          error = "Impossible de se connecter à l'adresse saisie. Vérifiez cette dernière et votre connexion.";
+        }
+        if (e.toString().contains("Invalid or corrupted pad block")) {
+          error = "Le mot de passe et/ou l'identifiant saisi(s) est/sont incorrect(s)";
+        }
+        if (e.toString().contains("HTML PAGE")) {
+          error = "Problème de page HTML.";
+        }
+        if (e.toString().contains("nombre d'erreurs d'authentification autorisées")) {
+          error =
+              "Vous avez dépassé le nombre d'erreurs d'authentification authorisées ! Réessayez dans quelques minutes.";
+        }
+        if (e.toString().contains("Failed login request")) {
+          error = "Impossible de se connecter à l'URL renseignée. Vérifiez votre connexion et l'URL entrée.";
+        }
+        print("test");
+        await logFile(error);
+        return ([0, error, localClient.stepsLogger]);
+      }
+    } else {
+      loginReqNumber++;
+      return [0, null];
+    }
+  }
+
+  @override
+  Future<bool?> testNewGrades() async {
+    return null;
+  }
+
+  @override
+  Future uploadFile(String contexte, String id, String filepath) {
+    // TODO: implement sendFile
     throw UnimplementedError();
   }
 }

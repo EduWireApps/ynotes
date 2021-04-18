@@ -39,7 +39,7 @@ class PronoteDisciplineConverter {
     //get grades
     List<Grade> _grades = grades(client, rawGrades);
     disciplines.forEach((element) {
-      element.gradesList.addAll(_grades.where((grade) => grade.disciplineName == element.disciplineName));
+      (element.gradesList ?? []).addAll(_grades.where((grade) => grade.disciplineName == element.disciplineName));
     });
     return disciplines;
   }
@@ -52,7 +52,7 @@ class PronoteDisciplineConverter {
       String periodCode = mapGet(gradeData, ["periode", "V", "L"]).hashCode.toString() ?? "";
       String periodName = mapGet(gradeData, ["periode", "V", "L"]) ?? "";
       String disciplineCode = (mapGet(gradeData, ["service", "V", "L"]) ?? "").hashCode.toString();
-      String subdisciplineCode;
+      String? subdisciplineCode;
       String disciplineName = mapGet(gradeData, ["service", "V", "L"]);
       bool letters = (mapGet(gradeData, ["note", "V"]) ?? "").contains("|");
       String weight = mapGet(gradeData, ["coefficient"]).toString();
@@ -60,12 +60,12 @@ class PronoteDisciplineConverter {
       String min = client.utils.gradeTranslate(mapGet(gradeData, ["noteMin", "V"]) ?? "");
       String max = client.utils.gradeTranslate(mapGet(gradeData, ["noteMax", "V"]) ?? "");
       String classAverage = client.utils.gradeTranslate(mapGet(gradeData, ["moyenne", "V"]) ?? "");
-      DateTime date = mapGet(gradeData, ["date", "V"]) != null
+      DateTime? date = mapGet(gradeData, ["date", "V"]) != null
           ? DateFormat("dd/MM/yyyy").parse(mapGet(gradeData, ["date", "V"]))
           : null;
       bool notSignificant = client.utils.gradeTranslate(mapGet(gradeData, ["note", "V"]) ?? "") == "NonNote";
       String testType = "Interrogation";
-      DateTime entryDate = mapGet(gradeData, ["date", "V"]) != null
+      DateTime? entryDate = mapGet(gradeData, ["date", "V"]) != null
           ? DateFormat("dd/MM/yyyy").parse(mapGet(gradeData, ["date", "V"]))
           : null;
       bool countAsZero =

@@ -233,7 +233,7 @@ class AppNotification {
           ledColor: Colors.white)
     ]);
     List<AgendaReminder> reminders =
-        await (appSys.offline!.reminders.getReminders(event.lesson!.id) as Future<List<AgendaReminder>>);
+        await (appSys.offline.reminders.getReminders(event.lesson!.id) as Future<List<AgendaReminder>>);
     await Future.forEach(reminders, (AgendaReminder rmd) async {
       //Unschedule existing
       if (rmd.alarm == alarmType.none) {

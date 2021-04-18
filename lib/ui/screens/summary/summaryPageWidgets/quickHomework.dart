@@ -373,7 +373,7 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
                     Container(
                       width: screenSize.size.width / 5 * 0.8,
                       child: FutureBuilder<bool>(
-                          future: appSys.offline!.doneHomework.getHWCompletion(widget._homework.id ?? ''),
+                          future: appSys.offline.doneHomework.getHWCompletion(widget._homework.id ?? ''),
                           initialData: false,
                           builder: (context, snapshot) {
                             bool? done = snapshot.data ?? false;
@@ -389,7 +389,7 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
                                   ? null
                                   : (bool? x) async {
                                       widget.refreshCallback();
-                                      await appSys.offline!.doneHomework.setHWCompletion(widget._homework.id, x);
+                                      await appSys.offline.doneHomework.setHWCompletion(widget._homework.id, x);
                                     },
                             );
                           }),

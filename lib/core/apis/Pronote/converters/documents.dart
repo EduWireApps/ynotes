@@ -7,8 +7,8 @@ class PronoteDocumentConverter {
       String documentName = document["L"].toString();
       String id = document["N"].toString();
       String type = document["G"].toString();
-      int length;
-      documents.add(Document(documentName,id,type,length));
+      int? length;
+      documents.add(Document(documentName, id, type, length));
     });
     return documents;
   }

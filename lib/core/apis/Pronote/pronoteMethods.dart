@@ -18,9 +18,9 @@ class PronoteMethod {
 
   PronoteMethod(this.client, this.account, this._offlineController);
 
-  Future<List<SchoolAccount>> accounts() {}
+  Future<List<SchoolAccount>?> accounts() async {}
 
-  Future<List<CloudItem>> cloudFolders() async {}
+  Future<List<CloudItem>?> cloudFolders() async {}
 
   fetchAnyData(dynamic onlineFetch, dynamic offlineFetch, String lockName,
       {bool forceFetch = false, isOfflineLocked = false}) async {
@@ -52,7 +52,7 @@ class PronoteMethod {
   Future<List<Discipline>> grades() async {
     List<PronotePeriod> periods = this.client.periods();
     List<Discipline> listDisciplines = [];
-    await Future.forEach(periods, (period) async {
+    await Future.forEach(periods, (PronotePeriod period) async {
       if (period != null) {
         var jsonData = {
           'donnees': {
@@ -71,18 +71,18 @@ class PronoteMethod {
     if (!_offlineController.locked) {
       await _offlineController.disciplines.updateDisciplines(listDisciplines);
     }
-    appSys.updateSetting(
-        appSys.settings["system"], "lastGradeCount", getAllGrades(listDisciplines, overrideLimit: true).length);
+    appSys.updateSetting(appSys.settings!["system"], "lastGradeCount",
+        (getAllGrades(listDisciplines, overrideLimit: true) ?? []).length);
     return listDisciplines;
   }
 
-  Future<List<Homework>> homeworkFor(DateTime date) async {}
+  Future<List<Homework>?> homeworkFor(DateTime date) async {}
 
-  Future<List<Lesson>> lessons(DateTime dateToUse, int week) {}
+  Future<List<Lesson>?> lessons(DateTime dateToUse, int week) async {}
 
   nextHomework() async {
     DateTime now = DateTime.now();
-    List<Homework> listHW =[];
+    List<Homework> listHW = [];
     final f = new DateFormat('dd/MM/yyyy');
     var dateTo = f.parse(this.client.funcOptions['donneesSec']['donnees']['General']['DerniereDate']['V']);
     var jsonData = {
@@ -92,7 +92,7 @@ class PronoteMethod {
     };
     List<Homework> hws =
         await request("PageCahierDeTexte", PronoteHomeworkConverter.homework, data: jsonData, onglet: 88);
-    hws.removeWhere((element) => element.date.isBefore(now));
+    hws.removeWhere((element) => element.date == null && element.date!.isBefore(now));
 
     listHW.addAll(hws);
     List<DateTime> pinnedDates = await _offlineController.pinnedHomework.getPinnedHomeworkDates();
@@ -105,7 +105,8 @@ class PronoteMethod {
       };
       List<Homework> pinnedHomework =
           await request("PageCahierDeTexte", PronoteHomeworkConverter.homework, data: jsonData, onglet: 88);
-      pinnedHomework.removeWhere((pinnedHWElement) => element.day != pinnedHWElement.date.day);
+      pinnedHomework.removeWhere((pinnedHWElement) =>
+          pinnedHWElement == null && pinnedHWElement.date == null && element.day != pinnedHWElement.date!.day);
       pinnedHomework.forEach((pinned) {
         if (!listHW.any((hw) => hw.id == pinned.id)) {
           listHW.add(pinned);
@@ -166,13 +167,13 @@ class PronoteMethod {
     }
   }
 
-  request(String functionName, Function converter, {var data, var customURL, int onglet}) async {
+  request(String functionName, Function converter, {var data, var customURL, int? onglet}) async {
     data = Map<dynamic, dynamic>.from(data);
     if (onglet != null) data['_Signature_'] = {'onglet': onglet};
     //If it is a parent account
     if (this.account.isParentAccount) data['_Signature_']["membre"] = {'N': this.account.studentID, 'G': 4};
 
-    return await converter(this.client, await this.client.communication.post(functionName, data: data));
+    return await converter(this.client, await this.client.communication!.post(functionName, data: data));
   }
 
   testLock(String key) {

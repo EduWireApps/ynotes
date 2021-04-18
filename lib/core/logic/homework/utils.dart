@@ -13,7 +13,7 @@ class HomeworkUtils {
         int done = 0;
 
         await Future.forEach(list, (dynamic element) async {
-          bool isDone = await appSys.offline!.doneHomework.getHWCompletion(element.id);
+          bool isDone = await appSys.offline.doneHomework.getHWCompletion(element.id);
           if (isDone) {
             done++;
           }
