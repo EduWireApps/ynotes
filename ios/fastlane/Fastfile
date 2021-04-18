@@ -11,7 +11,14 @@ platform :ios do
         setup_ci
         match(type: "appstore", readonly: is_ci)
         build_app(workspace: "Runner.xcworkspace", scheme: "Runner") # Change name of workspace
-        upload_to_testflight(changelog: ENV["CHANGELOG"] || "Pas de note de mise à jour fournie. Merci de consulter le changelog in-app.")
+        api_key = app_store_connect_api_key(
+            key_id: ENV["APP_STORE_API_KEY_ID"],
+            issuer_id: ENV["APP_STORE_API_KEY_ISSUER_ID"],
+            key_content: ENV["APP_STORE_API_KEY"] 
+            duration: 1200, # optional (maximum 1200)
+            in_house: false, # optional but may be required if using match/sigh
+          )
+        upload_to_testflight(api_key: api_key, changelog: ENV["CHANGELOG"] || "Pas de note de mise à jour fournie. Merci de consulter le changelog in-app.")
     end
     desc "Sets the version of the bundle to a RELEASE_VERSION passed in as an environment variable"
     lane :set_release_version do
