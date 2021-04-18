@@ -1,4 +1,4 @@
-git_url("git@github.com:ynotesapp/ynotes_certificates.git")
+git_url("https://github.com/EduWireApps/certificates")
 
 storage_mode("git")
 
