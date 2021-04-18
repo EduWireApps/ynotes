@@ -44,7 +44,24 @@ jobs:
       with:
         ruby-version: 2.7.2
         bundler-cache: true
-
+    - name: Download bundle dependencies
+      run: |
+        gem install bundler:2.0.2
+        bundle config path vendor/bundle
+        bundle install   
+      working-directory: ios/fastlane
+    
+    - name: Update to test flight
+      working-directory: ios
+      run: |
+        export LC_ALL=fr_FR.UTF-8
+        export LANG=fr_FR.UTF-8
+        bundle exec test
+      env:
+        MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+        APP_STORE_API_KEY_ID: ${{ secrets.APP_STORE_API_KEY_ID }},
+        APP_STORE_API_KEY_ISSUER_ID: ${{ secrets.APP_STORE_API_KEY_ISSUER_ID}},
+        APP_STORE_API_KEY: ${{ secrets.APP_STORE_API_KEY }},
     
     - name: Setup Flutter
       uses: subosito/flutter-action@v1
@@ -66,13 +83,7 @@ jobs:
 
       run: |
         pod install
-    - name: Download bundle dependencies
-      run: |
-        gem install bundler:2.0.2
-        bundle config path vendor/bundle
-        bundle install   
-      working-directory: ios/fastlane
-
+    
     - name: Update to test flight
       working-directory: ios
       run: |
@@ -83,5 +94,5 @@ jobs:
       env:
         MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
         APP_STORE_API_KEY_ID: ${{ secrets.APP_STORE_API_KEY_ID }},
-        APP_STORE_API_KEY_ISSUER_ID: ${{ secrets.APP_STORE_API_KEY_ISSUER_ID }},
+        APP_STORE_API_KEY_ISSUER_ID: ${{ secrets.APP_STORE_API_KEY_ISSUER_ID}},
         APP_STORE_API_KEY: ${{ secrets.APP_STORE_API_KEY }},
