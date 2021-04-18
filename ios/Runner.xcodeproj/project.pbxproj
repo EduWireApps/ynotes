@@ -378,9 +378,9 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = fr.ynotesapp.ynotes;
+				PRODUCT_BUNDLE_IDENTIFIER = fr.eduwire.ynotes;
 				PRODUCT_NAME = yNotes;
-				PROVISIONING_PROFILE_SPECIFIER = "match AppStore fr.ynotesapp.ynotes";
+				PROVISIONING_PROFILE_SPECIFIER = "match AppStore fr.eduwire.ynotes";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -521,9 +521,9 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = fr.ynotesapp.ynotes;
+				PRODUCT_BUNDLE_IDENTIFIER = fr.eduwire.ynotes;
 				PRODUCT_NAME = yNotes;
-				PROVISIONING_PROFILE_SPECIFIER = "match AppStore fr.ynotesapp.ynotes";
+				PROVISIONING_PROFILE_SPECIFIER = "match AppStore fr.eduwire.ynotes";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -558,9 +558,9 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flutter",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = fr.ynotesapp.ynotes;
+				PRODUCT_BUNDLE_IDENTIFIER = fr.eduwire.ynotes;
 				PRODUCT_NAME = yNotes;
-				PROVISIONING_PROFILE_SPECIFIER = "match AppStore fr.ynotesapp.ynotes";
+				PROVISIONING_PROFILE_SPECIFIER = "match AppStore fr.eduwire.ynotes";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
