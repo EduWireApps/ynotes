@@ -40,7 +40,7 @@ class EcoleDirecteDisciplineConverter {
               disciplinesList[disciplinesList.lastIndexWhere((disciplinesList) =>
                       disciplinesList.disciplineCode == rawData['codeMatiere'] &&
                       disciplinesList.period == periodeElement["periode"])]
-                  .subdisciplineCode
+                  .subdisciplineCode!
                   .add(rawData['codeSousMatiere']);
             } catch (e) {
               print(e);
