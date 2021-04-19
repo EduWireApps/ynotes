@@ -3,118 +3,36 @@ import 'dart:io';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/core/utils/fileUtils.dart';
-import 'package:ynotes/main.dart';
-import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/services/shared_preferences.dart';
-import 'package:ynotes/ui/screens/summary/summaryPage.dart';
+import 'package:ynotes/globals.dart';
 
-import 'ui/screens/summary/summaryPage.dart';
-
-launchURL(url) async {
-  if (await canLaunch(url)) {
-    await launch(url);
-  } else {
-    throw "L'adresse $url n'a pas pu être ouverte";
-  }
-}
+String actualUser = "";
 
 //Parsers list
-List parsers = ["EcoleDirecte", "Pronote"];
-
-Route router(Widget widget) {
-  return PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) => widget,
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      var begin = Offset(1.0, 0.0);
-      var end = Offset.zero;
-      var curve = Curves.ease;
-
-      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
-      return SlideTransition(
-        position: animation.drive(tween),
-        child: Material(child: child),
-      );
-    },
-  );
-}
-
 ///Color theme switcher, actually 0 for darkmode and 1 for lightmode
 int colorTheme = 0;
-String actualUser = "";
+
+List parsers = ["EcoleDirecte", "Pronote"];
+
+List<Discipline> specialities = List<Discipline>();
+TValue case2<TOptionType, TValue>(
+  TOptionType selectedOption,
+  Map<TOptionType, TValue> branches, [
+  TValue defaultValue = null,
+]) {
+  if (!branches.containsKey(selectedOption)) {
+    return defaultValue;
+  }
+
+  return branches[selectedOption];
+}
 
 //Connectivity  classs
 
-class ConnectionStatusSingleton {
-  //This creates the single instance by calling the `_internal` constructor specified below
-  static final ConnectionStatusSingleton _singleton = new ConnectionStatusSingleton._internal();
-  ConnectionStatusSingleton._internal();
-
-  //This is what's used to retrieve the instance through the app
-  static ConnectionStatusSingleton getInstance() => _singleton;
-
-  //This tracks the current connection status
-  bool hasConnection = false;
-
-  //This is how we'll allow subscribing to connection changes
-  StreamController connectionChangeController = new StreamController.broadcast();
-
-  //flutter_connectivity
-  final Connectivity _connectivity = Connectivity();
-
-  //Hook into flutter_connectivity's Stream to listen for changes
-  //And check the connection status out of the gate
-  void initialize() {
-    _connectivity.onConnectivityChanged.listen(_connectionChange);
-    checkConnection();
-  }
-
-  Stream get connectionChange => connectionChangeController.stream;
-
-  //A clean up method to close our StreamController
-  //   Because this is meant to exist through the entire application life cycle this isn't
-  //   really an issue
-  void dispose() {
-    connectionChangeController.close();
-  }
-
-  //flutter_connectivity's listener
-  void _connectionChange(ConnectivityResult result) {
-    checkConnection();
-  }
-
-  //The test to actually see if there is a connection
-  Future<bool> checkConnection() async {
-    bool previousConnection = hasConnection;
-
-    try {
-      final result = await InternetAddress.lookup('google.com');
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        hasConnection = true;
-      } else {
-        hasConnection = false;
-      }
-    } on SocketException catch (_) {
-      hasConnection = false;
-    }
-
-    //The connection status changed send out an update to all listeners
-    if (previousConnection != hasConnection) {
-      connectionChangeController.add(hasConnection);
-    }
-
-    return hasConnection;
-  }
-}
-
-//Get only grades as a list
 List<Grade> getAllGrades(List<Discipline> list, {bool overrideLimit = false, bool sortByWritingDate = true}) {
   if (appSys.api != null) {
     List<Grade> listToReturn = List();
@@ -162,21 +80,22 @@ List<Grade> getAllGrades(List<Discipline> list, {bool overrideLimit = false, boo
   }
 }
 
-//Redefine the switch statement
-TValue case2<TOptionType, TValue>(
-  TOptionType selectedOption,
-  Map<TOptionType, TValue> branches, [
-  TValue defaultValue = null,
-]) {
-  if (!branches.containsKey(selectedOption)) {
-    return defaultValue;
+//Get only grades as a list
+launchURL(url) async {
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw "L'adresse $url n'a pas pu être ouverte";
   }
-
-  return branches[selectedOption];
 }
 
-List<Discipline> specialities = List<Discipline>();
-//Refresh colors
+//Redefine the switch statement
+ReadStorage(_key) async {
+  String u = await storage.read(key: _key);
+
+  return u;
+}
+
 Future<List<Discipline>> refreshDisciplinesListColors(List<Discipline> list) async {
   List<Discipline> newList = List<Discipline>();
   list.forEach((f) async {
@@ -184,6 +103,25 @@ Future<List<Discipline>> refreshDisciplinesListColors(List<Discipline> list) asy
     newList.add(f);
   });
   return newList;
+}
+
+//Refresh colors
+Route router(Widget widget) {
+  return PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) => widget,
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      var begin = Offset(1.0, 0.0);
+      var end = Offset.zero;
+      var curve = Curves.ease;
+
+      var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+      return SlideTransition(
+        position: animation.drive(tween),
+        child: Material(child: child),
+      );
+    },
+  );
 }
 
 specialtiesSelectionAvailable() async {
@@ -205,8 +143,64 @@ specialtiesSelectionAvailable() async {
   }
 }
 
-ReadStorage(_key) async {
-  String u = await storage.read(key: _key);
+class ConnectionStatusSingleton {
+  //This creates the single instance by calling the `_internal` constructor specified below
+  static final ConnectionStatusSingleton _singleton = new ConnectionStatusSingleton._internal();
+  bool hasConnection = false;
 
-  return u;
+  //This is what's used to retrieve the instance through the app
+  StreamController connectionChangeController = new StreamController.broadcast();
+
+  //This tracks the current connection status
+  final Connectivity _connectivity = Connectivity();
+
+  //This is how we'll allow subscribing to connection changes
+  ConnectionStatusSingleton._internal();
+
+  //flutter_connectivity
+  Stream get connectionChange => connectionChangeController.stream;
+
+  //Hook into flutter_connectivity's Stream to listen for changes
+  //And check the connection status out of the gate
+  Future<bool> checkConnection() async {
+    bool previousConnection = hasConnection;
+
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+        hasConnection = true;
+      } else {
+        hasConnection = false;
+      }
+    } on SocketException catch (_) {
+      hasConnection = false;
+    }
+
+    //The connection status changed send out an update to all listeners
+    if (previousConnection != hasConnection) {
+      connectionChangeController.add(hasConnection);
+    }
+
+    return hasConnection;
+  }
+
+  void dispose() {
+    connectionChangeController.close();
+  }
+
+  //A clean up method to close our StreamController
+  //   Because this is meant to exist through the entire application life cycle this isn't
+  //   really an issue
+  void initialize() {
+    _connectivity.onConnectivityChanged.listen(_connectionChange);
+    checkConnection();
+  }
+
+  //flutter_connectivity's listener
+  void _connectionChange(ConnectivityResult result) {
+    checkConnection();
+  }
+
+  //The test to actually see if there is a connection
+  static ConnectionStatusSingleton getInstance() => _singleton;
 }

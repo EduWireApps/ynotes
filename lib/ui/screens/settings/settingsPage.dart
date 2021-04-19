@@ -12,7 +12,9 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:wiredash/wiredash.dart';
+import 'package:ynotes/core/apis/Pronote.dart';
 import 'package:ynotes/core/logic/appConfig/controller.dart';
+import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/services/platform.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
@@ -483,7 +485,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                           title: 'Bouton magique',
                           leading: Icon(MdiIcons.testTube, color: ThemeUtils.textColor()),
                           onTap: () async {
-                            print((await appSys.api.getPeriods()).map((e) => e.name));
+                      
                           },
                           titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                           subtitleTextStyle: TextStyle(
