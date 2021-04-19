@@ -70,10 +70,11 @@ jobs:
         working-directory: android/fastlane
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN}}
-        - name: Select Xcode Version
-      uses: maxim-lobanov/setup-xcode@v1
-      with:
-        xcode-version: latest-stable
+      
+      - name: Select Xcode Version
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+         xcode-version: latest-stable
     
       - name: Setup SSH Keys and known_hosts for fastlane match
         run: |
