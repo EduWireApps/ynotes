@@ -27,7 +27,7 @@ class SettingsUtils {
         "shakeToReport": false,
         "autoCloseDrawer": false,
       },
-      "summaryPage": {"summaryQuickHomework": 1},
+      "summaryPage": {"summaryQuickHomework": 11},
       "homeworkPage": {
         "isExpandedByDefault": false,
       },
