@@ -109,7 +109,7 @@ lane :githubrelease do
       end
   ensure
       github_release = set_github_release(
-      repository_name: "ModernChocolate/ynotes",
+      repository_name: "EduWireApps/ynotes",
       api_token: ENV["GITHUB_TOKEN"],
       name: "yNotes #{version}+#{build_number}",
       tag_name: "v#{version}+#{build_number}",

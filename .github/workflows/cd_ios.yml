@@ -8,7 +8,7 @@ on:
 
 jobs:
   # CD
-  deploy_android:
+  deploy_ios:
     runs-on: macos-latest
     # Beta release only
     if: github.ref == 'refs/heads/beta-releases'
