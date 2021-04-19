@@ -3,6 +3,7 @@ import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import '../../../usefulMethods.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
@@ -25,7 +26,7 @@ class _RecurringEventsDialogState extends State<RecurringEventsDialog> {
   }
 
   getReverseAB() async {
-    bool reverse = await getSetting("reverseWeekNames");
+    bool reverse = appSys.settings["user"]["agendaPage"]["reverseWeekNames"];
     if (reverse) {
       setState(() {
         weekTypes = ["Toutes les semaines", "Semaine B", "Semaine A"];
@@ -158,8 +159,7 @@ class _RecurringEventsDialogState extends State<RecurringEventsDialog> {
                             'Activée',
                             style: TextStyle(
                                 fontFamily: "Asap",
-                                color:
-                                    isDarkModeEnabled ? Colors.white.withOpacity(0.8) : Colors.black.withOpacity(0.8),
+                                color: ThemeUtils.textColor().withOpacity(0.8),
                                 fontSize: screenSize.size.width / 5 * 0.25),
                           ),
                           value: enabled,
@@ -197,8 +197,7 @@ class _RecurringEventsDialogState extends State<RecurringEventsDialog> {
                             'Tous les jours',
                             style: TextStyle(
                                 fontFamily: "Asap",
-                                color:
-                                    isDarkModeEnabled ? Colors.white.withOpacity(0.8) : Colors.black.withOpacity(0.8),
+                                color: ThemeUtils.textColor().withOpacity(0.8),
                                 fontSize: screenSize.size.width / 5 * 0.25),
                           ),
                           value: everyDay,

@@ -54,7 +54,6 @@ class AgendaEventChoice extends StatelessWidget {
                       color: ThemeUtils.textColor(),
                     ),
                     textAlign: TextAlign.center,
-                    alignment: AlignmentDirectional.topStart,
                     repeatForever: true,
                     duration: Duration(milliseconds: 8000),
                   )),

@@ -20,7 +20,7 @@ import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 
 import 'package:ynotes/main.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/globals.dart';import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'dart:async';
 import 'package:ynotes/ui/components/expandable_bottom_sheet-master/src/raw_expandable_bottom_sheet.dart';
 import 'dart:io';
@@ -57,7 +57,7 @@ class _AgendaPageState extends State<AgendaPage> {
   Future<void> refreshAgendaFuture({bool force = true}) async {
     if (mounted) {
       setState(() {
-        agendaFuture = localApi.getNextLessons(date, forceReload: force);
+        agendaFuture = appSys.api.getNextLessons(date, forceReload: force);
       });
     }
 
@@ -236,7 +236,7 @@ class _AgendaPageState extends State<AgendaPage> {
                           child: Material(
                             color: Colors.transparent,
                             child: Theme(
-                              data: isDarkModeEnabled ? ThemeData.dark() : ThemeData.light(),
+                              data: ThemeUtils.isThemeDark ? ThemeData.dark() : ThemeData.light(),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[SizedBox(child: child)],

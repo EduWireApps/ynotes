@@ -4,7 +4,6 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:alice/alice.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/offline/offline.dart';
@@ -13,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/apis/EcoleDirecte/ecoleDirecteCloud.dart';
 import 'package:ynotes/core/apis/EcoleDirecte/ecoleDirecteConverters.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
@@ -21,7 +21,6 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 
 import 'EcoleDirecte/ecoleDirecteMethods.dart';
 
-Alice alice = Alice();
 //Create a secure storage
 void CreateStorage(String key, String data) async {
   await storage.write(key: key, value: data);
@@ -62,7 +61,7 @@ class APIEcoleDirecte extends API {
   APIEcoleDirecte(Offline offlineController) : super(offlineController);
 
 //Get connection message and store token
-  Future<List> login(username, password, {url, cas}) async {
+  Future<List> login(username, password, {url, cas, mobileCasLogin}) async {
     final prefs = await SharedPreferences.getInstance();
     if (username == null) {
       username = "";
@@ -76,7 +75,7 @@ class APIEcoleDirecte extends API {
     String data = 'data={"identifiant": "$username", "motdepasse": "$password"}';
     //encode Map to JSON
     var body = data;
-    var response = await http.post(url, headers: headers, body: body).catchError((e) {
+    var response = await http.post(Uri.parse(url), headers: headers, body: body).catchError((e) {
       return "Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.";
     });
 
@@ -161,7 +160,8 @@ class APIEcoleDirecte extends API {
   Future<bool> testNewGrades() async {
     try {
       //Getting the offline count of grades
-      List<Grade> listOfflineGrades = getAllGrades(await offline.disciplines.getDisciplines(), overrideLimit: true);
+      List<Grade> listOfflineGrades =
+          getAllGrades(await appSys.offline.disciplines.getDisciplines(), overrideLimit: true);
       print("Offline length is ${listOfflineGrades.length}");
       //Getting the online count of grades
       List<Grade> listOnlineGrades =
@@ -301,7 +301,7 @@ Future getCloud(String args, String action, CloudItem item) async {
 
       case ("/"):
         {
-          return await EcoleDirecteMethod(offline).cloudFolders();
+          return await EcoleDirecteMethod(appSys.offline).cloudFolders();
         }
         break;
       default:
@@ -315,7 +315,7 @@ Future getCloud(String args, String action, CloudItem item) async {
 
 ///Returning Ecole Directe Mails, **checking** bool is used to only returns old mail number
 Future getMails({bool checking}) async {
-  await EcoleDirecteMethod(offline).testToken();
+  await EcoleDirecteMethod(appSys.offline).testToken();
   String id = await storage.read(key: "userID");
   var url = 'https://api.ecoledirecte.com/v3/eleves/$id/messages.awp?verbe=getall&typeRecuperation=all';
 
@@ -323,7 +323,7 @@ Future getMails({bool checking}) async {
   String data = 'data={"token": "$token"}';
   //encode Map to JSON
   var body = data;
-  var response = await http.post(url, headers: headers, body: body).catchError((e) {
+  var response = await http.post(Uri.parse(url), headers: headers, body: body).catchError((e) {
     throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou reessayez plus tard.");
   });
   print("Starting the mails collection");
@@ -361,8 +361,7 @@ Future getMails({bool checking}) async {
       if (checking == null) {
         print("checking mails");
         List<Mail> receivedMails = mailsList.where((element) => element.mtype == "received").toList();
-
-        setIntSetting("mailNumber", receivedMails.length);
+        appSys.updateSetting(appSys.settings["system"], "lastMailCount", receivedMails.length);
         print("checked mails");
       }
 
@@ -379,7 +378,7 @@ Future getMails({bool checking}) async {
 }
 
 Future readMail(String mailId, bool read) async {
-  await EcoleDirecteMethod(offline).testToken();
+  await EcoleDirecteMethod(appSys.offline).testToken();
   String id = await storage.read(key: "userID");
   var url = 'https://api.ecoledirecte.com/v3/eleves/$id/messages/$mailId.awp?verbe=get&mode=destinataire';
 
@@ -387,7 +386,7 @@ Future readMail(String mailId, bool read) async {
   String data = 'data={"token": "$token"}';
   //encode Map to JSON
   var body = data;
-  var response = await http.post(url, headers: headers, body: body).catchError((e) {
+  var response = await http.post(Uri.parse(url), headers: headers, body: body).catchError((e) {
     throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou reessayez plus tard.");
   });
   print("Starting the mail reading");

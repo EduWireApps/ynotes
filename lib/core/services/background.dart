@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:workmanager/workmanager.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/services/shared_preferences.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/apis/model.dart';
@@ -19,7 +19,7 @@ class BackgroundService {
     //await LocalNotification.showDebugNotification();
     try {
 //Ensure that grades notification are enabled and battery saver disabled
-      if (await getSetting("notificationNewGrade") && !await getSetting("batterySaver")) {
+      if (appSys.settings["user"]["global"]["disableAtDayEnd"] && !appSys.settings["user"]["global"]["batterySaver"]) {
         logFile("New grade test triggered");
         if (await testNewGrades()) {
           await AppNotification.showNewGradeNotification();
@@ -29,7 +29,8 @@ class BackgroundService {
       } else {
         print("New grade notification disabled");
       }
-      if (await getSetting("notificationNewMail") && !await getSetting("batterySaver")) {
+      if (appSys.settings["user"]["global"]["notificationNewMail"] &&
+          !appSys.settings["user"]["global"]["batterySaver"]) {
         logFile("New mail test triggered");
 
         Mail mail = await testNewMails();
@@ -42,7 +43,7 @@ class BackgroundService {
       } else {
         print("New mail notification disabled");
       }
-      if (await getSetting("agendaOnGoingNotification")) {
+      if (appSys.settings["user"]["agendaPage"]["agendaOnGoingNotification"] ) {
         print("Setting On going notification");
         await AppNotification.setOnGoingNotification(dontShowActual: true);
       } else {
@@ -59,12 +60,11 @@ class BackgroundService {
   static testNewGrades() async {
     try {
       //Get the old number of mails
-      var oldGradesLength = await getIntSetting("gradesNumber");
+      var oldGradesLength = appSys.settings["system"]["lastGradeCount"];
       //Getting the offline count of grades
       //instanciate an offline controller read only
       Offline _offline = Offline(true);
-      await _offline.init();
-      await reloadChosenApi();
+      await appSys.offline.init();
       API backgroundFetchApi = APIManager(_offline);
 
       print("Old grades length is ${oldGradesLength}");
@@ -97,7 +97,7 @@ class BackgroundService {
   static testNewMails() async {
     try {
       //Get the old number of mails
-      var oldMailLength = await getIntSetting("mailNumber");
+      var oldMailLength = appSys.settings["system"]["lastMailCount"];
       print("Old length is $oldMailLength");
       //Get new mails
       List<Mail> mails = await getMails();
@@ -108,7 +108,7 @@ class BackgroundService {
         DateTime dateb = DateTime.parse(b.date);
         return datea.compareTo(dateb);
       });
-      var newMailLength = await getIntSetting("mailNumber");
+      var newMailLength = appSys.settings["system"]["lastMailCount"];
 
       await logFile("Mails checking triggered");
       print("New length is ${newMailLength}");
@@ -128,13 +128,5 @@ class BackgroundService {
       print("Erreur dans la verification de nouveaux mails hors ligne " + e.toString());
       return null;
     }
-  }
-
-  static Future<void> callbackDispatcher() async {
-    Workmanager.executeTask((task, inputData) async {
-      print("Called background fetch."); //simpleTask will be emitted here.
-      await backgroundFetchHeadlessTask("");
-      return Future.value(true);
-    });
   }
 }

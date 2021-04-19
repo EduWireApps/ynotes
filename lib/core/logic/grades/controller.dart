@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/services/shared_preferences.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 ///To use to collect grades in a view
@@ -82,7 +83,6 @@ class GradesController extends ChangeNotifier {
     _setAverage();
     _setBestAverage();
     await _setListSpecialties();
-
     notifyListeners();
   }
 
@@ -103,7 +103,7 @@ class GradesController extends ChangeNotifier {
     double temp;
     List<double> averages = List();
     for (Discipline f in disciplines().where((i) => i.period == _period)) {
-      if (chosenParser == 1) {
+      if (appSys.settings["system"]["chosenParser"] == 1) {
         if (f.generalAverage != null) {
           double _temp = double.tryParse(f.generalAverage.replaceAll(",", "."));
           if (temp != null && !temp.isNaN) {
@@ -173,7 +173,7 @@ class GradesController extends ChangeNotifier {
           }
           break;
         case "littérature":
-          if (chosenParser == 0) {
+          if (appSys.settings["system"]["chosenParser"] == 0) {
             List<String> codeMatiere = ["FRANC", "HI-GE", "AGL1", "ESP2"];
 
             if (f.period == _period &&
@@ -203,7 +203,7 @@ class GradesController extends ChangeNotifier {
 
           break;
         case "sciences":
-          if (chosenParser == 0) {
+          if (appSys.settings["system"]["chosenParser"] == 0) {
             List<String> codeMatiere = ["SVT", "MATHS", "G-SCI", "PH-CH"];
             if (f.period == _period &&
                 codeMatiere.any((test) {

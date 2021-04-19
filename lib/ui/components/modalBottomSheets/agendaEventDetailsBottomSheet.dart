@@ -9,6 +9,7 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 
 Future<void> lessonDetails(context, AgendaEvent event) async {
   return showModalBottomSheet(
@@ -40,7 +41,7 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
   }
 
   void getAssociatedReminders() async {
-    List<AgendaReminder> remindersOnline = await offline.reminders.getReminders(widget.event.id);
+    List<AgendaReminder> remindersOnline = await appSys.offline.reminders.getReminders(widget.event.id);
     setState(() {
       if (remindersOnline != null) {
         reminders = remindersOnline;
@@ -106,7 +107,7 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                                     Navigator.pop(context);
                                   }
                                 } else {
-                                  await offline.agendaEvents.addAgendaEvent(temp, await get_week(temp.start));
+                                  await appSys.offline.agendaEvents.addAgendaEvent(temp, await get_week(temp.start));
                                   await AppNotification.scheduleAgendaReminders(temp);
                                 }
                                 setState(() {
@@ -203,7 +204,7 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                             setState(() {
                               reminders.add(reminder);
                             });
-                            offline.reminders.updateReminders(reminder);
+                            appSys.offline.reminders.updateReminders(reminder);
                             await AppNotification.scheduleReminders(widget.event);
                           }
                         },
@@ -236,7 +237,7 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                                             setState(() {
                                               reminders.add(reminder);
                                             });
-                                            offline.reminders.updateReminders(reminder);
+                                            appSys.offline.reminders.updateReminders(reminder);
                                             await AppNotification.scheduleReminders(widget.event);
                                           }
                                         },
@@ -307,7 +308,7 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                               setState(() {
                                 reminders.add(reminder);
                               });
-                              offline.reminders.updateReminders(reminder);
+                              appSys.offline.reminders.updateReminders(reminder);
                               await AppNotification.scheduleReminders(widget.event);
                             }
                           }
@@ -351,7 +352,7 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                                                 setState(() {
                                                   reminders.add(reminder);
                                                 });
-                                                offline.reminders.updateReminders(reminder);
+                                                appSys.offline.reminders.updateReminders(reminder);
                                                 await AppNotification.scheduleReminders(widget.event);
                                               }
                                             }

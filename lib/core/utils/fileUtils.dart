@@ -1,12 +1,14 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:csv/csv.dart';
 import 'package:ext_storage/ext_storage.dart';
 import 'package:flutter/services.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 
 class FileInfo {
@@ -55,7 +57,6 @@ class FolderAppUtil {
 
 ///Every action related to files
 class FileAppUtil {
-  
   static writeInFile(String data, String fileName) async {
     print("Writing");
     try {
@@ -101,6 +102,41 @@ class FileAppUtil {
     } else {
       return null;
     }
+  }
+
+  static getCsv(List<Grade> associateGradeList) async {
+    //create an element rows of type list of list. All the above data set are stored in associate list
+//Let associate be a model class with attributes name,gender and age and associateList be a list of associate model class.
+
+    List<List<dynamic>> rows = List<List<dynamic>>();
+    for (int i = 0; i < associateGradeList.length; i++) {
+      List<dynamic> row = List();
+
+      //row refer to each column of a row in csv file and rows refer to each row in a file
+      row.add(associateGradeList[i].value);
+      row.add(associateGradeList[i].disciplineName);
+      row.add(associateGradeList[i].date);
+      row.add(associateGradeList[i].entryDate);
+      row.add(associateGradeList[i].countAsZero);
+      row.add(associateGradeList[i].periodCode);
+      row.add(associateGradeList[i].periodName);
+      row.add(associateGradeList[i].testName);
+
+      row.add(associateGradeList[i].hashCode);
+
+      rows.add(row);
+    }
+
+//store file in documents folder
+
+    String dir = (await getExternalStorageDirectory()).absolute.path + "/";
+    var file = "$dir";
+    File f = new File(file + "filename.csv");
+
+// convert rows to String and write as csv file
+
+    String csv = const ListToCsvConverter().convert(rows);
+    f.writeAsString(csv);
   }
 
 //Open a file

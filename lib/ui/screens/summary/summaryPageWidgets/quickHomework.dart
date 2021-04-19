@@ -11,7 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:liquid_progress_indicator/liquid_progress_indicator.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:ynotes/UI/components/columnGenerator.dart';
+import 'package:ynotes/ui/components/columnGenerator.dart';
 import 'package:ynotes/core/logic/homework/controller.dart';
 import 'package:ynotes/core/logic/homework/utils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
@@ -19,6 +19,7 @@ import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/screens/summary/summaryPageWidgets/quickHomeworkCurvedContainer.dart';
 
 class QuickHomework extends StatefulWidget {
@@ -376,7 +377,7 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
                     Container(
                       width: screenSize.size.width / 5 * 0.8,
                       child: FutureBuilder(
-                          future: offline.doneHomework.getHWCompletion(widget._homework.id ?? ''),
+                          future: appSys.offline.doneHomework.getHWCompletion(widget._homework.id ?? ''),
                           initialData: false,
                           builder: (context, snapshot) {
                             bool done = snapshot.data;
@@ -390,11 +391,11 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
                                       .widget
                                       ._homework
                                       .date
-                                      .isAtSameMomentAs(DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now())))
+                                      .isBefore(DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now())))
                                   ? null
                                   : (bool x) async {
                                       widget.refreshCallback();
-                                      await offline.doneHomework.setHWCompletion(widget._homework.id, x);
+                                      await appSys.offline.doneHomework.setHWCompletion(widget._homework.id, x);
                                     },
                             );
                           }),

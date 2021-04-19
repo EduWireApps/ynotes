@@ -1,6 +1,7 @@
 import 'package:hive/hive.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/offline/offline.dart';
+import 'package:ynotes/globals.dart';
 
 class RemindersOffline extends Offline {
   Offline parent;
@@ -30,7 +31,6 @@ class RemindersOffline extends Offline {
     if (!locked) {
       print("Update reminders");
       try {
-        
         var old = await parent.agendaBox.get("reminders");
         List<AgendaReminder> offline = List();
         if (old != null) {

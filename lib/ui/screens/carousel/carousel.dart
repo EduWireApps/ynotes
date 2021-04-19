@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:permission_handler/permission_handler.dart';
+import 'package:ynotes/core/logic/appConfig/controller.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -13,6 +16,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/usefulMethods.dart';
 
@@ -59,7 +63,8 @@ class _page1State extends State<page1> {
     return Stack(
       children: <Widget>[
         Transform.translate(
-          offset: Offset(-(widget.offset) * 400 - 75 + 75 * widget.offset, -135 + 135 * widget.offset),
+          offset: Offset(-(widget.offset) * 400 - 75 + 75 * widget.offset,
+              -135 + 135 * widget.offset),
           child: Align(
               alignment: Alignment.center,
               child: Transform.rotate(
@@ -84,7 +89,9 @@ class _page1State extends State<page1> {
                       TextSpan(
                         text: "Bienvenue dans",
                         children: <TextSpan>[
-                          TextSpan(text: ' yNotes !', style: TextStyle(fontWeight: FontWeight.bold)),
+                          TextSpan(
+                              text: ' yNotes !',
+                              style: TextStyle(fontWeight: FontWeight.bold)),
                         ],
                       ),
                       textAlign: TextAlign.center,
@@ -112,7 +119,8 @@ class _page1State extends State<page1> {
                           decoration: ShapeDecoration(
                             color: Color(0xFFD5B872),
                             shape: RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(MediaQuery.of(context).size.width / 5 * 0.5),
+                              borderRadius: new BorderRadius.circular(
+                                  MediaQuery.of(context).size.width / 5 * 0.5),
                             ),
                           ),
                           child: Align(
@@ -123,17 +131,22 @@ class _page1State extends State<page1> {
                               decoration: ShapeDecoration(
                                 color: Color(0xFF3F3F3F),
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: new BorderRadius.circular(MediaQuery.of(context).size.width),
+                                  borderRadius: new BorderRadius.circular(
+                                      MediaQuery.of(context).size.width),
                                 ),
                               ),
                               child: Align(
                                 alignment: Alignment.center,
                                 child: Container(
                                   margin: EdgeInsets.only(left: 22, top: 10),
-                                  width: MediaQuery.of(context).size.width / 3.5,
-                                  height: MediaQuery.of(context).size.width / 3.5,
-                                  child:
-                                      Image(fit: BoxFit.fill, image: AssetImage('assets/images/marks/3.0x/mark.png')),
+                                  width:
+                                      MediaQuery.of(context).size.width / 3.5,
+                                  height:
+                                      MediaQuery.of(context).size.width / 3.5,
+                                  child: Image(
+                                      fit: BoxFit.fill,
+                                      image: AssetImage(
+                                          'assets/images/marks/3.0x/mark.png')),
                                 ),
                               ),
                             ),
@@ -160,7 +173,8 @@ class _page1State extends State<page1> {
                         decoration: ShapeDecoration(
                           color: Color(0xFFC9463C),
                           shape: RoundedRectangleBorder(
-                            borderRadius: new BorderRadius.circular(MediaQuery.of(context).size.width / 5 * 0.5),
+                            borderRadius: new BorderRadius.circular(
+                                MediaQuery.of(context).size.width / 5 * 0.5),
                           ),
                         ),
                         child: Align(
@@ -171,7 +185,8 @@ class _page1State extends State<page1> {
                             decoration: ShapeDecoration(
                               color: Color(0xFF3F3F3F),
                               shape: RoundedRectangleBorder(
-                                borderRadius: new BorderRadius.circular(MediaQuery.of(context).size.width),
+                                borderRadius: new BorderRadius.circular(
+                                    MediaQuery.of(context).size.width),
                               ),
                             ),
                             child: Align(
@@ -180,7 +195,10 @@ class _page1State extends State<page1> {
                                 margin: EdgeInsets.only(left: 22, top: 10),
                                 width: MediaQuery.of(context).size.width / 3.5,
                                 height: MediaQuery.of(context).size.width / 3.5,
-                                child: Image(fit: BoxFit.fill, image: AssetImage('assets/images/marks/3.0x/mark.png')),
+                                child: Image(
+                                    fit: BoxFit.fill,
+                                    image: AssetImage(
+                                        'assets/images/marks/3.0x/mark.png')),
                               ),
                             ),
                           ),
@@ -219,7 +237,8 @@ class _page1State extends State<page1> {
                         decoration: ShapeDecoration(
                           color: Color(0xFF1CA68A),
                           shape: RoundedRectangleBorder(
-                            borderRadius: new BorderRadius.circular(MediaQuery.of(context).size.width / 5 * 0.5),
+                            borderRadius: new BorderRadius.circular(
+                                MediaQuery.of(context).size.width / 5 * 0.5),
                           ),
                         ),
                         child: Align(
@@ -230,7 +249,8 @@ class _page1State extends State<page1> {
                             decoration: ShapeDecoration(
                               color: Color(0xFF3F3F3F),
                               shape: RoundedRectangleBorder(
-                                borderRadius: new BorderRadius.circular(MediaQuery.of(context).size.width),
+                                borderRadius: new BorderRadius.circular(
+                                    MediaQuery.of(context).size.width),
                               ),
                             ),
                             child: Align(
@@ -239,7 +259,10 @@ class _page1State extends State<page1> {
                                 margin: EdgeInsets.only(left: 22, top: 10),
                                 width: MediaQuery.of(context).size.width / 3.5,
                                 height: MediaQuery.of(context).size.width / 3.5,
-                                child: Image(fit: BoxFit.fill, image: AssetImage('assets/images/marks/3.0x/mark.png')),
+                                child: Image(
+                                    fit: BoxFit.fill,
+                                    image: AssetImage(
+                                        'assets/images/marks/3.0x/mark.png')),
                               ),
                             ),
                           ),
@@ -266,9 +289,13 @@ class _page1State extends State<page1> {
                       TextSpan(
                         text: "Car les",
                         children: <TextSpan>[
-                          TextSpan(text: ' outils ', style: TextStyle(fontWeight: FontWeight.bold)),
+                          TextSpan(
+                              text: ' outils ',
+                              style: TextStyle(fontWeight: FontWeight.bold)),
                           TextSpan(text: ' sont aussi importants que le'),
-                          TextSpan(text: ' travail...', style: TextStyle(fontWeight: FontWeight.bold)),
+                          TextSpan(
+                              text: ' travail...',
+                              style: TextStyle(fontWeight: FontWeight.bold)),
                         ],
                       ),
                       textAlign: TextAlign.center,
@@ -297,28 +324,40 @@ class _page2State extends State<page2> {
                   child: Container(
                       height: 100,
                       width: 100,
-                      child: FittedBox(fit: BoxFit.fill, child: Image.asset('assets/images/shelves/calendar.png'))),
+                      child: FittedBox(
+                          fit: BoxFit.fill,
+                          child: Image.asset(
+                              'assets/images/shelves/calendar.png'))),
                 ),
                 Transform.translate(
                   offset: Offset(70 - (widget.offset - 1) * 20, -157),
                   child: Container(
                       height: 120,
                       width: 120,
-                      child: FittedBox(fit: BoxFit.fill, child: Image.asset('assets/images/shelves/clock.png'))),
+                      child: FittedBox(
+                          fit: BoxFit.fill,
+                          child:
+                              Image.asset('assets/images/shelves/clock.png'))),
                 ),
                 Transform.translate(
                   offset: Offset(0 - (widget.offset - 1) * 400, -90),
                   child: Container(
                       height: 170,
                       width: 320,
-                      child: FittedBox(fit: BoxFit.fill, child: Image.asset('assets/images/shelves/shelve1.png'))),
+                      child: FittedBox(
+                          fit: BoxFit.fill,
+                          child: Image.asset(
+                              'assets/images/shelves/shelve1.png'))),
                 ),
                 Transform.translate(
                   offset: Offset(0 - (widget.offset - 1) * 300, 90),
                   child: Container(
                       height: 90,
                       width: 320,
-                      child: FittedBox(fit: BoxFit.fill, child: Image.asset('assets/images/shelves/shelve2.png'))),
+                      child: FittedBox(
+                          fit: BoxFit.fill,
+                          child: Image.asset(
+                              'assets/images/shelves/shelve2.png'))),
                 ),
               ],
             ),
@@ -337,7 +376,9 @@ class _page2State extends State<page2> {
                         TextSpan(
                           text: "...emmenez l'école",
                           children: <TextSpan>[
-                            TextSpan(text: ' dans votre poche ! ', style: TextStyle(fontWeight: FontWeight.bold)),
+                            TextSpan(
+                                text: ' dans votre poche ! ',
+                                style: TextStyle(fontWeight: FontWeight.bold)),
                           ],
                         ),
                         textAlign: TextAlign.center,
@@ -357,7 +398,8 @@ class _page3State extends State<page3> {
     return Stack(
       children: <Widget>[
         Positioned(
-          left: MediaQuery.of(context).size.width / 8 - (widget.offset - 2) * 250,
+          left:
+              MediaQuery.of(context).size.width / 8 - (widget.offset - 2) * 250,
           child: Align(
               alignment: Alignment.center,
               child: Opacity(
@@ -373,7 +415,8 @@ class _page3State extends State<page3> {
               )),
         ),
         Positioned(
-          right: MediaQuery.of(context).size.width / 8 + (widget.offset - 2) * 70,
+          right:
+              MediaQuery.of(context).size.width / 8 + (widget.offset - 2) * 70,
           top: MediaQuery.of(context).size.height / 5,
           child: Align(
               alignment: Alignment.center,
@@ -390,7 +433,8 @@ class _page3State extends State<page3> {
               )),
         ),
         Positioned(
-          left: MediaQuery.of(context).size.width / 3.5 - (widget.offset - 2) * 310,
+          left: MediaQuery.of(context).size.width / 3.5 -
+              (widget.offset - 2) * 310,
           top: MediaQuery.of(context).size.height / 2.3,
           child: Align(
               alignment: Alignment.center,
@@ -407,7 +451,8 @@ class _page3State extends State<page3> {
               )),
         ),
         Positioned(
-          left: MediaQuery.of(context).size.width / 12 - (widget.offset - 2) * 280,
+          left: MediaQuery.of(context).size.width / 12 -
+              (widget.offset - 2) * 280,
           top: MediaQuery.of(context).size.height / 4,
           child: Align(
               alignment: Alignment.center,
@@ -438,11 +483,17 @@ class _page3State extends State<page3> {
                         text: "...sans oublier de gérer votre",
                         children: <TextSpan>[
                           TextSpan(
-                              text: ' espace !', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+                              text: ' espace !',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white)),
                         ],
                       ),
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontFamily: "Asap", fontSize: 30.0, color: Colors.white)))),
+                      style: TextStyle(
+                          fontFamily: "Asap",
+                          fontSize: 30.0,
+                          color: Colors.white)))),
         ),
       ],
     );
@@ -464,7 +515,7 @@ class _page4State extends State<page4> {
 
   void refreshCarouselDLFuture() {
     setState(() {
-      carouselDisciplineListFuture = localApi.getGrades();
+      carouselDisciplineListFuture = appSys.api.getGrades();
     });
   }
 
@@ -493,12 +544,6 @@ class _page4State extends State<page4> {
   List<String> chosenSpecialties = List();
   @override
   Widget build(BuildContext context) {
-    SchedulerBinding.instance.addPostFrameCallback((_) => mounted
-        ? setState(() {
-            isDarkModeEnabled = Provider.of<AppStateNotifier>(context, listen: false).isDarkMode;
-          })
-        : null);
-
     var screenSize = MediaQuery.of(context);
     double opacityvalue = 0;
     if (widget.offset - 1 > 0 && widget.offset - 1 < 1) {
@@ -506,193 +551,205 @@ class _page4State extends State<page4> {
     } else {
       opacityvalue = 0;
     }
-    return Container(
-      height: screenSize.size.height,
-      color: Theme.of(context).backgroundColor,
-      child: CupertinoScrollbar(
-        child: SingleChildScrollView(
-          child: Container(
-            height: screenSize.size.height,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  "Paramètrons votre application",
-                  style: TextStyle(
-                      fontFamily: "Asap", fontSize: screenSize.size.height / 10 * 0.35, color: ThemeUtils.textColor()),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(
-                  height: screenSize.size.height / 10 * 0.1,
-                ),
-                SizedBox(
-                  height: screenSize.size.height / 10 * 0.2,
-                ),
-                ListTile(
-                    title: Text(
-                      "Choix de spécialités",
+    return ChangeNotifierProvider<ApplicationSystem>.value(
+      value: appSys,
+      child: Consumer<ApplicationSystem>(builder: (buildContext, model, child) {
+        return Container(
+          height: screenSize.size.height,
+          color: Theme.of(context).backgroundColor,
+          child: CupertinoScrollbar(
+            child: SingleChildScrollView(
+              child: Container(
+                height: screenSize.size.height,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      "Paramètrons votre application",
                       style: TextStyle(
                           fontFamily: "Asap",
-                          color: ThemeUtils.textColor(),
-                          fontSize: screenSize.size.height / 10 * 0.3),
+                          fontSize: screenSize.size.height / 10 * 0.35,
+                          color: ThemeUtils.textColor()),
+                      textAlign: TextAlign.center,
                     ),
-                    leading: Icon(MdiIcons.formatListBulleted, color: ThemeUtils.textColor()),
-                    onTap: () {
-                      CustomDialogs.showSpecialtiesChoice(context);
-                    }),
-                SizedBox(
-                  height: screenSize.size.height / 10 * 0.2,
-                ),
-                Text(
-                  "De quel côté de la force êtes vous ?",
-                  style: TextStyle(
-                    fontFamily: "Asap",
-                    fontSize: screenSize.size.height / 10 * 0.27,
-                    color: ThemeUtils.textColor(),
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                Divider(
-                  color: ThemeUtils.textColor(),
-                ),
-                FutureBuilder(
-                    future: getSetting("nightmode"),
-                    initialData: false,
-                    builder: (context, snapshot) {
-                      return SwitchListTile(
-                        value: snapshot.data,
-                        title: Text("Mode nuit",
-                            style: TextStyle(
-                                fontFamily: "Asap",
-                                color: ThemeUtils.textColor(),
-                                fontSize: screenSize.size.height / 10 * 0.3)),
-                        onChanged: (value) {
-                          setState(() {
-                            Provider.of<AppStateNotifier>(context, listen: false).updateTheme(value);
-                            setSetting("nightmode", value);
-                          });
-                        },
-                        secondary: Icon(
-                          Icons.lightbulb_outline,
-                          color: ThemeUtils.textColor(),
-                        ),
-                      );
-                    }),
-                Divider(
-                  color: ThemeUtils.textColor(),
-                ),
-                Text(
-                  "Notifications",
-                  style: TextStyle(
-                      fontFamily: "Asap", fontSize: screenSize.size.height / 10 * 0.27, color: ThemeUtils.textColor()),
-                  textAlign: TextAlign.center,
-                ),
-                Divider(),
-                FutureBuilder(
-                    future: getSetting("notificationNewGrade"),
-                    initialData: false,
-                    builder: (context, snapshot) {
-                      return SwitchListTile(
-                          value: snapshot.data,
-                          title: Text(
-                            "Notification de nouvelle note",
-                            style: TextStyle(
-                                fontFamily: "Asap",
-                                color: ThemeUtils.textColor(),
-                                fontSize: screenSize.size.height / 10 * 0.3),
-                          ),
-                          secondary: Icon(
-                            MdiIcons.newBox,
-                            color: ThemeUtils.textColor(),
-                          ),
-                          onChanged: (value) async {
-                            if ((await Permission.ignoreBatteryOptimizations.isGranted)) {
-                              setState(() {
-                                setSetting("notificationNewGrade", value);
-                              });
-                            } else {
-                              if (await CustomDialogs.showAuthorizationsDialog(
-                                      context,
-                                      "la configuration d'optimisation de batterie",
-                                      "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ??
-                                  false) {
-                                if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
-                                  setState(() {
-                                    setSetting("notificationNewGrade", value);
-                                  });
-                                }
-                              }
-                            }
-                          });
-                    }),
-                Divider(),
-                FutureBuilder(
-                    future: getSetting("notificationNewMail"),
-                    initialData: false,
-                    builder: (context, snapshot) {
-                      return SwitchListTile(
-                        value: snapshot.data,
+                    SizedBox(
+                      height: screenSize.size.height / 10 * 0.1,
+                    ),
+                    SizedBox(
+                      height: screenSize.size.height / 10 * 0.2,
+                    ),
+                    ListTile(
                         title: Text(
-                          "Notification de nouveau mail",
+                          "Choix de spécialités",
                           style: TextStyle(
                               fontFamily: "Asap",
                               color: ThemeUtils.textColor(),
                               fontSize: screenSize.size.height / 10 * 0.3),
                         ),
+                        leading: Icon(MdiIcons.formatListBulleted,
+                            color: ThemeUtils.textColor()),
+                        onTap: () {
+                          CustomDialogs.showSpecialtiesChoice(context);
+                        }),
+                    SizedBox(
+                      height: screenSize.size.height / 10 * 0.2,
+                    ),
+                    Text(
+                      "De quel côté de la force êtes vous ?",
+                      style: TextStyle(
+                        fontFamily: "Asap",
+                        fontSize: screenSize.size.height / 10 * 0.27,
+                        color: ThemeUtils.textColor(),
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    Divider(
+                      color: ThemeUtils.textColor(),
+                    ),
+                    SwitchListTile(
+                      value: ThemeUtils.isThemeDark,
+                      title: Text("Mode nuit",
+                          style: TextStyle(
+                              fontFamily: "Asap",
+                              color: ThemeUtils.textColor(),
+                              fontSize: screenSize.size.height / 10 * 0.3)),
+                      onChanged: (value) async {
+                        await model.updateTheme(value ? "sombre" : "clair");
+                      },
+                      secondary: Icon(
+                        Icons.lightbulb_outline,
+                        color: ThemeUtils.textColor(),
+                      ),
+                    ),
+                    Divider(
+                      color: ThemeUtils.textColor(),
+                    ),
+                    Text(
+                      "Notifications",
+                      style: TextStyle(
+                          fontFamily: "Asap",
+                          fontSize: screenSize.size.height / 10 * 0.27,
+                          color: ThemeUtils.textColor()),
+                      textAlign: TextAlign.center,
+                    ),
+                    Divider(),
+                    SwitchListTile(
+                        value: model.settings["user"]["global"]
+                            ["notificationNewGrade"],
+                        title: Text(
+                          "Notification de nouvelle note",
+                          style: TextStyle(
+                              fontFamily: "Asap",
+                              color: ThemeUtils.textColor(),
+                              fontSize: screenSize.size.height / 10 * 0.3),
+                        ),
+                        secondary: Icon(
+                          MdiIcons.newBox,
+                          color: ThemeUtils.textColor(),
+                        ),
                         onChanged: (value) async {
-                          if ((await Permission.ignoreBatteryOptimizations.isGranted)) {
-                            setState(() {
-                              setSetting("notificationNewMail", value);
-                            });
+                          if (Platform.isIOS ||
+                              (await Permission
+                                  .ignoreBatteryOptimizations.isGranted)) {
+                            model.updateSetting(
+                                appSys.settings["user"]["global"],
+                                "notificationNewGrade",
+                                value);
                           } else {
                             if (await CustomDialogs.showAuthorizationsDialog(
                                     context,
                                     "la configuration d'optimisation de batterie",
                                     "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ??
                                 false) {
-                              if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
-                                setState(() {
-                                  setSetting("notificationNewMail", value);
-                                });
+                              if (await Permission.ignoreBatteryOptimizations
+                                  .request()
+                                  .isGranted) {
+                                model.updateSetting(
+                                    appSys.settings["user"]["global"],
+                                    "notificationNewGrade",
+                                    value);
                               }
                             }
                           }
-                        },
-                        secondary: Icon(
-                          MdiIcons.newBox,
-                          color: ThemeUtils.textColor(),
-                        ),
-                      );
-                    }),
-                Divider(
-                  color: ThemeUtils.textColor(),
+                        }),
+                    Divider(),
+                    SwitchListTile(
+                      value: appSys.settings["user"]["global"]
+                          ["notificationNewMail"],
+                      title: Text(
+                        "Notification de nouveau mail",
+                        style: TextStyle(
+                            fontFamily: "Asap",
+                            color: ThemeUtils.textColor(),
+                            fontSize: screenSize.size.height / 10 * 0.3),
+                      ),
+                      onChanged: (value) async {
+                        if (Platform.isIOS ||
+                            (await Permission
+                                .ignoreBatteryOptimizations.isGranted)) {
+                          model.updateSetting(appSys.settings["user"]["global"],
+                              "notificationNewMail", value);
+                        } else {
+                          if (await CustomDialogs.showAuthorizationsDialog(
+                                  context,
+                                  "la configuration d'optimisation de batterie",
+                                  "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ??
+                              false) {
+                            if (await Permission.ignoreBatteryOptimizations
+                                .request()
+                                .isGranted) {
+                              appSys.updateSetting(
+                                  appSys.settings["user"]["global"],
+                                  "notificationNewMail",
+                                  value);
+                            }
+                          }
+                        }
+                      },
+                      secondary: Icon(
+                        MdiIcons.newBox,
+                        color: ThemeUtils.textColor(),
+                      ),
+                    ),
+                    Divider(
+                      color: ThemeUtils.textColor(),
+                    ),
+                    RaisedButton(
+                      color: Color(0xff5DADE2),
+                      shape: StadiumBorder(),
+                      onPressed: () async {
+                        var classe = await specialtiesSelectionAvailable();
+                        if (classe[0] &&
+                            chosenSpecialties.length ==
+                                (classe[1] == "Première" ? 3 : 2)) {
+                          CreateStorage("agreedTermsAndConfiguredApp", "true");
+                          final prefs = await SharedPreferences.getInstance();
+                          prefs.setStringList(
+                              "listSpecialties", chosenSpecialties);
+                          Navigator.of(context)
+                              .pushReplacement(router(homePage()));
+                        } else if (!classe[0]) {
+                          CreateStorage("agreedTermsAndConfiguredApp", "true");
+                          final prefs = await SharedPreferences.getInstance();
+                          prefs.setStringList(
+                              "listSpecialties", chosenSpecialties);
+                          Navigator.of(context)
+                              .pushReplacement(router(homePage()));
+                        } else {
+                          CustomDialogs.showAnyDialog(context,
+                              "Vous devez renseigner toutes vos spécialités.");
+                        }
+                      },
+                      child: const Text('Allons-y !',
+                          style: TextStyle(fontSize: 20, fontFamily: "Asap")),
+                    ),
+                  ],
                 ),
-                RaisedButton(
-                  color: Color(0xff5DADE2),
-                  shape: StadiumBorder(),
-                  onPressed: () async {
-                    var classe = await specialtiesSelectionAvailable();
-                    if (classe[0] && chosenSpecialties.length == (classe[1] == "Première" ? 3 : 2)) {
-                      CreateStorage("agreedTermsAndConfiguredApp", "true");
-                      final prefs = await SharedPreferences.getInstance();
-                      prefs.setStringList("listSpecialties", chosenSpecialties);
-                      Navigator.of(context).pushReplacement(router(homePage()));
-                    } else if (!classe[0]) {
-                      CreateStorage("agreedTermsAndConfiguredApp", "true");
-                      final prefs = await SharedPreferences.getInstance();
-                      prefs.setStringList("listSpecialties", chosenSpecialties);
-                      Navigator.of(context).pushReplacement(router(homePage()));
-                    } else {
-                      CustomDialogs.showAnyDialog(context, "Vous devez renseigner toutes vos spécialités.");
-                    }
-                  },
-                  child: const Text('Allons-y !', style: TextStyle(fontSize: 20, fontFamily: "Asap")),
-                ),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 }
@@ -761,7 +818,8 @@ class _SlidingCarouselState extends State<SlidingCarousel> {
             offset: offset,
             idx: idx,
           ),
-          backgroundColor: isDarkModeEnabled ? Color(0xff313131) : Colors.white),
+          backgroundColor:
+              ThemeUtils.isThemeDark ? Color(0xff313131) : Colors.white),
     ];
   }
 
@@ -776,10 +834,10 @@ class _SlidingCarouselState extends State<SlidingCarousel> {
       Color current = _pageInfoList[_pageOffset.toInt()].backgroundColor;
       Color next = _pageInfoList[_pageOffset.toInt() + 1].backgroundColor;
       if (_pageOffset.toInt() == 2) {
-        next = isDarkModeEnabled ? Color(0xff313131) : Colors.white;
+        next = ThemeUtils.isThemeDark ? Color(0xff313131) : Colors.white;
       }
       if (_pageOffset.toInt() == 3) {
-        current = isDarkModeEnabled ? Color(0xff313131) : Colors.white;
+        current = ThemeUtils.isThemeDark ? Color(0xff313131) : Colors.white;
       }
       return Color.lerp(current, next, _pageOffset - _pageOffset.toInt());
     } else {
@@ -791,7 +849,9 @@ class _SlidingCarouselState extends State<SlidingCarousel> {
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
     return Scaffold(
-      backgroundColor: _pageOffset.toInt() == 3 ? Theme.of(context).backgroundColor : _getBGColor(),
+      backgroundColor: _pageOffset.toInt() == 3
+          ? Theme.of(context).backgroundColor
+          : _getBGColor(),
       body: //Disable back button
           WillPopScope(
         onWillPop: () async {
@@ -810,7 +870,8 @@ class _SlidingCarouselState extends State<SlidingCarousel> {
                         itemCount: _pageInfoList.length,
                         itemBuilder: (context, idx) {
                           return Container(
-                              height: MediaQuery.of(context).size.height, child: Center(child: _setOffset(idx)));
+                              height: MediaQuery.of(context).size.height,
+                              child: Center(child: _setOffset(idx)));
                         }),
                   ),
                   Container(
@@ -821,20 +882,26 @@ class _SlidingCarouselState extends State<SlidingCarousel> {
                         Align(
                           alignment: Alignment.centerRight,
                           child: Visibility(
-                            visible: _pageController.hasClients ? (_pageIndex != 3) : true,
+                            visible: _pageController.hasClients
+                                ? (_pageIndex != 3)
+                                : true,
                             child: Container(
                               margin: EdgeInsets.only(
-                                  right: screenSize.size.width / 5 * 0.1, top: screenSize.size.height / 10 * 0.08),
+                                  right: screenSize.size.width / 5 * 0.1,
+                                  top: screenSize.size.height / 10 * 0.08),
                               child: OutlineButton(
                                 color: Colors.transparent,
                                 highlightColor: Colors.black,
                                 focusColor: Colors.black,
                                 borderSide: BorderSide(color: Colors.indigo),
-                                shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(30.0)),
+                                shape: new RoundedRectangleBorder(
+                                    borderRadius:
+                                        new BorderRadius.circular(30.0)),
                                 highlightedBorderColor: Colors.black,
                                 onPressed: () async {
                                   _pageController.animateToPage(3,
-                                      duration: Duration(milliseconds: 250), curve: Curves.easeIn);
+                                      duration: Duration(milliseconds: 250),
+                                      curve: Curves.easeIn);
                                 },
                                 child: AutoSizeText(
                                   "Passer",

@@ -24,6 +24,24 @@
 	<true/>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<true/>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+		<key>NSAllowsArbitraryLoadsInWebContent</key>
+		<true/>
+	</dict>
+	<key>NSCalendarsUsageDescription</key>
+	<string>yNotes needs access to your calendar to schedule reminders or events notifications.</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>yNotes needs access to your location in order to locate schools around you and to get their Pronote URL addresses.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>yNotes needs access to your photos in order to let you insert them in the messages you send to teachers or other students.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>processing</string>
+	</array>
 	<key>UIFileSharingEnabled</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
@@ -43,5 +61,9 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+    <key>BGTaskSchedulerPermittedIdentifiers</key>
+    <array>
+        <string>fr.eduwire.ynotes</string>
+    </array>
 </dict>
 </plist>

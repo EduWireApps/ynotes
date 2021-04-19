@@ -1,7 +1,6 @@
 import 'package:hive/hive.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/offline/offline.dart';
-import 'package:ynotes/core/offline/offline.dart';
 
 class AgendaEventsOffline extends Offline {
   Offline parent;
@@ -69,7 +68,6 @@ class AgendaEventsOffline extends Offline {
   removeAgendaEvent(String id, var fetchID) async {
     if (!locked) {
       try {
-
         Map<dynamic, dynamic> timeTable = Map();
         var offline = await parent.agendaBox.get("agendaEvents");
         List<AgendaEvent> events = List();
@@ -99,7 +97,6 @@ class AgendaEventsOffline extends Offline {
   addAgendaEvent(AgendaEvent newData, var id) async {
     if (!locked) {
       try {
-
         if (newData != null) {
           Map<dynamic, dynamic> timeTable = Map();
           var offline = await parent.agendaBox.get("agendaEvents");

@@ -8,14 +8,15 @@ import 'package:marquee/marquee.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:stacked/stacked.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:ynotes/ui/components/customLoader.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/core/logic/shared/downloadController.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
 import '../../../usefulMethods.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
@@ -39,7 +40,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
     if (!monochromatic) {
       return html;
     }
-    String color = isDarkModeEnabled ? "white" : "black";
+    String color = ThemeUtils.isThemeDark ? "white" : "black";
     String finalHTML = html.replaceAll("color", color);
     return finalHTML;
   }
@@ -154,7 +155,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                             format.format(DateTime.parse(widget.mail.date)),
                                             style: TextStyle(
                                                 fontFamily: "Asap",
-                                                color: isDarkModeEnabled
+                                                color: ThemeUtils.isThemeDark
                                                     ? Colors.white.withOpacity(0.5)
                                                     : Colors.black.withOpacity(0.5)),
                                           ),
@@ -165,7 +166,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                           this.widget.mail.to[0]["name"],
                                           style: TextStyle(
                                               fontFamily: "Asap",
-                                              color: isDarkModeEnabled
+                                              color: ThemeUtils.isThemeDark
                                                   ? Colors.white.withOpacity(0.5)
                                                   : Colors.black.withOpacity(0.5)),
                                         )
@@ -399,9 +400,9 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                       )
                                     ],
                                   )
-                                : SpinKitFadingFour(
-                                    color: Theme.of(context).primaryColorDark,
-                                    size: screenSize.size.width / 5 * 0.7,
+                                : Center(
+                                    child: CustomLoader(screenSize.size.width / 5 * 2.5,
+                                        screenSize.size.width / 5 * 2.5, Theme.of(context).primaryColorDark),
                                   ),
                           )
                         ],

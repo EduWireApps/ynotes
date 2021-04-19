@@ -1,3 +1,4 @@
+import 'package:day_night_switcher/day_night_switcher.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -5,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:wiredash/wiredash.dart';
-import 'package:ynotes/ui/components/day_night_switch-master/lib/day_night_switch.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/screens/drawer/drawerBuilder.dart';
 import 'package:ynotes/ui/screens/settings/settingsPage.dart';
 import 'package:ynotes/ui/screens/summary/summaryPage.dart';
@@ -30,22 +31,8 @@ class CustomDrawer extends StatefulWidget {
 }
 
 class _CustomDrawerState extends State<CustomDrawer> {
-  //Settings
-  var boolSettings = {
-    "autoCloseDrawer": false,
-  };
-  void getSettings() async {
-    await Future.forEach(boolSettings.keys, (key) async {
-      var value = await getSetting(key);
-      setState(() {
-        boolSettings[key] = value;
-      });
-    });
-  }
-
   void initState() {
     super.initState();
-    getSettings();
   }
 
   @override
@@ -80,20 +67,18 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         ),
                         Align(
                           alignment: Alignment.centerRight,
-                          child: Transform.scale(
-                            scale: 0.4,
-                            child: DayNightSwitch(
-                              height: screenSize.size.height / 10 * 0.2,
-                              value: isDarkModeEnabled,
-                              dragStartBehavior: DragStartBehavior.start,
-                              onChanged: (val) async {
-                                print(val);
-                                setState(() {
-                                  isDarkModeEnabled = val;
-                                });
-                                Provider.of<AppStateNotifier>(context, listen: false).updateTheme(val);
-                                await setSetting("nightmode", val);
-                              },
+                          child: Container(
+                            margin: EdgeInsets.only(right: screenSize.size.width / 5 * 0.1),
+                            child: SizedBox(
+                              width: screenSize.size.width / 5 * 1,
+                              height: screenSize.size.height / 10 * 0.7,
+                              child: DayNightSwitcher(
+                                isDarkModeEnabled: ThemeUtils.isThemeDark,
+                                onStateChanged: (value) {
+                                  appSys.updateTheme(value ? "sombre" : "clair");
+                                  setState(() {});
+                                },
+                              ),
                             ),
                           ),
                         ),
@@ -107,7 +92,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
               ),
               for (var entry in this.widget.entries)
                 if (entry["relatedApi"] == null ||
-                    entry["relatedApi"] == chosenParser ||
+                    entry["relatedApi"] == appSys.settings["system"]["chosenParser"] ||
                     (entry["relatedApi"] == -1 && !kReleaseMode))
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -125,7 +110,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 splashFactory: InkRipple.splashFactory,
                                 onTap: () {
                                   //Close drawer
-                                  if (boolSettings["autoCloseDrawer"]) {
+                                  if (appSys.settings["user"]["global"]["autoCloseDrawer"]) {
                                     Navigator.of(context).pop();
                                   }
                                   widget.drawerPageViewController.jumpToPage(this.widget.entries.indexOf(entry));

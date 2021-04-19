@@ -2,6 +2,7 @@ import 'package:flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/logic/pronote/schoolsModel.dart';
 import 'package:ynotes/ui/components/dialogs/homeworkDetails.dart';
 import 'package:ynotes/core/services/shared_preferences.dart';
 import 'package:ynotes/ui/components/dialogs/authorizationsDialog.dart';
@@ -11,6 +12,7 @@ import 'package:ynotes/ui/components/dialogs/shareDialog.dart';
 import 'package:ynotes/ui/components/dialogs/updateNoteDialog.dart';
 import 'package:ynotes/ui/components/giffy_dialog/src/asset.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/writeMailBottomSheet.dart';
+import 'package:ynotes/ui/screens/login/loginPageWidgets/pronoteLocationDialog.dart';
 import 'package:ynotes/ui/screens/settings/settingsPage.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/apis/EcoleDirecte/ecoleDirecteMethods.dart';
@@ -38,11 +40,15 @@ class CustomDialogs {
               image: Image.asset(hd.gifPath),
               title: Text(
                 hd.title,
-                style: TextStyle(fontSize: screenSize.size.height / 10 * 0.3, fontWeight: FontWeight.w600),
+                style: TextStyle(
+                    fontSize: screenSize.size.height / 10 * 0.3,
+                    fontWeight: FontWeight.w600),
                 textScaleFactor: 1.0,
                 textAlign: TextAlign.center,
               ),
-              description: Text(hd.description[0], style: TextStyle(fontSize: screenSize.size.height / 10 * 0.2)),
+              description: Text(hd.description[0],
+                  style:
+                      TextStyle(fontSize: screenSize.size.height / 10 * 0.2)),
               buttonOkText: Text(
                 "J'ai compris",
                 style: TextStyle(fontFamily: "Asap", color: Colors.white),
@@ -65,8 +71,10 @@ class CustomDialogs {
             ));
   }
 
-  static Future<bool> showConfirmationDialog(BuildContext context, Function show,
-      {String alternativeText = "Voulez vous vraiment supprimer cet élément (irréversible) ?",
+  static Future<bool> showConfirmationDialog(
+      BuildContext context, Function show,
+      {String alternativeText =
+          "Voulez vous vraiment supprimer cet élément (irréversible) ?",
       String alternativeButtonConfirmText = "SUPPRIMER"}) {
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
@@ -83,7 +91,8 @@ class CustomDialogs {
       ),
       actions: [
         FlatButton(
-          child: const Text('ANNULER', style: TextStyle(color: Colors.green), textScaleFactor: 1.0),
+          child: const Text('ANNULER',
+              style: TextStyle(color: Colors.green), textScaleFactor: 1.0),
           onPressed: () {
             if (show != null) {
               show();
@@ -118,7 +127,8 @@ class CustomDialogs {
     );
   }
 
-  static showNumberChoiceDialog(BuildContext context, {String text = "", bool isDouble = false}) {
+  static showNumberChoiceDialog(BuildContext context,
+      {String text = "", bool isDouble = false}) {
     // show the dialog
     return showDialog(
       barrierDismissible: false,
@@ -132,7 +142,8 @@ class CustomDialogs {
     );
   }
 
-  static Future<Color> showColorPicker(BuildContext context, Color defaultColor) {
+  static Future<Color> showColorPicker(
+      BuildContext context, Color defaultColor) {
     // show the dialog
     return showDialog<Color>(
       barrierDismissible: false,
@@ -143,7 +154,8 @@ class CustomDialogs {
     );
   }
 
-  static Future<String> showTextChoiceDialog(BuildContext context, {String text = "", String defaultText = ""}) {
+  static Future<String> showTextChoiceDialog(BuildContext context,
+      {String text = "", String defaultText = ""}) {
     // show the dialog
     return showDialog<String>(
       barrierDismissible: false,
@@ -154,26 +166,29 @@ class CustomDialogs {
     );
   }
 
-  static Future<bool> showNewFolderDialog(
-      BuildContext context, String path, List<FileInfo> files, bool selectionMode, Function callback) {
+  static Future<bool> showNewFolderDialog(BuildContext context, String path,
+      List<FileInfo> files, bool selectionMode, Function callback) {
     // show the dialog
     return showDialog<bool>(
       barrierDismissible: false,
       context: context,
       builder: (BuildContext context) {
-        return FolderChoiceDialog(context, path, files, selectionMode, callback);
+        return FolderChoiceDialog(
+            context, path, files, selectionMode, callback);
       },
     );
   }
 
-  static Future showMultipleChoicesDialog(BuildContext context, List choices, List<int> initialSelection,
+  static Future showMultipleChoicesDialog(
+      BuildContext context, List choices, List<int> initialSelection,
       {singleChoice = false}) {
     // show the dialog
     return showDialog(
       barrierDismissible: true,
       context: context,
       builder: (BuildContext context) {
-        return MultipleChoicesDialog(choices, initialSelection, singleChoice: singleChoice);
+        return MultipleChoicesDialog(choices, initialSelection,
+            singleChoice: singleChoice);
       },
     );
   }
@@ -189,7 +204,8 @@ class CustomDialogs {
     );
   }
 
-  static Future showAuthorizationsDialog(BuildContext context, String authName, String goal) {
+  static Future showAuthorizationsDialog(
+      BuildContext context, String authName, String goal) {
     // show the dialog
     return showDialog(
       barrierDismissible: true,
@@ -217,7 +233,8 @@ class CustomDialogs {
       ),
       mainButton: FlatButton(
         onPressed: () {
-          const url = 'https://view.monday.com/486453658-df7d6a346f0accba2e9d6a3c45b3f7c1';
+          const url =
+              'https://view.monday.com/486453658-df7d6a346f0accba2e9d6a3c45b3f7c1';
           launchURL(url);
         },
         child: Text(
@@ -226,6 +243,30 @@ class CustomDialogs {
         ),
       ),
       borderRadius: 8,
+    )..show(context);
+  }
+
+  //Bêta purposes : show when a function is not available yet
+  static showErrorSnackBar(BuildContext context, String text, String logs) {
+    Flushbar(
+      flushbarPosition: FlushbarPosition.BOTTOM,
+      backgroundColor: Colors.red,
+      isDismissible: true,
+      duration: Duration(seconds: 2),
+      margin: EdgeInsets.all(8),
+      messageText: Text(
+        text ?? "Une erreur a eu lieu.",
+        style: TextStyle(fontFamily: "Asap", color: Colors.white),
+      ),
+      icon: Icon(
+        Icons.error,
+        color: Colors.white,
+      ),
+      borderRadius: 8,
+      mainButton: Text(
+        "Copier les logs",
+        style: TextStyle(fontFamily: "Asap", color: Colors.blueGrey),
+      ),
     )..show(context);
   }
 
@@ -304,7 +345,8 @@ class CustomDialogs {
         pageBuilder: (context, animation1, animation2) {});
   }
 
-  static Future<void> showHomeworkDetailsDialog(BuildContext context, Homework hw) async {
+  static Future<void> showHomeworkDetailsDialog(
+      BuildContext context, Homework hw) async {
     String returnVal = await showGeneralDialog(
         context: context,
         barrierColor: Colors.black.withOpacity(0.5),
@@ -315,23 +357,46 @@ class CustomDialogs {
         transitionBuilder: (context, a1, a2, widget) {
           MediaQueryData screenSize;
           screenSize = MediaQuery.of(context);
-          return Transform.scale(scale: a1.value, child: Container(child: DialogHomework(hw)));
+          return Transform.scale(
+              scale: a1.value, child: Container(child: DialogHomework(hw)));
         });
   }
 
-  static Future writeModalBottomSheet(context, {List<Recipient> defaultListRecipients, defaultSubject}) async {
+  static Future<PronoteSpace> showPronoteSchoolGeolocationDialog(
+      BuildContext context) async {
+    return await showGeneralDialog(
+        context: context,
+        barrierColor: Colors.black.withOpacity(0.5),
+        transitionDuration: Duration(milliseconds: 200),
+        barrierDismissible: false,
+        barrierLabel: '',
+        pageBuilder: (context, animation1, animation2) {},
+        transitionBuilder: (context, a1, a2, widget) {
+          MediaQueryData screenSize;
+          screenSize = MediaQuery.of(context);
+          return Transform.scale(
+              scale: a1.value, child: PronoteGeolocationDialog());
+        });
+  }
+
+  static Future writeModalBottomSheet(context,
+      {List<Recipient> defaultListRecipients, defaultSubject}) async {
     var mailData = await showModalBottomSheet(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(25), topRight: Radius.circular(25)),
         ),
         backgroundColor: Color(0xffDCDCDC),
         context: context,
         isScrollControlled: true,
         builder: (BuildContext bc) {
-          return WriteMailBottomSheet(defaultRecipients: defaultListRecipients, defaultSubject: defaultSubject);
+          return WriteMailBottomSheet(
+              defaultRecipients: defaultListRecipients,
+              defaultSubject: defaultSubject);
         });
     if (mailData != null) {
-      await EcoleDirecteMethod.sendMail(mailData[0], mailData[1], mailData[2]).then((value) {
+      await EcoleDirecteMethod.sendMail(mailData[0], mailData[1], mailData[2])
+          .then((value) {
         print("success");
         CustomDialogs.showAnyDialog(context, "Le mail a été envoyé.");
       }).catchError((Object error) {
@@ -361,13 +426,15 @@ class HelpDialog {
   ///Set if the dialog as already been watched
   setAlreadyViewed() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    await preferences.setBool("alreadyViewedHelpDialog" + this.id.toString(), true);
+    await preferences.setBool(
+        "alreadyViewedHelpDialog" + this.id.toString(), true);
   }
 
   ///Check if the dialog as already been watched
   checkAlreadyViewed() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
-    bool viewed = preferences.getBool("alreadyViewedHelpDialog" + this.id.toString());
+    bool viewed =
+        preferences.getBool("alreadyViewedHelpDialog" + this.id.toString());
 
     return viewed != null ? viewed : false;
   }
@@ -384,7 +451,8 @@ class HelpDialog {
   static resetEveryHelpDialog() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     for (int i = 0; i < helpDialogs.length; i++) {
-      await preferences.setBool("alreadyViewedHelpDialog" + i.toString(), false);
+      await preferences.setBool(
+          "alreadyViewedHelpDialog" + i.toString(), false);
     }
   }
 
@@ -407,8 +475,13 @@ List<HelpDialog> helpDialogs = [
       ],
       "assets/gifs/QuickMenu720.gif",
       1),
-  HelpDialog("Épingler", ["Restez appuyé puis épinglez un devoir pour le revoir même après sa date d'échéance."],
-      "assets/gifs/PinHomework720.gif", 2),
+  HelpDialog(
+      "Épingler",
+      [
+        "Restez appuyé puis épinglez un devoir pour le revoir même après sa date d'échéance."
+      ],
+      "assets/gifs/PinHomework720.gif",
+      2),
   HelpDialog(
       "Nouvel explorateur de téléchargements",
       [

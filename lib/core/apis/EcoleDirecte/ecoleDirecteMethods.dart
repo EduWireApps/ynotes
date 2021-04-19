@@ -1,11 +1,10 @@
 import 'dart:convert';
 
 import 'package:connectivity/connectivity.dart';
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/apis/EcoleDirecte/ecoleDirecteConverters.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
 import 'package:ynotes/core/offline/offline.dart';
@@ -27,7 +26,7 @@ class EcoleDirecteMethod {
     String method = "emploidutemps.awp?verbe=get&";
     List<Lesson> lessonsList =
         await request(data, rootUrl, method, EcoleDirecteConverter.lessons, "Lessons request returned an error:");
-    await offline.lessons.updateLessons(lessonsList, week);
+    await appSys.offline.lessons.updateLessons(lessonsList, week);
     return lessonsList;
   }
 
@@ -75,7 +74,8 @@ class EcoleDirecteMethod {
     }
     createStack();
     if (disciplinesList != null) {
-      await setIntSetting("gradesNumber", getAllGrades(disciplinesList, overrideLimit: true).length);
+      appSys.updateSetting(
+          appSys.settings["system"], "lastGradeCount", getAllGrades(disciplinesList, overrideLimit: true).length);
     }
     return disciplinesList;
   }
@@ -87,17 +87,16 @@ class EcoleDirecteMethod {
     String data = 'data={"token": "$token"}';
     List<DateTime> homeworkDates = await request(
         data, rootUrl, method, EcoleDirecteConverter.homeworkDates, "Homework dates request returned an error:");
-    bool isLimitedTo7Days = await getSetting("7DaysLimit");
-    if (isLimitedTo7Days) {
-      homeworkDates.removeWhere((date) =>
-          DateFormat("yyyy-MM-dd")
-              .parse(date.toString())
-              .difference(DateFormat("yyyy-MM-dd").parse(DateTime.now().toString()))
-              .inDays >
-          7);
-    }
+
+    homeworkDates.removeWhere((date) =>
+        DateFormat("yyyy-MM-dd")
+            .parse(date.toString())
+            .difference(DateFormat("yyyy-MM-dd").parse(DateTime.now().toString()))
+            .inDays >
+        7);
+
     //Get pinned dates
-    List<DateTime> pinnedDates = await offline.pinnedHomework.getPinnedHomeworkDates();
+    List<DateTime> pinnedDates = await appSys.offline.pinnedHomework.getPinnedHomeworkDates();
     //Combine lists
     pinnedDates.forEach((element) {
       if (!homeworkDates.any((hwlistelement) => hwlistelement == element)) {
@@ -117,8 +116,8 @@ class EcoleDirecteMethod {
     String data = 'data={"token": "$token"}';
     homeworkList = await request(
         data, rootUrl, method, EcoleDirecteConverter.unloadedHomework, "UHomework request returned an error:");
-    await offline.homework.updateHomework(homeworkList);
-    List<DateTime> pinnedDates = await offline.pinnedHomework.getPinnedHomeworkDates();
+    await appSys.offline.homework.updateHomework(homeworkList);
+    List<DateTime> pinnedDates = await appSys.offline.pinnedHomework.getPinnedHomeworkDates();
 
     //Add pinned content
     await Future.wait(pinnedDates.map((element) async {
@@ -144,7 +143,7 @@ class EcoleDirecteMethod {
     homework.forEach((hw) {
       hw.date = date;
     });
-    await offline.homework.updateHomework(homework, add: true, forceAdd: true);
+    await appSys.offline.homework.updateHomework(homework, add: true, forceAdd: true);
     return homework;
   }
 
@@ -166,7 +165,7 @@ class EcoleDirecteMethod {
         data, rootUrl, "", EcoleDirecteConverter.recipients, "Recipients request returned an error:",
         ignoreMethodAndId: true);
     if (recipients != null) {
-      await offline.recipients.recipients.updateRecipients(recipients);
+      await appSys.offline.recipients.recipients.updateRecipients(recipients);
     }
     return recipients;
   }
@@ -194,7 +193,7 @@ class EcoleDirecteMethod {
       String data = 'data={"token": "$token"}';
       //encode Map to JSON
       var body = data;
-      var response = await http.post(url, headers: headers, body: body).catchError((e) {
+      var response = await http.post(Uri.parse(url), headers: headers, body: body).catchError((e) {
         return false;
       });
 
@@ -248,7 +247,7 @@ class EcoleDirecteMethod {
                     },""";
     });
 
-    await EcoleDirecteMethod(offline).testToken();
+    await EcoleDirecteMethod(appSys.offline).testToken();
     String id = await storage.read(key: "userID");
     var url = 'https://api.ecoledirecte.com/v3/eleves/$id/messages.awp?verbe=post';
 
@@ -268,12 +267,12 @@ class EcoleDirecteMethod {
     },
     "anneeMessages": "",
     "token": "$token"
-}""";
+    }""";
     printWrapped(data);
     //encode Map to JSON
 
     var body = data;
-    var response = await http.post(url, headers: headers, body: body).catchError((e) {
+    var response = await http.post(Uri.parse(url), headers: headers, body: body).catchError((e) {
       throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou reessayez plus tard.");
     });
     print("Starting the mail reading");
@@ -311,9 +310,9 @@ class EcoleDirecteMethod {
       }
       var response;
       if (getRequest) {
-        response = await http.get(finalUrl, headers: headers);
+        response = await http.get(Uri.parse(finalUrl), headers: headers);
       } else {
-        response = await http.post(finalUrl, headers: headers, body: data);
+        response = await http.post(Uri.parse(finalUrl), headers: headers, body: data);
       }
       printWrapped(finalUrl);
       Map<String, dynamic> responseData = json.decode(utf8.decode(response.bodyBytes));
@@ -347,7 +346,7 @@ class EcoleDirecteMethod {
     String data = 'data={"identifiant": "$username", "motdepasse": "$password"}';
     //encode Map to JSON
     var body = data;
-    var response = await http.post(url, headers: headers, body: body).catchError((e) {
+    var response = await http.post(Uri.parse(url), headers: headers, body: body).catchError((e) {
       throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou reessayez plus tard. ${e.toString()}");
     });
     if (response.statusCode == 200) {

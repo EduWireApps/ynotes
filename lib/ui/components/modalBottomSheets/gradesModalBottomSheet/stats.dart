@@ -39,14 +39,18 @@ class _ImpactState extends State<ImpactStat> {
       width: screenSize.size.width,
       height: screenSize.size.height / 10 * 1,
       padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
-      decoration: BoxDecoration(color: Theme.of(context).primaryColorDark, borderRadius: BorderRadius.circular(20)),
+      decoration: BoxDecoration(
+          color: Theme.of(context).primaryColorDark,
+          borderRadius: BorderRadius.circular(20)),
       child: Row(
         children: [
           Container(
             width: screenSize.size.width / 5 * 0.8,
             height: screenSize.size.width / 5 * 0.8,
             padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
-            decoration: BoxDecoration(color: getAdaptedColor(), borderRadius: BorderRadius.circular(20)),
+            decoration: BoxDecoration(
+                color: getAdaptedColor(),
+                borderRadius: BorderRadius.circular(20)),
             child: FittedBox(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -66,17 +70,23 @@ class _ImpactState extends State<ImpactStat> {
           Container(
             height: screenSize.size.height / 10 * 0.5,
             width: screenSize.size.width / 5 * 3,
-            padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
+            padding: EdgeInsets.symmetric(
+                horizontal: screenSize.size.width / 5 * 0.1),
             child: Column(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AutoSizeText(
-                  widget.label ?? "",
-                  maxLines: 2,
-                  style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w600, color: ThemeUtils.textColor()),
-                  textAlign: TextAlign.left,
+                FittedBox(
+                  child: AutoSizeText(
+                    widget.label ?? "",
+                    maxLines: 2,
+                    style: TextStyle(
+                        fontFamily: "Asap",
+                        fontWeight: FontWeight.w600,
+                        color: ThemeUtils.textColor()),
+                    textAlign: TextAlign.left,
+                  ),
                 )
               ],
             ),
