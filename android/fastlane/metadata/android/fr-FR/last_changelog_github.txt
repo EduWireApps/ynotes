@@ -1,1 +1,2 @@
-HTTP Pronote users are now able to login. 
+This version adds a new login screen :
+- All Pronote CAS should be able to login

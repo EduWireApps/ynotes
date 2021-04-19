@@ -1,1 +1,1 @@
-Les utilisateurs de Pronote avec HTTP peuvent désormais se connecter.
+Version 0.10 : les nouveautés sont dans la note de mise à jour in app.

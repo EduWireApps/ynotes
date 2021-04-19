@@ -2,6 +2,6 @@
 Dans cette version, de nombreux correctifs et fonctionnalités pour Pronote sont rajoutés :
 - Connexion à l'aide d'un ENT quelconque sur Pronote
 - Connexion par HTTP
-
+- Nouvel écran de connexion plus simple et intuitif
 
 

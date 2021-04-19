@@ -20,7 +20,7 @@ class _UpdateNoteDialogState extends State<UpdateNoteDialog> {
   }
 
   static const String markdownText = "updateNoteAssets/updateNote.md";
-  static const String thumbnail = "updateNoteAssets/0_9thumbnail.jpg";
+  static const String thumbnail = "updateNoteAssets/0_10thumbnail.jpg";
   String markdown;
   getMarkDownText() async {
     var value = await FileAppUtil.loadAsset("assets/$markdownText");
