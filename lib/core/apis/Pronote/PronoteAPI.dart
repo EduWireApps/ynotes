@@ -780,7 +780,6 @@ class Communication {
 
     this.requestNumber += 2;
     if (requestNumber > 190) {
-      print("WELL DUH" +requestNumber.toString());
       await this.client.refresh();
     }
 

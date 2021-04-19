@@ -1,17 +1,15 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:ynotes/core/apis/model.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/main.dart';
-import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteAPI.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
+import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
-import 'package:ynotes/core/offline/offline.dart';
+import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
-
+import 'package:ynotes/core/offline/offline.dart';
+import 'package:ynotes/globals.dart';
+import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 PronoteClient localClient;
@@ -54,7 +52,8 @@ class APIPronote extends API {
       }
       toReturn = await refreshDisciplinesListColors(toReturn);
       if (toReturn != null) {
-        appSys.updateSetting(appSys.settings["system"], "lastGradeCount", getAllGrades(toReturn, overrideLimit: true).length);
+        appSys.updateSetting(
+            appSys.settings["system"], "lastGradeCount", getAllGrades(toReturn, overrideLimit: true).length);
       }
 
       return toReturn;
@@ -271,7 +270,8 @@ class APIPronote extends API {
       loginLock = true;
       try {
         var cookies = await callCas(cas, username, password, url ?? "");
-        localClient = PronoteClient(url, username: username, password: password, mobileLogin: mobileCasLogin, cookies: cookies);
+        localClient =
+            PronoteClient(url, username: username, password: password, mobileLogin: mobileCasLogin, cookies: cookies);
 
         await localClient.init();
         if (localClient.loggedIn) {
@@ -435,6 +435,7 @@ class APIPronote extends API {
         }
       } else {
         try {
+
           return await getOfflinePeriods();
         } catch (e) {
           throw ("Error while collecting offline periods");
@@ -520,7 +521,9 @@ class APIPronote extends API {
           listPeriods.add(Period(grade.periodName, grade.periodCode));
         }
       });
-
+      listPeriods.forEach((element) {
+        print(element.name);
+      });
       listPeriods.sort((a, b) => a.name.compareTo(b.name));
 
       return listPeriods;
