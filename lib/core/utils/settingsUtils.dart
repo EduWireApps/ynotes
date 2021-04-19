@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:ynotes/core/services/shared_preferences.dart';
-import 'package:ynotes/core/utils/nullSafeMap.dart';
 
 class SettingsUtils {
   static const Map secureSettingsForm = {"username": "", "password": "", "pronoteurl": "", "pronotecas": ""};
@@ -10,6 +9,7 @@ class SettingsUtils {
     "system": {
       "firstUse": false,
       "agreedTermsAndConfiguredApp": false,
+      "lastReadUpdateNote": "",
       "chosenParser": 0,
       "lastMailCount": 0,
       "lastGradeCount": 0
@@ -43,6 +43,32 @@ class SettingsUtils {
   };
   //retrieve old settings
   //and parse it to new settings format
+  static Map getAppSettings() {
+    //App settings
+  }
+
+  ///Deprecated
+  static Future<bool> getBoolSetting(String setting) async {
+    final prefs = await SharedPreferences.getInstance();
+    bool value = prefs.getBool(setting);
+    return value;
+  }
+
+  static Future<int> getIntSetting(String setting) async {
+    final prefs = await SharedPreferences.getInstance();
+    var value = prefs.getInt(setting);
+    if (value == null) {
+      value = 0;
+      if (setting == "summaryQuickHomework") {
+        value = 10;
+      }
+      if (setting == "lessonReminderDelay") {
+        value = 5;
+      }
+    }
+    return value;
+  }
+
   static Map getOldSettings() {
     Map _settings = settingsForm;
     (_settings["user"] as Map).keys.forEach((key1) {
@@ -68,6 +94,19 @@ class SettingsUtils {
     //The user's settings per page
   }
 
+  static Future<Map> getSavedSettings() async {
+    final prefs = await SharedPreferences.getInstance();
+    String settings = prefs.getString("settings");
+
+    if (settings == null) {
+      settings = json.encode(settingsForm);
+    }
+    print(settings);
+    Map _settings = json.decode(settings);
+    return _settings;
+  }
+
+  //Deprecated
   static getSettings() async {
     Map _settings;
     Map _oldSettings;
@@ -86,48 +125,9 @@ class SettingsUtils {
     return _settings;
   }
 
-  static Future<Map> getSavedSettings() async {
-    final prefs = await SharedPreferences.getInstance();
-    String settings = prefs.getString("settings");
-
-    if (settings == null) {
-      settings = json.encode(settingsForm);
-    }
-    print(settings);
-    Map _settings = json.decode(settings);
-    return _settings;
-  }
-
   static setSetting(Map newMap) async {
     final prefs = await SharedPreferences.getInstance();
     String encoded = json.encode(newMap);
     await prefs.setString("settings", encoded);
-  }
-
-  ///Deprecated
-  static Future<bool> getBoolSetting(String setting) async {
-    final prefs = await SharedPreferences.getInstance();
-    bool value = prefs.getBool(setting);
-    return value;
-  }
-
-  //Deprecated
-  static Future<int> getIntSetting(String setting) async {
-    final prefs = await SharedPreferences.getInstance();
-    var value = prefs.getInt(setting);
-    if (value == null) {
-      value = 0;
-      if (setting == "summaryQuickHomework") {
-        value = 10;
-      }
-      if (setting == "lessonReminderDelay") {
-        value = 5;
-      }
-    }
-    return value;
-  }
-
-  static Map getAppSettings() {
-    //App settings
   }
 }
