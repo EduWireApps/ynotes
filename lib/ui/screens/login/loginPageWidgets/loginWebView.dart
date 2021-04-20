@@ -243,7 +243,7 @@ class _LoginWebViewState extends State<LoginWebView> {
   setCookie() async {
     print("Setting cookie");
     //generate UUID
-   await appSys.updateSetting(appSys.settings["system"], "mobileUUID", uuid.v4());
+   await appSys.updateSetting(appSys.settings["system"], "uuid", uuid.v4());
 
     //set cookie
     String cookieFunction = '(function(){try{' +
