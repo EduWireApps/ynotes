@@ -1,1 +1,1 @@
-Version 0.10 : les nouveautés sont dans la note de mise à jour in app.
+Correctif d'un bug qui empêchait le démarrage de l'application.
