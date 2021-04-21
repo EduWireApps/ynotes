@@ -494,8 +494,8 @@ class PronoteClient {
     if (cookies == null && password == null && username == null) {
       throw 'Please provide login credentials. Cookies are None, and username and password are empty.';
     }
-    this.username = username;
-    this.password = password;
+    this.username = username ?? "";
+    this.password = password ?? "";
     this.pronote_url = pronote_url;
     this.mobileLogin = mobileLogin;
     print("Initiate communication");
@@ -522,6 +522,7 @@ class PronoteClient {
       print(e);
     }
   }
+
   homework(DateTime date_from, {DateTime date_to}) async {
     print(date_from);
     if (date_to == null) {
