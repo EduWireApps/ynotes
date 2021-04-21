@@ -2,9 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
-
+import 'package:ynotes/core/utils/themeUtils.dart';
 
 class UpdateNoteDialog extends StatefulWidget {
   @override
@@ -12,23 +11,10 @@ class UpdateNoteDialog extends StatefulWidget {
 }
 
 class _UpdateNoteDialogState extends State<UpdateNoteDialog> {
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    getMarkDownText();
-  }
-
   static const String markdownText = "updateNoteAssets/updateNote.md";
-  static const String thumbnail = "updateNoteAssets/0_9thumbnail.jpg";
-  String? markdown;
-  getMarkDownText() async {
-    var value = await FileAppUtil.loadAsset("assets/$markdownText");
-    setState(() {
-      markdown = value;
-    });
-  }
 
+  static const String thumbnail = "updateNoteAssets/0_10thumbnail.png";
+  String? markdown;
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
@@ -77,5 +63,19 @@ class _UpdateNoteDialogState extends State<UpdateNoteDialog> {
         ),
       ),
     );
+  }
+
+  getMarkDownText() async {
+    var value = await FileAppUtil.loadAsset("assets/$markdownText");
+    setState(() {
+      markdown = value;
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getMarkDownText();
   }
 }

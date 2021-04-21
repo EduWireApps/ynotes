@@ -6,6 +6,8 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
 import 'package:ynotes/core/apis/utils.dart';
+import 'package:ynotes/globals.dart';
+import 'package:ynotes/main.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 
 class LoginWebView extends StatefulWidget {
@@ -15,22 +17,19 @@ class LoginWebView extends StatefulWidget {
 
   LoginWebView({Key? key, this.url, this.controller, this.spaceUrl}) : super(key: key);
   @override
+  
   _LoginWebViewState createState() => _LoginWebViewState();
 }
-
 class _LoginWebViewState extends State<LoginWebView> {
   var loginData;
   late Map currentProfile;
   //locals, but shouldn't be obviously
 
-  String? location;
   Map? loginStatus;
   String? serverUrl;
   String? espaceUrl;
   bool auth = false;
   int step = 3;
-  String randomUUID = "121567895313231";
-
   authAndValidateProfile() async {
     print("Validating profile");
     //navigate to address
@@ -69,7 +68,8 @@ class _LoginWebViewState extends State<LoginWebView> {
                     "InfoMobileApp.json?id=0D264427-EEFC-4810-A9E9-346942A862A4")),
 
             ///1) We open a page with the serverUrl + weird string hardcoded
-            initialOptions: InAppWebViewGroupOptions(crossPlatform: InAppWebViewOptions()),
+            initialOptions: InAppWebViewGroupOptions(
+                crossPlatform: InAppWebViewOptions(supportZoom: true)),
             onWebViewCreated: (InAppWebViewController controller) {
               widget.controller = controller;
               //Clear cookies
@@ -79,7 +79,8 @@ class _LoginWebViewState extends State<LoginWebView> {
             onLoadStop: (controller, url) async {
               await stepper();
             },
-            onProgressChanged: (InAppWebViewController controller, int progress) {},
+            onProgressChanged:
+                (InAppWebViewController controller, int progress) {},
           ),
           Align(
             alignment: Alignment.bottomCenter,
@@ -140,7 +141,7 @@ class _LoginWebViewState extends State<LoginWebView> {
       setState(() {
         step = 2;
       });
-      stepper();
+       stepper();
     } else {
       print("Failed to get metas");
     }
@@ -179,7 +180,7 @@ class _LoginWebViewState extends State<LoginWebView> {
           loginStatus!["mdp"] +
           '\',' +
           '      uuid : \'' +
-          randomUUID +
+          appSys.settings!["system"]["uuid"] +
           '\',' +
           '    })' +
           '  }' +
@@ -199,7 +200,7 @@ class _LoginWebViewState extends State<LoginWebView> {
           '\', \'' +
           loginStatus!["mdp"] +
           '\', null, \'' +
-          randomUUID +
+          appSys.settings!["system"]["uuid"] +
           '\');' +
           '}';
       /*  String amiajoketou = await widget.controller.evaluateJavascript(source: joker);
@@ -231,6 +232,8 @@ class _LoginWebViewState extends State<LoginWebView> {
 
   setCookie() async {
     print("Setting cookie");
+    //generate UUID
+   await appSys.updateSetting(appSys.settings!["system"], "uuid", uuid.v4());
 
     //set cookie
     String cookieFunction = '(function(){try{' +
@@ -240,7 +243,7 @@ class _LoginWebViewState extends State<LoginWebView> {
         'if(!!lJetonCas) {' +
         'document.cookie = "validationAppliMobile="+lJetonCas+";expires=" + new Date(new Date().getTime() + (5*60*1000)).toUTCString();' +
         'document.cookie = "uuidAppliMobile=' +
-        randomUUID +
+        appSys.settings!["system"]["uuid"] +
         ';expires=" + new Date(new Date().getTime() + (5*60*1000)).toUTCString();' +
         'document.cookie = "ielang=' +
         "1036" +
@@ -314,7 +317,6 @@ class _LoginWebViewState extends State<LoginWebView> {
       ),
     );
   }
-
   _buildText(String text) {
     return SelectableText(text);
   }

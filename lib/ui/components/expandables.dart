@@ -57,14 +57,21 @@ class Expandables extends StatefulWidget {
   _ExpandablesState createState() => _ExpandablesState();
 }
 
-class _ExpandablesState extends State<Expandables> with TickerProviderStateMixin {
+class _ExpandablesState extends State<Expandables>
+    with TickerProviderStateMixin {
   void initState() {
     super.initState();
-    expandingAnimationController = AnimationController(duration: Duration(milliseconds: widget.animationDuration), vsync: this);
+    expandingAnimationController = AnimationController(
+        duration: Duration(milliseconds: widget.animationDuration),
+        vsync: this);
     expandingAnimationController.addListener(() {
       widget.onDragUpdate!(topWidgetPercentExpansion, bottomWidgetPercentExpansion);
     });
-    expandBottomWidget = Tween<double>(begin: 0, end: 1).animate(new CurvedAnimation(parent: expandingAnimationController, curve: Curves.easeInQuad, reverseCurve: Curves.easeInQuad));
+    expandBottomWidget = Tween<double>(begin: 0, end: 1).animate(
+        new CurvedAnimation(
+            parent: expandingAnimationController,
+            curve: Curves.easeInQuad,
+            reverseCurve: Curves.easeInQuad));
     if (!widget.topIsExpanded) {
       bottomWidgetPercentExpansion = 100;
       topWidgetPercentExpansion = 0;
@@ -120,9 +127,11 @@ class _ExpandablesState extends State<Expandables> with TickerProviderStateMixin
     //If dragging to the top
 
     if (dyPosition > 0) {
-      if (topWidgetPercentExpansion < 100 && details.localPosition.dy.abs() * 100 / rootContainerHeight < 100) {
+      if (topWidgetPercentExpansion < 100 &&
+          details.localPosition.dy.abs() * 100 / rootContainerHeight < 100) {
         setState(() {
-          topWidgetPercentExpansion = details.localPosition.dy.abs() * 100 / rootContainerHeight;
+          topWidgetPercentExpansion =
+              details.localPosition.dy.abs() * 100 / rootContainerHeight;
           bottomWidgetPercentExpansion = -(topWidgetPercentExpansion) + 100;
         });
         if (widget.onDragUpdate != null) {
@@ -133,7 +142,8 @@ class _ExpandablesState extends State<Expandables> with TickerProviderStateMixin
   }
 
   handleTopWidgetDragEnd(DragEndDetails details) {
-    if (topWidgetPercentExpansion < minPercentDragged && !expandingAnimationController.isAnimating) {
+    if (topWidgetPercentExpansion < minPercentDragged &&
+        !expandingAnimationController.isAnimating) {
       //if dragged fastly
       if (details.primaryVelocity! > velocityToExpand) {
         animateBottomWidgetToMin();
@@ -153,9 +163,11 @@ class _ExpandablesState extends State<Expandables> with TickerProviderStateMixin
     //If dragging to the top
 
     if (dyPosition < 0) {
-      if (bottomWidgetPercentExpansion < 100 && details.localPosition.dy.abs() * 100 / rootContainerHeight < 100) {
+      if (bottomWidgetPercentExpansion < 100 &&
+          details.localPosition.dy.abs() * 100 / rootContainerHeight < 100) {
         setState(() {
-          bottomWidgetPercentExpansion = details.localPosition.dy.abs() * 100 / rootContainerHeight;
+          bottomWidgetPercentExpansion =
+              details.localPosition.dy.abs() * 100 / rootContainerHeight;
           topWidgetPercentExpansion = -(bottomWidgetPercentExpansion) + 100;
         });
         if (widget.onDragUpdate != null) {
@@ -166,7 +178,8 @@ class _ExpandablesState extends State<Expandables> with TickerProviderStateMixin
   }
 
   handleBottomWidgetDragEnd(DragEndDetails details) {
-    if (bottomWidgetPercentExpansion < minPercentDragged && !expandingAnimationController.isAnimating) {
+    if (bottomWidgetPercentExpansion < minPercentDragged &&
+        !expandingAnimationController.isAnimating) {
       //if dragged fastly
       if (details.primaryVelocity! < velocityToExpand) {
         animateBottomWidgetToMax();
@@ -199,8 +212,10 @@ class _ExpandablesState extends State<Expandables> with TickerProviderStateMixin
         animation: expandingAnimationController,
         builder: (context, child) {
           if (expandingAnimationController.isAnimating) {
-            bottomWidgetPercentExpansion = expandingAnimationController.value * 100;
-            topWidgetPercentExpansion = (-expandingAnimationController.value + 1) * 100;
+            bottomWidgetPercentExpansion =
+                expandingAnimationController.value * 100;
+            topWidgetPercentExpansion =
+                (-expandingAnimationController.value + 1) * 100;
           }
           return Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -222,6 +237,9 @@ class _ExpandablesState extends State<Expandables> with TickerProviderStateMixin
                       height: widget.minHeight! + (widget.maxHeight! - widget.minHeight!) * topWidgetPercentExpansion / 100,
                       child: widget.topChild,
                     )),
+              ),
+              SizedBox(
+                height: widget.spaceBetween,
               ),
               GestureDetector(
                 onVerticalDragUpdate: handleBottomWidgetDragUpdate,

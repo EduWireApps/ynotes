@@ -3,14 +3,13 @@ import 'dart:io';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/globals.dart';
-
-String? actualUser = "";
+import 'package:shared_preferences/shared_preferences.dart';
+String actualUser = "";
 
 //Parsers list
 ///Color theme switcher, actually 0 for darkmode and 1 for lightmode

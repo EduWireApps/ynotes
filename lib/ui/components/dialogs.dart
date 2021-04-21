@@ -1,3 +1,5 @@
+import 'dart:core';
+
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -113,7 +115,8 @@ class CustomDialogs {
       ),
       actions: [
         FlatButton(
-          child: const Text('ANNULER', style: TextStyle(color: Colors.green), textScaleFactor: 1.0),
+          child: const Text('ANNULER',
+              style: TextStyle(color: Colors.green), textScaleFactor: 1.0),
           onPressed: () {
             if (show != null) {
               show();
@@ -366,7 +369,8 @@ class CustomDialogs {
       ),
       mainButton: FlatButton(
         onPressed: () {
-          const url = 'https://view.monday.com/486453658-df7d6a346f0accba2e9d6a3c45b3f7c1';
+          const url =
+              'https://view.monday.com/486453658-df7d6a346f0accba2e9d6a3c45b3f7c1';
           launchURL(url);
         },
         child: Text(
@@ -399,16 +403,20 @@ class CustomDialogs {
   static Future writeModalBottomSheet(context, {List<Recipient>? defaultListRecipients, defaultSubject}) async {
     var mailData = await showModalBottomSheet(
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(25), topRight: Radius.circular(25)),
         ),
         backgroundColor: Color(0xffDCDCDC),
         context: context,
         isScrollControlled: true,
         builder: (BuildContext bc) {
-          return WriteMailBottomSheet(defaultRecipients: defaultListRecipients, defaultSubject: defaultSubject);
+          return WriteMailBottomSheet(
+              defaultRecipients: defaultListRecipients,
+              defaultSubject: defaultSubject);
         });
     if (mailData != null) {
-      await EcoleDirecteMethod.sendMail(mailData[0], mailData[1], mailData[2]).then((value) {
+      await EcoleDirecteMethod.sendMail(mailData[0], mailData[1], mailData[2])
+          .then((value) {
         print("success");
         CustomDialogs.showAnyDialog(context, "Le mail a été envoyé.");
       }).catchError((Object error) {
@@ -463,7 +471,8 @@ class HelpDialog {
   static resetEveryHelpDialog() async {
     SharedPreferences? preferences = await SharedPreferences.getInstance();
     for (int i = 0; i < helpDialogs.length; i++) {
-      await preferences.setBool("alreadyViewedHelpDialog" + i.toString(), false);
+      await preferences.setBool(
+          "alreadyViewedHelpDialog" + i.toString(), false);
     }
   }
 }

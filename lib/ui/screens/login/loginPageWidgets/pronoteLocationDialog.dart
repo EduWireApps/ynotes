@@ -10,7 +10,8 @@ import 'package:ynotes/ui/screens/login/loginPageWidgets/textField.dart';
 
 class PronoteGeolocationDialog extends StatefulWidget {
   @override
-  _PronoteGeolocationDialogState createState() => _PronoteGeolocationDialogState();
+  _PronoteGeolocationDialogState createState() =>
+      _PronoteGeolocationDialogState();
 }
 
 class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
@@ -66,7 +67,9 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
       key: ValueKey<int>(1),
       children: [
         Container(
-          decoration: BoxDecoration(color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(18)),
+          decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor,
+              borderRadius: BorderRadius.circular(18)),
           height: screenSize.size.height / 10 * 1.5,
           child: FittedBox(
             child: Icon(
@@ -133,7 +136,8 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
             style: TextStyle(fontFamily: "Asap"),
           ),
           SizedBox(height: screenSize.size.height / 10 * 0.1),
-          LoginPageTextField(searchCon, "Chercher une école", false, Icons.search, false),
+          LoginPageTextField(
+              searchCon, "Chercher une école", false, Icons.search, false),
           SizedBox(height: screenSize.size.height / 10 * 0.1),
           Container(
               height: screenSize.size.height / 10 * 5,
@@ -142,7 +146,8 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
                       itemCount: filterSchools(schools).length,
                       padding: EdgeInsets.zero,
                       itemBuilder: (context, index) {
-                        return slidingSchool(context, filterSchools(schools)[index]);
+                        return slidingSchool(
+                            context, filterSchools(schools)[index]);
                       },
                     )
                   : buildNoSchoolFound()),
@@ -155,7 +160,10 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
                 Expanded(
                   child: CustomButtons.materialButton(context, null, null, () {
                     Navigator.of(context).pop();
-                  }, label: "Quitter", backgroundColor: Colors.orange, textColor: Colors.white),
+                  },
+                      label: "Quitter",
+                      backgroundColor: Colors.orange,
+                      textColor: Colors.white),
                 ),
                 Expanded(
                   child: CustomButtons.materialButton(
@@ -169,7 +177,8 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
                             }
                           : null,
                       label: "Continuer",
-                      backgroundColor: selectedSchool != null ? Colors.green : Colors.grey,
+                      backgroundColor:
+                          selectedSchool != null ? Colors.green : Colors.grey,
                       textColor: Colors.white),
                 )
               ],
@@ -209,7 +218,10 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
                 Expanded(
                   child: CustomButtons.materialButton(context, null, null, () {
                     Navigator.of(context).pop();
-                  }, label: "Quitter", backgroundColor: Colors.orange, textColor: Colors.white),
+                  },
+                      label: "Quitter",
+                      backgroundColor: Colors.orange,
+                      textColor: Colors.white),
                 ),
                 Expanded(
                   child: CustomButtons.materialButton(
@@ -222,7 +234,8 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
                             }
                           : null,
                       label: "Continuer",
-                      backgroundColor: space != null ? Colors.green : Colors.grey,
+                      backgroundColor:
+                          space != null ? Colors.green : Colors.grey,
                       textColor: Colors.white),
                 )
               ],
@@ -318,14 +331,16 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
                   children: [
                     Text(
                       school.name ?? "",
-                      style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                          fontFamily: "Asap", fontWeight: FontWeight.bold),
                     ),
                     Text(
                       "-",
                     ),
                     Text(
                       school.postalCode ?? "",
-                      style: TextStyle(fontFamily: "Asap", fontStyle: FontStyle.italic),
+                      style: TextStyle(
+                          fontFamily: "Asap", fontStyle: FontStyle.italic),
                     ),
                     Text(distance),
                   ],

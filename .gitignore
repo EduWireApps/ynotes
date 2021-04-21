@@ -41,4 +41,5 @@ lib/generated_plugin_registrant.dart
 pronoteAPI.py
 /android/fastlane/.env.default
 /android/fastlane/report.xml
-
+/ios/fastlane/.env.default
+/ios/fastlane/

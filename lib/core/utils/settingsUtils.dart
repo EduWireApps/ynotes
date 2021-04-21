@@ -9,6 +9,7 @@ class SettingsUtils {
     "system": {
       "firstUse": false,
       "agreedTermsAndConfiguredApp": false,
+      "lastReadUpdateNote": "",
       "chosenParser": 0,
       "lastMailCount": 0,
       "lastGradeCount": 0

@@ -11,7 +11,7 @@ description: yNotes application de gestion de vie scolaire
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.
-version: 0.9.3+9
+version: 0.10.1+9
 
 environment:
   sdk: '>=2.12.0 <3.0.0'
@@ -69,6 +69,7 @@ dependencies:
   collection: ^1.15.0-nullsafety.4
   connectivity: ^3.0.3
   csv: ^5.0.0
+  day_night_switcher: ^0.2.0+1  
   device_apps: ^2.0.2
   dotted_border: ^2.0.0-nullsafety.0
   dotted_line: ^3.0.0
@@ -116,7 +117,8 @@ dependencies:
   stack: ^0.2.1
   stacked: ^2.0.2
   supercharged: ^2.0.0
-
+  tinycolor: ^1.0.2
+  day_night_switcher: ^0.2.0+1  
   url_launcher: ^6.0.3
   uuid: ^3.0.3
   visibility_detector: ^0.2.0-nullsafety.1

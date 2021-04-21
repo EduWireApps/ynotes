@@ -63,7 +63,8 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
           Icons.add,
           size: screenSize.size.width / 5 * 0.5,
         ),
-        decoration: BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
+        decoration:
+            BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
       ),
       onPressed: () async {
         await addEvent(context);
@@ -96,15 +97,18 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
     return Container(
-        height: screenSize.size.height / 10 * 8,
+        height: screenSize.size.height / 10 * 7.5,
         margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
         decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15), color: ThemeUtils.spaceColor()),
+            borderRadius:
+                BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+            color: ThemeUtils.spaceColor()),
         width: screenSize.size.width,
         child: Stack(
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+              borderRadius:
+                  BorderRadius.circular(screenSize.size.width / 5 * 0.15),
               child: Container(
                 width: screenSize.size.width,
                 height: screenSize.size.height,
@@ -146,13 +150,22 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
                                       return Center(
                                         child: FittedBox(
                                           child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
                                             children: <Widget>[
                                               Container(
-                                                margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.5),
-                                                height: screenSize.size.height / 10 * 1.9,
+                                                margin: EdgeInsets.only(
+                                                    left:
+                                                        screenSize.size.width /
+                                                            5 *
+                                                            0.5),
+                                                height: screenSize.size.height /
+                                                    10 *
+                                                    1.9,
                                                 child: Image(
-                                                    fit: BoxFit.fitWidth, image: AssetImage('assets/images/relax.png')),
+                                                    fit: BoxFit.fitWidth,
+                                                    image: AssetImage(
+                                                        'assets/images/relax.png')),
                                               ),
                                               Text(
                                                 "Journée détente ?",
@@ -160,26 +173,48 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
                                                 style: TextStyle(
                                                     fontFamily: "Asap",
                                                     color: Colors.white,
-                                                    fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
+                                                    fontSize: (screenSize
+                                                                .size.height /
+                                                            10 *
+                                                            8.8) /
+                                                        10 *
+                                                        0.2),
                                               ),
                                               FlatButton(
                                                 onPressed: () {
                                                   //Reload list
                                                   refreshAgendaFutures();
                                                 },
-                                                child: snapshot.connectionState != ConnectionState.waiting
+                                                child: snapshot.connectionState !=
+                                                        ConnectionState.waiting
                                                     ? Text("Recharger",
                                                         style: TextStyle(
                                                             fontFamily: "Asap",
                                                             color: Colors.white,
-                                                            fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2))
+                                                            fontSize: (screenSize
+                                                                        .size
+                                                                        .height /
+                                                                    10 *
+                                                                    8.8) /
+                                                                10 *
+                                                                0.2))
                                                     : FittedBox(
                                                         child: SpinKitThreeBounce(
-                                                            color: Theme.of(context).primaryColorDark,
-                                                            size: screenSize.size.width / 5 * 0.4)),
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .primaryColorDark,
+                                                            size: screenSize
+                                                                    .size
+                                                                    .width /
+                                                                5 *
+                                                                0.4)),
                                                 shape: RoundedRectangleBorder(
-                                                    borderRadius: new BorderRadius.circular(18.0),
-                                                    side: BorderSide(color: Theme.of(context).primaryColorDark)),
+                                                    borderRadius:
+                                                        new BorderRadius
+                                                            .circular(18.0),
+                                                    side: BorderSide(
+                                                        color: Theme.of(context)
+                                                            .primaryColorDark)),
                                               )
                                             ],
                                           ),
@@ -187,7 +222,8 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
                                       );
                                     } else {
                                       return SpinKitFadingFour(
-                                        color: Theme.of(context).primaryColorDark,
+                                        color:
+                                            Theme.of(context).primaryColorDark,
                                         size: screenSize.size.width / 5 * 1,
                                       );
                                     }
@@ -204,8 +240,9 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
             Align(
               alignment: Alignment.bottomRight,
               child: Container(
-                margin:
-                    EdgeInsets.only(right: screenSize.size.width / 5 * 0.1, bottom: screenSize.size.height / 10 * 0.4),
+                margin: EdgeInsets.only(
+                    right: screenSize.size.width / 5 * 0.1,
+                    bottom: screenSize.size.height / 10 * 0.4),
                 child: _buildFloatingButton(context),
               ),
             ),

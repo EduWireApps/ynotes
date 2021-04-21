@@ -76,7 +76,8 @@ class _AgendaState extends State<Agenda> {
           Icons.add,
           size: screenSize.size.width / 5 * 0.5,
         ),
-        decoration: BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
+        decoration:
+            BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
       ),
       onPressed: () async {
         await addEvent(context);
@@ -95,6 +96,7 @@ class _AgendaState extends State<Agenda> {
           Color color = Color((snapshot.data) ?? 0);
           return Container(
             width: screenSize.size.width / 5 * 4.5,
+            
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -110,7 +112,8 @@ class _AgendaState extends State<Agenda> {
                       Container(
                         width: screenSize.size.width / 5 * 4.4,
                         height: screenSize.size.height / 10 * 1.57,
-                        padding: EdgeInsets.all(screenSize.size.height / 10 * 0.05),
+                        padding:
+                            EdgeInsets.all(screenSize.size.height / 10 * 0.05),
                         child: FittedBox(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
@@ -138,11 +141,13 @@ class _AgendaState extends State<Agenda> {
                         ),
                       ),
                       Container(
-                        margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.1),
+                        margin: EdgeInsets.only(
+                            bottom: screenSize.size.height / 10 * 0.1),
                         width: screenSize.size.width / 5 * 2.5,
                         height: screenSize.size.height / 10 * 0.5,
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                          borderRadius: BorderRadius.circular(
+                              screenSize.size.width / 5 * 0.15),
                           color: Color(0xffC4C4C4),
                         ),
                         child: FittedBox(
@@ -151,13 +156,18 @@ class _AgendaState extends State<Agenda> {
                               Text(
                                 DateFormat.Hm().format(lesson.start!),
                                 style: TextStyle(
-                                    fontFamily: "Asap", fontWeight: FontWeight.bold, color: ThemeUtils.textColor()),
+                                    fontFamily: "Asap",
+                                    fontWeight: FontWeight.bold,
+                                    color: ThemeUtils.textColor()),
                               ),
-                              Icon(MdiIcons.arrowRight, color: ThemeUtils.textColor()),
+                              Icon(MdiIcons.arrowRight,
+                                  color: ThemeUtils.textColor()),
                               Text(
                                 DateFormat.Hm().format(lesson.end!),
                                 style: TextStyle(
-                                    fontFamily: "Asap", fontWeight: FontWeight.bold, color: ThemeUtils.textColor()),
+                                    fontFamily: "Asap",
+                                    fontWeight: FontWeight.bold,
+                                    color: ThemeUtils.textColor()),
                               )
                             ],
                           ),
@@ -197,7 +207,7 @@ class _AgendaState extends State<Agenda> {
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
     return Container(
-        height: screenSize.size.height / 10 * 8,
+        height: screenSize.size.height / 10 * 7.5,
         margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
@@ -207,7 +217,8 @@ class _AgendaState extends State<Agenda> {
         child: Stack(
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+              borderRadius:
+                  BorderRadius.circular(screenSize.size.width / 5 * 0.15),
               child: Container(
                 width: screenSize.size.width,
                 height: screenSize.size.height,
@@ -241,40 +252,74 @@ class _AgendaState extends State<Agenda> {
                                       return Center(
                                         child: FittedBox(
                                           child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
                                             children: <Widget>[
                                               Container(
-                                                margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.5),
-                                                height: screenSize.size.height / 10 * 1.9,
+                                                margin: EdgeInsets.only(
+                                                    left:
+                                                        screenSize.size.width /
+                                                            5 *
+                                                            0.5),
+                                                height: screenSize.size.height /
+                                                    10 *
+                                                    1.9,
                                                 child: Image(
-                                                    fit: BoxFit.fitWidth, image: AssetImage('assets/images/relax.png')),
+                                                    fit: BoxFit.fitWidth,
+                                                    image: AssetImage(
+                                                        'assets/images/relax.png')),
                                               ),
                                               Text(
                                                 "Journée détente ?",
                                                 textAlign: TextAlign.center,
                                                 style: TextStyle(
                                                     fontFamily: "Asap",
-                                                    color: ThemeUtils.textColor(),
-                                                    fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
+                                                    color:
+                                                        ThemeUtils.textColor(),
+                                                    fontSize: (screenSize
+                                                                .size.height /
+                                                            10 *
+                                                            8.8) /
+                                                        10 *
+                                                        0.2),
                                               ),
                                               FlatButton(
                                                 onPressed: () async {
                                                   //Reload list
-                                                  await refreshAgendaFutures(force: true);
+                                                  await refreshAgendaFutures(
+                                                      force: true);
                                                 },
-                                                child: snapshot.connectionState != ConnectionState.waiting
+                                                child: snapshot.connectionState !=
+                                                        ConnectionState.waiting
                                                     ? Text("Recharger",
                                                         style: TextStyle(
                                                             fontFamily: "Asap",
-                                                            color: ThemeUtils.textColor(),
-                                                            fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2))
+                                                            color: ThemeUtils
+                                                                .textColor(),
+                                                            fontSize: (screenSize
+                                                                        .size
+                                                                        .height /
+                                                                    10 *
+                                                                    8.8) /
+                                                                10 *
+                                                                0.2))
                                                     : FittedBox(
                                                         child: SpinKitThreeBounce(
-                                                            color: Theme.of(context).primaryColorDark,
-                                                            size: screenSize.size.width / 5 * 0.4)),
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .primaryColorDark,
+                                                            size: screenSize
+                                                                    .size
+                                                                    .width /
+                                                                5 *
+                                                                0.4)),
                                                 shape: RoundedRectangleBorder(
-                                                    borderRadius: new BorderRadius.circular(18.0),
-                                                    side: BorderSide(color: Theme.of(context).primaryColorDark)),
+                                                    borderRadius:
+                                                        new BorderRadius
+                                                            .circular(18.0),
+                                                    side: BorderSide(
+                                                        color: Theme.of(context)
+                                                            .primaryColorDark)),
                                               )
                                             ],
                                           ),
@@ -282,7 +327,8 @@ class _AgendaState extends State<Agenda> {
                                       );
                                     } else {
                                       return SpinKitFadingFour(
-                                        color: Theme.of(context).primaryColorDark,
+                                        color:
+                                            Theme.of(context).primaryColorDark,
                                         size: screenSize.size.width / 5 * 1,
                                       );
                                     }
@@ -299,8 +345,9 @@ class _AgendaState extends State<Agenda> {
             Align(
               alignment: Alignment.bottomRight,
               child: Container(
-                margin:
-                    EdgeInsets.only(right: screenSize.size.width / 5 * 0.1, bottom: screenSize.size.height / 10 * 0.4),
+                margin: EdgeInsets.only(
+                    right: screenSize.size.width / 5 * 0.1,
+                    bottom: screenSize.size.height / 10 * 0.4),
                 child: _buildFloatingButton(context),
               ),
             ),

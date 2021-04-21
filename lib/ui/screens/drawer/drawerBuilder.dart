@@ -1,5 +1,7 @@
+
+
+
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -73,8 +75,9 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
   @override
   Widget build(BuildContext context) {
     //status bar info
-    SystemChrome.setSystemUIOverlayStyle(
-        ThemeUtils.isThemeDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark);
+    SystemChrome.setSystemUIOverlayStyle(ThemeUtils.isThemeDark
+        ? SystemUiOverlayStyle.light
+        : SystemUiOverlayStyle.dark);
     MediaQueryData screenSize;
     screenSize = MediaQuery.of(context);
 
@@ -90,7 +93,8 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
           resizeToAvoidBottomInset: false,
           drawer: Theme(
             data: Theme.of(context).copyWith(
-              canvasColor: Theme.of(context).primaryColor, //This will change the drawer background to blue.
+              canvasColor: Theme.of(context)
+                  .primaryColor, //This will change the drawer background to blue.
               //other styles
             ),
             child: ClipRRect(
@@ -109,37 +113,48 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                   )),
             ),
           ),
-          backgroundColor: ThemeUtils.darken(Theme.of(context).backgroundColor, forceAmount: 0.05),
+          backgroundColor: ThemeUtils.darken(Theme.of(context).backgroundColor,
+              forceAmount: 0.05),
           body: Stack(
             children: <Widget>[
               ClipRRect(
                 child: Scaffold(
                   backgroundColor: Theme.of(context).backgroundColor,
                   appBar: PreferredSize(
-                    preferredSize: Size.fromHeight(screenSize.size.height / 10 * 0.7),
+                    preferredSize:
+                        Size.fromHeight(screenSize.size.height / 10 * 0.7),
                     child: ValueListenableBuilder(
                         valueListenable: _notifier,
                         builder: (context, dynamic value, child) {
                           return AppBar(
+                              centerTitle: false,
                               shadowColor: Colors.transparent,
                               backgroundColor: ThemeUtils.isThemeDark
                                   ? Theme.of(context).primaryColorLight
                                   : Theme.of(context).primaryColorDark,
-                              title: Text(entries()[value]["menuName"]),
+                              title: Text(entries()[value]["menuName"],
+                                  textAlign: TextAlign.start),
                               actions: [
                                 if (entries()[value]["key"] != null)
                                   FlatButton(
                                     color: Colors.transparent,
                                     child: Icon(MdiIcons.wrench,
-                                        color: ThemeUtils.isThemeDark ? Colors.white : Colors.black),
+                                        color: ThemeUtils.isThemeDark
+                                            ? Colors.white
+                                            : Colors.black),
                                     onPressed: () {
-                                      entries()[value]["key"].currentState.triggerSettings();
+                                      entries()[value]["key"]
+                                          .currentState
+                                          .triggerSettings();
                                     },
                                   )
                               ],
                               leading: FlatButton(
                                 color: Colors.transparent,
-                                child: Icon(MdiIcons.menu, color: ThemeUtils.isThemeDark ? Colors.white : Colors.black),
+                                child: Icon(MdiIcons.menu,
+                                    color: ThemeUtils.isThemeDark
+                                        ? Colors.white
+                                        : Colors.black),
                                 onPressed: () async {
                                   _drawerKey.currentState!.openDrawer(); //
                                 },
@@ -170,7 +185,12 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                       animation: showLoginControllerStatus,
                       builder: (context, child) {
                         return Transform.translate(
-                          offset: Offset(0, -screenSize.size.height / 10 * 1.2 * showLoginControllerStatus.value),
+                          offset: Offset(
+                              0,
+                              -screenSize.size.height /
+                                  10 *
+                                  1.2 *
+                                  showLoginControllerStatus.value),
                           child: Opacity(
                               opacity: 0.8,
                               child: Container(
@@ -193,14 +213,17 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                                     case2(
                                       model.actualState,
                                       {
-                                        loginStatus.loggedOff: SpinKitThreeBounce(
+                                        loginStatus.loggedOff:
+                                            SpinKitThreeBounce(
                                           size: screenSize.size.width / 5 * 0.3,
-                                          color: Theme.of(context).primaryColorDark,
+                                          color: Theme.of(context)
+                                              .primaryColorDark,
                                         ),
                                         loginStatus.offline: Icon(
                                           MdiIcons.networkStrengthOff,
                                           size: screenSize.size.width / 5 * 0.3,
-                                          color: Theme.of(context).primaryColorDark,
+                                          color: Theme.of(context)
+                                              .primaryColorDark,
                                         ),
                                         loginStatus.error: GestureDetector(
                                           onTap: () async {
@@ -208,19 +231,23 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                                           },
                                           child: Icon(
                                             MdiIcons.exclamation,
-                                            size: screenSize.size.width / 5 * 0.3,
-                                            color: Theme.of(context).primaryColorDark,
+                                            size:
+                                                screenSize.size.width / 5 * 0.3,
+                                            color: Theme.of(context)
+                                                .primaryColorDark,
                                           ),
                                         ),
                                         loginStatus.loggedIn: Icon(
                                           MdiIcons.check,
                                           size: screenSize.size.width / 5 * 0.3,
-                                          color: Theme.of(context).primaryColorDark,
+                                          color: Theme.of(context)
+                                              .primaryColorDark,
                                         )
                                       },
                                       SpinKitThreeBounce(
                                         size: screenSize.size.width / 5 * 0.4,
-                                        color: Theme.of(context).primaryColorDark,
+                                        color:
+                                            Theme.of(context).primaryColorDark,
                                       ),
                                     ) as Widget,
                                   ])))),

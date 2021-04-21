@@ -1,0 +1,76 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+
+default_platform(:ios)
+
+platform :ios do
+    desc "Run tests"
+    lane :tests do
+        run_tests(scheme: "Runner")
+    end
+    desc "Push a new beta build to TestFlight"
+    lane :beta do
+        
+        setup_ci
+        match(type: "appstore")
+        build_app(workspace: "Runner.xcworkspace", scheme: "Runner") # Change name of workspace
+        api_key = app_store_connect_api_key(
+            key_id: "5R2MFY6PX4",
+            issuer_id: "2bea063b-c85d-4d31-9d3e-130f8c768e4e",
+            key_filepath:  "./AuthKey_5R2MFY6PX4.p8",
+            in_house: false, # optional but may be required if using match/sigh
+        )
+        upload_to_testflight(api_key: api_key, changelog: ENV["CHANGELOG"] || "Pas de note de mise à jour fournie. Merci de consulter le changelog in-app.")
+    end
+    lane :prod do
+        setup_ci
+        match(type: "appstore")
+        build_app(workspace: "Runner.xcworkspace", scheme: "Runner") # Change name of workspace
+        api_key = app_store_connect_api_key(
+            key_id: "5R2MFY6PX4",
+            issuer_id: "2bea063b-c85d-4d31-9d3e-130f8c768e4e",
+            key_filepath:  "./AuthKey_5R2MFY6PX4.p8",
+            in_house: false, # optional but may be required if using match/sigh
+        )
+        upload_to_app_store(
+            api_key: api_key,
+            force: true, # Set to true to skip verification of HTML preview
+            skip_metadata: true,# pass a specific value to the iTMSTransporter -itc_provider option
+            submit_for_review: false,
+            precheck_include_in_app_purchases: false
+          )
+    end
+    lane :test do
+        api_key = app_store_connect_api_key(
+            key_id: ENV["APP_STORE_API_KEY_ID"],
+            issuer_id: ENV["APP_STORE_API_KEY_ISSUER_ID"],
+            key_filepath:  "./AuthKey_5R2MFY6PX4.p8",
+            in_house: false, # optional but may be required if using match/sigh
+          )
+        upload_to_testflight(changelog: ENV["CHANGELOG"] || "Pas de note de mise à jour fournie. Merci de consulter le changelog in-app.")
+    end
+    desc "Sets the version of the bundle to a RELEASE_VERSION passed in as an environment variable"
+    lane :set_release_version do
+        version  = flutter_version()["version_name"]
+        if version 
+            build_number = number_of_commits()
+            UI.message("Setting version to #{version}")
+            increment_version_number(version_number: version)
+            increment_build_number(build_number: build_number)
+        else
+            UI.user_error!("Environment variable RELEASE_VERSION not set")
+        end
+    end
+end

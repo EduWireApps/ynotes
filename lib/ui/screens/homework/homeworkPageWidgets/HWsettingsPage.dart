@@ -34,23 +34,31 @@ class _HomeworkSettingPageState extends State<HomeworkSettingPage> {
               margin: EdgeInsets.all(screenSize.size.width / 5 * 0.2),
               child: Text(
                 "Paramètres des devoirs",
-                style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: ThemeUtils.textColor()),
+                style: TextStyle(
+                    fontFamily: "Asap",
+                    fontWeight: FontWeight.bold,
+                    color: ThemeUtils.textColor()),
                 textAlign: TextAlign.left,
               )),
           SwitchListTile(
             value: appSys.settings!["user"]["homeworkPage"]["isExpandedByDefault"],
             title: Text("Étendre les devoirs",
                 style: TextStyle(
-                    fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.25)),
+                    fontFamily: "Asap",
+                    color: ThemeUtils.textColor(),
+                    fontSize: screenSize.size.height / 10 * 0.25)),
             subtitle: Text(
               "Afficher les détails des devoirs par défaut.",
               style: TextStyle(
-                  fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.2),
+                  fontFamily: "Asap",
+                  color: ThemeUtils.textColor(),
+                  fontSize: screenSize.size.height / 10 * 0.2),
             ),
             onChanged: (value) async {
               appSys.updateSetting(appSys.settings!["user"]["homeworkPage"], "isExpandedByDefault", value);
 
 
+              setState(() {});
             },
             secondary: Icon(
               MdiIcons.arrowExpand,

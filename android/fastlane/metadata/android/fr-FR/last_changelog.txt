@@ -1,1 +1,1 @@
-Les utilisateurs de Pronote avec HTTP peuvent désormais se connecter.
+Correctif d'un bug qui empêchait le démarrage de l'application.

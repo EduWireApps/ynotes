@@ -1,3 +1,4 @@
+import 'package:day_night_switcher/day_night_switcher.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
@@ -6,7 +7,6 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:provider/provider.dart';
 import 'package:wiredash/wiredash.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/components/day_night_switch-master/lib/day_night_switch.dart';
 import 'package:ynotes/ui/screens/drawer/drawerBuilder.dart';
 import 'package:ynotes/ui/screens/settings/settingsPage.dart';
 import 'package:ynotes/ui/screens/summary/summaryPage.dart';
@@ -67,15 +67,18 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         ),
                         Align(
                           alignment: Alignment.centerRight,
-                          child: Transform.scale(
-                            scale: 0.4,
-                            child: DayNightSwitch(
-                              height: screenSize.size.height / 10 * 0.2,
-                              value: ThemeUtils.isThemeDark,
-                              dragStartBehavior: DragStartBehavior.start,
-                              onChanged: (val) async {
-                                appSys.updateTheme((val ?? false) ? "sombre" : "clair");
-                              },
+                          child: Container(
+                            margin: EdgeInsets.only(right: screenSize.size.width / 5 * 0.1),
+                            child: SizedBox(
+                              width: screenSize.size.width / 5 * 1,
+                              height: screenSize.size.height / 10 * 0.7,
+                              child: DayNightSwitcher(
+                                isDarkModeEnabled: ThemeUtils.isThemeDark,
+                                onStateChanged: (value) {
+                                  appSys.updateTheme(value ? "sombre" : "clair");
+                                  setState(() {});
+                                },
+                              ),
                             ),
                           ),
                         ),

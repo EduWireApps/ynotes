@@ -29,14 +29,14 @@ Future<List<PollInfo>?> getPronotePolls(bool forced) async {
   List<PollInfo>? listPolls;
   try {
     if (forced) {
-      listPolls = await localClient.polls() as List<PollInfo>;
+      listPolls = await localClient?.polls() as List<PollInfo>;
       await appSys.offline.polls.update(listPolls);
       return listPolls;
     } else {
       listPolls = await appSys.offline.polls.get();
       if (listPolls == null) {
         print("Error while returning offline polls");
-        listPolls = await localClient.polls() as List<PollInfo>;
+        listPolls = await localClient?.polls() as List<PollInfo>;
         await appSys.offline.polls.update(listPolls);
         return listPolls;
       } else {
@@ -98,13 +98,13 @@ class APIPronote extends API {
             }
             try {
               pollsLock = true;
-              await localClient.setPollRead(args ?? "");
+              await localClient?.setPollRead(args ?? "");
               pollsLock = false;
             } catch (e) {
               pollsLock = false;
               if (!pollsRefreshRecursive) {
                 await pronoteMethod.refreshClient();
-                await localClient.setPollRead(args ?? "");
+                await localClient?.setPollRead(args ?? "");
               }
             }
           }
@@ -116,13 +116,13 @@ class APIPronote extends API {
             }
             try {
               pollsLock = true;
-              await localClient.setPollResponse(args ?? "");
+              await localClient?.setPollResponse(args ?? "");
               pollsLock = false;
             } catch (e) {
               pollsLock = false;
               if (!pollsRefreshRecursive) {
                 await pronoteMethod.refreshClient();
-                await localClient.setPollResponse(args ?? "");
+                await localClient?.setPollResponse(args ?? "");
               }
             }
           }
@@ -133,7 +133,7 @@ class APIPronote extends API {
 
   @override
   Future<http.Request> downloadRequest(Document document) async {
-    String url = await localClient.downloadUrl(document);
+    String url = await localClient?.downloadUrl(document);
     http.Request request = http.Request('GET', Uri.parse(url));
     return request;
   }
@@ -174,12 +174,12 @@ class APIPronote extends API {
         hwLock = true;
 
         List<Homework> listHW = [];
-        var hws = await localClient.homework(dateHomework!, date_to: dateHomework);
+        var hws = await localClient?.homework(dateHomework!, date_to: dateHomework);
 
         //This returns all the week
         listHW.addAll(hws);
         //Remove the others
-        listHW.removeWhere((element) => element.date!.day != dateHomework.day);
+        listHW.removeWhere((element) => element.date!.day != dateHomework?.day);
 
         hwLock = false;
         hwRefreshRecursive = false;
@@ -236,7 +236,7 @@ class APIPronote extends API {
         //Check if needed to force refresh if not offline
         if ((forceReload == true || toReturn == null) && connectivityResult != ConnectivityResult.none) {
           try {
-            List<Lesson> onlineLessons = await localClient.lessons(dateToUse);
+            List<Lesson> onlineLessons = await localClient?.lessons(dateToUse);
 
             await appSys.offline.lessons.updateLessons(onlineLessons, await get_week(dateToUse));
 
@@ -263,7 +263,7 @@ class APIPronote extends API {
         if (lessonsRefreshRecursive == false && connectivityResult != ConnectivityResult.none) {
           lessonsRefreshRecursive = true;
           await pronoteMethod.refreshClient();
-          toReturn = await localClient.lessons(dateToUse);
+          toReturn = await localClient?.lessons(dateToUse);
           toReturn ??
               [].removeWhere((lesson) =>
                   DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) !=
@@ -286,7 +286,7 @@ class APIPronote extends API {
       List<Discipline>? disciplines = await appSys.offline.disciplines.getDisciplines();
       List<Grade> grades = getAllGrades(disciplines, overrideLimit: true)!;
       grades.forEach((grade) {
-        if (!listPeriods.any((period) => period.name == grade.periodName && period.id == grade.periodCode)) {
+        if (!listPeriods.any((period) => period.name == grade.periodName)) {
           listPeriods.add(Period(grade.periodName, grade.periodCode));
         }
       });
@@ -302,17 +302,17 @@ class APIPronote extends API {
   getOnlinePeriods() async {
     try {
       List<Period> listPeriod = [];
-      if (localClient.localPeriods != null) {
-        localClient.localPeriods.forEach((pronotePeriod) {
+      if (localClient?.localPeriods != null) {
+        localClient?.localPeriods.forEach((pronotePeriod) {
           listPeriod.add(Period(pronotePeriod.name, pronotePeriod.id));
         });
 
         return listPeriod;
       } else {
-        var listPronotePeriods = await localClient.periods();
+        var listPronotePeriods = await localClient?.periods();
         //refresh local pronote periods
-        localClient.localPeriods = [];
-        listPronotePeriods.forEach((pronotePeriod) {
+        localClient?.localPeriods = [];
+        (listPronotePeriods??[]).forEach((pronotePeriod) {
           listPeriod.add(Period(pronotePeriod.name, pronotePeriod.id));
         });
         return listPeriod;
@@ -329,8 +329,8 @@ class APIPronote extends API {
       return await getOfflinePeriods();
     } catch (e) {
       print("Erreur while getting offline period " + e.toString());
-      if (connectivityResult != ConnectivityResult.none) {
-        if (localClient.loggedIn) {
+      if (connectivityResult != ConnectivityResult.none && localClient!=null) {
+        if (localClient!.loggedIn) {
           print("getting periods online");
           return await getOnlinePeriods();
         } else {
@@ -362,8 +362,8 @@ class APIPronote extends API {
         localClient =
             PronoteClient(url, username: username, password: password, mobileLogin: mobileCasLogin, cookies: cookies);
 
-        await localClient.init();
-        if (localClient.loggedIn) {
+        await localClient?.init();
+        if (localClient!=null && localClient!.loggedIn) {
           this.loggedIn = true;
           loginLock = false;
           pronoteMethod = PronoteMethod(localClient, appSys.account, this.offlineController);
@@ -374,12 +374,12 @@ class APIPronote extends API {
           return ([
             0,
             "Oups, une erreur a eu lieu. Vérifiez votre mot de passe et les autres informations de connexion.",
-            localClient.stepsLogger
+            localClient?.stepsLogger
           ]);
         }
       } catch (e) {
         loginLock = false;
-        localClient.stepsLogger?.add("❌ Pronote login failed : " + e.toString());
+        localClient?.stepsLogger?.add("❌ Pronote login failed : " + e.toString());
         print(e);
         String error = "Une erreur a eu lieu. " + e.toString();
         if (e.toString().contains("invalid url")) {
@@ -414,7 +414,7 @@ class APIPronote extends API {
         }
         print("test");
         await logFile(error);
-        return ([0, error, localClient.stepsLogger]);
+        return ([0, error, localClient?.stepsLogger]);
       }
     } else {
       loginReqNumber++;

@@ -141,6 +141,7 @@ getWeeksRelation(int index, List<Homework> list) {
         return "Dans plus d'un mois";
       }
     }
+
   } catch (error) {
     print(error);
   }
