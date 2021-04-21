@@ -417,9 +417,9 @@ class Encryption {
       print(this.rsaKeys);
       String? modulusBytes = this.rsaKeys['MR'];
 
-      var modulus = BigInt.parse(modulusBytes ?? "", radix: 16);
+      var modulus = BigInt.parse(modulusBytes!, radix: 16);
 
-      var exponent = BigInt.parse(this.rsaKeys['ER'] ?? "", radix: 16);
+      var exponent = BigInt.parse(this.rsaKeys['ER']!, radix: 16);
 
       var cipher = PKCS1Encoding(RSAEngine());
       cipher.init(true, PublicKeyParameter<RSAPublicKey>(RSAPublicKey(modulus, exponent)));
@@ -497,8 +497,8 @@ class PronoteClient {
     if (cookies == null && password == null && username == null) {
       throw 'Please provide login credentials. Cookies are None, and username and password are empty.';
     }
-    this.username = username;
-    this.password = password;
+    this.username = username ?? "";
+    this.password = password ?? "";
     this.pronote_url = pronote_url;
     this.mobileLogin = mobileLogin;
     print("Initiate communication");
@@ -914,7 +914,7 @@ class PronoteClient {
       "enConnexionAppliMobile": this.mobileLogin,
       "demandeConnexionAppliMobile": false,
       "demandeConnexionAppliMobileJeton": false,
-      "uuidAppliMobile": "121567895313231",
+      "uuidAppliMobile": appSys.settings!["system"]["uuid"],
       "loginTokenSAV": ""
     };
     var idr = await this.communication!.post("Identification", data: {'donnees': ident_json});
