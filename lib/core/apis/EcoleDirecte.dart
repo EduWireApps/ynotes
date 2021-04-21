@@ -40,15 +40,15 @@ final storage = new FlutterSecureStorage();
 
 String? token;
 
-  @override
-  Future<List<SchoolAccount>> getAccounts() {
-    // TODO: implement getAccounts
-    throw UnimplementedError();
-  }
-
-  ///END OF THE API CLASS
+///END OF THE API CLASS
 void CreateStorage(String key, String? data) async {
   await storage.write(key: key, value: data);
+}
+
+@override
+Future<List<SchoolAccount>> getAccounts() {
+  // TODO: implement getAccounts
+  throw UnimplementedError();
 }
 
 ///  CLOUD SUB API
@@ -281,8 +281,8 @@ class APIEcoleDirecte extends API {
         }
       }
 
-      toReturn!.sort((a, b) => a.start!.compareTo(b.start!));
-      return toReturn
+      (toReturn ?? []).sort((a, b) => a.start!.compareTo(b.start!));
+      return (toReturn ?? [])
           .where((lesson) =>
               DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start!)) ==
               DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)))
@@ -356,7 +356,7 @@ class APIEcoleDirecte extends API {
           logFile(e.toString());
         }
         this.loggedIn = true;
-        return [1, "Bienvenue ${actualUser![0].toUpperCase()}${actualUser!.substring(1).toLowerCase()} !"];
+        return [1, "Bienvenue ${actualUser[0].toUpperCase()}${actualUser.substring(1).toLowerCase()} !"];
       }
       //Return an error
       else {

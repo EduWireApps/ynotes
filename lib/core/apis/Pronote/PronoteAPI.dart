@@ -494,9 +494,6 @@ class PronoteClient {
   List<String>? stepsLogger;
   bool? mobileLogin;
   PronoteClient(String pronote_url, {String? username, String? password, var cookies, bool? mobileLogin}) {
-    if (cookies == null && password == null && username == null) {
-      throw 'Please provide login credentials. Cookies are None, and username and password are empty.';
-    }
     this.username = username ?? "";
     this.password = password ?? "";
     this.pronote_url = pronote_url;

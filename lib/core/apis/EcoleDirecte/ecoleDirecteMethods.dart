@@ -303,7 +303,7 @@ class EcoleDirecteMethod {
         try {
           parsedData = await converter(responseData);
         } catch (e) {
-          throw (onErrorBody + " " + e.toString());
+          throw (onErrorBody + " - during conversion - " + e.toString());
         }
         return parsedData;
       } else {

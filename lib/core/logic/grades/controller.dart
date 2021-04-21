@@ -336,7 +336,7 @@ class GradesController extends ChangeNotifier {
 
   void _setDefaultPeriod() {
     if (_disciplines != null && _period == "") {
-      _period = _disciplines?.lastWhere((list) => list.gradesList!.length > 0).gradesList!.last.periodName;
+      _period = (_disciplines??[]).lastWhere((list) => list.gradesList!.length > 0).gradesList!.last.periodName;
     }
   }
 

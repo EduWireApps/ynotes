@@ -110,18 +110,20 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
 
   //Disable new grades when battery saver is enabled
   bool? disableNotification;
+
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
 //animation left to right
-    SystemChrome.setSystemUIOverlayStyle(
-        ThemeUtils.isThemeDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark);
+
     return ChangeNotifierProvider<ApplicationSystem>.value(
       value: appSys,
       child: Consumer<ApplicationSystem>(builder: (context, _appSys, child) {
         return new Scaffold(
             backgroundColor: Theme.of(context).backgroundColor,
-            appBar: new AppBar(
+            appBar: AppBar(
+              systemOverlayStyle: ThemeUtils.isThemeDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+              brightness: ThemeUtils.isThemeDark ? Brightness.dark : Brightness.light,
               backgroundColor: Theme.of(context).primaryColor,
               title: new Text("Paramètres"),
               leading: new IconButton(
@@ -137,6 +139,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                 backgroundColor: Theme.of(context).backgroundColor,
                 darkBackgroundColor: Theme.of(context).backgroundColor,
                 lightBackgroundColor: Theme.of(context).backgroundColor,
+                contentPadding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.1),
                 sections: [
                   SettingsSection(
                     title: 'Mon compte',

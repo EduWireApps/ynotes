@@ -109,11 +109,8 @@ class ApplicationSystem extends ChangeNotifier {
     theme = appThemes[themeName];
     this.themeName = themeName;
     updateSetting(this.settings!["user"]["global"], "theme", themeName);
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-        systemNavigationBarColor: ThemeUtils.isThemeDark ? theme!.primaryColorLight : theme!.primaryColorDark,
-        statusBarColor: Colors.transparent // navigation bar color
-        // status bar color
-        ));
+    SystemChrome.setSystemUIOverlayStyle(
+        ThemeUtils.isThemeDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark);
     notifyListeners();
   }
 

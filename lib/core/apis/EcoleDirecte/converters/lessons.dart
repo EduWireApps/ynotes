@@ -5,7 +5,8 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 class EcoleDirecteLessonConverter {
   static Future<List<Lesson>> lessons(Map<String, dynamic> lessonData) async {
     List<Lesson> lessons = [];
-    await Future.forEach(lessonData["data"], (Map? lesson) async {
+    List<Map> listLessons = lessonData["data"].cast<Map>();
+    await Future.forEach(listLessons, (Map lesson) async {
       if (lesson != null) {
         String room = lesson["salle"].toString();
         List<String> teachers = [lesson["prof"]];

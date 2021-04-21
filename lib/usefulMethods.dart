@@ -3,12 +3,13 @@ import 'dart:io';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/globals.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
 String actualUser = "";
 
 //Parsers list
@@ -70,7 +71,7 @@ List<Grade>? getAllGrades(List<Discipline>? list, {bool overrideLimit = false, b
         appSys.api!.gradesList?.addAll(listToReturn);
 
         if (overrideLimit == false && listToReturn != null) {
-          listToReturn = listToReturn.sublist(0, (listToReturn.length >= 5) ? 5 : listToReturn.length);
+          listToReturn = listToReturn.sublist(0, ((listToReturn.length >= 5) ? 5 : listToReturn.length));
         }
       }
       return listToReturn;
