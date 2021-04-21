@@ -569,7 +569,7 @@ class APIPronote extends API {
 
   @override
   Future<List> login(username, password, {url, cas, mobileCasLogin}) async {
-    print(username + " " + password + " " + url);
+    print(username.toString()+ " " + password.toString() + " " + url.toString());
     int req = 0;
     while (loginLock == true && req < 5) {
       req++;
