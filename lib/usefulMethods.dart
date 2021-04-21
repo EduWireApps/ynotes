@@ -70,7 +70,7 @@ List<Grade>? getAllGrades(List<Discipline>? list, {bool overrideLimit = false, b
         appSys.api!.gradesList?.addAll(listToReturn);
 
         if (overrideLimit == false && listToReturn != null) {
-          listToReturn == listToReturn.sublist(0, (listToReturn.length >= 5) ? 5 : listToReturn.length);
+          listToReturn = listToReturn.sublist(0, (listToReturn.length >= 5) ? 5 : listToReturn.length);
         }
       }
       return listToReturn;

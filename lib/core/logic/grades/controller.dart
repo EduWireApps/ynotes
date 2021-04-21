@@ -190,7 +190,7 @@ class GradesController extends ChangeNotifier {
       return li;
     }
     List<Discipline> toReturn = [];
-    li!.forEach((f) {
+    (li ?? []).forEach((f) {
       switch (_sorter) {
         case "all":
           if (f.period == _period) {

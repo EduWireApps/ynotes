@@ -12,7 +12,6 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:wiredash/wiredash.dart';
-import 'package:ynotes/core/apis/Pronote.dart';
 import 'package:ynotes/core/logic/appConfig/controller.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/services/platform.dart';
@@ -20,7 +19,6 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
-import 'package:ynotes/ui/screens/settings/sub_pages/accountPage.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/exportPage.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
 
@@ -249,7 +247,8 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                                     "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ??
                                 false) {
                               if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
-                                _appSys.updateSetting(_appSys.settings!["user"]["global"], "notificationNewMail", value);
+                                _appSys.updateSetting(
+                                    _appSys.settings!["user"]["global"], "notificationNewMail", value);
                               }
                             }
                           }
@@ -290,11 +289,10 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                           onTap: () async {
                             //Check battery optimization setting
                             if (!await Permission.ignoreBatteryOptimizations.isGranted &&
-                                    await CustomDialogs.showAuthorizationsDialog(
-                                        context,
-                                        "la configuration d'optimisation de batterie",
-                                        "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ??
-                                false) {
+                                await CustomDialogs.showAuthorizationsDialog(
+                                    context,
+                                    "la configuration d'optimisation de batterie",
+                                    "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")) {
                               await Permission.ignoreBatteryOptimizations.request().isGranted;
                             }
 
@@ -412,8 +410,9 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                         leading: Icon(MdiIcons.restore, color: ThemeUtils.textColor()),
                         onTap: () async {
                           if ((await CustomDialogs.showConfirmationDialog(context, null,
-                              alternativeText: "Etes-vous sûr de vouloir réinitialiser le tutoriel ?",
-                              alternativeButtonConfirmText: "confirmer"))??false) {
+                                  alternativeText: "Etes-vous sûr de vouloir réinitialiser le tutoriel ?",
+                                  alternativeButtonConfirmText: "confirmer")) ??
+                              false) {
                             await HelpDialog.resetEveryHelpDialog();
                           }
                           HelpDialog.resetEveryHelpDialog();
@@ -430,8 +429,9 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                         leading: Icon(MdiIcons.deleteAlert, color: ThemeUtils.textColor()),
                         onTap: () async {
                           if ((await CustomDialogs.showConfirmationDialog(context, null,
-                              alternativeText:
-                                  "Etes-vous sûr de vouloir supprimer les données hors ligne ? (irréversible)"))??false) {
+                                  alternativeText:
+                                      "Etes-vous sûr de vouloir supprimer les données hors ligne ? (irréversible)")) ??
+                              false) {
                             await _appSys.offline.clearAll();
                           }
                         },
@@ -470,7 +470,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                               ),
                               applicationName: "yNotes",
                               applicationVersion:
-                                  packageInfo.version + "+" + packageInfo.buildNumber + " T" + Tests.testVersion ?? "",
+                                  packageInfo.version + "+" + packageInfo.buildNumber + " T" + Tests.testVersion,
                               applicationLegalese:
                                   "Developpé avec amour en France.\nAPI Pronote adaptée à l'aide de l'API pronotepy développée par Bain sous licence MIT.\nJe remercie la participation des bêta testeurs et des développeurs ayant participé au développement de l'application.");
                         },
@@ -484,9 +484,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                         SettingsTile(
                           title: 'Bouton magique',
                           leading: Icon(MdiIcons.testTube, color: ThemeUtils.textColor()),
-                          onTap: () async {
-                      
-                          },
+                          onTap: () async {},
                           titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                           subtitleTextStyle: TextStyle(
                               fontFamily: "Asap",
@@ -515,7 +513,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
   void getUsername() async {
     var actualUserAsync = await ReadStorage("userFullName");
     setState(() {
-      actualUser = actualUserAsync??"";
+      actualUser = actualUserAsync ?? "";
     });
   }
 

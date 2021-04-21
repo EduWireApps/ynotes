@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:ynotes/usefulMethods.dart';
+
 part 'models.g.dart';
 
 @HiveType(typeId: 3)
@@ -29,7 +29,7 @@ class Discipline {
   @HiveField(10)
   final List<String?>? teachers;
   @HiveField(11)
-  final String? period;
+  String? period;
   @HiveField(12)
   List<Grade>? gradesList;
   @HiveField(13)
@@ -63,38 +63,6 @@ class Discipline {
     this.weight,
   });
 
-  set setcolor(Color newcolor) {
-    color = newcolor.value;
-  }
-
-  set setGradeList(List<Grade> list) {
-    gradesList = [];
-  }
-
-  double getAverage() {
-    //if using Pronote
-
-    double average = 0.0;
-    double counter = 0;
-
-    gradesList!.forEach((Grade grade) {
-      if (!grade.notSignificant! && (!grade.letters! || grade.countAsZero!) && grade.periodName == this.period) {
-        counter += double.parse(grade.weight!);
-        String gradeStringValue = grade.countAsZero! ? "0" : grade.value!;
-        average += double.parse(gradeStringValue.replaceAll(',', '.')) *
-            20 /
-            double.parse(grade.scale!.replaceAll(',', '.')) *
-            double.parse(grade.weight!.replaceAll(',', '.'));
-      }
-    });
-    print(counter);
-    average = double.parse((average / counter).toStringAsFixed(2));
-    return (average);
-  }
-
-//Map<String, dynamic> json, List<String> profs, String codeMatiere, String periode, Color color, String moyenneG, String bmoyenneClasse, String moyenneClasse
-//disciplinesList.add(Discipline.fromJson(element, teachersNames, element['codeMatiere'], periodeElement["idPeriode"], Colors.blue, periodeElement["ensembleMatieres"]["moyenneGenerale"], periodeElement["ensembleMatieres"]["moyenneMax"], periodeElement["ensembleMatieres"]["moyenneClasse"]));
-
   factory Discipline.fromEcoleDirecteJson(
       {required Map<String, dynamic> json,
       required List<String?> profs,
@@ -125,13 +93,45 @@ class Discipline {
         generalRank: rangGeneral,
         weight: json["coef"].toString());
   }
-  //overrides == operator to avoid issues in selectors
+
+  set setcolor(Color newcolor) {
+    color = newcolor.value;
+  }
+
+  set setGradeList(List<Grade> list) {
+    gradesList = [];
+  }
+
+//Map<String, dynamic> json, List<String> profs, String codeMatiere, String periode, Color color, String moyenneG, String bmoyenneClasse, String moyenneClasse
+//disciplinesList.add(Discipline.fromJson(element, teachersNames, element['codeMatiere'], periodeElement["idPeriode"], Colors.blue, periodeElement["ensembleMatieres"]["moyenneGenerale"], periodeElement["ensembleMatieres"]["moyenneMax"], periodeElement["ensembleMatieres"]["moyenneClasse"]));
+
   @override
   bool operator ==(Object other) =>
       other is Discipline &&
       other.disciplineCode == disciplineCode &&
       other.period == period &&
       other.subdisciplineCode == subdisciplineCode;
+  //overrides == operator to avoid issues in selectors
+  double getAverage() {
+    //if using Pronote
+
+    double average = 0.0;
+    double counter = 0;
+
+    gradesList!.forEach((Grade grade) {
+      if (!grade.notSignificant! && (!grade.letters! || grade.countAsZero!) && grade.periodName == this.period) {
+        counter += double.parse(grade.weight!);
+        String gradeStringValue = grade.countAsZero! ? "0" : grade.value!;
+        average += double.parse(gradeStringValue.replaceAll(',', '.')) *
+            20 /
+            double.parse(grade.scale!.replaceAll(',', '.')) *
+            double.parse(grade.weight!.replaceAll(',', '.'));
+      }
+    });
+    print(counter);
+    average = double.parse((average / counter).toStringAsFixed(2));
+    return (average);
+  }
 }
 
 //Marks class

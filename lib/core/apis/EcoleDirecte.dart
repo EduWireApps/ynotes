@@ -328,7 +328,7 @@ class APIEcoleDirecte extends API {
           //Put the value of the name in a variable
           actualUser = req['data']['accounts'][0]['prenom'] ?? "Invité";
           ;
-          CreateStorage("userFullName", actualUser ?? "");
+          CreateStorage("userFullName", actualUser);
           String userID = req['data']['accounts'][0]['id'].toString();
           String classe;
           try {

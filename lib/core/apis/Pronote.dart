@@ -284,7 +284,8 @@ class APIPronote extends API {
     try {
       List<Period> listPeriods = [];
       List<Discipline>? disciplines = await appSys.offline.disciplines.getDisciplines();
-      List<Grade> grades = getAllGrades(disciplines, overrideLimit: true)!;
+      List<Grade> grades =
+          (disciplines ?? []).map((e) => e.gradesList).toList().map((e) => e).expand((element) => element!).toList();
       grades.forEach((grade) {
         if (!listPeriods.any((period) => period.name == grade.periodName)) {
           listPeriods.add(Period(grade.periodName, grade.periodCode));
@@ -312,7 +313,7 @@ class APIPronote extends API {
         var listPronotePeriods = await localClient?.periods();
         //refresh local pronote periods
         localClient?.localPeriods = [];
-        (listPronotePeriods??[]).forEach((pronotePeriod) {
+        (listPronotePeriods ?? []).forEach((pronotePeriod) {
           listPeriod.add(Period(pronotePeriod.name, pronotePeriod.id));
         });
         return listPeriod;
@@ -329,7 +330,7 @@ class APIPronote extends API {
       return await getOfflinePeriods();
     } catch (e) {
       print("Erreur while getting offline period " + e.toString());
-      if (connectivityResult != ConnectivityResult.none && localClient!=null) {
+      if (connectivityResult != ConnectivityResult.none && localClient != null) {
         if (localClient!.loggedIn) {
           print("getting periods online");
           return await getOnlinePeriods();
@@ -363,7 +364,7 @@ class APIPronote extends API {
             PronoteClient(url, username: username, password: password, mobileLogin: mobileCasLogin, cookies: cookies);
 
         await localClient?.init();
-        if (localClient!=null && localClient!.loggedIn) {
+        if (localClient != null && localClient!.loggedIn) {
           this.loggedIn = true;
           loginLock = false;
           pronoteMethod = PronoteMethod(localClient, appSys.account, this.offlineController);

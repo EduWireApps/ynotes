@@ -60,9 +60,8 @@ class PronoteMethod {
               'Periode': {'N': period.id, 'L': period.name}
             },
           };
-          var temp =
-              await request("DernieresNotes", PronoteDisciplineConverter.disciplines, data: jsonData, onglet: 198);
-          temp.forEach((element) {
+          var temp = await request("DernieresNotes", PronoteDisciplineConverter.disciplines, data: jsonData, onglet: 198);
+          temp.forEach((Discipline element) {
             element.period = period.name;
           });
           listDisciplines.addAll(temp);
@@ -143,7 +142,7 @@ class PronoteMethod {
         locks[lockName] = false;
         return toReturn;
       } catch (e) {
-        print(e);
+        print("Error while fetching for " + (lockName ?? "") + e.toString());
         locks[lockName] = false;
         if (!testLock("recursive_" + lockName)) {
           print("Refreshing client");
