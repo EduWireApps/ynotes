@@ -52,21 +52,24 @@ class PronoteMethod {
   Future<List<Discipline>> grades() async {
     List<PronotePeriod>? periods = this.client?.periods();
     List<Discipline> listDisciplines = [];
-    await Future.forEach(periods, (PronotePeriod period) async {
-      if (period != null) {
-        var jsonData = {
-          'donnees': {
-            'Periode': {'N': period.id, 'L': period.name}
-          },
-        };
-        var temp = await request("DernieresNotes", PronoteDisciplineConverter.disciplines, data: jsonData, onglet: 198);
-        temp.forEach((element) {
-          element.period = period.name;
-        });
-        listDisciplines.addAll(temp);
-        listDisciplines = await refreshDisciplinesListColors(listDisciplines);
-      }
-    });
+    if (periods != null) {
+      await Future.forEach(periods, (PronotePeriod period) async {
+        if (period != null) {
+          var jsonData = {
+            'donnees': {
+              'Periode': {'N': period.id, 'L': period.name}
+            },
+          };
+          var temp =
+              await request("DernieresNotes", PronoteDisciplineConverter.disciplines, data: jsonData, onglet: 198);
+          temp.forEach((element) {
+            element.period = period.name;
+          });
+          listDisciplines.addAll(temp);
+          listDisciplines = await refreshDisciplinesListColors(listDisciplines);
+        }
+      });
+    }
     print("Completed disciplines request");
     if (!_offlineController.locked) {
       await _offlineController.disciplines.updateDisciplines(listDisciplines);
@@ -84,7 +87,7 @@ class PronoteMethod {
     DateTime now = DateTime.now();
     List<Homework> listHW = [];
     final f = new DateFormat('dd/MM/yyyy');
-    var dateTo = f.parse(this.client.funcOptions['donneesSec']['donnees']['General']['DerniereDate']['V']);
+    var dateTo = f.parse(this.client?.funcOptions['donneesSec']['donnees']['General']['DerniereDate']['V']);
     var jsonData = {
       'donnees': {
         'domaine': {'_T': 8, 'V': "[${await get_week(now)}..${await get_week(dateTo)}]"}
@@ -173,7 +176,7 @@ class PronoteMethod {
     //If it is a parent account
     if (this.account.isParentAccount) data['_Signature_']["membre"] = {'N': this.account.studentID, 'G': 4};
 
-    return await converter(this.client, await this.client.communication!.post(functionName, data: data));
+    return await converter(this.client, await this.client?.communication!.post(functionName, data: data));
   }
 
   testLock(String key) {
