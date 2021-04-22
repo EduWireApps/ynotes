@@ -654,15 +654,12 @@ class PronoteClient {
     this.authCookie = null;
     this.date = DateTime.now();
     var inputFormat = DateFormat("dd/MM/yyyy");
-    print("s");
 
     this.startDay = inputFormat.parse(this.funcOptions['donneesSec']['donnees']['General']['PremierLundi']['V']);
-    print("gfd");
 
     final storage = new FlutterSecureStorage();
     await storage.write(key: "startday", value: this.startDay.toString());
     this.week = await get_week(DateTime.now());
-    print("sdf");
 
     this.localPeriods = this.periods;
     this.stepsLogger!.add("✅ Created attributes");
@@ -744,12 +741,14 @@ class PronoteClient {
   }
 
   polls() async {
-    print("GETTING POLLS");
+    /* print("GETTING POLLS");
     Map data = {
       "_Signature_": {"onglet": 8},
     };
     var response = await this.communication!.post('PageActualites', data: data);
     var listActus = response['donneesSec']['donnees']['listeActualites']["V"];
+    FileAppUtil.writeInFile(conv.jsonEncode(response['donneesSec']['donnees']['listeActualites']["V"]), "questions");
+
     List<PollInfo> listInfosPolls = [];
     listActus.forEach((element) {
       List<Document> documents = [];
@@ -763,6 +762,7 @@ class PronoteClient {
 
         List<String> questions = [];
         List<Map> choices = [];
+        FileAppUtil.writeInFile(conv.jsonEncode(element["listeQuestions"]["V"]), "questions");
         element["listeQuestions"]["V"].forEach((question) {
           questions.add(conv.jsonEncode(question));
         });
@@ -779,7 +779,7 @@ class PronoteClient {
         print("Failed to add an element to the polls list " + e.toString());
       }
     });
-    return listInfosPolls;
+    return listInfosPolls;*/
   }
 
   void printWrapped(String text) {

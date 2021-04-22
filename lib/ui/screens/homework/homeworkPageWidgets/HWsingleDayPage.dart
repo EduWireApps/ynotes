@@ -3,13 +3,11 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/animations/FadeAnimation.dart';
 import 'package:ynotes/ui/components/customLoader.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPage.dart';
-import 'package:ynotes/core/utils/themeUtils.dart';
-import 'package:ynotes/main.dart';
-import 'package:ynotes/globals.dart';
-import 'package:ynotes/usefulMethods.dart';
 
 import 'HWelement.dart';
 
@@ -24,17 +22,6 @@ class HomeworkSecondPage extends StatefulWidget {
 
 class _HomeworkSecondPageState extends State<HomeworkSecondPage> {
   Future? homeworkListFuture;
-  Future<void> refreshLocalHomeworkList() async {
-    setState(() {
-      homeworkListFuture = appSys.api!.getNextHomework(forceReload: true);
-    });
-    var realHW = await homeworkListFuture;
-  }
-
-  void callback() {
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
@@ -61,7 +48,7 @@ class _HomeworkSecondPageState extends State<HomeworkSecondPage> {
                                 ? null
                                 : () {
                                     setState(() {
-                                      isPinnedDateToUse = !isPinnedDateToUse!;
+                                      isPinnedDateToUse = isPinnedDateToUse ?? false;
                                       appSys.offline.pinnedHomework.set(dateToUse.toString(), isPinnedDateToUse);
                                     });
                                     if (isPinnedDateToUse!) {
@@ -129,14 +116,14 @@ class _HomeworkSecondPageState extends State<HomeworkSecondPage> {
                     width: screenSize.size.width / 5 * 4.4,
                     child: snapshot.connectionState == ConnectionState.done
                         ? Container(
-                            child: snapshot.data!.length > 0
+                            child: (snapshot.data ?? []).length > 0
                                 ? ListView.builder(
                                     addRepaintBoundaries: false,
-                                    itemCount: snapshot.data!.length,
+                                    itemCount: (snapshot.data ?? []).length,
                                     itemBuilder: (context, index) {
                                       return FadeAnimationLeftToRight(
                                         0.05 + index / 5,
-                                        HomeworkElement(snapshot.data![index], true),
+                                        HomeworkElement((snapshot.data ?? [])[index], true),
                                       );
                                     })
                                 : Container(
@@ -183,5 +170,16 @@ class _HomeworkSecondPageState extends State<HomeworkSecondPage> {
             ),
           );
         });
+  }
+
+  void callback() {
+    setState(() {});
+  }
+
+  Future<void> refreshLocalHomeworkList() async {
+    setState(() {
+      homeworkListFuture = appSys.api!.getNextHomework(forceReload: true);
+    });
+    var realHW = await homeworkListFuture;
   }
 }

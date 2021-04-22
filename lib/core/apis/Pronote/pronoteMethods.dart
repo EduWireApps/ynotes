@@ -1,6 +1,7 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:intl/intl.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteAPI.dart';
+import 'package:ynotes/core/apis/Pronote/converters/polls.dart';
 import 'package:ynotes/core/apis/Pronote/convertersExporter.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
@@ -60,7 +61,8 @@ class PronoteMethod {
               'Periode': {'N': period.id, 'L': period.name}
             },
           };
-          var temp = await request("DernieresNotes", PronoteDisciplineConverter.disciplines, data: jsonData, onglet: 198);
+          var temp =
+              await request("DernieresNotes", PronoteDisciplineConverter.disciplines, data: jsonData, onglet: 198);
           temp.forEach((Discipline element) {
             element.period = period.name;
           });
@@ -78,7 +80,17 @@ class PronoteMethod {
     return listDisciplines;
   }
 
-  Future<List<Homework>?> homeworkFor(DateTime date) async {}
+  Future<List<Homework>?> homeworkFor(DateTime date) async {
+    var jsonData = {
+      'donnees': {
+        'domaine': {'_T': 8, 'V': "[${await get_week(date)}..${await get_week(date)}]"}
+      },
+    };
+    List<Homework>? hw =
+        await request("PageCahierDeTexte", PronoteHomeworkConverter.homework, data: jsonData, onglet: 88);
+    (hw ?? []).removeWhere((element) => element.date != date);
+    return hw;
+  }
 
   Future<List<Lesson>?> lessons(DateTime dateToUse, int week) async {}
 
@@ -92,17 +104,17 @@ class PronoteMethod {
         'domaine': {'_T': 8, 'V': "[${await get_week(now)}..${await get_week(dateTo)}]"}
       },
     };
-    List<Homework> hws =
+    List<Homework>? hws =
         await request("PageCahierDeTexte", PronoteHomeworkConverter.homework, data: jsonData, onglet: 88);
-    hws.removeWhere((element) => element.date == null && element.date!.isBefore(now));
+    hws?.removeWhere((element) => element.date == null && element.date!.isBefore(now));
 
-    listHW.addAll(hws);
+    listHW.addAll(hws ?? []);
     List<DateTime> pinnedDates = await _offlineController.pinnedHomework.getPinnedHomeworkDates();
     //Add pinned content
     await Future.wait(pinnedDates.map((element) async {
       jsonData = {
         'donnees': {
-          'domaine': {'_T': 8, 'V': "[${await get_week(now)}..${await get_week(element)}]"}
+          'domaine': {'_T': 8, 'V': "[${await get_week(element)}..${await get_week(element)}]"}
         },
       };
       List<Homework> pinnedHomework =
@@ -124,8 +136,7 @@ class PronoteMethod {
     return listHW;
   }
 
-  //Test if another concurrent task is not running
-  onlineFetchWithLock(dynamic onlineFetch, lockName) async {
+  onlineFetchWithLock(dynamic onlineFetch, lockName, {dynamic arguments}) async {
     int req = 0;
     //Time out of 20 seconds. Wait until the task is unlocked
     while (testLock(lockName) && req < 10) {
@@ -137,7 +148,7 @@ class PronoteMethod {
         //Lock current function
         locks[lockName] = true;
         print("Fetching task with name " + lockName);
-        var toReturn = await onlineFetch();
+        var toReturn = await onlineFetch(arguments);
         //Unlock it
         locks[lockName] = false;
         return toReturn;
@@ -148,12 +159,18 @@ class PronoteMethod {
           print("Refreshing client");
           locks["recursive_" + lockName] = true;
           await refreshClient();
-          this.onlineFetchWithLock(onlineFetch, lockName);
+          this.onlineFetchWithLock(onlineFetch, lockName, arguments: arguments);
         }
       }
     } else {
       return null;
     }
+  }
+
+  //Test if another concurrent task is not running
+  Future<List<PollInfo>?> polls() async {
+    List<PollInfo>? polls = await request("PageActualites", PronotePollsConverter.polls, data: {}, onglet: 8);
+    return polls;
   }
 
   refreshClient() async {

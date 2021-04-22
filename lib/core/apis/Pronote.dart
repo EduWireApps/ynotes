@@ -162,46 +162,9 @@ class APIPronote extends API {
 
   @override
   Future<List<Homework>?> getHomeworkFor(DateTime? dateHomework) async {
-    int req = 0;
-    //Time out of 20 seconds. Wait until the task is unlocked
-    while (hwLock == true && req < 10) {
-      req++;
-      await Future.delayed(const Duration(seconds: 2), () => "1");
+    if (dateHomework != null) {
+      return await pronoteMethod.onlineFetchWithLock(pronoteMethod.homeworkFor, "homeworkFor", arguments: dateHomework);
     }
-    if (hwLock == false) {
-      try {
-        print("GETTING HOMEWORK");
-        hwLock = true;
-
-        List<Homework> listHW = [];
-        var hws = await localClient.homework(dateHomework!, date_to: dateHomework);
-
-        //This returns all the week
-        listHW.addAll(hws);
-        //Remove the others
-        listHW.removeWhere((element) => element.date!.day != dateHomework.day);
-
-        hwLock = false;
-        hwRefreshRecursive = false;
-        return listHW;
-      } catch (e) {
-        print("Error while getting homework" + e.toString());
-        List<Homework> listHW = [];
-        hwLock = false;
-
-        if (hwRefreshRecursive == false) {
-          await pronoteMethod.refreshClient();
-          hwRefreshRecursive = true;
-
-          listHW.addAll(await (getHomeworkFor(dateHomework) as Future<Iterable<Homework>>));
-        }
-      }
-    } else {
-      print("HOMEWORK WERE LOCKED");
-      List<Homework> listHW = [];
-      return listHW;
-    }
-    return null;
   }
 
   @override

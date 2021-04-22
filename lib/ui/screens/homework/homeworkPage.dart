@@ -141,7 +141,6 @@ getWeeksRelation(int index, List<Homework> list) {
         return "Dans plus d'un mois";
       }
     }
-
   } catch (error) {
     print(error);
   }
@@ -301,9 +300,9 @@ class HomeworkPageState extends State<HomeworkPage> {
 
                                     getPinnedStateDayToUse();
                                   });
-
-                                  _pageControllerHW!
-                                      .animateToPage(2, duration: Duration(milliseconds: 200), curve: Curves.easeIn);
+                                  if (_pageControllerHW != null)
+                                    _pageControllerHW!.animateToPage(2,
+                                        duration: Duration(milliseconds: 200), curve: Curves.easeIn);
                                 }
                               },
                               child: Container(

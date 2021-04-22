@@ -17,9 +17,9 @@ class LoginWebView extends StatefulWidget {
 
   LoginWebView({Key? key, this.url, this.controller, this.spaceUrl}) : super(key: key);
   @override
-  
   _LoginWebViewState createState() => _LoginWebViewState();
 }
+
 class _LoginWebViewState extends State<LoginWebView> {
   var loginData;
   late Map currentProfile;
@@ -40,8 +40,7 @@ class _LoginWebViewState extends State<LoginWebView> {
       });
       String loginDataProcess =
           "(function(){return window && window.loginState ? JSON.stringify(window.loginState) : \'\';})();";
-      String? loginDataProcessResult =
-          await (widget.controller!.evaluateJavascript(source: loginDataProcess));
+      String? loginDataProcessResult = await (widget.controller!.evaluateJavascript(source: loginDataProcess));
       getCreds(loginDataProcessResult);
       if (loginStatus != null) {
         setState(() {
@@ -69,6 +68,7 @@ class _LoginWebViewState extends State<LoginWebView> {
 
             ///1) We open a page with the serverUrl + weird string hardcoded
             initialOptions: InAppWebViewGroupOptions(
+                android: AndroidInAppWebViewOptions(useHybridComposition: true),
                 crossPlatform: InAppWebViewOptions(supportZoom: true)),
             onWebViewCreated: (InAppWebViewController controller) {
               widget.controller = controller;
@@ -79,8 +79,7 @@ class _LoginWebViewState extends State<LoginWebView> {
             onLoadStop: (controller, url) async {
               await stepper();
             },
-            onProgressChanged:
-                (InAppWebViewController controller, int progress) {},
+            onProgressChanged: (InAppWebViewController controller, int progress) {},
           ),
           Align(
             alignment: Alignment.bottomCenter,
@@ -141,7 +140,7 @@ class _LoginWebViewState extends State<LoginWebView> {
       setState(() {
         step = 2;
       });
-       stepper();
+      stepper();
     } else {
       print("Failed to get metas");
     }
@@ -233,7 +232,7 @@ class _LoginWebViewState extends State<LoginWebView> {
   setCookie() async {
     print("Setting cookie");
     //generate UUID
-   await appSys.updateSetting(appSys.settings!["system"], "uuid", uuid.v4());
+    await appSys.updateSetting(appSys.settings!["system"], "uuid", uuid.v4());
 
     //set cookie
     String cookieFunction = '(function(){try{' +
@@ -317,6 +316,7 @@ class _LoginWebViewState extends State<LoginWebView> {
       ),
     );
   }
+
   _buildText(String text) {
     return SelectableText(text);
   }

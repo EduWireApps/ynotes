@@ -134,9 +134,9 @@ class _PollsAndInfoPageState extends State<PollsAndInfoPage> {
                                               (snapshot.data?[index].title != null
                                                       ? (snapshot.data ?? [])[index].title ?? "" + " - "
                                                       : "") +
-                                                  (((snapshot.data ?? [])[index].datedebut != null)
+                                                  (((snapshot.data ?? [])[index].start != null)
                                                       ? DateFormat("dd/MM/yyyy")
-                                                          .format((snapshot.data ?? [])[index].datedebut!)
+                                                          .format((snapshot.data ?? [])[index].start!)
                                                       : ""),
                                               style: TextStyle(
                                                   fontFamily: "Asap",
@@ -144,7 +144,7 @@ class _PollsAndInfoPageState extends State<PollsAndInfoPage> {
                                                   color: ThemeUtils.textColor()),
                                             ),
                                             AutoSizeText(
-                                              (snapshot.data ?? [])[index].auteur??"",
+                                              (snapshot.data ?? [])[index].author??"",
                                               style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                                             ),
                                           ],
