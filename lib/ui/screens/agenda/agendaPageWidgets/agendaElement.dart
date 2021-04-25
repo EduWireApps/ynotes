@@ -120,7 +120,7 @@ class _AgendaElementState extends State<AgendaElement> {
                                   this.widget.event = temp;
                                 });
                               } else {
-                                await appSys.offline.agendaEvents.addAgendaEvent(temp, await get_week(temp.start));
+                                await appSys.offline.agendaEvents.addAgendaEvent(temp, await getWeek(temp.start));
 
                                 setState(() {
                                   this.widget.event = temp;

@@ -11,7 +11,7 @@ class RecurringEventSchemes {
   //Get schemes
   static Future<List> toScheme(DateTime date) async {
     List schemes = [];
-    int parity = ((await get_week(date)).isEven) ? 1 : 2;
+    int parity = ((await getWeek(date)).isEven) ? 1 : 2;
     int day = date.day;
     //Get all week event
     schemes.add("allWeek");

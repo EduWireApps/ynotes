@@ -31,7 +31,7 @@ abstract class API {
     List<AgendaEvent> events = [];
     List<AgendaEvent>? extracurricularEvents = [];
     List<Lesson>? lessons = await (appSys.api!.getNextLessons(date, forceReload: forceReload));
-    int week = await get_week(date);
+    int week = await getWeek(date);
     //Add lessons for this day
     if (lessons != null) {
       events.addAll(AgendaEvent.eventsFromLessons(lessons));

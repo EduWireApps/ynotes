@@ -7,6 +7,7 @@ import 'package:ynotes/core/apis/Pronote/pronoteMethods.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/logic/shared/loginController.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
@@ -155,35 +156,40 @@ class APIPronote extends API {
 
   @override
   Future<List<Discipline>?> getGrades({bool? forceReload}) async {
-    return await pronoteMethod.fetchAnyData(
+    return (await pronoteMethod.fetchAnyData(
         pronoteMethod.grades, offlineController.disciplines.getDisciplines, "grades",
-        forceFetch: forceReload ?? false, isOfflineLocked: super.offlineController.locked);
+        forceFetch: forceReload ?? false, isOfflineLocked: super.offlineController.locked));
   }
 
   @override
   Future<List<Homework>?> getHomeworkFor(DateTime? dateHomework) async {
     if (dateHomework != null) {
-      return await pronoteMethod.onlineFetchWithLock(pronoteMethod.homeworkFor, "homeworkFor", arguments: dateHomework);
+      return (await pronoteMethod.onlineFetchWithLock(pronoteMethod.homeworkFor, "homeworkFor",
+          arguments: dateHomework));
     }
   }
 
   @override
   Future<List<Homework>?> getNextHomework({bool? forceReload}) async {
-    return await pronoteMethod.fetchAnyData(
+    return (await pronoteMethod.fetchAnyData(
         pronoteMethod.nextHomework, offlineController.homework.getHomework, "homework",
-        forceFetch: forceReload ?? false, isOfflineLocked: super.offlineController.locked);
+        forceFetch: forceReload ?? false, isOfflineLocked: super.offlineController.locked));
   }
 
   @override
   Future<List<Lesson>?> getNextLessons(DateTime dateToUse, {bool? forceReload}) async {
-    return (await pronoteMethod.fetchAnyData(pronoteMethod.lessons, offlineController.lessons.get, "homework",
+    List<Lesson>? lessons = await pronoteMethod.fetchAnyData(
+        pronoteMethod.lessons, offlineController.lessons.get, "lessons",
         forceFetch: forceReload ?? false,
         isOfflineLocked: super.offlineController.locked,
         onlineArguments: dateToUse,
-        offlineArguments: await get_week(dateToUse))??[]).where((lesson) =>
-                DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start!)) ==
-                DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)))
-            .toList();
+        offlineArguments: await getWeek(dateToUse));
+    if (lessons != null) {
+      lessons.retainWhere((lesson) =>
+          DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start!)) ==
+          DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)));
+    }
+    return lessons;
   }
 
   getOfflinePeriods() async {
@@ -257,9 +263,10 @@ class APIPronote extends API {
   Future<List> login(username, password, {url, cas, mobileCasLogin}) async {
     print(username + " " + password + " " + url);
     int req = 0;
-    while (loginLock == true && req < 5) {
+    while (loginLock == true && req < 5 && appSys.loginController.actualState != loginStatus.loggedIn) {
+      print("Locked, trying in 5 seconds...");
       req++;
-      await Future.delayed(const Duration(seconds: 2), () => "1");
+      await Future.delayed(const Duration(seconds: 5), () => "1");
     }
     if (loginLock == false && loginReqNumber < 5) {
       loginReqNumber = 0;

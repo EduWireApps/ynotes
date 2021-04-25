@@ -12,7 +12,7 @@ addEvent(context) async {
     if (temp.recurrenceScheme != null && temp.recurrenceScheme != "0") {
       await appSys.offline.agendaEvents.addAgendaEvent(temp, temp.recurrenceScheme);
     } else {
-      await appSys.offline.agendaEvents.addAgendaEvent(temp, await get_week(temp.start!));
+      await appSys.offline.agendaEvents.addAgendaEvent(temp, await getWeek(temp.start!));
     }
     await AppNotification.scheduleAgendaReminders(temp);
   }

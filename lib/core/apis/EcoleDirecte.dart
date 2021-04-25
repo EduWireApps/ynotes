@@ -250,7 +250,7 @@ class APIEcoleDirecte extends API {
   Future<List<Lesson>?> getNextLessons(DateTime dateToUse, {bool? forceReload = false}) async {
     try {
       print("Getting next lessons");
-      int week = await get_week(dateToUse);
+      int week = await getWeek(dateToUse);
       List<Lesson>? toReturn;
       var connectivityResult = await (Connectivity().checkConnectivity());
       //get lessons from offline storage

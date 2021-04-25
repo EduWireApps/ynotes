@@ -42,7 +42,7 @@ class AppNotification {
       }
     }
     var date = DateTime.now();
-    int week = await get_week(date);
+    int week = await getWeek(date);
     final dir = await FolderAppUtil.getDirectory();
     Hive.init("${dir.path}/offline");
     //Register adapters once
@@ -294,7 +294,7 @@ class AppNotification {
       }
     }
     var date = DateTime.now();
-    int week = await get_week(date);
+    int week = await getWeek(date);
     final dir = await FolderAppUtil.getDirectory();
     Hive.init("${dir.path}/offline");
     //Register adapters once

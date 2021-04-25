@@ -34,13 +34,13 @@ class PronoteMethod {
       try {
         return await onlineFetchWithLock(onlineFetch, lockName, arguments: onlineArguments);
       } catch (e) {
-        return await offlineFetch(offlineArguments);
+        return await (offlineArguments != null ? offlineFetch(offlineArguments) : offlineFetch);
       }
     } else {
       //Offline data;
       var data;
       if (!isOfflineLocked) {
-        data = await offlineFetch();
+        data = await (offlineArguments != null ? offlineFetch(offlineArguments) : offlineFetch);
       }
       if (data == null) {
         print("Online fetch because offline is null");
@@ -83,7 +83,7 @@ class PronoteMethod {
   Future<List<Homework>?> homeworkFor(DateTime date) async {
     var jsonData = {
       'donnees': {
-        'domaine': {'_T': 8, 'V': "[${await get_week(date)}..${await get_week(date)}]"}
+        'domaine': {'_T': 8, 'V': "[${await getWeek(date)}..${await getWeek(date)}]"}
       },
     };
     List<Homework>? hw =
@@ -92,9 +92,9 @@ class PronoteMethod {
     return hw;
   }
 
-  Future<List<Lesson>?> lessons(PronoteClient client, DateTime dateFrom, {DateTime? dateTo}) async {
+  Future<List<Lesson>?> lessons(DateTime dateFrom, {DateTime? dateTo}) async {
     List<Lesson>? lessons = [];
-    var user = client.paramsUser['donneesSec']['donnees']['ressource'];
+    var user = client?.paramsUser['donneesSec']['donnees']['ressource'];
     Map jsonData = {
       "donnees": {
         "ressource": user,
@@ -108,17 +108,21 @@ class PronoteMethod {
       }
     };
     var output = [];
-    var firstWeek = await get_week(dateFrom);
+    var firstWeek = await getWeek(dateFrom);
     if (dateTo == null) {
       dateTo = dateFrom;
     }
-    var lastWeek = await get_week(dateTo);
-    for (int week = firstWeek; lastWeek < lastWeek + 1; ++lastWeek) {
-      jsonData["donnees"]["NumeroSemaine"] = lastWeek;
-      jsonData["donnees"]["numeroSemaine"] = lastWeek;
-      lessons.addAll(await request("PageEmploiDuTemps", PronoteLessonsConverter.lesson, data: jsonData, onglet: 16));
+    var lastWeek = await getWeek(dateTo);
+    for (int week = firstWeek; week < (lastWeek + 1); week++) {
+      jsonData["donnees"]["NumeroSemaine"] = week;
+      jsonData["donnees"]["numeroSemaine"] = week;
+      List<Lesson> newLessons =
+          await request("PageEmploiDuTemps", PronoteLessonsConverter.lessons, data: jsonData, onglet: 16);
+      lessons.addAll(newLessons);
+      await appSys.offline.lessons.updateLessons(newLessons, week);
     }
-    await appSys.offline.lessons.updateLessons(lessons, await get_week(dateFrom));
+
+    return lessons;
   }
 
   nextHomework() async {
@@ -128,7 +132,7 @@ class PronoteMethod {
     var dateTo = f.parse(this.client?.funcOptions['donneesSec']['donnees']['General']['DerniereDate']['V']);
     var jsonData = {
       'donnees': {
-        'domaine': {'_T': 8, 'V': "[${await get_week(now)}..${await get_week(dateTo)}]"}
+        'domaine': {'_T': 8, 'V': "[${await getWeek(now)}..${await getWeek(dateTo)}]"}
       },
     };
     List<Homework>? hws =
@@ -141,7 +145,7 @@ class PronoteMethod {
     await Future.wait(pinnedDates.map((element) async {
       jsonData = {
         'donnees': {
-          'domaine': {'_T': 8, 'V': "[${await get_week(element)}..${await get_week(element)}]"}
+          'domaine': {'_T': 8, 'V': "[${await getWeek(element)}..${await getWeek(element)}]"}
         },
       };
       List<Homework> pinnedHomework =
@@ -175,12 +179,12 @@ class PronoteMethod {
         //Lock current function
         locks[lockName] = true;
         print("Fetching task with name " + lockName);
-        var toReturn = await onlineFetch(arguments);
+        var toReturn = await (arguments != null ? onlineFetch(arguments) : onlineFetch());
         //Unlock it
         locks[lockName] = false;
         return toReturn;
       } catch (e) {
-        print("Error while fetching for " + (lockName ?? "") + e.toString());
+        print("Error while fetching for " + (lockName ?? "") + " " + e.toString());
         locks[lockName] = false;
         if (!testLock("recursive_" + lockName)) {
           print("Refreshing client");

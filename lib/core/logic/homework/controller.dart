@@ -14,29 +14,13 @@ class HomeworkController extends ChangeNotifier {
   bool isFetching = false;
   int examsCount = 0;
 
-  ///Returns [donePercent, doneLength, length]
-  List get homeworkCompletion => _hwCompletion;
+  HomeworkController(this.api) {
+    _api = api;
+  }
   List<Homework>? get getHomework => _old;
 
-  Future<void> refresh({bool force = false, refreshFromOffline = false}) async {
-    print("Refreshing homework " + (refreshFromOffline ? "from offline" : "online"));
-    isFetching = true;
-    notifyListeners();
-    //ED
-    if (refreshFromOffline) {
-      _old = await HomeworkUtils.getReducedListHomework();
-      _old!.sort((a, b) => a.date!.compareTo(b.date!));
-      notifyListeners();
-    } else {
-      _old = await HomeworkUtils.getReducedListHomework(forceReload: force);
-      _old!.sort((a, b) => a.date!.compareTo(b.date!));
-      notifyListeners();
-    }
-
-    await prepareOld(_old!);
-    isFetching = false;
-    notifyListeners();
-  }
+  ///Returns [donePercent, doneLength, length]
+  List get homeworkCompletion => _hwCompletion;
 
   void getHomeworkDonePercent() async {
     List<Homework> list = [];
@@ -51,7 +35,7 @@ class HomeworkController extends ChangeNotifier {
     if (list != null) {
       //Number of elements in list
       int total = list.length;
-    
+
       if (total == 0) {
         _hwCompletion = [100, 0, 0];
         notifyListeners();
@@ -103,6 +87,17 @@ class HomeworkController extends ChangeNotifier {
     }
   }
 
+  void prepareExamsCount() {
+    List<Homework> hwList = getHomework!;
+    if (hwList != null) {
+      examsCount = hwList.where((element) => element.isATest!).length;
+      notifyListeners();
+    } else {
+      examsCount = 0;
+      notifyListeners();
+    }
+  }
+
   Future<void> prepareOld(List<Homework> oldHW) async {
     oldHW.forEach((element) {
       //remove duplicates
@@ -119,18 +114,23 @@ class HomeworkController extends ChangeNotifier {
     await loadAll();
   }
 
-  void prepareExamsCount() {
-    List<Homework> hwList = getHomework!;
-    if (hwList != null) {
-      examsCount = hwList.where((element) => element.isATest!).length;
+  Future<void> refresh({bool force = false, refreshFromOffline = false}) async {
+    print("Refreshing homework " + (refreshFromOffline ? "from offline" : "online"));
+    isFetching = true;
+    notifyListeners();
+    //ED
+    if (refreshFromOffline) {
+      _old = await HomeworkUtils.getReducedListHomework();
+      _old!.sort((a, b) => a.date!.compareTo(b.date!));
       notifyListeners();
     } else {
-      examsCount = 0;
+      _old = await HomeworkUtils.getReducedListHomework(forceReload: force);
+      (_old ?? []).sort((a, b) => a.date!.compareTo(b.date!));
       notifyListeners();
     }
-  }
 
-  HomeworkController(this.api) {
-    _api = api;
+    await prepareOld(_old!);
+    isFetching = false;
+    notifyListeners();
   }
 }

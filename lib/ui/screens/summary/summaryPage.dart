@@ -113,22 +113,23 @@ class SummaryPageState extends State<SummaryPage> {
         offset = _pageControllerSummaryPage.offset;
       });
     });
-
-    SchedulerBinding.instance!.addPostFrameCallback((!mounted
-        ? null
-        : (_) => {
-              initLoginController().then((var f) {
-                if (firstStart == true) {
-                  firstStart = false;
-                }
-              })
-            })!);
-
     //Init controllers
     appSys.gradesController.refresh(force: false);
     appSys.homeworkController.refresh(force: false);
-    appSys.gradesController.refresh(force: true);
-    appSys.homeworkController.refresh(force: true);
+    SchedulerBinding.instance!.addPostFrameCallback((!mounted
+        ? null
+        : (_) => {
+              if (firstStart)
+                {
+                  initLoginController().then((var f) {
+                    if (firstStart) {
+                      firstStart = false;
+                    }
+                    appSys.gradesController.refresh(force: true);
+                    appSys.homeworkController.refresh(force: true);
+                  })
+                }
+            })!);
   }
 
   Future<void> refreshControllers() async {

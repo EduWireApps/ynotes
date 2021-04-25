@@ -107,7 +107,7 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                                     Navigator.pop(context);
                                   }
                                 } else {
-                                  await appSys.offline.agendaEvents.addAgendaEvent(temp, await get_week(temp.start));
+                                  await appSys.offline.agendaEvents.addAgendaEvent(temp, await getWeek(temp.start));
                                   await AppNotification.scheduleAgendaReminders(temp);
                                 }
                                 setState(() {

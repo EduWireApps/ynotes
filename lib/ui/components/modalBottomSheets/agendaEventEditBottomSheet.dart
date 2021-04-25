@@ -118,12 +118,12 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                               if (this.widget.customEvent!.recurrenceScheme != null &&
                                   this.widget.customEvent!.recurrenceScheme != "0") {
                                 await appSys.offline.agendaEvents
-                                    .removeAgendaEvent(id, await get_week(this.widget.customEvent!.start!));
+                                    .removeAgendaEvent(id, await getWeek(this.widget.customEvent!.start!));
                                 await appSys.offline.agendaEvents
                                     .removeAgendaEvent(id, this.widget.customEvent!.recurrenceScheme);
                               } else {
                                 await appSys.offline.agendaEvents
-                                    .removeAgendaEvent(id, await get_week(this.widget.customEvent!.start!));
+                                    .removeAgendaEvent(id, await getWeek(this.widget.customEvent!.start!));
                               }
                             }
                             if (this.widget.reminder != null) {

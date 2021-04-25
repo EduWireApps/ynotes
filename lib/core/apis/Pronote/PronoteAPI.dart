@@ -249,10 +249,6 @@ class Communication {
     print(p_site);
 
     this.requestNumber += 2;
-    if (requestNumber > 190) {
-      print("WELL DUH" + requestNumber.toString());
-      await this.client.refresh();
-    }
 
     var response = await Requests.post(p_site, json: json).catchError((onError) {
       print("Error occured during request : $onError");
@@ -529,7 +525,7 @@ class PronoteClient {
     }
     var json_data = {
       'donnees': {
-        'domaine': {'_T': 8, 'V': "[${await get_week(date_from)}..${await get_week(date_to)}]"}
+        'domaine': {'_T': 8, 'V': "[${await getWeek(date_from)}..${await getWeek(date_to)}]"}
       },
       '_Signature_': {'onglet': 88}
     };
@@ -657,7 +653,7 @@ class PronoteClient {
 
     final storage = new FlutterSecureStorage();
     await storage.write(key: "startday", value: this.startDay.toString());
-    this.week = await get_week(DateTime.now());
+    this.week = await getWeek(DateTime.now());
 
     this.localPeriods = this.periods;
     this.stepsLogger!.add("✅ Created attributes");
@@ -798,7 +794,7 @@ class PronoteClient {
     await this._login();
     this.localPeriods = null;
     this.localPeriods = this.periods();
-    this.week = await get_week(DateTime.now());
+    this.week = await getWeek(DateTime.now());
 
     this.hourStart = DateFormat("""'hh'h'mm'""")
         .parse(this.funcOptions['donneesSec']['donnees']['General']['ListeHeures']['V'][0]['L']);

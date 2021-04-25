@@ -50,7 +50,7 @@ class LessonsOffline extends Offline {
             timeTable = Map();
           }
 
-          int todayWeek = await get_week(DateTime.now());
+          int todayWeek = await getWeek(DateTime.now());
 
           bool lighteningOverride = appSys.settings!["user"]["agendaPage"]["lighteningOverride"];
 

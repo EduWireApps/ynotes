@@ -57,7 +57,7 @@ void createStack() {
   });
 }
 
-get_week(DateTime date) async {
+getWeek(DateTime date) async {
   final storage = new FlutterSecureStorage();
   return (1 + (date.difference(DateTime.parse(await (storage.read(key: "startday")) ?? "")).inDays / 7).floor())
       .round();
@@ -88,7 +88,7 @@ Future<int> getLessonID(DateTime start, DateTime end, String disciplineName) asy
   if (disciplineName != null) {
     _disciplineName = disciplineName;
   }
-  int parity = ((await get_week(start)).isEven) ? 1 : 2;
+  int parity = ((await getWeek(start)).isEven) ? 1 : 2;
   int weekDay = start.weekday;
   TimeOfDay startTimeOfDay = TimeOfDay.fromDateTime(start);
   TimeOfDay endTimeOfDay = TimeOfDay.fromDateTime(end);

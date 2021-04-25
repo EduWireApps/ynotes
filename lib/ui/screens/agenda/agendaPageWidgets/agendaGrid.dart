@@ -258,7 +258,7 @@ class _AgendaGridState extends State<AgendaGrid> {
                                       _event = temp;
                                     });
                                   } else {
-                                    await appSys.offline.agendaEvents.addAgendaEvent(temp, await get_week(temp.start));
+                                    await appSys.offline.agendaEvents.addAgendaEvent(temp, await getWeek(temp.start));
 
                                     setState(() {
                                       _event = temp;
