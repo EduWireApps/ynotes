@@ -176,71 +176,14 @@ class APIPronote extends API {
 
   @override
   Future<List<Lesson>?> getNextLessons(DateTime dateToUse, {bool? forceReload}) async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    List<Lesson>? toReturn;
-    int req = 0;
-    while (lessonsLock == true && req < 10) {
-      req++;
-      await Future.delayed(const Duration(seconds: 2), () => "1");
-    }
-
-    if (lessonsLock == false) {
-      lessonsLock = true;
-      try {
-        //get lessons from offline storage
-        var offlineLesson = await appSys.offline.lessons.get(await get_week(dateToUse));
-        if (offlineLesson != null) {
-          toReturn = [];
-          toReturn.addAll(offlineLesson);
-
-          //filter lessons
-          toReturn;
-        }
-        //Check if needed to force refresh if not offline
-        if ((forceReload == true || toReturn == null) && connectivityResult != ConnectivityResult.none) {
-          try {
-            List<Lesson> onlineLessons = await localClient.lessons(dateToUse);
-
-            await appSys.offline.lessons.updateLessons(onlineLessons, await get_week(dateToUse));
-
-            toReturn = onlineLessons;
-          } catch (e) {
-            print("Failed to force refresh " + e.toString());
-          }
-        }
-
-        lessonsLock = false;
-        (toReturn ?? [])
-            .where((element) => element.start != null)
-            .toList()
-            .sort((a, b) => a.start!.compareTo(b.start!));
-        return toReturn!
-            .where((lesson) =>
+    return (await pronoteMethod.fetchAnyData(pronoteMethod.lessons, offlineController.lessons.get, "homework",
+        forceFetch: forceReload ?? false,
+        isOfflineLocked: super.offlineController.locked,
+        onlineArguments: dateToUse,
+        offlineArguments: await get_week(dateToUse))??[]).where((lesson) =>
                 DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start!)) ==
                 DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)))
             .toList();
-      } catch (e) {
-        print("Error while getting next lessons " + e.toString());
-        lessonsLock = false;
-        //If not recursive and if not offline
-        if (lessonsRefreshRecursive == false && connectivityResult != ConnectivityResult.none) {
-          lessonsRefreshRecursive = true;
-          await pronoteMethod.refreshClient();
-          toReturn = await localClient.lessons(dateToUse);
-          toReturn ??
-              [].removeWhere((lesson) =>
-                  DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) !=
-                  DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)));
-          (toReturn ?? [])
-              .where((element) => element.start != null)
-              .toList()
-              .sort((a, b) => a.start!.compareTo(b.start!));
-          return toReturn;
-        }
-      }
-    } else {
-      print("Was locked");
-    }
   }
 
   getOfflinePeriods() async {

@@ -23,8 +23,8 @@ class PronoteMethod {
 
   Future<List<CloudItem>?> cloudFolders() async {}
 
-  fetchAnyData(dynamic onlineFetch, dynamic offlineFetch, String lockName,
-      {bool forceFetch = false, isOfflineLocked = false}) async {
+  Future<dynamic?> fetchAnyData(dynamic onlineFetch, dynamic offlineFetch, String lockName,
+      {bool forceFetch = false, isOfflineLocked = false, dynamic onlineArguments, dynamic offlineArguments}) async {
     //Test connection status
     var connectivityResult = await (Connectivity().checkConnectivity());
     //Offline
@@ -32,9 +32,9 @@ class PronoteMethod {
       return await offlineFetch();
     } else if (forceFetch && !isOfflineLocked) {
       try {
-        return await onlineFetchWithLock(onlineFetch, lockName);
+        return await onlineFetchWithLock(onlineFetch, lockName, arguments: onlineArguments);
       } catch (e) {
-        return await offlineFetch();
+        return await offlineFetch(offlineArguments);
       }
     } else {
       //Offline data;
@@ -44,7 +44,7 @@ class PronoteMethod {
       }
       if (data == null) {
         print("Online fetch because offline is null");
-        data = await onlineFetchWithLock(onlineFetch, lockName);
+        data = await onlineFetchWithLock(onlineFetch, lockName, arguments: onlineArguments);
       }
       return data;
     }
@@ -92,7 +92,34 @@ class PronoteMethod {
     return hw;
   }
 
-  Future<List<Lesson>?> lessons(DateTime dateToUse, int week) async {}
+  Future<List<Lesson>?> lessons(PronoteClient client, DateTime dateFrom, {DateTime? dateTo}) async {
+    List<Lesson>? lessons = [];
+    var user = client.paramsUser['donneesSec']['donnees']['ressource'];
+    Map jsonData = {
+      "donnees": {
+        "ressource": user,
+        "avecAbsencesEleve": false,
+        "avecConseilDeClasse": true,
+        "estEDTPermanence": false,
+        "avecAbsencesRessource": true,
+        "avecDisponibilites": true,
+        "avecInfosPrefsGrille": true,
+        "Ressource": user,
+      }
+    };
+    var output = [];
+    var firstWeek = await get_week(dateFrom);
+    if (dateTo == null) {
+      dateTo = dateFrom;
+    }
+    var lastWeek = await get_week(dateTo);
+    for (int week = firstWeek; lastWeek < lastWeek + 1; ++lastWeek) {
+      jsonData["donnees"]["NumeroSemaine"] = lastWeek;
+      jsonData["donnees"]["numeroSemaine"] = lastWeek;
+      lessons.addAll(await request("PageEmploiDuTemps", PronoteLessonsConverter.lesson, data: jsonData, onglet: 16));
+    }
+    await appSys.offline.lessons.updateLessons(lessons, await get_week(dateFrom));
+  }
 
   nextHomework() async {
     DateTime now = DateTime.now();

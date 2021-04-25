@@ -7,7 +7,6 @@ import 'package:crypto/crypto.dart';
 import 'package:encrypt/encrypt.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:html/parser.dart' show parse;
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:intl/intl.dart';
 import 'package:package_info/package_info.dart';
 import 'package:pointycastle/api.dart';
@@ -15,7 +14,6 @@ import 'package:pointycastle/asymmetric/pkcs1.dart';
 import 'package:pointycastle/asymmetric/rsa.dart';
 import 'package:pointycastle/pointycastle.dart';
 import 'package:requests/requests.dart';
-import 'package:ynotes/core/apis/Pronote/pronoteConverters.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
 import 'package:ynotes/core/utils/nullSafeMap.dart';
@@ -680,7 +678,7 @@ class PronoteClient {
   }
 
   lessons(DateTime date_from, {DateTime? date_to}) async {
-    initializeDateFormatting();
+    /* initializeDateFormatting();
     var user = this.paramsUser['donneesSec']['donnees']['ressource'];
     List<Lesson> listToReturn = [];
     //Set request
@@ -719,7 +717,7 @@ class PronoteClient {
       });
       print("Agenda collecte succeeded");
       return listToReturn;
-    }
+    }*/
   }
 
   List<PronotePeriod> periods() {
