@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:connectivity/connectivity.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -9,6 +11,7 @@ import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
 import 'package:ynotes/core/offline/offline.dart';
+import 'package:ynotes/core/utils/nullSafeMap.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
 import 'package:ynotes/usefulMethods.dart';
@@ -26,30 +29,6 @@ bool loginLock = false;
 bool pollsLock = false;
 bool pollsRefreshRecursive = false;
 
-Future<List<PollInfo>?> getPronotePolls(bool forced) async {
-  List<PollInfo>? listPolls;
-  try {
-    if (forced) {
-      listPolls = await localClient.polls() as List<PollInfo>;
-      await appSys.offline.polls.update(listPolls);
-      return listPolls;
-    } else {
-      listPolls = await appSys.offline.polls.get();
-      if (listPolls == null) {
-        print("Error while returning offline polls");
-        listPolls = await localClient.polls() as List<PollInfo>;
-        await appSys.offline.polls.update(listPolls);
-        return listPolls;
-      } else {
-        return listPolls;
-      }
-    }
-  } catch (e) {
-    listPolls = await appSys.offline.polls.get();
-    return listPolls;
-  }
-}
-
 class APIPronote extends API {
   late PronoteMethod pronoteMethod;
 
@@ -59,76 +38,9 @@ class APIPronote extends API {
     localClient = PronoteClient("");
     pronoteMethod = PronoteMethod(localClient, appSys.account, this.offlineController);
   }
-
   @override
   Future app(String appname, {String? args, String? action, CloudItem? folder}) async {
     switch (appname) {
-      case "polls":
-        {
-          if (action == "get") {
-            int req = 0;
-            while (pollsLock == true && req < 10) {
-              req++;
-              await Future.delayed(const Duration(seconds: 2), () => "1");
-            }
-            if (pollsLock == false) {
-              try {
-                pollsLock = true;
-                List<PollInfo>? toReturn = await getPronotePolls(args == "forced");
-                pollsLock = false;
-                return toReturn;
-              } catch (e) {
-                if (!pollsRefreshRecursive) {
-                  pollsRefreshRecursive = true;
-                  pollsLock = false;
-                  await pronoteMethod.refreshClient();
-                  List<PollInfo>? toReturn = await getPronotePolls(args == "forced");
-
-                  return toReturn;
-                }
-                pollsLock = false;
-                print("Erreur pendant la collection des sondages/informations " + e.toString());
-              }
-            }
-          }
-          if (action == "read") {
-            int req = 0;
-            while (pollsLock == true && req < 10) {
-              req++;
-              await Future.delayed(const Duration(seconds: 2), () => "1");
-            }
-            try {
-              pollsLock = true;
-              await localClient.setPollRead(args ?? "");
-              pollsLock = false;
-            } catch (e) {
-              pollsLock = false;
-              if (!pollsRefreshRecursive) {
-                await pronoteMethod.refreshClient();
-                await localClient.setPollRead(args ?? "");
-              }
-            }
-          }
-          if (action == "answer") {
-            int req = 0;
-            while (pollsLock == true && req < 10) {
-              req++;
-              await Future.delayed(const Duration(seconds: 2), () => "1");
-            }
-            try {
-              pollsLock = true;
-              await localClient.setPollResponse(args ?? "");
-              pollsLock = false;
-            } catch (e) {
-              pollsLock = false;
-              if (!pollsRefreshRecursive) {
-                await pronoteMethod.refreshClient();
-                await localClient.setPollResponse(args ?? "");
-              }
-            }
-          }
-        }
-        break;
     }
   }
 
@@ -259,6 +171,19 @@ class APIPronote extends API {
     }
   }
 
+  Future<List<PollInfo>?> getPronotePolls({bool? forceReload}) async {
+    List<PollInfo>? listPolls = [];
+    List<PollInfo>? pollsFromInternet = (await pronoteMethod.fetchAnyData(
+      pronoteMethod.polls,
+      offlineController.polls.get,
+      "polls",
+      forceFetch: forceReload ?? false,
+      isOfflineLocked: super.offlineController.locked,
+    ));
+    listPolls.addAll(pollsFromInternet ?? []);
+    return listPolls;
+  }
+
   @override
   Future<List> login(username, password, {url, cas, mobileCasLogin}) async {
     print(username + " " + password + " " + url);
@@ -333,6 +258,104 @@ class APIPronote extends API {
     } else {
       loginReqNumber++;
       return [0, null];
+    }
+  }
+
+  Future<bool> setPronotePollRead(PollInfo poll, PollQuestion question) async {
+    try {
+      String publicID = mapGet(localClient.paramsUser, ["donneesSec", "donnees", "ressource", "N"]);
+      int publicType = mapGet(localClient.paramsUser, ["donneesSec", "donnees", "ressource", "G"]);
+      String publicName = mapGet(localClient.paramsUser, ["donneesSec", "donnees", "ressource", "L"]);
+
+      var data = {
+        "donnees": {
+          "listeActualites": [
+            {
+              "N": poll.id,
+              "E": publicType,
+              "validationDirecte": true,
+              "genrePublic": publicType,
+              "public": {"N": publicID, "G": publicType, "L": publicName},
+              "lue": poll.read,
+              "supprimee": false,
+              "marqueLueSeulement": false,
+              "saisieActualite": false,
+              "listeQuestions": [
+                {
+                  "N": question.id,
+                  "L": question.questionName,
+                  "E": 2,
+                  "genreReponse": 2,
+                  "reponse": {
+                    "N": 0,
+                    "E": 1,
+                    "Actif": true,
+                    "avecReponse": true,
+                    "valeurReponse": "",
+                    "_validationSaisie": true
+                  }
+                }
+              ]
+            }
+          ],
+          "saisieActualite": false
+        }
+      };
+      print(jsonEncode(data));
+      var a = await pronoteMethod.request("SaisieActualites", null, data: data, onglet: 8);
+      print(a);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<bool> setPronotePolls(PollInfo poll, PollQuestion question, PollChoice choice) async {
+    try {
+      String publicID = mapGet(localClient.paramsUser, ["donneesSec", "donnees", "ressource", "N"]);
+      int publicType = mapGet(localClient.paramsUser, ["donneesSec", "donnees", "ressource", "G"]);
+      String publicName = mapGet(localClient.paramsUser, ["donneesSec", "donnees", "ressource", "L"]);
+
+      var data = {
+        "donnees": {
+          "listeActualites": [
+            {
+              "N": poll.id,
+              "E": publicType,
+              "validationDirecte": true,
+              "genrePublic": publicType,
+              "public": {"N": publicID, "G": publicType, "L": publicName},
+              "lue": poll.read,
+              "supprimee": false,
+              "marqueLueSeulement": false,
+              "saisieActualite": false,
+              "listeQuestions": [
+                {
+                  "N": question.id,
+                  "L": question.questionName,
+                  "E": 2,
+                  "genreReponse": 2,
+                  "reponse": {
+                    "N": question.answerID,
+                    "E": 2,
+                    "Actif": true,
+                    "valeurReponse": {"_T": 8, "V": "[" + choice.rank.toString() + "]"},
+                    "avecReponse": true,
+                    "_validationSaisie": true
+                  }
+                }
+              ]
+            }
+          ],
+          "saisieActualite": false
+        }
+      };
+      print(jsonEncode(data));
+      var a = await pronoteMethod.request("SaisieActualites", null, data: data, onglet: 8);
+      print(a);
+      return true;
+    } catch (e) {
+      return false;
     }
   }
 

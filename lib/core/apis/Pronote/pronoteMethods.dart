@@ -34,13 +34,13 @@ class PronoteMethod {
       try {
         return await onlineFetchWithLock(onlineFetch, lockName, arguments: onlineArguments);
       } catch (e) {
-        return await (offlineArguments != null ? offlineFetch(offlineArguments) : offlineFetch);
+        return await (offlineArguments != null ? offlineFetch(offlineArguments) : offlineFetch());
       }
     } else {
       //Offline data;
       var data;
       if (!isOfflineLocked) {
-        data = await (offlineArguments != null ? offlineFetch(offlineArguments) : offlineFetch);
+        data = await (offlineArguments != null ? offlineFetch(offlineArguments) : offlineFetch());
       }
       if (data == null) {
         print("Online fetch because offline is null");
@@ -188,9 +188,10 @@ class PronoteMethod {
         locks[lockName] = false;
         if (!testLock("recursive_" + lockName)) {
           print("Refreshing client");
+          appSys.loginController.actualState = loginStatus.error;
           locks["recursive_" + lockName] = true;
-          await refreshClient();
-          this.onlineFetchWithLock(onlineFetch, lockName, arguments: arguments);
+/*
+          this.onlineFetchWithLock(onlineFetch, lockName, arguments: arguments);*/
         }
       }
     } else {
@@ -217,13 +218,16 @@ class PronoteMethod {
     }
   }
 
-  request(String functionName, Function converter, {var data, var customURL, int? onglet}) async {
+  request(String functionName, Function? converter, {var data, var customURL, int? onglet}) async {
     data = Map<dynamic, dynamic>.from(data);
     if (onglet != null) data['_Signature_'] = {'onglet': onglet};
     //If it is a parent account
     if (this.account.isParentAccount) data['_Signature_']["membre"] = {'N': this.account.studentID, 'G': 4};
-
-    return await converter(this.client, await this.client?.communication!.post(functionName, data: data));
+    if (converter != null) {
+      return await converter(this.client, await this.client?.communication!.post(functionName, data: data));
+    } else {
+      return await this.client?.communication!.post(functionName, data: data);
+    }
   }
 
   testLock(String key) {

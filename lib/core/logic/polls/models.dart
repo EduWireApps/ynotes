@@ -18,7 +18,7 @@ class PollInfo {
   final String? author;
   @HiveField(1)
   final DateTime? start;
-  @HiveField(2)
+  @HiveField(8)
   final List<PollQuestion>? questions;
   @HiveField(3)
   bool? read;
@@ -31,9 +31,11 @@ class PollInfo {
   //Brut data
   @HiveField(7)
   final Map? data;
-  final String? answers;
+  @HiveField(10)
   final bool? isPoll;
+  @HiveField(11)
   final bool? isInformation;
+  @HiveField(12)
   final bool? anonymous;
   PollInfo(
       {this.author,
@@ -44,7 +46,6 @@ class PollInfo {
       this.id,
       this.documents,
       this.data,
-      this.answers,
       this.isPoll,
       this.isInformation,
       this.anonymous});
@@ -58,5 +59,15 @@ class PollQuestion {
   final String? id;
   final int? rank;
   final List<PollChoice>? choices;
-  PollQuestion({this.choices, this.questionName, this.question, this.id, this.rank});
+  final String? answers;
+  final String? answerID;
+  PollQuestion({
+    this.choices,
+    this.questionName,
+    this.question,
+    this.id,
+    this.rank,
+    this.answers,
+    this.answerID,
+  });
 }
