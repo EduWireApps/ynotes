@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
@@ -80,7 +79,7 @@ Future<List<CloudItem>?> getCloud(String? args, String? action, CloudItem? item)
 
 ///Returning Ecole Directe Mails, **checking** bool is used to only returns old mail number
 Future<List<Mail>?> getMails({bool? checking}) async {
-  await EcoleDirecteMethod(appSys.offline).testToken();
+  await EcoleDirecteMethod.testToken();
   String? id = await storage.read(key: "userID");
   var url = 'https://api.ecoledirecte.com/v3/eleves/$id/messages.awp?verbe=getall&typeRecuperation=all';
 
@@ -142,7 +141,7 @@ Future<List<Mail>?> getMails({bool? checking}) async {
 }
 
 Future<String?> readMail(String mailId, bool read) async {
-  await EcoleDirecteMethod(appSys.offline).testToken();
+  await EcoleDirecteMethod.testToken();
   String? id = await storage.read(key: "userID");
   var url = 'https://api.ecoledirecte.com/v3/eleves/$id/messages/$mailId.awp?verbe=get&mode=destinataire';
 
@@ -248,7 +247,19 @@ class APIEcoleDirecte extends API {
 
   @override
   Future<List<Lesson>?> getNextLessons(DateTime dateToUse, {bool? forceReload = false}) async {
-    try {
+    List<Lesson>? lessons = await EcoleDirecteMethod.fetchAnyData(
+        EcoleDirecteMethod.lessons, offlineController.lessons.get,
+        forceFetch: forceReload ?? false,
+        isOfflineLocked: super.offlineController.locked,
+        onlineArguments: dateToUse,
+        offlineArguments: await getWeek(dateToUse));
+    if (lessons != null) {
+      lessons.retainWhere((lesson) =>
+          DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start!)) ==
+          DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)));
+    }
+    return lessons;
+    /*try {
       print("Getting next lessons");
       int week = await getWeek(dateToUse);
       List<Lesson>? toReturn;
@@ -289,7 +300,7 @@ class APIEcoleDirecte extends API {
           .toList();
     } catch (e) {
       print("Error while getting next lessons " + e.toString());
-    }
+    }*/
   }
 
   @override
@@ -394,7 +405,7 @@ class APIEcoleDirecte extends API {
           var altClient = HttpClient();
 
           //Ensure that token is refreshed
-          await EcoleDirecteMethod(this.offlineController).testToken();
+          await EcoleDirecteMethod.testToken();
           var uri = Uri.parse('https://api.ecoledirecte.com/v3/televersement.awp?verbe=post&mode=CDT');
           var request = http.MultipartRequest('POST', uri)
             ..headers["user-agent"] = "PostmanRuntime/7.25.0"

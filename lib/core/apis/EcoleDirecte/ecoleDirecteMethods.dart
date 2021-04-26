@@ -18,7 +18,7 @@ class EcoleDirecteMethod {
 
   EcoleDirecteMethod(this._offlineController);
   Future<List<CloudItem>> cloudFolders() async {
-    await this.testToken();
+    await EcoleDirecteMethod.testToken();
     String rootUrl = 'https://api.ecoledirecte.com/v3/E/';
     String method = "espacestravail.awp?verbe=get&";
     String data = 'data={"token": "$token"}';
@@ -28,7 +28,7 @@ class EcoleDirecteMethod {
   }
 
   Future<List<Discipline>> grades() async {
-    await this.testToken();
+    await EcoleDirecteMethod.testToken();
     String rootUrl = "https://api.ecoledirecte.com/v3/Eleves/";
     /*if (kDebugMode) {
       rootUrl = "http://192.168.1.99:3000/posts/2";
@@ -59,7 +59,7 @@ class EcoleDirecteMethod {
   }
 
   homeworkDates() async {
-    await this.testToken();
+    await EcoleDirecteMethod.testToken();
     String rootUrl = 'https://api.ecoledirecte.com/v3/Eleves/';
     String method = "cahierdetexte.awp?verbe=get&";
     String data = 'data={"token": "$token"}';
@@ -86,7 +86,7 @@ class EcoleDirecteMethod {
   }
 
   Future<List<Homework>> homeworkFor(DateTime date) async {
-    await this.testToken();
+    await EcoleDirecteMethod.testToken();
     String dateToUse = DateFormat("yyyy-MM-dd").format(date).toString();
     String rootUrl = 'https://api.ecoledirecte.com/v3/Eleves/';
     String method = "cahierdetexte/$dateToUse.awp?verbe=get&";
@@ -100,22 +100,8 @@ class EcoleDirecteMethod {
     return homework;
   }
 
-  lessons(DateTime dateToUse, int week) async {
-    await this.testToken();
-    String dateDebut = DateFormat("yyyy/MM/dd").format(getMonday(dateToUse));
-
-    String dateFin = DateFormat("yyyy/MM/dd").format(getNextSunday(dateToUse));
-    String data = 'data={"dateDebut":"$dateDebut","dateFin":"$dateFin", "avecTrous":false, "token": "$token"}';
-    String rootUrl = "https://api.ecoledirecte.com/v3/E/";
-    String method = "emploidutemps.awp?verbe=get&";
-    List<Lesson> lessonsList =
-        await request(data, rootUrl, method, EcoleDirecteConverter.lessons, "Lessons request returned an error:");
-    await appSys.offline.lessons.updateLessons(lessonsList, week);
-    return lessonsList;
-  }
-
   nextHomework() async {
-    await this.testToken();
+    await EcoleDirecteMethod.testToken();
 
     List<Homework> homeworkList = [];
     String rootUrl = 'https://api.ecoledirecte.com/v3/Eleves/';
@@ -140,7 +126,7 @@ class EcoleDirecteMethod {
   }
 
   periods() async {
-    await this.testToken();
+    await EcoleDirecteMethod.testToken();
     String data = 'data={"token": "$token"}';
     String rootUrl = "https://api.ecoledirecte.com/v3/Eleves/";
     /*if (kDebugMode) {
@@ -159,7 +145,7 @@ class EcoleDirecteMethod {
   }
 
   Future<List<Recipient>> recipients() async {
-    await this.testToken();
+    await EcoleDirecteMethod.testToken();
     String data = 'data={"token": "$token"}';
     String rootUrl = 'https://api.ecoledirecte.com/v3/messagerie/contacts/professeurs.awp?verbe=get';
     List<Recipient> recipients = await request(
@@ -172,7 +158,7 @@ class EcoleDirecteMethod {
   }
 
   Future<List<SchoolLifeTicket>> schoolLife() async {
-    await this.testToken();
+    await EcoleDirecteMethod.testToken();
     String rootUrl = 'https://api.ecoledirecte.com/v3/eleves/';
     String method = "viescolaire.awp?verbe=get&";
     String data = 'data={"token": "$token"}';
@@ -181,74 +167,64 @@ class EcoleDirecteMethod {
     return schoolLifeList;
   }
 
-//Bool value and Token validity tester
-  testToken() async {
-    if (token == "" || token == null) {
-      await EcoleDirecteMethod.refreshToken();
-      return false;
-    } else {
-      String? id = await storage.read(key: "userID");
-
-      var url = 'https://api.ecoledirecte.com/v3/$id/login.awp';
-      Map<String, String> headers = {"Content-type": "text/plain"};
-      String data = 'data={"token": "$token"}';
-      //encode Map to JSON
-      var body = data;
-      var response = await http.post(Uri.parse(url), headers: headers, body: body).catchError((e) {
-        return false;
-      });
-
-      if (response.statusCode == 200) {
-        Map<String, dynamic> req = jsonDecode(response.body);
-        if (req['code'] == 200) {
-          return true;
-        } else {
-          await EcoleDirecteMethod.refreshToken();
-          return false;
-        }
-      } else {
-        await EcoleDirecteMethod.refreshToken();
-        return false;
-      }
-    }
-  }
-
   static fetchAnyData(dynamic onlineFetch, dynamic offlineFetch,
-      {bool forceFetch = false, isOfflineLocked = false}) async {
+      {bool forceFetch = false, isOfflineLocked = false, onlineArguments, offlineArguments}) async {
     //Test connection status
     var connectivityResult = await (Connectivity().checkConnectivity());
     //Offline
     if (connectivityResult == ConnectivityResult.none && !isOfflineLocked) {
-      return await offlineFetch();
+      return await ((offlineArguments != null) ? offlineFetch(offlineArguments) : offlineFetch());
     } else if (forceFetch && !isOfflineLocked) {
       try {
-        return await onlineFetch();
+        return await ((onlineArguments != null) ? onlineFetch(onlineArguments) : onlineFetch());
       } catch (e) {
-        return await offlineFetch();
+        return await ((offlineArguments != null) ? offlineFetch(offlineArguments) : offlineFetch());
       }
     } else {
       //Offline data;
       var data;
       if (!isOfflineLocked) {
-        data = await offlineFetch();
+        data = await ((offlineArguments != null) ? offlineFetch(offlineArguments) : offlineFetch());
       }
       if (data == null) {
-        data = await onlineFetch();
+        data = await ((onlineArguments != null) ? onlineFetch(onlineArguments) : onlineFetch());
       }
       return data;
     }
   }
 
+//Bool value and Token validity tester
   static getMonday(DateTime date) {
     return date.subtract(Duration(days: date.weekday - 1));
   }
 
-//Refresh the token if expired
   static getNextSunday(DateTime date) {
     return date.subtract(Duration(days: date.weekday - 1)).add(Duration(days: 6));
   }
 
-//Returns the suitable function according to connection state
+  static lessons(DateTime dateToUse) async {
+    await EcoleDirecteMethod.testToken();
+    String dateDebut = DateFormat("yyyy/MM/dd").format(getMonday(dateToUse));
+
+    String dateFin = DateFormat("yyyy/MM/dd").format(getNextSunday(dateToUse));
+    String data = 'data={"dateDebut":"$dateDebut","dateFin":"$dateFin", "avecTrous":false, "token": "$token"}';
+    String rootUrl = "https://api.ecoledirecte.com/v3/E/";
+    String method = "emploidutemps.awp?verbe=get&";
+    try {
+      List<Lesson>? lessonsList =
+          await request(data, rootUrl, method, EcoleDirecteConverter.lessons, "Lessons request returned an error:");
+      int week = await getWeek(dateToUse);
+      if (lessonsList != null) {
+        await appSys.offline.lessons.updateLessons(lessonsList, week);
+      }
+
+      return lessonsList;
+    } catch (e) {
+      return [];
+    }
+  }
+
+//Refresh the token if expired
   static refreshToken() async {
 //Get the password in the secure storage
     String? password = await storage.read(key: "password");
@@ -275,6 +251,7 @@ class EcoleDirecteMethod {
     }
   }
 
+//Returns the suitable function according to connection state
   static request(String data, String rootUrl, String urlMethod, Function converter, String onErrorBody,
       {Map<String, String>? headers, bool ignoreMethodAndId = false, bool getRequest = false}) async {
     try {
@@ -350,7 +327,7 @@ class EcoleDirecteMethod {
                     },""";
     });
 
-    await EcoleDirecteMethod(appSys.offline).testToken();
+    await await EcoleDirecteMethod.testToken();
     String? id = await storage.read(key: "userID");
     var url = 'https://api.ecoledirecte.com/v3/eleves/$id/messages.awp?verbe=post';
 
@@ -396,6 +373,37 @@ class EcoleDirecteMethod {
       }
     } catch (e) {
       throw ("Error while sending mail $e");
+    }
+  }
+
+  static testToken() async {
+    if (token == "" || token == null) {
+      await EcoleDirecteMethod.refreshToken();
+      return false;
+    } else {
+      String? id = await storage.read(key: "userID");
+
+      var url = 'https://api.ecoledirecte.com/v3/$id/login.awp';
+      Map<String, String> headers = {"Content-type": "text/plain"};
+      String data = 'data={"token": "$token"}';
+      //encode Map to JSON
+      var body = data;
+      var response = await http.post(Uri.parse(url), headers: headers, body: body).catchError((e) {
+        return false;
+      });
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> req = jsonDecode(response.body);
+        if (req['code'] == 200) {
+          return true;
+        } else {
+          await EcoleDirecteMethod.refreshToken();
+          return false;
+        }
+      } else {
+        await EcoleDirecteMethod.refreshToken();
+        return false;
+      }
     }
   }
 

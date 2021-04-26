@@ -1,9 +1,7 @@
-import 'package:hive/hive.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/usefulMethods.dart';
 
 class LessonsOffline extends Offline {
   late Offline parent;
@@ -61,8 +59,11 @@ class LessonsOffline extends Offline {
               return ((key < todayWeek - 2) || key > todayWeek + 3);
             });
           }
+          timeTable[week] = [];
           //Update the timetable
           timeTable.update(week, (value) => newData, ifAbsent: () => newData);
+
+          print(timeTable[week]);
           await parent.agendaBox?.put("lessons", timeTable);
           await parent.refreshData();
         }
