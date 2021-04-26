@@ -106,8 +106,7 @@ class _PollsAndInfoPageState extends State<PollsAndInfoPage> {
                                                           if ((await (appSys.api as APIPronote).setPronotePollRead(
                                                                   (snapshot.data ?? [])[index],
                                                                   ((snapshot.data ?? [])[index].questions ?? [])
-                                                                      .first)) ??
-                                                              false) {
+                                                                      .first))) {
                                                             CustomDialogs.showAnyDialog(
                                                                 context, "Votre choix a été confirmé");
                                                             refreshPolls(forced: true);
@@ -175,8 +174,7 @@ class _PollsAndInfoPageState extends State<PollsAndInfoPage> {
               CircularCheckBox(
                 value: (question.answers ?? "").contains((question.choices ?? [])[i].rank.toString()),
                 onChanged: (value) async {
-                  if ((await (appSys.api as APIPronote).setPronotePolls(poll, question, (question.choices ?? [])[i])) ??
-                      false) {
+                  if ((await (appSys.api as APIPronote).setPronotePolls(poll, question, (question.choices ?? [])[i]))) {
                     CustomDialogs.showAnyDialog(context, "Votre choix a été confirmé");
                     refreshPolls(forced: true);
                   }

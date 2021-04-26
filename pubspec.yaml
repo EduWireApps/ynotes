@@ -101,10 +101,13 @@ dependencies:
   material_design_icons_flutter: ^5.0.5955-rc.1
   open_file: ^3.0.1
   package_info: ^2.0.0
+  
   path_provider: ^2.0.1
   percent_indicator: ^3.3.0-nullsafety.1
   permission_handler: ^6.1.1
   pointycastle: ^3.0.1
+  preload_page_view: ^0.1.6
+
   provider: ^5.0.0
   rive: ^0.7.0
   rxdart: ^0.26.0

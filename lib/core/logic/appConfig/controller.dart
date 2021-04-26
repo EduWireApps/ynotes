@@ -8,6 +8,7 @@ import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
+import 'package:ynotes/core/logic/agenda/controller.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/core/logic/homework/controller.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
@@ -48,9 +49,9 @@ class ApplicationSystem extends ChangeNotifier {
   ///All the app controllers
 
   late LoginController loginController;
-
   late GradesController gradesController;
   late HomeworkController homeworkController;
+  late AgendaController agendaController;
   exitApp() async {
     try {
       await this.offline.clearAll();
@@ -90,6 +91,7 @@ class ApplicationSystem extends ChangeNotifier {
     loginController = LoginController();
     gradesController = GradesController(this.api);
     homeworkController = HomeworkController(this.api);
+    agendaController = AgendaController(this.api);
   }
 
   initControllers() async {

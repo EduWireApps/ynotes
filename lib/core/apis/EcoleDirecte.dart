@@ -259,48 +259,6 @@ class APIEcoleDirecte extends API {
           DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)));
     }
     return lessons;
-    /*try {
-      print("Getting next lessons");
-      int week = await getWeek(dateToUse);
-      List<Lesson>? toReturn;
-      var connectivityResult = await (Connectivity().checkConnectivity());
-      //get lessons from offline storage
-      var offlineLesson = await offlineController.lessons.get(week);
-      if (offlineLesson != null) {
-        //Important init to return
-        toReturn = [];
-
-        toReturn.addAll(offlineLesson);
-        //filter lessons
-        toReturn.removeWhere((lesson) =>
-            DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start!)) !=
-            DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)));
-      } else {
-        toReturn = null;
-      }
-      //Check if needed to force refresh if not offline
-      if ((forceReload == true || toReturn == null) && connectivityResult != ConnectivityResult.none) {
-        try {
-          print("Getting next lessons from online");
-          List<Lesson> onlineLessons = await EcoleDirecteMethod(this.offlineController).lessons(dateToUse, week);
-
-          await offlineController.lessons.updateLessons(onlineLessons, week);
-
-          toReturn = onlineLessons;
-        } catch (e) {
-          print(e.toString());
-        }
-      }
-
-      (toReturn ?? []).sort((a, b) => a.start!.compareTo(b.start!));
-      return (toReturn ?? [])
-          .where((lesson) =>
-              DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start!)) ==
-              DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)))
-          .toList();
-    } catch (e) {
-      print("Error while getting next lessons " + e.toString());
-    }*/
   }
 
   @override

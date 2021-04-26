@@ -14,12 +14,13 @@ class LessonsOffline extends Offline {
       if (parent.lessonsData != null && parent.lessonsData![week] != null) {
         List<Lesson> lessons = [];
         lessons.addAll(parent.lessonsData![week].cast<Lesson>());
+
         return lessons;
       } else {
         await refreshData();
-        if (parent.lessonsData![week] != null) {
+        if ((parent.lessonsData ?? {})[week] != null) {
           List<Lesson> lessons = [];
-          lessons.addAll(parent.lessonsData![week].cast<Lesson>());
+          lessons.addAll((parent.lessonsData ?? {})[week].cast<Lesson>());
           return lessons;
         } else {
           return null;
@@ -62,7 +63,7 @@ class LessonsOffline extends Offline {
           timeTable[week] = [];
           //Update the timetable
           timeTable.update(week, (value) => newData, ifAbsent: () => newData);
-
+          print(timeTable);
           print(timeTable[week]);
           await parent.agendaBox?.put("lessons", timeTable);
           await parent.refreshData();
