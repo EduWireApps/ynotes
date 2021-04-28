@@ -264,23 +264,29 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                         borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                         child: InkWell(
                           borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-                          onTap: !(clipboard.length > 0)
-                              ? null
-                              : () async {
-                                  await Future.forEach(clipboard, (FileInfo element) async {
-                                    try {
-                                      await element.element.copy(initialPath! + path + "/" + element.fileName!);
-                                    } catch (e) {
-                                      if (Platform.isAndroid) {
-                                        print("try to paste");
-                                        await Process.run(
-                                            'cp', ['-r', element.element.path, initialPath! + path + "/"]);
-                                      }
-                                    }
-                                  });
-
-                                  await refreshFileListFuture();
-                                },
+                          onTap: () async {
+                            if (selectionMode) {
+                              bool response = await (CustomDialogs.showConfirmationDialog(context, null)) ?? false;
+                              if (response) {
+                                await Future.forEach(_listFiles!.where((element) => element.selected),
+                                    (dynamic fileinfo) async {
+                                  await FileAppUtil.remove(fileinfo.element);
+                                });
+                                await refreshFileListFuture();
+                              }
+                            } else {
+                              setState(() {
+                                if ((explorerSortValue.values.indexOf(actualSort) + 1) <=
+                                    explorerSortValue.values.length - 1) {
+                                  actualSort =
+                                      explorerSortValue.values[explorerSortValue.values.indexOf(actualSort) + 1];
+                                } else {
+                                  actualSort = explorerSortValue.values[0];
+                                }
+                              });
+                              sortList();
+                            }
+                          },
                           child: Container(
                               height: screenSize.size.height / 10 * 0.5,
                               padding: EdgeInsets.all(screenSize.size.width / 5 * 0.05),
@@ -301,8 +307,8 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                                             )
                                           : Icon(
                                               case2(actualSort, {
-                                                explorerSortValue.date: MdiIcons.sortAscending,
-                                                explorerSortValue.reversed_date: MdiIcons.sortDescending,
+                                                explorerSortValue.date: MdiIcons.sortClockAscending,
+                                                explorerSortValue.reversed_date: MdiIcons.sortClockDescending,
                                                 explorerSortValue.name: MdiIcons.sortAlphabeticalAscending,
                                               }),
                                               color: ThemeUtils.textColor(),
@@ -375,12 +381,14 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                                     await Future.forEach(clipboard, (FileInfo element) async {
                                       try {
                                         await element.element
-                                            .copy(initialPath ?? "" + path + "/" + (element.fileName ?? ""));
+                                            .copy((initialPath ?? "") + path + "/" + (element.fileName ?? ""));
                                       } catch (e) {
+                                        print(e);
                                         if (Platform.isAndroid) {
                                           print("try to paste");
-                                          await Process.run(
-                                              'cp', ['-r', element.element.path, initialPath ?? "" + path + "/"]);
+                                          var result = await Process.run(
+                                              'cp', ['-r', element.element.path, (initialPath ?? "") + path + "/"]);
+                                          print(result.stdout);
                                         }
                                       }
                                     });
@@ -628,6 +636,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
         filesListFuture = FileAppUtil.getFilesList(initialPath! + path);
       });
       var realLF = await filesListFuture;
+      sortList();
     }
   }
 
@@ -636,25 +645,35 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
       switch (actualSort) {
         case explorerSortValue.name:
           setState(() {
-            _listFiles!.sort((a, b) => (a.fileName!.toLowerCase()).compareTo(b.fileName!.toLowerCase()));
+            (_listFiles ?? []).sort((a, b) => (a.fileName!.toLowerCase()).compareTo(b.fileName!.toLowerCase()));
           });
 
           break;
         case explorerSortValue.date:
           setState(() {
             try {
-              _listFiles!.sort((a, b) {
-                return a.lastModifiedDate!.compareTo(b.lastModifiedDate!);
+              (_listFiles ?? []).sort((a, b) {
+                if (a.lastModifiedDate != null && b.lastModifiedDate != null) {
+                  return a.lastModifiedDate!.compareTo(b.lastModifiedDate!);
+                } else {
+                  return 0;
+                }
               });
-            } catch (e) {}
+            } catch (e) {
+              print(e);
+            }
           });
 
           break;
         case explorerSortValue.reversed_date:
           setState(() {
             try {
-              _listFiles!.sort((a, b) {
-                return b.lastModifiedDate!.compareTo(a.lastModifiedDate!);
+              (_listFiles ?? []).sort((a, b) {
+                if (a.lastModifiedDate != null && b.lastModifiedDate != null) {
+                  return b.lastModifiedDate!.compareTo(a.lastModifiedDate!);
+                } else {
+                  return 0;
+                }
               });
             } catch (e) {}
           });
