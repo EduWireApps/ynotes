@@ -6,6 +6,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/ui/components/expandables.dart';
 import 'package:ynotes/ui/components/hiddenSettings.dart';
+import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/agenda.dart';
 import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/agendaSettings.dart';
 import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/spaceAgenda.dart';
 
@@ -32,19 +33,17 @@ class AgendaPageState extends State<AgendaPage> {
       child: Container(
         height: screenSize.size.height / 10 * 8,
         margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
-        child: FittedBox(
-          child: Expandables(
-            buildTopChild(),
-            buildBottomChild(),
-            width: screenSize.size.width,
-            maxHeight: screenSize.size.height / 10 * 7.5,
-            minHeight: screenSize.size.height / 10 * 0.7,
-            bottomExpandableColor: ThemeUtils.spaceColor(),
-            onDragUpdate: handleDragUpdate,
-            animationDuration: 200,
-            topExpandableBorderRadius: 11,
-            bottomExpandableBorderRadius: 11,
-          ),
+        child: Expandables(
+          buildTopChild(),
+          buildBottomChild(),
+          width: screenSize.size.width,
+          maxHeight: screenSize.size.height / 10 * 7.5,
+          minHeight: screenSize.size.height / 10 * 0.7,
+          bottomExpandableColor: ThemeUtils.spaceColor(),
+          onDragUpdate: handleDragUpdate,
+          animationDuration: 200,
+          topExpandableBorderRadius: 11,
+          bottomExpandableBorderRadius: 11,
         ),
       ),
     );
@@ -141,8 +140,8 @@ class AgendaPageState extends State<AgendaPage> {
             ),
           ),
           Positioned(
-            top: (topPercents / 100) * screenSize.size.height / 10 * 0.7,
-            child: SpaceAgenda(),
+            top: (btPercents / 100) * screenSize.size.height / 10 * 0.7,
+            child: Agenda(),
           )
         ],
       ),
