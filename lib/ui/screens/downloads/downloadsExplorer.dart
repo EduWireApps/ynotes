@@ -597,18 +597,15 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
 
   getInitialPath() async {
     var a = await FolderAppUtil.getDirectory(download: true);
-
     setState(() {
       initialPath = a + "/yNotesDownloads";
       path = "";
     });
-
     await refreshFileListFuture();
   }
 
   void initState() {
     // TODO: implement initState
-
     SchedulerBinding.instance!.addPostFrameCallback((_) => mounted
         ? setState(() {
             getInitialPath();

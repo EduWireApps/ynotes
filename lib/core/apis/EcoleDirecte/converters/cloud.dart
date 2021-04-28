@@ -4,14 +4,16 @@ class EcoleDirecteCloudConverter {
   static List<CloudItem> cloudFolders(var cloudFoldersData) {
     List<CloudItem> cloudFolders = [];
     cloudFoldersData["data"].forEach((folderData) {
-      String date = folderData["creeLe"];
+      String? date = folderData["creeLe"];
       try {
-        var split = date.split(" ");
-        date = split[0];
+        if (date != null) {
+          var split = date.split(" ");
+          date = split[0];
+        }
       } catch (e) {}
-      String title = folderData["titre"];
+      String? title = folderData["titre"];
       String elementType = "FOLDER";
-      String author = folderData["creePar"];
+      String? author = folderData["creePar"];
       bool isRootDir = true;
       bool isMemberOf = folderData["estMembre"];
       String id = folderData["id"].toString();
