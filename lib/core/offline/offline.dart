@@ -203,6 +203,12 @@ class Offline {
       await offlineBox.deleteFromDisk();
       await homeworkDoneBox.deleteFromDisk();
       await pinnedHomeworkBox.deleteFromDisk();
+      disciplinesData?.clear();
+      homeworkData?.clear();
+      lessonsData?.clear();
+      remindersData?.clear();
+      agendaEventsData?.clear();
+      recipientsData?.clear();
       await this.init();
     } catch (e) {
       print("Failed to clear all db " + e.toString());

@@ -3,9 +3,9 @@ import 'package:provider/provider.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/ui/animations/FadeAnimation.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/usefulMethods.dart';
-
 
 class LoadingPage extends StatefulWidget {
   const LoadingPage({Key key}) : super(key: key);
@@ -21,28 +21,23 @@ class _LoadingPageState extends State<LoadingPage> {
   String z;
   @override
   void initState() {
-    getDarkModeSetting();
     tryToConnect();
   }
 
   tryToConnect() async {
     await Future.delayed(const Duration(milliseconds: 500), () => "1");
-    await reloadChosenApi();
     String u = await ReadStorage("username");
     String p = await ReadStorage("password");
     String url = await ReadStorage("pronoteurl");
     String cas = await ReadStorage("pronotecas");
+    bool iscas = (await ReadStorage("ispronotecas") == "true");
+
     z = await storage.read(key: "agreedTermsAndConfiguredApp");
-    if (u != null && p != null && z != null && chosenParser != null) {
+    if (u != null && p != null && z != null && appSys.settings["system"]["chosenParser"] != null) {
       Navigator.of(context).pushReplacement(router(homePage()));
     } else {
       Navigator.of(context).pushReplacement(router(login()));
     }
-  }
-
-  getDarkModeSetting() async {
-    bool toset = await getSetting("nightmode");
-    Provider.of<AppStateNotifier>(context, listen: false).updateTheme(toset);
   }
 
   @override

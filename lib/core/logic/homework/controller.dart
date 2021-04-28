@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/logic/homework/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 
 class HomeworkController extends ChangeNotifier {
   final api;
@@ -44,7 +45,8 @@ class HomeworkController extends ChangeNotifier {
     }
     //Remove antecedent hw
     if (list != null) {
-      list.removeWhere((element) => !element.date.isAfter(DateTime.now()));
+      list.removeWhere(
+          (element) => element.date.isBefore(DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now()))));
     }
     if (list != null) {
       //Number of elements in list
@@ -56,7 +58,7 @@ class HomeworkController extends ChangeNotifier {
         int done = 0;
 
         await Future.forEach(list, (element) async {
-          bool isDone = await offline.doneHomework.getHWCompletion(element.id);
+          bool isDone = await appSys.offline.doneHomework.getHWCompletion(element.id);
           if (isDone) {
             done++;
           }

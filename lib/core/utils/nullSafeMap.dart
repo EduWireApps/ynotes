@@ -2,11 +2,11 @@
 // where path = [p1, p2, ..., pn]
 //
 // example: mapGet(map, ["foo", 9, 'c'])
-dynamic mapGet(Map map, List path) {
+dynamic mapGet(var map, List path) {
   assert(path.length > 0);
-  var m = map ?? const {};
+  var m = map ?? {};
   for (int i = 0; i < path.length - 1; i++) {
-    m = m[path[i]] ?? const {};
+    m = m[path[i]] ?? {};
   }
 
   return m[path.last];

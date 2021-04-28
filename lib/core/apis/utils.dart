@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:http/http.dart' as http;
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/apis/Pronote.dart';
+import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/shared_preferences.dart';
 
 import 'package:stack/stack.dart' as sta;
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 //Return the good API (will be extended to Pronote)
 APIManager(Offline _offline) {
   //The parser list index corresponding to the user choice
-
-  switch (chosenParser) {
+  switch (appSys.settings["system"]["chosenParser"]) {
     case 0:
       return APIEcoleDirecte(_offline);
 
@@ -21,19 +23,49 @@ APIManager(Offline _offline) {
   }
 }
 
-reloadChosenApi() async {
-  final prefs = await SharedPreferences.getInstance();
-  chosenParser = prefs.getInt('chosenParser') ?? null;
+setChosenParser(int chosen) async {
+  appSys.updateSetting(appSys.settings["system"], "chosenParser", chosen);
 }
 
-setChosenParser(int chosen) async {
-  final prefs = await SharedPreferences.getInstance();
-  prefs.setInt('chosenParser', chosen);
+testIfPronoteCas(String url) async {
+  //auto forward
+  if (url.contains("?")) {
+    url += "&fd=1";
+  } else {
+    url += "?fd=1";
+  }
+  var response = await http.get(Uri.parse(url));
+  printWrapped(response.body);
+  if (response.body.contains('id="id_body"')) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
+getRootAddress(addr) {
+  return [
+    (addr.split('/').sublist(0, addr.split('/').length - 1).join("/")),
+    (addr.split('/').sublist(addr.split('/').length - 1, addr.split('/').length).join("/"))
+  ];
 }
 
 get_week(DateTime date) async {
   final storage = new FlutterSecureStorage();
   return (1 + (date.difference(DateTime.parse(await storage.read(key: "startday"))).inDays / 7).floor()).round();
+}
+
+checkPronoteURL(String url) async {
+  var response = await http
+      .get(Uri.parse(getRootAddress(url)[0] +
+          (url[url.length - 1] == "/" ? "" : "/") +
+          "InfoMobileApp.json?id=0D264427-EEFC-4810-A9E9-346942A862A4"))
+      .catchError((e) {});
+  if (response != null && response.statusCode == 200) {
+    return true;
+  } else {
+    return false;
+  }
 }
 
 ///Generate lesson ID using, the next scheme : week parity (1 or 2), day of week (1-7) and an hashcode

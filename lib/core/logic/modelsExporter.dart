@@ -14,3 +14,4 @@ export 'package:ynotes/core/logic/schoolLife/models.dart';
 
 export 'package:ynotes/core/logic/shared/models.dart';
 
+export 'package:ynotes/core/logic/pronote/schoolsModel.dart';

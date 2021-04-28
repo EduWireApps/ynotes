@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:ynotes/ui/components/customLoader.dart';
 import 'package:ynotes/ui/screens/settings/settingsPage.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
@@ -232,7 +233,7 @@ class _QuickMenuState extends State<QuickMenu> with TickerProviderStateMixin {
                                                                         style: TextStyle(
                                                                             fontFamily: "Asap",
                                                                             fontSize: screenSize.size.height / 10 * 0.2,
-                                                                            color: isDarkModeEnabled
+                                                                            color: ThemeUtils.isThemeDark
                                                                                 ? Colors.white.withOpacity(0.5)
                                                                                 : Colors.black.withOpacity(0.5)),
                                                                       ),
@@ -272,9 +273,10 @@ class _QuickMenuState extends State<QuickMenu> with TickerProviderStateMixin {
                                         );
                                       }
                                     } else {
-                                      return SpinKitFadingFour(
-                                        color: Theme.of(context).primaryColorDark,
-                                        size: screenSize.size.width / 5 * 1,
+                                      return CustomLoader(
+                                        screenSize.size.width / 5 * 1,
+                                        screenSize.size.width / 5 * 1,
+                                        Theme.of(context).primaryColorDark,
                                       );
                                     }
                                   },

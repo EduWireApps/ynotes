@@ -8,6 +8,8 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
+import 'package:ynotes/ui/animations/FadeAnimation.dart';
+import 'package:ynotes/ui/components/customLoader.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/screens/grades/gradesPage.dart';
 import 'package:ynotes/core/apis/Pronote.dart';
@@ -49,17 +51,23 @@ class _QuickGradesState extends State<QuickGrades> {
               color: Colors.transparent,
               width: screenSize.size.width / 5 * 4.5,
               height: (screenSize.size.height / 10 * 8.8) / 10 * 2,
-              child: Row(
+              child: Stack(
                 children: [
-                  Container(
-                      color: Colors.transparent,
-                      width: screenSize.size.width / 5 * 4.5,
-                      child: (disciplines != null && !fetching)
-                          ? SummaryChart(
-                              getAllGrades(disciplines, overrideLimit: true, sortByWritingDate: true),
-                            )
-                          : SpinKitThreeBounce(
-                              color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4))
+                  Row(
+                    children: [
+                      Container(
+                          color: Colors.transparent,
+                          width: screenSize.size.width / 5 * 4.5,
+                          child: (disciplines != null && !fetching)
+                              ? ClipRRect(
+                                  child: SummaryChart(
+                                    getAllGrades(disciplines, overrideLimit: true, sortByWritingDate: true),
+                                  ),
+                                )
+                              : CustomLoader(
+                                  screenSize.size.width / 5 * 2.5, screenSize.size.width / 5 * 2.5, Color(0xff5c66c1)))
+                    ],
+                  ),
                 ],
               ),
             )));
@@ -122,7 +130,7 @@ class _QuickGradesState extends State<QuickGrades> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (grade.disciplineName != null && grade.disciplineName != "")
+              if (grade.disciplineName != null || grade.disciplineName != "")
                 Text(
                   grade.disciplineName ?? "",
                   style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),

@@ -116,7 +116,6 @@ class _StatsPageState extends State<StatsPage> {
           Container(
             width: screenSize.size.width / 5 * 4.8,
             child: ExpandablePanel(
-              hasIcon: false,
               header: Container(
                 width: screenSize.size.width / 5 * 4.8,
                 height: screenSize.size.height / 10 * 0.8,

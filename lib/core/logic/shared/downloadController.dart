@@ -6,6 +6,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 
 ///Class download to notify view when download is ended
 class DownloadController extends ChangeNotifier {
@@ -44,7 +45,7 @@ class DownloadController extends ChangeNotifier {
     _progress = null;
     String filename = document.documentName;
     notifyListeners();
-    Request request = await localApi.downloadRequest(document);
+    Request request = await appSys.api.downloadRequest(document);
     //Make a response client
     final StreamedResponse response = await Client().send(request);
     final contentLength = response.contentLength;

@@ -11,6 +11,7 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/stats/gradesStats.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/disciplinesModalBottomSheet.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/gradesModalBottomSheet/gradesModalBottomSheet.dart';
@@ -96,6 +97,7 @@ class _GradesGroupState extends State<GradesGroup> {
                               children: [
                                 if (capitalizedNomDiscipline != null)
                                   Container(
+                                    width: screenSize.size.width / 5 * 4.5,
                                     child: Text(
                                       capitalizedNomDiscipline,
                                       overflow: TextOverflow.ellipsis,
@@ -127,7 +129,7 @@ class _GradesGroupState extends State<GradesGroup> {
                                       borderRadius: BorderRadius.circular(0),
                                       child: Text(
                                         "Moyenne : " +
-                                            ((chosenParser == 1)
+                                            ((appSys.settings["system"]["chosenParser"] == 1)
                                                 ? (widget.discipline.average ?? "-")
                                                 : ((!widget.discipline.getAverage().isNaN)
                                                     ? widget.discipline.getAverage().toString()

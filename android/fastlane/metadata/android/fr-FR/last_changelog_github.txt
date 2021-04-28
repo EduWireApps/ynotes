@@ -1,1 +1,2 @@
-Pronote important fixes (including non-HTTPS login) and bug fixes
+This version adds a new login screen :
+- All Pronote CAS should be able to login
