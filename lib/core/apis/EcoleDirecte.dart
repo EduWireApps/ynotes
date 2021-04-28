@@ -253,12 +253,12 @@ class APIEcoleDirecte extends API {
         isOfflineLocked: super.offlineController.locked,
         onlineArguments: dateToUse,
         offlineArguments: await getWeek(dateToUse));
-    if (lessons != null) {
-      lessons.retainWhere((lesson) =>
-          DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start!)) ==
-          DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)));
-    }
-    return lessons;
+
+    return (lessons ?? [])
+        .where((lesson) =>
+            DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start!)) ==
+            DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)))
+        .toList();
   }
 
   @override

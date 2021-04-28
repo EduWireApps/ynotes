@@ -74,6 +74,7 @@ class AgendaController extends ChangeNotifier {
       oldweek.forEach((oldWeekDate) {
         for (int i = 0; i < week.length; i++) {
           if (week[i] == oldWeekDate) {
+
             //We add these events
             (_cachedEvents ?? [])[i] = [];
             (_cachedEvents ?? [])[i]!.addAll(oldEvents[i] ?? []);

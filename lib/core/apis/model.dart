@@ -156,6 +156,4 @@ class SchoolAccount {
   SchoolAccount(this.name, this.studentClass, this.studentID, this.availableTabs, this.studentPeriods, this.type,
       {this.credentials})
       : super();
-
-
 }

@@ -7,7 +7,6 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/ui/components/expandables.dart';
 import 'package:ynotes/ui/components/hiddenSettings.dart';
 import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/agendaSettings.dart';
-import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/newAgenda.dart';
 import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/spaceAgenda.dart';
 
 DateTime? agendaDate;
@@ -142,8 +141,8 @@ class AgendaPageState extends State<AgendaPage> {
             ),
           ),
           Positioned(
-            top: (btPercents / 100) * screenSize.size.height / 10 * 0.7,
-            child: Container(height: screenSize.size.height / 10 * 7.5, width: screenSize.size.width, child: Agenda2()),
+            top: (topPercents / 100) * screenSize.size.height / 10 * 0.7,
+            child: SpaceAgenda(),
           )
         ],
       ),

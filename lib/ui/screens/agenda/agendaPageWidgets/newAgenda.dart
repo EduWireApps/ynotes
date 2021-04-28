@@ -2,7 +2,6 @@ import 'package:calendar_time/calendar_time.dart';
 import 'package:flutter/material.dart';
 import 'package:preload_page_view/preload_page_view.dart';
 import 'package:provider/provider.dart';
-import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/agenda/controller.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/buttons.dart';
@@ -41,23 +40,8 @@ class _Agenda2State extends State<Agenda2> {
                 ),
               ),
               CustomButtons.materialButton(context, null, null, () async {
-               /* print("1 " +
-                    (await appSys.api!.getEvents(CalendarTime(DateTime.now()).startOfDay.add(Duration(days: 0)), false,
-                            forceReload: true))!
-                        .length
-                        .toString());*/
-                print("2 " +
-                    (await appSys.api!.getEvents(CalendarTime(DateTime.now()).startOfDay.add(Duration(days: 2)), false,
-                            forceReload: false))!
-                        .length
-                        .toString());
-                print("3 " +
-                    ((await appSys.offline.lessons.get(await getWeek(
-                              CalendarTime(DateTime.now()).startOfDay.add(Duration(days: 1)),
-                            ))) ??
-                            [])
-                        .length
-                        .toString());
+                con.jumpToPage(365);
+                appSys.agendaController.setDay(DateTime.now());
               }, label: "today")
             ],
           ),
