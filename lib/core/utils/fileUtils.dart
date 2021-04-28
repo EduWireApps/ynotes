@@ -9,101 +9,9 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/ui/components/dialogs.dart';
-
-class FileInfo {
-  final element;
-  final DateTime? lastModifiedDate;
-  final String? fileName;
-  bool selected;
-  FileInfo(this.element, this.lastModifiedDate, this.fileName, {this.selected = false});
-}
-
-class FolderAppUtil {
-  static getDirectory({bool download = false}) async {
-    if (download && Platform.isAndroid) {
-      final dir = await ExtStorage.getExternalStoragePublicDirectory(ExtStorage.DIRECTORY_DOWNLOADS);
-
-      return dir;
-    }
-    if (Platform.isAndroid) {
-      var dir = await getExternalStorageDirectory();
-
-      return download ? dir!.path : dir;
-    }
-    if (Platform.isIOS) {
-      var dir = await getApplicationDocumentsDirectory();
-      return download ? dir.path : dir;
-    } else {
-      ///DO NOTHING
-    }
-  }
-
-  static getTempDirectory() async {
-    final dir = await getTemporaryDirectory();
-    return dir;
-  }
-
-  static createDirectory(String path) async {
-    final Directory _appDocDirFolder = Directory(path);
-
-    if (!await _appDocDirFolder.exists()) {
-      print("creating $path");
-
-      final Directory _appDocDirNewFolder = await _appDocDirFolder.create(recursive: true);
-    } else {}
-  }
-}
 
 ///Every action related to files
 class FileAppUtil {
-  static writeInFile(String data, String fileName) async {
-    print("Writing");
-    try {
-      final directory = await FolderAppUtil.getDirectory();
-      final File file = File('${directory.path}/$fileName.txt');
-      await file.writeAsString(data, mode: FileMode.write);
-    } catch (e) {
-      print(e.toString());
-    }
-  }
-
-  static Future<String?> getFileNameWithExtension(var file) async {
-    if (await file.exists()) {
-      return path.basename(file.path);
-    } else {
-      return null;
-    }
-  }
-
-  ///Get new file path
-  static Future<File> getFilePath(String? filename) async {
-    final dir = await FolderAppUtil.getDirectory(download: true);
-    return File("$dir/yNotesDownloads/$filename");
-  }
-
-  static Future<DateTime?> getLastModifiedDate(var item) async {
-    try {
-      if (await item.exists()) {
-        return await item.lastModified();
-      } else {
-        return null;
-      }
-    } catch (e) {}
-  }
-
-  static Future<String> loadAsset(path) async {
-    return await rootBundle.loadString(path);
-  }
-
-  static remove(var file) async {
-    if (await file.exists()) {
-      file.delete(recursive: true);
-    } else {
-      return null;
-    }
-  }
-
   static getCsv(List<Grade> associateGradeList) async {
     //create an element rows of type list of list. All the above data set are stored in associate list
 //Let associate be a model class with attributes name,gender and age and associateList be a list of associate model class.
@@ -139,23 +47,18 @@ class FileAppUtil {
     f.writeAsString(csv);
   }
 
-//Open a file
-  static Future<void> openFile(String? filePath, {bool usingFileName = false}) async {
-    try {
-      String? path = "";
-
-      //Get root dir path
-      if (usingFileName) {
-        final dir = await FolderAppUtil.getDirectory(download: true);
-        path = '$dir/yNotesDownloads/$filePath';
-      } else {
-        path = filePath;
-      }
-
-      await OpenFile.open(path!);
-    } catch (e) {
-      print("Failed to open file : " + e.toString());
+  static Future<String?> getFileNameWithExtension(var file) async {
+    if (await file.exists()) {
+      return path.basename(file.path);
+    } else {
+      return null;
     }
+  }
+
+  ///Get new file path
+  static Future<File> getFilePath(String? filename) async {
+    final dir = await FolderAppUtil.getDirectory(download: true);
+    return File("$dir/yNotesDownloads/$filename");
   }
 
   static Future<List<FileInfo>> getFilesList(String path) async {
@@ -181,7 +84,7 @@ class FileAppUtil {
           }
         });
 
-        listFiles = [];
+        listFiles = listFiles.reversed.toList();
         return listFiles;
       }
     } catch (e) {
@@ -189,5 +92,101 @@ class FileAppUtil {
       return listFiles;
     }
     return [];
+  }
+
+  static Future<DateTime?> getLastModifiedDate(var item) async {
+    try {
+      if (await item.exists()) {
+        return await item.lastModified();
+      } else {
+        return null;
+      }
+    } catch (e) {}
+  }
+
+  static Future<String> loadAsset(path) async {
+    return await rootBundle.loadString(path);
+  }
+
+  static Future<void> openFile(String? filePath, {bool usingFileName = false}) async {
+    try {
+      String? path = "";
+
+      //Get root dir path
+      if (usingFileName) {
+        final dir = await FolderAppUtil.getDirectory(download: true);
+        path = '$dir/yNotesDownloads/$filePath';
+      } else {
+        path = filePath;
+      }
+
+      await OpenFile.open(path!);
+    } catch (e) {
+      print("Failed to open file : " + e.toString());
+    }
+  }
+
+//Open a file
+  static remove(var file) async {
+    if (await file.exists()) {
+      file.delete(recursive: true);
+    } else {
+      return null;
+    }
+  }
+
+  static writeInFile(String data, String fileName) async {
+    print("Writing");
+    try {
+      final directory = await FolderAppUtil.getDirectory();
+      final File file = File('${directory.path}/$fileName.txt');
+      await file.writeAsString(data, mode: FileMode.write);
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+}
+
+class FileInfo {
+  final element;
+  final DateTime? lastModifiedDate;
+  final String? fileName;
+  bool selected;
+  FileInfo(this.element, this.lastModifiedDate, this.fileName, {this.selected = false});
+}
+
+class FolderAppUtil {
+  static createDirectory(String path) async {
+    final Directory _appDocDirFolder = Directory(path);
+
+    if (!await _appDocDirFolder.exists()) {
+      print("creating $path");
+
+      final Directory _appDocDirNewFolder = await _appDocDirFolder.create(recursive: true);
+    } else {}
+  }
+
+  static getDirectory({bool download = false}) async {
+    if (download && Platform.isAndroid) {
+      final dir = await ExtStorage.getExternalStoragePublicDirectory(ExtStorage.DIRECTORY_DOWNLOADS);
+
+      return dir;
+    }
+    if (Platform.isAndroid) {
+      var dir = await getExternalStorageDirectory();
+
+      return download ? dir!.path : dir;
+    }
+    if (Platform.isIOS) {
+      var dir = await getApplicationDocumentsDirectory();
+      return download ? dir.path : dir;
+    } else {
+      ///DO NOTHING
+    }
+  }
+
+  static getTempDirectory() async {
+    final dir = await getTemporaryDirectory();
+    return dir;
   }
 }

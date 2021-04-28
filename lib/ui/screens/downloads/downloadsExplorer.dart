@@ -8,12 +8,13 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:path/path.dart' as pathPackage;
+import 'package:permission_handler/permission_handler.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/usefulMethods.dart';
 
-late Future<List<FileInfo>> filesListFuture;
+Future<List<FileInfo>>? filesListFuture;
 
 List<FileInfo> selectedFiles = [];
 bool selectionMode = false;
@@ -419,174 +420,177 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
               color: Theme.of(context).primaryColorDark,
             ),
           ),
-          Container(
-            height: screenSize.size.height / 10 * 7.5,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-              child: FutureBuilder<List<FileInfo>>(
-                future: filesListFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    if ((snapshot.data ?? []).length != 0) {
-                      _listFiles = snapshot.data;
-                      return Container(
-                        height: screenSize.size.height / 10 * 7.3,
-                        child: RefreshIndicator(
-                          onRefresh: () => refreshFileListFuture(),
-                          child: ListView.builder(
-                            padding: EdgeInsets.all(0.0),
-                            itemCount: _listFiles!.length,
-                            itemBuilder: (context, index) {
-                              final item = _listFiles![index].fileName!;
-                              bool selected = false;
-                              return Dismissible(
-                                direction: DismissDirection.endToStart,
-                                background: Container(color: Colors.red),
-                                confirmDismiss: (direction) async {
-                                  setState(() {});
-                                  return await CustomDialogs.showConfirmationDialog(context, null) == true;
-                                },
-                                onDismissed: (direction) async {
-                                  await FileAppUtil.remove(_listFiles![index].element);
+          RefreshIndicator(
+            onRefresh: () => refreshFileListFuture(),
+            child: SingleChildScrollView(
+              physics: AlwaysScrollableScrollPhysics(),
+              child: Container(
+                height: screenSize.size.height / 10 * 7.5,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                  child: FutureBuilder<List<FileInfo>>(
+                    future: filesListFuture,
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        if ((snapshot.data ?? []).length != 0) {
+                          _listFiles = snapshot.data;
+                          return Container(
+                            height: screenSize.size.height / 10 * 7.3,
+                            child: ListView.builder(
+                              padding: EdgeInsets.all(0.0),
+                              itemCount: _listFiles!.length,
+                              itemBuilder: (context, index) {
+                                final item = _listFiles![index].fileName!;
+                                bool selected = false;
+                                return Dismissible(
+                                  direction: DismissDirection.endToStart,
+                                  background: Container(color: Colors.red),
+                                  confirmDismiss: (direction) async {
+                                    setState(() {});
+                                    return await CustomDialogs.showConfirmationDialog(context, null) == true;
+                                  },
+                                  onDismissed: (direction) async {
+                                    await FileAppUtil.remove(_listFiles![index].element);
 
-                                  setState(() {
-                                    _listFiles!.removeAt(index);
-                                  });
-                                },
-                                key: Key(item),
-                                child: Container(
-                                  child: Column(
-                                    children: <Widget>[
-                                      ConstrainedBox(
-                                        constraints: new BoxConstraints(
-                                          minHeight: screenSize.size.height / 10 * 0.8,
-                                        ),
-                                        child: Container(
-                                          margin: EdgeInsets.only(bottom: (screenSize.size.height / 10 * 0.008)),
-                                          child: Material(
-                                            color: _listFiles![index].selected
-                                                ? Colors.blue
-                                                : Theme.of(context).primaryColorDark,
-                                            child: InkWell(
-                                              splashColor: Color(0xff525252),
-                                              onLongPress: () {
-                                                setState(() {
-                                                  selectionMode = true;
-                                                  _listFiles![index].selected = true;
-                                                });
-                                              },
-                                              onTap: () async {
-                                                if (selectionMode) {
-                                                  print(selectedFiles.length);
-                                                  _listFiles![index].selected = !_listFiles![index].selected;
-                                                  setState(() {});
-                                                } else {
-                                                  if (_listFiles![index].element is Directory) {
-                                                    setState(() {
-                                                      path = path + "/" + _listFiles![index].fileName!;
-                                                    });
-                                                    await refreshFileListFuture();
+                                    setState(() {
+                                      _listFiles!.removeAt(index);
+                                    });
+                                  },
+                                  key: Key(item),
+                                  child: Container(
+                                    child: Column(
+                                      children: <Widget>[
+                                        ConstrainedBox(
+                                          constraints: new BoxConstraints(
+                                            minHeight: screenSize.size.height / 10 * 0.8,
+                                          ),
+                                          child: Container(
+                                            margin: EdgeInsets.only(bottom: (screenSize.size.height / 10 * 0.008)),
+                                            child: Material(
+                                              color: _listFiles![index].selected
+                                                  ? Colors.blue
+                                                  : Theme.of(context).primaryColorDark,
+                                              child: InkWell(
+                                                splashColor: Color(0xff525252),
+                                                onLongPress: () {
+                                                  setState(() {
+                                                    selectionMode = true;
+                                                    _listFiles![index].selected = true;
+                                                  });
+                                                },
+                                                onTap: () async {
+                                                  if (selectionMode) {
+                                                    print(selectedFiles.length);
+                                                    _listFiles![index].selected = !_listFiles![index].selected;
+                                                    setState(() {});
                                                   } else {
-                                                    await FileAppUtil.openFile(_listFiles![index].element.path);
+                                                    if (_listFiles![index].element is Directory) {
+                                                      setState(() {
+                                                        path = path + "/" + _listFiles![index].fileName!;
+                                                      });
+                                                      await refreshFileListFuture();
+                                                    } else {
+                                                      await FileAppUtil.openFile(_listFiles![index].element.path);
+                                                    }
                                                   }
-                                                }
-                                              },
-                                              child: Container(
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: screenSize.size.width / 5 * 0.25,
-                                                    vertical: screenSize.size.height / 10 * 0.2),
+                                                },
                                                 child: Container(
-                                                  child: Row(
-                                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                    children: <Widget>[
-                                                      Icon(
-                                                        (_listFiles![index].element is Directory)
-                                                            ? MdiIcons.folder
-                                                            : MdiIcons.file,
-                                                        color: (_listFiles![index].element is Directory)
-                                                            ? Colors.yellow.shade100
-                                                            : ThemeUtils.textColor().withOpacity(0.5),
-                                                      ),
-                                                      Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: <Widget>[
-                                                          Container(
-                                                            width: screenSize.size.width / 5 * 3.25,
-                                                            child: Text(
-                                                              (snapshot.data ?? [])[index].fileName ?? "",
-                                                              style: TextStyle(
-                                                                  fontFamily: "Asap",
-                                                                  fontSize: screenSize.size.height / 10 * 0.2,
-                                                                  color: ThemeUtils.textColor()),
-                                                            ),
-                                                          ),
-                                                          if ((snapshot.data ?? [])[index].lastModifiedDate != null)
-                                                            FittedBox(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: screenSize.size.width / 5 * 0.25,
+                                                      vertical: screenSize.size.height / 10 * 0.2),
+                                                  child: Container(
+                                                    child: Row(
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                      children: <Widget>[
+                                                        Icon(
+                                                          (_listFiles![index].element is Directory)
+                                                              ? MdiIcons.folder
+                                                              : MdiIcons.file,
+                                                          color: (_listFiles![index].element is Directory)
+                                                              ? Colors.yellow.shade100
+                                                              : ThemeUtils.textColor().withOpacity(0.5),
+                                                        ),
+                                                        Column(
+                                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                                          children: <Widget>[
+                                                            Container(
+                                                              width: screenSize.size.width / 5 * 3.25,
                                                               child: Text(
-                                                                DateFormat("yyyy-MM-dd HH:mm").format(
-                                                                    (snapshot.data ?? [])[index].lastModifiedDate!),
-                                                                textAlign: TextAlign.left,
+                                                                (snapshot.data ?? [])[index].fileName ?? "",
                                                                 style: TextStyle(
                                                                     fontFamily: "Asap",
                                                                     fontSize: screenSize.size.height / 10 * 0.2,
-                                                                    color: ThemeUtils.isThemeDark
-                                                                        ? Colors.white.withOpacity(0.5)
-                                                                        : Colors.black.withOpacity(0.5)),
+                                                                    color: ThemeUtils.textColor()),
                                                               ),
                                                             ),
-                                                        ],
-                                                      ),
-                                                    ],
+                                                            if ((snapshot.data ?? [])[index].lastModifiedDate != null)
+                                                              FittedBox(
+                                                                child: Text(
+                                                                  DateFormat("yyyy-MM-dd HH:mm").format(
+                                                                      (snapshot.data ?? [])[index].lastModifiedDate!),
+                                                                  textAlign: TextAlign.left,
+                                                                  style: TextStyle(
+                                                                      fontFamily: "Asap",
+                                                                      fontSize: screenSize.size.height / 10 * 0.2,
+                                                                      color: ThemeUtils.isThemeDark
+                                                                          ? Colors.white.withOpacity(0.5)
+                                                                          : Colors.black.withOpacity(0.5)),
+                                                                ),
+                                                              ),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
                                               ),
                                             ),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          );
+                        } else {
+                          return Container(
+                            height: screenSize.size.height / 10 * 7.3,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                ConstrainedBox(
+                                  constraints: BoxConstraints(maxHeight: screenSize.size.height / 10 * 1.2),
+                                  child: FittedBox(
+                                    child: Icon(
+                                      MdiIcons.downloadOffOutline,
+                                      color: ThemeUtils.textColor(),
+                                      size: screenSize.size.width / 5 * 1.5,
+                                    ),
                                   ),
                                 ),
-                              );
-                            },
-                          ),
-                        ),
-                      );
-                    } else {
-                      return Container(
-                        height: screenSize.size.height / 10 * 7.3,
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            ConstrainedBox(
-                              constraints: BoxConstraints(maxHeight: screenSize.size.height / 10 * 1.2),
-                              child: FittedBox(
-                                child: Icon(
-                                  MdiIcons.downloadOffOutline,
-                                  color: ThemeUtils.textColor(),
-                                  size: screenSize.size.width / 5 * 1.5,
-                                ),
-                              ),
+                                Text(
+                                  "Aucun élément.",
+                                  style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: 15),
+                                )
+                              ],
                             ),
-                            Text(
-                              "Aucun élément.",
-                              style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: 15),
-                            )
-                          ],
-                        ),
-                      );
-                    }
-                  } else {
-                    if (snapshot.hasError) {
-                      print("Erreur " + (snapshot.error as String));
-                    }
-                    return SpinKitFadingFour(
-                      color: Theme.of(context).primaryColorDark,
-                      size: screenSize.size.width / 5 * 1,
-                    );
-                  }
-                },
+                          );
+                        }
+                      } else {
+                        if (snapshot.hasError) {
+                          print("Erreur " + (snapshot.error as String));
+                        }
+                        return SpinKitFadingFour(
+                          color: Theme.of(context).primaryColorDark,
+                          size: screenSize.size.width / 5 * 1,
+                        );
+                      }
+                    },
+                  ),
+                ),
               ),
             ),
           ),
@@ -617,12 +621,14 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
     });
   }
 
-  refreshFileListFuture() async {
-    selectionMode = false;
-    setState(() {
-      filesListFuture = FileAppUtil.getFilesList(initialPath! + path);
-    });
-    var realLF = await filesListFuture;
+  Future<void> refreshFileListFuture() async {
+    if (await Permission.storage.request().isGranted) {
+      selectionMode = false;
+      setState(() {
+        filesListFuture = FileAppUtil.getFilesList(initialPath! + path);
+      });
+      var realLF = await filesListFuture;
+    }
   }
 
   sortList() {
