@@ -68,28 +68,23 @@ class _LoginWebViewState extends State<LoginWebView> {
 
             ///1) We open a page with the serverUrl + weird string hardcoded
             initialOptions: InAppWebViewGroupOptions(
+                android: AndroidInAppWebViewOptions(useHybridComposition: true),
                 crossPlatform: InAppWebViewOptions(
-                     supportZoom: true,
+                    supportZoom: true,
                     javaScriptEnabled: true,
                     allowFileAccessFromFileURLs: true,
-                    userAgent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.106 Safari/537.36 OPR/38.0.2220.41",
+                    userAgent:
+                        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.106 Safari/537.36 OPR/38.0.2220.41",
                     allowUniversalAccessFromFileURLs: true)),
             onWebViewCreated: (InAppWebViewController controller) {
               widget.controller = controller;
               //Clear cookies
               controller.clearCache();
             },
-            onConsoleMessage: (a,b)
-            {
-          
-            },
-           
-            onLoadHttpError: (d, c, a, f) {
-          
-            },
-            onLoadError: (a, b, c, d) {
-           
-            },
+            onConsoleMessage: (a, b) {},
+
+            onLoadHttpError: (d, c, a, f) {},
+            onLoadError: (a, b, c, d) {},
             onLoadStop: (controller, url) async {
               await stepper();
             },
