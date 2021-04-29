@@ -1,2 +1,1 @@
-This version adds a new login screen :
-- All Pronote CAS should be able to login
+This version fixes the iOS login webview.
