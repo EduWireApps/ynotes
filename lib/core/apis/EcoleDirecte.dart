@@ -6,8 +6,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ynotes/core/apis/EcoleDirecte/convertersExporter.dart';
 import 'package:ynotes/core/apis/EcoleDirecte/ecoleDirecteCloud.dart';
-import 'package:ynotes/core/apis/EcoleDirecte/ecoleDirecteConverters.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
@@ -42,12 +42,6 @@ String? token;
 ///END OF THE API CLASS
 void CreateStorage(String key, String? data) async {
   await storage.write(key: key, value: data);
-}
-
-@override
-Future<List<SchoolAccount>> getAccounts() {
-  // TODO: implement getAccounts
-  throw UnimplementedError();
 }
 
 ///  CLOUD SUB API
@@ -117,7 +111,7 @@ Future<List<Mail>?> getMails({bool? checking}) async {
         });
         messagesList.forEach((element) {
           Map<String, dynamic> mailData = element;
-          mailsList.add(EcoleDirecteConverter.mail(mailData));
+          mailsList.add(EcoleDirecteMailConverter.mail(mailData));
         });
       }
       print("Returned mails");
@@ -180,8 +174,6 @@ Future<String?> readMail(String mailId, bool read) async {
 ///The ecole directe api extended from the apiManager.dart API class
 class APIEcoleDirecte extends API {
   APIEcoleDirecte(Offline offlineController) : super(offlineController);
-
-//Get connection message and store token
   @override
   Future app(String appname, {String? args, String? action, CloudItem? folder}) async {
     switch (appname) {
@@ -209,6 +201,7 @@ class APIEcoleDirecte extends API {
     }
   }
 
+//Get connection message and store token
   Future<http.Request> downloadRequest(Document document) async {
     var url = 'https://api.ecoledirecte.com/v3/telechargement.awp?verbe=get';
     await EcoleDirecteMethod.refreshToken();
@@ -219,6 +212,12 @@ class APIEcoleDirecte extends API {
     http.Request request = http.Request('POST', Uri.parse(url));
     request.body = body.toString();
     return request;
+  }
+
+  @override
+  Future<List<SchoolAccount>> getAccounts() {
+    // TODO: implement getAccounts
+    throw UnimplementedError();
   }
 
   Future<List<DateTime>> getDatesNextHomework() async {
@@ -273,6 +272,8 @@ class APIEcoleDirecte extends API {
   }
 
   Future<List> login(username, password, {url, cas, mobileCasLogin}) async {
+
+      
     final prefs = await SharedPreferences.getInstance();
     if (username == null) {
       username = "";
@@ -294,9 +295,13 @@ class APIEcoleDirecte extends API {
       Map<String, dynamic> req = jsonDecode(response.body);
       if (req['code'] == 200) {
         try {
+          //we register accounts
+        
+          //If the account length is 1 we automatically set the default account
+          appSys.account = appSys.accounts[0];
+          
           //Put the value of the name in a variable
           actualUser = req['data']['accounts'][0]['prenom'] ?? "Invité";
-          ;
           CreateStorage("userFullName", actualUser);
           String userID = req['data']['accounts'][0]['id'].toString();
           String classe;

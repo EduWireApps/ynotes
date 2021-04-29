@@ -3,7 +3,8 @@ import 'dart:convert';
 import 'package:connectivity/connectivity.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:ynotes/core/apis/EcoleDirecte/ecoleDirecteConverters.dart';
+import 'package:ynotes/core/apis/EcoleDirecte/converters/cloud.dart';
+import 'package:ynotes/core/apis/EcoleDirecte/convertersExporter.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
@@ -23,7 +24,7 @@ class EcoleDirecteMethod {
     String method = "espacestravail.awp?verbe=get&";
     String data = 'data={"token": "$token"}';
     List<CloudItem> cloudFolders = await request(
-        data, rootUrl, method, EcoleDirecteConverter.cloudFolders, "Cloud folders request returned an error:");
+        data, rootUrl, method, EcoleDirecteCloudConverter.cloudFolders, "Cloud folders request returned an error:");
     return cloudFolders;
   }
 
@@ -39,7 +40,7 @@ class EcoleDirecteMethod {
       data,
       rootUrl,
       method,
-      EcoleDirecteConverter.disciplines,
+      EcoleDirecteDisciplineConverter.disciplines,
       "Grades request returned an error:",
       /*ignoreMethodAndId: kDebugMode, getRequest: kDebugMode*/
     );
@@ -64,7 +65,7 @@ class EcoleDirecteMethod {
     String method = "cahierdetexte.awp?verbe=get&";
     String data = 'data={"token": "$token"}';
     List<DateTime> homeworkDates = await request(
-        data, rootUrl, method, EcoleDirecteConverter.homeworkDates, "Homework dates request returned an error:");
+        data, rootUrl, method, EcoleDirecteHomeworkConverter.homeworkDates, "Homework dates request returned an error:");
 
     homeworkDates.removeWhere((date) =>
         DateFormat("yyyy-MM-dd")
@@ -92,7 +93,7 @@ class EcoleDirecteMethod {
     String method = "cahierdetexte/$dateToUse.awp?verbe=get&";
     String data = 'data={"token": "$token"}';
     List<Homework> homework =
-        await request(data, rootUrl, method, EcoleDirecteConverter.homework, "Homework request returned an error:");
+        await request(data, rootUrl, method, EcoleDirecteHomeworkConverter.homework, "Homework request returned an error:");
     homework.forEach((hw) {
       hw.date = date;
     });
@@ -108,7 +109,7 @@ class EcoleDirecteMethod {
     String method = "cahierdetexte.awp?verbe=get&";
     String data = 'data={"token": "$token"}';
     homeworkList = await request(
-        data, rootUrl, method, EcoleDirecteConverter.unloadedHomework, "UHomework request returned an error:");
+        data, rootUrl, method, EcoleDirecteHomeworkConverter.unloadedHomework, "UHomework request returned an error:");
     await appSys.offline.homework.updateHomework(homeworkList);
     List<DateTime> pinnedDates = await appSys.offline.pinnedHomework.getPinnedHomeworkDates();
 
@@ -137,7 +138,7 @@ class EcoleDirecteMethod {
       data,
       rootUrl,
       method,
-      EcoleDirecteConverter.periods,
+      EcoleDirecteAccountConverter.periods,
       "Periods request returned an error:",
     );
     print("periods " + periodsList.length.toString());
@@ -149,7 +150,7 @@ class EcoleDirecteMethod {
     String data = 'data={"token": "$token"}';
     String rootUrl = 'https://api.ecoledirecte.com/v3/messagerie/contacts/professeurs.awp?verbe=get';
     List<Recipient> recipients = await request(
-        data, rootUrl, "", EcoleDirecteConverter.recipients, "Recipients request returned an error:",
+        data, rootUrl, "", EcoleDirecteMailConverter.recipients, "Recipients request returned an error:",
         ignoreMethodAndId: true);
     if (recipients != null) {
       await appSys.offline.recipients.recipients.updateRecipients(recipients);
@@ -163,7 +164,7 @@ class EcoleDirecteMethod {
     String method = "viescolaire.awp?verbe=get&";
     String data = 'data={"token": "$token"}';
     List<SchoolLifeTicket> schoolLifeList = await request(
-        data, rootUrl, method, EcoleDirecteConverter.schoolLife, "School Life request returned an error:");
+        data, rootUrl, method, EcoleDirecteSchoolLifeConverter.schoolLife, "School Life request returned an error:");
     return schoolLifeList;
   }
 
@@ -212,7 +213,7 @@ class EcoleDirecteMethod {
     String method = "emploidutemps.awp?verbe=get&";
     try {
       List<Lesson>? lessonsList =
-          await request(data, rootUrl, method, EcoleDirecteConverter.lessons, "Lessons request returned an error:");
+          await request(data, rootUrl, method, EcoleDirecteLessonConverter.lessons, "Lessons request returned an error:");
       int week = await getWeek(dateToUse);
       if (lessonsList != null) {
         await appSys.offline.lessons.updateLessons(lessonsList, week);

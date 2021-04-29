@@ -101,6 +101,8 @@ abstract class API {
     return events;
   }
 
+  Future<List<SchoolAccount>> getAccounts();
+
   ///Get marks
   Future<List<Discipline>?> getGrades({bool? forceReload});
 
