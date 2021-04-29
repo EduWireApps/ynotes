@@ -1,13 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:requests/requests.dart';
-import 'package:uuid/uuid.dart';
-import 'package:ynotes/core/apis/Pronote.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/globals.dart';
@@ -19,8 +15,7 @@ class LoginWebView extends StatefulWidget {
   final String spaceUrl;
   InAppWebViewController controller;
 
-  LoginWebView({Key key, this.url, this.controller, this.spaceUrl})
-      : super(key: key);
+  LoginWebView({Key key, this.url, this.controller, this.spaceUrl}) : super(key: key);
   @override
   _LoginWebViewState createState() => _LoginWebViewState();
 }
@@ -46,8 +41,7 @@ class _LoginWebViewState extends State<LoginWebView> {
       });
       String loginDataProcess =
           "(function(){return window && window.loginState ? JSON.stringify(window.loginState) : \'\';})();";
-      String loginDataProcessResult =
-          await widget.controller.evaluateJavascript(source: loginDataProcess);
+      String loginDataProcessResult = await widget.controller.evaluateJavascript(source: loginDataProcess);
       getCreds(loginDataProcessResult);
       if (loginStatus != null) {
         setState(() {
@@ -55,9 +49,7 @@ class _LoginWebViewState extends State<LoginWebView> {
         });
         //url: widget.url + "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335"
         await widget.controller.loadUrl(
-            urlRequest: URLRequest(
-                url: Uri.parse(widget.url +
-                    "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335")));
+            urlRequest: URLRequest(url: Uri.parse(widget.url + "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335")));
       }
     });
   }
@@ -78,33 +70,27 @@ class _LoginWebViewState extends State<LoginWebView> {
 
             ///1) We open a page with the serverUrl + weird string hardcoded
             initialOptions: InAppWebViewGroupOptions(
+                android: AndroidInAppWebViewOptions(useHybridComposition: true),
                 crossPlatform: InAppWebViewOptions(
                     supportZoom: true,
                     javaScriptEnabled: true,
                     allowFileAccessFromFileURLs: true,
-                    userAgent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.106 Safari/537.36 OPR/38.0.2220.41",
+                    userAgent:
+                        "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.106 Safari/537.36 OPR/38.0.2220.41",
                     allowUniversalAccessFromFileURLs: true)),
             onWebViewCreated: (InAppWebViewController controller) {
               widget.controller = controller;
               //Clear cookies
               controller.clearCache();
             },
-            onConsoleMessage: (a,b)
-            {
-          
-            },
-           
-            onLoadHttpError: (d, c, a, f) {
-          
-            },
-            onLoadError: (a, b, c, d) {
-           
-            },
+            onConsoleMessage: (a, b) {},
+
+            onLoadHttpError: (d, c, a, f) {},
+            onLoadError: (a, b, c, d) {},
             onLoadStop: (controller, url) async {
               await stepper();
             },
-            onProgressChanged:
-                (InAppWebViewController controller, int progress) {},
+            onProgressChanged: (InAppWebViewController controller, int progress) {},
           ),
           Align(
             alignment: Alignment.bottomCenter,
@@ -159,8 +145,7 @@ class _LoginWebViewState extends State<LoginWebView> {
     print("Getting metas");
     //Injected function to get metas
     String metaGetFunction = "(function(){return document.body.innerText;})()";
-    String metaGetResult =
-        await widget.controller.evaluateJavascript(source: metaGetFunction);
+    String metaGetResult = await widget.controller.evaluateJavascript(source: metaGetFunction);
     if (metaGetResult != null && metaGetResult.length > 0) {
       loginData = json.decode(metaGetResult);
       setState(() {
@@ -276,15 +261,13 @@ class _LoginWebViewState extends State<LoginWebView> {
         'return "ok";' +
         '} else return "ko";' +
         '} catch(e){return "ko";}})();';
-    String cookieFunctionResult =
-        await widget.controller.evaluateJavascript(source: cookieFunction);
+    String cookieFunctionResult = await widget.controller.evaluateJavascript(source: cookieFunction);
     if (cookieFunctionResult == "ok") {
       String authFunction = 'location.assign("' + widget.url + '?fd=1")';
       setState(() {
         step = 4;
       });
-      String authFunctionResult =
-          await widget.controller.evaluateJavascript(source: authFunction);
+      String authFunctionResult = await widget.controller.evaluateJavascript(source: authFunction);
 
       stepper();
     }
@@ -336,8 +319,7 @@ class _LoginWebViewState extends State<LoginWebView> {
             MdiIcons.exitRun,
             size: screenSize.size.width / 5 * 0.5,
           ),
-          decoration:
-              BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
+          decoration: BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
         ),
         onPressed: () async {
           Navigator.of(context).pop();
