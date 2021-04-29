@@ -12,7 +12,7 @@ import 'package:ynotes/ui/components/customLoader.dart';
 
 var actualSort = sortValue.date;
 
-late Future<List<CloudItem>?> cloudFolderFuture;
+Future<List<CloudItem>?>? cloudFolderFuture;
 
 String? cloudUsedFolder = "";
 

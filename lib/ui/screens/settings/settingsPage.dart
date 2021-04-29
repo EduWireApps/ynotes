@@ -89,7 +89,9 @@ class _ExitDialogWidgetState extends State<ExitDialogWidget> {
             onPressed: () async {
               await appSys.exitApp();
               appSys.api!.gradesList!.clear();
-              setState(() {});
+              setState(() {
+                appSys.api = null;
+              });
               try {
                 appSys.updateTheme("clair");
               } catch (e) {}

@@ -69,6 +69,7 @@ class _LoginWebViewState extends State<LoginWebView> {
             ///1) We open a page with the serverUrl + weird string hardcoded
             initialOptions: InAppWebViewGroupOptions(
                 android: AndroidInAppWebViewOptions(useHybridComposition: true),
+                ios: IOSInAppWebViewOptions(),
                 crossPlatform: InAppWebViewOptions(supportZoom: true)),
             onWebViewCreated: (InAppWebViewController controller) {
               widget.controller = controller;
