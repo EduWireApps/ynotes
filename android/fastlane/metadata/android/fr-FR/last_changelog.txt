@@ -1,1 +1,1 @@
-Correctif pour la page de connexion, qui ne s'affichait pas pour certains appareils.
+Correctif pour la webview de connexion, qui ne s'affichait pas pour certains appareils.
