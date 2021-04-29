@@ -23,6 +23,8 @@ abstract class API {
   ///Download a file from his name
   Future<Request> downloadRequest(Document document);
 
+  Future<List<SchoolAccount>> getAccounts();
+
   ///Get the dates of next homework (deprecated)
   Future<List<DateTime>?> getDatesNextHomework();
 
@@ -101,8 +103,6 @@ abstract class API {
     return events;
   }
 
-  Future<List<SchoolAccount>> getAccounts();
-
   ///Get marks
   Future<List<Discipline>?> getGrades({bool? forceReload});
 
@@ -134,28 +134,56 @@ abstract class API {
 enum API_TYPE { EcoleDirecte, Pronote }
 
 @JsonSerializable()
+class AppAccount {
+  //User name
+  final String? name;
+  final String? surname;
+  //this is an internal ID used to name the offline boxes
+  final String? id;
+  //additionnal settings
+  final Map? apiSettings;
+  //if a parent can manage accounts
+  final bool isParentMainAccount;
+  final API_TYPE apiType;
+  final List<SchoolAccount>? managedAccounts;
+  AppAccount({
+    this.name,
+    this.surname,
+    this.id,
+    this.managedAccounts,
+    this.apiSettings,
+    required this.isParentMainAccount,
+    required this.apiType,
+  });
+}
+
+@JsonSerializable()
 class SchoolAccount {
   //Name of the student
-  final String name;
+  final String? name;
+
+  final String? surname;
+
+  final String? schoolName;
 
   //Class of the student
-  final String studentClass;
+  final String? studentClass;
 
-  final String studentID;
+  final String? studentID;
 
-  //Tabs the student can access to
+  //Tabs the student can have access to
   final List<appTabs> availableTabs;
-
-  final List<Period> studentPeriods;
-
-  final bool isParentAccount = false;
 
   ///Configuration credentials
   Map? credentials;
 
-  final API_TYPE type;
-
-  SchoolAccount(this.name, this.studentClass, this.studentID, this.availableTabs, this.studentPeriods, this.type,
-      {this.credentials})
+  SchoolAccount(
+      {this.name,
+      this.studentClass,
+      this.studentID,
+      required this.availableTabs,
+      this.surname,
+      this.schoolName,
+      this.credentials})
       : super();
 }
