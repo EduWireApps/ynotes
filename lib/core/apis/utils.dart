@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
@@ -57,12 +59,6 @@ void createStack() {
   });
 }
 
-getWeek(DateTime date) async {
-  final storage = new FlutterSecureStorage();
-  return (1 + (date.difference(DateTime.parse(await (storage.read(key: "startday")) ?? "")).inDays / 7).floor())
-      .round();
-}
-
 Future<int> getColor(String? disciplineName) async {
   SharedPreferences prefs = await (SharedPreferences.getInstance());
   if (disciplineName != null) {
@@ -110,6 +106,12 @@ getRootAddress(addr) {
   ];
 }
 
+getWeek(DateTime date) async {
+  final storage = new FlutterSecureStorage();
+  return (1 + (date.difference(DateTime.parse(await (storage.read(key: "startday")) ?? "")).inDays / 7).floor())
+      .round();
+}
+
 setChosenParser(int? chosen) async {
   appSys.updateSetting(appSys.settings!["system"], "chosenParser", chosen);
 }
@@ -128,6 +130,11 @@ testIfPronoteCas(String url) async {
   } else {
     return true;
   }
+}
+
+String utf8convert(String text) {
+  List<int> bytes = text.toString().codeUnits;
+  return utf8.decode(bytes);
 }
 
 class HexColor extends Color {

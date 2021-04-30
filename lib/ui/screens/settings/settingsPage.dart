@@ -19,6 +19,7 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
+import 'package:ynotes/ui/screens/settings/sub_pages/accountPage.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/exportPage.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
 
@@ -157,7 +158,11 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                                   : Colors.black.withOpacity(0.7)),
                           subtitle: '${actualUser.length > 0 ? actualUser : "Invité"}',
                           leading: Icon(MdiIcons.account, color: ThemeUtils.textColor()),
-                          onTap: () {},
+                          onTap: () {
+                            if (kDebugMode) {
+                              Navigator.of(context).push(router(AccountPage()));
+                            }
+                          },
                           iosChevron: Icon(Icons.chevron_right)),
                       SettingsTile(
                         title: 'Déconnexion',

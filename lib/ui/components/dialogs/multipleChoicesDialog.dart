@@ -2,30 +2,21 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import '../../../usefulMethods.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/ui/components/buttons.dart';
 
 class MultipleChoicesDialog extends StatefulWidget {
   List choices;
   List<int> initialSelection;
   bool singleChoice;
-  MultipleChoicesDialog(this.choices, this.initialSelection, {this.singleChoice = true});
+  String? label;
+  MultipleChoicesDialog(this.choices, this.initialSelection, {this.singleChoice = true, this.label});
   @override
   _MultipleChoicesDialogState createState() => _MultipleChoicesDialogState();
 }
 
 class _MultipleChoicesDialogState extends State<MultipleChoicesDialog> {
   List<int> indexsSelected = [];
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    if (widget.initialSelection != null && indexsSelected.isEmpty) {
-      indexsSelected.addAll(widget.initialSelection);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize;
@@ -35,31 +26,22 @@ class _MultipleChoicesDialogState extends State<MultipleChoicesDialog> {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0))),
         contentPadding: EdgeInsets.only(top: 0.0),
         content: Container(
-          height: screenSize.size.height / 10 * 4,
+          padding: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.1),
           width: screenSize.size.width / 5 * 4,
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              GestureDetector(
-                onTap: () {
-                  Navigator.of(context).pop(indexsSelected);
-                },
-                child: Container(
-                  width: screenSize.size.width / 5 * 4,
-                  height: screenSize.size.height / 10 * 0.5,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                          margin: EdgeInsets.only(top: screenSize.size.width / 5 * 0.2),
-                          height: (screenSize.size.height / 10 * 8.8) / 10 * 0.75,
-                          width: screenSize.size.width / 5 * 2,
-                          child: Icon(MdiIcons.check, color: ThemeUtils.textColor())),
-                    ],
+              if (this.widget.label != null)
+                Container(
+                  child: Text(
+                    widget.label!,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                   ),
                 ),
-              ),
+              if (this.widget.label != null) Divider(),
               Container(
                 height: screenSize.size.height / 10 * 3.5,
                 width: screenSize.size.width / 5 * 4,
@@ -141,8 +123,59 @@ class _MultipleChoicesDialogState extends State<MultipleChoicesDialog> {
                   ),
                 ),
               ),
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pop(indexsSelected);
+                },
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
+                  width: screenSize.size.width / 5 * 4,
+                  height: screenSize.size.height / 10 * 0.6,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Container(
+                            margin: EdgeInsets.only(top: screenSize.size.width / 5 * 0.2), child: buildCancelButton()),
+                      ),
+                      Expanded(
+                        child: Container(
+                            margin: EdgeInsets.only(top: screenSize.size.width / 5 * 0.2),
+                            child: buildValidateButton()),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ),
         ));
+  }
+
+  buildCancelButton() {
+    MediaQueryData screenSize;
+    screenSize = MediaQuery.of(context);
+
+    return CustomButtons.materialButton(context, null, (screenSize.size.height / 10 * 8.8) / 10 * 1.2, () {
+      Navigator.of(context).pop();
+    }, label: "Annuler", backgroundColor: Colors.orange.shade300);
+  }
+
+  buildValidateButton() {
+    MediaQueryData screenSize;
+    screenSize = MediaQuery.of(context);
+    return CustomButtons.materialButton(context, null, (screenSize.size.height / 10 * 8.8) / 10 * 1.2, () {
+      Navigator.of(context).pop(indexsSelected);
+    }, label: "Valider", backgroundColor: Colors.green.shade300);
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if (widget.initialSelection != null && indexsSelected.isEmpty) {
+      indexsSelected.addAll(widget.initialSelection);
+    }
   }
 }

@@ -1,17 +1,16 @@
-import 'package:ynotes/core/apis/utils.dart';
-import 'package:ynotes/core/utils/fileUtils.dart';
-
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:ynotes/ui/screens/login/loginPage.dart';
-import 'package:ynotes/main.dart';
+import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/globals.dart';
+import 'package:ynotes/ui/screens/login/loginPage.dart';
 import 'package:ynotes/usefulMethods.dart';
 
+int? chosen;
 late Animation<double> chosenAnimation1;
-late Animation<double> chosenAnimation2;
 late AnimationController chosenAnimation1Controller;
+late Animation<double> chosenAnimation2;
+
 late AnimationController chosenAnimation2Controller;
 
 class SchoolAPIChoice extends StatefulWidget {
@@ -20,40 +19,7 @@ class SchoolAPIChoice extends StatefulWidget {
   }
 }
 
-int? chosen;
-
 class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderStateMixin {
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    chosenAnimation1Controller = AnimationController(vsync: this, duration: Duration(milliseconds: 450));
-    chosenAnimation2Controller = AnimationController(vsync: this, duration: Duration(milliseconds: 450));
-    chosenAnimation1 = new Tween(
-      begin: 1.0,
-      end: 1.1,
-    ).animate(new CurvedAnimation(parent: chosenAnimation1Controller, curve: Curves.easeInOutQuint));
-    chosenAnimation2 = new Tween(
-      begin: 1.0,
-      end: 1.1,
-    ).animate(new CurvedAnimation(parent: chosenAnimation2Controller, curve: Curves.easeInOutQuint));
-    getLocalChosen();
-  }
-
-  getLocalChosen() async {
-    setState(() {
-      chosen = appSys.settings!["system"]["chosenParser"];
-    });
-    if (chosen == 0) {
-      chosenAnimation2Controller.reverse();
-      chosenAnimation1Controller.forward();
-    }
-    if (chosen == 1) {
-      chosenAnimation1Controller.reverse();
-      chosenAnimation2Controller.forward();
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize;
@@ -220,5 +186,36 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
         ),
       ),
     );
+  }
+
+  getLocalChosen() async {
+    setState(() {
+      chosen = appSys.settings!["system"]["chosenParser"];
+    });
+    if (chosen == 0) {
+      chosenAnimation2Controller.reverse();
+      chosenAnimation1Controller.forward();
+    }
+    if (chosen == 1) {
+      chosenAnimation1Controller.reverse();
+      chosenAnimation2Controller.forward();
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    chosenAnimation1Controller = AnimationController(vsync: this, duration: Duration(milliseconds: 450));
+    chosenAnimation2Controller = AnimationController(vsync: this, duration: Duration(milliseconds: 450));
+    chosenAnimation1 = new Tween(
+      begin: 1.0,
+      end: 1.1,
+    ).animate(new CurvedAnimation(parent: chosenAnimation1Controller, curve: Curves.easeInOutQuint));
+    chosenAnimation2 = new Tween(
+      begin: 1.0,
+      end: 1.1,
+    ).animate(new CurvedAnimation(parent: chosenAnimation2Controller, curve: Curves.easeInOutQuint));
+    getLocalChosen();
   }
 }

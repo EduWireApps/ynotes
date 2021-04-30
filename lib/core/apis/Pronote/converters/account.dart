@@ -1,0 +1,76 @@
+import 'package:ynotes/core/apis/model.dart';
+import 'package:ynotes/core/logic/appConfig/models.dart';
+import 'package:ynotes/core/utils/nullSafeMap.dart';
+import 'package:ynotes/main.dart';
+
+class PronoteAccountConverter {
+  static AppAccount account(Map<String, dynamic> accountData) {
+    Map data = mapGet(accountData, ["donneesSec", "donnees", "ressource"]);
+    List<appTabs> tabs = availableTabs(mapGet(data, ["listeOnglets"]), mapGet(data, ["listeOngletsInvisibles"]));
+    if (mapGet(data, ["listeRessources"]) != null) {
+      String? name = mapGet(data, ["L"]);
+      bool isParentMainAccount = true;
+      List<SchoolAccount> accounts = schoolAccounts(mapGet(data, ["listeRessources"]));
+      ;
+      //we generate a random UUID
+      String? id = uuid.v1();
+      return AppAccount(
+          managableAccounts: accounts, isParentMainAccount: isParentMainAccount, apiType: API_TYPE.Pronote);
+    }
+  }
+
+  static List<appTabs> availableTabs(List? alltabs, List? hiddenTabs) {
+    List<int> tabsNumbers = [];
+    List<appTabs> tabs = [];
+    (alltabs ?? []).forEach((tab) {
+      tabsNumbers.add(tab["G"]);
+
+      (tab["Onglet"] ?? []).forEach((subtab) {
+        tabsNumbers.addAll(subtab.values.where((b) => b is int).toList());
+        //Sub sub tab
+        (subtab["Onglet"] ?? []).forEach((subsubtab) {
+          tabsNumbers.addAll(subsubtab.values.where((b) => b is int).toList());
+        });
+      });
+    });
+    (hiddenTabs ?? []).forEach((element) {
+      tabsNumbers.remove(element);
+    });
+    tabsNumbers.forEach((tabNumber) {
+      switch (tabNumber) {
+        case 16:
+          tabs.add(appTabs.AGENDA);
+          break;
+        case 8:
+          tabs.add(appTabs.POLLS);
+          break;
+        case 198:
+          tabs.add(appTabs.GRADES);
+
+          break;
+        case 88:
+          tabs.add(appTabs.HOMEWORK);
+          break;
+        default:
+      }
+    });
+    tabs.add(appTabs.SUMMARY);
+    tabs.add(appTabs.FILES);
+    return tabs;
+  }
+
+  static List<SchoolAccount> schoolAccounts(List? schoolAccountsData) {
+    List<SchoolAccount> accounts = [];
+    (schoolAccountsData ?? []).forEach((studentData) {
+      String? name = mapGet(studentData, ["L"]);
+      String? studentClass = mapGet(studentData, ["classeDEleve", "L"]);
+      String? schoolName = mapGet(studentData, ["Etablissement", "V", "L"]);
+      String? studentID = mapGet(studentData, ["N"]);
+
+      accounts.add(SchoolAccount(availableTabs: []));
+    });
+    return accounts;
+  }
+
+  static SchoolAccount singleSchoolAccount() {}
+}

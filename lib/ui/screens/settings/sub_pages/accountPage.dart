@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/buttons.dart';
@@ -30,16 +31,16 @@ class _AccountPageState extends State<AccountPage> {
               Container(
                 height: screenSize.size.height / 10 * 8,
                 child: SingleChildScrollView(
-                  child: ExpansionPanelList(
-                      expandedHeaderPadding: EdgeInsets.zero,
-                      expansionCallback: (index, newVal) {
-                        setState(() {
-                          isExpanded = !newVal;
-                        });
-                      },
-                      children: (appSys.account!.managableAccounts??[]).map((e) => buildAccountDetail()).toList())),
-                ),
-      
+                    child: ExpansionPanelList(
+                        expandedHeaderPadding: EdgeInsets.zero,
+                        expansionCallback: (index, newVal) {
+                          setState(() {
+                            isExpanded = !newVal;
+                          });
+                        },
+                        children:
+                            (appSys.account!.managableAccounts ?? []).map((e) => buildAccountDetail(e)).toList())),
+              ),
               Expanded(child: SizedBox()),
               GestureDetector(
                 onTap: () async {
@@ -68,7 +69,7 @@ class _AccountPageState extends State<AccountPage> {
     );
   }
 
-  ExpansionPanel buildAccountDetail() {
+  ExpansionPanel buildAccountDetail(SchoolAccount account) {
     MediaQueryData screenSize = MediaQuery.of(context);
 
     return ExpansionPanel(
@@ -114,7 +115,7 @@ class _AccountPageState extends State<AccountPage> {
                     width: MediaQuery.of(context).size.width / 5 * 0.3,
                   ),
                   Text(
-                    "Compte 1",
+                    account.name ?? "",
                     style: TextStyle(
                       fontFamily: "Asap",
                       color: ThemeUtils.textColor(),
@@ -132,19 +133,22 @@ class _AccountPageState extends State<AccountPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              buildKeyValuesInfo(context, "Nom du compte", ["Test"]),
+              buildKeyValuesInfo(context, "Prénom", [(account.name ?? "")]),
               SizedBox(
                 height: screenSize.size.height / 10 * 0.1,
               ),
-              buildKeyValuesInfo(context, "Classe", ["6eB"]),
+              buildKeyValuesInfo(context, "Nom", [(account.surname ?? "")]),
               SizedBox(
                 height: screenSize.size.height / 10 * 0.1,
               ),
-              buildKeyValuesInfo(context, "Est un compte supervisé par un parent", ["Oui"]),
+              buildKeyValuesInfo(context, "Classe", [(account.studentClass ?? "")]),
               SizedBox(
                 height: screenSize.size.height / 10 * 0.1,
               ),
-              buildKeyValuesInfo(context, "Nom du compte", ["Paparazi"]),
+              SizedBox(
+                height: screenSize.size.height / 10 * 0.1,
+              ),
+              buildKeyValuesInfo(context, "Etablissement scolaire", [(account.schoolName ?? "")]),
               SizedBox(
                 height: screenSize.size.height / 10 * 0.3,
               ),

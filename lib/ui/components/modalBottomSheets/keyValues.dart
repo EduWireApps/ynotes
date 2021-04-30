@@ -59,6 +59,7 @@ buildKeyValuesInfo(BuildContext context, String key, List<String?>? values) {
                               vertical: (screenSize.size.width / 5) * 0.1),
                           child: Text(
                             values[index]!,
+                            overflow: TextOverflow.ellipsis,
                             style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                           ),
                         );

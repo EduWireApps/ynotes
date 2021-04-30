@@ -1,4 +1,5 @@
 import 'package:ynotes/core/apis/model.dart';
+import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/nullSafeMap.dart';
 import 'package:ynotes/main.dart';
@@ -37,7 +38,7 @@ class EcoleDirecteAccountConverter {
     }
   }
 
-  static List<appTabs> availableTabs(List<Map<String, dynamic>>? modules) {
+  static List<appTabs> availableTabs(List? modules) {
     List<appTabs> tabs = [];
     (modules ?? []).forEach((element) {
 //Tabs available in app
@@ -86,7 +87,7 @@ class EcoleDirecteAccountConverter {
       String? surname = mapGet(rawAccountData, ["nom"]);
       String? schoolName = mapGet(rawAccountData, ["classe", "nomEtablissement"]);
       String? studentClass = mapGet(rawAccountData, ["classe", "libelle"]);
-      String? studentID = mapGet(rawAccountData, ["id"]);
+      String? studentID = mapGet(rawAccountData, ["id"]).toString();
       List<appTabs> tabs = availableTabs(mapGet(rawAccountData, ["modules"]));
       accounts.add(SchoolAccount(
           name: name,
@@ -101,11 +102,11 @@ class EcoleDirecteAccountConverter {
 
   static SchoolAccount singleSchoolAccount(Map<dynamic, dynamic> schoolAccountsData) {
     schoolAccountsData = mapGet(schoolAccountsData, ["data", "accounts", 0]);
-    String? name = mapGet(schoolAccountsData, ["prenom"]);
-    String? surname = mapGet(schoolAccountsData, ["nom"]);
-    String? schoolName = mapGet(schoolAccountsData, ["classe", "nomEtablissement"]);
-    String? studentClass = mapGet(schoolAccountsData, ["classe", "libelle"]);
-    String? studentID = mapGet(schoolAccountsData, ["id"]);
+    String? name = utf8convert(mapGet(schoolAccountsData, ["prenom"]));
+    String? surname = utf8convert(mapGet(schoolAccountsData, ["nom"]));
+    String? schoolName = utf8convert(mapGet(schoolAccountsData, ["profile", "nomEtablissement"]));
+    String? studentClass = utf8convert(mapGet(schoolAccountsData, ["profile", "classe", "libelle"]));
+    String? studentID = mapGet(schoolAccountsData, ["id"]).toString();
     List<appTabs> tabs = availableTabs(mapGet(schoolAccountsData, ["modules"]));
     return SchoolAccount(
         name: name,

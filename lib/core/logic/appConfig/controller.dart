@@ -23,7 +23,7 @@ class ApplicationSystem extends ChangeNotifier {
   Map? settings;
 
   AppAccount? account;
-  SchoolAccount? currentSchoolAccount;
+  SchoolAccount? _currentSchoolAccount;
 
   ///A boolean representing the use of the application
   bool? isFirstUse;
@@ -42,12 +42,22 @@ class ApplicationSystem extends ChangeNotifier {
   ///App logger
   late Logger logger;
 
-  ///All the app controllers
-
   late LoginController loginController;
   late GradesController gradesController;
+
   late HomeworkController homeworkController;
   late AgendaController agendaController;
+
+  ///All the app controllers
+
+  SchoolAccount? get currentSchoolAccount => _currentSchoolAccount;
+  set currentSchoolAccount(SchoolAccount? newValue) {
+    _currentSchoolAccount = newValue;
+    if (account != null && account!.managableAccounts != null && newValue != null) {
+      this.updateSetting(this.settings!["system"], "accountIndex", this.account!.managableAccounts!.indexOf(newValue));
+    }
+  }
+
   exitApp() async {
     try {
       await this.offline.clearAll();
@@ -79,8 +89,11 @@ class ApplicationSystem extends ChangeNotifier {
     await _initOffline();
     //Set api
     this.api = APIManager(this.offline);
+
     if (api != null) {
       account = await api!.account();
+      if (account != null && account!.managableAccounts != null)
+        currentSchoolAccount = account!.managableAccounts![settings!["system"]["accountIndex"]];
     }
     //Set background fetch
     await _initBackgroundFetch();

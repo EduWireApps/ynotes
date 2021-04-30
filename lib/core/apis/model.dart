@@ -150,6 +150,7 @@ class AppAccount {
   //User name
   final String? name;
   final String? surname;
+
   ///this is an internal ID used to name the offline boxes
   ///IT HAS TO BE GENERATED USING UUID, using provided API ID might be a security issue (offline boxes are named with this ID)
   final String? id;
@@ -170,6 +171,7 @@ class AppAccount {
     required this.apiType,
   });
   factory AppAccount.fromJson(Map<String, dynamic> json) => _$AppAccountFromJson(json);
+  Map<String, dynamic> toJson() => _$AppAccountToJson(this);
 }
 
 @JsonSerializable()
@@ -192,12 +194,9 @@ class SchoolAccount {
   ///Configuration credentials
   Map? credentials;
   SchoolAccount(
-      {this.name,
-      this.studentClass,
-      this.studentID,
-      required this.availableTabs,
-      this.surname,
-      this.schoolName})
+      {this.name, this.studentClass, this.studentID, required this.availableTabs, this.surname, this.schoolName})
       : super();
   factory SchoolAccount.fromJson(Map<String, dynamic> json) => _$SchoolAccountFromJson(json);
+    Map<String, dynamic> toJson() => _$SchoolAccountToJson(this);
+
 }

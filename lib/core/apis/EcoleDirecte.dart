@@ -294,6 +294,13 @@ class APIEcoleDirecte extends API {
           //Put the value of the name in a variable
           //
           appSys.account = EcoleDirecteAccountConverter.account(req);
+          if (appSys.account != null && appSys.account!.managableAccounts != null) {
+            await storage.write(key: "appAccount", value: jsonEncode(appSys.account!.toJson()));
+            appSys.currentSchoolAccount = appSys.account!.managableAccounts![0];
+          } else {
+            return [0, "Impossible de collecter les comptes."];
+          }
+
           actualUser = req['data']['accounts'][0]['prenom'] ?? "Invité";
           CreateStorage("userFullName", actualUser);
           String userID = req['data']['accounts'][0]['id'].toString();
