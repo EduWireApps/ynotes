@@ -22,12 +22,8 @@ import 'package:ynotes/ui/themes/themesList.dart';
 class ApplicationSystem extends ChangeNotifier {
   Map? settings;
 
-  late SchoolAccount account;
-  List<SchoolAccount> accounts = [
-    SchoolAccount("", "", "", [], [], API_TYPE.EcoleDirecte),
-    SchoolAccount("", "", "", [], [], API_TYPE.EcoleDirecte),
-    SchoolAccount("", "", "", [], [], API_TYPE.EcoleDirecte)
-  ];
+  AppAccount? account;
+  SchoolAccount? currentSchoolAccount;
 
   ///A boolean representing the use of the application
   bool? isFirstUse;
@@ -75,7 +71,6 @@ class ApplicationSystem extends ChangeNotifier {
   ///It will intialize Offline, APIs and background fetch
   initApp() async {
     logger = Logger();
-    account = SchoolAccount("", "", "", [], [], API_TYPE.EcoleDirecte);
     //set settings
     await _initSettings();
     //Set theme to default
@@ -84,7 +79,9 @@ class ApplicationSystem extends ChangeNotifier {
     await _initOffline();
     //Set api
     this.api = APIManager(this.offline);
-
+    if (api != null) {
+      account = await api!.account();
+    }
     //Set background fetch
     await _initBackgroundFetch();
     //Set controllers

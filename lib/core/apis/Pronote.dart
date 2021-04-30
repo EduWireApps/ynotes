@@ -36,7 +36,7 @@ class APIPronote extends API {
 
   APIPronote(Offline offlineController) : super(offlineController) {
     localClient = PronoteClient("");
-    pronoteMethod = PronoteMethod(localClient, appSys.account, this.offlineController);
+    pronoteMethod = PronoteMethod(localClient,this.offlineController);
   }
   @override
   Future app(String appname, {String? args, String? action, CloudItem? folder}) async {
@@ -52,7 +52,7 @@ class APIPronote extends API {
   }
 
   @override
-  Future<List<SchoolAccount>> getAccounts() {
+  Future<AppAccount> account() {
     // TODO: implement getAccounts
     throw UnimplementedError();
   }
@@ -205,8 +205,6 @@ class APIPronote extends API {
         if (localClient != null && localClient.loggedIn) {
           this.loggedIn = true;
           loginLock = false;
-          pronoteMethod = PronoteMethod(localClient, appSys.account, this.offlineController);
-
           return ([1, "Bienvenue $actualUser!"]);
         } else {
           loginLock = false;

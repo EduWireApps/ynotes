@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'dart:core';
 
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart';
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -9,6 +11,8 @@ import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/space/recurringEvents.dart';
 import 'package:ynotes/globals.dart';
 
+part 'model.g.dart';
+
 abstract class API {
   bool loggedIn = false;
   final Offline offlineController;
@@ -17,13 +21,21 @@ abstract class API {
 
   API(this.offlineController);
 
+  Future<AppAccount?> account() async {
+    final storage = new FlutterSecureStorage();
+    String? appAccount = await storage.read(key: "appAccount");
+    if (appAccount != null) {
+      return AppAccount.fromJson(jsonDecode(appAccount));
+    } else {
+      return null;
+    }
+  }
+
   ///Apps
   app(String appname, {String? args, String? action, CloudItem? folder});
 
   ///Download a file from his name
   Future<Request> downloadRequest(Document document);
-
-  Future<List<SchoolAccount>> getAccounts();
 
   ///Get the dates of next homework (deprecated)
   Future<List<DateTime>?> getDatesNextHomework();
@@ -138,23 +150,26 @@ class AppAccount {
   //User name
   final String? name;
   final String? surname;
-  //this is an internal ID used to name the offline boxes
+  ///this is an internal ID used to name the offline boxes
+  ///IT HAS TO BE GENERATED USING UUID, using provided API ID might be a security issue (offline boxes are named with this ID)
   final String? id;
   //additionnal settings
   final Map? apiSettings;
   //if a parent can manage accounts
   final bool isParentMainAccount;
   final API_TYPE apiType;
-  final List<SchoolAccount>? managedAccounts;
+  //other accounts
+  final List<SchoolAccount>? managableAccounts;
   AppAccount({
     this.name,
     this.surname,
     this.id,
-    this.managedAccounts,
+    required this.managableAccounts,
     this.apiSettings,
     required this.isParentMainAccount,
     required this.apiType,
   });
+  factory AppAccount.fromJson(Map<String, dynamic> json) => _$AppAccountFromJson(json);
 }
 
 @JsonSerializable()
@@ -176,14 +191,13 @@ class SchoolAccount {
 
   ///Configuration credentials
   Map? credentials;
-
   SchoolAccount(
       {this.name,
       this.studentClass,
       this.studentID,
       required this.availableTabs,
       this.surname,
-      this.schoolName,
-      this.credentials})
+      this.schoolName})
       : super();
+  factory SchoolAccount.fromJson(Map<String, dynamic> json) => _$SchoolAccountFromJson(json);
 }

@@ -14,10 +14,9 @@ import 'package:ynotes/usefulMethods.dart';
 class PronoteMethod {
   Map locks = Map();
   PronoteClient? client;
-  final SchoolAccount account;
   final Offline _offlineController;
 
-  PronoteMethod(this.client, this.account, this._offlineController);
+  PronoteMethod(this.client, this._offlineController);
 
   Future<List<SchoolAccount>?> accounts() async {}
 
@@ -222,7 +221,8 @@ class PronoteMethod {
     data = Map<dynamic, dynamic>.from(data);
     if (onglet != null) data['_Signature_'] = {'onglet': onglet};
     //If it is a parent account
-    if (this.account.isParentAccount) data['_Signature_']["membre"] = {'N': this.account.studentID, 'G': 4};
+    if (appSys.currentSchoolAccount != null && appSys.account!.isParentMainAccount)
+      data['_Signature_']["membre"] = {'N': appSys.currentSchoolAccount!.studentID, 'G': 4};
     if (converter != null) {
       return await converter(this.client, await this.client?.communication!.post(functionName, data: data));
     } else {

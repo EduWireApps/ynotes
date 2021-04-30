@@ -25,6 +25,7 @@ Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
   appSys = ApplicationSystem();
   await appSys.initApp();
+  
   //appSys.loginController = LoginController();
 
   runZoned<Future<Null>>(() async {

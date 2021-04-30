@@ -3,7 +3,6 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/buttons.dart';
-import 'package:ynotes/ui/components/columnGenerator.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/keyValues.dart';
 
 class AccountPage extends StatefulWidget {
@@ -13,6 +12,62 @@ class AccountPage extends StatefulWidget {
 
 class _AccountPageState extends State<AccountPage> {
   bool isExpanded = false;
+  @override
+  Widget build(BuildContext context) {
+    MediaQueryData screenSize = MediaQuery.of(context);
+    return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
+      body: Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).backgroundColor,
+          ),
+          margin: EdgeInsets.symmetric(
+              horizontal: screenSize.size.width / 5 * 0.05, vertical: screenSize.size.height / 10 * 0.08),
+          height: screenSize.size.height,
+          width: screenSize.size.width,
+          child: Column(
+            children: [
+              Container(
+                height: screenSize.size.height / 10 * 8,
+                child: SingleChildScrollView(
+                  child: ExpansionPanelList(
+                      expandedHeaderPadding: EdgeInsets.zero,
+                      expansionCallback: (index, newVal) {
+                        setState(() {
+                          isExpanded = !newVal;
+                        });
+                      },
+                      children: (appSys.account!.managableAccounts??[]).map((e) => buildAccountDetail()).toList())),
+                ),
+      
+              Expanded(child: SizedBox()),
+              GestureDetector(
+                onTap: () async {
+                  launch('https://support.ynotes.fr/compte');
+                },
+                child: Text("En savoir plus sur les comptes",
+                    style: TextStyle(
+                      fontFamily: 'Asap',
+                      color: Colors.transparent,
+                      shadows: [Shadow(color: Colors.white, offset: Offset(0, -5))],
+                      fontSize: 14,
+                      decorationColor: Colors.white,
+                      fontWeight: FontWeight.normal,
+                      textBaseline: TextBaseline.alphabetic,
+                      decoration: TextDecoration.underline,
+                      decorationThickness: 2,
+                      decorationStyle: TextDecorationStyle.dashed,
+                    )),
+              ),
+            ],
+          )),
+      appBar: new AppBar(
+        title: new Text("Compte"),
+        backgroundColor: Theme.of(context).primaryColor,
+      ),
+    );
+  }
+
   ExpansionPanel buildAccountDetail() {
     MediaQueryData screenSize = MediaQuery.of(context);
 
@@ -101,61 +156,5 @@ class _AccountPageState extends State<AccountPage> {
             ],
           ),
         ));
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    MediaQueryData screenSize = MediaQuery.of(context);
-    return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
-      body: Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).backgroundColor,
-          ),
-          margin: EdgeInsets.symmetric(
-              horizontal: screenSize.size.width / 5 * 0.05, vertical: screenSize.size.height / 10 * 0.08),
-          height: screenSize.size.height,
-          width: screenSize.size.width,
-          child: Column(
-            children: [
-              Container(
-                height: screenSize.size.height / 10 * 8,
-                child: SingleChildScrollView(
-                  child: ExpansionPanelList(
-                      expandedHeaderPadding: EdgeInsets.zero,
-                      expansionCallback: (index, newVal) {
-                        setState(() {
-                          isExpanded = !newVal;
-                        });
-                      },
-                      children: (appSys.accounts.map((e) => buildAccountDetail()).toList())),
-                ),
-              ),
-              Expanded(child: SizedBox()),
-              GestureDetector(
-                onTap: () async {
-                  launch('https://support.ynotes.fr/compte');
-                },
-                child: Text("En savoir plus sur les comptes",
-                    style: TextStyle(
-                      fontFamily: 'Asap',
-                      color: Colors.transparent,
-                      shadows: [Shadow(color: Colors.white, offset: Offset(0, -5))],
-                      fontSize: 14,
-                      decorationColor: Colors.white,
-                      fontWeight: FontWeight.normal,
-                      textBaseline: TextBaseline.alphabetic,
-                      decoration: TextDecoration.underline,
-                      decorationThickness: 2,
-                      decorationStyle: TextDecorationStyle.dashed,
-                    )),
-              ),
-            ],
-          )),
-      appBar: new AppBar(
-        title: new Text("Compte"),
-        backgroundColor: Theme.of(context).primaryColor,
-      ),
-    );
   }
 }

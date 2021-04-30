@@ -175,6 +175,10 @@ Future<String?> readMail(String mailId, bool read) async {
 class APIEcoleDirecte extends API {
   APIEcoleDirecte(Offline offlineController) : super(offlineController);
   @override
+  Future<AppAccount?> account() async {}
+
+//Get connection message and store token
+  @override
   Future app(String appname, {String? args, String? action, CloudItem? folder}) async {
     switch (appname) {
       case "mail":
@@ -201,7 +205,6 @@ class APIEcoleDirecte extends API {
     }
   }
 
-//Get connection message and store token
   Future<http.Request> downloadRequest(Document document) async {
     var url = 'https://api.ecoledirecte.com/v3/telechargement.awp?verbe=get';
     await EcoleDirecteMethod.refreshToken();
@@ -212,12 +215,6 @@ class APIEcoleDirecte extends API {
     http.Request request = http.Request('POST', Uri.parse(url));
     request.body = body.toString();
     return request;
-  }
-
-  @override
-  Future<List<SchoolAccount>> getAccounts() {
-    // TODO: implement getAccounts
-    throw UnimplementedError();
   }
 
   Future<List<DateTime>> getDatesNextHomework() async {
@@ -272,8 +269,6 @@ class APIEcoleDirecte extends API {
   }
 
   Future<List> login(username, password, {url, cas, mobileCasLogin}) async {
-
-      
     final prefs = await SharedPreferences.getInstance();
     if (username == null) {
       username = "";
@@ -296,11 +291,9 @@ class APIEcoleDirecte extends API {
       if (req['code'] == 200) {
         try {
           //we register accounts
-        
-          //If the account length is 1 we automatically set the default account
-          appSys.account = appSys.accounts[0];
-          
           //Put the value of the name in a variable
+          //
+          appSys.account = EcoleDirecteAccountConverter.account(req);
           actualUser = req['data']['accounts'][0]['prenom'] ?? "Invité";
           CreateStorage("userFullName", actualUser);
           String userID = req['data']['accounts'][0]['id'].toString();
