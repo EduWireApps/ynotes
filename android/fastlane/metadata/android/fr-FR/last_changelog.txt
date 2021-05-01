@@ -1,1 +1,2 @@
-Correctif pour la webview de connexion, qui ne s'affichait pas pour certains appareils.
+Correctif important pour les anciens utilisateurs : les anciens paramètres sont correctement chargés. 
+Ne concerne pas les nouveaux utilisateurs.

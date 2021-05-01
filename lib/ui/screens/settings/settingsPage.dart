@@ -12,11 +12,11 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:wiredash/wiredash.dart';
-import 'package:ynotes/core/apis/Pronote.dart';
 import 'package:ynotes/core/logic/appConfig/controller.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/services/platform.dart';
+import 'package:ynotes/core/services/shared_preferences.dart';
+import 'package:ynotes/core/utils/settingsUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/main.dart';
@@ -456,6 +456,23 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                         iosChevron: Icon(Icons.chevron_right),
                       ),
                       SettingsTile(
+                        title: 'Forcer la restauration des anciens paramètres',
+                        leading: Icon(MdiIcons.emoticonConfused, color: ThemeUtils.textColor()),
+                        onTap: () async {
+                          var temp = await SettingsUtils.forceRestoreOldSettings();
+                          setState(() {
+                            appSys.settings = temp;
+                          });
+                          CustomDialogs.showAnyDialog(context, "Anciens paramètres restaurés.");
+                        },
+                        titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                        subtitleTextStyle: TextStyle(
+                            fontFamily: "Asap",
+                            color:
+                                ThemeUtils.isThemeDark ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
+                        iosChevron: Icon(Icons.chevron_right),
+                      ),
+                      SettingsTile(
                         title: 'A propos de cette application',
                         leading: Icon(MdiIcons.information, color: ThemeUtils.textColor()),
                         iosChevron: Icon(Icons.chevron_right),
@@ -485,7 +502,8 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                           title: 'Bouton magique',
                           leading: Icon(MdiIcons.testTube, color: ThemeUtils.textColor()),
                           onTap: () async {
-                      
+                            SharedPreferences test = await SharedPreferences.getInstance();
+                            print(await SettingsUtils.getSettings());
                           },
                           titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                           subtitleTextStyle: TextStyle(

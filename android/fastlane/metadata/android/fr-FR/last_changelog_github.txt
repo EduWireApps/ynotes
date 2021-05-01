@@ -1,1 +1,1 @@
-This version fixes the iOS login webview.
+Fix the 0.9 -> 0.10 migration (old settings can now be retrieved easily)
