@@ -1,2 +1,1 @@
-This version adds a new login screen :
-- All Pronote CAS should be able to login
+Fix the 0.9 -> 0.10 migration (old settings can now be retrieved easily)

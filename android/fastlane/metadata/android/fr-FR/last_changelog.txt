@@ -1,1 +1,2 @@
-Correctif d'un bug qui empêchait le démarrage de l'application.
+Correctif important pour les anciens utilisateurs : les anciens paramètres sont correctement chargés. 
+Ne concerne pas les nouveaux utilisateurs.
