@@ -4,18 +4,37 @@ import 'package:ynotes/core/utils/nullSafeMap.dart';
 import 'package:ynotes/main.dart';
 
 class PronoteAccountConverter {
-  static AppAccount account(Map<String, dynamic> accountData) {
-    Map data = mapGet(accountData, ["donneesSec", "donnees", "ressource"]);
+  static AppAccount account(Map accountData) {
+    Map? data = mapGet(accountData, ["donneesSec", "donnees", "ressource"]);
     List<appTabs> tabs = availableTabs(mapGet(data, ["listeOnglets"]), mapGet(data, ["listeOngletsInvisibles"]));
     if (mapGet(data, ["listeRessources"]) != null) {
       String? name = mapGet(data, ["L"]);
       bool isParentMainAccount = true;
       List<SchoolAccount> accounts = schoolAccounts(mapGet(data, ["listeRessources"]));
-      ;
+      (accounts ?? []).forEach((element) {
+        element.availableTabs = tabs;
+      });
       //we generate a random UUID
-      String? id = uuid.v1();
+      String id = uuid.v1();
       return AppAccount(
-          managableAccounts: accounts, isParentMainAccount: isParentMainAccount, apiType: API_TYPE.Pronote);
+          name: name,
+          managableAccounts: accounts,
+          id: id,
+          isParentMainAccount: isParentMainAccount,
+          apiType: API_TYPE.Pronote);
+    }
+    //If this is a single account
+    else {
+      String? name = mapGet(data, ["L"]);
+      bool isParentMainAccount = false;
+      List<SchoolAccount> accounts = [singleSchoolAccount((data ?? {}))];
+      String id = uuid.v1();
+      return AppAccount(
+          name: name,
+          managableAccounts: accounts,
+          id: id,
+          isParentMainAccount: isParentMainAccount,
+          apiType: API_TYPE.Pronote);
     }
   }
 
@@ -67,10 +86,18 @@ class PronoteAccountConverter {
       String? schoolName = mapGet(studentData, ["Etablissement", "V", "L"]);
       String? studentID = mapGet(studentData, ["N"]);
 
-      accounts.add(SchoolAccount(availableTabs: []));
+      accounts.add(SchoolAccount(
+          name: name, studentClass: studentClass, studentID: studentID, availableTabs: [], schoolName: schoolName));
     });
     return accounts;
   }
 
-  static SchoolAccount singleSchoolAccount() {}
+  static SchoolAccount singleSchoolAccount(Map schoolAccountData) {
+    String? name = mapGet(schoolAccountData, ["L"]);
+    String? schoolName = mapGet(schoolAccountData, ["Etablissement", "V", "L"]);
+    String? studentClass = mapGet(schoolAccountData, ["classeDEleve", "L"]);
+    String? studentID = mapGet(schoolAccountData, ["N"]);
+    return SchoolAccount(
+        name: name, studentClass: studentClass, studentID: studentID, availableTabs: [], schoolName: schoolName);
+  }
 }

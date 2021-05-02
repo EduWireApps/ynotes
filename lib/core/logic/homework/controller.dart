@@ -88,7 +88,7 @@ class HomeworkController extends ChangeNotifier {
   }
 
   void prepareExamsCount() {
-    List<Homework> hwList = getHomework!;
+    List<Homework> hwList = (getHomework ?? []);
     if (hwList != null) {
       examsCount = hwList.where((element) => element.isATest!).length;
       notifyListeners();
@@ -129,7 +129,7 @@ class HomeworkController extends ChangeNotifier {
       notifyListeners();
     }
 
-    await prepareOld(_old!);
+    await prepareOld((_old ?? []));
     isFetching = false;
     notifyListeners();
   }

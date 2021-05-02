@@ -189,7 +189,7 @@ class SchoolAccount {
   final String? studentID;
 
   //Tabs the student can have access to
-  final List<appTabs> availableTabs;
+  List<appTabs> availableTabs;
 
   ///Configuration credentials
   Map? credentials;
@@ -197,6 +197,5 @@ class SchoolAccount {
       {this.name, this.studentClass, this.studentID, required this.availableTabs, this.surname, this.schoolName})
       : super();
   factory SchoolAccount.fromJson(Map<String, dynamic> json) => _$SchoolAccountFromJson(json);
-    Map<String, dynamic> toJson() => _$SchoolAccountToJson(this);
-
+  Map<String, dynamic> toJson() => _$SchoolAccountToJson(this);
 }

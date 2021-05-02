@@ -8,6 +8,7 @@ import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
 import 'package:ynotes/core/offline/offline.dart';
+import 'package:ynotes/core/utils/nullSafeMap.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/usefulMethods.dart';
 
@@ -93,7 +94,7 @@ class PronoteMethod {
 
   Future<List<Lesson>?> lessons(DateTime dateFrom, {DateTime? dateTo}) async {
     List<Lesson>? lessons = [];
-    var user = client?.paramsUser['donneesSec']['donnees']['ressource'];
+    var user = mapGet(client?.paramsUser, ['donneesSec', 'donnees', 'ressource']) ?? "";
     Map jsonData = {
       "donnees": {
         "ressource": user,

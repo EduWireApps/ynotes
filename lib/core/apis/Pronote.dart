@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteAPI.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
+import 'package:ynotes/core/apis/Pronote/converters/account.dart';
 import 'package:ynotes/core/apis/Pronote/pronoteMethods.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
@@ -13,6 +14,7 @@ import 'package:ynotes/core/logic/shared/loginController.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/utils/nullSafeMap.dart';
 import 'package:ynotes/globals.dart';
+import 'package:ynotes/ui/screens/settings/settingsPage.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
 import 'package:ynotes/usefulMethods.dart';
 
@@ -36,8 +38,11 @@ class APIPronote extends API {
 
   APIPronote(Offline offlineController) : super(offlineController) {
     localClient = PronoteClient("");
-    pronoteMethod = PronoteMethod(localClient,this.offlineController);
+    pronoteMethod = PronoteMethod(localClient, this.offlineController);
   }
+  @override
+  Future<AppAccount?> account() async {}
+
   @override
   Future app(String appname, {String? args, String? action, CloudItem? folder}) async {
     switch (appname) {
@@ -49,12 +54,6 @@ class APIPronote extends API {
     String url = await localClient.downloadUrl(document);
     http.Request request = http.Request('GET', Uri.parse(url));
     return request;
-  }
-
-  @override
-  Future<AppAccount> account() {
-    // TODO: implement getAccounts
-    throw UnimplementedError();
   }
 
   @override
@@ -203,6 +202,19 @@ class APIPronote extends API {
 
         await localClient.init();
         if (localClient != null && localClient.loggedIn) {
+          if (localClient.paramsUser != null) {
+            appSys.account = PronoteAccountConverter.account(localClient.paramsUser!);
+          }
+
+          if (appSys.account != null && appSys.account!.managableAccounts != null) {
+            await storage.write(key: "appAccount", value: jsonEncode(appSys.account!.toJson()));
+            appSys.currentSchoolAccount = appSys.account!.managableAccounts![0];
+          } else {
+            loginLock = false;
+            print("Impossible to collect accounts");
+            return [0, "Impossible de collecter les comptes."];
+          }
+
           this.loggedIn = true;
           loginLock = false;
           return ([1, "Bienvenue $actualUser!"]);

@@ -477,7 +477,7 @@ class PronoteClient {
   late bool loggedIn;
 
   var authCookie;
-  late var paramsUser;
+  Map? paramsUser;
 
   late DateTime hourEnd;
 
@@ -808,7 +808,7 @@ class PronoteClient {
   }
 
   setPollRead(String meta) async {
-    var user = this.paramsUser['donneesSec']['donnees']['ressource'];
+    var user = mapGet(paramsUser, ['donneesSec', 'donnees', 'ressource']);
     print(user);
     List metas = meta.split("/");
     Map data = {
@@ -837,7 +837,7 @@ class PronoteClient {
   setPollResponse(String meta) async {
     try {
       List metas = meta.split("/ynsplit");
-      var user = this.paramsUser['donneesSec']['donnees']['ressource'];
+      var user = mapGet(paramsUser, ['donneesSec', 'donnees', 'ressource']);
       Map mapData = conv.jsonDecode(metas[0]);
       Map pollMapData = conv.jsonDecode(metas[1]);
       String answer = metas[2];
@@ -990,13 +990,15 @@ class PronoteClient {
           try {
             paramsUser = await this.communication!.post("ParametresUtilisateur", data: {'donnees': {}});
 
-            this.communication!.authorizedTabs = prepareTabs(paramsUser['donneesSec']['donnees']['listeOnglets']);
+            this.communication!.authorizedTabs =
+                prepareTabs(mapGet(paramsUser, ['donneesSec', 'donnees', 'ressource']));
+
             this.stepsLogger!.add("✅ Prepared tabs");
 
             try {
-              CreateStorage("classe", paramsUser['donneesSec']['donnees']['ressource']["classeDEleve"]["L"] ?? "");
-              CreateStorage("userFullName", paramsUser['donneesSec']['donnees']['ressource']["L"] ?? "");
-              actualUser = paramsUser['donneesSec']['donnees']['ressource']["L"];
+              CreateStorage("classe", mapGet(paramsUser, ['donneesSec', 'donnees', 'ressource', "classeDEleve", "L"]));
+              CreateStorage("userFullName", mapGet(paramsUser, ['donneesSec', 'donnees', 'ressource', "L"]));
+              actualUser = (mapGet(paramsUser, ['donneesSec', 'donnees', 'ressource', "L"]) ?? "");
             } catch (e) {
               this.stepsLogger!.add("❌ Failed to register UserInfos");
 
