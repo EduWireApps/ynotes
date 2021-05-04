@@ -64,7 +64,7 @@ removeAlea(String text) {
 ///Communication class used to send requests to Pronote
 class Communication {
   var cookies;
-  late var client;
+  late PronoteClient client;
   var htmlPage;
   var rootSite;
   late Encryption encryption;
@@ -143,7 +143,7 @@ class Communication {
     String url = this.rootSite +
         "/" +
         (this.cookies != null ? "?fd=1" : this.htmlPage) +
-        (this.client.mobileLogin ? "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335" : "");
+        ((this.client.mobileLogin ?? false) ? "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335" : "");
     if (url.contains("?login=true") || url.contains("?fd=1")) {
       url += "&fd=1";
     } else {
@@ -151,7 +151,7 @@ class Communication {
     }
     print(url);
     this.client.stepsLogger.add("ⓘ" + " Used url is " + "`" + url + "`");
-    print(this.client.mobileLogin ? "CAS" : "NOT CAS");
+    print((this.client.mobileLogin ?? false) ? "CAS" : "NOT CAS");
 //?fd=1 bypass the old navigator issue
     var getResponse = await Requests.get(url, headers: headers).catchError((e) {
       this.client.stepsLogger.add("❌ Failed login request " + e.toString());
@@ -278,7 +278,7 @@ class Communication {
         throw "Unknown error from pronote: ${responseJson["Erreur"]["G"]} | ${responseJson["Erreur"]["Titre"]}\n$responseJson";
       }
 
-      return await this.client.communication.post(functionName, data: data, recursive: true);
+      return await this.client.communication?.post(functionName, data: data, recursive: true);
     }
 
     if (decryptionChange != null) {
@@ -485,7 +485,7 @@ class PronoteClient {
 
   int? oneHourDuration;
 
-  List<String>? stepsLogger;
+  List<String> stepsLogger = [];
   bool? mobileLogin;
   PronoteClient(String pronote_url, {String? username, String? password, var cookies, bool? mobileLogin}) {
     this.username = username ?? "";
@@ -614,8 +614,7 @@ class PronoteClient {
   Future init() async {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
-    this.stepsLogger = [];
-    this.stepsLogger!.add("ⓘ " +
+    this.stepsLogger.add("ⓘ " +
         DateFormat("dd/MM/yyyy hh:mm:ss").format(DateTime.now()) +
         " Started login - yNotes version is : " +
         packageInfo.version +
@@ -625,7 +624,7 @@ class PronoteClient {
         Tests.testVersion);
 
     var attributesandfunctions = await this.communication!.initialise();
-    this.stepsLogger!.add("✅ Initialized");
+    this.stepsLogger.add("✅ Initialized");
 
     this.attributes = attributesandfunctions[0];
     this.funcOptions = attributesandfunctions[1];
@@ -637,7 +636,7 @@ class PronoteClient {
       print("LOGIN AS REGULAR USER");
       this.ent = false;
     }
-    this.stepsLogger!.add("✅ Login passed : using " + ((this.ent ?? false) ? "ent" : "direct") + "connection");
+    this.stepsLogger.add("✅ Login passed : using " + ((this.ent ?? false) ? "ent" : "direct") + "connection");
     //set up encryption
     this.encryption = Encryption();
     this.encryption.aesIV = this.communication!.encryption.aesIV;
@@ -656,7 +655,7 @@ class PronoteClient {
     this.week = await getWeek(DateTime.now());
 
     this.localPeriods = this.periods;
-    this.stepsLogger!.add("✅ Created attributes");
+    this.stepsLogger.add("✅ Created attributes");
 
     this.loggedIn = await this._login();
 
@@ -719,7 +718,6 @@ class PronoteClient {
   List<PronotePeriod> periods() {
     print("GETTING PERIODS");
     //printWrapped(this.func_options['donneesSec']['donnees'].toString());
-
     var json;
     try {
       json = this.funcOptions['donneesSec']['donnees']['General']['ListePeriodes'];
@@ -909,7 +907,7 @@ class PronoteClient {
       "loginTokenSAV": ""
     };
     var idr = await this.communication!.post("Identification", data: {'donnees': ident_json});
-    this.stepsLogger!.add("✅ Posted identification successfully");
+    this.stepsLogger.add("✅ Posted identification successfully");
 
     print("Identification");
 
@@ -933,14 +931,14 @@ class PronoteClient {
         print("LOWER CASE ID");
         print(idr['donneesSec']['donnees']['modeCompLog']);
         u = u.toString().toLowerCase();
-        this.stepsLogger!.add("ⓘ Lowercased id");
+        this.stepsLogger.add("ⓘ Lowercased id");
       }
 
       if (idr['donneesSec']['donnees']['modeCompMdp'] != null && idr['donneesSec']['donnees']['modeCompMdp'] != 0) {
         print("LOWER CASE PASSWORD");
         print(idr['donneesSec']['donnees']['modeCompMdp']);
         p = p.toString().toLowerCase();
-        this.stepsLogger!.add("ⓘ Lowercased password");
+        this.stepsLogger.add("ⓘ Lowercased password");
       }
 
       var alea = idr['donneesSec']['donnees']['alea'];
@@ -952,20 +950,20 @@ class PronoteClient {
     }
 
     var rawChallenge = e.aesDecrypt(conv.hex.decode(challenge));
-    this.stepsLogger!.add("✅ Decrypted challenge");
+    this.stepsLogger.add("✅ Decrypted challenge");
 
     var rawChallengeWithoutAlea = removeAlea(rawChallenge);
-    this.stepsLogger!.add("✅ Removed alea");
+    this.stepsLogger.add("✅ Removed alea");
 
     var encryptedChallenge = e.aesEncrypt(conv.utf8.encode(rawChallengeWithoutAlea));
-    this.stepsLogger!.add("✅ Encrypted credentials");
+    this.stepsLogger.add("✅ Encrypted credentials");
 
     Map authentificationJson = {
       "connexion": 0,
       "challenge": encryptedChallenge,
       "espace": int.parse(this.attributes['a'])
     };
-    this.stepsLogger!.add("✅ Identification passed");
+    this.stepsLogger.add("✅ Identification passed");
 
     try {
       print("Authentification");
@@ -973,7 +971,7 @@ class PronoteClient {
           .communication!
           .post("Authentification", data: {'donnees': authentificationJson, 'identifiantNav': ''});
     } catch (e) {
-      this.stepsLogger!.add("❌  Authentification failed : " + e.toString());
+      this.stepsLogger.add("❌  Authentification failed : " + e.toString());
       throw ("Error during auth" + e.toString());
     }
 
@@ -991,22 +989,22 @@ class PronoteClient {
             paramsUser = await this.communication!.post("ParametresUtilisateur", data: {'donnees': {}});
 
             this.communication!.authorizedTabs =
-                prepareTabs(mapGet(paramsUser, ['donneesSec', 'donnees', 'ressource']));
+                prepareTabs(mapGet(paramsUser, ['donneesSec', 'donnees', 'listeOnglets']));
 
-            this.stepsLogger!.add("✅ Prepared tabs");
+            this.stepsLogger.add("✅ Prepared tabs");
 
             try {
               CreateStorage("classe", mapGet(paramsUser, ['donneesSec', 'donnees', 'ressource', "classeDEleve", "L"]));
               CreateStorage("userFullName", mapGet(paramsUser, ['donneesSec', 'donnees', 'ressource', "L"]));
               actualUser = (mapGet(paramsUser, ['donneesSec', 'donnees', 'ressource', "L"]) ?? "");
             } catch (e) {
-              this.stepsLogger!.add("❌ Failed to register UserInfos");
+              this.stepsLogger.add("❌ Failed to register UserInfos");
 
               print("Failed to register UserInfos");
               print(e);
             }
           } catch (e) {
-            this.stepsLogger!.add("ⓘ Using old api ");
+            this.stepsLogger.add("ⓘ Using old api ");
 
             print("Surely using OLD API");
           }

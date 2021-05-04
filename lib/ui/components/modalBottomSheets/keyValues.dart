@@ -6,15 +6,17 @@ buildKeyValuesInfo(BuildContext context, String key, List<String?>? values) {
   if (values != null) {
     MediaQueryData screenSize = MediaQuery.of(context);
     if (values.length == 1) {
-      return FittedBox(
-        child: Container(
-          width: screenSize.size.width,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Text(key, style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor())),
-              Container(
+      return Container(
+        padding: EdgeInsets.symmetric(
+            horizontal: (screenSize.size.width / 5) * 0.2, vertical: (screenSize.size.width / 5) * 0.1),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Expanded(flex: 2, child: Text(key, style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()))),
+            Expanded(
+              flex: 3,
+              child: Container(
                 margin: EdgeInsets.only(left: (screenSize.size.width / 5) * 0.2),
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(15)), color: Theme.of(context).primaryColor),
@@ -22,11 +24,14 @@ buildKeyValuesInfo(BuildContext context, String key, List<String?>? values) {
                     horizontal: (screenSize.size.width / 5) * 0.2, vertical: (screenSize.size.width / 5) * 0.1),
                 child: Text(
                   values[0] ?? "",
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                  maxLines: 10,
                   style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       );
     } else {
@@ -57,10 +62,12 @@ buildKeyValuesInfo(BuildContext context, String key, List<String?>? values) {
                           padding: EdgeInsets.symmetric(
                               horizontal: (screenSize.size.width / 5) * 0.2,
                               vertical: (screenSize.size.width / 5) * 0.1),
-                          child: Text(
-                            values[index]!,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                          child: FittedBox(
+                            child: Text(
+                              values[index]!,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                            ),
                           ),
                         );
                       }),

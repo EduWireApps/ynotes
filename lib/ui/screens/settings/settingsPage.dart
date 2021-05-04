@@ -159,6 +159,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                                   : Colors.black.withOpacity(0.7)),
                           subtitle: '${actualUser.length > 0 ? actualUser : "Invité"}',
                           leading: Icon(MdiIcons.account, color: ThemeUtils.textColor()),
+                          trailing: Icon(Icons.chevron_right, color: ThemeUtils.textColor()),
                           onTap: () {
                             if (kDebugMode) {
                               Navigator.of(context).push(router(AccountPage()));

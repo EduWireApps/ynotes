@@ -28,18 +28,32 @@ class _AccountPageState extends State<AccountPage> {
           width: screenSize.size.width,
           child: Column(
             children: [
-              Container(
-                height: screenSize.size.height / 10 * 8,
-                child: SingleChildScrollView(
-                    child: ExpansionPanelList(
-                        expandedHeaderPadding: EdgeInsets.zero,
-                        expansionCallback: (index, newVal) {
-                          setState(() {
-                            isExpanded = !newVal;
-                          });
-                        },
-                        children:
-                            (appSys.account!.managableAccounts ?? []).map((e) => buildAccountDetail(e)).toList())),
+              Card(
+                color: Theme.of(context).primaryColor,
+                child: Container(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: (screenSize.size.width / 5) * 0.2, vertical: (screenSize.size.width / 5) * 0.1),
+                  child: Column(
+                    children: [
+                      buildMainAccountInfos(),
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: (screenSize.size.width / 5) * 0.2, vertical: (screenSize.size.width / 5) * 0.1),
+                        child: SingleChildScrollView(
+                            child: ExpansionPanelList(
+                                expandedHeaderPadding: EdgeInsets.zero,
+                                expansionCallback: (index, newVal) {
+                                  setState(() {
+                                    isExpanded = !newVal;
+                                  });
+                                },
+                                children: (appSys.account!.managableAccounts ?? [])
+                                    .map((e) => buildAccountDetail(e))
+                                    .toList())),
+                      ),
+                    ],
+                  ),
+                ),
               ),
               Expanded(child: SizedBox()),
               GestureDetector(
@@ -94,17 +108,20 @@ class _AccountPageState extends State<AccountPage> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Container(
-                            child: Icon(
-                          Icons.power,
-                          color: ThemeUtils.textColor(),
-                        )),
+                        if (appSys.currentSchoolAccount == account)
+                          Container(
+                              child: Icon(
+                            Icons.power,
+                            color: ThemeUtils.textColor(),
+                          )),
                         Container(
                           child: Image(
                             width: MediaQuery.of(context).size.width / 5 * 0.3,
                             height: MediaQuery.of(context).size.width / 5 * 0.2,
                             fit: BoxFit.fill,
-                            image: AssetImage('assets/images/EcoleDirecte/EcoleDirecteIcon.png'),
+                            image: AssetImage(appSys.account?.apiType == API_TYPE.EcoleDirecte
+                                ? 'assets/images/EcoleDirecte/EcoleDirecteIcon.png'
+                                : 'assets/images/Pronote/PronoteIcon.png'),
                             color: ThemeUtils.textColor(),
                           ),
                         ),
@@ -148,17 +165,51 @@ class _AccountPageState extends State<AccountPage> {
               SizedBox(
                 height: screenSize.size.height / 10 * 0.1,
               ),
-              buildKeyValuesInfo(context, "Etablissement scolaire", [(account.schoolName ?? "")]),
+              Container(
+                width: screenSize.size.width,
+                child: buildKeyValuesInfo(context, "Etablissement scolaire", [(account.schoolName ?? "")]),
+              ),
               SizedBox(
                 height: screenSize.size.height / 10 * 0.3,
               ),
-              Center(
-                child: CustomButtons.materialButton(
-                    context, screenSize.size.width / 5 * 1.7, screenSize.size.height / 10 * 0.4, () {},
-                    backgroundColor: Colors.blue, label: "Se connecter"),
-              )
+              if (appSys.currentSchoolAccount != account)
+                Center(
+                  child: CustomButtons.materialButton(
+                      context, screenSize.size.width / 5 * 1.7, screenSize.size.height / 10 * 0.4, () {},
+                      backgroundColor: Colors.blue, label: "Se connecter"),
+                )
             ],
           ),
         ));
+  }
+
+  buildMainAccountInfos() {
+    MediaQueryData screenSize = MediaQuery.of(context);
+    return Column(
+      children: [
+        Wrap(
+          spacing: screenSize.size.width / 5 * 0.05,
+          children: [
+            Text(
+              "Bonjour " + (appSys.account?.name ?? "{pas de nom}"),
+              style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Asap", color: ThemeUtils.textColor()),
+            ),
+            Text(
+              appSys.account?.surname ?? "",
+              style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Asap", color: ThemeUtils.textColor()),
+            ),
+          ],
+        ),
+        (appSys.account?.isParentMainAccount ?? false)
+            ? Text(
+                "Vous pouvez gérer le(s) compte(s) suivant(s) :",
+                style: TextStyle(fontWeight: FontWeight.w200, fontFamily: "Asap", color: ThemeUtils.textColor()),
+              )
+            : Text(
+                "Votre compte :",
+                style: TextStyle(fontWeight: FontWeight.w200, fontFamily: "Asap", color: ThemeUtils.textColor()),
+              ),
+      ],
+    );
   }
 }

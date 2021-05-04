@@ -132,7 +132,7 @@ testIfPronoteCas(String url) async {
   }
 }
 
-String utf8convert(String text) {
+String utf8convert(String? text) {
   List<int> bytes = text.toString().codeUnits;
   return utf8.decode(bytes);
 }

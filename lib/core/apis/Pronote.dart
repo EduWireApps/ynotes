@@ -40,8 +40,6 @@ class APIPronote extends API {
     localClient = PronoteClient("");
     pronoteMethod = PronoteMethod(localClient, this.offlineController);
   }
-  @override
-  Future<AppAccount?> account() async {}
 
   @override
   Future app(String appname, {String? args, String? action, CloudItem? folder}) async {
@@ -217,6 +215,8 @@ class APIPronote extends API {
 
           this.loggedIn = true;
           loginLock = false;
+          pronoteMethod = PronoteMethod(localClient, this.offlineController);
+
           return ([1, "Bienvenue $actualUser!"]);
         } else {
           loginLock = false;
@@ -228,7 +228,7 @@ class APIPronote extends API {
         }
       } catch (e) {
         loginLock = false;
-        localClient.stepsLogger?.add("❌ Pronote login failed : " + e.toString());
+        localClient.stepsLogger.add("❌ Pronote login failed : " + e.toString());
         print(e);
         String error = "Une erreur a eu lieu. " + e.toString();
         if (e.toString().contains("invalid url")) {

@@ -11,7 +11,7 @@ class PronoteAccountConverter {
       String? name = mapGet(data, ["L"]);
       bool isParentMainAccount = true;
       List<SchoolAccount> accounts = schoolAccounts(mapGet(data, ["listeRessources"]));
-      (accounts ?? []).forEach((element) {
+      (accounts).forEach((element) {
         element.availableTabs = tabs;
       });
       //we generate a random UUID

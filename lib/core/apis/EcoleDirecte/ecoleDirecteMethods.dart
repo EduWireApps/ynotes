@@ -64,8 +64,8 @@ class EcoleDirecteMethod {
     String rootUrl = 'https://api.ecoledirecte.com/v3/Eleves/';
     String method = "cahierdetexte.awp?verbe=get&";
     String data = 'data={"token": "$token"}';
-    List<DateTime> homeworkDates = await request(
-        data, rootUrl, method, EcoleDirecteHomeworkConverter.homeworkDates, "Homework dates request returned an error:");
+    List<DateTime> homeworkDates = await request(data, rootUrl, method, EcoleDirecteHomeworkConverter.homeworkDates,
+        "Homework dates request returned an error:");
 
     homeworkDates.removeWhere((date) =>
         DateFormat("yyyy-MM-dd")
@@ -92,8 +92,8 @@ class EcoleDirecteMethod {
     String rootUrl = 'https://api.ecoledirecte.com/v3/Eleves/';
     String method = "cahierdetexte/$dateToUse.awp?verbe=get&";
     String data = 'data={"token": "$token"}';
-    List<Homework> homework =
-        await request(data, rootUrl, method, EcoleDirecteHomeworkConverter.homework, "Homework request returned an error:");
+    List<Homework> homework = await request(
+        data, rootUrl, method, EcoleDirecteHomeworkConverter.homework, "Homework request returned an error:");
     homework.forEach((hw) {
       hw.date = date;
     });
@@ -212,8 +212,8 @@ class EcoleDirecteMethod {
     String rootUrl = "https://api.ecoledirecte.com/v3/E/";
     String method = "emploidutemps.awp?verbe=get&";
     try {
-      List<Lesson>? lessonsList =
-          await request(data, rootUrl, method, EcoleDirecteLessonConverter.lessons, "Lessons request returned an error:");
+      List<Lesson>? lessonsList = await request(
+          data, rootUrl, method, EcoleDirecteLessonConverter.lessons, "Lessons request returned an error:");
       int week = await getWeek(dateToUse);
       if (lessonsList != null) {
         await appSys.offline.lessons.updateLessons(lessonsList, week);
@@ -256,7 +256,7 @@ class EcoleDirecteMethod {
   static request(String data, String rootUrl, String urlMethod, Function converter, String onErrorBody,
       {Map<String, String>? headers, bool ignoreMethodAndId = false, bool getRequest = false}) async {
     try {
-      String id = (await (storage.read(key: "userID"))) ?? "";
+      String id = appSys.currentSchoolAccount?.studentID ?? "";
 
       String finalUrl = rootUrl + id + "/" + urlMethod;
       if (ignoreMethodAndId) {
@@ -329,7 +329,7 @@ class EcoleDirecteMethod {
     });
 
     await await EcoleDirecteMethod.testToken();
-    String? id = await storage.read(key: "userID");
+    String? id = appSys.currentSchoolAccount?.studentID ?? "";
     var url = 'https://api.ecoledirecte.com/v3/eleves/$id/messages.awp?verbe=post';
 
     Map<String, String> headers = {"Content-type": "text/plain"};
@@ -382,8 +382,7 @@ class EcoleDirecteMethod {
       await EcoleDirecteMethod.refreshToken();
       return false;
     } else {
-      String? id = await storage.read(key: "userID");
-
+      String? id = appSys.currentSchoolAccount?.studentID ?? "";
       var url = 'https://api.ecoledirecte.com/v3/$id/login.awp';
       Map<String, String> headers = {"Content-type": "text/plain"};
       String data = 'data={"token": "$token"}';

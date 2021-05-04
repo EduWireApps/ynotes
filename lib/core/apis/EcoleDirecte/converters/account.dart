@@ -5,13 +5,13 @@ import 'package:ynotes/core/utils/nullSafeMap.dart';
 import 'package:ynotes/main.dart';
 
 class EcoleDirecteAccountConverter {
-  static AppAccount account(Map<String, dynamic> accountData) {
-    List<Map>? rawSchoolAccounts = mapGet(accountData, ["data", "accounts", 0, "profile", "eleves"]);
+  static AppAccount account(Map<dynamic, dynamic> accountData) {
+    List<Map>? rawSchoolAccounts = mapGet(accountData, ["data", "accounts", 0, "profile", "eleves"]).cast<Map>();
 
     if (rawSchoolAccounts != null) {
       var data = mapGet(accountData, ["data", "accounts", 0]);
-      String? name = mapGet(data, ["prenom"]);
-      String? surname = mapGet(data, ["nom"]);
+      String? name = utf8convert(mapGet(data, ["prenom"]));
+      String? surname = utf8convert(mapGet(data, ["nom"]));
       String? id = uuid.v1();
       bool isParentMainAccount = true;
       List<SchoolAccount> _schoolAccountsList = schoolAccounts(rawSchoolAccounts);
@@ -71,7 +71,7 @@ class EcoleDirecteAccountConverter {
     return tabs;
   }
 
-  static List<Period> periods(Map<String, dynamic> periodsData) {
+  static List<Period> periods(Map<dynamic, dynamic> periodsData) {
     List rawPeriods = periodsData['data']['periodes'];
     List<Period> periods = [];
     rawPeriods.forEach((element) {
@@ -83,10 +83,10 @@ class EcoleDirecteAccountConverter {
   static List<SchoolAccount> schoolAccounts(List<Map<dynamic, dynamic>> schoolAccountsData) {
     List<SchoolAccount> accounts = [];
     schoolAccountsData.forEach((rawAccountData) {
-      String? name = mapGet(rawAccountData, ["prenom"]);
-      String? surname = mapGet(rawAccountData, ["nom"]);
-      String? schoolName = mapGet(rawAccountData, ["classe", "nomEtablissement"]);
-      String? studentClass = mapGet(rawAccountData, ["classe", "libelle"]);
+      String? name = utf8convert(mapGet(rawAccountData, ["prenom"]));
+      String? surname = utf8convert(mapGet(rawAccountData, ["nom"]));
+      String? schoolName = utf8convert(mapGet(rawAccountData, ["nomEtablissement"]));
+      String? studentClass = utf8convert(mapGet(rawAccountData, ["classe", "libelle"]));
       String? studentID = mapGet(rawAccountData, ["id"]).toString();
       List<appTabs> tabs = availableTabs(mapGet(rawAccountData, ["modules"]));
       accounts.add(SchoolAccount(

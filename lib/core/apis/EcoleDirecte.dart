@@ -74,7 +74,7 @@ Future<List<CloudItem>?> getCloud(String? args, String? action, CloudItem? item)
 ///Returning Ecole Directe Mails, **checking** bool is used to only returns old mail number
 Future<List<Mail>?> getMails({bool? checking}) async {
   await EcoleDirecteMethod.testToken();
-  String? id = await storage.read(key: "userID");
+  String? id = appSys.currentSchoolAccount?.studentID;
   var url = 'https://api.ecoledirecte.com/v3/eleves/$id/messages.awp?verbe=getall&typeRecuperation=all';
 
   Map<String, String> headers = {"Content-type": "text/plain"};
@@ -136,7 +136,7 @@ Future<List<Mail>?> getMails({bool? checking}) async {
 
 Future<String?> readMail(String mailId, bool read) async {
   await EcoleDirecteMethod.testToken();
-  String? id = await storage.read(key: "userID");
+  String? id = appSys.currentSchoolAccount?.studentID;
   var url = 'https://api.ecoledirecte.com/v3/eleves/$id/messages/$mailId.awp?verbe=get&mode=destinataire';
 
   Map<String, String> headers = {"Content-type": "text/plain"};
@@ -174,8 +174,6 @@ Future<String?> readMail(String mailId, bool read) async {
 ///The ecole directe api extended from the apiManager.dart API class
 class APIEcoleDirecte extends API {
   APIEcoleDirecte(Offline offlineController) : super(offlineController);
-  @override
-  Future<AppAccount?> account() async {}
 
 //Get connection message and store token
   @override
@@ -210,7 +208,7 @@ class APIEcoleDirecte extends API {
     await EcoleDirecteMethod.refreshToken();
     Map<String, String> headers = {"Content-type": "x"};
     String? type = document.type;
-    String? id = document.id;
+    String? id = appSys.currentSchoolAccount?.studentID;
     String body = "leTypeDeFichier=$type&fichierId=$id&token=$token";
     http.Request request = http.Request('POST', Uri.parse(url));
     request.body = body.toString();
@@ -293,7 +291,12 @@ class APIEcoleDirecte extends API {
           //we register accounts
           //Put the value of the name in a variable
           //
-          appSys.account = EcoleDirecteAccountConverter.account(req);
+          try {
+            appSys.account = EcoleDirecteAccountConverter.account(req);
+          } catch (e) {
+            print("Impossible to get accounts " + e.toString());
+            print(e);
+          }
           if (appSys.account != null && appSys.account!.managableAccounts != null) {
             await storage.write(key: "appAccount", value: jsonEncode(appSys.account!.toJson()));
             appSys.currentSchoolAccount = appSys.account!.managableAccounts![0];

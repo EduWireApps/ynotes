@@ -25,6 +25,7 @@ abstract class API {
     final storage = new FlutterSecureStorage();
     String? appAccount = await storage.read(key: "appAccount");
     if (appAccount != null) {
+      print("Returning account");
       return AppAccount.fromJson(jsonDecode(appAccount));
     } else {
       return null;
