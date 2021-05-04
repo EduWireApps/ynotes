@@ -6,7 +6,7 @@ import 'package:ynotes/main.dart';
 
 class EcoleDirecteAccountConverter {
   static AppAccount account(Map<dynamic, dynamic> accountData) {
-    List<Map>? rawSchoolAccounts = mapGet(accountData, ["data", "accounts", 0, "profile", "eleves"]).cast<Map>();
+    List<Map>? rawSchoolAccounts = mapGet(accountData, ["data", "accounts", 0, "profile", "eleves"])?.cast<Map>();
 
     if (rawSchoolAccounts != null) {
       var data = mapGet(accountData, ["data", "accounts", 0]);

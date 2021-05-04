@@ -85,7 +85,6 @@ getHeight(var listValues, index, var screenSize, var lineSize, var gradeContaine
       }
     }
 
-    print(localListValues);
     var smallerNearest = localListValues.where((e) => e < listValues[index]).toList()..sort();
     var higherNearest = localListValues.where((e) => e > listValues[index]).toList()..sort();
 
@@ -98,7 +97,6 @@ getHeight(var listValues, index, var screenSize, var lineSize, var gradeContaine
     }
   } catch (e) {
     print(e);
-    print(listValues[index]);
     return screenSize.size.height / 10 * 0.4;
   }
 }

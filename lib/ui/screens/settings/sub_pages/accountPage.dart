@@ -32,13 +32,13 @@ class _AccountPageState extends State<AccountPage> {
                 color: Theme.of(context).primaryColor,
                 child: Container(
                   padding: EdgeInsets.symmetric(
-                      horizontal: (screenSize.size.width / 5) * 0.2, vertical: (screenSize.size.width / 5) * 0.1),
+                      horizontal: (screenSize.size.width / 5) * 0.1, vertical: (screenSize.size.width / 5) * 0.1),
                   child: Column(
                     children: [
                       buildMainAccountInfos(),
                       Container(
                         padding: EdgeInsets.symmetric(
-                            horizontal: (screenSize.size.width / 5) * 0.2, vertical: (screenSize.size.width / 5) * 0.1),
+                            horizontal: (screenSize.size.width / 5) * 0.1, vertical: (screenSize.size.width / 5) * 0.1),
                         child: SingleChildScrollView(
                             child: ExpansionPanelList(
                                 expandedHeaderPadding: EdgeInsets.zero,
@@ -64,9 +64,9 @@ class _AccountPageState extends State<AccountPage> {
                     style: TextStyle(
                       fontFamily: 'Asap',
                       color: Colors.transparent,
-                      shadows: [Shadow(color: Colors.white, offset: Offset(0, -5))],
+                      shadows: [Shadow(color: ThemeUtils.textColor(), offset: Offset(0, -5))],
                       fontSize: 14,
-                      decorationColor: Colors.white,
+                      decorationColor: ThemeUtils.textColor(),
                       fontWeight: FontWeight.normal,
                       textBaseline: TextBaseline.alphabetic,
                       decoration: TextDecoration.underline,
@@ -115,14 +115,18 @@ class _AccountPageState extends State<AccountPage> {
                             color: ThemeUtils.textColor(),
                           )),
                         Container(
+                          padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width / 10 * 0.1),
                           child: Image(
-                            width: MediaQuery.of(context).size.width / 5 * 0.3,
-                            height: MediaQuery.of(context).size.width / 5 * 0.2,
-                            fit: BoxFit.fill,
+                            width: MediaQuery.of(context).size.width /
+                                5 *
+                                (appSys.account?.apiType == API_TYPE.EcoleDirecte ? 0.2 : 0.4),
+                            height: screenSize.size.width /
+                                5 *
+                                (appSys.account?.apiType == API_TYPE.EcoleDirecte ? 0.2 : 0.4),
                             image: AssetImage(appSys.account?.apiType == API_TYPE.EcoleDirecte
                                 ? 'assets/images/EcoleDirecte/EcoleDirecteIcon.png'
                                 : 'assets/images/Pronote/PronoteIcon.png'),
-                            color: ThemeUtils.textColor(),
+                            color: appSys.account?.apiType == API_TYPE.EcoleDirecte ? ThemeUtils.textColor() : null,
                           ),
                         ),
                       ],

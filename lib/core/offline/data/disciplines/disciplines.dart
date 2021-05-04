@@ -37,7 +37,6 @@ class DisciplinesOffline extends Offline {
             listPeriods.add(Period(grade.periodName, grade.periodCode));
           } else {}
         } else {
-          print("w");
         }
       });
       try {

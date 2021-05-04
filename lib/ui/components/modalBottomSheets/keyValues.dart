@@ -8,26 +8,34 @@ buildKeyValuesInfo(BuildContext context, String key, List<String?>? values) {
     if (values.length == 1) {
       return Container(
         padding: EdgeInsets.symmetric(
-            horizontal: (screenSize.size.width / 5) * 0.2, vertical: (screenSize.size.width / 5) * 0.1),
+            horizontal: (screenSize.size.width / 5) * 0.2, vertical: (screenSize.size.height / 10) * 0.05),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Expanded(flex: 2, child: Text(key, style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()))),
             Expanded(
-              flex: 3,
-              child: Container(
-                margin: EdgeInsets.only(left: (screenSize.size.width / 5) * 0.2),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(15)), color: Theme.of(context).primaryColor),
-                padding: EdgeInsets.symmetric(
-                    horizontal: (screenSize.size.width / 5) * 0.2, vertical: (screenSize.size.width / 5) * 0.1),
+                flex: 3,
                 child: Text(
-                  values[0] ?? "",
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.center,
-                  maxLines: 10,
+                  key,
                   style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                  textAlign: TextAlign.start,
+                )),
+            Flexible(
+              flex: 3,
+              fit: FlexFit.loose,
+              child: Center(
+                child: Container(
+                  margin: EdgeInsets.only(left: (screenSize.size.width / 5) * 0.2),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(15)), color: Theme.of(context).primaryColor),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: (screenSize.size.width / 5) * 0.2, vertical: (screenSize.size.width / 5) * 0.1),
+                  child: Text(
+                    values[0] ?? "",
+                    textAlign: TextAlign.center,
+                    maxLines: 10,
+                    style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                  ),
                 ),
               ),
             ),
