@@ -108,8 +108,12 @@ getRootAddress(addr) {
 
 getWeek(DateTime date) async {
   final storage = new FlutterSecureStorage();
-  return (1 + (date.difference(DateTime.parse(await (storage.read(key: "startday")) ?? "")).inDays / 7).floor())
-      .round();
+  if (await (storage.read(key: "startday")) != null) {
+    return (1 + (date.difference(DateTime.parse(await (storage.read(key: "startday")) ?? "")).inDays / 7).floor())
+        .round();
+  } else {
+    return 0;
+  }
 }
 
 setChosenParser(int? chosen) async {

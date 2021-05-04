@@ -188,7 +188,6 @@ class PronoteMethod {
         locks[lockName] = false;
         if (!testLock("recursive_" + lockName)) {
           print("Refreshing client");
-          appSys.loginController.actualState = loginStatus.error;
           locks["recursive_" + lockName] = true;
 /*
           this.onlineFetchWithLock(onlineFetch, lockName, arguments: arguments);*/
@@ -219,11 +218,16 @@ class PronoteMethod {
   }
 
   request(String functionName, Function? converter, {var data, var customURL, int? onglet}) async {
-    data = Map<dynamic, dynamic>.from(data);
-    if (onglet != null) data['_Signature_'] = {'onglet': onglet};
+    data = Map.from(data);
+    if (onglet != null && appSys.currentSchoolAccount != null && !appSys.account!.isParentMainAccount)
+      data['_Signature_'] = {'onglet': onglet};
     //If it is a parent account
-    if (appSys.currentSchoolAccount != null && appSys.account!.isParentMainAccount)
-      data['_Signature_']["membre"] = {'N': appSys.currentSchoolAccount!.studentID, 'G': 4};
+    if (onglet != null && appSys.currentSchoolAccount != null && appSys.account!.isParentMainAccount) {
+      data['_Signature_'] = {
+        'onglet': onglet,
+        'membre': {'N': appSys.currentSchoolAccount!.studentID, 'G': 4}
+      };
+    }
     if (converter != null) {
       return await converter(this.client, await this.client?.communication!.post(functionName, data: data));
     } else {

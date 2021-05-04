@@ -276,7 +276,9 @@ class _LoginPageState extends State<LoginPage> {
                                 snapshot.data![1].toString(),
                                 textAlign: TextAlign.center,
                               ),
-                              if (snapshot.data!.length > 2 && snapshot.data![2] != null && snapshot.data![2].length > 0)
+                              if (snapshot.data!.length > 2 &&
+                                  snapshot.data![2] != null &&
+                                  snapshot.data![2].length > 0)
                                 Container(
                                   margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
                                   child: CustomButtons.materialButton(
@@ -464,7 +466,9 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
                                 snapshot.data![1].toString(),
                                 textAlign: TextAlign.center,
                               ),
-                              if (snapshot.data!.length > 2 && snapshot.data![2] != null && snapshot.data![2].length > 0)
+                              if (snapshot.data!.length > 2 &&
+                                  snapshot.data![2] != null &&
+                                  snapshot.data![2].length > 0)
                                 Container(
                                   margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
                                   child: CustomButtons.materialButton(
@@ -605,7 +609,7 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
                     _password.text.length == 0 &&
                     _username.text.length == 0) {
                   connectionData = appSys.api!.login("demonstration", "pronotevs",
-                      url: "https://demo.index-education.net/pronote/eleve.html", mobileCasLogin: false);
+                      url: "https://demo.index-education.net/pronote/parent.html", mobileCasLogin: false);
                 }
                 openLoadingDialog();
               },
@@ -688,6 +692,7 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
       return "Entrez vos identifiants de connexion.";
     }
   }
+
   _loginTextAndHelpButton() {
     MediaQueryData screenSize = MediaQuery.of(context);
     return Container(

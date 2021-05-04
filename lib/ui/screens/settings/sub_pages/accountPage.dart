@@ -18,64 +18,59 @@ class _AccountPageState extends State<AccountPage> {
     MediaQueryData screenSize = MediaQuery.of(context);
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
-      body: Container(
-          decoration: BoxDecoration(
-            color: Theme.of(context).backgroundColor,
-          ),
-          margin: EdgeInsets.symmetric(
-              horizontal: screenSize.size.width / 5 * 0.05, vertical: screenSize.size.height / 10 * 0.08),
-          height: screenSize.size.height,
-          width: screenSize.size.width,
-          child: Column(
-            children: [
-              Card(
-                color: Theme.of(context).primaryColor,
-                child: Container(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: (screenSize.size.width / 5) * 0.1, vertical: (screenSize.size.width / 5) * 0.1),
-                  child: Column(
-                    children: [
-                      buildMainAccountInfos(),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: (screenSize.size.width / 5) * 0.1, vertical: (screenSize.size.width / 5) * 0.1),
-                        child: SingleChildScrollView(
-                            child: ExpansionPanelList(
-                                expandedHeaderPadding: EdgeInsets.zero,
-                                expansionCallback: (index, newVal) {
-                                  setState(() {
-                                    isExpanded = !newVal;
-                                  });
-                                },
-                                children: (appSys.account!.managableAccounts ?? [])
-                                    .map((e) => buildAccountDetail(e))
-                                    .toList())),
-                      ),
-                    ],
-                  ),
+      body: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            Card(
+              color: Theme.of(context).primaryColor,
+              child: Container(
+                padding: EdgeInsets.symmetric(
+                    horizontal: (screenSize.size.width / 5) * 0.1, vertical: (screenSize.size.width / 5) * 0.1),
+                child: Column(
+                  children: [
+                    buildMainAccountInfos(),
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: (screenSize.size.width / 5) * 0.1, vertical: (screenSize.size.width / 5) * 0.1),
+                      child: SingleChildScrollView(
+                          child: ExpansionPanelList(
+                              expandedHeaderPadding: EdgeInsets.zero,
+                              expansionCallback: (index, newVal) {
+                                setState(() {
+                                  isExpanded = !newVal;
+                                });
+                              },
+                              children: (appSys.account!.managableAccounts ?? [])
+                                  .map((e) => buildAccountDetail(e))
+                                  .toList())),
+                    ),
+                  ],
                 ),
               ),
-              Expanded(child: SizedBox()),
-              GestureDetector(
-                onTap: () async {
-                  launch('https://support.ynotes.fr/compte');
-                },
-                child: Text("En savoir plus sur les comptes",
-                    style: TextStyle(
-                      fontFamily: 'Asap',
-                      color: Colors.transparent,
-                      shadows: [Shadow(color: ThemeUtils.textColor(), offset: Offset(0, -5))],
-                      fontSize: 14,
-                      decorationColor: ThemeUtils.textColor(),
-                      fontWeight: FontWeight.normal,
-                      textBaseline: TextBaseline.alphabetic,
-                      decoration: TextDecoration.underline,
-                      decorationThickness: 2,
-                      decorationStyle: TextDecorationStyle.dashed,
-                    )),
-              ),
-            ],
-          )),
+            ),
+            SizedBox(),
+            GestureDetector(
+              onTap: () async {
+                launch('https://support.ynotes.fr/compte');
+              },
+              child: Text("En savoir plus sur les comptes",
+                  style: TextStyle(
+                    fontFamily: 'Asap',
+                    color: Colors.transparent,
+                    shadows: [Shadow(color: ThemeUtils.textColor(), offset: Offset(0, -5))],
+                    fontSize: 14,
+                    decorationColor: ThemeUtils.textColor(),
+                    fontWeight: FontWeight.normal,
+                    textBaseline: TextBaseline.alphabetic,
+                    decoration: TextDecoration.underline,
+                    decorationThickness: 2,
+                    decorationStyle: TextDecorationStyle.dashed,
+                  )),
+            ),
+          ],
+        ),
+      ),
       appBar: new AppBar(
         title: new Text("Compte"),
         backgroundColor: Theme.of(context).primaryColor,
@@ -179,8 +174,11 @@ class _AccountPageState extends State<AccountPage> {
               if (appSys.currentSchoolAccount != account)
                 Center(
                   child: CustomButtons.materialButton(
-                      context, screenSize.size.width / 5 * 1.7, screenSize.size.height / 10 * 0.4, () {},
-                      backgroundColor: Colors.blue, label: "Se connecter"),
+                      context, screenSize.size.width / 5 * 1.7, screenSize.size.height / 10 * 0.4, () {
+                    setState(() {
+                      appSys.currentSchoolAccount = account;
+                    });
+                  }, backgroundColor: Colors.blue, label: "Se connecter"),
                 )
             ],
           ),

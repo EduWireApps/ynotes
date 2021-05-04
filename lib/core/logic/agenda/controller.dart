@@ -15,7 +15,7 @@ class AgendaController extends ChangeNotifier {
   List<List<AgendaEvent>?>? _cachedEvents = List.filled(7, []);
   AgendaController(API? api) {
     _api = api;
-    setDay(DateTime.now());
+   // setDay(DateTime.now());
   }
   List<AgendaEvent>? get today => (_cachedEvents ?? [])[3];
   bool get todayLoaded => loaded[3];

@@ -245,17 +245,20 @@ class _GradesPageState extends State<GradesPage> {
                                               } else {
                                                 return Column(
                                                   mainAxisAlignment: MainAxisAlignment.center,
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
                                                   children: <Widget>[
                                                     Image(
                                                         image: AssetImage('assets/images/book.png'),
                                                         width: screenSize.size.width / 5 * 4),
-                                                    Container(
-                                                      margin: EdgeInsets.symmetric(
-                                                          horizontal: screenSize.size.width / 5 * 0.5),
-                                                      child: AutoSizeText("Pas de notes pour cette periode.",
-                                                          textAlign: TextAlign.center,
-                                                          style: TextStyle(
-                                                              fontFamily: "Asap", color: ThemeUtils.textColor())),
+                                                    Center(
+                                                      child: Container(
+                                                        margin: EdgeInsets.symmetric(
+                                                            horizontal: screenSize.size.width / 5 * 0.5),
+                                                        child: AutoSizeText("Pas de notes pour cette periode.",
+                                                            textAlign: TextAlign.center,
+                                                            style: TextStyle(
+                                                                fontFamily: "Asap", color: ThemeUtils.textColor())),
+                                                      ),
                                                     ),
                                                     FlatButton(
                                                       onPressed: () {

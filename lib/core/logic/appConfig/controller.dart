@@ -56,6 +56,7 @@ class ApplicationSystem extends ChangeNotifier {
     if (account != null && account!.managableAccounts != null && newValue != null) {
       this.updateSetting(this.settings!["system"], "accountIndex", this.account!.managableAccounts!.indexOf(newValue));
     }
+    notifyListeners();
   }
 
   exitApp() async {
