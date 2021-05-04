@@ -152,7 +152,7 @@ class APIPronote extends API {
     } catch (e) {
       print("Erreur while getting offline period " + e.toString());
       if (connectivityResult != ConnectivityResult.none && localClient != null) {
-        if (localClient.loggedIn) {
+        if (localClient.loggedIn ?? false) {
           print("getting periods online");
           return await getOnlinePeriods();
         } else {
@@ -188,7 +188,7 @@ class APIPronote extends API {
     while (loginLock == true && req < 5 && appSys.loginController.actualState != loginStatus.loggedIn) {
       print("Locked, trying in 5 seconds...");
       req++;
-      await Future.delayed(const Duration(seconds: 5), () => "1");
+      await Future.delayed(Duration(seconds: 5), () => "1");
     }
     if (loginLock == false && loginReqNumber < 5) {
       loginReqNumber = 0;
@@ -199,7 +199,7 @@ class APIPronote extends API {
             PronoteClient(url, username: username, password: password, mobileLogin: mobileCasLogin, cookies: cookies);
 
         await localClient.init();
-        if (localClient != null && localClient.loggedIn) {
+        if (localClient != null && (localClient.loggedIn ?? false)) {
           if (localClient.paramsUser != null) {
             appSys.account = PronoteAccountConverter.account(localClient.paramsUser!);
           }

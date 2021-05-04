@@ -143,6 +143,8 @@ class Offline {
     recipients = RecipientsOffline(this.locked, this);
   }
 
+  openBoxes() {}
+
   refreshData() async {
     if (!locked) {
       print("Refreshing offline");

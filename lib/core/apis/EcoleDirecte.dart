@@ -297,6 +297,7 @@ class APIEcoleDirecte extends API {
             print("Impossible to get accounts " + e.toString());
             print(e);
           }
+
           if (appSys.account != null && appSys.account!.managableAccounts != null) {
             await storage.write(key: "appAccount", value: jsonEncode(appSys.account!.toJson()));
             appSys.currentSchoolAccount = appSys.account!.managableAccounts![0];

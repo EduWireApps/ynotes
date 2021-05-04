@@ -14,6 +14,7 @@ import 'package:ynotes/core/logic/appConfig/controller.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/usefulMethods.dart';
 
@@ -507,28 +508,33 @@ class _page4State extends State<page4> {
                           style: TextStyle(
                               fontFamily: "Asap",
                               color: ThemeUtils.textColor(),
-                              fontSize: screenSize.size.height / 10 * 0.3),
+                              fontSize: screenSize.size.height / 10 * 0.28),
                         ),
                         leading: Icon(MdiIcons.formatListBulleted, color: ThemeUtils.textColor()),
                         onTap: () {
                           CustomDialogs.showSpecialtiesChoice(context);
                         }),
+                    Divider(
+                      color: ThemeUtils.textColor().withOpacity(0.4),
+                    ),
                     ListTile(
                         title: Text(
                           "Compte à administrer",
                           style: TextStyle(
                               fontFamily: "Asap",
                               color: ThemeUtils.textColor(),
-                              fontSize: screenSize.size.height / 10 * 0.3),
+                              fontSize: screenSize.size.height / 10 * 0.28),
                         ),
                         leading: Icon(MdiIcons.account, color: ThemeUtils.textColor()),
-                        subtitle: Text(
-                          (appSys.currentSchoolAccount?.name) ?? "(non choisi)",
-                          style: TextStyle(
-                              fontFamily: "Asap",
-                              color: ThemeUtils.textColor().withOpacity(0.7),
-                              fontSize: screenSize.size.height / 10 * 0.3),
-                        ),
+                        subtitle: appSys.account!.isParentMainAccount
+                            ? Text(
+                                (appSys.currentSchoolAccount?.name) ?? "(non choisi)",
+                                style: TextStyle(
+                                    fontFamily: "Asap",
+                                    color: ThemeUtils.textColor().withOpacity(0.4),
+                                    fontSize: screenSize.size.height / 10 * 0.28),
+                              )
+                            : null,
                         onTap: () async {
                           if (appSys.account != null && appSys.account!.managableAccounts != null) {
                             List? choices = await CustomDialogs.showMultipleChoicesDialog(
@@ -544,19 +550,17 @@ class _page4State extends State<page4> {
                           }
                         }),
                     SizedBox(
-                      height: screenSize.size.height / 10 * 0.2,
+                      height: screenSize.size.height / 10 * 0.1,
                     ),
                     Text(
-                      "De quel côté de la force êtes vous ?",
+                      "De quel côté de la force êtes-vous ?",
                       style: TextStyle(
                         fontFamily: "Asap",
-                        fontSize: screenSize.size.height / 10 * 0.27,
+                        fontSize: screenSize.size.height / 10 * 0.3,
+                        fontWeight: FontWeight.w500,
                         color: ThemeUtils.textColor(),
                       ),
                       textAlign: TextAlign.center,
-                    ),
-                    Divider(
-                      color: ThemeUtils.textColor(),
                     ),
                     SwitchListTile(
                       value: ThemeUtils.isThemeDark,
@@ -564,7 +568,7 @@ class _page4State extends State<page4> {
                           style: TextStyle(
                               fontFamily: "Asap",
                               color: ThemeUtils.textColor(),
-                              fontSize: screenSize.size.height / 10 * 0.3)),
+                              fontSize: screenSize.size.height / 10 * 0.28)),
                       onChanged: (value) async {
                         await model.updateTheme(value ? "sombre" : "clair");
                       },
@@ -573,18 +577,18 @@ class _page4State extends State<page4> {
                         color: ThemeUtils.textColor(),
                       ),
                     ),
-                    Divider(
-                      color: ThemeUtils.textColor(),
+                    SizedBox(
+                      height: screenSize.size.height / 10 * 0.1,
                     ),
                     Text(
                       "Notifications",
                       style: TextStyle(
                           fontFamily: "Asap",
-                          fontSize: screenSize.size.height / 10 * 0.27,
+                          fontSize: screenSize.size.height / 10 * 0.3,
+                          fontWeight: FontWeight.w500,
                           color: ThemeUtils.textColor()),
                       textAlign: TextAlign.center,
                     ),
-                    Divider(),
                     SwitchListTile(
                         value: model.settings!["user"]["global"]["notificationNewGrade"],
                         title: Text(
@@ -592,11 +596,14 @@ class _page4State extends State<page4> {
                           style: TextStyle(
                               fontFamily: "Asap",
                               color: ThemeUtils.textColor(),
-                              fontSize: screenSize.size.height / 10 * 0.3),
+                              fontSize: screenSize.size.height / 10 * 0.28),
                         ),
-                        secondary: Icon(
-                          MdiIcons.newBox,
-                          color: ThemeUtils.textColor(),
+                        secondary: Transform.rotate(
+                          angle: -25,
+                          child: Icon(
+                            MdiIcons.bellRing,
+                            color: ThemeUtils.textColor(),
+                          ),
                         ),
                         onChanged: (value) async {
                           if (Platform.isIOS || (await Permission.ignoreBatteryOptimizations.isGranted)) {
@@ -614,7 +621,9 @@ class _page4State extends State<page4> {
                             }
                           }
                         }),
-                    Divider(),
+                    Divider(
+                      color: ThemeUtils.textColor().withOpacity(0.4),
+                    ),
                     SwitchListTile(
                       value: appSys.settings!["user"]["global"]["notificationNewMail"],
                       title: Text(
@@ -622,7 +631,7 @@ class _page4State extends State<page4> {
                         style: TextStyle(
                             fontFamily: "Asap",
                             color: ThemeUtils.textColor(),
-                            fontSize: screenSize.size.height / 10 * 0.3),
+                            fontSize: screenSize.size.height / 10 * 0.28),
                       ),
                       onChanged: (value) async {
                         if (Platform.isIOS || (await Permission.ignoreBatteryOptimizations.isGranted)) {
@@ -640,15 +649,34 @@ class _page4State extends State<page4> {
                           }
                         }
                       },
-                      secondary: Icon(
-                        MdiIcons.newBox,
-                        color: ThemeUtils.textColor(),
+                      secondary: Transform.rotate(
+                        angle: -25,
+                        child: Icon(
+                          MdiIcons.bellRing,
+                          color: ThemeUtils.textColor(),
+                        ),
                       ),
                     ),
-                    Divider(
-                      color: ThemeUtils.textColor(),
+                    SizedBox(
+                      height: screenSize.size.height / 10 * 0.1,
                     ),
-                    RaisedButton(
+                    CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5, () async {
+                      var classe = await specialtiesSelectionAvailable();
+                      if (classe[0] && chosenSpecialties.length == (classe[1] == "Première" ? 3 : 2)) {
+                        CreateStorage("agreedTermsAndConfiguredApp", "true");
+                        final prefs = await (SharedPreferences.getInstance());
+                        prefs.setStringList("listSpecialties", chosenSpecialties);
+                        Navigator.of(context).pushReplacement(router(homePage()));
+                      } else if (!classe[0]) {
+                        CreateStorage("agreedTermsAndConfiguredApp", "true");
+                        final prefs = await (SharedPreferences.getInstance());
+                        prefs.setStringList("listSpecialties", chosenSpecialties);
+                        Navigator.of(context).pushReplacement(router(homePage()));
+                      } else {
+                        CustomDialogs.showAnyDialog(context, "Vous devez renseigner toutes vos spécialités.");
+                      }
+                    }, label: "Allons-y !", textColor: ThemeUtils.textColor(), backgroundColor: Color(0xff5DADE2))
+                    /*RaisedButton(
                       color: Color(0xff5DADE2),
                       shape: StadiumBorder(),
                       onPressed: () async {
@@ -668,7 +696,7 @@ class _page4State extends State<page4> {
                         }
                       },
                       child: const Text('Allons-y !', style: TextStyle(fontSize: 20, fontFamily: "Asap")),
-                    ),
+                    ),*/
                   ],
                 ),
               ),

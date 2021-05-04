@@ -49,7 +49,9 @@ class _AccountPageState extends State<AccountPage> {
                 ),
               ),
             ),
-            SizedBox(),
+            SizedBox(
+              height: screenSize.size.height / 10 * 0.2,
+            ),
             GestureDetector(
               onTap: () async {
                 launch('https://support.ynotes.fr/compte');

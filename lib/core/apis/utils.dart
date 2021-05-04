@@ -117,7 +117,7 @@ getWeek(DateTime date) async {
 }
 
 setChosenParser(int? chosen) async {
-  appSys.updateSetting(appSys.settings!["system"], "chosenParser", chosen);
+  await appSys.updateSetting(appSys.settings!["system"], "chosenParser", chosen);
 }
 
 testIfPronoteCas(String url) async {

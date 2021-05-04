@@ -474,7 +474,7 @@ class PronoteClient {
 
   var authResponse;
 
-  late bool loggedIn;
+  bool? loggedIn;
 
   var authCookie;
   Map? paramsUser;

@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:ynotes/core/logic/appConfig/models.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
@@ -159,76 +160,105 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
               ),
 
               //Transparent login panel
-              ChangeNotifierProvider<LoginController>.value(
-                value: appSys.loginController,
-                child: Consumer<LoginController>(builder: (context, model, child) {
-                  print(model.actualState);
-                  if (model.actualState != loginStatus.loggedIn) {
-                    showLoginControllerStatusController.forward();
-                  } else {
-                    showLoginControllerStatusController.reverse();
-                  }
-                  return AnimatedBuilder(
-                      animation: showLoginControllerStatus,
-                      builder: (context, child) {
-                        return Transform.translate(
-                          offset: Offset(0, -screenSize.size.height / 10 * 1.2 * showLoginControllerStatus.value),
-                          child: Opacity(
-                              opacity: 0.8,
-                              child: Container(
-                                  margin: EdgeInsets.only(
-                                      left: screenSize.size.width / 5 * 2.25, top: screenSize.size.height / 10 * 0.1),
-                                  height: screenSize.size.width / 5 * 0.5,
-                                  width: screenSize.size.width / 5 * 0.5,
-                                  padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
-                                  decoration: BoxDecoration(
-                                    color: case2(model.actualState, {
-                                      loginStatus.loggedIn: Colors.green,
-                                      loginStatus.loggedOff: Colors.grey,
-                                      loginStatus.error: Colors.red.shade500,
-                                      loginStatus.offline: Colors.orange,
-                                    }),
-                                    borderRadius: BorderRadius.all(Radius.circular(1000)),
+              Align(
+                alignment: Alignment.topCenter,
+                child: ChangeNotifierProvider<LoginController>.value(
+                  value: appSys.loginController,
+                  child: Consumer<LoginController>(builder: (context, model, child) {
+                    print(model.actualState);
+                    if (model.actualState != loginStatus.loggedIn) {
+                      showLoginControllerStatusController.forward();
+                    } else {
+                      showLoginControllerStatusController.reverse();
+                    }
+                    return AnimatedBuilder(
+                        animation: showLoginControllerStatus,
+                        builder: (context, child) {
+                          return Transform.translate(
+                            offset: Offset(0, -screenSize.size.height / 10 * 1.2 * showLoginControllerStatus.value),
+                            child: Container(
+                              margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
+                              decoration: BoxDecoration(
+                                color: model.actualState == loginStatus.error ? Colors.orange : Colors.transparent,
+                                borderRadius: BorderRadius.all(Radius.circular(1000)),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Opacity(
+                                    opacity: 0.8,
+                                    child: Container(
+                                        height: screenSize.size.width / 5 * 0.5,
+                                        width: screenSize.size.width / 5 * 0.5,
+                                        padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
+                                        decoration: BoxDecoration(
+                                          color: case2(model.actualState, {
+                                            loginStatus.loggedIn: Colors.green,
+                                            loginStatus.loggedOff: Colors.grey,
+                                            loginStatus.error: Colors.red.shade500,
+                                            loginStatus.offline: Colors.orange,
+                                          }),
+                                          borderRadius: BorderRadius.all(Radius.circular(1000)),
+                                        ),
+                                        child: FittedBox(
+                                            child: Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+                                          case2(
+                                            model.actualState,
+                                            {
+                                              loginStatus.loggedOff: SpinKitThreeBounce(
+                                                size: screenSize.size.width / 5 * 0.3,
+                                                color: Theme.of(context).primaryColorDark,
+                                              ),
+                                              loginStatus.offline: Icon(
+                                                MdiIcons.networkStrengthOff,
+                                                size: screenSize.size.width / 5 * 0.3,
+                                                color: Theme.of(context).primaryColorDark,
+                                              ),
+                                              loginStatus.error: GestureDetector(
+                                                onTap: () async {
+                                                  await model.login();
+                                                },
+                                                child: Icon(
+                                                  MdiIcons.exclamation,
+                                                  size: screenSize.size.width / 5 * 0.3,
+                                                  color: Theme.of(context).primaryColorDark,
+                                                ),
+                                              ),
+                                              loginStatus.loggedIn: Icon(
+                                                MdiIcons.check,
+                                                size: screenSize.size.width / 5 * 0.3,
+                                                color: Theme.of(context).primaryColorDark,
+                                              )
+                                            },
+                                            SpinKitThreeBounce(
+                                              size: screenSize.size.width / 5 * 0.4,
+                                              color: Theme.of(context).primaryColorDark,
+                                            ),
+                                          ) as Widget,
+                                        ]))),
                                   ),
-                                  child: FittedBox(
-                                      child: Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-                                    case2(
-                                      model.actualState,
-                                      {
-                                        loginStatus.loggedOff: SpinKitThreeBounce(
-                                          size: screenSize.size.width / 5 * 0.3,
-                                          color: Theme.of(context).primaryColorDark,
-                                        ),
-                                        loginStatus.offline: Icon(
-                                          MdiIcons.networkStrengthOff,
-                                          size: screenSize.size.width / 5 * 0.3,
-                                          color: Theme.of(context).primaryColorDark,
-                                        ),
-                                        loginStatus.error: GestureDetector(
-                                          onTap: () async {
-                                            await model.login();
-                                          },
-                                          child: Icon(
-                                            MdiIcons.exclamation,
-                                            size: screenSize.size.width / 5 * 0.3,
-                                            color: Theme.of(context).primaryColorDark,
-                                          ),
-                                        ),
-                                        loginStatus.loggedIn: Icon(
-                                          MdiIcons.check,
-                                          size: screenSize.size.width / 5 * 0.3,
-                                          color: Theme.of(context).primaryColorDark,
-                                        )
-                                      },
-                                      SpinKitThreeBounce(
-                                        size: screenSize.size.width / 5 * 0.4,
-                                        color: Theme.of(context).primaryColorDark,
+                                  AnimatedContainer(
+                                    duration: Duration(milliseconds: 500),
+                                    width: (model.actualState == loginStatus.error) ? null : 0,
+                                    height: (model.actualState == loginStatus.error) ? null : 0,
+                                    margin: (model.actualState == loginStatus.error)
+                                        ? EdgeInsets.only(right: screenSize.size.width / 5 * 0.2)
+                                        : null,
+                                    child: FittedBox(
+                                      child: Text(
+                                        "Voir le détail de l'erreur",
+                                        style: TextStyle(fontFamily: "Asap"),
                                       ),
-                                    ) as Widget,
-                                  ])))),
-                        );
-                      });
-                }),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          );
+                        });
+                  }),
+                ),
               ),
             ],
           )),
@@ -252,6 +282,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
     return [
       {
         "menuName": "Résumé",
+        "tabName": appTabs.SUMMARY,
         "icon": MdiIcons.home,
         "page": SummaryPage(
           switchPage: _switchPage,
@@ -261,11 +292,13 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
       },
       {
         "menuName": "Notes",
+        "tabName": appTabs.GRADES,
         "icon": MdiIcons.trophy,
         "page": SingleChildScrollView(physics: NeverScrollableScrollPhysics(), child: GradesPage())
       },
       {
         "menuName": "Devoirs",
+        "tabName": appTabs.HOMEWORK,
         "icon": MdiIcons.calendarCheck,
         "page": HomeworkPage(
           key: homeworkPage,
@@ -273,12 +306,19 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
         ),
         "key": homeworkPage
       },
-      {"menuName": "Agenda", "icon": MdiIcons.calendar, "page": AgendaPage(key: agendaPage), "key": agendaPage},
+      {
+        "menuName": "Agenda",
+        "icon": MdiIcons.calendar,
+        "page": AgendaPage(key: agendaPage),
+        "key": agendaPage,
+        "tabName": appTabs.AGENDA,
+      },
       {
         "menuName": "Messagerie",
         "icon": MdiIcons.mail,
         "relatedApi": 0,
         "page": MailPage(),
+        "tabName": appTabs.MESSAGING,
       },
       {
         "menuName": "Vie scolaire",
@@ -287,9 +327,16 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
         "page": SingleChildScrollView(physics: NeverScrollableScrollPhysics(), child: SchoolLifePage()),
       },
       {"menuName": "Cloud", "icon": MdiIcons.cloud, "relatedApi": 0, "page": CloudPage()},
-      {"menuName": "Sondages", "icon": MdiIcons.poll, "relatedApi": 1, "page": PollsAndInfoPage()},
+      {
+        "menuName": "Sondages",
+        "tabName": appTabs.POLLS,
+        "icon": MdiIcons.poll,
+        "relatedApi": 1,
+        "page": PollsAndInfoPage()
+      },
       {
         "menuName": "Fichiers",
+        "tabName": appTabs.FILES,
         "icon": MdiIcons.file,
         "relatedApi": 0,
         "page": DownloadsExplorer(),
