@@ -78,7 +78,6 @@ class PronoteLessonsConverter {
   static lessons(PronoteClient client, Map lessonsData) {
     List<Lesson> lessonsList = [];
     List<Map> lessonsListRaw = (mapGet(lessonsData, ['donneesSec', 'donnees', 'ListeCours']) ?? []).cast<Map>();
-    print(lessonsListRaw.length);
 
     lessonsListRaw.forEach((lesson) {
       try {

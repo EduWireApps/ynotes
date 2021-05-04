@@ -64,15 +64,10 @@ class LessonsOffline extends Offline {
           }
           //timeTable[week] = [];
           //Update the timetable
-          print(week);
-          print(newData.length);
           timeTable[week] = newData;
-          print(timeTable[week].length);
 
           await parent.agendaBox?.put("lessons", timeTable);
           await parent.refreshData();
-          print(parent.lessonsData);
-          print(appSys.offline.lessonsData);
         }
 
         return true;
