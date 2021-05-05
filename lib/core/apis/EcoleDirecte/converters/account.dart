@@ -53,13 +53,16 @@ class EcoleDirecteAccountConverter {
             tabs.add(appTabs.MESSAGING);
 
             break;
+          case "EDT":
+            tabs.add(appTabs.AGENDA);
+
+            break;
           case "CLOUD":
             tabs.add(appTabs.CLOUD);
 
             break;
           case "CAHIER_DE_TEXTES":
             tabs.add(appTabs.HOMEWORK);
-
             break;
           default:
         }

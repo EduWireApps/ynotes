@@ -308,10 +308,10 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
       },
       {
         "menuName": "Agenda",
+        "tabName": appTabs.AGENDA,
         "icon": MdiIcons.calendar,
         "page": AgendaPage(key: agendaPage),
         "key": agendaPage,
-        "tabName": appTabs.AGENDA,
       },
       {
         "menuName": "Messagerie",

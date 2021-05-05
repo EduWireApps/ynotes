@@ -15,7 +15,9 @@ class BackgroundService {
 //Background task when when app is closed
   static Future<void> backgroundFetchHeadlessTask(String a) async {
     print("Starting the headless closed bakground task");
-    await appSys.initApp();
+    if (appSys == null) {
+      await appSys.initApp();
+    }
     await logFile("Init appSys");
 
     //await LocalNotification.showDebugNotification();
@@ -38,7 +40,7 @@ class BackgroundService {
 
         Mail? mail = await testNewMails();
         if (mail != null) {
-          String content = await (readMail(mail.id, mail.read) as Future<String>);
+          String content = (await readMail(mail.id, mail.read)) ?? "";
           await AppNotification.showNewMailNotification(mail, content);
         } else {
           print("Nothing updated");
