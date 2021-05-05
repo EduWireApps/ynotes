@@ -42,6 +42,12 @@ class APIPronote extends API {
   }
 
   @override
+  Future<List> apiStatus() async {
+    // TODO: implement apiStatus
+    return [1, "Pas de problème connu."];
+  }
+
+  @override
   Future app(String appname, {String? args, String? action, CloudItem? folder}) async {
     switch (appname) {
     }

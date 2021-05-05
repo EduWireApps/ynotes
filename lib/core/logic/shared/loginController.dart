@@ -12,7 +12,7 @@ class LoginController extends ChangeNotifier {
   //Login status details
   String _details = "Déconnecté";
   //Error logs
-  String _logs = "";
+  String logs = "";
   //getters
   Connectivity _connectivity = Connectivity();
   LoginController() {
@@ -97,7 +97,7 @@ class LoginController extends ChangeNotifier {
               _details = "Erreur de connexion.";
             }
 
-            _logs = loginValues[1].toString();
+            logs = loginValues[1].toString();
             _actualState = loginStatus.error;
             notifyListeners();
           }

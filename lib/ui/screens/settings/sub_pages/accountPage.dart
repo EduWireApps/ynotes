@@ -1,14 +1,18 @@
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:wiredash/wiredash.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
+import 'package:ynotes/main.dart';
 import 'package:ynotes/ui/components/buttons.dart';
+import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/keyValues.dart';
 import 'package:ynotes/usefulMethods.dart';
 
@@ -35,7 +39,7 @@ class _AccountPageState extends State<AccountPage> {
           children: [
             LoginStatus(),
             Card(
-              color: Theme.of(context).primaryColor,
+              color: Theme.of(context).primaryColorLight,
               child: Container(
                 padding: EdgeInsets.symmetric(
                     horizontal: (screenSize.size.width / 5) * 0.1, vertical: (screenSize.size.width / 5) * 0.1),
@@ -57,6 +61,28 @@ class _AccountPageState extends State<AccountPage> {
                                   .map((e) => buildAccountDetail(e))
                                   .toList())),
                     ),
+                    CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.45, () async {
+                      if (await CustomDialogs.showConfirmationDialog(context, null,
+                              alternativeText:
+                                  "Voulez-vous vraiment vous déconnecter (et supprimer toutes vos données) ?",
+                              alternativeButtonConfirmText: "Se déconnecter") ??
+                          false) {
+                        await appSys.exitApp();
+                        appSys.api!.gradesList!.clear();
+                        setState(() {
+                          appSys.api = null;
+                        });
+                        try {
+                          appSys.updateTheme("clair");
+                        } catch (e) {}
+                        Navigator.of(context).pushReplacement(router(login()));
+                      }
+                    },
+                        backgroundColor: Colors.red,
+                        icon: MdiIcons.logout,
+                        iconColor: Colors.white,
+                        label: "Déconnexion",
+                        textColor: Colors.white),
                   ],
                 ),
               ),
@@ -87,6 +113,8 @@ class _AccountPageState extends State<AccountPage> {
       ),
       appBar: new AppBar(
         title: new Text("Compte"),
+        systemOverlayStyle: ThemeUtils.isThemeDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+        brightness: ThemeUtils.isThemeDark ? Brightness.dark : Brightness.light,
         backgroundColor: Theme.of(context).primaryColor,
       ),
     );
@@ -96,7 +124,7 @@ class _AccountPageState extends State<AccountPage> {
     MediaQueryData screenSize = MediaQuery.of(context);
 
     return ExpansionPanel(
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: Theme.of(context).primaryColorDark,
         isExpanded: isExpanded,
         canTapOnHeader: true,
         headerBuilder: (context, index) {
@@ -199,6 +227,45 @@ class _AccountPageState extends State<AccountPage> {
         ));
   }
 
+  buildApiIssues() {
+    MediaQueryData screenSize = MediaQuery.of(context);
+
+    return FutureBuilder<List>(
+        future: appSys.api!.apiStatus(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return Card(
+              color: (snapshot.data?[0] == 0) ? Color(0xffFEF08A) : Color(0xff99F6E4),
+              child: Container(
+                width: screenSize.size.width,
+                padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Etat des serveurs", style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Asap")),
+                    Text(snapshot.data?[1], style: TextStyle(fontFamily: "Asap")),
+                  ],
+                ),
+              ),
+            );
+          } else {
+            return Card(
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
+                width: screenSize.size.width,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Etat des serveurs en cours de chargement...",
+                        style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Asap")),
+                  ],
+                ),
+              ),
+            );
+          }
+        });
+  }
+
   buildMainAccountInfos() {
     MediaQueryData screenSize = MediaQuery.of(context);
     return Column(
@@ -242,7 +309,7 @@ class _LoginStatusState extends State<LoginStatus> {
   String loggedOffLabel = "Nous vous connectons...";
 
   String errorTitle = "Aille... une erreur a eu lieu.";
-  String errorLabel = "Regardez les détails pour trouver de l'aide.";
+  String errorLabel = "Tapez pour consulter les détails.";
 
   String apiIssues = "Il se peut que votre système scolaire rencontre des problèmes !";
 
@@ -266,18 +333,43 @@ class _LoginStatusState extends State<LoginStatus> {
   }
 
   buildErrorDetails(LoginController model) {
-    return Card(
-      margin: EdgeInsets.zero,
-      color: case2(model.actualState, {
-        loginStatus.loggedIn: Color(0xff4ADE80),
-        loginStatus.loggedOff: Color(0xffA8A29E),
-        loginStatus.error: Color(0xffEF4444),
-        loginStatus.offline: Color(0xffFCD34D),
-      }),
+    MediaQueryData screenSize = MediaQuery.of(context);
+
+    return Container(
+      padding: EdgeInsets.symmetric(
+          horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.height / 10 * 0.1),
       child: (Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Text("Que dois-je faire ?"),
-          Text(errorExplanation),
+          Text(
+            "Que dois-je faire ?",
+            textAlign: TextAlign.justify,
+            style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
+          ),
+          Text(errorExplanation, textAlign: TextAlign.justify),
+          Text(
+            "Erreur retournée par l'application :",
+            textAlign: TextAlign.justify,
+            style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
+          ),
+          Text(model.logs, textAlign: TextAlign.justify),
+          SizedBox(
+            height: screenSize.size.height / 10 * 0.1,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CustomButtons.materialButton(context, screenSize.size.width / 5 * 1.7, screenSize.size.height / 10 * 0.4,
+                  () {
+                model.login();
+              }, backgroundColor: Colors.orange, label: "Reconnexion", textColor: Colors.white),
+              CustomButtons.materialButton(context, screenSize.size.width / 5 * 1.7, screenSize.size.height / 10 * 0.4,
+                  () {
+                //show wiredash
+                Wiredash.of(context)!.show();
+              }, backgroundColor: Colors.blue, label: "Support", textColor: Colors.white),
+            ],
+          ),
         ],
       )),
     );
@@ -323,22 +415,19 @@ class _LoginStatusState extends State<LoginStatus> {
     MediaQueryData screenSize = MediaQuery.of(context);
     return GestureDetector(
       onTap: () {
-        print("ok");
         setState(() {
           controller.toggle();
         });
       },
       child: Expandable(
         controller: controller,
-        collapsed: buildTopCard(model),
-        expanded: Column(
-          children: [buildTopCard(model), buildErrorDetails(model)],
-        ),
+        collapsed: buildTopCard(model, false),
+        expanded: buildTopCard(model, true),
       ),
     );
   }
 
-  buildTopCard(LoginController model) {
+  buildTopCard(LoginController model, bool expanded) {
     MediaQueryData screenSize = MediaQuery.of(context);
 
     return Card(
@@ -348,57 +437,62 @@ class _LoginStatusState extends State<LoginStatus> {
         loginStatus.error: Color(0xffEF4444),
         loginStatus.offline: Color(0xffFCD34D),
       }),
-      child: Container(
-        width: screenSize.size.width,
-        padding: EdgeInsets.symmetric(
-            vertical: screenSize.size.height / 10 * 0.1, horizontal: screenSize.size.width / 5 * 0.1),
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Flexible(
-              flex: 1,
-              child: Container(
-                height: screenSize.size.height / 10 * 0.7,
-                width: screenSize.size.height / 10 * 0.7,
-                decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: ThemeUtils.darken(
-                        case2(model.actualState, {
-                          loginStatus.loggedIn: Color(0xff4ADE80),
-                          loginStatus.loggedOff: Color(0xffA8A29E),
-                          loginStatus.error: Color(0xffEF4444),
-                          loginStatus.offline: Color(0xffFCD34D),
-                        }) as Color,
-                        forceAmount: 0.15)),
-                child: buildIcon(model),
-              ),
-            ),
-            SizedBox(
-              width: screenSize.size.width / 5 * 0.1,
-            ),
-            Flexible(
-              flex: 4,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    choseDetails(model)[0],
-                    maxLines: 100,
-                    textAlign: TextAlign.start,
-                    style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
+      child: Column(
+        children: [
+          Container(
+            width: screenSize.size.width,
+            padding: EdgeInsets.symmetric(
+                vertical: screenSize.size.height / 10 * 0.1, horizontal: screenSize.size.width / 5 * 0.1),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Flexible(
+                  flex: 1,
+                  child: Container(
+                    height: screenSize.size.height / 10 * 0.7,
+                    width: screenSize.size.height / 10 * 0.7,
+                    decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: ThemeUtils.darken(
+                            case2(model.actualState, {
+                              loginStatus.loggedIn: Color(0xff4ADE80),
+                              loginStatus.loggedOff: Color(0xffA8A29E),
+                              loginStatus.error: Color(0xffEF4444),
+                              loginStatus.offline: Color(0xffFCD34D),
+                            }) as Color,
+                            forceAmount: 0.15)),
+                    child: buildIcon(model),
                   ),
-                  Text(
-                    choseDetails(model)[1],
-                    maxLines: 100,
-                    textAlign: TextAlign.start,
-                    style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w200),
-                  )
-                ],
-              ),
-            )
-          ],
-        ),
+                ),
+                SizedBox(
+                  width: screenSize.size.width / 5 * 0.1,
+                ),
+                Flexible(
+                  flex: 4,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        choseDetails(model)[0],
+                        maxLines: 100,
+                        textAlign: TextAlign.start,
+                        style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        choseDetails(model)[1],
+                        maxLines: 100,
+                        textAlign: TextAlign.start,
+                        style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w200),
+                      )
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+          if (expanded && model.actualState == loginStatus.error) buildErrorDetails(model)
+        ],
       ),
     );
   }

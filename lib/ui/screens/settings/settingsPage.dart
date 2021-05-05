@@ -17,6 +17,7 @@ import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/services/platform.dart';
 import 'package:ynotes/core/utils/settingsUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/core/utils/totalBugParser.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
@@ -147,7 +148,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                 sections: [
                   SettingsSection(
                     title: 'Mon compte',
-                    titleTextStyle: TextStyle(color: ThemeUtils.textColor()),
+                    titleTextStyle: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
                     tiles: [
                       SettingsTile(
                           title: 'Compte actuellement connecté',
@@ -514,7 +515,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                           title: 'Bouton magique',
                           leading: Icon(MdiIcons.testTube, color: ThemeUtils.textColor()),
                           onTap: () async {
-                            appSys.updateSetting(appSys.settings!["system"], "lastMailCount", 5);
+                            print(await TotalBug.websiteReportsNumber("pronote"));
                           },
                           titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                           subtitleTextStyle: TextStyle(

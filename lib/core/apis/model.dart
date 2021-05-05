@@ -32,6 +32,9 @@ abstract class API {
     }
   }
 
+  ///Get the API status (down etc..;)
+  Future<List> apiStatus();
+
   ///Apps
   app(String appname, {String? args, String? action, CloudItem? folder});
 

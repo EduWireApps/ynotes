@@ -177,6 +177,12 @@ class APIEcoleDirecte extends API {
 
 //Get connection message and store token
   @override
+  Future<List> apiStatus() async {
+    // TODO: implement apiStatus
+    return [1, "Pas de problème connu."];
+  }
+
+  @override
   Future app(String appname, {String? args, String? action, CloudItem? folder}) async {
     switch (appname) {
       case "mail":
@@ -219,6 +225,7 @@ class APIEcoleDirecte extends API {
     return await EcoleDirecteMethod(this.offlineController).homeworkDates();
   }
 
+//Get dates of the the next homework (based on the EcoleDirecte API)
   @override
 //Getting grades
   Future<List<Discipline>> getGrades({bool? forceReload}) async {
@@ -227,12 +234,11 @@ class APIEcoleDirecte extends API {
         forceFetch: forceReload ?? false, isOfflineLocked: this.offlineController.locked);
   }
 
-//Get dates of the the next homework (based on the EcoleDirecte API)
+//Get homeworks for a specific date
   Future<List<Homework>> getHomeworkFor(DateTime? dateHomework) async {
     return await EcoleDirecteMethod(this.offlineController).homeworkFor(dateHomework!);
   }
 
-//Get homeworks for a specific date
   Future<List<Homework>> getNextHomework({bool? forceReload}) async {
     return await EcoleDirecteMethod.fetchAnyData(
         EcoleDirecteMethod(this.offlineController).nextHomework, offlineController.homework.getHomework,
@@ -304,7 +310,6 @@ class APIEcoleDirecte extends API {
           } else {
             return [0, "Impossible de collecter les comptes."];
           }
-
           actualUser = req['data']['accounts'][0]['prenom'] ?? "Invité";
           CreateStorage("userFullName", actualUser);
           String userID = req['data']['accounts'][0]['id'].toString();
