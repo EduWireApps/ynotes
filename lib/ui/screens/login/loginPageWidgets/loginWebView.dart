@@ -11,24 +11,23 @@ import 'package:ynotes/main.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 
 class LoginWebView extends StatefulWidget {
-  final String url;
-  final String spaceUrl;
-  InAppWebViewController controller;
+  final String? url;
+  final String? spaceUrl;
+  InAppWebViewController? controller;
 
-  LoginWebView({Key key, this.url, this.controller, this.spaceUrl}) : super(key: key);
+  LoginWebView({Key? key, this.url, this.controller, this.spaceUrl}) : super(key: key);
   @override
   _LoginWebViewState createState() => _LoginWebViewState();
 }
 
 class _LoginWebViewState extends State<LoginWebView> {
   var loginData;
-  Map currentProfile;
+  late Map currentProfile;
   //locals, but shouldn't be obviously
 
-  String location;
-  Map loginStatus;
-  String serverUrl;
-  String espaceUrl;
+  Map? loginStatus;
+  String? serverUrl;
+  String? espaceUrl;
   bool auth = false;
   int step = 3;
   authAndValidateProfile() async {
@@ -41,15 +40,15 @@ class _LoginWebViewState extends State<LoginWebView> {
       });
       String loginDataProcess =
           "(function(){return window && window.loginState ? JSON.stringify(window.loginState) : \'\';})();";
-      String loginDataProcessResult = await widget.controller.evaluateJavascript(source: loginDataProcess);
+      String? loginDataProcessResult = await (widget.controller!.evaluateJavascript(source: loginDataProcess));
       getCreds(loginDataProcessResult);
       if (loginStatus != null) {
         setState(() {
           step = 5;
         });
         //url: widget.url + "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335"
-        await widget.controller.loadUrl(
-            urlRequest: URLRequest(url: Uri.parse(widget.url + "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335")));
+        await widget.controller!.loadUrl(
+            urlRequest: URLRequest(url: Uri.parse(widget.url! + "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335")));
       }
     });
   }
@@ -63,10 +62,9 @@ class _LoginWebViewState extends State<LoginWebView> {
         children: [
           InAppWebView(
             initialUrlRequest: URLRequest(
-              url: Uri.parse(getRootAddress(widget.url)[0] +
-                  (widget.url[widget.url.length - 1] == "/" ? "" : "/") +
-                  "InfoMobileApp.json?id=0D264427-EEFC-4810-A9E9-346942A862A4"),
-            ),
+                url: Uri.parse(getRootAddress(widget.url)[0] +
+                    (widget.url![widget.url!.length - 1] == "/" ? "" : "/") +
+                    "InfoMobileApp.json?id=0D264427-EEFC-4810-A9E9-346942A862A4")),
 
             ///1) We open a page with the serverUrl + weird string hardcoded
             initialOptions: InAppWebViewGroupOptions(
@@ -94,7 +92,7 @@ class _LoginWebViewState extends State<LoginWebView> {
           ),
           Align(
             alignment: Alignment.bottomCenter,
-            child: _buildText(loginStatus != null ? loginStatus["mdp"] : ""),
+            child: _buildText(loginStatus != null ? loginStatus!["mdp"] : ""),
           ),
           Align(
             alignment: Alignment.bottomRight,
@@ -127,7 +125,7 @@ class _LoginWebViewState extends State<LoginWebView> {
 
   getCookie() {}
 
-  getCreds(String credsData) {
+  getCreds(String? credsData) {
     if (credsData != null && credsData.length > 0) {
       printWrapped(credsData);
       Map temp = json.decode(credsData);
@@ -145,7 +143,7 @@ class _LoginWebViewState extends State<LoginWebView> {
     print("Getting metas");
     //Injected function to get metas
     String metaGetFunction = "(function(){return document.body.innerText;})()";
-    String metaGetResult = await widget.controller.evaluateJavascript(source: metaGetFunction);
+    String? metaGetResult = await (widget.controller!.evaluateJavascript(source: metaGetFunction));
     if (metaGetResult != null && metaGetResult.length > 0) {
       loginData = json.decode(metaGetResult);
       setState(() {
@@ -172,7 +170,7 @@ class _LoginWebViewState extends State<LoginWebView> {
           '  messageData.push({action: \'errorStatus\', msg: isError[1]});' +
           '}'*/
           ;
-      var a = await widget.controller.evaluateJavascript(source: toexecute);
+      var a = await widget.controller!.evaluateJavascript(source: toexecute);
       /* print("A" + a.toString());
       String toexecute3 =
           "(function(){var lMessData = window.messageData && window.messageData.length ? window.messageData.splice(0, window.messageData.length) : \'\';return lMessData ? JSON.stringify(lMessData) : \'\';})()";
@@ -184,13 +182,13 @@ class _LoginWebViewState extends State<LoginWebView> {
           '      estAppliMobile : true,' +
           '      avecExitApp : true,' +
           '      login : \'' +
-          loginStatus["login"].replaceAll("'", "\\'") +
+          loginStatus!["login"].replaceAll("'", "\\'") +
           '\',' +
           '      mdp : \'' +
-          loginStatus["mdp"] +
+          loginStatus!["mdp"] +
           '\',' +
           '      uuid : \'' +
-          appSys.settings["system"]["uuid"] +
+          appSys.settings!["system"]["uuid"] +
           '\',' +
           '    })' +
           '  }' +
@@ -206,11 +204,11 @@ class _LoginWebViewState extends State<LoginWebView> {
           '  };' +
           '  if(GApplication.smartAppBanner) \$(\'#\'+GApplication.smartAppBanner.id.escapeJQ()).remove();' +
           '  GInterface.traiterEvenementValidation(\'' +
-          loginStatus["login"].replaceAll("'", "\\'") +
+          loginStatus!["login"].replaceAll("'", "\\'") +
           '\', \'' +
-          loginStatus["mdp"] +
+          loginStatus!["mdp"] +
           '\', null, \'' +
-          appSys.settings["system"]["uuid"] +
+          appSys.settings!["system"]["uuid"] +
           '\');' +
           '}';
       /*  String amiajoketou = await widget.controller.evaluateJavascript(source: joker);
@@ -243,7 +241,7 @@ class _LoginWebViewState extends State<LoginWebView> {
   setCookie() async {
     print("Setting cookie");
     //generate UUID
-    await appSys.updateSetting(appSys.settings["system"], "uuid", uuid.v4());
+    await appSys.updateSetting(appSys.settings!["system"], "uuid", uuid.v4());
 
     //set cookie
     String cookieFunction = '(function(){try{' +
@@ -253,7 +251,7 @@ class _LoginWebViewState extends State<LoginWebView> {
         'if(!!lJetonCas) {' +
         'document.cookie = "validationAppliMobile="+lJetonCas+";expires=" + new Date(new Date().getTime() + (5*60*1000)).toUTCString();' +
         'document.cookie = "uuidAppliMobile=' +
-        appSys.settings["system"]["uuid"] +
+        appSys.settings!["system"]["uuid"] +
         ';expires=" + new Date(new Date().getTime() + (5*60*1000)).toUTCString();' +
         'document.cookie = "ielang=' +
         "1036" +
@@ -261,13 +259,13 @@ class _LoginWebViewState extends State<LoginWebView> {
         'return "ok";' +
         '} else return "ko";' +
         '} catch(e){return "ko";}})();';
-    String cookieFunctionResult = await widget.controller.evaluateJavascript(source: cookieFunction);
+    String? cookieFunctionResult = await (widget.controller!.evaluateJavascript(source: cookieFunction));
     if (cookieFunctionResult == "ok") {
-      String authFunction = 'location.assign("' + widget.url + '?fd=1")';
+      String authFunction = 'location.assign("' + widget.url! + '?fd=1")';
       setState(() {
         step = 4;
       });
-      String authFunctionResult = await widget.controller.evaluateJavascript(source: authFunction);
+      String? authFunctionResult = await (widget.controller!.evaluateJavascript(source: authFunction));
 
       stepper();
     }

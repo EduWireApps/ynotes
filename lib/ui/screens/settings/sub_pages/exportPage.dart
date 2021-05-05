@@ -83,12 +83,12 @@ class _ExportPageState extends State<ExportPage> {
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
                   onPressed: () async {
                     String data = await HiveBackUpManager(null).getBackUpFileData();
-                    Map decoded = jsonDecode(data);
+                    Map? decoded = jsonDecode(data);
                     if (decoded != null) {
                       //Try to import pinned homework
                       if (decoded["homework"] != null && decoded["homework"] != null) {
                         print("Importing homework");
-                        List<Homework> hw = List();
+                        List<Homework> hw = [];
                         jsonDecode(decoded["homework"]).forEach((e) {
                           hw.add(Homework.fromJson(e));
                         });
@@ -98,14 +98,14 @@ class _ExportPageState extends State<ExportPage> {
                       if (decoded["pinnedHomework"] != null && jsonDecode(decoded["pinnedHomework"]) != null) {
                         print("Importing pinned homework");
 
-                        Map dates = jsonDecode(decoded["pinnedHomework"]);
+                        Map? dates = jsonDecode(decoded["pinnedHomework"]);
                         await HiveBackUpManager(appSys.offline.pinnedHomeworkBox, dataToImport: dates).import();
                       }
 
                       //Try to import lessons
                       if (decoded["lessons"] != null && jsonDecode(decoded["reminders"]) != null) {
                         print("Importing lessons");
-                        Map lessons = jsonDecode(decoded["lessons"]);
+                        Map? lessons = jsonDecode(decoded["lessons"]);
                         await HiveBackUpManager(appSys.offline.pinnedHomeworkBox,
                                 dataToImport: lessons, subBoxName: "lessons")
                             .import();
@@ -113,7 +113,7 @@ class _ExportPageState extends State<ExportPage> {
                       //Try to import agenda events
                       if (decoded["agendaEvents"] != null && jsonDecode(decoded["agendaEvents"]) != null) {
                         print("Importing agenda events");
-                        Map agendaEvents = jsonDecode(decoded["agendaEvents"]);
+                        Map? agendaEvents = jsonDecode(decoded["agendaEvents"]);
                         await HiveBackUpManager(appSys.offline.pinnedHomeworkBox,
                                 dataToImport: agendaEvents, subBoxName: "agendaEvents")
                             .import();
@@ -121,7 +121,7 @@ class _ExportPageState extends State<ExportPage> {
                       //Try to import reminders
                       if (decoded["reminders"] != null && jsonDecode(decoded["reminders"]) != null) {
                         print("Importing reminders");
-                        List<AgendaReminder> reminders = List();
+                        List<AgendaReminder> reminders = [];
                         jsonDecode(decoded["reminders"]).forEach((e) {
                           reminders.add(AgendaReminder.fromJson(e));
                         });

@@ -10,8 +10,8 @@ import 'hsv_picker.dart';
 
 class HsvColorPicker extends StatefulWidget {
   const HsvColorPicker({
-    @required this.pickerColor,
-    @required this.onColorChanged,
+    required this.pickerColor,
+    required this.onColorChanged,
     this.paletteType: PaletteType.hsv,
     this.enableAlpha: true,
     this.showLabel: true,
@@ -27,7 +27,7 @@ class HsvColorPicker extends StatefulWidget {
   final PaletteType paletteType;
   final bool enableAlpha;
   final bool showLabel;
-  final TextStyle labelTextStyle;
+  final TextStyle? labelTextStyle;
   final bool displayThumbColor;
   final double colorPickerWidth;
   final double pickerAreaHeightPercent;

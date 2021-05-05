@@ -8,15 +8,15 @@ import 'package:ynotes/globals.dart';
 import 'fileUtils.dart';
 
 class HiveBackUpManager {
-  Box box;
-  final String subBoxName;
+  Box? box;
+  final String? subBoxName;
   final dataToImport;
   HiveBackUpManager(this.box, {this.subBoxName, this.dataToImport});
   export() {
     try {
       print("Exporting data");
       //getting map
-      Map map = this.box.toMap();
+      Map map = this.box!.toMap();
       var data;
       if (subBoxName != null) {
         data = map[subBoxName];
@@ -42,7 +42,7 @@ class HiveBackUpManager {
     //Old values
     Map map = Map();
     if (this.box != null) {
-      map = this.box.toMap();
+      map = this.box!.toMap();
 
       //New values (back up values)
       var data = this.dataToImport;
@@ -63,8 +63,8 @@ class HiveBackUpManager {
             data = finalData;
           }
         }
-        await this.box.delete(subBoxName);
-        await this.box.put(subBoxName, data);
+        await this.box!.delete(subBoxName);
+        await this.box!.put(subBoxName, data);
       } else {
         //Concatenate
         Map finalMap = {
@@ -72,9 +72,9 @@ class HiveBackUpManager {
           ...data,
         };
 
-        await this.box.clear();
+        await this.box!.clear();
 
-        await this.box.putAll(finalMap);
+        await this.box!.putAll(finalMap);
       }
       await appSys.offline.refreshData();
     }
@@ -96,7 +96,7 @@ class HiveBackUpManager {
     final params = OpenFileDialogParams(
       dialogType: OpenFileDialogType.document,
     );
-    final filePath = await FlutterFileDialog.pickFile(params: params);
+    final filePath = await (FlutterFileDialog.pickFile(params: params) as Future<String>);
     final File file = File(filePath);
     String data = await file.readAsString();
     return data;

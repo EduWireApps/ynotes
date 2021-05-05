@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class LoginPageTextField extends StatefulWidget {
-  final TextEditingController controller;
+  final TextEditingController? controller;
   final String hint;
   bool isObscured;
   final IconData icon;
@@ -14,7 +14,7 @@ class LoginPageTextField extends StatefulWidget {
     this.isObscured,
     this.icon,
     this.eyeButton, {
-    Key key,
+    Key? key,
   }) : super(key: key);
   @override
   _LoginPageTextFieldState createState() => _LoginPageTextFieldState();

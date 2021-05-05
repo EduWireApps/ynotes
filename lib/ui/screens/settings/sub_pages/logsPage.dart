@@ -1,12 +1,39 @@
-import 'package:ynotes/core/utils/fileUtils.dart';
-
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:ynotes/ui/components/dialogs.dart';
+import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/ui/components/dialogs.dart';
 
-import '../../../../usefulMethods.dart';
+Future<String> getFileData() async {
+  try {
+    final dir = await FolderAppUtil.getDirectory();
+    final File file = File('${dir.path}/logs.txt');
+    String toReturn = await file.readAsString();
+    return toReturn;
+  } catch (e) {
+    return "";
+  }
+}
+
+logFile(String error) async {
+  print("logging");
+  try {
+    final directory = await FolderAppUtil.getDirectory();
+    final File file = File('${directory.path}/logs.txt');
+    String existingText = await getFileData();
+    await file.writeAsString(DateTime.now().toString() + "\n" + error + "\n\n" + existingText, mode: FileMode.write);
+  } catch (e) {
+    print(e.toString());
+  }
+}
+
+removeLogFile() async {
+  print("Delete logs");
+  final directory = await FolderAppUtil.getDirectory();
+  final File file = File('${directory.path}/logs.txt');
+  await file.writeAsString("");
+}
 
 class LogsPage extends StatefulWidget {
   State<StatefulWidget> createState() {
@@ -26,8 +53,9 @@ class _LogsPageState extends State<LogsPage> {
             IconButton(
               icon: new Icon(Icons.delete),
               onPressed: () async {
-                if (await CustomDialogs.showConfirmationDialog(context, null,
-                    alternativeText: "Voulez vous vraiment supprimer l'intégralité des logs (irréversible) ?")) {
+                bool? val = await (CustomDialogs.showConfirmationDialog(context, null,
+                    alternativeText: "Voulez vous vraiment supprimer l'intégralité des logs (irréversible) ?"));
+                if (val ?? false) {
                   await removeLogFile();
                   setState(() {});
                 }
@@ -48,7 +76,7 @@ class _LogsPageState extends State<LogsPage> {
             removeTop: true,
             child: SingleChildScrollView(
               padding: EdgeInsets.zero,
-              child: FutureBuilder(
+              child: FutureBuilder<String>(
                   future: getFileData(),
                   builder: (BuildContext context, snapshot) {
                     if (snapshot.hasData) {
@@ -60,7 +88,7 @@ class _LogsPageState extends State<LogsPage> {
                                 padding: EdgeInsets.zero,
                                 reverse: true,
                                 child: SelectableText(
-                                  snapshot.data,
+                                  snapshot.data ?? "",
                                   style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                                 ),
                               )));
@@ -72,35 +100,4 @@ class _LogsPageState extends State<LogsPage> {
           ),
         ));
   }
-}
-
-Future<String> getFileData() async {
-  try {
-    final dir = await FolderAppUtil.getDirectory();
-    final File file = File('${dir.path}/logs.txt');
-    String toReturn = await file.readAsString();
-    return toReturn;
-  } catch (e) {
-    return "";
-  }
-}
-
-
-logFile(String error) async {
-  print("logging");
-  try {
-    final directory = await FolderAppUtil.getDirectory();
-    final File file = File('${directory.path}/logs.txt');
-    String existingText = await getFileData();
-    await file.writeAsString(DateTime.now().toString() + "\n" + error + "\n\n" + existingText, mode: FileMode.write);
-  } catch (e) {
-    print(e.toString());
-  }
-}
-
-removeLogFile() async {
-  print("Delete logs");
-  final directory = await FolderAppUtil.getDirectory();
-  final File file = File('${directory.path}/logs.txt');
-  await file.writeAsString("");
 }

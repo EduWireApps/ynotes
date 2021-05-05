@@ -26,7 +26,7 @@ class alarmTypeAdapter extends TypeAdapter<alarmType> {
       case 5:
         return alarmType.oneDay;
       default:
-        return null;
+        return alarmType.none;
     }
   }
 
@@ -76,18 +76,18 @@ class LessonAdapter extends TypeAdapter<Lesson> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Lesson(
-      room: fields[0] as String,
-      teachers: (fields[1] as List)?.cast<String>(),
-      start: fields[2] as DateTime,
-      duration: fields[4] as int,
-      canceled: fields[5] as bool,
-      status: fields[6] as String,
-      groups: (fields[7] as List)?.cast<String>(),
-      content: fields[8] as String,
-      discipline: fields[9] as String,
-      disciplineCode: fields[10] as String,
-      end: fields[3] as DateTime,
-      id: fields[11] as String,
+      room: fields[0] as String?,
+      teachers: (fields[1] as List?)?.cast<String?>(),
+      start: fields[2] as DateTime?,
+      duration: fields[4] as int?,
+      canceled: fields[5] as bool?,
+      status: fields[6] as String?,
+      groups: (fields[7] as List?)?.cast<String>(),
+      content: fields[8] as String?,
+      discipline: fields[9] as String?,
+      disciplineCode: fields[10] as String?,
+      end: fields[3] as DateTime?,
+      id: fields[11] as String?,
     );
   }
 
@@ -143,12 +143,12 @@ class AgendaReminderAdapter extends TypeAdapter<AgendaReminder> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return AgendaReminder(
-      fields[0] as String,
-      fields[1] as String,
-      fields[3] as alarmType,
-      fields[5] as String,
-      description: fields[2] as String,
-      tagColor: fields[4] as int,
+      fields[0] as String?,
+      fields[1] as String?,
+      fields[3] as alarmType?,
+      fields[5] as String?,
+      description: fields[2] as String?,
+      tagColor: fields[4] as int?,
     );
   }
 
@@ -192,23 +192,23 @@ class AgendaEventAdapter extends TypeAdapter<AgendaEvent> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return AgendaEvent(
-      fields[0] as DateTime,
-      fields[1] as DateTime,
-      fields[2] as String,
-      fields[3] as String,
-      fields[4] as double,
-      fields[5] as double,
-      fields[7] as bool,
-      fields[8] as String,
-      fields[6] as double,
-      wholeDay: fields[14] as bool,
-      isLesson: fields[10] as bool,
-      lesson: fields[11] as Lesson,
-      reminders: (fields[9] as List)?.cast<AgendaReminder>(),
-      description: fields[12] as String,
-      alarm: fields[13] as alarmType,
-      color: fields[15] as int,
-      recurrenceScheme: fields[16] as String,
+      fields[0] as DateTime?,
+      fields[1] as DateTime?,
+      fields[2] as String?,
+      fields[3] as String?,
+      fields[4] as double?,
+      fields[5] as double?,
+      fields[7] as bool?,
+      fields[8] as String?,
+      fields[6] as double?,
+      wholeDay: fields[14] as bool?,
+      isLesson: fields[10] as bool?,
+      lesson: fields[11] as Lesson?,
+      reminders: (fields[9] as List?)?.cast<AgendaReminder>(),
+      description: fields[12] as String?,
+      alarm: fields[13] as alarmType?,
+      color: fields[15] as int?,
+      recurrenceScheme: fields[16] as String?,
     );
   }
 
@@ -269,26 +269,29 @@ class AgendaEventAdapter extends TypeAdapter<AgendaEvent> {
 
 Lesson _$LessonFromJson(Map<String, dynamic> json) {
   return Lesson(
-    room: json['room'] as String,
-    teachers: (json['teachers'] as List).map((e) => e as String).toList(),
-    start: DateTime.parse(json['start'] as String),
-    duration: json['duration'] as int,
-    canceled: json['canceled'] as bool,
-    status: json['status'] as String,
-    groups: (json['groups'] as List).map((e) => e as String).toList(),
-    content: json['content'] as String,
-    discipline: json['discipline'] as String,
-    disciplineCode: json['disciplineCode'] as String,
-    end: DateTime.parse(json['end'] as String),
-    id: json['id'] as String,
+    room: json['room'] as String?,
+    teachers:
+        (json['teachers'] as List<dynamic>?)?.map((e) => e as String?).toList(),
+    start:
+        json['start'] == null ? null : DateTime.parse(json['start'] as String),
+    duration: json['duration'] as int?,
+    canceled: json['canceled'] as bool?,
+    status: json['status'] as String?,
+    groups:
+        (json['groups'] as List<dynamic>?)?.map((e) => e as String).toList(),
+    content: json['content'] as String?,
+    discipline: json['discipline'] as String?,
+    disciplineCode: json['disciplineCode'] as String?,
+    end: json['end'] == null ? null : DateTime.parse(json['end'] as String),
+    id: json['id'] as String?,
   );
 }
 
 Map<String, dynamic> _$LessonToJson(Lesson instance) => <String, dynamic>{
       'room': instance.room,
       'teachers': instance.teachers,
-      'start': instance.start.toIso8601String(),
-      'end': instance.end.toIso8601String(),
+      'start': instance.start?.toIso8601String(),
+      'end': instance.end?.toIso8601String(),
       'duration': instance.duration,
       'canceled': instance.canceled,
       'status': instance.status,
@@ -301,12 +304,12 @@ Map<String, dynamic> _$LessonToJson(Lesson instance) => <String, dynamic>{
 
 AgendaReminder _$AgendaReminderFromJson(Map<String, dynamic> json) {
   return AgendaReminder(
-    json['lessonID'] as String,
-    json['name'] as String,
-    _$enumDecode(_$alarmTypeEnumMap, json['alarm']),
-    json['id'] as String,
-    description: json['description'] as String,
-    tagColor: json['tagColor'] as int,
+    json['lessonID'] as String?,
+    json['name'] as String?,
+    _$enumDecodeNullable(_$alarmTypeEnumMap, json['alarm']),
+    json['id'] as String?,
+    description: json['description'] as String?,
+    tagColor: json['tagColor'] as int?,
   );
 }
 
@@ -320,25 +323,41 @@ Map<String, dynamic> _$AgendaReminderToJson(AgendaReminder instance) =>
       'id': instance.id,
     };
 
-T _$enumDecode<T>(
-  Map<T, dynamic> enumValues,
-  dynamic source, {
-  T unknownValue,
+K _$enumDecode<K, V>(
+  Map<K, V> enumValues,
+  Object? source, {
+  K? unknownValue,
 }) {
   if (source == null) {
-    throw ArgumentError('A value must be provided. Supported values: '
-        '${enumValues.values.join(', ')}');
+    throw ArgumentError(
+      'A value must be provided. Supported values: '
+      '${enumValues.values.join(', ')}',
+    );
   }
 
-  final value = enumValues.entries
-      .singleWhere((e) => e.value == source, orElse: () => null)
-      ?.key;
+  return enumValues.entries.singleWhere(
+    (e) => e.value == source,
+    orElse: () {
+      if (unknownValue == null) {
+        throw ArgumentError(
+          '`$source` is not one of the supported values: '
+          '${enumValues.values.join(', ')}',
+        );
+      }
+      return MapEntry(unknownValue, enumValues.values.first);
+    },
+  ).key;
+}
 
-  if (value == null && unknownValue == null) {
-    throw ArgumentError('`$source` is not one of the supported values: '
-        '${enumValues.values.join(', ')}');
+K? _$enumDecodeNullable<K, V>(
+  Map<K, V> enumValues,
+  dynamic source, {
+  K? unknownValue,
+}) {
+  if (source == null) {
+    return null;
   }
-  return value ?? unknownValue;
+  return _$enumDecode<K, V>(enumValues, source, unknownValue: unknownValue);
 }
 
 const _$alarmTypeEnumMap = {
@@ -352,32 +371,34 @@ const _$alarmTypeEnumMap = {
 
 AgendaEvent _$AgendaEventFromJson(Map<String, dynamic> json) {
   return AgendaEvent(
-    DateTime.parse(json['start'] as String),
-    DateTime.parse(json['end'] as String),
-    json['name'] as String,
-    json['location'] as String,
-    (json['left'] as num).toDouble(),
-    (json['height'] as num).toDouble(),
-    json['canceled'] as bool,
-    json['id'] as String,
-    (json['width'] as num).toDouble(),
-    wholeDay: json['wholeDay'] as bool,
-    isLesson: json['isLesson'] as bool,
-    lesson: Lesson.fromJson(json['lesson'] as Map<String, dynamic>),
-    reminders: (json['reminders'] as List)
-        .map((e) => AgendaReminder.fromJson(e as Map<String, dynamic>))
+    json['start'] == null ? null : DateTime.parse(json['start'] as String),
+    json['end'] == null ? null : DateTime.parse(json['end'] as String),
+    json['name'] as String?,
+    json['location'] as String?,
+    (json['left'] as num?)?.toDouble(),
+    (json['height'] as num?)?.toDouble(),
+    json['canceled'] as bool?,
+    json['id'] as String?,
+    (json['width'] as num?)?.toDouble(),
+    wholeDay: json['wholeDay'] as bool?,
+    isLesson: json['isLesson'] as bool?,
+    lesson: json['lesson'] == null
+        ? null
+        : Lesson.fromJson(json['lesson'] as Map<String, dynamic>),
+    reminders: (json['reminders'] as List<dynamic>?)
+        ?.map((e) => AgendaReminder.fromJson(e as Map<String, dynamic>))
         .toList(),
-    description: json['description'] as String,
-    alarm: _$enumDecode(_$alarmTypeEnumMap, json['alarm']),
-    color: json['color'] as int,
-    recurrenceScheme: json['recurrenceScheme'] as String,
+    description: json['description'] as String?,
+    alarm: _$enumDecodeNullable(_$alarmTypeEnumMap, json['alarm']),
+    color: json['color'] as int?,
+    recurrenceScheme: json['recurrenceScheme'] as String?,
   );
 }
 
 Map<String, dynamic> _$AgendaEventToJson(AgendaEvent instance) =>
     <String, dynamic>{
-      'start': instance.start.toIso8601String(),
-      'end': instance.end.toIso8601String(),
+      'start': instance.start?.toIso8601String(),
+      'end': instance.end?.toIso8601String(),
       'name': instance.name,
       'location': instance.location,
       'left': instance.left,

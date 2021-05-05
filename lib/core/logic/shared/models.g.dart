@@ -17,10 +17,10 @@ class DocumentAdapter extends TypeAdapter<Document> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Document(
-      fields[0] as String,
-      fields[1] as String,
-      fields[2] as String,
-      fields[3] as int,
+      fields[0] as String?,
+      fields[1] as String?,
+      fields[2] as String?,
+      fields[3] as int?,
     );
   }
 
@@ -55,10 +55,10 @@ class DocumentAdapter extends TypeAdapter<Document> {
 
 Document _$DocumentFromJson(Map<String, dynamic> json) {
   return Document(
-    json['documentName'] as String,
-    json['id'] as String,
-    json['type'] as String,
-    json['length'] as int,
+    json['documentName'] as String?,
+    json['id'] as String?,
+    json['type'] as String?,
+    json['length'] as int?,
   );
 }
 

@@ -20,23 +20,23 @@ class ThemeUtils {
     }
   }
 
-  static get isThemeDark => appSys.themeName.contains("sombre");
+  static get isThemeDark => appSys.themeName!.contains("sombre");
   Color test() => Colors.blue;
 
   ///Make the selected color darker
-  static Color darken(Color color, {double forceAmount}) {
+  static Color darken(Color color, {double? forceAmount}) {
     double amount = 0.05;
-    var ColorTest = TinyColor(color);
+    var colorTest = TinyColor(color);
     //Test if the color is not too light
     if (forceAmount == null) {
-      if (ColorTest.isLight()) {
+      if (colorTest.isLight()) {
         amount = 0.2;
       }
       //Test if the color is something like yellow
-      if (ColorTest.getLuminance() > 0.5) {
+      if (colorTest.getLuminance() > 0.5) {
         amount = 0.2;
       }
-      if (ColorTest.getLuminance() < 0.5) {
+      if (colorTest.getLuminance() < 0.5) {
         amount = 0.18;
       }
     } else {

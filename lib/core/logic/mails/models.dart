@@ -14,18 +14,18 @@ class Mail {
   final to;
   //E.G : "Coronavirus school prank"
   final String subject;
-  final String date;
-  final String content;
-  final List<Document> files;
+  final String? date;
+  final String? content;
+  final List<Document>? files;
   Mail(this.id, this.mtype, this.read, this.idClasseur, this.from, this.subject, this.date,
       {this.content, this.to, this.files});
 }
 
 class Classeur {
   //E.G: "Mails Maths"
-  final String libelle;
+  final String? libelle;
   //E.G : "128"
-  final int id;
+  final int? id;
 
   Classeur(this.libelle, this.id);
 }
@@ -33,14 +33,14 @@ class Classeur {
 @HiveType(typeId: 9)
 class Recipient {
   @HiveField(0)
-  final String name;
+  final String? name;
   @HiveField(1)
-  final String surname;
+  final String? surname;
   @HiveField(2)
-  final String id;
+  final String? id;
   @HiveField(3)
-  final String discipline;
+  final String? discipline;
   @HiveField(4)
-  final bool isTeacher;
+  final bool? isTeacher;
   Recipient(this.name, this.surname, this.id, this.isTeacher, this.discipline);
 }

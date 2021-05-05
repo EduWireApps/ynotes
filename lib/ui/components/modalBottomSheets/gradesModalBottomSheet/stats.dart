@@ -3,20 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 
 class ImpactStat extends StatefulWidget {
-  final double impact;
-  final String label;
+  final double? impact;
+  final String? label;
 
-  const ImpactStat({Key key, this.impact, this.label}) : super(key: key);
+  const ImpactStat({Key? key, this.impact, this.label}) : super(key: key);
   @override
   _ImpactState createState() => _ImpactState();
 }
 
 class _ImpactState extends State<ImpactStat> {
   getAdaptedColor() {
-    if (widget.impact.isNaN || widget.impact == null || widget.impact == 0) {
+    if (widget.impact!.isNaN || widget.impact == null || widget.impact == 0) {
       return Colors.grey;
     }
-    if (widget.impact < 0) {
+    if (widget.impact! < 0) {
       return Colors.orange;
     } else {
       return Colors.green;
@@ -24,10 +24,10 @@ class _ImpactState extends State<ImpactStat> {
   }
 
   getText() {
-    if (widget.impact.isNaN || widget.impact == null || widget.impact == 0) {
+    if (widget.impact!.isNaN || widget.impact == null || widget.impact == 0) {
       return "+0.0";
     } else {
-      return (widget.impact < 0 ? "" : "+") + widget.impact.toStringAsFixed(1);
+      return (widget.impact! < 0 ? "" : "+") + widget.impact!.toStringAsFixed(1);
     }
   }
 

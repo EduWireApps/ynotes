@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart' as ptr;
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/agenda/addEvent.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
@@ -26,7 +25,7 @@ class Agenda extends StatefulWidget {
 bool extended = false;
 
 class _AgendaState extends State<Agenda> {
-  List<FileInfo> listFiles;
+  List<FileInfo>? listFiles;
   @override
   void initState() {
     if (agendaDate == null) {
@@ -39,17 +38,15 @@ class _AgendaState extends State<Agenda> {
   }
 
   //Force get date
-  getLessons(DateTime date) async {
+  getLessons(DateTime? date) async {
     await refreshAgendaFutures(force: false);
   }
 
   Future<void> refreshAgendaFutures({bool force = true}) async {
     if (mounted) {
       setState(() {
-        spaceAgendaFuture =
-            appSys.api.getEvents(agendaDate, true, forceReload: force);
-        agendaFuture =
-            appSys.api.getEvents(agendaDate, false, forceReload: false);
+        spaceAgendaFuture = appSys.api!.getEvents(agendaDate!, true, forceReload: force);
+        agendaFuture = appSys.api!.getEvents(agendaDate!, false, forceReload: false);
       });
     }
     var realSAF = await agendaFuture;
@@ -59,8 +56,8 @@ class _AgendaState extends State<Agenda> {
   Future<void> refreshAgendaFuture() async {
     if (mounted) {
       setState(() {
-        spaceAgendaFuture = appSys.api.getEvents(agendaDate, true);
-        agendaFuture = appSys.api.getEvents(agendaDate, false);
+        spaceAgendaFuture = appSys.api!.getEvents(agendaDate!, true);
+        agendaFuture = appSys.api!.getEvents(agendaDate!, false);
       });
     }
     var realAF = await spaceAgendaFuture;
@@ -92,11 +89,11 @@ class _AgendaState extends State<Agenda> {
 
   _buildActualLesson(BuildContext context, Lesson lesson) {
     MediaQueryData screenSize = MediaQuery.of(context);
-    return FutureBuilder(
+    return FutureBuilder<int>(
         future: getColor(lesson.disciplineCode),
         initialData: 0,
         builder: (context, snapshot) {
-          Color color = Color(snapshot.data);
+          Color color = Color((snapshot.data) ?? 0);
           return Container(
             width: screenSize.size.width / 5 * 4.5,
             
@@ -122,26 +119,20 @@ class _AgendaState extends State<Agenda> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
-                                lesson.discipline,
-                                style: TextStyle(
-                                    fontFamily: "Asap",
-                                    fontWeight: FontWeight.w800),
+                                lesson.discipline!,
+                                style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w800),
                                 maxLines: 4,
                                 textAlign: TextAlign.center,
                               ),
                               Text(
-                                lesson.teachers[0],
-                                style: TextStyle(
-                                    fontFamily: "Asap",
-                                    fontWeight: FontWeight.w600),
+                                lesson.teachers![0]!,
+                                style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w600),
                                 textAlign: TextAlign.center,
                                 maxLines: 4,
                               ),
                               Text(
-                                lesson.room,
-                                style: TextStyle(
-                                    fontFamily: "Asap",
-                                    fontWeight: FontWeight.w500),
+                                lesson.room!,
+                                style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w500),
                                 textAlign: TextAlign.center,
                                 maxLines: 4,
                               ),
@@ -163,7 +154,7 @@ class _AgendaState extends State<Agenda> {
                           child: Row(
                             children: [
                               Text(
-                                DateFormat.Hm().format(lesson.start),
+                                DateFormat.Hm().format(lesson.start!),
                                 style: TextStyle(
                                     fontFamily: "Asap",
                                     fontWeight: FontWeight.bold,
@@ -172,7 +163,7 @@ class _AgendaState extends State<Agenda> {
                               Icon(MdiIcons.arrowRight,
                                   color: ThemeUtils.textColor()),
                               Text(
-                                DateFormat.Hm().format(lesson.end),
+                                DateFormat.Hm().format(lesson.end!),
                                 style: TextStyle(
                                     fontFamily: "Asap",
                                     fontWeight: FontWeight.bold,
@@ -203,7 +194,6 @@ class _AgendaState extends State<Agenda> {
     // monitor network fetch
     await Future.delayed(Duration(milliseconds: 1000));
     // if failed,use refreshFailed()
-    _refreshController.refreshCompleted();
   }
 
   void _onLoading() async {
@@ -213,8 +203,6 @@ class _AgendaState extends State<Agenda> {
   }
 
   List<String> items = ["1", "2", "3", "4", "5", "6", "7", "8"];
-  ptr.RefreshController _refreshController =
-      ptr.RefreshController(initialRefresh: false);
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
@@ -247,12 +235,12 @@ class _AgendaState extends State<Agenda> {
                           height: screenSize.size.height / 10 * 8,
                           child: Stack(
                             children: [
-                              FutureBuilder(
+                              FutureBuilder<List<AgendaEvent>?>(
                                   future: agendaFuture,
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData &&
                                         snapshot.data != null &&
-                                        snapshot.data.length != 0) {
+                                        (snapshot.data ?? []).length != 0) {
                                       return RefreshIndicator(
                                           onRefresh: refreshAgendaFutures,
                                           child: AgendaGrid(
@@ -260,8 +248,7 @@ class _AgendaState extends State<Agenda> {
                                             initState,
                                           ));
                                     }
-                                    if (snapshot.data != null &&
-                                        snapshot.data.length == 0) {
+                                    if (snapshot.data != null && snapshot.data!.length == 0) {
                                       return Center(
                                         child: FittedBox(
                                           child: Column(
@@ -369,22 +356,20 @@ class _AgendaState extends State<Agenda> {
   }
 }
 
-Lesson getCurrentLesson(List<Lesson> lessons, {DateTime now}) {
-  List<Lesson> dailyLessons = List();
-  Lesson lesson;
+Lesson? getCurrentLesson(List<Lesson>? lessons, {DateTime? now}) {
+  List<Lesson> dailyLessons = [];
+  Lesson? lesson;
   if (lessons != null) {
     dailyLessons = lessons
         .where((lesson) =>
-            DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) ==
-            DateTime.parse(
-                DateFormat("yyyy-MM-dd").format(now ?? DateTime.now())))
+            DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start!)) ==
+            DateTime.parse(DateFormat("yyyy-MM-dd").format(now ?? DateTime.now())))
         .toList();
     if (dailyLessons != null && dailyLessons.length != 0) {
       //Get current lesson
       try {
         lesson = dailyLessons.firstWhere((lesson) =>
-            (now ?? DateTime.now()).isBefore(lesson.end) &&
-            (now ?? DateTime.now()).isAfter(lesson.start));
+            (now ?? DateTime.now()).isBefore(lesson.end!) && (now ?? DateTime.now()).isAfter(lesson.start!));
       } catch (e) {
         print(lessons);
       }
@@ -398,21 +383,20 @@ Lesson getCurrentLesson(List<Lesson> lessons, {DateTime now}) {
   }
 }
 
-getNextLesson(List<Lesson> lessons) {
-  List<Lesson> dailyLessons = List();
-  Lesson lesson;
+getNextLesson(List<Lesson>? lessons) {
+  List<Lesson> dailyLessons = [];
+  Lesson? lesson;
   if (lessons != null) {
     dailyLessons = lessons
         .where((lesson) =>
-            DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start)) ==
+            DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start!)) ==
             DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now())))
         .toList();
     if (dailyLessons != null && dailyLessons.length != 0) {
       //Get current lesson
       try {
-        dailyLessons.sort((a, b) => a.start.compareTo(b.start));
-        lesson = dailyLessons
-            .firstWhere((lesson) => DateTime.now().isBefore(lesson.start));
+        dailyLessons.sort((a, b) => a.start!.compareTo(b.start!));
+        lesson = dailyLessons.firstWhere((lesson) => DateTime.now().isBefore(lesson.start!));
       } catch (e) {
         print(e.toString());
       }

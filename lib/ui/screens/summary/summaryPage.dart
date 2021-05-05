@@ -14,7 +14,7 @@ import 'package:ynotes/ui/screens/summary/summaryPageWidgets/quickGrades.dart';
 import 'package:ynotes/ui/screens/summary/summaryPageWidgets/quickHomework.dart';
 import 'package:ynotes/ui/screens/summary/summaryPageWidgets/summaryPageSettings.dart';
 
-Future donePercentFuture;
+Future? donePercentFuture;
 
 bool firstStart = true;
 GlobalKey _gradeChartGB = GlobalKey();
@@ -24,10 +24,10 @@ GlobalKey _quickGradeGB = GlobalKey();
 
 ///First page to access quickly to last grades, homework and
 class SummaryPage extends StatefulWidget {
-  final Function switchPage;
+  final Function? switchPage;
 
   const SummaryPage({
-    Key key,
+    Key? key,
     this.switchPage,
   }) : super(key: key);
   State<StatefulWidget> createState() {
@@ -36,11 +36,11 @@ class SummaryPage extends StatefulWidget {
 }
 
 class SummaryPageState extends State<SummaryPage> {
-  double actualPage;
-  PageController _pageControllerSummaryPage;
-  PageController todoSettingsController;
+  double? actualPage;
+  late PageController _pageControllerSummaryPage;
+  PageController? todoSettingsController;
   bool done2 = false;
-  double offset;
+  double? offset;
   ExpandableController alertExpandableDialogController = ExpandableController();
   PageController summarySettingsController = PageController(initialPage: 1);
 
@@ -84,12 +84,10 @@ class SummaryPageState extends State<SummaryPage> {
                       separator(context, "Notes"),
                       QuickGrades(
                         switchPage: widget.switchPage,
-                        gradesController: appSys.gradesController,
                       ),
                       separator(context, "Devoirs"),
                       QuickHomework(
                         switchPage: widget.switchPage,
-                        hwcontroller: appSys.homeworkController,
                       )
                     ],
                   ),
@@ -115,22 +113,23 @@ class SummaryPageState extends State<SummaryPage> {
         offset = _pageControllerSummaryPage.offset;
       });
     });
-
-    SchedulerBinding.instance.addPostFrameCallback(!mounted
-        ? null
-        : (_) => {
-              initLoginController().then((var f) {
-                if (firstStart == true) {
-                  firstStart = false;
-                }
-              })
-            });
-
     //Init controllers
     appSys.gradesController.refresh(force: false);
     appSys.homeworkController.refresh(force: false);
-    appSys.gradesController.refresh(force: true);
-    appSys.homeworkController.refresh(force: true);
+    SchedulerBinding.instance!.addPostFrameCallback((!mounted
+        ? null
+        : (_) => {
+              if (firstStart)
+                {
+                  initLoginController().then((var f) {
+                    if (firstStart) {
+                      firstStart = false;
+                    }
+                    appSys.gradesController.refresh(force: true);
+                    appSys.homeworkController.refresh(force: true);
+                  })
+                }
+            })!);
   }
 
   Future<void> refreshControllers() async {
@@ -163,9 +162,9 @@ class SummaryPageState extends State<SummaryPage> {
   }
 
   showUpdateNote() async {
-    if ((appSys.settings["system"]["lastReadUpdateNote"] != "0.10")) {
+    if ((appSys.settings!["system"]["lastReadUpdateNote"] != "0.10")) {
       await CustomDialogs.showUpdateNoteDialog(context);
-      appSys.updateSetting(appSys.settings["system"], "lastReadUpdateNote", "0.10");
+      appSys.updateSetting(appSys.settings!["system"], "lastReadUpdateNote", "0.10");
     }
   }
 
