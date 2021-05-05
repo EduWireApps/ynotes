@@ -156,6 +156,11 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                       return ChangeNotifierProvider<LoginController>.value(
                         value: appSys.loginController,
                         child: Consumer<LoginController>(builder: (context, model, child) {
+                          if (model.actualState != loginStatus.loggedIn) {
+                            showLoginControllerStatusController.forward();
+                          } else {
+                            showLoginControllerStatusController.reverse();
+                          }
                           return buildPageWithHeader(model, child: entries()[index]["page"]);
                         }),
                       );
@@ -193,7 +198,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                         loginStatus.error: Color(0xffF87171),
                         loginStatus.offline: Color(0xffFCD34D),
                       }),
-                      height: screenSize.size.height / 10 * 0.4 * showLoginControllerStatus.value,
+                      height: screenSize.size.height / 10 * 0.4 * (1 - showLoginControllerStatus.value),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -349,14 +354,6 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
       end: 0.0,
     ).animate(new CurvedAnimation(
         parent: showLoginControllerStatusController, curve: Interval(0.1, 1.0, curve: Curves.fastOutSlowIn)));
-
-    //Define a controller in order to control  quick menu animation
-    quickMenuAnimationController = AnimationController(vsync: this, duration: Duration(milliseconds: 300));
-    quickMenuButtonAnimation = new Tween(
-      begin: 1.0,
-      end: 1.3,
-    ).animate(
-        new CurvedAnimation(parent: quickMenuAnimationController, curve: Curves.easeIn, reverseCurve: Curves.easeOut));
   }
 
   @override
