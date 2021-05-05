@@ -310,8 +310,7 @@ class APIEcoleDirecte extends API {
           } else {
             return [0, "Impossible de collecter les comptes."];
           }
-          actualUser = req['data']['accounts'][0]['prenom'] ?? "Invité";
-          CreateStorage("userFullName", actualUser);
+
           String userID = req['data']['accounts'][0]['id'].toString();
           String classe;
           try {
@@ -339,7 +338,7 @@ class APIEcoleDirecte extends API {
           logFile(e.toString());
         }
         this.loggedIn = true;
-        return [1, "Bienvenue ${actualUser[0].toUpperCase()}${actualUser.substring(1).toLowerCase()} !"];
+        return [1, "Bienvenue ${appSys.account?.name ?? "Invité"} !"];
       }
       //Return an error
       else {

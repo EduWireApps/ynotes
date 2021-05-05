@@ -158,7 +158,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                               color: ThemeUtils.isThemeDark
                                   ? Colors.white.withOpacity(0.7)
                                   : Colors.black.withOpacity(0.7)),
-                          subtitle: '${actualUser.length > 0 ? actualUser : "Invité"}',
+                          subtitle: '${appSys.currentSchoolAccount?.name ?? "Invité"}',
                           leading: Icon(MdiIcons.account, color: ThemeUtils.textColor()),
                           trailing: Icon(Icons.chevron_right, color: ThemeUtils.textColor()),
                           onTap: () {
@@ -167,18 +167,6 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                             }
                           },
                           iosChevron: Icon(Icons.chevron_right)),
-                      SettingsTile(
-                        title: 'Déconnexion',
-                        titleTextStyle: TextStyle(fontFamily: "Asap", color: Colors.red),
-                        leading: Icon(
-                          MdiIcons.logout,
-                          color: Colors.red,
-                        ),
-                        iosChevron: Icon(Icons.chevron_right),
-                        onTap: () {
-                          showExitDialog(context);
-                        },
-                      )
                     ],
                   ),
                   SettingsSection(
@@ -542,19 +530,11 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
     super.dispose();
   }
 
-  void getUsername() async {
-    var actualUserAsync = await ReadStorage("userFullName");
-    setState(() {
-      actualUser = actualUserAsync ?? "";
-    });
-  }
-
   @override
   void initState() {
     setState(() {
       isFirstAvatarSelected = true;
     });
-    getUsername();
     super.initState();
     leftToRightAnimation = AnimationController(duration: Duration(milliseconds: 800), vsync: this);
     rightToLeftAnimation = AnimationController(duration: Duration(milliseconds: 800), vsync: this);

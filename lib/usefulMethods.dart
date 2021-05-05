@@ -10,7 +10,6 @@ import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/globals.dart';
 
-String actualUser = "";
 
 //Parsers list
 ///Color theme switcher, actually 0 for darkmode and 1 for lightmode

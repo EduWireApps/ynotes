@@ -19,7 +19,6 @@ import 'package:ynotes/core/logic/shared/loginController.dart';
 import 'package:ynotes/core/utils/nullSafeMap.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/tests.dart';
-import 'package:ynotes/usefulMethods.dart';
 
 import '../EcoleDirecte.dart';
 import '../utils.dart';
@@ -996,7 +995,6 @@ class PronoteClient {
             try {
               CreateStorage("classe", mapGet(paramsUser, ['donneesSec', 'donnees', 'ressource', "classeDEleve", "L"]));
               CreateStorage("userFullName", mapGet(paramsUser, ['donneesSec', 'donnees', 'ressource', "L"]));
-              actualUser = (mapGet(paramsUser, ['donneesSec', 'donnees', 'ressource', "L"]) ?? "");
             } catch (e) {
               this.stepsLogger.add("❌ Failed to register UserInfos");
 

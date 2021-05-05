@@ -16,7 +16,6 @@ import 'package:ynotes/core/utils/nullSafeMap.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/screens/settings/settingsPage.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
-import 'package:ynotes/usefulMethods.dart';
 
 bool gradeLock = false;
 //Locks are use to prohibit the app to send too much requests while collecting data and ensure there are made one by one
@@ -223,7 +222,7 @@ class APIPronote extends API {
           loginLock = false;
           pronoteMethod = PronoteMethod(localClient, this.offlineController);
 
-          return ([1, "Bienvenue $actualUser!"]);
+          return ([1, "Bienvenue ${appSys.account?.name ?? "Invité"}!"]);
         } else {
           loginLock = false;
           return ([
