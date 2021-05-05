@@ -27,6 +27,7 @@ class LoginStatus extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
+  List<bool?> expanded = List.filled((appSys.account!.managableAccounts ?? []).length, false);
   bool isExpanded = false;
   @override
   Widget build(BuildContext context) {
@@ -54,11 +55,12 @@ class _AccountPageState extends State<AccountPage> {
                               expandedHeaderPadding: EdgeInsets.zero,
                               expansionCallback: (index, newVal) {
                                 setState(() {
-                                  isExpanded = !newVal;
+                                  expanded[index] = newVal;
                                 });
                               },
                               children: (appSys.account!.managableAccounts ?? [])
-                                  .map((e) => buildAccountDetail(e))
+                                  .map((e) =>
+                                      buildAccountDetail(e, (appSys.account!.managableAccounts ?? []).indexOf(e)))
                                   .toList())),
                     ),
                     CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.45, () async {
@@ -120,12 +122,12 @@ class _AccountPageState extends State<AccountPage> {
     );
   }
 
-  ExpansionPanel buildAccountDetail(SchoolAccount account) {
+  ExpansionPanel buildAccountDetail(SchoolAccount account, int index) {
     MediaQueryData screenSize = MediaQuery.of(context);
 
     return ExpansionPanel(
         backgroundColor: Theme.of(context).primaryColorDark,
-        isExpanded: isExpanded,
+        isExpanded: expanded[index] ?? false,
         canTapOnHeader: true,
         headerBuilder: (context, index) {
           return Center(
@@ -314,7 +316,7 @@ class _LoginStatusState extends State<LoginStatus> {
   String apiIssues = "Il se peut que votre système scolaire rencontre des problèmes !";
 
   String errorExplanation =
-      "Consultez l'erreur suivante. Reconnectez-vous maintenant ou dans quelques minutes. Si rien ne change, consultez le support avec le bouton ci-dessous.";
+      "Consultez l'erreur suivante. Reconnectez-vous maintenant ou dans quelques minutes. Si rien ne change, Contactez le support avec le bouton ci-dessous.";
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
@@ -434,7 +436,7 @@ class _LoginStatusState extends State<LoginStatus> {
       color: case2(model.actualState, {
         loginStatus.loggedIn: Color(0xff4ADE80),
         loginStatus.loggedOff: Color(0xffA8A29E),
-        loginStatus.error: Color(0xffEF4444),
+        loginStatus.error: Color(0xffF87171),
         loginStatus.offline: Color(0xffFCD34D),
       }),
       child: Column(
@@ -458,7 +460,7 @@ class _LoginStatusState extends State<LoginStatus> {
                             case2(model.actualState, {
                               loginStatus.loggedIn: Color(0xff4ADE80),
                               loginStatus.loggedOff: Color(0xffA8A29E),
-                              loginStatus.error: Color(0xffEF4444),
+                              loginStatus.error: Color(0xffF87171),
                               loginStatus.offline: Color(0xffFCD34D),
                             }) as Color,
                             forceAmount: 0.15)),

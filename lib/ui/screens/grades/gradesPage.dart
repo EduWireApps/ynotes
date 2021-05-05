@@ -51,290 +51,280 @@ class _GradesPageState extends State<GradesPage> {
                     Column(mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
                       ///Button container
 
-                      Card(
-                        margin: EdgeInsets.zero,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
-                        color: Theme.of(context).backgroundColor,
-                        child: Column(
-                          children: [
-                            Container(
-                              padding: EdgeInsets.only(top: (screenSize.size.height / 10 * 8.8) / 10 * 1 / 6),
-                              height: screenSize.size.height / 10 * 0.7,
-                              width: screenSize.size.width,
-                              decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
-                                border: Border.all(width: 0.00000, color: Colors.transparent),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Container(
-                                    height: screenSize.size.height / 10 * 9,
-                                    width: (screenSize.size.width / 5) * 2.2,
-                                    padding: EdgeInsets.symmetric(horizontal: (screenSize.size.width / 5) * 0.4),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-                                      color: Theme.of(context).primaryColor,
-                                    ),
-                                    child: FittedBox(
-                                      fit: BoxFit.fitWidth,
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                        children: <Widget>[
-                                          Theme(
-                                              data: Theme.of(context).copyWith(
-                                                canvasColor: Theme.of(context).primaryColor,
-                                              ),
-                                              child: (model.periods == null ||
-                                                      model.period == "" ||
-                                                      model.periods!.length == 0)
-                                                  ? Container(
-                                                      child: Text(
-                                                        "Pas de periode",
-                                                        style: TextStyle(
-                                                            fontFamily: "Asap", color: ThemeUtils.textColor()),
-                                                      ),
-                                                    )
-                                                  : DropdownButtonHideUnderline(
-                                                      child: DropdownButton<String>(
-                                                        value: model.period,
-                                                        iconSize: 0.0,
-                                                        style: TextStyle(
-                                                            fontSize: 18,
-                                                            fontFamily: "Asap",
-                                                            color: ThemeUtils.textColor()),
-                                                        onChanged: (String? newValue) {
-                                                          model.period = newValue;
-                                                        },
-                                                        focusColor: Theme.of(context).primaryColor,
-                                                        items: model.periods!
-                                                            .toSet()
-                                                            .map<DropdownMenuItem<String>>((Period period) {
-                                                          return DropdownMenuItem<String>(
-                                                            value: period != null ? period.name : "-",
-                                                            child: Text(
-                                                              period != null ? period.name! : "-",
-                                                              textAlign: TextAlign.center,
-                                                              style: TextStyle(
-                                                                  fontSize: 18,
-                                                                  fontFamily: "Asap",
-                                                                  color: ThemeUtils.textColor()),
-                                                            ),
-                                                          );
-                                                        }).toList(),
-                                                      ),
-                                                    ))
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(left: (screenSize.size.height / 10 * 8.8) / 10 * 0.1),
-                                    child: Material(
-                                      color: Theme.of(context).primaryColor,
-                                      borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-                                      child: InkWell(
-                                        borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-                                        onTap: () {
-                                          openSortBox(model);
-                                        },
-                                        child: Container(
-                                            height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
-                                            padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
-                                            child: FittedBox(
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: <Widget>[
-                                                  Icon(
-                                                    Icons.settings,
-                                                    color: ThemeUtils.textColor(),
+                      Expanded(
+                        flex: 1,
+                        child: Container(
+                          padding: EdgeInsets.only(top: (screenSize.size.height / 10 * 8.8) / 10 * 1 / 6),
+                          width: screenSize.size.width,
+                          decoration: BoxDecoration(
+                            borderRadius:
+                                BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
+                            border: Border.all(width: 0.00000, color: Colors.transparent),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Container(
+                                height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
+                                width: (screenSize.size.width / 5) * 2.2,
+                                padding: EdgeInsets.symmetric(horizontal: (screenSize.size.width / 5) * 0.4),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                                child: FittedBox(
+                                  fit: BoxFit.fitWidth,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: <Widget>[
+                                      Theme(
+                                          data: Theme.of(context).copyWith(
+                                            canvasColor: Theme.of(context).primaryColor,
+                                          ),
+                                          child: (model.periods == null ||
+                                                  model.period == "" ||
+                                                  model.periods!.length == 0)
+                                              ? Container(
+                                                  child: Text(
+                                                    "Pas de periode",
+                                                    style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                                                   ),
-                                                  Text(
-                                                    "Trier",
+                                                )
+                                              : DropdownButtonHideUnderline(
+                                                  child: DropdownButton<String>(
+                                                    value: model.period,
+                                                    iconSize: 0.0,
                                                     style: TextStyle(
-                                                      fontFamily: "Asap",
-                                                      color: ThemeUtils.textColor(),
-                                                    ),
+                                                        fontSize: 18,
+                                                        fontFamily: "Asap",
+                                                        color: ThemeUtils.textColor()),
+                                                    onChanged: (String? newValue) {
+                                                      model.period = newValue;
+                                                    },
+                                                    focusColor: Theme.of(context).primaryColor,
+                                                    items: model.periods!
+                                                        .toSet()
+                                                        .map<DropdownMenuItem<String>>((Period period) {
+                                                      return DropdownMenuItem<String>(
+                                                        value: period != null ? period.name : "-",
+                                                        child: Text(
+                                                          period != null ? period.name! : "-",
+                                                          textAlign: TextAlign.center,
+                                                          style: TextStyle(
+                                                              fontSize: 18,
+                                                              fontFamily: "Asap",
+                                                              color: ThemeUtils.textColor()),
+                                                        ),
+                                                      );
+                                                    }).toList(),
                                                   ),
-                                                ],
-                                              ),
-                                            )),
-                                      ),
-                                    ),
+                                                ))
+                                    ],
                                   ),
-
-                                  //For now only enable simulator on debug mode
-                                  Container(
-                                    margin: EdgeInsets.only(left: (screenSize.size.height / 10 * 8.8) / 10 * 0.1),
-                                    child: Material(
-                                      color: model.isSimulating ? Colors.blue : Theme.of(context).primaryColor,
-                                      borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-                                      child: InkWell(
-                                        borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-                                        onTap: () {
-                                          model.isSimulating = !model.isSimulating;
-                                        },
-                                        child: Container(
-                                            height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
-                                            padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
-                                            child: FittedBox(
-                                              child: Row(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: <Widget>[
-                                                  Icon(
-                                                    MdiIcons.flask,
-                                                    color: ThemeUtils.textColor(),
-                                                  ),
-                                                ],
-                                              ),
-                                            )),
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                                ),
                               ),
-                            ),
+                              Container(
+                                margin: EdgeInsets.only(left: (screenSize.size.height / 10 * 8.8) / 10 * 0.1),
+                                child: Material(
+                                  color: Theme.of(context).primaryColor,
+                                  borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                                  child: InkWell(
+                                    borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                                    onTap: () {
+                                      openSortBox(model);
+                                    },
+                                    child: Container(
+                                        height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
+                                        padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
+                                        child: FittedBox(
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              Icon(
+                                                Icons.settings,
+                                                color: ThemeUtils.textColor(),
+                                              ),
+                                              Text(
+                                                "Trier",
+                                                style: TextStyle(
+                                                  fontFamily: "Asap",
+                                                  color: ThemeUtils.textColor(),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        )),
+                                  ),
+                                ),
+                              ),
 
-                            ///Grades container
-
-                            RefreshIndicator(
-                                onRefresh: forceRefreshGrades,
-                                child: Container(
-                                    width: screenSize.size.width / 5 * 4.7,
-                                    padding: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
-                                    height: screenSize.size.height / 10 * 6.7,
-                                    margin: EdgeInsets.only(top: 0),
-                                    decoration: BoxDecoration(
-                                        border: Border.all(width: 0.000000, color: Colors.transparent),
-                                        borderRadius: BorderRadius.only(
-                                          bottomLeft: Radius.circular(15),
-                                          bottomRight: Radius.circular(15),
-                                        ),
-                                        color: Theme.of(context).backgroundColor),
-                                    child: Stack(
-                                      children: [
-                                        ClipRRect(
-                                          borderRadius: BorderRadius.circular(0),
-                                          child: Consumer<GradesController>(builder: (context, model, child) {
-                                            if (!model.isFetching) {
-                                              if (model
-                                                  .disciplines()!
-                                                  .any((Discipline element) => (element.gradesList!.length > 0))) {
-                                                return Column(
-                                                  children: [
-                                                    if (model.isSimulating) _buildResetButton(model),
-                                                    Expanded(
-                                                      child: Container(
-                                                        child: ListView.builder(
-                                                            physics: AlwaysScrollableScrollPhysics(),
-                                                            itemCount: model.disciplines()!.length,
-                                                            padding: EdgeInsets.symmetric(
-                                                                vertical: screenSize.size.width / 5 * 0.1,
-                                                                horizontal: screenSize.size.width / 5 * 0.05),
-                                                            itemBuilder: (BuildContext context, int index) {
-                                                              return GradesGroup(
-                                                                  discipline: model.disciplines()![index],
-                                                                  gradesController: model);
-                                                            }),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                );
-                                              } else {
-                                                return Column(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  children: <Widget>[
-                                                    Image(
-                                                        image: AssetImage('assets/images/book.png'),
-                                                        width: screenSize.size.width / 5 * 4),
-                                                    Center(
-                                                      child: Container(
-                                                        margin: EdgeInsets.symmetric(
-                                                            horizontal: screenSize.size.width / 5 * 0.5),
-                                                        child: AutoSizeText("Pas de notes pour cette periode.",
-                                                            textAlign: TextAlign.center,
-                                                            style: TextStyle(
-                                                                fontFamily: "Asap", color: ThemeUtils.textColor())),
-                                                      ),
-                                                    ),
-                                                    FlatButton(
-                                                      onPressed: () {
-                                                        //Reload list
-                                                        forceRefreshGrades();
-                                                      },
-                                                      child: !model.isFetching
-                                                          ? Text("Recharger",
-                                                              style: TextStyle(
-                                                                  fontFamily: "Asap",
-                                                                  color: ThemeUtils.textColor(),
-                                                                  fontSize:
-                                                                      (screenSize.size.height / 10 * 8.8) / 10 * 0.2))
-                                                          : FittedBox(
-                                                              child: SpinKitThreeBounce(
-                                                                  color: Theme.of(context).primaryColorDark,
-                                                                  size: screenSize.size.width / 5 * 0.4)),
-                                                      shape: RoundedRectangleBorder(
-                                                          borderRadius: new BorderRadius.circular(18.0),
-                                                          side: BorderSide(color: Theme.of(context).primaryColorDark)),
-                                                    )
-                                                  ],
-                                                );
-                                              }
-                                            }
-                                            if (!model.isFetching && model.disciplines == null) {
-                                              return Column(
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: <Widget>[
-                                                  Image(
-                                                    image: AssetImage('assets/images/totor.png'),
-                                                    width: screenSize.size.width / 5 * 3.5,
-                                                  ),
-                                                  Container(
-                                                    margin: EdgeInsets.symmetric(
-                                                        horizontal: screenSize.size.width / 5 * 0.5),
-                                                    child: AutoSizeText(
-                                                        "Hum... on dirait que tout ne s'est pas passé comme prévu.",
-                                                        textAlign: TextAlign.center,
-                                                        style: TextStyle(
-                                                          fontFamily: "Asap",
-                                                          color: ThemeUtils.textColor(),
-                                                        )),
-                                                  ),
-                                                ],
-                                              );
-                                            } else {
-                                              //Loading group
-                                              return ListView.builder(
-                                                  itemCount: 5,
-                                                  padding: EdgeInsets.all(screenSize.size.width / 5 * 0.3),
-                                                  itemBuilder: (BuildContext context, int index) {
-                                                    return GradesGroup(
-                                                      gradesController: model,
-                                                      discipline: null,
-                                                    );
-                                                  });
-                                            }
-                                          }),
-                                        ),
-                                        if (model.isSimulating) _buildFloatingButton(context)
-                                      ],
-                                    )))
-                          ],
+                              //For now only enable simulator on debug mode
+                              Container(
+                                margin: EdgeInsets.only(left: (screenSize.size.height / 10 * 8.8) / 10 * 0.1),
+                                child: Material(
+                                  color: model.isSimulating ? Colors.blue : Theme.of(context).primaryColor,
+                                  borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                                  child: InkWell(
+                                    borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                                    onTap: () {
+                                      model.isSimulating = !model.isSimulating;
+                                    },
+                                    child: Container(
+                                        height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
+                                        padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
+                                        child: FittedBox(
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              Icon(
+                                                MdiIcons.flask,
+                                                color: ThemeUtils.textColor(),
+                                              ),
+                                            ],
+                                          ),
+                                        )),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
 
+                      ///Grades container
+
+                      Expanded(
+                        flex: 7,
+                        child: RefreshIndicator(
+                            onRefresh: forceRefreshGrades,
+                            child: Container(
+                                width: screenSize.size.width / 5 * 4.7,
+                                padding: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
+                                margin: EdgeInsets.only(top: 0),
+                                decoration: BoxDecoration(
+                                    border: Border.all(width: 0.000000, color: Colors.transparent),
+                                    borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(15),
+                                      bottomRight: Radius.circular(15),
+                                    ),
+                                    color: Theme.of(context).backgroundColor),
+                                child: Stack(
+                                  children: [
+                                    ClipRRect(
+                                      borderRadius: BorderRadius.circular(0),
+                                      child: Consumer<GradesController>(builder: (context, model, child) {
+                                        if (!model.isFetching) {
+                                          if (model
+                                              .disciplines()!
+                                              .any((Discipline element) => (element.gradesList!.length > 0))) {
+                                            return Column(
+                                              children: [
+                                                if (model.isSimulating) _buildResetButton(model),
+                                                Expanded(
+                                                  child: Container(
+                                                    child: ListView.builder(
+                                                        physics: AlwaysScrollableScrollPhysics(),
+                                                        itemCount: model.disciplines()!.length,
+                                                        padding: EdgeInsets.symmetric(
+                                                            vertical: screenSize.size.width / 5 * 0.1,
+                                                            horizontal: screenSize.size.width / 5 * 0.05),
+                                                        itemBuilder: (BuildContext context, int index) {
+                                                          return GradesGroup(
+                                                              discipline: model.disciplines()![index],
+                                                              gradesController: model);
+                                                        }),
+                                                  ),
+                                                ),
+                                              ],
+                                            );
+                                          } else {
+                                            return Column(
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              children: <Widget>[
+                                                Image(
+                                                    image: AssetImage('assets/images/book.png'),
+                                                    width: screenSize.size.width / 5 * 4),
+                                                Center(
+                                                  child: Container(
+                                                    margin: EdgeInsets.symmetric(
+                                                        horizontal: screenSize.size.width / 5 * 0.5),
+                                                    child: AutoSizeText("Pas de notes pour cette periode.",
+                                                        textAlign: TextAlign.center,
+                                                        style: TextStyle(
+                                                            fontFamily: "Asap", color: ThemeUtils.textColor())),
+                                                  ),
+                                                ),
+                                                FlatButton(
+                                                  onPressed: () {
+                                                    //Reload list
+                                                    forceRefreshGrades();
+                                                  },
+                                                  child: !model.isFetching
+                                                      ? Text("Recharger",
+                                                          style: TextStyle(
+                                                              fontFamily: "Asap",
+                                                              color: ThemeUtils.textColor(),
+                                                              fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2))
+                                                      : FittedBox(
+                                                          child: SpinKitThreeBounce(
+                                                              color: Theme.of(context).primaryColorDark,
+                                                              size: screenSize.size.width / 5 * 0.4)),
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius: new BorderRadius.circular(18.0),
+                                                      side: BorderSide(color: Theme.of(context).primaryColorDark)),
+                                                )
+                                              ],
+                                            );
+                                          }
+                                        }
+                                        if (!model.isFetching && model.disciplines == null) {
+                                          return Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              Image(
+                                                image: AssetImage('assets/images/totor.png'),
+                                                width: screenSize.size.width / 5 * 3.5,
+                                              ),
+                                              Container(
+                                                margin:
+                                                    EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.5),
+                                                child: AutoSizeText(
+                                                    "Hum... on dirait que tout ne s'est pas passé comme prévu.",
+                                                    textAlign: TextAlign.center,
+                                                    style: TextStyle(
+                                                      fontFamily: "Asap",
+                                                      color: ThemeUtils.textColor(),
+                                                    )),
+                                              ),
+                                            ],
+                                          );
+                                        } else {
+                                          //Loading group
+                                          return ListView.builder(
+                                              itemCount: 5,
+                                              padding: EdgeInsets.all(screenSize.size.width / 5 * 0.3),
+                                              itemBuilder: (BuildContext context, int index) {
+                                                return GradesGroup(
+                                                  gradesController: model,
+                                                  discipline: null,
+                                                );
+                                              });
+                                        }
+                                      }),
+                                    ),
+                                    if (model.isSimulating) _buildFloatingButton(context)
+                                  ],
+                                ))),
+                      ),
+
                       //Average section
-                      Card(
-                        margin: EdgeInsets.zero,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
-                        color: Theme.of(context).backgroundColor,
+                      Expanded(
+                        flex: 2,
                         child: Container(
                           margin: EdgeInsets.only(left: (screenSize.size.width / 5 * 0.25)),
                           width: screenSize.size.width,
-                          height: (screenSize.size.height / 10 * 8.8) / 10 * 1.8,
                           child: ClipRRect(
                               borderRadius: BorderRadius.circular(15),
                               child: Consumer<GradesController>(builder: (context, model, child) {
@@ -508,9 +498,8 @@ class _GradesPageState extends State<GradesPage> {
                                       ),
 
                                       //Circle with the moyenneGenerale
-                                      Positioned(
-                                        left: screenSize.size.width / 6 * 0.015,
-                                        top: (screenSize.size.height / 10 * 8.8) / 10 * 0.2,
+                                      Align(
+                                        alignment: Alignment.centerLeft,
                                         child: Container(
                                           padding: EdgeInsets.all(screenSize.size.height / 10 * 0.3),
                                           width: screenSize.size.width / 5 * 1.5,
@@ -525,18 +514,16 @@ class _GradesPageState extends State<GradesPage> {
                                                 ),
                                               ],
                                               color: (model.sorter == "all" ? Colors.white : Colors.green)),
-                                          child: Center(
-                                            child: FittedBox(
-                                              child: Text(
-                                                (model.average.toString() != null && !model.average.isNaN
-                                                    ? model.average.toStringAsFixed(2)
-                                                    : "-"),
-                                                style: TextStyle(
-                                                    color: Colors.black,
-                                                    fontFamily: "Asap",
-                                                    fontSize: (screenSize.size.width / 5) * 0.35),
-                                                textAlign: TextAlign.center,
-                                              ),
+                                          child: FittedBox(
+                                            child: Text(
+                                              (model.average.toString() != null && !model.average.isNaN
+                                                  ? model.average.toStringAsFixed(2)
+                                                  : "-"),
+                                              style: TextStyle(
+                                                  color: Colors.black,
+                                                  fontFamily: "Asap",
+                                                  fontSize: (screenSize.size.width / 5) * 0.35),
+                                              textAlign: TextAlign.center,
                                             ),
                                           ),
                                         ),

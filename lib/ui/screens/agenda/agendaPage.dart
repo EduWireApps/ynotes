@@ -30,21 +30,17 @@ class AgendaPageState extends State<AgendaPage> {
     return HiddenSettings(
       controller: agendaPageSettingsController,
       settingsWidget: AgendaSettings(),
-      child: Container(
-        height: screenSize.size.height / 10 * 8,
-        margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
-        child: Expandables(
-          buildTopChild(),
-          buildBottomChild(),
-          width: screenSize.size.width,
-          maxHeight: screenSize.size.height / 10 * 7.5,
-          minHeight: screenSize.size.height / 10 * 0.7,
-          bottomExpandableColor: ThemeUtils.spaceColor(),
-          onDragUpdate: handleDragUpdate,
-          animationDuration: 200,
-          topExpandableBorderRadius: 11,
-          bottomExpandableBorderRadius: 11,
-        ),
+      child: Expandables(
+        buildTopChild(),
+        buildBottomChild(),
+        width: screenSize.size.width,
+        maxHeight: screenSize.size.height / 10 * 7.2,
+        minHeight: screenSize.size.height / 10 * 0.7,
+        bottomExpandableColor: ThemeUtils.spaceColor(),
+        onDragUpdate: handleDragUpdate,
+        animationDuration: 200,
+        topExpandableBorderRadius: 11,
+        bottomExpandableBorderRadius: 11,
       ),
     );
   }
