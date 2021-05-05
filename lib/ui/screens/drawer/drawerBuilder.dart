@@ -202,7 +202,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          FittedBox(
+                          ClipRRect(
                               child: Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
                             case2(
                               con.actualState,
