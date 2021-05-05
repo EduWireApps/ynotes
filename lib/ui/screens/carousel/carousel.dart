@@ -8,6 +8,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/logic/appConfig/controller.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
@@ -654,6 +655,7 @@ class _Page4State extends State<Page4> {
                       height: screenSize.size.height / 10 * 0.1,
                     ),
                     CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5, () async {
+                      createStorage("agreedTermsAndConfiguredApp", "true");
                       Navigator.of(context).pushReplacement(router(homePage()));
                     }, label: "Allons-y !", textColor: ThemeUtils.textColor(), backgroundColor: Color(0xff5DADE2))
                     /*RaisedButton(
@@ -807,7 +809,6 @@ class _SlidingCarouselState extends State<SlidingCarousel> {
     super.initState();
 
     _pageOffset = 0.0;
-
 
     _pageController = PageController()
       ..addListener(() {
