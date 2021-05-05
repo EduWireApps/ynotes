@@ -20,6 +20,7 @@ import 'package:ynotes/ui/screens/grades/gradesPage.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPage.dart';
 import 'package:ynotes/ui/screens/mail/mailPage.dart';
 import 'package:ynotes/ui/screens/polls/pollsPage.dart';
+import 'package:ynotes/ui/screens/settings/sub_pages/accountPage.dart';
 import 'package:ynotes/ui/screens/statspage/statspage.dart';
 import 'package:ynotes/ui/screens/summary/summaryPage.dart';
 import 'package:ynotes/ui/screens/viescolaire/schoolLifePage.dart';
@@ -238,17 +239,22 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                                           ) as Widget,
                                         ]))),
                                   ),
-                                  AnimatedContainer(
-                                    duration: Duration(milliseconds: 500),
-                                    width: (model.actualState == loginStatus.error) ? null : 0,
-                                    height: (model.actualState == loginStatus.error) ? null : 0,
-                                    margin: (model.actualState == loginStatus.error)
-                                        ? EdgeInsets.only(right: screenSize.size.width / 5 * 0.2)
-                                        : null,
-                                    child: FittedBox(
-                                      child: Text(
-                                        "Voir le détail de l'erreur",
-                                        style: TextStyle(fontFamily: "Asap"),
+                                  GestureDetector(
+                                    onTap: () {
+                                      Navigator.of(context).push(router(AccountPage()));
+                                    },
+                                    child: AnimatedContainer(
+                                      duration: Duration(milliseconds: 500),
+                                      width: (model.actualState == loginStatus.error) ? null : 0,
+                                      height: (model.actualState == loginStatus.error) ? null : 0,
+                                      margin: (model.actualState == loginStatus.error)
+                                          ? EdgeInsets.only(right: screenSize.size.width / 5 * 0.2)
+                                          : null,
+                                      child: FittedBox(
+                                        child: Text(
+                                          "Voir le détail de l'erreur",
+                                          style: TextStyle(fontFamily: "Asap"),
+                                        ),
                                       ),
                                     ),
                                   )

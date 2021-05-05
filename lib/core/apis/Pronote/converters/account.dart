@@ -6,7 +6,8 @@ import 'package:ynotes/main.dart';
 class PronoteAccountConverter {
   static AppAccount account(Map accountData) {
     Map? data = mapGet(accountData, ["donneesSec", "donnees", "ressource"]);
-    List<appTabs> tabs = availableTabs(mapGet(data, ["listeOnglets"]), mapGet(data, ["listeOngletsInvisibles"]));
+    List<appTabs> tabs = availableTabs(mapGet(accountData, ["donneesSec", "donnees", "listeOnglets"]),
+        mapGet(accountData, ["donneesSec", "donnees", "listeOngletsInvisibles"]));
     if (mapGet(data, ["listeRessources"]) != null) {
       String? name = mapGet(data, ["L"]);
       bool isParentMainAccount = true;
@@ -29,6 +30,9 @@ class PronoteAccountConverter {
       bool isParentMainAccount = false;
       List<SchoolAccount> accounts = [singleSchoolAccount((data ?? {}))];
       String id = uuid.v1();
+      (accounts).forEach((element) {
+        element.availableTabs = tabs;
+      });
       return AppAccount(
           name: name,
           managableAccounts: accounts,
@@ -45,13 +49,14 @@ class PronoteAccountConverter {
       tabsNumbers.add(tab["G"]);
 
       (tab["Onglet"] ?? []).forEach((subtab) {
-        tabsNumbers.addAll(subtab.values.where((b) => b is int).toList());
+        tabsNumbers += subtab.values.where((b) => b is int).toList().cast<int>();
         //Sub sub tab
         (subtab["Onglet"] ?? []).forEach((subsubtab) {
-          tabsNumbers.addAll(subsubtab.values.where((b) => b is int).toList());
+          tabsNumbers += tabsNumbers + subsubtab.values.where((b) => b is int).toList().cast<int>();
         });
       });
     });
+    print(tabsNumbers);
     (hiddenTabs ?? []).forEach((element) {
       tabsNumbers.remove(element);
     });
