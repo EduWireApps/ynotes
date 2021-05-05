@@ -1,19 +1,12 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:html/parser.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:share/share.dart';
-import 'package:ynotes/ui/screens/summary/summaryPage.dart';
-import 'package:ynotes/ui/screens/summary/summaryPageWidgets/quickHomework.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/main.dart';
-import 'package:ynotes/globals.dart';
-import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
-
-import 'package:html/parser.dart';
 
 class DialogHomework extends StatefulWidget {
   final Homework? hw;
@@ -25,15 +18,14 @@ class DialogHomework extends StatefulWidget {
 }
 
 class _DialogHomeworkState extends State<DialogHomework> {
-  initState() {
-    super.initState();
-  }
-
   int segmentedControlIndex = 0;
+
   Widget build(BuildContext context) {
     TextStyle textStyle = TextStyle(backgroundColor: Colors.yellow.shade100);
 
-    var document = parse(segmentedControlIndex == 0 ? widget.hw!.rawContent : widget.hw!.sessionRawContent);
+    var document = parse(segmentedControlIndex == 0
+        ? (widget.hw!.rawContent) ?? "Non chargé"
+        : (widget.hw!.sessionRawContent) ?? "Non chargé");
 
     String parsedHtml = parse(document.body!.text).documentElement!.text;
     MediaQueryData screenSize;
@@ -140,5 +132,9 @@ class _DialogHomeworkState extends State<DialogHomework> {
         ],
       ),
     );
+  }
+
+  initState() {
+    super.initState();
   }
 }
