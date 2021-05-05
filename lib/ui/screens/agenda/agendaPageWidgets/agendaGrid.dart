@@ -32,7 +32,6 @@ class _AgendaGridState extends State<AgendaGrid> {
   ScrollController scontroller = ScrollController();
   @override
   void initState() {
-    // TODO: implement initState
 
     super.initState();
     layoutEvents();

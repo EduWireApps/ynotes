@@ -172,7 +172,6 @@ class _MultipleChoicesDialogState extends State<MultipleChoicesDialog> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     if (widget.initialSelection != null && indexsSelected.isEmpty) {
       indexsSelected.addAll(widget.initialSelection);

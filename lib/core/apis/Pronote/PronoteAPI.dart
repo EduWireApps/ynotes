@@ -23,7 +23,7 @@ import 'package:ynotes/tests.dart';
 import '../EcoleDirecte.dart';
 import '../utils.dart';
 
-Map error_messages = {
+Map errorMessages = {
   22: '[ERROR 22] The object was from a previous session. Please read the "Long Term Usage" section in README on github.',
   10: '[ERROR 10] Session has expired and pronotepy was not able to reinitialise the connection.'
 };
@@ -103,8 +103,8 @@ class Communication {
     try {
       this.authorizedTabs = prepareTabs(data['donneesSec']['donnees']['listeOnglets']);
 
-      CreateStorage("classe", data['donneesSec']['donnees']['ressource']["classeDEleve"]["L"]);
-      CreateStorage("userFullName", data['donneesSec']['donnees']['ressource']["L"]);
+      createStorage("classe", data['donneesSec']['donnees']['ressource']["classeDEleve"]["L"]);
+      createStorage("userFullName", data['donneesSec']['donnees']['ressource']["L"]);
       isOldAPIUsed = true;
     } catch (e) {
       isOldAPIUsed = false;
@@ -243,13 +243,13 @@ class Communication {
       'nom': functionName,
       'donneesSec': data
     };
-    String p_site =
+    String pSite =
         this.rootSite + '/appelfonction/' + this.attributes!['a'] + '/' + this.attributes!['h'] + '/' + rNumber;
-    print(p_site);
+    print(pSite);
 
     this.requestNumber += 2;
 
-    var response = await Requests.post(p_site, json: json).catchError((onError) {
+    var response = await Requests.post(pSite, json: json).catchError((onError) {
       print("Error occured during request : $onError");
     });
 
@@ -264,13 +264,13 @@ class Communication {
       var responseJson = response.json();
 
       if (responseJson["Erreur"]['G'] == 22) {
-        throw error_messages["22"];
+        throw errorMessages["22"];
       }
       if (responseJson["Erreur"]['G'] == 10) {
         appSys.loginController.details = "Connexion expirée";
         appSys.loginController.actualState = loginStatus.error;
 
-        throw error_messages["10"];
+        throw errorMessages["10"];
       }
 
       if (recursive != null && recursive) {
@@ -450,7 +450,7 @@ class KeepAlive {
 class PronoteClient {
   var username;
   var password;
-  var pronote_url;
+  var pronoteUrl;
   Communication? communication;
   var attributes;
   var funcOptions;
@@ -486,25 +486,25 @@ class PronoteClient {
 
   List<String> stepsLogger = [];
   bool? mobileLogin;
-  PronoteClient(String pronote_url, {String? username, String? password, var cookies, bool? mobileLogin}) {
+  PronoteClient(String pronoteUrl, {String? username, String? password, var cookies, bool? mobileLogin}) {
     this.username = username ?? "";
     this.password = password ?? "";
-    this.pronote_url = pronote_url;
+    this.pronoteUrl = pronoteUrl;
     this.mobileLogin = mobileLogin;
     print("Initiate communication");
 
-    this.communication = Communication(pronote_url, cookies, this);
+    this.communication = Communication(pronoteUrl, cookies, this);
   }
 
   downloadUrl(Document document) {
     try {
       Map data = {"N": document.id, "G": int.parse(document.type!)};
       //Used by pronote to encrypt the data (I don't know why)
-      var magic_stuff = this.encryption.aesEncryptFromString(conv.jsonEncode(data));
+      var magicStuff = this.encryption.aesEncryptFromString(conv.jsonEncode(data));
       String libelle = Uri.encodeComponent(Uri.encodeComponent(document.documentName!));
       String? url = this.communication!.rootSite +
           '/FichiersExternes/' +
-          magic_stuff +
+          magicStuff +
           '/' +
           libelle +
           '?Session=' +
@@ -516,33 +516,33 @@ class PronoteClient {
     }
   }
 
-  homework(DateTime date_from, {DateTime? date_to}) async {
-    print(date_from);
-    if (date_to == null) {
+  homework(DateTime dateFrom, {DateTime? dateTo}) async {
+    print(dateFrom);
+    if (dateTo == null) {
       final f = new DateFormat('dd/MM/yyyy');
-      date_to = f.parse(this.funcOptions['donneesSec']['donnees']['General']['DerniereDate']['V']);
+      dateTo = f.parse(this.funcOptions['donneesSec']['donnees']['General']['DerniereDate']['V']);
     }
-    var json_data = {
+    var jsonData = {
       'donnees': {
-        'domaine': {'_T': 8, 'V': "[${await getWeek(date_from)}..${await getWeek(date_to)}]"}
+        'domaine': {'_T': 8, 'V': "[${await getWeek(dateFrom)}..${await getWeek(dateTo)}]"}
       },
       '_Signature_': {'onglet': 88}
     };
-    var response = await this.communication!.post("PageCahierDeTexte", data: json_data);
-    var json_data_contenu = {
+    var response = await this.communication!.post("PageCahierDeTexte", data: jsonData);
+    var jsonDataContenu = {
       'donnees': {
         'domaine': {'_T': 8, 'V': "[${1}..${62}]"}
       },
       '_Signature_': {'onglet': 89}
     };
     //Get "Contenu de cours"
-    var responseContent = await this.communication!.post("PageCahierDeTexte", data: json_data_contenu);
+    var responseContent = await this.communication!.post("PageCahierDeTexte", data: jsonDataContenu);
 
-    var c_list = responseContent['donneesSec']['donnees']['ListeCahierDeTextes']['V'];
+    var cList = responseContent['donneesSec']['donnees']['ListeCahierDeTextes']['V'];
     //Content homework
     List<Homework> listCHW = [];
 
-    c_list.forEach((h) {
+    cList.forEach((h) {
       List<Document> listDocs = [];
       //description
       String description = "";
@@ -671,7 +671,7 @@ class PronoteClient {
     return KeepAlive();
   }
 
-  lessons(DateTime date_from, {DateTime? date_to}) async {
+  lessons(DateTime dateFrom, {DateTime? dateTo}) async {
     /* initializeDateFormatting();
     var user = this.paramsUser['donneesSec']['donnees']['ressource'];
     List<Lesson> listToReturn = [];
@@ -781,7 +781,7 @@ class PronoteClient {
   refresh() async {
     print("Reinitialisation");
 
-    this.communication = Communication(this.pronote_url, null, this);
+    this.communication = Communication(this.pronoteUrl, null, this);
     var future = await this.communication!.initialise();
 
     this.attributes = future[0];
@@ -882,7 +882,7 @@ class PronoteClient {
       if (mobileLogin! && (await storage.read(key: "password")) != null) {
         password = await storage.read(key: "password");
       }
-      await storage.write(key: "pronoteurl", value: this.pronote_url);
+      await storage.write(key: "pronoteurl", value: this.pronoteUrl);
       await storage.write(key: "ispronotecas", value: this.mobileLogin.toString());
       print("Saved credentials");
     } catch (e) {
@@ -892,7 +892,7 @@ class PronoteClient {
       this.username = this.attributes['e'];
       this.password = this.attributes['f'];
     }
-    Map ident_json = {
+    Map indentJson = {
       "genreConnexion": 0,
       "genreEspace": int.parse(this.attributes['a']),
       "identifiant": this.username,
@@ -905,7 +905,7 @@ class PronoteClient {
       "uuidAppliMobile": appSys.settings!["system"]["uuid"],
       "loginTokenSAV": ""
     };
-    var idr = await this.communication!.post("Identification", data: {'donnees': ident_json});
+    var idr = await this.communication!.post("Identification", data: {'donnees': indentJson});
     this.stepsLogger.add("✅ Posted identification successfully");
 
     print("Identification");
@@ -993,8 +993,8 @@ class PronoteClient {
             this.stepsLogger.add("✅ Prepared tabs");
 
             try {
-              CreateStorage("classe", mapGet(paramsUser, ['donneesSec', 'donnees', 'ressource', "classeDEleve", "L"]));
-              CreateStorage("userFullName", mapGet(paramsUser, ['donneesSec', 'donnees', 'ressource', "L"]));
+              createStorage("classe", mapGet(paramsUser, ['donneesSec', 'donnees', 'ressource', "classeDEleve", "L"]));
+              createStorage("userFullName", mapGet(paramsUser, ['donneesSec', 'donnees', 'ressource', "L"]));
             } catch (e) {
               this.stepsLogger.add("❌ Failed to register UserInfos");
 

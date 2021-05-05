@@ -118,7 +118,6 @@ class _HomeworkFirstPageState extends State<HomeworkFirstPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     SchedulerBinding.instance!.addPostFrameCallback((_) => mounted ? appSys.homeworkController.refresh() : null);
   }

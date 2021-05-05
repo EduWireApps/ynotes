@@ -336,8 +336,8 @@ class ColorPickerLabel extends StatefulWidget {
     this.hsvColor, {
     this.enableAlpha: true,
     this.textStyle,
-    this.editable: false, // TODO: TBD
-    this.onColorChanged, // TODO: TBD
+    this.editable: false, 
+    this.onColorChanged, 
   });
 
   final HSVColor hsvColor;

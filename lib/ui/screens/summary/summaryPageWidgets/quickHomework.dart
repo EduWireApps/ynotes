@@ -31,7 +31,6 @@ class QuickHomework extends StatefulWidget {
 class _QuickHomeworkState extends State<QuickHomework> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState(); //init homework
   }
 

@@ -7,9 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/logic/appConfig/controller.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
@@ -18,35 +16,35 @@ import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/usefulMethods.dart';
 
-class page1 extends StatefulWidget {
+class Page1 extends StatefulWidget {
   final double? offset;
   final int? idx;
-  page1({Key? key, this.offset, this.idx}) : super(key: key);
-  _page1State createState() => _page1State();
+  Page1({Key? key, this.offset, this.idx}) : super(key: key);
+  _Page1State createState() => _Page1State();
 }
 
 //Create states of each page
-class page2 extends StatefulWidget {
+class Page2 extends StatefulWidget {
   final double? offset;
   final int? idx;
-  page2({Key? key, this.offset, this.idx}) : super(key: key);
-  _page2State createState() => _page2State();
+  Page2({Key? key, this.offset, this.idx}) : super(key: key);
+  _Page2State createState() => _Page2State();
 }
 
-class page3 extends StatefulWidget {
+class Page3 extends StatefulWidget {
   final double? offset;
   final int? idx;
-  page3({Key? key, this.offset, this.idx}) : super(key: key);
+  Page3({Key? key, this.offset, this.idx}) : super(key: key);
 
-  _page3State createState() => _page3State();
+  _Page3State createState() => _Page3State();
 }
 
-class page4 extends StatefulWidget {
+class Page4 extends StatefulWidget {
   final double? offset;
   final int? idx;
-  page4({Key? key, this.offset, this.idx}) : super(key: key);
+  Page4({Key? key, this.offset, this.idx}) : super(key: key);
 
-  _page4State createState() => _page4State();
+  _Page4State createState() => _Page4State();
 }
 
 class PageInfo {
@@ -64,7 +62,7 @@ class SlidingCarousel extends StatefulWidget {
 }
 
 //PAGE2 STATE
-class _page1State extends State<page1> {
+class _Page1State extends State<Page1> {
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -290,7 +288,7 @@ class _page1State extends State<page1> {
   }
 }
 
-class _page2State extends State<page2> {
+class _Page2State extends State<Page2> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -359,7 +357,7 @@ class _page2State extends State<page2> {
   }
 }
 
-class _page3State extends State<page3> {
+class _Page3State extends State<Page3> {
   @override
   Widget build(BuildContext context) {
     double opacityvalue = 1;
@@ -459,7 +457,7 @@ class _page3State extends State<page3> {
   }
 }
 
-class _page4State extends State<page4> {
+class _Page4State extends State<Page4> {
   bool isIgnoringBatteryOptimization = false;
   bool? specialtiesAvailable = false;
   Future? carouselDisciplineListFuture;
@@ -469,12 +467,7 @@ class _page4State extends State<page4> {
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
-    double opacityvalue = 0;
-    if (widget.offset! - 1 > 0 && widget.offset! - 1 < 1) {
-      opacityvalue = widget.offset! - 1;
-    } else {
-      opacityvalue = 0;
-    }
+
     return ChangeNotifierProvider<ApplicationSystem>.value(
       value: appSys,
       child: Consumer<ApplicationSystem>(builder: (buildContext, model, child) {
@@ -661,20 +654,7 @@ class _page4State extends State<page4> {
                       height: screenSize.size.height / 10 * 0.1,
                     ),
                     CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5, () async {
-                      var classe = await specialtiesSelectionAvailable();
-                      if (classe[0] && chosenSpecialties.length == (classe[1] == "Première" ? 3 : 2)) {
-                        CreateStorage("agreedTermsAndConfiguredApp", "true");
-                        final prefs = await (SharedPreferences.getInstance());
-                        prefs.setStringList("listSpecialties", chosenSpecialties);
-                        Navigator.of(context).pushReplacement(router(homePage()));
-                      } else if (!classe[0]) {
-                        CreateStorage("agreedTermsAndConfiguredApp", "true");
-                        final prefs = await (SharedPreferences.getInstance());
-                        prefs.setStringList("listSpecialties", chosenSpecialties);
-                        Navigator.of(context).pushReplacement(router(homePage()));
-                      } else {
-                        CustomDialogs.showAnyDialog(context, "Vous devez renseigner toutes vos spécialités.");
-                      }
+                      Navigator.of(context).pushReplacement(router(homePage()));
                     }, label: "Allons-y !", textColor: ThemeUtils.textColor(), backgroundColor: Color(0xff5DADE2))
                     /*RaisedButton(
                       color: Color(0xff5DADE2),
@@ -719,21 +699,10 @@ class _page4State extends State<page4> {
     }
   }
 
-  void getSpecialitiesChoiceAvailability() async {
-    var list = await specialtiesSelectionAvailable();
-    if (mounted) {
-      setState(() {
-        //localClasse = [];
-        specialtiesAvailable = list[0];
-      });
-    }
-  }
-
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    getSpecialitiesChoiceAvailability();
+
     getAuth();
   }
 
@@ -751,7 +720,6 @@ class _SlidingCarouselState extends State<SlidingCarousel> {
 
   double? _pageOffset;
   int? _pageIndex;
-  int? _currentPageId;
 
   @override
   Widget build(BuildContext context) {
@@ -840,7 +808,6 @@ class _SlidingCarouselState extends State<SlidingCarousel> {
 
     _pageOffset = 0.0;
 
-    _currentPageId = 0;
 
     _pageController = PageController()
       ..addListener(() {
@@ -873,28 +840,28 @@ class _SlidingCarouselState extends State<SlidingCarousel> {
   _list(offset, idx) {
     return _pageInfoList = [
       PageInfo(
-        widget: page1(
+        widget: Page1(
           offset: offset,
           idx: idx,
         ),
         backgroundColor: Color(0xFFECFCFF),
       ),
       PageInfo(
-        widget: page2(
+        widget: Page2(
           offset: offset,
           idx: idx,
         ),
         backgroundColor: Color(0xFFE5AE6C),
       ),
       PageInfo(
-        widget: page3(
+        widget: Page3(
           offset: offset,
           idx: idx,
         ),
         backgroundColor: Color(0xFF252B62),
       ),
       PageInfo(
-          widget: page4(
+          widget: Page4(
             offset: offset,
             idx: idx,
           ),

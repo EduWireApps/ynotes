@@ -617,7 +617,6 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
   }
 
   void initState() {
-    // TODO: implement initState
     SchedulerBinding.instance!.addPostFrameCallback((_) => mounted
         ? setState(() {
             getInitialPath();

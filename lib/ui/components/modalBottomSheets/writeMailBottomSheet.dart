@@ -252,7 +252,6 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
     WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() {

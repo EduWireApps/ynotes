@@ -27,9 +27,9 @@ List<String> colorList = [
   "#8ac6d1"
 ];
 
-sta.Stack<String> Colorstack = sta.Stack();
+sta.Stack<String> colorStack = sta.Stack();
 
-APIManager(Offline _offline) {
+apiManager(Offline _offline) {
   //The parser list index corresponding to the user choice
   switch (appSys.settings!["system"]["chosenParser"]) {
     case 0:
@@ -46,7 +46,7 @@ checkPronoteURL(String url) async {
           (url[url.length - 1] == "/" ? "" : "/") +
           "InfoMobileApp.json?id=0D264427-EEFC-4810-A9E9-346942A862A4"))
       .catchError((e) {});
-  if (response != null && response.statusCode == 200) {
+  if (response.statusCode == 200) {
     return true;
   } else {
     return false;
@@ -55,7 +55,7 @@ checkPronoteURL(String url) async {
 
 void createStack() {
   colorList.forEach((color) {
-    Colorstack.push(color);
+    colorStack.push(color);
   });
 }
 
@@ -66,10 +66,10 @@ Future<int> getColor(String? disciplineName) async {
       String color = prefs.getString(disciplineName)!;
       return HexColor(color).value;
     } else {
-      if (Colorstack.isEmpty) {
+      if (colorStack.isEmpty) {
         createStack();
       }
-      await prefs.setString(disciplineName, Colorstack.pop());
+      await prefs.setString(disciplineName, colorStack.pop());
       String color = prefs.getString(disciplineName)!;
       return HexColor(color).value;
     }

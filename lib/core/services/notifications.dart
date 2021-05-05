@@ -28,12 +28,12 @@ class AppNotification {
     List<Lesson>? lessons = [];
     //Lock offline data
     Offline _offline = Offline(true);
-    API api = APIManager(_offline);
+    API api = apiManager(_offline);
     //Login creds
-    String? u = await ReadStorage("username");
-    String? p = await ReadStorage("password");
-    String? url = await ReadStorage("pronoteurl");
-    String? cas = await ReadStorage("pronotecas");
+    String? u = await readStorage("username");
+    String? p = await readStorage("password");
+    String? url = await readStorage("pronoteurl");
+    String? cas = await readStorage("pronotecas");
     if (connectivityResult != ConnectivityResult.none) {
       try {
         await api.login(u, p, url: url, cas: cas);
@@ -280,12 +280,12 @@ class AppNotification {
     print("Setting on going notification");
     var connectivityResult = await (Connectivity().checkConnectivity());
     List<Lesson>? lessons = [];
-    API api = APIManager(appSys.offline);
+    API api = apiManager(appSys.offline);
     //Login creds
-    String? u = await ReadStorage("username");
-    String? p = await ReadStorage("password");
-    String? url = await ReadStorage("pronoteurl");
-    String? cas = await ReadStorage("pronotecas");
+    String? u = await readStorage("username");
+    String? p = await readStorage("password");
+    String? url = await readStorage("pronoteurl");
+    String? cas = await readStorage("pronotecas");
     if (connectivityResult != ConnectivityResult.none) {
       try {
         await api.login(u, p, url: url, cas: cas);

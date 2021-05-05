@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -40,7 +39,7 @@ final storage = new FlutterSecureStorage();
 String? token;
 
 ///END OF THE API CLASS
-void CreateStorage(String key, String? data) async {
+void createStorage(String key, String? data) async {
   await storage.write(key: key, value: data);
 }
 
@@ -61,12 +60,10 @@ Future<List<CloudItem>?> getCloud(String? args, String? action, CloudItem? item)
         {
           return await EcoleDirecteMethod(appSys.offline).cloudFolders();
         }
-        break;
       default:
         {
           return changeFolder(args!);
         }
-        break;
     }
   }
 }
@@ -178,7 +175,6 @@ class APIEcoleDirecte extends API {
 //Get connection message and store token
   @override
   Future<List> apiStatus() async {
-    // TODO: implement apiStatus
     return [1, "Pas de problème connu."];
   }
 
@@ -192,27 +188,23 @@ class APIEcoleDirecte extends API {
 
           return mails;
         }
-        break;
       case "cloud":
         {
           print("Returning cloud");
           return await getCloud(args, action, folder);
         }
-        break;
       case "mailRecipients":
         {
           print("Returing mail recipients");
           return (await EcoleDirecteMethod.fetchAnyData(
               EcoleDirecteMethod(this.offlineController).recipients, offlineController.recipients.getRecipients));
         }
-        break;
     }
   }
 
   Future<http.Request> downloadRequest(Document document) async {
     var url = 'https://api.ecoledirecte.com/v3/telechargement.awp?verbe=get';
     await EcoleDirecteMethod.refreshToken();
-    Map<String, String> headers = {"Content-type": "x"};
     String? type = document.type;
     String? id = appSys.currentSchoolAccount?.studentID;
     String body = "leTypeDeFichier=$type&fichierId=$id&token=$token";
@@ -287,7 +279,7 @@ class APIEcoleDirecte extends API {
     //encode Map to JSON
     var body = data;
     var response = await http.post(Uri.parse(url), headers: headers, body: body).catchError((e) {
-      return "Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.";
+      throw "Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.";
     });
 
     if (response.statusCode == 200) {
@@ -322,13 +314,13 @@ class APIEcoleDirecte extends API {
           token = req['token'];
           //Create secure storage for credentials
 
-          CreateStorage("password", password ?? "");
-          CreateStorage("username", username ?? "");
+          createStorage("password", password ?? "");
+          createStorage("username", username ?? "");
           //IMPORTANT ! store the user ID
-          CreateStorage("userID", userID);
-          CreateStorage("classe", classe);
+          createStorage("userID", userID);
+          createStorage("classe", classe);
           //random date
-          CreateStorage("startday", DateTime.parse("2020-02-02").toString());
+          createStorage("startday", DateTime.parse("2020-02-02").toString());
 
           //Ensure that the user will not see the carousel anymore
           prefs.setBool('firstUse', false);
@@ -373,8 +365,6 @@ class APIEcoleDirecte extends API {
     switch (contexte) {
       case ("CDT"):
         {
-          var altClient = HttpClient();
-
           //Ensure that token is refreshed
           await EcoleDirecteMethod.testToken();
           var uri = Uri.parse('https://api.ecoledirecte.com/v3/televersement.awp?verbe=post&mode=CDT');

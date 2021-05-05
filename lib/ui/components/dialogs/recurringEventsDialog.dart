@@ -19,7 +19,6 @@ class _RecurringEventsDialogState extends State<RecurringEventsDialog> {
   String? _scheme;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _scheme = this.widget.scheme;
     getReverseAB();

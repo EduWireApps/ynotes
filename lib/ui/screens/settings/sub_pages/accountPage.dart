@@ -54,8 +54,9 @@ class _AccountPageState extends State<AccountPage> {
                           child: ExpansionPanelList(
                               expandedHeaderPadding: EdgeInsets.zero,
                               expansionCallback: (index, newVal) {
+                                print(index);
                                 setState(() {
-                                  expanded[index] = newVal;
+                                  expanded[index] = !(expanded[index] ?? false);
                                 });
                               },
                               children: (appSys.account!.managableAccounts ?? [])
@@ -127,7 +128,7 @@ class _AccountPageState extends State<AccountPage> {
 
     return ExpansionPanel(
         backgroundColor: Theme.of(context).primaryColorDark,
-        isExpanded: expanded[index] ?? false,
+        isExpanded: (expanded[index] ?? false),
         canTapOnHeader: true,
         headerBuilder: (context, index) {
           return Center(

@@ -74,7 +74,6 @@ class _UpdateNoteDialogState extends State<UpdateNoteDialog> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getMarkDownText();
   }

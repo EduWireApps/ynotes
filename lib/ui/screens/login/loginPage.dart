@@ -164,7 +164,6 @@ class _AlertBoxWidgetState extends State<AlertBoxWidget> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     scrollViewController.addListener(() {
       setState(() {
@@ -320,11 +319,11 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   tryToConnect() async {
-    String? u = await ReadStorage("username");
-    String? p = await ReadStorage("password");
-    String? url = await ReadStorage("pronoteurl");
-    String? cas = await ReadStorage("pronotecas");
-    String? isCas = await ReadStorage("pronotecas");
+    String? u = await readStorage("username");
+    String? p = await readStorage("password");
+    String? url = await readStorage("pronoteurl");
+    String? cas = await readStorage("pronotecas");
+    String? isCas = await readStorage("pronotecas");
 
     String? z = await storage.read(key: "agreedTermsAndConfiguredApp");
 

@@ -55,7 +55,7 @@ class PronoteMethod {
     List<Discipline> listDisciplines = [];
     if (periods != null) {
       await Future.forEach(periods, (PronotePeriod period) async {
-        if (period != null) {
+    
           var jsonData = {
             'donnees': {
               'Periode': {'N': period.id, 'L': period.name}
@@ -68,7 +68,7 @@ class PronoteMethod {
           });
           listDisciplines.addAll(temp);
           listDisciplines = await refreshDisciplinesListColors(listDisciplines);
-        }
+        
       });
     }
     print("Completed disciplines request");
@@ -107,7 +107,6 @@ class PronoteMethod {
         "Ressource": user,
       }
     };
-    var output = [];
     var firstWeek = await getWeek(dateFrom);
     if (dateTo == null) {
       dateTo = dateFrom;
@@ -151,7 +150,7 @@ class PronoteMethod {
       List<Homework> pinnedHomework =
           await request("PageCahierDeTexte", PronoteHomeworkConverter.homework, data: jsonData, onglet: 88);
       pinnedHomework.removeWhere((pinnedHWElement) =>
-          pinnedHWElement == null && pinnedHWElement.date == null && element.day != pinnedHWElement.date!.day);
+       pinnedHWElement.date == null && element.day != pinnedHWElement.date!.day);
       pinnedHomework.forEach((pinned) {
         if (!listHW.any((hw) => hw.id == pinned.id)) {
           listHW.add(pinned);

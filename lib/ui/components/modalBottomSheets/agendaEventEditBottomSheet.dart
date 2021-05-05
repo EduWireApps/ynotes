@@ -471,7 +471,6 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     if (start == null && widget.isCustomEvent) {
       print(widget.defaultDate);

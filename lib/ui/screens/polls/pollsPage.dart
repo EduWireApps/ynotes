@@ -151,7 +151,6 @@ class _PollsAndInfoPageState extends State<PollsAndInfoPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     refreshPolls();
   }

@@ -35,8 +35,7 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
   List<AgendaReminder> reminders = [];
   @override
   void initState() {
-    // TODO: implement initState
-
+    super.initState();
     getAssociatedReminders();
   }
 

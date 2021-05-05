@@ -173,7 +173,7 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
                         : () async {
                             await setChosenParser(chosen);
                             setState(() {
-                              appSys.api = APIManager(appSys.offline);
+                              appSys.api = apiManager(appSys.offline);
                             });
                             Navigator.of(context).pushReplacement(router(LoginPage()));
                           },
@@ -204,7 +204,6 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     chosenAnimation1Controller = AnimationController(vsync: this, duration: Duration(milliseconds: 450));
     chosenAnimation2Controller = AnimationController(vsync: this, duration: Duration(milliseconds: 450));

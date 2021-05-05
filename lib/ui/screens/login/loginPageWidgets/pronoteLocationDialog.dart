@@ -266,7 +266,6 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     searchCon = TextEditingController();
 

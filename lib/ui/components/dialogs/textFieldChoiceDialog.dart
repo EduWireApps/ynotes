@@ -16,7 +16,6 @@ class _TextFieldChoiceDialogState extends State<TextFieldChoiceDialog> {
   String? value;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() {
           var splits = widget.defaultText!.split(".");

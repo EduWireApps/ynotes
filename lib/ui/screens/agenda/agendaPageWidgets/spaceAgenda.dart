@@ -23,9 +23,9 @@ bool extended = false;
 class _SpaceAgendaState extends State<SpaceAgenda> {
   @override
 
-  // ignore: must_call_super
   void initState() {
-    // TODO: implement initState
+    super.initState();
+
     if (agendaDate == null) {
       setState(() {
         agendaDate = CalendarTime().startOfToday;

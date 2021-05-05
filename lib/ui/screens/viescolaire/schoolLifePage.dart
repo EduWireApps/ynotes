@@ -25,7 +25,6 @@ Future? schoolLifeFuture;
 class _SchoolLifePageState extends State<SchoolLifePage> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     // refreshPolls();
   }

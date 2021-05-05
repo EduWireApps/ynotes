@@ -42,7 +42,6 @@ class APIPronote extends API {
 
   @override
   Future<List> apiStatus() async {
-    // TODO: implement apiStatus
     return [1, "Pas de problème connu."];
   }
 
@@ -61,12 +60,10 @@ class APIPronote extends API {
 
   @override
   Future<List<DateTime>> getDatesNextHomework() {
-    // TODO: implement getDatesNextHomework
     throw UnimplementedError();
   }
 
   @override
-  // TODO: implement listApp
 
   @override
   Future<List<Discipline>?> getGrades({bool? forceReload}) async {
@@ -381,7 +378,6 @@ class APIPronote extends API {
 
   @override
   Future uploadFile(String contexte, String id, String filepath) {
-    // TODO: implement sendFile
     throw UnimplementedError();
   }
 }

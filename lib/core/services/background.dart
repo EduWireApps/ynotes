@@ -69,17 +69,17 @@ class BackgroundService {
       //Getting the offline count of grades
       //instanciate an offline controller read only
       await appSys.offline.init();
-      API backgroundFetchApi = APIManager(appSys.offline);
+      API backgroundFetchApi = apiManager(appSys.offline);
 
       print("Old grades length is ${oldGradesLength}");
       //Getting the online count of grades
 
       List<Grade>? listOnlineGrades = [];
       //Login creds
-      String? u = await ReadStorage("username");
-      String? p = await ReadStorage("password");
-      String? url = await ReadStorage("pronoteurl");
-      String? cas = await ReadStorage("pronotecas");
+      String? u = await readStorage("username");
+      String? p = await readStorage("password");
+      String? url = await readStorage("pronoteurl");
+      String? cas = await readStorage("pronotecas");
       await backgroundFetchApi.login(u, p, url: url, cas: cas);
       listOnlineGrades = getAllGrades(await backgroundFetchApi.getGrades(forceReload: true), overrideLimit: true);
 

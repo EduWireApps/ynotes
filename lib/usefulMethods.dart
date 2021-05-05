@@ -92,7 +92,7 @@ launchURL(url) async {
 }
 
 //Redefine the switch statement
-Future<String?> ReadStorage(_key) async {
+Future<String?> readStorage(_key) async {
   String? u = await storage.read(key: _key);
 
   return u;
@@ -126,24 +126,7 @@ Route router(Widget widget) {
   );
 }
 
-specialtiesSelectionAvailable() async {
-  return [false];
-  if (appSys.settings!["system"]["chosenParser"] == 0) {
-    SharedPreferences? preferences = await SharedPreferences.getInstance();
-    String classe = await storage.read(key: "classe") ?? "";
 
-//E.G : It is always something like "Première blabla"
-    var split = classe.split(" ");
-
-    if (split[0] == "PremiÃ¨re" || split[0] == "Terminale") {
-      return [true, (split[0] == "PremiÃ¨re") ? "Première" : split[0]];
-    } else {
-      return [false];
-    }
-  } else {
-    return [false];
-  }
-}
 
 class ConnectionStatusSingleton {
   //This creates the single instance by calling the `_internal` constructor specified below

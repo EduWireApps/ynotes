@@ -28,7 +28,6 @@ class _FolderChoiceDialogState extends State<FolderChoiceDialog> {
   List<FileInfo> filesToMove = [];
   @override
   void initState() {
-    // TODO: implement initState
     List<FileInfo> folderList = [];
     if (widget.files != null) {
       folderList = widget.files!.where((element) => element.element is Directory).toList();

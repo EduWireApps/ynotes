@@ -45,7 +45,7 @@ if ((wl != null) &&           // we have a WakeLock
                 result.success(true)
             }
             // Note: this method is invoked on the main thread.
-            // TODO
+      
           }
     }
     fun enableDND()
@@ -90,6 +90,12 @@ if ((wl != null) &&           // we have a WakeLock
                 intent.component = ComponentName(
                     "com.huawei.systemmanager",
                     "com.huawei.systemmanager.startupmgr.ui.StartupNormalAppListActivity"
+                )
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            } 
+            else if ("Samsung".equals(manufacturer, ignoreCase = true)) {
+                intent.component = ComponentName(
+                    "com.samsung.android.lool", "com.samsung.android.sm.battery.ui.BatteryActivity"
                 )
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             } 

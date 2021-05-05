@@ -67,11 +67,11 @@ class LoginController extends ChangeNotifier {
       _actualState = loginStatus.loggedOff;
       _details = "Connexion à l'API...";
       notifyListeners();
-      String? u = await ReadStorage("username");
-      String? p = await ReadStorage("password");
-      String? url = await ReadStorage("pronoteurl");
-      String? cas = await ReadStorage("pronotecas");
-      bool? iscas = (await ReadStorage("ispronotecas") == "true");
+      String? u = await readStorage("username");
+      String? p = await readStorage("password");
+      String? url = await readStorage("pronoteurl");
+      String? cas = await readStorage("pronotecas");
+      bool? iscas = (await readStorage("ispronotecas") == "true");
 
       var z = await storage.read(key: "agreedTermsAndConfiguredApp");
       if (u != null && p != null && z != null) {

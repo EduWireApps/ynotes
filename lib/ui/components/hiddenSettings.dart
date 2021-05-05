@@ -14,7 +14,6 @@ class HiddenSettings extends StatefulWidget {
 class _HiddenSettingsState extends State<HiddenSettings> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 

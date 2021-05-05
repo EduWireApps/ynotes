@@ -89,7 +89,7 @@ class ApplicationSystem extends ChangeNotifier {
     //Set offline
     await _initOffline();
     //Set api
-    this.api = APIManager(this.offline);
+    this.api = apiManager(this.offline);
 
     if (api != null) {
       account = await api!.account();

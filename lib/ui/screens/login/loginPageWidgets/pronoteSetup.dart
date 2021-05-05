@@ -108,7 +108,6 @@ class _PronoteUrlFieldPartState extends State<PronoteUrlFieldPart> {
   TextEditingController? _url = TextEditingController();
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _url = widget.pronoteUrl;
   }

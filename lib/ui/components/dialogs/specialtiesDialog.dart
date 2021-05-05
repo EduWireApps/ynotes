@@ -150,12 +150,10 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
   }
 
   getChosenSpecialties() async {
-    var other = await specialtiesSelectionAvailable();
     final prefs = await (SharedPreferences.getInstance());
     if (prefs.getStringList("listSpecialties") != null) {
       setState(() {
         chosenSpecialties = prefs.getStringList("listSpecialties");
-        classe = other;
       });
     }
   }

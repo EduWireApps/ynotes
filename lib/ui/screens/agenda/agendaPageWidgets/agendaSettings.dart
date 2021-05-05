@@ -16,7 +16,6 @@ class AgendaSettings extends StatefulWidget {
 class _AgendaSettingsState extends State<AgendaSettings> {
   @override
   void initState() {
-    // TODO: implement initState
   }
 
   @override
