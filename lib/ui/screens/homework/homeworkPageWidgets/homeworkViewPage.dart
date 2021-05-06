@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_tex/flutter_tex.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
@@ -19,7 +20,7 @@ class HomeworkDayViewPage extends StatefulWidget {
 }
 
 class _HomeworkPageState extends State<HomeworkDayViewPage> {
-  PageController? pageView;
+  late PageController pageView;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,7 +33,17 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
       ),
       body: Column(
         children: [
-          buildHeader(widget.homework[widget.defaultPage]),
+          ChangeNotifierProvider<PageController>.value(
+            value: pageView,
+            child: Consumer<PageController>(builder: (context, model, child) {
+              return FutureBuilder<Color>(
+                  future: getBackgroundColor(((model.hasClients) ? (model.page ?? 0.0) : 0.0)),
+                  builder: (context, snapshot) {
+                    return buildHeader(widget.homework[((model.hasClients) ? (model.page ?? 0) : 0).round()],
+                        ThemeUtils.darken(snapshot.data ?? Colors.white, forceAmount: 0.1));
+                  });
+            }),
+          ),
           Expanded(
               child: PageView.builder(
                   controller: pageView,
@@ -50,47 +61,56 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
 
     return Container(
       width: screenSize.size.width,
-      height: screenSize.size.height / 10 * 1.2,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Expanded(
-            child: Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CustomButtons.materialButton(
-                    context, screenSize.size.width / 5 * 0.55, screenSize.size.width / 5 * 0.55, () {},
-                    backgroundColor: Colors.red, icon: MdiIcons.fileDocumentMultiple, margin: EdgeInsets.zero),
-                CustomButtons.materialButton(
-                    context, screenSize.size.width / 5 * 0.55, screenSize.size.width / 5 * 0.55, () {},
-                    backgroundColor: Colors.red, icon: MdiIcons.fileDocumentMultiple),
-                CustomButtons.materialButton(
-                    context, screenSize.size.width / 5 * 0.55, screenSize.size.width / 5 * 0.55, () {},
-                    backgroundColor: Colors.red, icon: MdiIcons.fileDocumentMultiple)
-              ],
-            ),
+          SizedBox(
+            height: screenSize.size.height / 10 * 0.1,
           ),
-          Expanded(
-            child: CustomButtons.materialButton(
-                context, screenSize.size.width / 5 * 3.8, screenSize.size.width / 5 * 0.44, () {},
-                backgroundColor: Colors.red,
-                label: "RENDRE MON DEVOIR",
-                padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.5),
-                textStyle: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w500, color: Colors.white),
-                margin: EdgeInsets.zero),
-          )
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CustomButtons.materialButton(
+                  context, screenSize.size.width / 5 * 0.55, screenSize.size.width / 5 * 0.55, () {},
+                  borderRadius: BorderRadius.circular(11),
+                  backgroundColor: Colors.red,
+                  icon: MdiIcons.fileDocumentMultipleOutline,
+                  margin: EdgeInsets.zero),
+              CustomButtons.materialButton(
+                  context, screenSize.size.width / 5 * 0.55, screenSize.size.width / 5 * 0.55, () {},
+                  borderRadius: BorderRadius.circular(11),
+                  backgroundColor: Colors.red,
+                  icon: MdiIcons.shareVariantOutline),
+              CustomButtons.materialButton(
+                  context, screenSize.size.width / 5 * 0.55, screenSize.size.width / 5 * 0.55, () {},
+                  borderRadius: BorderRadius.circular(11), backgroundColor: Colors.red, icon: MdiIcons.eyePlusOutline)
+            ],
+          ),
+          SizedBox(
+            height: screenSize.size.height / 10 * 0.1,
+          ),
+          CustomButtons.materialButton(
+              context, screenSize.size.width / 5 * 3.2, screenSize.size.height / 10 * 0.5, () {},
+              backgroundColor: Colors.red,
+              label: "RENDRE MON DEVOIR",
+              icon: MdiIcons.fileMoveOutline,
+              borderRadius: BorderRadius.circular(11),
+              padding: EdgeInsets.symmetric(
+                  horizontal: screenSize.size.width / 5 * 0.5, vertical: screenSize.size.height / 10 * 0.12),
+              textStyle: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w600, color: Colors.white),
+              margin: EdgeInsets.zero)
         ],
       ),
     );
   }
 
-  buildHeader(Homework hw) {
+  buildHeader(Homework hw, Color color) {
     var screenSize = MediaQuery.of(context);
 
     return Container(
         height: screenSize.size.height / 10 * 1,
-        color: Colors.red,
+        color: color,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -181,6 +201,19 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
             throw "Unable to launch url";
           }
         });
+  }
+
+  Future<Color> getBackgroundColor(double offset) async {
+    if (offset.toInt() + 1 < widget.homework.length) {
+      //Current background color
+      Color? current = Color(await getColor(widget.homework[offset.toInt()].disciplineCode));
+      Color? next = Color(await getColor(widget.homework[offset.toInt() + 1].disciplineCode));
+      ThemeUtils.isThemeDark ? Color(0xff313131) : Colors.white;
+
+      return Color.lerp(current, next, offset - offset.toInt()) ?? Colors.white;
+    } else {
+      return Color(await getColor(widget.homework.last.disciplineCode));
+    }
   }
 
   @override
