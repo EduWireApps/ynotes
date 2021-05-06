@@ -18,8 +18,10 @@ class CustomButtons {
       width: width,
       margin: margin ?? EdgeInsets.only(left: (screenSize.size.height / 10 * 8.8) / 10 * 0.1),
       child: Material(
+        shape: RoundedRectangleBorder(
+          borderRadius: borderRadius ?? BorderRadius.circular(screenSize.size.width / 5 * 0.11),
+        ),
         color: backgroundColor ?? Theme.of(context).primaryColorDark,
-        borderRadius: borderRadius ?? BorderRadius.circular(screenSize.size.width / 5 * 0.11),
         child: InkWell(
           borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
           onTap: onTap as void Function()?,

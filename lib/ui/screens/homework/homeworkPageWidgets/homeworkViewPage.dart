@@ -62,6 +62,7 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
     var screenSize = MediaQuery.of(context);
 
     return Container(
+      color: Theme.of(context).primaryColor,
       width: screenSize.size.width,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -108,52 +109,57 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
   buildHeader(Homework hw, Color color, int page) {
     var screenSize = MediaQuery.of(context);
 
-    return Container(
-        height: screenSize.size.height / 10 * 0.8,
-        color: color,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (page != 0)
-              IconButton(
-                  icon: Icon(
-                    MdiIcons.chevronLeft,
-                    color: Colors.white,
-                  ),
-                  onPressed: () {
-                    pageView.previousPage(duration: Duration(milliseconds: 250), curve: Curves.easeIn);
-                  }),
-            Expanded(
-                child: Column(
-              mainAxisSize: MainAxisSize.max,
+    return Column(
+      children: [
+        Container(
+            height: screenSize.size.height / 10 * 0.8,
+            color: color,
+            child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Flexible(
-                  flex: 11,
-                  child: AutoSizeText(hw.discipline ?? "",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Asap", color: Colors.white)),
-                ),
-                Flexible(
-                  flex: 9,
-                  child: AutoSizeText(
-                    hw.teacherName ?? "",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontFamily: "Asap", color: Colors.white60),
-                  ),
-                ),
+                if (page != 0)
+                  IconButton(
+                      icon: Icon(
+                        MdiIcons.chevronLeft,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        pageView.previousPage(duration: Duration(milliseconds: 250), curve: Curves.easeIn);
+                      }),
+                Expanded(
+                    child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Flexible(
+                      flex: 11,
+                      child: AutoSizeText(hw.discipline ?? "",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Asap", color: Colors.white)),
+                    ),
+                    Flexible(
+                      flex: 9,
+                      child: AutoSizeText(
+                        hw.teacherName ?? "",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontFamily: "Asap", color: Colors.white60),
+                      ),
+                    ),
+                  ],
+                )),
+                IconButton(
+                    icon: Icon(
+                      MdiIcons.chevronRight,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      pageView.nextPage(duration: Duration(milliseconds: 250), curve: Curves.easeIn);
+                    })
               ],
             )),
-            IconButton(
-                icon: Icon(
-                  MdiIcons.chevronRight,
-                  color: Colors.white,
-                ),
-                onPressed: () {
-                  pageView.nextPage(duration: Duration(milliseconds: 250), curve: Curves.easeIn);
-                })
-          ],
-        ));
+        buildButton(hw, color),
+      ],
+    );
   }
 
   buildPage(Homework hw) {
@@ -167,7 +173,6 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                buildButton(hw, Color(snapshot.data ?? 0)),
                 Container(
                     padding: EdgeInsets.symmetric(
                         vertical: screenSize.size.height / 10 * 0.1, horizontal: screenSize.size.width / 5 * 0.3),
