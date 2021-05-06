@@ -8,10 +8,10 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/hiddenSettings.dart';
-import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/HWlistPage.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/HWsingleDayPage.dart';
 
 import 'homeworkPageWidgets/HWsettingsPage.dart';
+import 'homeworkPageWidgets/homeworkTimeline.dart';
 
 List dates = [];
 
@@ -188,16 +188,12 @@ class HomeworkPageState extends State<HomeworkPage> {
                 child: Stack(
                   children: <Widget>[
                     ClipRRect(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(15),
-                      ),
                       child: PageView(
                         controller: _pageControllerHW,
                         physics: NeverScrollableScrollPhysics(),
                         children: <Widget>[
                           //Second page with homework
-                          HomeworkFirstPage(),
-
+                          HomeworkTimeline(),
                           //Third page (with homework at a specific date)
                           HomeworkSecondPage(animateToPage)
                         ],

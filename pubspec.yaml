@@ -48,7 +48,7 @@ dependencies:
   simple_animations:
     git:
       url: https://github.com/felixblaschke/simple_animations
-      ref: nullsafety3
+      ref: nullsafety3 
   tinycolor:
     git:
       url: https://github.com/lslv1243/tinycolor

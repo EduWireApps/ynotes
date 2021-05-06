@@ -59,18 +59,18 @@ void createStack() {
   });
 }
 
-Future<int> getColor(String? disciplineName) async {
+Future<int> getColor(String? disciplineCode) async {
   SharedPreferences prefs = await (SharedPreferences.getInstance());
-  if (disciplineName != null) {
-    if (prefs.containsKey(disciplineName)) {
-      String color = prefs.getString(disciplineName)!;
+  if (disciplineCode != null) {
+    if (prefs.containsKey(disciplineCode)) {
+      String color = prefs.getString(disciplineCode)!;
       return HexColor(color).value;
     } else {
       if (colorStack.isEmpty) {
         createStack();
       }
-      await prefs.setString(disciplineName, colorStack.pop());
-      String color = prefs.getString(disciplineName)!;
+      await prefs.setString(disciplineCode, colorStack.pop());
+      String color = prefs.getString(disciplineCode)!;
       return HexColor(color).value;
     }
   }
