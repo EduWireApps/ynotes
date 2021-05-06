@@ -39,8 +39,10 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
               return FutureBuilder<Color>(
                   future: getBackgroundColor(((model.hasClients) ? (model.page ?? 0.0) : 0.0)),
                   builder: (context, snapshot) {
-                    return buildHeader(widget.homework[((model.hasClients) ? (model.page ?? 0) : 0).round()],
-                        ThemeUtils.darken(snapshot.data ?? Colors.white, forceAmount: 0.1));
+                    return buildHeader(
+                        widget.homework[((model.hasClients) ? (model.page ?? 0) : 0).round()],
+                        ThemeUtils.darken(snapshot.data ?? Colors.white, forceAmount: 0.1),
+                        ((model.hasClients) ? (model.page ?? 0) : 0).round());
                   });
             }),
           ),
@@ -56,7 +58,7 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
     );
   }
 
-  buildButton(Homework hw) {
+  buildButton(Homework hw, Color color) {
     var screenSize = MediaQuery.of(context);
 
     return Container(
@@ -74,17 +76,15 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
               CustomButtons.materialButton(
                   context, screenSize.size.width / 5 * 0.55, screenSize.size.width / 5 * 0.55, () {},
                   borderRadius: BorderRadius.circular(11),
-                  backgroundColor: Colors.red,
+                  backgroundColor: color,
                   icon: MdiIcons.fileDocumentMultipleOutline,
                   margin: EdgeInsets.zero),
               CustomButtons.materialButton(
                   context, screenSize.size.width / 5 * 0.55, screenSize.size.width / 5 * 0.55, () {},
-                  borderRadius: BorderRadius.circular(11),
-                  backgroundColor: Colors.red,
-                  icon: MdiIcons.shareVariantOutline),
+                  borderRadius: BorderRadius.circular(11), backgroundColor: color, icon: MdiIcons.shareVariantOutline),
               CustomButtons.materialButton(
                   context, screenSize.size.width / 5 * 0.55, screenSize.size.width / 5 * 0.55, () {},
-                  borderRadius: BorderRadius.circular(11), backgroundColor: Colors.red, icon: MdiIcons.eyePlusOutline)
+                  borderRadius: BorderRadius.circular(11), backgroundColor: color, icon: MdiIcons.eyePlusOutline)
             ],
           ),
           SizedBox(
@@ -92,7 +92,7 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
           ),
           CustomButtons.materialButton(
               context, screenSize.size.width / 5 * 3.2, screenSize.size.height / 10 * 0.5, () {},
-              backgroundColor: Colors.red,
+              backgroundColor: color,
               label: "RENDRE MON DEVOIR",
               icon: MdiIcons.fileMoveOutline,
               borderRadius: BorderRadius.circular(11),
@@ -105,16 +105,24 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
     );
   }
 
-  buildHeader(Homework hw, Color color) {
+  buildHeader(Homework hw, Color color, int page) {
     var screenSize = MediaQuery.of(context);
 
     return Container(
-        height: screenSize.size.height / 10 * 1,
+        height: screenSize.size.height / 10 * 0.8,
         color: color,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            IconButton(icon: Icon(MdiIcons.chevronLeft), onPressed: () {}),
+            if (page != 0)
+              IconButton(
+                  icon: Icon(
+                    MdiIcons.chevronLeft,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    pageView.previousPage(duration: Duration(milliseconds: 250), curve: Curves.easeIn);
+                  }),
             Expanded(
                 child: Column(
               mainAxisSize: MainAxisSize.max,
@@ -136,7 +144,14 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                 ),
               ],
             )),
-            IconButton(icon: Icon(MdiIcons.chevronRight), onPressed: () {})
+            IconButton(
+                icon: Icon(
+                  MdiIcons.chevronRight,
+                  color: Colors.white,
+                ),
+                onPressed: () {
+                  pageView.nextPage(duration: Duration(milliseconds: 250), curve: Curves.easeIn);
+                })
           ],
         ));
   }
@@ -152,7 +167,7 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                buildButton(hw),
+                buildButton(hw, Color(snapshot.data ?? 0)),
                 Container(
                     padding: EdgeInsets.symmetric(
                         vertical: screenSize.size.height / 10 * 0.1, horizontal: screenSize.size.width / 5 * 0.3),
