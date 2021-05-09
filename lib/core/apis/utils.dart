@@ -116,6 +116,12 @@ getWeek(DateTime date) async {
   }
 }
 
+String linkify(String link) {
+  return link.replaceAllMapped(new RegExp(r'(>|\s)+(https?.+?)(<|\s)', multiLine: true, caseSensitive: false), (match) {
+    return '${match.group(1)}<a href="${match.group(2)}">${match.group(2)}</a>${match.group(3)}';
+  });
+}
+
 setChosenParser(int? chosen) async {
   await appSys.updateSetting(appSys.settings!["system"], "chosenParser", chosen);
 }

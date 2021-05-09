@@ -14,6 +14,7 @@ import 'package:ynotes/core/logic/homework/controller.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/background.dart';
+import 'package:ynotes/core/utils/nullSafeMap.dart';
 import 'package:ynotes/core/utils/settingsUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/ui/themes/themesList.dart';
@@ -94,7 +95,7 @@ class ApplicationSystem extends ChangeNotifier {
     if (api != null) {
       account = await api!.account();
       if (account != null && account!.managableAccounts != null)
-        currentSchoolAccount = account!.managableAccounts![settings!["system"]["accountIndex"]];
+        currentSchoolAccount = account!.managableAccounts![mapGet(settings, ["system","accountIndex"])??0];
     }
     //Set background fetch
     await _initBackgroundFetch();

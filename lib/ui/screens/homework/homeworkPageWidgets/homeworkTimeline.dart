@@ -9,6 +9,9 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/columnGenerator.dart';
+import 'package:ynotes/ui/components/dialogs.dart';
+import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/homeworkViewPage.dart';
+import 'package:ynotes/usefulMethods.dart';
 
 class HomeworkTimeline extends StatefulWidget {
   const HomeworkTimeline({Key? key}) : super(key: key);
@@ -31,7 +34,8 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
           child: ListView.builder(
               itemCount: groupHomeworkByDate(model.getHomework ?? []).length,
               itemBuilder: (context, index) {
-                return buildHomeworkBlock(groupHomeworkByDate(model.getHomework ?? [])[index].first.date ?? DateTime.now(),
+                return buildHomeworkBlock(
+                    groupHomeworkByDate(model.getHomework ?? [])[index].first.date ?? DateTime.now(),
                     groupHomeworkByDate(model.getHomework ?? [])[index]);
               }),
         );
@@ -40,10 +44,10 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
   }
 
   ///The basical homework element
-  buildHomework(Homework homeworkElement) {
+  buildHomework(List<Homework> homework, int index) {
     var screenSize = MediaQuery.of(context);
     return FutureBuilder<int>(
-        future: getColor(homeworkElement.disciplineCode),
+        future: getColor(homework[index].disciplineCode),
         initialData: 0,
         builder: (context, snapshot) {
           return Card(
@@ -52,7 +56,16 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
             margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.1),
             child: InkWell(
               borderRadius: BorderRadius.circular(5),
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).push(router(HomeworkDayViewPage(
+                  homework,
+                  defaultPage: index,
+                )));
+              },
+              onLongPress: () async {
+                await CustomDialogs.showHomeworkDetailsDialog(context, homework[index]);
+                setState(() {});
+              },
               child: Container(
                 width: screenSize.size.width / 5 * 4.1,
                 height: screenSize.size.height / 10 * 0.6,
@@ -67,7 +80,7 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
                           Expanded(
                             flex: 8,
                             child: AutoSizeText(
-                              homeworkElement.discipline ?? "",
+                              homework[index].discipline ?? "",
                               textAlign: TextAlign.start,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
@@ -78,15 +91,15 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
                           ),
                           Expanded(
                               flex: 7,
-                              child: AutoSizeText(homeworkElement.teacherName ?? "",
+                              child: AutoSizeText(homework[index].teacherName ?? "",
                                   overflow: TextOverflow.ellipsis,
                                   textAlign: TextAlign.start,
                                   style: TextStyle(fontFamily: "Asap")))
                         ],
                       ),
                     ),
-                    if (homeworkElement.toReturn ?? false) Icon(MdiIcons.uploadOutline),
-                    if (homeworkElement.isATest ?? false) Icon(MdiIcons.bookEditOutline)
+                    if (homework[index].toReturn ?? false) Icon(MdiIcons.uploadOutline),
+                    if (homework[index].isATest ?? false) Icon(MdiIcons.bookEditOutline)
                   ],
                 ),
               ),
@@ -109,7 +122,7 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
                 child: ColumnBuilder(
                   itemCount: homework.length,
                   itemBuilder: (context, index) {
-                    return buildHomework(homework[index]);
+                    return buildHomework(homework, index);
                   },
                 )),
           ],

@@ -82,7 +82,7 @@ class _HomeworkReaderOptionsBottomSheetState extends State<HomeworkReaderOptions
             width: screenSize.size.width,
             margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.05),
             child: Text(
-              "Police",
+              "Taille de police",
               style: TextStyle(
                   fontFamily: "Asap", fontSize: 19, fontWeight: FontWeight.w500, color: ThemeUtils.textColor()),
               textAlign: TextAlign.start,
@@ -144,24 +144,33 @@ class _PageColorChoiceState extends State<PageColorChoice> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          buildColorDot(true, ThemeUtils.textColor(revert: true)),
-          buildColorDot(false, Theme.of(context).primaryColorDark),
-          buildColorDot(false, Color(0xfff2e7bf)),
+          buildColorDot(0, Theme.of(context).primaryColorDark),
+          buildColorDot(1, ThemeUtils.textColor(revert: true)),
+          if (!ThemeUtils.isThemeDark) buildColorDot(2, Color(0xfff2e7bf)),
         ],
       ),
     );
   }
 
-  buildColorDot(bool selected, Color color) {
+  buildColorDot(int index, Color color) {
     var screenSize = MediaQuery.of(context);
-    return Container(
-      width: screenSize.size.width / 5 * 0.6,
-      height: screenSize.size.width / 5 * 0.6,
-      margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.05),
-      decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: color,
-          border: selected ? Border.all(width: 2, color: Colors.blue) : Border.all(width: 2, color: Colors.grey)),
+    return GestureDetector(
+      onTap: () {
+        appSys.updateSetting(appSys.settings!["user"]["homeworkPage"], "pageColorVariant", index);
+        setState(() {});
+      },
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 350),
+        width: screenSize.size.width / 5 * 0.6,
+        height: screenSize.size.width / 5 * 0.6,
+        margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.05),
+        decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: color,
+            border: (appSys.settings!["user"]["homeworkPage"]["pageColorVariant"] ?? 0) == index
+                ? Border.all(width: 2, color: Colors.blue)
+                : Border.all(width: 2, color: Colors.grey)),
+      ),
     );
   }
 }
@@ -171,6 +180,7 @@ class _PageTextChoiceState extends State<PageTextChoice> with TickerProviderStat
   late AnimationController minusController;
   late Animation<double> plusAnimation;
   late Animation<double> minusAnimation;
+
   List<String> availableFonts = ["Asap", "Roboto", "SF Pro Display"];
 
   String currentFont = "Asap";
@@ -181,54 +191,52 @@ class _PageTextChoiceState extends State<PageTextChoice> with TickerProviderStat
       margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.05),
       child: Column(
         children: [
+          
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Expanded(
                 child: Text(
-                  currentFont,
-                  style: TextStyle(fontFamily: ".SF UI Text", fontSize: 25),
-                ),
-              ),
-              Container(
-                margin: EdgeInsets.only(right: screenSize.size.width / 5 * 0.05),
-                child: Text(
-                  "Changer",
-                  style: TextStyle(fontFamily: "Asap", fontSize: 19, color: Colors.blueAccent),
-                ),
-              )
-            ],
-          ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Expanded(
-                child: Text(
-                  currentFont,
-                  style: TextStyle(fontFamily: currentFont, fontSize: 25),
+                  appSys.settings!["user"]["homeworkPage"]["fontSize"].toString(),
+                  style: TextStyle(
+                      fontFamily: currentFont,
+                      fontSize: (appSys.settings!["user"]["homeworkPage"]["fontSize"] ?? 20).toDouble(),
+                      color: ThemeUtils.textColor()),
                 ),
               ),
               Container(
                 width: screenSize.size.width / 5 * 1.2,
                 height: screenSize.size.height / 10 * 0.5,
-                decoration: BoxDecoration(borderRadius: BorderRadius.circular(11), border: Border.all()),
+                margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(11), border: Border.all(color: ThemeUtils.textColor())),
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Expanded(
                         child: GestureDetector(
                       onTap: () {
                         minusController.forward();
+                        if (appSys.settings!["user"]["homeworkPage"]["fontSize"] > 11)
+                          appSys.updateSetting(appSys.settings!["user"]["homeworkPage"], "fontSize",
+                              appSys.settings!["user"]["homeworkPage"]["fontSize"] - 1);
+                        setState(() {});
                       },
                       child: Container(
                         decoration: BoxDecoration(
                             border: Border(
-                          right: BorderSide(),
+                          right: BorderSide(color: ThemeUtils.textColor()),
                         )),
                         child: Center(
                           child: AnimatedBuilder(
                               animation: minusController,
                               builder: (context, child) {
-                                return Transform.scale(scale: minusAnimation.value, child: Text("-"));
+                                return Transform.scale(
+                                    scale: minusAnimation.value,
+                                    child: Text(
+                                      "-",
+                                      style: TextStyle(color: ThemeUtils.textColor()),
+                                    ));
                               }),
                         ),
                       ),
@@ -237,18 +245,20 @@ class _PageTextChoiceState extends State<PageTextChoice> with TickerProviderStat
                         child: GestureDetector(
                       onTap: () {
                         plusController.forward();
+                        if (appSys.settings!["user"]["homeworkPage"]["fontSize"] < 35)
+                          appSys.updateSetting(appSys.settings!["user"]["homeworkPage"], "fontSize",
+                              appSys.settings!["user"]["homeworkPage"]["fontSize"] + 1);
+                        setState(() {});
                       },
                       child: Container(
-                        decoration: BoxDecoration(
-                          border: Border(
-                            left: BorderSide(),
-                          ),
-                        ),
+                        decoration: BoxDecoration(),
                         child: Center(
                           child: AnimatedBuilder(
                               animation: plusAnimation,
                               builder: (context, child) {
-                                return Transform.scale(scale: plusAnimation.value, child: Text("+"));
+                                return Transform.scale(
+                                    scale: plusAnimation.value,
+                                    child: Text("+", style: TextStyle(color: ThemeUtils.textColor())));
                               }),
                         ),
                       ),
@@ -266,14 +276,14 @@ class _PageTextChoiceState extends State<PageTextChoice> with TickerProviderStat
   @override
   void initState() {
     super.initState();
-    plusController = AnimationController(value: 0.0, duration: Duration(milliseconds: 200), vsync: this)
+    plusController = AnimationController(value: 0.0, duration: Duration(milliseconds: 120), vsync: this)
       ..addStatusListener((status) {
         if (status == AnimationStatus.completed) {
           plusController.reverse();
         }
       });
 
-    minusController = AnimationController(value: 0.0, duration: Duration(milliseconds: 200), vsync: this)
+    minusController = AnimationController(value: 0.0, duration: Duration(milliseconds: 120), vsync: this)
       ..addStatusListener((status) {
         if (status == AnimationStatus.completed) {
           minusController.reverse();
@@ -282,11 +292,11 @@ class _PageTextChoiceState extends State<PageTextChoice> with TickerProviderStat
 
     minusAnimation = Tween(
       begin: 1.0,
-      end: 1.8,
-    ).animate(CurvedAnimation(parent: minusController, curve: Curves.easeInQuint));
+      end: 2.0,
+    ).animate(CurvedAnimation(parent: minusController, curve: Curves.easeInBack));
     plusAnimation = Tween(
       begin: 1.0,
-      end: 1.8,
-    ).animate(CurvedAnimation(parent: plusController, curve: Curves.easeInQuint));
+      end: 2.0,
+    ).animate(CurvedAnimation(parent: plusController, curve: Curves.easeInBack));
   }
 }

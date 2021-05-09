@@ -30,7 +30,9 @@ class SettingsUtils {
       "summaryPage": {"summaryQuickHomework": 11},
       "homeworkPage": {
         "isExpandedByDefault": false,
-        "forceMonochromeContent": false
+        "forceMonochromeContent": false,
+        "fontSize": 20,
+        "pageColorVariant": 0
       },
       "agendaPage": {
         "lighteningOverride": false,
@@ -69,6 +71,9 @@ class SettingsUtils {
       value = 0;
       if (setting == "summaryQuickHomework") {
         value = 10;
+      }
+      if (setting == "fontSize") {
+        value = 11;
       }
       if (setting == "lessonReminderDelay") {
         value = 5;
@@ -135,8 +140,10 @@ class SettingsUtils {
       settings = json.encode(settingsForm);
     }
     print(settings);
+    print(settingsForm);
+
     Map? _settings = json.decode(settings);
-    return _settings;
+    return {...json.decode(json.encode(settingsForm)), ..._settings ?? {}};
   }
 
   //Oops
@@ -154,6 +161,7 @@ class SettingsUtils {
     if (_newSettings == null) {
       await setSetting(_settings);
     }
+    print(_settings);
     return _settings;
   }
 
