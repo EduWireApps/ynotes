@@ -30,6 +30,7 @@ class SettingsUtils {
       "summaryPage": {"summaryQuickHomework": 11},
       "homeworkPage": {
         "isExpandedByDefault": false,
+        "forceMonochromeContent": false
       },
       "agendaPage": {
         "lighteningOverride": false,

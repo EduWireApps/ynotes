@@ -29,10 +29,10 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
           height: screenSize.size.height,
           width: screenSize.size.width,
           child: ListView.builder(
-              itemCount: homeworkFilter(model.getHomework ?? []).length,
+              itemCount: groupHomeworkByDate(model.getHomework ?? []).length,
               itemBuilder: (context, index) {
-                return buildHomeworkBlock(homeworkFilter(model.getHomework ?? [])[index].first.date ?? DateTime.now(),
-                    homeworkFilter(model.getHomework ?? [])[index]);
+                return buildHomeworkBlock(groupHomeworkByDate(model.getHomework ?? [])[index].first.date ?? DateTime.now(),
+                    groupHomeworkByDate(model.getHomework ?? [])[index]);
               }),
         );
       }),
@@ -157,7 +157,7 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
   }
 
   //Date on the left of the homework
-  List<List<Homework>> homeworkFilter(List<Homework> homeworkList) {
+  List<List<Homework>> groupHomeworkByDate(List<Homework> homeworkList) {
     List<DateTime> dates = [];
     List<List<Homework>> subList = [];
     homeworkList.forEach((hw) {

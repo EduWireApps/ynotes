@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_tex/flutter_tex.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
+import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -10,6 +11,7 @@ import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/ui/components/buttons.dart';
+import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/homeworkReaderOptions.dart';
 
 class HomeworkDayViewPage extends StatefulWidget {
   final List<Homework> homework;
@@ -23,10 +25,18 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
   late PageController pageView;
   @override
   Widget build(BuildContext context) {
+    String date = "Pas de date !";
+
+    if (widget.homework.first.date != null) {
+      date = DateFormat("EEEE dd MMMM", "fr_FR").format(widget.homework.first.date!).toUpperCase();
+    }
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       appBar: new AppBar(
-        title: new Text(widget.homework.first.date.toString()),
+        title: new Text(
+          date,
+          style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
+        ),
         systemOverlayStyle: ThemeUtils.isThemeDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
         brightness: ThemeUtils.isThemeDark ? Brightness.dark : Brightness.light,
         backgroundColor: Theme.of(context).primaryColor,
@@ -58,49 +68,72 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
     );
   }
 
+  buildAditionnalMetaHeader() {}
   buildButton(Homework hw, Color color) {
     var screenSize = MediaQuery.of(context);
 
     return Container(
       color: Theme.of(context).primaryColor,
       width: screenSize.size.width,
+      padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.1),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          SizedBox(
-            height: screenSize.size.height / 10 * 0.1,
-          ),
           Row(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CustomButtons.materialButton(
-                  context, screenSize.size.width / 5 * 0.55, screenSize.size.width / 5 * 0.55, () {},
-                  borderRadius: BorderRadius.circular(11),
-                  backgroundColor: color,
-                  icon: MdiIcons.fileDocumentMultipleOutline,
-                  margin: EdgeInsets.zero),
+              AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 200),
+                  transitionBuilder: (Widget child, Animation<double> animation) {
+                    return ScaleTransition(child: child, scale: animation);
+                  },
+                  child: (hw.documents ?? []).length > 0
+                      ? Container(
+                          key: ValueKey<int>(0),
+                          child: CustomButtons.materialButton(
+                              context, screenSize.size.width / 5 * 0.55, screenSize.size.width / 5 * 0.55, () {},
+                              borderRadius: BorderRadius.circular(11),
+                              backgroundColor: color,
+                              icon: MdiIcons.fileDocumentMultipleOutline,
+                              margin: EdgeInsets.zero),
+                        )
+                      : Container()),
               CustomButtons.materialButton(
                   context, screenSize.size.width / 5 * 0.55, screenSize.size.width / 5 * 0.55, () {},
                   borderRadius: BorderRadius.circular(11), backgroundColor: color, icon: MdiIcons.shareVariantOutline),
-              CustomButtons.materialButton(
-                  context, screenSize.size.width / 5 * 0.55, screenSize.size.width / 5 * 0.55, () {},
-                  borderRadius: BorderRadius.circular(11), backgroundColor: color, icon: MdiIcons.eyePlusOutline)
+              CustomButtons.materialButton(context, screenSize.size.width / 5 * 0.55, screenSize.size.width / 5 * 0.55,
+                  () {
+                showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    builder: (context) {
+                      return HomeworkReaderOptionsBottomSheet();
+                    });
+              }, borderRadius: BorderRadius.circular(11), backgroundColor: color, icon: MdiIcons.eyePlusOutline),
+              AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 200),
+                  transitionBuilder: (Widget child, Animation<double> animation) {
+                    return ScaleTransition(child: child, scale: animation);
+                  },
+                  child: (hw.toReturn ?? false)
+                      ? CustomButtons.materialButton(
+                          context,
+                          null,
+                          screenSize.size.height / 10 * 0.5,
+                          () {},
+                          backgroundColor: color,
+                          label: "RENDRE MON DEVOIR",
+                          icon: MdiIcons.fileMoveOutline,
+                          borderRadius: BorderRadius.circular(11),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: screenSize.size.width / 5 * 0.5,
+                              vertical: screenSize.size.height / 10 * 0.12),
+                          textStyle: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w600, color: Colors.white),
+                        )
+                      : Container()),
             ],
           ),
-          SizedBox(
-            height: screenSize.size.height / 10 * 0.1,
-          ),
-          CustomButtons.materialButton(
-              context, screenSize.size.width / 5 * 3.2, screenSize.size.height / 10 * 0.5, () {},
-              backgroundColor: color,
-              label: "RENDRE MON DEVOIR",
-              icon: MdiIcons.fileMoveOutline,
-              borderRadius: BorderRadius.circular(11),
-              padding: EdgeInsets.symmetric(
-                  horizontal: screenSize.size.width / 5 * 0.5, vertical: screenSize.size.height / 10 * 0.12),
-              textStyle: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w600, color: Colors.white),
-              margin: EdgeInsets.zero)
         ],
       ),
     );
@@ -116,9 +149,14 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
             color: color,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                if (page != 0)
-                  IconButton(
+                Visibility(
+                  visible: page != 0,
+                  maintainAnimation: true,
+                  maintainState: true,
+                  maintainSize: true,
+                  child: IconButton(
                       icon: Icon(
                         MdiIcons.chevronLeft,
                         color: Colors.white,
@@ -126,6 +164,7 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                       onPressed: () {
                         pageView.previousPage(duration: Duration(milliseconds: 250), curve: Curves.easeIn);
                       }),
+                ),
                 Expanded(
                     child: Column(
                   mainAxisSize: MainAxisSize.max,
@@ -175,7 +214,7 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
               children: [
                 Container(
                     padding: EdgeInsets.symmetric(
-                        vertical: screenSize.size.height / 10 * 0.1, horizontal: screenSize.size.width / 5 * 0.3),
+                        vertical: screenSize.size.height / 10 * 0.2, horizontal: screenSize.size.width / 5 * 0.3),
                     child: buildText(hw)),
               ],
             ),
