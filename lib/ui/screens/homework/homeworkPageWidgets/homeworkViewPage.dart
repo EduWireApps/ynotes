@@ -196,14 +196,20 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                     ),
                   ],
                 )),
-                IconButton(
-                    icon: Icon(
-                      MdiIcons.chevronRight,
-                      color: Colors.white,
-                    ),
-                    onPressed: () {
-                      pageView.nextPage(duration: Duration(milliseconds: 250), curve: Curves.easeIn);
-                    })
+                Visibility(
+                  visible: page != widget.homework.length-1,
+                  maintainAnimation: true,
+                  maintainState: true,
+                  maintainSize: true,
+                  child: IconButton(
+                      icon: Icon(
+                        MdiIcons.chevronRight,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        pageView.nextPage(duration: Duration(milliseconds: 250), curve: Curves.easeIn);
+                      }),
+                )
               ],
             )),
         buildButton(hw, color),
