@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
+import 'package:ynotes/core/logic/appConfig/controller.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/globals.dart';
@@ -14,14 +15,17 @@ import 'package:ynotes/usefulMethods.dart';
 class BackgroundService {
 //Background task when when app is closed
   static Future<void> backgroundFetchHeadlessTask(String a) async {
-    print("Starting the headless closed bakground task");
-    if (appSys == null) {
-      await appSys.initApp();
-    }
-    await logFile("Init appSys");
+   
 
     //await LocalNotification.showDebugNotification();
     try {
+       print("Starting the headless closed bakground task");
+    await AppNotification.showLoadingNotification(a.hashCode);
+
+    appSys = ApplicationSystem();
+    await appSys.initApp();
+
+    await logFile("Init appSys");
 //Ensure that grades notification are enabled and battery saver disabled
       if (appSys.settings!["user"]["global"]["notificationNewGrade"] &&
           !appSys.settings!["user"]["global"]["batterySaver"]) {
@@ -55,7 +59,9 @@ class BackgroundService {
         print("On going notification disabled");
       }
       await logFile("Background fetch occured.");
+      await AppNotification.cancelNotification(a.hashCode);
     } catch (e) {
+      await AppNotification.cancelNotification(a.hashCode);
       await logFile("An error occured during the background fetch : " + e.toString());
     }
     //BackgroundFetch.finish("");

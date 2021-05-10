@@ -382,6 +382,25 @@ class AppNotification {
     ));
   }
 
+  static Future<void> showLoadingNotification(int id) async {
+    AwesomeNotifications().initialize(null, [
+      NotificationChannel(
+          icon: 'resource://drawable/appicon',
+          channelKey: 'loading',
+          channelName: 'Chargement',
+          channelDescription: 'Indicateur des chargements de yNotes',
+          defaultColor: ThemeUtils.spaceColor(),
+          ledColor: Colors.white),
+    ]);
+    await AwesomeNotifications().createNotification(
+        content: NotificationContent(
+            id: id,
+            channelKey: 'loading',
+            title: "Rafraichissement des données",
+            notificationLayout: NotificationLayout.ProgressBar,
+            progress: null));
+  }
+
   static showNewGradeNotification() async {
     await AwesomeNotifications().initialize('resource://drawable/newgradeicon', [
       NotificationChannel(
