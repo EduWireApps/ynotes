@@ -47,7 +47,6 @@ class _GradesPageState extends State<GradesPage> {
                 height: screenSize.size.height,
                 child: Stack(
                   children: [
-                    _buildBackground(context, model),
                     Column(mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
                       ///Button container
 
@@ -760,18 +759,6 @@ class _GradesPageState extends State<GradesPage> {
         });
   }
 
-  _buildBackground(BuildContext context, GradesController model) {
-    var screenSize = MediaQuery.of(context);
-
-    return AnimatedContainer(
-      duration: Duration(milliseconds: 250),
-      decoration: BoxDecoration(
-        color: Colors.blue,
-      ),
-      width: model.isSimulating ? screenSize.size.height : 0,
-      height: model.isSimulating ? screenSize.size.height : 0,
-    );
-  }
 
   _buildFloatingButton(BuildContext context) {
     var screenSize = MediaQuery.of(context);

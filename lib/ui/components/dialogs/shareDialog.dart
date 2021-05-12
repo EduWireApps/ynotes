@@ -183,7 +183,7 @@ class _ShareBoxState extends State<ShareBox> {
       ui.Image image = await boundary.toImage(pixelRatio: 2.0);
       ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
       var pngBytes = byteData?.buffer.asUint8List();
-      final directory = (await getExternalStorageDirectory())!.path;
+      final directory = (await getTemporaryDirectory()).path;
       File imgFile = new File('$directory/screenshot.png');
       if (pngBytes != null) imgFile.writeAsBytes(pngBytes);
 
