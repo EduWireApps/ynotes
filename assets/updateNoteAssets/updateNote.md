@@ -1,7 +1,7 @@
 ## Note de mise à jour 0.11
 *La 0.10 est passée bien vite mais accueillait surtout la compatibilité multi ENT et l'arrivée sur l'App Store de l'application.
 Dans cette version, nous avons beaucoup modifié le code source de l'application pour nous aligner sur les toutes dernières nouveautés du monde du développement mobile.
-Ainsi, même si n'y verrez pas grand chose, cela nous changera la vie pour l'intégration des futures fonctionnalités. ✨*
+Ainsi, même si vous n'y verrez pas grand chose, cela nous changera la vie pour l'intégration des futures fonctionnalités. ✨*
 
 - Arrivée du compte parent
   
