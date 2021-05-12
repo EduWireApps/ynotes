@@ -3,29 +3,30 @@ import 'package:ynotes/core/apis/Pronote/PronoteAPI.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/nullSafeMap.dart';
 
-class PronoteConverter {
-  static Lesson lesson(PronoteClient client, Map<String, dynamic> lessonData) {
-    String matiere = mapGet(lessonData, ["ListeContenus", "V", 0, "L"]);
-
+class PronoteLessonsConverter {
+  static Lesson lesson(PronoteClient client, Map lessonData) {
+    String? matiere = mapGet(lessonData, ["ListeContenus", "V", 0, "L"]);
     DateTime start = DateFormat("dd/MM/yyyy HH:mm:ss", "fr_FR").parse(mapGet(lessonData, ["DateDuCours", "V"]));
+    DateTime? end;
 
-    DateTime end;
-    var endPlace = (mapGet(lessonData, ['place']) %
+    int? endPlace = (mapGet(lessonData, ['place']) %
             ((client.funcOptions['donneesSec']['donnees']['General']['ListeHeuresFin']['V']).length - 1)) +
         (mapGet(lessonData, ['duree']) - 1);
 
     ///Get the correct hours
     ///Pronote gives us the place where the hour should be in a week, when we modulo that with the amount of
     ///hours in a day we can get the "place" when the hour starts. Then we just add the duration (and substract 1)
-    for (var endTime in (mapGet(client.funcOptions, ['donneesSec', 'donnees', 'General', 'ListeHeuresFin', 'V']))) {
+    for (Map? endTime in (mapGet(client.funcOptions, ['donneesSec', 'donnees', 'General', 'ListeHeuresFin', 'V']))) {
       if (mapGet(endTime, ['G']) == endPlace) {
-        print(matiere + " " + "START " + start.toString() + " END " + endTime["L"]);
-        endTime = DateFormat("""HH'h'mm""").parse(mapGet(endTime, ["L"]));
-        end = DateTime(start.year, start.month, start.day, endTime.hour, endTime.minute);
+        if (endTime != null) {
+          print(matiere! + " " + "START " + start.toString() + " END " + endTime["L"]);
+        }
+        DateTime endTimeDate = DateFormat("""HH'h'mm""").parse(mapGet(endTime, ["L"]));
+        end = DateTime(start.year, start.month, start.day, endTimeDate.hour, endTimeDate.minute);
       }
     }
 
-    String room;
+    String? room;
     try {
       var roomContainer = mapGet(lessonData, ["ListeContenus", "V"]) ?? [].firstWhere((element) => element["G"] == 17);
       room = mapGet(roomContainer, ["L"]);
@@ -33,7 +34,7 @@ class PronoteConverter {
 
     //Sort of null aware
     catch (e) {}
-    List<String> teachers = List();
+    List<String?> teachers = [];
     try {
       mapGet(lessonData, ["ListeContenus", "V"]).forEach((element) {
         if (element["G"] == 3) {
@@ -42,14 +43,13 @@ class PronoteConverter {
       });
     } catch (e) {}
 
-    print(lessonData);
     //Some attributes
     String codeMatiere = mapGet(lessonData, ["ListeContenus", "V", 0, "L"]).hashCode.toString();
 
-    String id = mapGet(lessonData, ["N"]);
+    String? id = mapGet(lessonData, ["N"]);
 
-    String status;
-    bool canceled = false;
+    String? status;
+    bool? canceled = false;
 
     //Set lesson status
     if (mapGet(lessonData, ["Statut"]) != null) {
@@ -58,7 +58,6 @@ class PronoteConverter {
     if (mapGet(lessonData, ["estAnnule"]) != null) {
       canceled = mapGet(lessonData, ["estAnnule"]);
     }
-    print("d");
 
     //Finally set attributes
     Lesson l = Lesson(
@@ -66,7 +65,7 @@ class PronoteConverter {
         teachers: teachers,
         start: start,
         end: end,
-        duration: end.difference(start).inMinutes,
+        duration: end!.difference(start).inMinutes,
         canceled: canceled,
         status: status,
         discipline: matiere,
@@ -74,5 +73,19 @@ class PronoteConverter {
         disciplineCode: codeMatiere);
     //return lesson
     return l;
+  }
+
+  static lessons(PronoteClient client, Map lessonsData) {
+    List<Lesson> lessonsList = [];
+    List<Map> lessonsListRaw = (mapGet(lessonsData, ['donneesSec', 'donnees', 'ListeCours']) ?? []).cast<Map>();
+
+    lessonsListRaw.forEach((lesson) {
+      try {
+        lessonsList.add(PronoteLessonsConverter.lesson(client, lesson));
+      } catch (e) {
+        print(e);
+      }
+    });
+    return lessonsList;
   }
 }

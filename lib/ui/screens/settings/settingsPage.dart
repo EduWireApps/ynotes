@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:flushbar/flushbar.dart';
+import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -15,19 +15,19 @@ import 'package:wiredash/wiredash.dart';
 import 'package:ynotes/core/logic/appConfig/controller.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/services/platform.dart';
-import 'package:ynotes/core/services/shared_preferences.dart';
 import 'package:ynotes/core/utils/settingsUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
+import 'package:ynotes/ui/screens/settings/sub_pages/accountPage.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/exportPage.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
 
 import '../../../tests.dart';
 import '../../../usefulMethods.dart';
 
-bool isFirstAvatarSelected;
+bool? isFirstAvatarSelected;
 
 final storage = new FlutterSecureStorage();
 showExitDialog(BuildContext context) {
@@ -42,7 +42,7 @@ showExitDialog(BuildContext context) {
 
 class ExitDialogWidget extends StatefulWidget {
   const ExitDialogWidget({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -50,7 +50,7 @@ class ExitDialogWidget extends StatefulWidget {
 }
 
 class SettingsPage extends StatefulWidget {
-  const SettingsPage({Key key}) : super(key: key);
+  const SettingsPage({Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -90,8 +90,10 @@ class _ExitDialogWidgetState extends State<ExitDialogWidget> {
             ),
             onPressed: () async {
               await appSys.exitApp();
-              appSys.api.gradesList.clear();
-              setState(() {});
+              appSys.api!.gradesList!.clear();
+              setState(() {
+                appSys.api = null;
+              });
               try {
                 appSys.updateTheme("clair");
               } catch (e) {}
@@ -103,27 +105,29 @@ class _ExitDialogWidgetState extends State<ExitDialogWidget> {
 }
 
 class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMixin {
-  AnimationController leftToRightAnimation;
-  AnimationController rightToLeftAnimation;
+  late AnimationController leftToRightAnimation;
+  late AnimationController rightToLeftAnimation;
   //Avatar's animations :
-  Animation<double> movingRow;
+  Animation<double>? movingRow;
   //To use by the actual image when switching
-  Animation<double> avatarSize;
+  Animation<double>? avatarSize;
 
   //Disable new grades when battery saver is enabled
-  bool disableNotification;
+  bool? disableNotification;
+
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
 //animation left to right
-    SystemChrome.setSystemUIOverlayStyle(
-        ThemeUtils.isThemeDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark);
+
     return ChangeNotifierProvider<ApplicationSystem>.value(
       value: appSys,
       child: Consumer<ApplicationSystem>(builder: (context, _appSys, child) {
         return new Scaffold(
             backgroundColor: Theme.of(context).backgroundColor,
-            appBar: new AppBar(
+            appBar: AppBar(
+              systemOverlayStyle: ThemeUtils.isThemeDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+              brightness: ThemeUtils.isThemeDark ? Brightness.dark : Brightness.light,
               backgroundColor: Theme.of(context).primaryColor,
               title: new Text("Paramètres"),
               leading: new IconButton(
@@ -139,10 +143,11 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                 backgroundColor: Theme.of(context).backgroundColor,
                 darkBackgroundColor: Theme.of(context).backgroundColor,
                 lightBackgroundColor: Theme.of(context).backgroundColor,
+                contentPadding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.1),
                 sections: [
                   SettingsSection(
                     title: 'Mon compte',
-                    titleTextStyle: TextStyle(color: ThemeUtils.textColor()),
+                    titleTextStyle: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
                     tiles: [
                       SettingsTile(
                           title: 'Compte actuellement connecté',
@@ -152,22 +157,13 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                               color: ThemeUtils.isThemeDark
                                   ? Colors.white.withOpacity(0.7)
                                   : Colors.black.withOpacity(0.7)),
-                          subtitle: '${actualUser.length > 0 ? actualUser : "Invité"}',
+                          subtitle: '${appSys.currentSchoolAccount?.name ?? "Invité"}',
                           leading: Icon(MdiIcons.account, color: ThemeUtils.textColor()),
-                          onTap: () {},
+                          trailing: Icon(Icons.chevron_right, color: ThemeUtils.textColor()),
+                          onPressed: (context) {
+                            Navigator.of(context).push(router(AccountPage()));
+                          },
                           iosChevron: Icon(Icons.chevron_right)),
-                      SettingsTile(
-                        title: 'Déconnexion',
-                        titleTextStyle: TextStyle(fontFamily: "Asap", color: Colors.red),
-                        leading: Icon(
-                          MdiIcons.logout,
-                          color: Colors.red,
-                        ),
-                        iosChevron: Icon(Icons.chevron_right),
-                        onTap: () {
-                          showExitDialog(context);
-                        },
-                      )
                     ],
                   ),
                   SettingsSection(
@@ -199,9 +195,9 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                             color:
                                 ThemeUtils.isThemeDark ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
                         leading: Icon(MdiIcons.batteryHeart, color: ThemeUtils.textColor()),
-                        switchValue: _appSys.settings["user"]["global"]["batterySaver"],
+                        switchValue: _appSys.settings!["user"]["global"]["batterySaver"],
                         onToggle: (value) async {
-                          _appSys.updateSetting(_appSys.settings["user"]["global"], "batterySaver", value);
+                          _appSys.updateSetting(_appSys.settings!["user"]["global"], "batterySaver", value);
                         },
                       ),
                       SettingsTile.switchTile(
@@ -216,9 +212,9 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                             color:
                                 ThemeUtils.isThemeDark ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
                         leading: Icon(MdiIcons.arrowCollapseLeft, color: ThemeUtils.textColor()),
-                        switchValue: _appSys.settings["user"]["global"]["autoCloseDrawer"],
+                        switchValue: _appSys.settings!["user"]["global"]["autoCloseDrawer"],
                         onToggle: (value) async {
-                          _appSys.updateSetting(_appSys.settings["user"]["global"], "autoCloseDrawer", value);
+                          _appSys.updateSetting(_appSys.settings!["user"]["global"], "autoCloseDrawer", value);
                         },
                       ),
                     ],
@@ -229,46 +225,19 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     tiles: [
                       SettingsTile.switchTile(
                         title: 'Notification de nouveau mail',
-                        enabled: !_appSys.settings["user"]["global"]["batterySaver"],
+                        enabled: !_appSys.settings!["user"]["global"]["batterySaver"],
                         titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                         subtitleTextStyle: TextStyle(
                             fontFamily: "Asap",
                             color:
                                 ThemeUtils.isThemeDark ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
-                        switchValue: _appSys.settings["user"]["global"]["notificationNewMail"],
+                        switchValue: _appSys.settings!["user"]["global"]["notificationNewMail"],
                         onToggle: (bool value) async {
                           if (Platform.isIOS ||
                               value == false ||
                               (await Permission.ignoreBatteryOptimizations.isGranted) ||
                               Platform.isIOS) {
-                            _appSys.updateSetting(_appSys.settings["user"]["global"], "notificationNewMail", value);
-                          } else {
-                            if (await CustomDialogs.showAuthorizationsDialog(
-                                    context,
-                                    "la configuration d'optimisation de batterie",
-                                    "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ??
-                                false) {
-                              if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
-                                _appSys.updateSetting(_appSys.settings["user"]["global"], "notificationNewMail", value);
-                              }
-                            }
-                          }
-                        },
-                      ),
-                      SettingsTile.switchTile(
-                        title: 'Notification de nouvelle note',
-                        enabled: !_appSys.settings["user"]["global"]["batterySaver"],
-                        titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-                        subtitleTextStyle: TextStyle(
-                            fontFamily: "Asap",
-                            color:
-                                ThemeUtils.isThemeDark ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
-                        switchValue: _appSys.settings["user"]["global"]["notificationNewGrade"],
-                        onToggle: (bool value) async {
-                          if (Platform.isIOS ||
-                              value == false ||
-                              (await Permission.ignoreBatteryOptimizations.isGranted)) {
-                            _appSys.updateSetting(_appSys.settings["user"]["global"], "notificationNewGrade", value);
+                            _appSys.updateSetting(_appSys.settings!["user"]["global"], "notificationNewMail", value);
                           } else {
                             if (await CustomDialogs.showAuthorizationsDialog(
                                     context,
@@ -277,7 +246,35 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                                 false) {
                               if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
                                 _appSys.updateSetting(
-                                    _appSys.settings["user"]["global"], "notificationNewGrade", value);
+                                    _appSys.settings!["user"]["global"], "notificationNewMail", value);
+                              }
+                            }
+                          }
+                        },
+                      ),
+                      SettingsTile.switchTile(
+                        title: 'Notification de nouvelle note',
+                        enabled: !_appSys.settings!["user"]["global"]["batterySaver"],
+                        titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                        subtitleTextStyle: TextStyle(
+                            fontFamily: "Asap",
+                            color:
+                                ThemeUtils.isThemeDark ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
+                        switchValue: _appSys.settings!["user"]["global"]["notificationNewGrade"],
+                        onToggle: (bool value) async {
+                          if (Platform.isIOS ||
+                              value == false ||
+                              (await Permission.ignoreBatteryOptimizations.isGranted)) {
+                            _appSys.updateSetting(_appSys.settings!["user"]["global"], "notificationNewGrade", value);
+                          } else {
+                            if (await CustomDialogs.showAuthorizationsDialog(
+                                    context,
+                                    "la configuration d'optimisation de batterie",
+                                    "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ??
+                                false) {
+                              if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
+                                _appSys.updateSetting(
+                                    _appSys.settings!["user"]["global"], "notificationNewGrade", value);
                               }
                             }
                           }
@@ -290,11 +287,10 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                           onTap: () async {
                             //Check battery optimization setting
                             if (!await Permission.ignoreBatteryOptimizations.isGranted &&
-                                    await CustomDialogs.showAuthorizationsDialog(
-                                        context,
-                                        "la configuration d'optimisation de batterie",
-                                        "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ??
-                                false) {
+                                await CustomDialogs.showAuthorizationsDialog(
+                                    context,
+                                    "la configuration d'optimisation de batterie",
+                                    "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")) {
                               await Permission.ignoreBatteryOptimizations.request().isGranted;
                             }
 
@@ -326,7 +322,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                                   style: TextStyle(color: Colors.blue, fontFamily: "Asap"),
                                 ),
                               ),
-                              borderRadius: 8,
+                              borderRadius: BorderRadius.circular(8),
                             )..show(context);
                           },
                           titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
@@ -379,7 +375,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                         subtitle: 'Ou nous recommander quelque chose',
                         leading: Icon(MdiIcons.commentAlert, color: ThemeUtils.textColor()),
                         onTap: () {
-                          Wiredash.of(context).show();
+                          Wiredash.of(context)?.show();
                         },
                         titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                         subtitleTextStyle: TextStyle(
@@ -411,9 +407,10 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                         title: 'Réinitialiser le tutoriel',
                         leading: Icon(MdiIcons.restore, color: ThemeUtils.textColor()),
                         onTap: () async {
-                          if (await CustomDialogs.showConfirmationDialog(context, null,
-                              alternativeText: "Etes-vous sûr de vouloir réinitialiser le tutoriel ?",
-                              alternativeButtonConfirmText: "confirmer")) {
+                          if ((await CustomDialogs.showConfirmationDialog(context, null,
+                                  alternativeText: "Etes-vous sûr de vouloir réinitialiser le tutoriel ?",
+                                  alternativeButtonConfirmText: "confirmer")) ??
+                              false) {
                             await HelpDialog.resetEveryHelpDialog();
                           }
                           HelpDialog.resetEveryHelpDialog();
@@ -429,9 +426,10 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                         title: 'Supprimer les données hors ligne',
                         leading: Icon(MdiIcons.deleteAlert, color: ThemeUtils.textColor()),
                         onTap: () async {
-                          if (await CustomDialogs.showConfirmationDialog(context, null,
-                              alternativeText:
-                                  "Etes-vous sûr de vouloir supprimer les données hors ligne ? (irréversible)")) {
+                          if ((await CustomDialogs.showConfirmationDialog(context, null,
+                                  alternativeText:
+                                      "Etes-vous sûr de vouloir supprimer les données hors ligne ? (irréversible)")) ??
+                              false) {
                             await _appSys.offline.clearAll();
                           }
                         },
@@ -487,7 +485,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                               ),
                               applicationName: "yNotes",
                               applicationVersion:
-                                  packageInfo.version + "+" + packageInfo.buildNumber + " T" + Tests.testVersion ?? "",
+                                  packageInfo.version + "+" + packageInfo.buildNumber + " T" + Tests.testVersion,
                               applicationLegalese:
                                   "Developpé avec amour en France.\nAPI Pronote adaptée à l'aide de l'API pronotepy développée par Bain sous licence MIT.\nJe remercie la participation des bêta testeurs et des développeurs ayant participé au développement de l'application.");
                         },
@@ -502,8 +500,8 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                           title: 'Bouton magique',
                           leading: Icon(MdiIcons.testTube, color: ThemeUtils.textColor()),
                           onTap: () async {
-                            SharedPreferences test = await SharedPreferences.getInstance();
-                            print(await SettingsUtils.getSettings());
+                            await Future.delayed(Duration(seconds: 5), () => "1");
+                            await AppNotification.cancelNotification(0);
                           },
                           titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                           subtitleTextStyle: TextStyle(
@@ -530,19 +528,11 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
     super.dispose();
   }
 
-  void getUsername() async {
-    var actualUserAsync = await ReadStorage("userFullName");
-    setState(() {
-      actualUser = actualUserAsync;
-    });
-  }
-
   @override
   void initState() {
     setState(() {
       isFirstAvatarSelected = true;
     });
-    getUsername();
     super.initState();
     leftToRightAnimation = AnimationController(duration: Duration(milliseconds: 800), vsync: this);
     rightToLeftAnimation = AnimationController(duration: Duration(milliseconds: 800), vsync: this);

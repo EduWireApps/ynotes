@@ -8,10 +8,10 @@ class Expandables extends StatefulWidget {
   final Widget bottomChild;
 
   ///The top expandable color
-  final Color topExpandableColor;
+  final Color? topExpandableColor;
 
   ///The bottom expandable color
-  final Color bottomExpandableColor;
+  final Color? bottomExpandableColor;
 
   ///The top expandable border radius (default to 11)
   final double topExpandableBorderRadius;
@@ -20,28 +20,26 @@ class Expandables extends StatefulWidget {
   final double bottomExpandableBorderRadius;
 
   ///Expandables max height
-  double maxHeight;
+  double? maxHeight;
 
   ///Expandables min height
-  double minHeight;
+  double? minHeight;
 
   ///Space between expandables
-  double spaceBetween;
+  double? spaceBetween;
 
   ///Width
-  double width;
+  double? width;
 
   ///Shadow color
-  final Color expandablesShadowColor;
+  final Color? expandablesShadowColor;
 
   ///Defines if top widget is firstly expanded
   final bool topIsExpanded;
 
 //Milliseconds animation (expanding or collapsing) duration
   final int animationDuration;
-  final Function(
-          double topWidgetPercentExpansion, double bottomWidgetPercentExpansion)
-      onDragUpdate;
+  final Function(double topWidgetPercentExpansion, double bottomWidgetPercentExpansion)? onDragUpdate;
   Expandables(this.topChild, this.bottomChild,
       {this.topExpandableColor,
       this.bottomExpandableColor,
@@ -67,8 +65,7 @@ class _ExpandablesState extends State<Expandables>
         duration: Duration(milliseconds: widget.animationDuration),
         vsync: this);
     expandingAnimationController.addListener(() {
-      widget.onDragUpdate(
-          topWidgetPercentExpansion, bottomWidgetPercentExpansion);
+      widget.onDragUpdate!(topWidgetPercentExpansion, bottomWidgetPercentExpansion);
     });
     expandBottomWidget = Tween<double>(begin: 0, end: 1).animate(
         new CurvedAnimation(
@@ -91,8 +88,8 @@ class _ExpandablesState extends State<Expandables>
   double bottomWidgetPercentExpansion = 0.0;
 
   double velocityToExpand = 800;
-  Animation<double> expandBottomWidget;
-  AnimationController expandingAnimationController;
+  Animation<double>? expandBottomWidget;
+  late AnimationController expandingAnimationController;
 
   animateBottomWidgetToMin() {
     setState(() {
@@ -104,12 +101,10 @@ class _ExpandablesState extends State<Expandables>
         topWidgetPercentExpansion = 100;
         bottomWidgetPercentExpansion = 0;
       });
-      widget.onDragUpdate(100, 0);
+      widget.onDragUpdate!(100, 0);
     });
 
-    this
-        .widget
-        .onDragUpdate(topWidgetPercentExpansion, bottomWidgetPercentExpansion);
+    this.widget.onDragUpdate!(topWidgetPercentExpansion, bottomWidgetPercentExpansion);
   }
 
   animateBottomWidgetToMax() {
@@ -122,13 +117,12 @@ class _ExpandablesState extends State<Expandables>
         topWidgetPercentExpansion = 0;
         bottomWidgetPercentExpansion = 100;
       });
-      widget.onDragUpdate(0, 100);
+      widget.onDragUpdate!(0, 100);
     });
   }
 
   handleTopWidgetDragUpdate(DragUpdateDetails details) {
-    double rootContainerHeight =
-        widget.maxHeight + widget.minHeight + widget.spaceBetween;
+    double rootContainerHeight = widget.maxHeight! + widget.minHeight! + widget.spaceBetween!;
     double dyPosition = details.localPosition.dy;
     //If dragging to the top
 
@@ -141,8 +135,7 @@ class _ExpandablesState extends State<Expandables>
           bottomWidgetPercentExpansion = -(topWidgetPercentExpansion) + 100;
         });
         if (widget.onDragUpdate != null) {
-          widget.onDragUpdate(
-              topWidgetPercentExpansion, bottomWidgetPercentExpansion);
+          widget.onDragUpdate!(topWidgetPercentExpansion, bottomWidgetPercentExpansion);
         }
       }
     } else {}
@@ -152,7 +145,7 @@ class _ExpandablesState extends State<Expandables>
     if (topWidgetPercentExpansion < minPercentDragged &&
         !expandingAnimationController.isAnimating) {
       //if dragged fastly
-      if (details.primaryVelocity > velocityToExpand) {
+      if (details.primaryVelocity! > velocityToExpand) {
         animateBottomWidgetToMin();
       }
       //if dragged slowly
@@ -165,8 +158,7 @@ class _ExpandablesState extends State<Expandables>
   }
 
   handleBottomWidgetDragUpdate(DragUpdateDetails details) {
-    double rootContainerHeight =
-        widget.maxHeight + widget.minHeight + widget.spaceBetween;
+    double rootContainerHeight = widget.maxHeight! + widget.minHeight! + widget.spaceBetween!;
     double dyPosition = details.localPosition.dy;
     //If dragging to the top
 
@@ -179,8 +171,7 @@ class _ExpandablesState extends State<Expandables>
           topWidgetPercentExpansion = -(bottomWidgetPercentExpansion) + 100;
         });
         if (widget.onDragUpdate != null) {
-          widget.onDragUpdate(
-              topWidgetPercentExpansion, bottomWidgetPercentExpansion);
+          widget.onDragUpdate!(topWidgetPercentExpansion, bottomWidgetPercentExpansion);
         }
       }
     } else {}
@@ -190,7 +181,7 @@ class _ExpandablesState extends State<Expandables>
     if (bottomWidgetPercentExpansion < minPercentDragged &&
         !expandingAnimationController.isAnimating) {
       //if dragged fastly
-      if (details.primaryVelocity < velocityToExpand) {
+      if (details.primaryVelocity! < velocityToExpand) {
         animateBottomWidgetToMax();
       }
       //if dragged slowly
@@ -238,23 +229,13 @@ class _ExpandablesState extends State<Expandables>
                 child: Card(
                     margin: EdgeInsets.zero,
                     shadowColor: widget.expandablesShadowColor,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(
-                            widget.topExpandableBorderRadius)),
-                    color: widget.topExpandableColor ??
-                        Theme.of(context).primaryColor,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(
-                          widget.topExpandableBorderRadius),
-                      child: Container(
-                        padding: EdgeInsets.zero,
-                        width: widget.width,
-                        height: widget.minHeight +
-                            (widget.maxHeight - widget.minHeight) *
-                                topWidgetPercentExpansion /
-                                100,
-                        child: widget.topChild,
-                      ),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(widget.topExpandableBorderRadius)),
+                    color: widget.topExpandableColor ?? Theme.of(context).primaryColor,
+                    child: Container(
+                      padding: EdgeInsets.zero,
+                      width: widget.width,
+                      height: widget.minHeight! + (widget.maxHeight! - widget.minHeight!) * topWidgetPercentExpansion / 100,
+                      child: widget.topChild,
                     )),
               ),
               SizedBox(
@@ -266,27 +247,16 @@ class _ExpandablesState extends State<Expandables>
                 onTap: () {
                   animateBottomWidgetToMax();
                 },
-                child: ClipRRect(
-                  child: Card(
-                      shadowColor: widget.expandablesShadowColor,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                              widget.bottomExpandableBorderRadius)),
-                      color: widget.bottomExpandableColor ??
-                          Theme.of(context).primaryColor,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(
-                            widget.bottomExpandableBorderRadius),
-                        child: Container(
-                          width: widget.width,
-                          height: widget.minHeight +
-                              (widget.maxHeight - widget.minHeight) *
-                                  bottomWidgetPercentExpansion /
-                                  100,
-                          child: widget.bottomChild,
-                        ),
-                      )),
-                ),
+                child: Card(
+                    shadowColor: widget.expandablesShadowColor,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(widget.bottomExpandableBorderRadius)),
+                    margin: EdgeInsets.only(top: widget.spaceBetween!),
+                    color: widget.bottomExpandableColor ?? Theme.of(context).primaryColor,
+                    child: Container(
+                      width: widget.width,
+                      height: widget.minHeight! + (widget.maxHeight! - widget.minHeight!) * bottomWidgetPercentExpansion / 100,
+                      child: widget.bottomChild,
+                    )),
               ),
             ],
           );

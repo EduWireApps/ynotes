@@ -1,40 +1,32 @@
 import 'package:day_night_switcher/day_night_switcher.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:provider/provider.dart';
 import 'package:wiredash/wiredash.dart';
-import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/screens/drawer/drawerBuilder.dart';
-import 'package:ynotes/ui/screens/settings/settingsPage.dart';
-import 'package:ynotes/ui/screens/summary/summaryPage.dart';
-import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/globals.dart';
+import 'package:ynotes/ui/screens/settings/settingsPage.dart';
+import 'package:ynotes/usefulMethods.dart';
 
 class CustomDrawer extends StatefulWidget {
   final List entries;
+  final ValueNotifier<int> _notifier;
+
+  final PageController? drawerPageViewController;
   const CustomDrawer(
     this.entries, {
-    Key key,
-    @required ValueNotifier<int> notifier,
-    @required this.drawerPageViewController,
-  })  : _notifier = notifier,
+    Key? key,
+    required ValueNotifier<int> notifier,
+    required this.drawerPageViewController,
+  })   : _notifier = notifier,
         super(key: key);
-
-  final ValueNotifier<int> _notifier;
-  final PageController drawerPageViewController;
 
   @override
   _CustomDrawerState createState() => _CustomDrawerState();
 }
 
 class _CustomDrawerState extends State<CustomDrawer> {
-  void initState() {
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
@@ -91,15 +83,15 @@ class _CustomDrawerState extends State<CustomDrawer> {
                 ),
               ),
               for (var entry in this.widget.entries)
-                if (entry["relatedApi"] == null ||
-                    entry["relatedApi"] == appSys.settings["system"]["chosenParser"] ||
+                if ((entry["tabName"] != null &&
+                        appSys.currentSchoolAccount!.availableTabs.contains(entry["tabName"])) ||
                     (entry["relatedApi"] == -1 && !kReleaseMode))
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       ValueListenableBuilder(
                           valueListenable: widget._notifier,
-                          builder: (context, value, child) {
+                          builder: (context, dynamic value, child) {
                             return Material(
                               borderRadius:
                                   BorderRadius.only(topRight: Radius.circular(11), bottomRight: Radius.circular(11)),
@@ -110,10 +102,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                 splashFactory: InkRipple.splashFactory,
                                 onTap: () {
                                   //Close drawer
-                                  if (appSys.settings["user"]["global"]["autoCloseDrawer"]) {
+                                  if (appSys.settings!["user"]["global"]["autoCloseDrawer"]) {
                                     Navigator.of(context).pop();
                                   }
-                                  widget.drawerPageViewController.jumpToPage(this.widget.entries.indexOf(entry));
+                                  widget.drawerPageViewController!.jumpToPage(this.widget.entries.indexOf(entry));
                                 },
                                 borderRadius:
                                     BorderRadius.only(topRight: Radius.circular(11), bottomRight: Radius.circular(11)),
@@ -159,7 +151,7 @@ class _CustomDrawerState extends State<CustomDrawer> {
               child: InkWell(
                 splashFactory: InkRipple.splashFactory,
                 onTap: () {
-                  Wiredash.of(context).show();
+                  Wiredash.of(context)!.show();
                 },
                 borderRadius: BorderRadius.only(topRight: Radius.circular(11), bottomRight: Radius.circular(11)),
                 child: Container(
@@ -231,5 +223,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
         )
       ],
     );
+  }
+
+  void initState() {
+    super.initState();
   }
 }

@@ -13,8 +13,8 @@ class UpdateNoteDialog extends StatefulWidget {
 class _UpdateNoteDialogState extends State<UpdateNoteDialog> {
   static const String markdownText = "updateNoteAssets/updateNote.md";
 
-  static const String thumbnail = "updateNoteAssets/0_10thumbnail.png";
-  String markdown;
+  static const String thumbnail = "updateNoteAssets/0_11thumbnail.png";
+  String? markdown;
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
@@ -74,7 +74,6 @@ class _UpdateNoteDialogState extends State<UpdateNoteDialog> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getMarkDownText();
   }

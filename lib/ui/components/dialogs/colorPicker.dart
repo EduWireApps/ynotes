@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:ynotes/ui/components/color_picker/flutter_colorpicker.dart';
 
 class CustomColorPicker extends StatefulWidget {
-  final Color defaultColor;
+  final Color? defaultColor;
 
-  const CustomColorPicker({Key key, this.defaultColor}) : super(key: key);
+  const CustomColorPicker({Key? key, this.defaultColor}) : super(key: key);
   @override
   _CustomColorPickerState createState() => _CustomColorPickerState();
 }
@@ -17,7 +17,7 @@ class _CustomColorPickerState extends State<CustomColorPicker> {
     });
   }
 
-  Color pickerColor;
+  Color? pickerColor;
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);

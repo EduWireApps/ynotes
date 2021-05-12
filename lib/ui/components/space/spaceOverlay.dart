@@ -10,7 +10,7 @@ Map spaceCoolSentences = {
 class SpaceOverlay extends StatefulWidget {
   final child;
 
-  const SpaceOverlay({Key key, @required this.child}) : super(key: key);
+  const SpaceOverlay({Key? key, required this.child}) : super(key: key);
   @override
   _SpaceOverlayState createState() => _SpaceOverlayState();
 }
@@ -20,8 +20,8 @@ Offset i = Offset(0, 0);
 class _SpaceOverlayState extends State<SpaceOverlay> with TickerProviderStateMixin {
   GlobalKey spaceKey = GlobalKey();
   bool deployed = false;
-  Animation<double> showAnimation;
-  AnimationController showAnimationController;
+  Animation<double>? showAnimation;
+  late AnimationController showAnimationController;
   @override
   void initState() {}
 

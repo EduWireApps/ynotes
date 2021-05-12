@@ -23,12 +23,12 @@ class ColorPicker extends StatefulWidget {
     this.pickerAreaBorderRadius: const BorderRadius.all(Radius.zero),
   });
 
-  final Color pickerColor;
-  final ValueChanged<Color> onColorChanged;
+  final Color? pickerColor;
+  final ValueChanged<Color>? onColorChanged;
   final PaletteType paletteType;
   final bool enableAlpha;
   final bool showLabel;
-  final TextStyle labelTextStyle;
+  final TextStyle? labelTextStyle;
   final bool displayThumbColor;
   final bool portraitOnly;
   final double colorPickerWidth;
@@ -45,13 +45,13 @@ class _ColorPickerState extends State<ColorPicker> {
   @override
   void initState() {
     super.initState();
-    currentHsvColor = HSVColor.fromColor(widget.pickerColor);
+    currentHsvColor = HSVColor.fromColor(widget.pickerColor!);
   }
 
   @override
   void didUpdateWidget(ColorPicker oldWidget) {
     super.didUpdateWidget(oldWidget);
-    currentHsvColor = HSVColor.fromColor(widget.pickerColor);
+    currentHsvColor = HSVColor.fromColor(widget.pickerColor!);
   }
 
   Widget colorPickerSlider(TrackType trackType) {
@@ -60,7 +60,7 @@ class _ColorPickerState extends State<ColorPicker> {
       currentHsvColor,
       (HSVColor color) {
         setState(() => currentHsvColor = color);
-        widget.onColorChanged(currentHsvColor.toColor());
+        widget.onColorChanged!(currentHsvColor.toColor());
       },
       displayThumbColor: widget.displayThumbColor,
     );
@@ -73,7 +73,7 @@ class _ColorPickerState extends State<ColorPicker> {
         currentHsvColor,
         (HSVColor color) {
           setState(() => currentHsvColor = color);
-          widget.onColorChanged(currentHsvColor.toColor());
+          widget.onColorChanged!(currentHsvColor.toColor());
         },
         widget.paletteType,
       ),
@@ -193,15 +193,15 @@ class SlidePicker extends StatefulWidget {
     this.indicatorBorderRadius: const BorderRadius.all(Radius.zero),
   });
 
-  final Color pickerColor;
-  final ValueChanged<Color> onColorChanged;
+  final Color? pickerColor;
+  final ValueChanged<Color>? onColorChanged;
   final PaletteType paletteType;
   final bool enableAlpha;
   final Size sliderSize;
   final bool showSliderText;
-  final TextStyle sliderTextStyle;
+  final TextStyle? sliderTextStyle;
   final bool showLabel;
-  final TextStyle labelTextStyle;
+  final TextStyle? labelTextStyle;
   final bool showIndicator;
   final Size indicatorSize;
   final AlignmentGeometry indicatorAlignmentBegin;
@@ -219,13 +219,13 @@ class _SlidePickerState extends State<SlidePicker> {
   @override
   void initState() {
     super.initState();
-    currentHsvColor = HSVColor.fromColor(widget.pickerColor);
+    currentHsvColor = HSVColor.fromColor(widget.pickerColor!);
   }
 
   @override
   void didUpdateWidget(SlidePicker oldWidget) {
     super.didUpdateWidget(oldWidget);
-    currentHsvColor = HSVColor.fromColor(widget.pickerColor);
+    currentHsvColor = HSVColor.fromColor(widget.pickerColor!);
   }
 
   Widget colorPickerSlider(TrackType trackType) {
@@ -234,7 +234,7 @@ class _SlidePickerState extends State<SlidePicker> {
       currentHsvColor,
       (HSVColor color) {
         setState(() => currentHsvColor = color);
-        widget.onColorChanged(currentHsvColor.toColor());
+        widget.onColorChanged!(currentHsvColor.toColor());
       },
       displayThumbColor: widget.displayThumbColor,
       fullThumbColor: true,
@@ -252,8 +252,8 @@ class _SlidePickerState extends State<SlidePicker> {
         foregroundDecoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              widget.pickerColor,
-              widget.pickerColor,
+              widget.pickerColor!,
+              widget.pickerColor!,
               currentHsvColor.toColor(),
               currentHsvColor.toColor(),
             ],

@@ -1,12 +1,9 @@
-import 'package:intl/intl.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/main.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/usefulMethods.dart';
 
 class HomeworkUtils {
   static Future<List<int>> getHomeworkDonePercent() async {
-    List list = await getReducedListHomework();
+    List? list = await getReducedListHomework();
     if (list != null) {
       //Number of elements in list
       int total = list.length;
@@ -15,7 +12,7 @@ class HomeworkUtils {
       } else {
         int done = 0;
 
-        await Future.forEach(list, (element) async {
+        await Future.forEach(list, (dynamic element) async {
           bool isDone = await appSys.offline.doneHomework.getHWCompletion(element.id);
           if (isDone) {
             done++;
@@ -30,20 +27,20 @@ class HomeworkUtils {
     }
   }
 
-  static Future<List<Homework>> getReducedListHomework({forceReload = false}) async {
-    int reduce = await appSys.settings["user"]["summaryPage"]["summaryQuickHomework"];
+  static Future<List<Homework>?> getReducedListHomework({forceReload = false}) async {
+    int? reduce = await appSys.settings!["user"]["summaryPage"]["summaryQuickHomework"];
     if (reduce == 11) {
       reduce = 770;
     }
-    List<Homework> localList = await appSys.api.getNextHomework(forceReload: forceReload);
+    List<Homework>? localList = await appSys.api?.getNextHomework(forceReload: forceReload);
     if (localList != null) {
-      List<Homework> listToReturn = List<Homework>();
+      List<Homework> listToReturn = [];
       localList.forEach((element) {
         var now = DateTime.now();
-        var date = element.date;
+        var date = element.date!;
 
         //ensure that the list doesn't contain the pinned homework
-        if (date.difference(now).inDays < reduce) {
+        if (date.difference(now).inDays < reduce!) {
           listToReturn.add(element);
         }
       });

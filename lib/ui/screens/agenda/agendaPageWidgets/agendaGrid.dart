@@ -18,7 +18,7 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 class AgendaGrid extends StatefulWidget {
-  List<AgendaEvent> events;
+  List<AgendaEvent>? events;
   final bool afterSchool;
   Function setStateCallback;
   AgendaGrid(this.events, this.setStateCallback, {this.afterSchool = false});
@@ -32,35 +32,34 @@ class _AgendaGridState extends State<AgendaGrid> {
   ScrollController scontroller = ScrollController();
   @override
   void initState() {
-    // TODO: implement initState
 
     super.initState();
     layoutEvents();
   }
 
-  DateTime lastEventEnding;
+  DateTime? lastEventEnding;
   double _scaleFactor = 1.1;
   double _baseScaleFactor = 1.1;
   var defaultGridHeight = 1.5;
-  List<AgendaEvent> _events = List();
+  List<AgendaEvent> _events = [];
   //The default school day length
   var minSchoolDayLength = [8, 18];
   //The default after school day length
   var minAfterSchoolDayLength = [18, 24];
   void layoutEvents() {
-    var columns = List<List<AgendaEvent>>();
+    List<List<AgendaEvent>> columns = [];
     _events.clear();
-    _events.addAll(widget.events);
+    _events.addAll(widget.events!);
     // _events.removeWhere((element) => element.start.hour < _getStartHour(_events).hour || element.start.hour > _getEndHour(_events).hour);
     //_events.removeWhere((element) => element.wholeDay);
 
     //sort events by date
-    _events.sort((a, b) => a.end.compareTo(b.end));
+    _events.sort((a, b) => a.end!.compareTo(b.end!));
 
     for (AgendaEvent ev in _events) {
-      if (!ev.wholeDay) {
+      if (!ev.wholeDay!) {
         if (lastEventEnding != null &&
-            (ev.start.isAfter(lastEventEnding) || ev.start.isAtSameMomentAs(lastEventEnding))) {
+            (ev.start!.isAfter(lastEventEnding!) || ev.start!.isAtSameMomentAs(lastEventEnding!))) {
           packEvents(columns);
           columns.clear();
           lastEventEnding = null;
@@ -76,7 +75,7 @@ class _AgendaGridState extends State<AgendaGrid> {
         if (!placed) {
           columns.add([ev]);
         }
-        if (lastEventEnding == null || ev.end.isAfter(lastEventEnding)) {
+        if (lastEventEnding == null || ev.end!.isAfter(lastEventEnding!)) {
           lastEventEnding = ev.end;
         }
       }
@@ -114,7 +113,7 @@ class _AgendaGridState extends State<AgendaGrid> {
 
 //Calculate the top position
   _getPosition(TimeOfDay start, AgendaEvent event) {
-    final dt = TimeOfDay(hour: event.start.hour, minute: event.start.minute);
+    final dt = TimeOfDay(hour: event.start!.hour, minute: event.start!.minute);
     double diff = ((dt.hour * 60 + dt.minute) - (start.hour * 60 + start.minute)) / 60;
 
     return (MediaQuery.of(context).size.height / 10 * defaultGridHeight * _scaleFactor) * diff;
@@ -123,12 +122,12 @@ class _AgendaGridState extends State<AgendaGrid> {
   //Calculate the start hour
   TimeOfDay _getStartHour(List<AgendaEvent> events) {
     if (events != null && events.length != 0) {
-      List<AgendaEvent> lessonsIList = List();
+      List<AgendaEvent> lessonsIList = [];
       lessonsIList.addAll(events);
 
-      lessonsIList.removeWhere((element) => element.wholeDay);
+      lessonsIList.removeWhere((element) => element.wholeDay!);
       if (widget.afterSchool) {
-        lessonsIList.removeWhere((element) => !element.isLesson);
+        lessonsIList.removeWhere((element) => !element.isLesson!);
       }
       if (lessonsIList.length == 0) {
         if (widget.afterSchool) {
@@ -138,11 +137,11 @@ class _AgendaGridState extends State<AgendaGrid> {
         }
       } else {
         if (widget.afterSchool) {
-          lessonsIList.sort((a, b) => a.end.compareTo(b.end));
-          return TimeOfDay(hour: lessonsIList.last.end.hour, minute: 0);
+          lessonsIList.sort((a, b) => a.end!.compareTo(b.end!));
+          return TimeOfDay(hour: lessonsIList.last.end!.hour, minute: 0);
         }
-        lessonsIList.sort((a, b) => a.start.compareTo(b.start));
-        return TimeOfDay(hour: lessonsIList.first.start.hour, minute: 0);
+        lessonsIList.sort((a, b) => a.start!.compareTo(b.start!));
+        return TimeOfDay(hour: lessonsIList.first.start!.hour, minute: 0);
       }
     } else if (widget.afterSchool) {
       return TimeOfDay(hour: minAfterSchoolDayLength[0], minute: 0);
@@ -154,7 +153,7 @@ class _AgendaGridState extends State<AgendaGrid> {
   //Calculate the end hour (end the start hour of the after school grid)
   TimeOfDay _getEndHour(List events) {
     if (events != null && events.length != 0) {
-      List lessonsIList = List();
+      List lessonsIList = [];
       lessonsIList.addAll(events);
       lessonsIList.removeWhere((element) => element.wholeDay);
       if (!this.widget.afterSchool) {
@@ -177,11 +176,11 @@ class _AgendaGridState extends State<AgendaGrid> {
     }
   }
 
-  Future<int> getRelatedColor(AgendaEvent event) async {
+  Future<int?> getRelatedColor(AgendaEvent event) async {
     if (event != null && event.color != null) {
       return event.color;
     } else {
-      return await getColor(event.lesson.disciplineCode);
+      return await getColor(event.lesson!.disciplineCode);
     }
   }
 
@@ -197,8 +196,8 @@ class _AgendaGridState extends State<AgendaGrid> {
   Future<void> refreshAgendaFuture() async {
     if (mounted) {
       setState(() {
-        spaceAgendaFuture = appSys.api.getEvents(agendaDate, true);
-        agendaFuture = appSys.api.getEvents(agendaDate, false);
+        spaceAgendaFuture = appSys.api!.getEvents(agendaDate!, true);
+        agendaFuture = appSys.api!.getEvents(agendaDate!, false);
       });
     }
     var realAF = await spaceAgendaFuture;
@@ -219,31 +218,31 @@ class _AgendaGridState extends State<AgendaGrid> {
             bottomRight: Radius.circular(5),
           )),
       width: screenSize.size.width / 5 * 4.9,
-      height: _events.any((element) => element.wholeDay) ? screenSize.size.height / 10 * 0.7 : 0,
+      height: _events.any((element) => element.wholeDay!) ? screenSize.size.height / 10 * 0.7 : 0,
       child: Container(
         width: screenSize.size.width / 5 * 4.5,
         child: ListView.builder(
             padding: EdgeInsets.symmetric(
               vertical: screenSize.size.height / 10 * 0.1,
             ),
-            itemCount: _events.where((element) => element.wholeDay).length,
+            itemCount: _events.where((element) => element.wholeDay!).length,
             scrollDirection: Axis.horizontal,
             itemBuilder: (ctxt, index) {
               return Container(
                 margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.2),
-                child: FutureBuilder(
+                child: FutureBuilder<int?>(
                     initialData: 0,
-                    future: getRelatedColor(_events.where((element) => element.wholeDay).toList()[index]),
+                    future: getRelatedColor(_events.where((element) => element.wholeDay!).toList()[index]),
                     builder: (context, snapshot) {
                       return Material(
-                        color: Color(snapshot.data),
+                        color: Color(snapshot.data ?? 0),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
                         child: InkWell(
                           onLongPress: () async {
-                            var _event = _events.where((element) => element.wholeDay).toList()[index];
-                            if (_event.isLesson) {
+                            var _event = _events.where((element) => element.wholeDay!).toList()[index];
+                            if (_event.isLesson!) {
                               //Getting color before
-                              _event.color = await getColor(_event.lesson.disciplineCode);
+                              _event.color = await getColor(_event.lesson!.disciplineCode);
                             }
                             var temp =
                                 await agendaEventEdit(context, true, defaultDate: _event.start, customEvent: _event);
@@ -258,7 +257,7 @@ class _AgendaGridState extends State<AgendaGrid> {
                                       _event = temp;
                                     });
                                   } else {
-                                    await appSys.offline.agendaEvents.addAgendaEvent(temp, await get_week(temp.start));
+                                    await appSys.offline.agendaEvents.addAgendaEvent(temp, await getWeek(temp.start));
 
                                     setState(() {
                                       _event = temp;
@@ -275,10 +274,10 @@ class _AgendaGridState extends State<AgendaGrid> {
                             }
                           },
                           onTap: () async {
-                            var _event = _events.where((element) => element.wholeDay).toList()[index];
+                            var _event = _events.where((element) => element.wholeDay!).toList()[index];
 
-                            if (_event.isLesson) {
-                              _event.color = await getColor(_event.lesson.disciplineCode);
+                            if (_event.isLesson!) {
+                              _event.color = await getColor(_event.lesson!.disciplineCode);
                               await lessonDetails(context, _event);
                               await refreshAgendaFuture();
                             } else {
@@ -296,9 +295,9 @@ class _AgendaGridState extends State<AgendaGrid> {
                             child: Center(
                               child: FittedBox(
                                 child: Text(
-                                  (_events.where((element) => element.wholeDay).toList()[index].name != null &&
-                                          _events.where((element) => element.wholeDay).toList()[index].name != "")
-                                      ? _events.where((element) => element.wholeDay).toList()[index].name
+                                  (_events.where((element) => element.wholeDay!).toList()[index].name != null &&
+                                          _events.where((element) => element.wholeDay!).toList()[index].name != "")
+                                      ? _events.where((element) => element.wholeDay!).toList()[index].name!
                                       : "(sans nom)",
                                   style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                                 ),
@@ -344,7 +343,7 @@ class _AgendaGridState extends State<AgendaGrid> {
                   children: [
                     Container(
                       padding: EdgeInsets.only(
-                          top: screenSize.size.height / 10 * (_events.any((element) => element.wholeDay) ? 0.8 : 0)),
+                          top: screenSize.size.height / 10 * (_events.any((element) => element.wholeDay!) ? 0.8 : 0)),
                       child: Column(
                         children: List.generate(
                             ((_getEndHour(_events).hour - _getStartHour(_events).hour)) < 0
@@ -354,7 +353,7 @@ class _AgendaGridState extends State<AgendaGrid> {
                             return GestureDetector(
                               onTapUp: (_) {
                                 if (slidableController.activeState != null) {
-                                  slidableController.activeState.close();
+                                  slidableController.activeState!.close();
                                 } else {}
                               },
                               child: Container(
@@ -387,16 +386,16 @@ class _AgendaGridState extends State<AgendaGrid> {
                       ),
                     ),
                     for (AgendaEvent i in _events)
-                      if (!i.wholeDay &&
+                      if (!i.wholeDay! &&
                           _getPosition(_getStartHour(_events), i) != null &&
-                          (this.widget.afterSchool ? !i.isLesson : true))
+                          (this.widget.afterSchool ? !i.isLesson! : true))
                         Positioned(
                           left: screenSize.size.width / 5 * 0.2,
                           top: _getPosition(_getStartHour(_events), i) +
-                              screenSize.size.height / 10 * (_events.any((element) => element.wholeDay) ? 0.8 : 0),
+                              screenSize.size.height / 10 * (_events.any((element) => element.wholeDay!) ? 0.8 : 0),
                           child: AgendaElement(
                             i,
-                            defaultGridHeight * _scaleFactor * i.end.difference(i.start).inMinutes / 60,
+                            defaultGridHeight * _scaleFactor * i.end!.difference(i.start!).inMinutes / 60,
                             widget.setStateCallback,
                             width: i.width,
                             position: i.left,
@@ -406,7 +405,7 @@ class _AgendaGridState extends State<AgendaGrid> {
                       AnimatedPositioned(
                         duration: Duration(milliseconds: 500),
                         top: _getBarPosition(_getStartHour(_events)) +
-                            screenSize.size.height / 10 * (_events.any((element) => element.wholeDay) ? 0.8 : 0),
+                            screenSize.size.height / 10 * (_events.any((element) => element.wholeDay!) ? 0.8 : 0),
                         child: Row(
                           children: [
                             Container(

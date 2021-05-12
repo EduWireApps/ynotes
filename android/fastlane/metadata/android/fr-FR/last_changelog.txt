@@ -1,2 +1,1 @@
-Correctif important pour les anciens utilisateurs : les anciens paramètres sont correctement chargés. 
-Ne concerne pas les nouveaux utilisateurs.
+Version 0.11: changements disponibles dans la note de mise à jour.

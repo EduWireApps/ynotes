@@ -3,17 +3,39 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:stacked/stacked.dart';
+import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/shared/downloadController.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
-import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/customLoader.dart';
 
-import '../../../main.dart';
-import '../../../usefulMethods.dart';
+var actualSort = sortValue.date;
 
-String cloudUsedFolder = "";
+Future<List<CloudItem>?>? cloudFolderFuture;
+
+String? cloudUsedFolder = "";
+
+String dossier = "Reçus";
+bool isLoading = false;
+List<CloudItem>? localFoldersList;
+String path = "/";
+sortByGroupMainPage(List<CloudItem> list) {
+  List<CloudItem> toReturn = [];
+  //Make two groups of member of and not member of
+
+  list.forEach((element) {
+    if (element.isMemberOf != null && element.isMemberOf!) {
+      toReturn.add(element);
+    }
+  });
+  list.forEach((element) {
+    if (element.isMemberOf == null || !element.isMemberOf!) {
+      toReturn.add(element);
+    }
+  });
+  return toReturn;
+}
 
 class CloudPage extends StatefulWidget {
   State<StatefulWidget> createState() {
@@ -21,46 +43,10 @@ class CloudPage extends StatefulWidget {
   }
 }
 
-Future cloudFolderFuture;
-
-String dossier = "Reçus";
 enum sortValue { date, reversed_date, author }
-bool isLoading = false;
-var actualSort = sortValue.date;
-List<CloudItem> localFoldersList;
-String path = "/";
 
+//Sort in the main page
 class _CloudPageState extends State<CloudPage> {
-  void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {
-          refreshLocalCloudItemsList();
-        }));
-  }
-
-  Future<void> refreshLocalCloudItemsList() async {
-    setState(() {
-      cloudFolderFuture = appSys.api.app("cloud", args: path, action: "CD");
-      isLoading = true;
-    });
-    var realdisciplinesListFuture = await cloudFolderFuture;
-    setState(() {
-      isLoading = false;
-    });
-  }
-
-  //Change directory action
-  changeDirectory(CloudItem item) async {
-    print(path);
-    setState(() {
-      cloudFolderFuture = appSys.api.app("cloud", args: path, action: "CD", folder: item);
-      isLoading = true;
-    });
-    var realdisciplinesListFuture = await cloudFolderFuture;
-    setState(() {
-      isLoading = false;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
@@ -147,13 +133,13 @@ class _CloudPageState extends State<CloudPage> {
                         height: screenSize.size.height / 10 * 8.3,
                         child: RefreshIndicator(
                           onRefresh: refreshLocalCloudItemsList,
-                          child: FutureBuilder(
+                          child: FutureBuilder<List<CloudItem>?>(
                               future: cloudFolderFuture,
                               builder: (context, snapshot) {
                                 if (snapshot.hasData && snapshot.connectionState == ConnectionState.done) {
                                   localFoldersList = snapshot.data;
                                   if (path == "/" && isLoading == false) {
-                                    localFoldersList = sortByGroupMainPage(localFoldersList);
+                                    localFoldersList = sortByGroupMainPage(localFoldersList!);
                                   }
 
                                   return ClipRRect(
@@ -163,7 +149,7 @@ class _CloudPageState extends State<CloudPage> {
                                       context: context,
                                       child: ListView.builder(
                                           addRepaintBoundaries: false,
-                                          itemCount: localFoldersList.length,
+                                          itemCount: localFoldersList!.length,
                                           itemBuilder: (context, index) {
                                             return Column(
                                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -172,11 +158,11 @@ class _CloudPageState extends State<CloudPage> {
                                                 if (path == "/" &&
                                                     isLoading == false &&
                                                     index != 0 &&
-                                                    localFoldersList[index - 1].isMemberOf != null &&
-                                                    localFoldersList[index].isMemberOf != null &&
-                                                    index != localFoldersList.length - 1 &&
-                                                    localFoldersList[index - 1].isMemberOf &&
-                                                    !localFoldersList[index].isMemberOf)
+                                                    localFoldersList![index - 1].isMemberOf != null &&
+                                                    localFoldersList![index].isMemberOf != null &&
+                                                    index != localFoldersList!.length - 1 &&
+                                                    localFoldersList![index - 1].isMemberOf! &&
+                                                    !localFoldersList![index].isMemberOf!)
                                                   Row(children: <Widget>[
                                                     Expanded(
                                                       child: new Container(
@@ -208,24 +194,24 @@ class _CloudPageState extends State<CloudPage> {
                                                         color: Theme.of(context).primaryColor,
                                                         child: InkWell(
                                                           onTap: () async {
-                                                            if (localFoldersList[index].type == "FOLDER") {
+                                                            if (localFoldersList![index].type == "FOLDER") {
                                                               if (path == "/") {
-                                                                cloudUsedFolder = localFoldersList[index].id;
+                                                                cloudUsedFolder = localFoldersList![index].id;
                                                               }
                                                               setState(() {
-                                                                path += localFoldersList[index].title + "/";
+                                                                path += localFoldersList![index].title! + "/";
                                                               });
-                                                              changeDirectory(localFoldersList[index]);
+                                                              changeDirectory(localFoldersList![index]);
                                                             }
-                                                            if (localFoldersList[index].type == "FILE") {
+                                                            if (localFoldersList![index].type == "FILE") {
                                                               if (await model
-                                                                  .fileExists(localFoldersList[index].title)) {
+                                                                  .fileExists(localFoldersList![index].title)) {
                                                                 await FileAppUtil.openFile(
-                                                                    localFoldersList[index].title,
+                                                                    localFoldersList![index].title,
                                                                     usingFileName: true);
                                                               } else {
-                                                                model.download(Document(localFoldersList[index].title,
-                                                                    localFoldersList[index].id, "CLOUD", 0));
+                                                                model.download(Document(localFoldersList![index].title,
+                                                                    localFoldersList![index].id, "CLOUD", 0));
                                                               }
                                                             }
                                                           },
@@ -235,22 +221,22 @@ class _CloudPageState extends State<CloudPage> {
                                                             margin: EdgeInsets.all(0),
                                                             child: Row(
                                                               children: <Widget>[
-                                                                FutureBuilder(
-                                                                    future:
-                                                                        model.fileExists(localFoldersList[index].title),
+                                                                FutureBuilder<bool>(
+                                                                    future: model
+                                                                        .fileExists(localFoldersList![index].title),
                                                                     initialData: false,
                                                                     builder: (context, snapshot) {
                                                                       return Container(
                                                                         margin: EdgeInsets.only(
                                                                             left: screenSize.size.width / 5 * 0.2),
                                                                         child: Icon(
-                                                                          (localFoldersList[index].type == "FOLDER")
+                                                                          (localFoldersList![index].type == "FOLDER")
                                                                               ? MdiIcons.folder
-                                                                              : (snapshot.data ||
+                                                                              : (snapshot.data! ||
                                                                                       model.downloadProgress == 100
                                                                                   ? MdiIcons.fileCheck
                                                                                   : MdiIcons.file),
-                                                                          color: ((localFoldersList[index].type ==
+                                                                          color: ((localFoldersList![index].type ==
                                                                                   "FOLDER")
                                                                               ? Colors.yellow.shade600
                                                                               : ThemeUtils.isThemeDark
@@ -269,7 +255,7 @@ class _CloudPageState extends State<CloudPage> {
                                                                     children: <Widget>[
                                                                       Container(
                                                                         child: Text(
-                                                                          localFoldersList[index].title,
+                                                                          localFoldersList![index].title!,
                                                                           textAlign: TextAlign.start,
                                                                           style: TextStyle(
                                                                             fontFamily: "Asap",
@@ -280,9 +266,9 @@ class _CloudPageState extends State<CloudPage> {
                                                                           overflow: TextOverflow.ellipsis,
                                                                         ),
                                                                       ),
-                                                                      if (localFoldersList[index].author != "")
+                                                                      if (localFoldersList![index].author != "")
                                                                         Text(
-                                                                          localFoldersList[index].author,
+                                                                          localFoldersList![index].author!,
                                                                           textAlign: TextAlign.start,
                                                                           style: TextStyle(
                                                                             fontFamily: "Asap",
@@ -293,11 +279,11 @@ class _CloudPageState extends State<CloudPage> {
                                                                           ),
                                                                           overflow: TextOverflow.ellipsis,
                                                                         ),
-                                                                      if (localFoldersList[index].date != null)
+                                                                      if (localFoldersList![index].date != null)
                                                                         Row(
                                                                           children: <Widget>[
                                                                             Text(
-                                                                              localFoldersList[index].date.toString(),
+                                                                              localFoldersList![index].date.toString(),
                                                                               textAlign: TextAlign.start,
                                                                               style: TextStyle(
                                                                                 fontFamily: "Asap",
@@ -401,22 +387,35 @@ class _CloudPageState extends State<CloudPage> {
       ),
     );
   }
-}
 
-//Sort in the main page
-sortByGroupMainPage(List<CloudItem> list) {
-  List<CloudItem> toReturn = List();
-  //Make two groups of member of and not member of
+  changeDirectory(CloudItem? item) async {
+    print(path);
+    setState(() {
+      cloudFolderFuture = getCloud(path, "CD", item);
+      isLoading = true;
+    });
+    var realdisciplinesListFuture = await cloudFolderFuture;
+    setState(() {
+      isLoading = false;
+    });
+  }
 
-  list.forEach((element) {
-    if (element.isMemberOf != null && element.isMemberOf) {
-      toReturn.add(element);
-    }
-  });
-  list.forEach((element) {
-    if (element.isMemberOf == null || !element.isMemberOf) {
-      toReturn.add(element);
-    }
-  });
-  return toReturn;
+  //Change directory action
+  void initState() {
+    WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() {
+          refreshLocalCloudItemsList();
+        }));
+  }
+
+  Future<void> refreshLocalCloudItemsList() async {
+    setState(() {
+      cloudFolderFuture = getCloud(path, "CD", null);
+
+      isLoading = true;
+    });
+    var realdisciplinesListFuture = await cloudFolderFuture;
+    setState(() {
+      isLoading = false;
+    });
+  }
 }

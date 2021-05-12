@@ -5,14 +5,14 @@ class ColumnBuilder extends StatelessWidget {
   final MainAxisAlignment mainAxisAlignment;
   final MainAxisSize mainAxisSize;
   final CrossAxisAlignment crossAxisAlignment;
-  final TextDirection textDirection;
+  final TextDirection? textDirection;
   final VerticalDirection verticalDirection;
   final int itemCount;
 
   const ColumnBuilder({
-    Key key,
-    @required this.itemBuilder,
-    @required this.itemCount,
+    Key? key,
+    required this.itemBuilder,
+    required this.itemCount,
     this.mainAxisAlignment: MainAxisAlignment.start,
     this.mainAxisSize: MainAxisSize.max,
     this.crossAxisAlignment: CrossAxisAlignment.center,
