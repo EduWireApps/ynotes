@@ -42,7 +42,7 @@ var uuid = Uuid();
 ///
 _headlessTask(HeadlessTask? task) async {
   if (task != null) {
-    await BackgroundService.backgroundFetchHeadlessTask(task.taskId);
+    await BackgroundService.backgroundFetchHeadlessTask(task.taskId, headless: true);
   }
 }
 

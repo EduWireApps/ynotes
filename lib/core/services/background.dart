@@ -14,18 +14,16 @@ import 'package:ynotes/usefulMethods.dart';
 //The main class for everything done in background
 class BackgroundService {
 //Background task when when app is closed
-  static Future<void> backgroundFetchHeadlessTask(String a) async {
-   
-
+  static Future<void> backgroundFetchHeadlessTask(String a, {bool headless = false}) async {
     //await LocalNotification.showDebugNotification();
     try {
-       print("Starting the headless closed bakground task");
-    await AppNotification.showLoadingNotification(a.hashCode);
-
-    appSys = ApplicationSystem();
-    await appSys.initApp();
-
-    await logFile("Init appSys");
+      print("Starting the headless closed bakground task");
+      await AppNotification.showLoadingNotification(a.hashCode);
+      if (headless) {
+        appSys = ApplicationSystem();
+        await appSys.initApp();
+      }
+      await logFile("Init appSys");
 //Ensure that grades notification are enabled and battery saver disabled
       if (appSys.settings!["user"]["global"]["notificationNewGrade"] &&
           !appSys.settings!["user"]["global"]["batterySaver"]) {
