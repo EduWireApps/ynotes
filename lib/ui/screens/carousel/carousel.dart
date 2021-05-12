@@ -604,10 +604,9 @@ class _Page4State extends State<Page4> {
                             model.updateSetting(appSys.settings!["user"]["global"], "notificationNewGrade", value);
                           } else {
                             if (await (CustomDialogs.showAuthorizationsDialog(
-                                        context,
-                                        "la configuration d'optimisation de batterie",
-                                        "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")
-                                    as Future<bool?>) ??
+                                    context,
+                                    "la configuration d'optimisation de batterie",
+                                    "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")) ??
                                 false) {
                               if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
                                 model.updateSetting(appSys.settings!["user"]["global"], "notificationNewGrade", value);
@@ -632,10 +631,9 @@ class _Page4State extends State<Page4> {
                           model.updateSetting(appSys.settings!["user"]["global"], "notificationNewMail", value);
                         } else {
                           if (await (CustomDialogs.showAuthorizationsDialog(
-                                      context,
-                                      "la configuration d'optimisation de batterie",
-                                      "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")
-                                  as Future<bool?>) ??
+                                  context,
+                                  "la configuration d'optimisation de batterie",
+                                  "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")) ??
                               false) {
                             if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
                               appSys.updateSetting(appSys.settings!["user"]["global"], "notificationNewMail", value);

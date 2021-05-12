@@ -161,7 +161,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                           subtitle: '${appSys.currentSchoolAccount?.name ?? "Invité"}',
                           leading: Icon(MdiIcons.account, color: ThemeUtils.textColor()),
                           trailing: Icon(Icons.chevron_right, color: ThemeUtils.textColor()),
-                          onTap: () {
+                          onPressed: (context) {
                             Navigator.of(context).push(router(AccountPage()));
                           },
                           iosChevron: Icon(Icons.chevron_right)),
