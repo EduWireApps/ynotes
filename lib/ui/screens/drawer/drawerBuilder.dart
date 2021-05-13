@@ -308,7 +308,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
         "icon": MdiIcons.stamper,
         "page": SingleChildScrollView(physics: NeverScrollableScrollPhysics(), child: SchoolLifePage()),
       },
-      {"menuName": "Cloud", "icon": MdiIcons.cloud, "relatedApi": 0, "page": CloudPage()},
+      {"menuName": "Cloud", "icon": MdiIcons.cloud, "relatedApi": 0, "page": CloudPage(), "tabName": appTabs.CLOUD},
       {
         "menuName": "Sondages",
         "tabName": appTabs.POLLS,

@@ -111,13 +111,13 @@ class ApplicationSystem extends ChangeNotifier {
     await this.homeworkController.refresh(force: true);
   }
 
+//Leave app
   updateSetting(Map path, String key, var value) {
     path[key] = value;
     SettingsUtils.setSetting(settings);
     notifyListeners();
   }
 
-//Leave app
   updateTheme(String themeName) {
     print("Updating theme to " + themeName);
     theme = appThemes[themeName];
@@ -128,6 +128,7 @@ class ApplicationSystem extends ChangeNotifier {
     notifyListeners();
   }
 
+// This "Headless Task" is run when app is terminated.
   _initBackgroundFetch() async {
     if (Platform.isAndroid || Platform.isIOS) {
       await BackgroundFetch.configure(
@@ -139,8 +140,7 @@ class ApplicationSystem extends ChangeNotifier {
               requiresBatteryNotLow: false,
               requiresCharging: false,
               requiresStorageNotLow: false,
-              requiresDeviceIdle: false,
-              requiredNetworkType: NetworkType.ANY), (taskId) async {
+              requiresDeviceIdle: false), (taskId) async {
         await BackgroundService.backgroundFetchHeadlessTask(taskId);
         BackgroundFetch.finish(taskId);
       });

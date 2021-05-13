@@ -162,9 +162,10 @@ class SummaryPageState extends State<SummaryPage> {
   }
 
   showUpdateNote() async {
-    if ((appSys.settings!["system"]["lastReadUpdateNote"] != "0.10")) {
+    if ((appSys.settings!["system"]["lastReadUpdateNote"] != "0.11")) {
+      appSys.updateSetting(appSys.settings!["system"], "lastReadUpdateNote", "0.11");
+
       await CustomDialogs.showUpdateNoteDialog(context);
-      appSys.updateSetting(appSys.settings!["system"], "lastReadUpdateNote", "0.10");
     }
   }
 

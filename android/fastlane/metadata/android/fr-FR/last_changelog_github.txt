@@ -1,1 +1,4 @@
-Fix the 0.9 -> 0.10 migration (old settings can now be retrieved easily)
+0.11 version :
+- Parent accounts are now supported
+- Background fetch fixes (it should repair notifications)
+- And lot of fixes as usual

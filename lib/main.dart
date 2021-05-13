@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:wiredash/wiredash.dart';
 import 'package:ynotes/core/logic/appConfig/controller.dart';
+import 'package:ynotes/core/services/background.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/screens/carousel/carousel.dart';
 import 'package:ynotes/ui/screens/drawer/drawerBuilder.dart';
@@ -17,15 +19,13 @@ import 'package:ynotes/ui/screens/loading/loadingPage.dart';
 import 'core/utils/themeUtils.dart';
 import 'ui/screens/school_api_choice/schoolAPIChoicePage.dart';
 
-///The app main class
-///
-///
 Future main() async {
   Logger.level = Level.warning;
   WidgetsFlutterBinding.ensureInitialized();
   appSys = ApplicationSystem();
   await appSys.initApp();
-  
+  BackgroundFetch.registerHeadlessTask(_headlessTask);
+
   //appSys.loginController = LoginController();
 
   runZoned<Future<Null>>(() async {
@@ -36,6 +36,15 @@ Future main() async {
 var setting;
 
 var uuid = Uuid();
+
+///The app main class
+///
+///
+_headlessTask(HeadlessTask? task) async {
+  if (task != null) {
+    await BackgroundService.backgroundFetchHeadlessTask(task.taskId, headless: true);
+  }
+}
 
 class carousel extends StatelessWidget {
   @override
