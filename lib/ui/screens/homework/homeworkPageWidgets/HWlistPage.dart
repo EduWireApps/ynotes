@@ -3,14 +3,13 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:provider/provider.dart';
 import 'package:ynotes/core/logic/homework/controller.dart';
+import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPage.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/HWcontainer.dart';
-import 'package:ynotes/core/utils/themeUtils.dart';
 
 class HomeworkFirstPage extends StatefulWidget {
-  final HomeworkController hwcontroller;
-
-  const HomeworkFirstPage({Key key, @required this.hwcontroller}) : super(key: key);
+  const HomeworkFirstPage({Key? key}) : super(key: key);
 
   State<StatefulWidget> createState() {
     return _HomeworkFirstPageState();
@@ -18,43 +17,27 @@ class HomeworkFirstPage extends StatefulWidget {
 }
 
 class _HomeworkFirstPageState extends State<HomeworkFirstPage> {
-  Future<void> refreshLocalHomeworkList() async {
-    await this.widget.hwcontroller.refresh(force: true);
-  }
-
-  void callback() {
-    setState(() {});
-  }
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    SchedulerBinding.instance.addPostFrameCallback((_) => mounted ? this.widget.hwcontroller.refresh() : null);
-  }
-
-
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
     return ChangeNotifierProvider<HomeworkController>.value(
-        value: this.widget.hwcontroller,
+        value: appSys.homeworkController,
         child: Consumer<HomeworkController>(builder: (context, model, child) {
           return RefreshIndicator(
               onRefresh: refreshLocalHomeworkList,
               child: model.getHomework != null
-                  ? (model.getHomework.length != 0)
+                  ? (model.getHomework!.length != 0)
                       ? Stack(
                           children: <Widget>[
                             Container(
                               margin: EdgeInsets.only(top: (screenSize.size.height / 10 * 8.8) / 10 * 0.1),
                               child: ListView.builder(
-                                  itemCount: getDates(model.getHomework).length,
+                                  itemCount: getDates(model.getHomework!).length,
                                   padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
                                   itemBuilder: (BuildContext context, int index) {
                                     return Column(
                                       children: <Widget>[
-                                        if (getWeeksRelation(index, model.getHomework) != null)
+                                        if (getWeeksRelation(index, model.getHomework!) != null)
                                           Row(children: <Widget>[
                                             Expanded(
                                               child: new Container(
@@ -65,7 +48,7 @@ class _HomeworkFirstPageState extends State<HomeworkFirstPage> {
                                                   )),
                                             ),
                                             Text(
-                                              getWeeksRelation(index, model.getHomework),
+                                              getWeeksRelation(index, model.getHomework!),
                                               style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
                                             ),
                                             Expanded(
@@ -78,7 +61,7 @@ class _HomeworkFirstPageState extends State<HomeworkFirstPage> {
                                             ),
                                           ]),
                                         HomeworkContainer(
-                                            getDates(model.getHomework)[index], this.callback, model.getHomework),
+                                            getDates(model.getHomework!)[index], this.callback, model.getHomework!),
                                       ],
                                     );
                                   }),
@@ -127,5 +110,19 @@ class _HomeworkFirstPageState extends State<HomeworkFirstPage> {
                       size: screenSize.size.width / 5 * 1,
                     ));
         }));
+  }
+
+  void callback() {
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    SchedulerBinding.instance!.addPostFrameCallback((_) => mounted ? appSys.homeworkController.refresh() : null);
+  }
+
+  Future<void> refreshLocalHomeworkList() async {
+    await appSys.homeworkController.refresh(force: true);
   }
 }

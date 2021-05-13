@@ -8,23 +8,24 @@ import 'package:marquee/marquee.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:stacked/stacked.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:ynotes/ui/components/customLoader.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/core/logic/shared/downloadController.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:advance_pdf_viewer/advance_pdf_viewer.dart';
 import '../../../usefulMethods.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 
 class ReadMailBottomSheet extends StatefulWidget {
   final Mail mail;
-  final int index;
+  final int? index;
 
-  const ReadMailBottomSheet(this.mail, this.index, {Key key}) : super(key: key);
+  const ReadMailBottomSheet(this.mail, this.index, {Key? key}) : super(key: key);
 
   @override
   _ReadMailBottomSheetState createState() => _ReadMailBottomSheetState();
@@ -35,12 +36,12 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
   DateFormat format = DateFormat("dd-MM-yyyy HH:hh");
 
   //Get monochromatic colors or not
-  htmlColors(String html) {
+  htmlColors(String? html) {
     if (!monochromatic) {
       return html;
     }
-    String color = isDarkModeEnabled ? "white" : "black";
-    String finalHTML = html.replaceAll("color", color);
+    String color = ThemeUtils.isThemeDark ? "white" : "black";
+    String finalHTML = html!.replaceAll("color", color);
     return finalHTML;
   }
 
@@ -55,7 +56,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
   Widget build(BuildContext context) {
     print(this.widget.mail.id);
     MediaQueryData screenSize = MediaQuery.of(context);
-    return FutureBuilder(
+    return FutureBuilder<String?>(
         future: readMail(this.widget.mail.id, this.widget.mail.read),
         builder: (context, snapshot) {
           return Container(
@@ -151,10 +152,10 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                             overflow: TextOverflow.ellipsis,
                                           ),
                                           Text(
-                                            format.format(DateTime.parse(widget.mail.date)),
+                                            format.format(DateTime.parse(widget.mail.date!)),
                                             style: TextStyle(
                                                 fontFamily: "Asap",
-                                                color: isDarkModeEnabled
+                                                color: ThemeUtils.isThemeDark
                                                     ? Colors.white.withOpacity(0.5)
                                                     : Colors.black.withOpacity(0.5)),
                                           ),
@@ -165,7 +166,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                           this.widget.mail.to[0]["name"],
                                           style: TextStyle(
                                               fontFamily: "Asap",
-                                              color: isDarkModeEnabled
+                                              color: ThemeUtils.isThemeDark
                                                   ? Colors.white.withOpacity(0.5)
                                                   : Colors.black.withOpacity(0.5)),
                                         )
@@ -210,9 +211,9 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                       AnimatedContainer(
                                         duration: Duration(milliseconds: 75),
                                         width: screenSize.size.width / 5 * 4.4,
-                                        height: this.widget.mail.files.length * (screenSize.size.height / 10 * 0.7),
+                                        height: this.widget.mail.files!.length * (screenSize.size.height / 10 * 0.7),
                                         child: ListView.builder(
-                                            itemCount: this.widget.mail.files.length,
+                                            itemCount: this.widget.mail.files!.length,
                                             itemBuilder: (BuildContext context, int index) {
                                               return Container(
                                                 margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.2),
@@ -238,7 +239,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                                               width: screenSize.size.width / 5 * 2.8,
                                                               child: ClipRRect(
                                                                 child: Marquee(
-                                                                    text: this.widget.mail.files[index].documentName,
+                                                                    text: this.widget.mail.files![index].documentName!,
                                                                     blankSpace: screenSize.size.width / 5 * 0.2,
                                                                     style: TextStyle(
                                                                         fontFamily: "Asap", color: Colors.white)),
@@ -263,7 +264,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                                                             future: model.fileExists(this
                                                                                 .widget
                                                                                 .mail
-                                                                                .files[index]
+                                                                                .files![index]
                                                                                 .documentName),
                                                                             initialData: false,
                                                                             builder: (context, snapshot) {
@@ -314,7 +315,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                                                                             this
                                                                                                 .widget
                                                                                                 .mail
-                                                                                                .files[index]
+                                                                                                .files![index]
                                                                                                 .documentName,
                                                                                             usingFileName: true);
                                                                                       },
@@ -323,7 +324,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                                                                         await model.download(this
                                                                                             .widget
                                                                                             .mail
-                                                                                            .files[index]);
+                                                                                            .files![index]);
                                                                                       },
                                                                                       child: Container(
                                                                                         width: screenSize.size.width /
@@ -349,7 +350,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                                                                       await model.download(this
                                                                                           .widget
                                                                                           .mail
-                                                                                          .files[index]);
+                                                                                          .files![index]);
                                                                                     },
                                                                                   );
                                                                                 }
@@ -364,14 +365,14 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                                                                         this
                                                                                             .widget
                                                                                             .mail
-                                                                                            .files[index]
+                                                                                            .files![index]
                                                                                             .documentName,
                                                                                         usingFileName: true);
                                                                                   },
                                                                                   //Force download
                                                                                   onLongPress: () async {
                                                                                     await model.download(
-                                                                                        this.widget.mail.files[index]);
+                                                                                        this.widget.mail.files![index]);
                                                                                   },
                                                                                   child: Container(
                                                                                     width:
@@ -383,6 +384,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                                                                   ),
                                                                                 ));
                                                                               }
+                                                                              return Container();
                                                                             });
                                                                       }),
                                                                 ],
@@ -399,9 +401,9 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                       )
                                     ],
                                   )
-                                : SpinKitFadingFour(
-                                    color: Theme.of(context).primaryColorDark,
-                                    size: screenSize.size.width / 5 * 0.7,
+                                : Center(
+                                    child: CustomLoader(screenSize.size.width / 5 * 2.5,
+                                        screenSize.size.width / 5 * 2.5, Theme.of(context).primaryColorDark),
                                   ),
                           )
                         ],

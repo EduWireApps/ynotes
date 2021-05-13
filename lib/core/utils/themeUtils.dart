@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tinycolor/tinycolor.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/usefulMethods.dart';
-
 
 class ThemeUtils {
   Map themeColors = {
@@ -14,28 +14,29 @@ class ThemeUtils {
   static Color spaceColor() => Color(0xff282246);
   static Color textColor({bool revert = false}) {
     if (revert) {
-      return isDarkModeEnabled ? Colors.black : Colors.white;
+      return isThemeDark ? Colors.black : Colors.white;
     } else {
-      return isDarkModeEnabled ? Colors.white : Colors.black;
+      return isThemeDark ? Colors.white : Colors.black;
     }
   }
 
+  static get isThemeDark => appSys.themeName!.contains("sombre");
   Color test() => Colors.blue;
 
   ///Make the selected color darker
-  static Color darken(Color color, {double forceAmount}) {
+  static Color darken(Color color, {double? forceAmount}) {
     double amount = 0.05;
-    var ColorTest = TinyColor(color);
+    var colorTest = TinyColor(color);
     //Test if the color is not too light
     if (forceAmount == null) {
-      if (ColorTest.isLight()) {
+      if (colorTest.isLight()) {
         amount = 0.2;
       }
       //Test if the color is something like yellow
-      if (ColorTest.getLuminance() > 0.5) {
+      if (colorTest.getLuminance() > 0.5) {
         amount = 0.2;
       }
-      if (ColorTest.getLuminance() < 0.5) {
+      if (colorTest.getLuminance() < 0.5) {
         amount = 0.18;
       }
     } else {

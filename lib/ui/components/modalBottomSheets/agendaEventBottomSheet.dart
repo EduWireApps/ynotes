@@ -26,7 +26,7 @@ void agendaEventBottomSheet(context) {
 
 class AgendaEventChoice extends StatelessWidget {
   const AgendaEventChoice({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -54,7 +54,6 @@ class AgendaEventChoice extends StatelessWidget {
                       color: ThemeUtils.textColor(),
                     ),
                     textAlign: TextAlign.center,
-                    alignment: AlignmentDirectional.topStart,
                     repeatForever: true,
                     duration: Duration(milliseconds: 8000),
                   )),

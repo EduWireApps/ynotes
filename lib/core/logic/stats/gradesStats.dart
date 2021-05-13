@@ -3,7 +3,7 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 
 class GradesStats {
   final Grade grade;
-  final List<Grade> allGrades;
+  final List<Grade>? allGrades;
 
   GradesStats(this.grade, this.allGrades);
 
@@ -12,15 +12,14 @@ class GradesStats {
   double calculateAverageImpact() {
     //remove not concerned grades
 
-    List<Grade> _sortedGrades = List();
-    _sortedGrades.addAll(this.allGrades);
-    //Order
+    List<Grade> _sortedGrades = [];
+    _sortedGrades.addAll(this.allGrades!);
+    print(grade.disciplineCode);
     //Remove unconcerned grades
-
     _sortedGrades.removeWhere(
         (_grade) => _grade.disciplineCode != this.grade.disciplineCode || _grade.periodCode != this.grade.periodCode);
     _sortedGrades = _sortedGrades.reversed.toList();
-
+    //get concerned grad index
     int gradeIndex =
         _sortedGrades.indexWhere((_grade) => _grade.testName == this.grade.testName && _grade.date == this.grade.date);
     //remove next items
@@ -28,28 +27,26 @@ class GradesStats {
     double beforeAverage = 0.0;
     double afterAverage = 0.0;
     double coeffCounter = 0.0;
-    print(gradeIndex);
     _sortedGrades.forEach((_grade) {
       //Before selected grade
       if (_grade.testName != this.grade.testName || _grade.entryDate != this.grade.entryDate) {
-        if (!_grade.notSignificant && !_grade.letters) {
+        if (!_grade.notSignificant! && !_grade.letters!) {
           double gradeOver20 =
-              double.parse(_grade.value.replaceAll(',', '.')) * 20 / double.parse(_grade.scale.replaceAll(',', '.'));
-          beforeAverage += gradeOver20 * double.parse(_grade.weight.replaceAll(',', '.'));
-          afterAverage += gradeOver20 * double.parse(_grade.weight.replaceAll(',', '.'));
-          coeffCounter += double.tryParse(_grade.weight.replaceAll(',', '.'));
+              double.parse(_grade.value!.replaceAll(',', '.')) * 20 / double.parse(_grade.scale!.replaceAll(',', '.'));
+          beforeAverage += gradeOver20 * double.parse(_grade.weight!.replaceAll(',', '.'));
+          afterAverage += gradeOver20 * double.parse(_grade.weight!.replaceAll(',', '.'));
+          coeffCounter += double.tryParse(_grade.weight!.replaceAll(',', '.'))!;
         }
       }
       //At selected grade
       else {
         //Calculate before average
         beforeAverage = beforeAverage / coeffCounter;
-
-        if (!_grade.notSignificant && !_grade.letters) {
+        if (!_grade.notSignificant! && !_grade.letters!) {
           double gradeOver20 =
-              double.parse(_grade.value.replaceAll(',', '.')) * 20 / double.parse(_grade.scale.replaceAll(',', '.'));
-          afterAverage += gradeOver20 * double.parse(_grade.weight.replaceAll(',', '.'));
-          coeffCounter += double.tryParse(_grade.weight.replaceAll(',', '.'));
+              double.parse(_grade.value!.replaceAll(',', '.')) * 20 / double.parse(_grade.scale!.replaceAll(',', '.'));
+          afterAverage += gradeOver20 * double.parse(_grade.weight!.replaceAll(',', '.'));
+          coeffCounter += double.tryParse(_grade.weight!.replaceAll(',', '.'))!;
           //Calculate before average
 
           afterAverage = afterAverage / coeffCounter;
@@ -66,10 +63,10 @@ class GradesStats {
   ///returns a double (positive or negative)
   ///this represents the the increase or decrease of the **global average** for this period when receiving the grade
   double calculateGlobalAverageImpact() {
-    List<Grade> _periodGradesWithGrade = List();
-    List<Grade> _periodGradesWithoutGrade = List();
+    List<Grade> _periodGradesWithGrade = [];
+    List<Grade> _periodGradesWithoutGrade = [];
 
-    _periodGradesWithGrade.addAll(this.allGrades);
+    _periodGradesWithGrade.addAll(this.allGrades!);
     //remove other periods grades
     _periodGradesWithGrade.removeWhere((_grade) => _grade.periodCode != this.grade.periodCode);
     _periodGradesWithGrade = _periodGradesWithGrade.reversed.toList();
@@ -89,10 +86,10 @@ class GradesStats {
   ///returns a double (positive or negative)
   ///this represents the the increase or decrease of the **global average** for this period with and without the grade
   double calculateGlobalAverageImpactOverall() {
-    List<Grade> _periodGradesWithGrade = List();
-    List<Grade> _periodGradesWithoutGrade = List();
+    List<Grade> _periodGradesWithGrade = [];
+    List<Grade> _periodGradesWithoutGrade = [];
 
-    _periodGradesWithGrade.addAll(this.allGrades);
+    _periodGradesWithGrade.addAll(this.allGrades!);
     //remove other periods grades
     _periodGradesWithGrade.removeWhere((_grade) => _grade.periodCode != this.grade.periodCode);
     _periodGradesWithGrade = _periodGradesWithGrade.reversed.toList();
@@ -109,27 +106,27 @@ class GradesStats {
 
   double _calculateGlobalAverage(List<Grade> grades) {
     Map<dynamic, List<Grade>> gradesSortedByDisciplines = Map();
-    List<double> averages = List();
+    List<double> averages = [];
 
     grades.forEach((grade) {
       //ensure that grade can be used
-      if (!grade.notSignificant && !grade.letters) {
+      if (!grade.notSignificant! && !grade.letters!) {
         if (gradesSortedByDisciplines[grade.disciplineCode] == null) {
-          gradesSortedByDisciplines[grade.disciplineCode] = List();
+          gradesSortedByDisciplines[grade.disciplineCode] = [];
         }
-        gradesSortedByDisciplines[grade.disciplineCode].add(grade);
+        gradesSortedByDisciplines[grade.disciplineCode]!.add(grade);
       }
     });
     gradesSortedByDisciplines.keys.forEach((key) {
       double average = 0.0;
       double counter = 0.0;
-      gradesSortedByDisciplines[key].forEach((_grade) {
+      gradesSortedByDisciplines[key]!.forEach((_grade) {
         try {
-          average += double.parse(_grade.value.replaceAll(',', '.')) *
+          average += double.parse(_grade.value!.replaceAll(',', '.')) *
               20 /
-              double.parse(_grade.scale.replaceAll(',', '.')) *
-              double.parse(_grade.weight.replaceAll(',', '.'));
-          counter += double.parse(_grade.weight);
+              double.parse(_grade.scale!.replaceAll(',', '.')) *
+              double.parse(_grade.weight!.replaceAll(',', '.'));
+          counter += double.parse(_grade.weight!);
         } catch (e) {}
       });
       average = average / counter;

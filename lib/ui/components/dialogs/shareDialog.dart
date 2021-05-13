@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'dart:typed_data';
-import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/core/utils/themeUtils.dart';
+import 'dart:ui' as ui;
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
@@ -13,41 +11,24 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:path_provider/path_provider.dart';
 import 'package:share/share.dart';
 import 'package:ynotes/core/apis/utils.dart';
+import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/ui/components/buttons.dart';
 
-import 'dart:ui' as ui;
-
+shareBox(Grade grade, Discipline discipline) {}
 
 class ShareBox extends StatefulWidget {
   final Grade grade;
 
-  const ShareBox(this.grade, {Key key}) : super(key: key);
+  const ShareBox(this.grade, {Key? key}) : super(key: key);
   @override
   _ShareBoxState createState() => _ShareBoxState();
 }
 
 class _ShareBoxState extends State<ShareBox> {
   GlobalKey _globalKey = new GlobalKey();
-  Future<Uint8List> _capturePng() async {
-    try {
-      RenderRepaintBoundary boundary = _globalKey.currentContext.findRenderObject();
-      ui.Image image = await boundary.toImage(pixelRatio: 2.0);
-      ByteData byteData = await image.toByteData(format: ui.ImageByteFormat.png);
-      var pngBytes = byteData.buffer.asUint8List();
-      final directory = (await getExternalStorageDirectory()).path;
-      File imgFile = new File('$directory/screenshot.png');
-      imgFile.writeAsBytes(pngBytes);
-
-      final RenderBox box = context.findRenderObject();
-      Share.shareFiles(['$directory/screenshot.png'],
-          subject: '', text: '', sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
-      setState(() {});
-      return pngBytes;
-    } catch (e) {
-      print(e);
-    }
-  }
-
   TextEditingController _label = TextEditingController(text: "");
+
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize;
@@ -77,14 +58,14 @@ class _ShareBoxState extends State<ShareBox> {
                       child: Stack(
                         children: [
                           Column(mainAxisSize: MainAxisSize.max, children: <Widget>[
-                            FutureBuilder(
+                            FutureBuilder<int>(
                                 initialData: 0,
                                 future: getColor(widget.grade.disciplineCode),
                                 builder: (context, snapshot) {
                                   return Container(
                                       child: Center(
                                         child: Text(
-                                          widget.grade.disciplineName,
+                                          widget.grade.disciplineName!,
                                           style: TextStyle(fontFamily: "Asap", color: Colors.black),
                                         ),
                                       ),
@@ -93,7 +74,7 @@ class _ShareBoxState extends State<ShareBox> {
                                       decoration: BoxDecoration(
                                           borderRadius: BorderRadius.only(
                                               topLeft: Radius.circular(15.0), topRight: Radius.circular(15.0)),
-                                          color: Color(snapshot.data)));
+                                          color: Color(snapshot.data ?? 0)));
                                 }),
                             Container(
                               width: screenSize.size.width / 5 * 5,
@@ -107,13 +88,16 @@ class _ShareBoxState extends State<ShareBox> {
                                 children: <Widget>[
                                   Text(
                                       widget.grade.date != null
-                                          ? ("Note du " + DateFormat("dd MMMM yyyy", "fr_FR").format(widget.grade.date))
+                                          ? ("Note du " +
+                                              DateFormat("dd MMMM yyyy", "fr_FR").format(widget.grade.date!))
                                           : "",
                                       style: TextStyle(
                                         fontFamily: "Asap",
                                         color: ThemeUtils.textColor(),
                                       )),
-                                  Text(widget.grade.testName,
+                                  Text(
+                                      widget.grade.testName ??
+                                          (widget.grade.simulated! ? "(note simulée)" : "(sans nom)"),
                                       style: TextStyle(
                                           fontFamily: "Asap",
                                           color: ThemeUtils.textColor(),
@@ -150,7 +134,7 @@ class _ShareBoxState extends State<ShareBox> {
 
                                               //MARK ON
                                               TextSpan(
-                                                  text: '/' + widget.grade.scale,
+                                                  text: '/' + widget.grade.scale!,
                                                   style: TextStyle(
                                                       color: ThemeUtils.textColor(),
                                                       fontWeight: FontWeight.bold,
@@ -182,20 +166,9 @@ class _ShareBoxState extends State<ShareBox> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                RaisedButton(
-                  color: Theme.of(context).primaryColor,
-                  shape: CircleBorder(),
-                  onPressed: () async {
-                    await _capturePng();
-                  },
-                  child: Container(
-                      padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
-                      child: Icon(
-                        MdiIcons.share,
-                        color: ThemeUtils.textColor(),
-                        size: screenSize.size.width / 5 * 0.5,
-                      )),
-                ),
+                CustomButtons.materialButton(context, screenSize.size.width / 5 * 1.5, null, () async {
+                  await _capturePng();
+                }, label: "Partager", icon: MdiIcons.share)
               ],
             )
           ],
@@ -203,6 +176,24 @@ class _ShareBoxState extends State<ShareBox> {
       ),
     );
   }
-}
 
-shareBox(Grade grade, Discipline discipline) {}
+  Future<Uint8List?> _capturePng() async {
+    try {
+      RenderRepaintBoundary boundary = _globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
+      ui.Image image = await boundary.toImage(pixelRatio: 2.0);
+      ByteData? byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      var pngBytes = byteData?.buffer.asUint8List();
+      final directory = (await getTemporaryDirectory()).path;
+      File imgFile = new File('$directory/screenshot.png');
+      if (pngBytes != null) imgFile.writeAsBytes(pngBytes);
+
+      final RenderBox box = context.findRenderObject() as RenderBox;
+      Share.shareFiles(['$directory/screenshot.png'],
+          subject: '', text: '', sharePositionOrigin: box.localToGlobal(Offset.zero) & box.size);
+      setState(() {});
+      return pngBytes;
+    } catch (e) {
+      print(e);
+    }
+  }
+}

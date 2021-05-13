@@ -1,1 +1,4 @@
-Fixes reversed grades list.
+0.11 version :
+- Parent accounts are now supported
+- Background fetch fixes (it should repair notifications)
+- And lot of fixes as usual

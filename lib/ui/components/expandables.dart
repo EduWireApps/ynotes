@@ -8,10 +8,10 @@ class Expandables extends StatefulWidget {
   final Widget bottomChild;
 
   ///The top expandable color
-  final Color topExpandableColor;
+  final Color? topExpandableColor;
 
   ///The bottom expandable color
-  final Color bottomExpandableColor;
+  final Color? bottomExpandableColor;
 
   ///The top expandable border radius (default to 11)
   final double topExpandableBorderRadius;
@@ -20,26 +20,26 @@ class Expandables extends StatefulWidget {
   final double bottomExpandableBorderRadius;
 
   ///Expandables max height
-  double maxHeight;
+  double? maxHeight;
 
   ///Expandables min height
-  double minHeight;
+  double? minHeight;
 
   ///Space between expandables
-  double spaceBetween;
+  double? spaceBetween;
 
   ///Width
-  double width;
+  double? width;
 
   ///Shadow color
-  final Color expandablesShadowColor;
+  final Color? expandablesShadowColor;
 
   ///Defines if top widget is firstly expanded
   final bool topIsExpanded;
 
 //Milliseconds animation (expanding or collapsing) duration
   final int animationDuration;
-  final Function(double topWidgetPercentExpansion, double bottomWidgetPercentExpansion) onDragUpdate;
+  final Function(double topWidgetPercentExpansion, double bottomWidgetPercentExpansion)? onDragUpdate;
   Expandables(this.topChild, this.bottomChild,
       {this.topExpandableColor,
       this.bottomExpandableColor,
@@ -57,14 +57,21 @@ class Expandables extends StatefulWidget {
   _ExpandablesState createState() => _ExpandablesState();
 }
 
-class _ExpandablesState extends State<Expandables> with TickerProviderStateMixin {
+class _ExpandablesState extends State<Expandables>
+    with TickerProviderStateMixin {
   void initState() {
     super.initState();
-    expandingAnimationController = AnimationController(duration: Duration(milliseconds: widget.animationDuration), vsync: this);
+    expandingAnimationController = AnimationController(
+        duration: Duration(milliseconds: widget.animationDuration),
+        vsync: this);
     expandingAnimationController.addListener(() {
-      widget.onDragUpdate(topWidgetPercentExpansion, bottomWidgetPercentExpansion);
+      widget.onDragUpdate!(topWidgetPercentExpansion, bottomWidgetPercentExpansion);
     });
-    expandBottomWidget = Tween<double>(begin: 0, end: 1).animate(new CurvedAnimation(parent: expandingAnimationController, curve: Curves.easeInQuad, reverseCurve: Curves.easeInQuad));
+    expandBottomWidget = Tween<double>(begin: 0, end: 1).animate(
+        new CurvedAnimation(
+            parent: expandingAnimationController,
+            curve: Curves.easeInQuad,
+            reverseCurve: Curves.easeInQuad));
     if (!widget.topIsExpanded) {
       bottomWidgetPercentExpansion = 100;
       topWidgetPercentExpansion = 0;
@@ -81,8 +88,8 @@ class _ExpandablesState extends State<Expandables> with TickerProviderStateMixin
   double bottomWidgetPercentExpansion = 0.0;
 
   double velocityToExpand = 800;
-  Animation<double> expandBottomWidget;
-  AnimationController expandingAnimationController;
+  Animation<double>? expandBottomWidget;
+  late AnimationController expandingAnimationController;
 
   animateBottomWidgetToMin() {
     setState(() {
@@ -94,10 +101,10 @@ class _ExpandablesState extends State<Expandables> with TickerProviderStateMixin
         topWidgetPercentExpansion = 100;
         bottomWidgetPercentExpansion = 0;
       });
-      widget.onDragUpdate(100, 0);
+      widget.onDragUpdate!(100, 0);
     });
 
-    this.widget.onDragUpdate(topWidgetPercentExpansion, bottomWidgetPercentExpansion);
+    this.widget.onDragUpdate!(topWidgetPercentExpansion, bottomWidgetPercentExpansion);
   }
 
   animateBottomWidgetToMax() {
@@ -110,32 +117,35 @@ class _ExpandablesState extends State<Expandables> with TickerProviderStateMixin
         topWidgetPercentExpansion = 0;
         bottomWidgetPercentExpansion = 100;
       });
-      widget.onDragUpdate(0, 100);
+      widget.onDragUpdate!(0, 100);
     });
   }
 
   handleTopWidgetDragUpdate(DragUpdateDetails details) {
-    double rootContainerHeight = widget.maxHeight + widget.minHeight + widget.spaceBetween;
+    double rootContainerHeight = widget.maxHeight! + widget.minHeight! + widget.spaceBetween!;
     double dyPosition = details.localPosition.dy;
     //If dragging to the top
 
     if (dyPosition > 0) {
-      if (topWidgetPercentExpansion < 100 && details.localPosition.dy.abs() * 100 / rootContainerHeight < 100) {
+      if (topWidgetPercentExpansion < 100 &&
+          details.localPosition.dy.abs() * 100 / rootContainerHeight < 100) {
         setState(() {
-          topWidgetPercentExpansion = details.localPosition.dy.abs() * 100 / rootContainerHeight;
+          topWidgetPercentExpansion =
+              details.localPosition.dy.abs() * 100 / rootContainerHeight;
           bottomWidgetPercentExpansion = -(topWidgetPercentExpansion) + 100;
         });
         if (widget.onDragUpdate != null) {
-          widget.onDragUpdate(topWidgetPercentExpansion, bottomWidgetPercentExpansion);
+          widget.onDragUpdate!(topWidgetPercentExpansion, bottomWidgetPercentExpansion);
         }
       }
     } else {}
   }
 
   handleTopWidgetDragEnd(DragEndDetails details) {
-    if (topWidgetPercentExpansion < minPercentDragged && !expandingAnimationController.isAnimating) {
+    if (topWidgetPercentExpansion < minPercentDragged &&
+        !expandingAnimationController.isAnimating) {
       //if dragged fastly
-      if (details.primaryVelocity > velocityToExpand) {
+      if (details.primaryVelocity! > velocityToExpand) {
         animateBottomWidgetToMin();
       }
       //if dragged slowly
@@ -148,27 +158,30 @@ class _ExpandablesState extends State<Expandables> with TickerProviderStateMixin
   }
 
   handleBottomWidgetDragUpdate(DragUpdateDetails details) {
-    double rootContainerHeight = widget.maxHeight + widget.minHeight + widget.spaceBetween;
+    double rootContainerHeight = widget.maxHeight! + widget.minHeight! + widget.spaceBetween!;
     double dyPosition = details.localPosition.dy;
     //If dragging to the top
 
     if (dyPosition < 0) {
-      if (bottomWidgetPercentExpansion < 100 && details.localPosition.dy.abs() * 100 / rootContainerHeight < 100) {
+      if (bottomWidgetPercentExpansion < 100 &&
+          details.localPosition.dy.abs() * 100 / rootContainerHeight < 100) {
         setState(() {
-          bottomWidgetPercentExpansion = details.localPosition.dy.abs() * 100 / rootContainerHeight;
+          bottomWidgetPercentExpansion =
+              details.localPosition.dy.abs() * 100 / rootContainerHeight;
           topWidgetPercentExpansion = -(bottomWidgetPercentExpansion) + 100;
         });
         if (widget.onDragUpdate != null) {
-          widget.onDragUpdate(topWidgetPercentExpansion, bottomWidgetPercentExpansion);
+          widget.onDragUpdate!(topWidgetPercentExpansion, bottomWidgetPercentExpansion);
         }
       }
     } else {}
   }
 
   handleBottomWidgetDragEnd(DragEndDetails details) {
-    if (bottomWidgetPercentExpansion < minPercentDragged && !expandingAnimationController.isAnimating) {
+    if (bottomWidgetPercentExpansion < minPercentDragged &&
+        !expandingAnimationController.isAnimating) {
       //if dragged fastly
-      if (details.primaryVelocity < velocityToExpand) {
+      if (details.primaryVelocity! < velocityToExpand) {
         animateBottomWidgetToMax();
       }
       //if dragged slowly
@@ -199,8 +212,10 @@ class _ExpandablesState extends State<Expandables> with TickerProviderStateMixin
         animation: expandingAnimationController,
         builder: (context, child) {
           if (expandingAnimationController.isAnimating) {
-            bottomWidgetPercentExpansion = expandingAnimationController.value * 100;
-            topWidgetPercentExpansion = (-expandingAnimationController.value + 1) * 100;
+            bottomWidgetPercentExpansion =
+                expandingAnimationController.value * 100;
+            topWidgetPercentExpansion =
+                (-expandingAnimationController.value + 1) * 100;
           }
           return Column(
             mainAxisAlignment: MainAxisAlignment.start,
@@ -219,9 +234,12 @@ class _ExpandablesState extends State<Expandables> with TickerProviderStateMixin
                     child: Container(
                       padding: EdgeInsets.zero,
                       width: widget.width,
-                      height: widget.minHeight + (widget.maxHeight - widget.minHeight) * topWidgetPercentExpansion / 100,
+                      height: widget.minHeight! + (widget.maxHeight! - widget.minHeight!) * topWidgetPercentExpansion / 100,
                       child: widget.topChild,
                     )),
+              ),
+              SizedBox(
+                height: widget.spaceBetween,
               ),
               GestureDetector(
                 onVerticalDragUpdate: handleBottomWidgetDragUpdate,
@@ -232,11 +250,11 @@ class _ExpandablesState extends State<Expandables> with TickerProviderStateMixin
                 child: Card(
                     shadowColor: widget.expandablesShadowColor,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(widget.bottomExpandableBorderRadius)),
-                    margin: EdgeInsets.only(top: widget.spaceBetween),
+                    margin: EdgeInsets.only(top: widget.spaceBetween!),
                     color: widget.bottomExpandableColor ?? Theme.of(context).primaryColor,
                     child: Container(
                       width: widget.width,
-                      height: widget.minHeight + (widget.maxHeight - widget.minHeight) * bottomWidgetPercentExpansion / 100,
+                      height: widget.minHeight! + (widget.maxHeight! - widget.minHeight!) * bottomWidgetPercentExpansion / 100,
                       child: widget.bottomChild,
                     )),
               ),
