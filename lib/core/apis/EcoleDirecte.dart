@@ -283,6 +283,11 @@ class APIEcoleDirecte extends API {
     return request;
   }
 
+  Future<List<SchoolLifeTicket>> getSchoolLife() async {
+    List<SchoolLifeTicket> tickets = await EcoleDirecteMethod(offline).schoolLife();
+    return tickets;
+  }
+
   ///END OF THE API CLASS
 }
 
@@ -413,9 +418,4 @@ Future readMail(String mailId, bool read) async {
   } catch (e) {
     print("error during the mail reading $e");
   }
-}
-
-Future<List<SchoolLifeTicket>> getSchoolLife() async {
-  List<SchoolLifeTicket> tickets = await EcoleDirecteMethod(offline).schoolLife();
-  return tickets;
 }

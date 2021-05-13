@@ -13,13 +13,14 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/core/logic/schoolLife/controller.dart';
 
 class SchoolLifePage extends StatefulWidget {
+  final SchoolLifeController schoollifecontroller;
+  const SchoolLifePage({Key key, this.schoollifecontroller}) : super(key: key);
   @override
   _SchoolLifePageState createState() => _SchoolLifePageState();
 }
-
-Future schoolLifeFuture;
 
 class _SchoolLifePageState extends State<SchoolLifePage> {
   @override
@@ -27,6 +28,10 @@ class _SchoolLifePageState extends State<SchoolLifePage> {
     // TODO: implement initState
     super.initState();
     // refreshPolls();
+  }
+
+  Future<List<SchoolLifeTicket>> schoolLifeFuture(force) async {
+    await widget.schoollifecontroller.refresh(force: force);
   }
 
   Widget separator(BuildContext context, String text) {
@@ -169,7 +174,7 @@ class _SchoolLifePageState extends State<SchoolLifePage> {
         height: screenSize.size.height,
         color: Theme.of(context).backgroundColor,
         child: FutureBuilder(
-            future: schoolLifeFuture,
+            future: schoolLifeFuture(true),
             builder: (context, snapshot) {
               if (snapshot.connectionState != ConnectionState.done) {
                 if (snapshot.data != null) {
