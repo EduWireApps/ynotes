@@ -383,7 +383,7 @@ class APIEcoleDirecte extends API {
   }
 
   Future<List<SchoolLifeTicket>> getSchoolLife() async {
-    return [];
+    return await EcoleDirecteMethod(this.offlineController).schoolLife();
   }
 
   ///END OF THE API CLASS

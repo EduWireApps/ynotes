@@ -15,9 +15,10 @@ import 'package:ynotes/main.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/core/logic/schoolLife/controller.dart';
+import 'package:provider/provider.dart';
 
 class SchoolLifePage extends StatefulWidget {
-  const SchoolLifePage(Key? key) : super(key: key);
+  const SchoolLifePage({Key? key}) : super(key: key);
   @override
   _SchoolLifePageState createState() => _SchoolLifePageState();
 }
@@ -164,96 +165,26 @@ class _SchoolLifePageState extends State<SchoolLifePage> {
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
-    return Container();
-    /*
     return Container(
-        width: screenSize.size.width,
-        height: screenSize.size.height,
-        color: Theme.of(context).backgroundColor,
-        child: FutureBuilder(
-            future: schoolLifeFuture(true),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState != ConnectionState.done) {
-                if (snapshot.data != null) {
-                  return buildNoTickets();
-                } else {
-                  /*
-                  return ListView.builder(
-                      itemCount: 5,
-                      itemBuilder: (context, index) {
-                        return buildTicket(SchoolLifeTicket("a", "a", "a", "a", false));
-                      });
-                      */
-                  return Column(
+        child: ChangeNotifierProvider<SchoolLifeController>.value(
+            value: appSys.schoolLifeController,
+            child: Consumer<SchoolLifeController>(builder: (context, model, child) {
+              return Stack(children: [
+                Container(
+                  child: Column(
                     children: [
-                      separator(context, "Absences et retards"),
-                      buildTicket(SchoolLifeTicket(
-                          "Retard du 10/02 de 10 minutes en 7e heure", "date", "Sans motif", "type", true)),
-                      buildTicket(SchoolLifeTicket("azerty", "date", "motif", "Repas", false)),
+                      separator(context, "Abscences"),
+                      ListView.builder(
+                          physics: AlwaysScrollableScrollPhysics(),
+                          padding: EdgeInsets.symmetric(
+                              vertical: screenSize.size.width / 5 * 0.1, horizontal: screenSize.size.width / 5 * 0.05),
+                          itemBuilder: (BuildContext context, int index) {
+                            return buildTicket(model.abscences![index]);
+                          }),
                     ],
-                  );
-                }
-              } else {
-                return Center(child: SpinKitFadingFour(color: Theme.of(context).primaryColor));
-              }
-            }));*/
+                  ),
+                )
+              ]);
+            })));
   }
-}
-
-Widget _buildPollQuestion(var data, screenSize) {
-  List<Widget> list = [];
-  for (var i = 0; i < data.questions.length; i++) {
-    Map mapQuestions = jsonDecode(data.questions[i]);
-    list.add(Container(
-      padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
-      child: Column(
-        children: [
-          HtmlWidget(mapQuestions["texte"]["V"],
-              textStyle: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"), onTapUrl: (url) async {
-            if (await canLaunch(url)) {
-              await launch(url);
-            } else {
-              throw "Unable to launch url";
-            }
-          }),
-          _buildPollChoices(mapQuestions, screenSize, data)
-        ],
-      ),
-    ));
-  }
-  return new Column(children: list);
-}
-
-Widget _buildPollChoices(Map data, screenSize, PollInfo pollinfo) {
-  List choices = data["listeChoix"]["V"];
-  List? response = [];
-  try {
-    if (data["reponse"] != null &&
-        data["reponse"]["V"] != null &&
-        data["reponse"]["V"]["valeurReponse"] != null &&
-        data["reponse"]["V"]["valeurReponse"]["V"] != null) {
-      response = jsonDecode(data["reponse"]["V"]["valeurReponse"]["V"]);
-    }
-  } catch (e) {
-    print(e);
-  }
-  //user info
-  List<Widget> list = [];
-  for (var i = 0; i < choices.length; i++) {
-    list.add(Container(
-        padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
-        child: Row(
-          children: [
-            CircularCheckBox(
-              value: response!.contains(i + 1),
-              onChanged: (value) async {
-                /* await refreshPolls(forced: true);
-                  await appSys.api.app("polls", action: "answer", args: jsonEncode(data) + "/ynsplit" + jsonEncode(pollinfo.data) + "/ynsplit" + (i + 1).toString());*/
-              },
-            ),
-            Text(choices[i]["L"])
-          ],
-        )));
-  }
-  return new Column(children: list);
 }
