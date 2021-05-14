@@ -9,7 +9,9 @@ import 'package:ynotes/core/offline/data/homework/homework.dart';
 import 'package:ynotes/core/offline/data/homework/pinnedHomework.dart';
 import 'package:ynotes/core/offline/data/mails/recipients.dart';
 import 'package:ynotes/core/offline/data/polls/polls.dart';
+import 'package:ynotes/core/offline/data/schoolLife/schoolLife.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
 
 ///An offline class to deal with the `hivedb` package
@@ -28,6 +30,8 @@ class Offline {
   Map<dynamic, dynamic>? lessonsData;
   //Return polls
   List<PollInfo>? pollsData;
+  //Return school life tickets
+  List<SchoolLifeTicket>? schoolLifeData;
   //Return agenda reminder
   List<AgendaReminder>? remindersData;
   //Return agenda event
@@ -40,14 +44,14 @@ class Offline {
   Box? pinnedHomeworkBox;
   Box? agendaBox;
 
-//Imports
+  //Imports
   late HomeworkOffline homework;
   late DoneHomeworkOffline doneHomework;
   late PinnedHomeworkOffline pinnedHomework;
   late AgendaEventsOffline agendaEvents;
   late RemindersOffline reminders;
   late LessonsOffline lessons;
-
+  late SchoolLifeOffline schoolLifeTickets;
   late DisciplinesOffline disciplines;
 
   late PollsOffline polls;
@@ -78,6 +82,7 @@ class Offline {
       lessonsData?.clear();
       remindersData?.clear();
       agendaEventsData?.clear();
+      schoolLifeData?.clear();
       recipientsData?.clear();
       await this.init();
     } catch (e) {
@@ -112,6 +117,8 @@ class Offline {
         Hive.registerAdapter(AgendaReminderAdapter());
         Hive.registerAdapter(AgendaEventAdapter());
         Hive.registerAdapter(RecipientAdapter());
+        Hive.registerAdapter(SchoolLifeAdapter());
+
         Hive.registerAdapter(alarmTypeAdapter());
       } catch (e) {
         print("Error " + e.toString());
@@ -181,6 +188,7 @@ class Offline {
         }
       } catch (e) {
         print("Error while refreshing " + e.toString());
+
       }
     }
   }

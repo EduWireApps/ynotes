@@ -264,6 +264,12 @@ class APIEcoleDirecte extends API {
     }
   }
 
+  Future<List<SchoolLifeTicket>> getSchoolLife({bool forceReload = false}) async {
+    return await EcoleDirecteMethod.fetchAnyData(
+        EcoleDirecteMethod(this.offlineController).schoolLife, offlineController.disciplines.getPeriods);
+    ;
+  }
+
   Future<List> login(username, password, {url, cas, mobileCasLogin}) async {
     final prefs = await SharedPreferences.getInstance();
     if (username == null) {
@@ -380,10 +386,6 @@ class APIEcoleDirecte extends API {
           });
         }
     }
-  }
-
-  Future<List<SchoolLifeTicket>> getSchoolLife() async {
-    return await EcoleDirecteMethod(this.offlineController).schoolLife();
   }
 
   ///END OF THE API CLASS

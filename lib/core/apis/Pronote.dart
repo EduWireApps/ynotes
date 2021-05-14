@@ -41,7 +41,7 @@ class APIPronote extends API {
   }
 
   @override
-  Future<List<SchoolLifeTicket>> getSchoolLife() async {
+  Future<List<SchoolLifeTicket>> getSchoolLife({bool forceReload = false}) async {
     return [];
   }
 

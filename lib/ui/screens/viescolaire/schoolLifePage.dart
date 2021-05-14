@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
@@ -23,18 +24,23 @@ class _SchoolLifePageState extends State<SchoolLifePage> {
         child: ChangeNotifierProvider<SchoolLifeController>.value(
             value: appSys.schoolLifeController,
             child: Consumer<SchoolLifeController>(builder: (context, model, child) {
-              return Container(
-                height: screenSize.size.height,
-                width: screenSize.size.width,
-                child: ListView.builder(
-                    physics: AlwaysScrollableScrollPhysics(),
-                    padding: EdgeInsets.symmetric(
-                        vertical: screenSize.size.width / 5 * 0.1, horizontal: screenSize.size.width / 5 * 0.05),
-                    itemCount: (model.tickets ?? []).length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return buildTicket(model.tickets![index]);
-                    }),
-              );
+              //if there is no tickets
+              if ((model.tickets ?? []).length == 0) {
+                return buildNoTickets();
+              } else {
+                return Container(
+                  height: screenSize.size.height,
+                  width: screenSize.size.width,
+                  child: ListView.builder(
+                      physics: AlwaysScrollableScrollPhysics(),
+                      padding: EdgeInsets.symmetric(
+                          vertical: screenSize.size.width / 5 * 0.1, horizontal: screenSize.size.width / 5 * 0.05),
+                      itemCount: (model.tickets ?? []).length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return buildTicket(model.tickets![index]);
+                      }),
+                );
+              }
             })));
   }
 
@@ -67,24 +73,46 @@ class _SchoolLifePageState extends State<SchoolLifePage> {
   Widget buildNoTickets() {
     MediaQueryData screenSize = MediaQuery.of(context);
 
-    return Center(
-      child: Container(
-        height: screenSize.size.height,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              MdiIcons.stamper,
-              size: screenSize.size.width / 5 * 1.2,
-              color: ThemeUtils.textColor(),
+    return ChangeNotifierProvider<SchoolLifeController>.value(
+      value: appSys.schoolLifeController,
+      child: Consumer<SchoolLifeController>(builder: (context, model, child) {
+        return Center(
+          child: Container(
+            height: screenSize.size.height,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  MdiIcons.stamper,
+                  size: screenSize.size.width / 5 * 1.2,
+                  color: ThemeUtils.textColor(),
+                ),
+                Text(
+                  "Pas de données.",
+                  style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: 20),
+                ),
+                FlatButton(
+                  onPressed: () {
+                    model.refresh(force: true);
+                  },
+                  child: model.loading
+                      ? Text("Recharger",
+                          style: TextStyle(
+                              fontFamily: "Asap",
+                              color: Colors.white,
+                              fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2))
+                      : FittedBox(
+                          child: SpinKitThreeBounce(
+                              color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4)),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(18.0),
+                      side: BorderSide(color: Theme.of(context).primaryColorDark)),
+                )
+              ],
             ),
-            Text(
-              "Pas de données.",
-              style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: 20),
-            )
-          ],
-        ),
-      ),
+          ),
+        );
+      }),
     );
   }
 

@@ -45,7 +45,7 @@ abstract class API {
   Future<List<DateTime>?> getDatesNextHomework();
 
   ///SchoolLife
-  Future<List<SchoolLifeTicket>?> getSchoolLife();
+  Future<List<SchoolLifeTicket>?> getSchoolLife({bool forceReload = false});
 
   ///All events
   Future<List<AgendaEvent>?> getEvents(DateTime date, bool afterSchool, {bool forceReload = false}) async {
