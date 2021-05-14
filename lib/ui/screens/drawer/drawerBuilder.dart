@@ -20,12 +20,11 @@ import 'package:ynotes/ui/screens/grades/gradesPage.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPage.dart';
 import 'package:ynotes/ui/screens/mail/mailPage.dart';
 import 'package:ynotes/ui/screens/polls/pollsPage.dart';
+import 'package:ynotes/ui/screens/schoolLife/schoolLifePage.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/accountPage.dart';
 import 'package:ynotes/ui/screens/statspage/statspage.dart';
 import 'package:ynotes/ui/screens/summary/summaryPage.dart';
-import 'package:ynotes/ui/screens/viescolaire/schoolLifePage.dart';
 import 'package:ynotes/usefulMethods.dart';
-
 import 'drawerBuilderWidgets/drawer.dart';
 
 bool isQuickMenuShown = false;

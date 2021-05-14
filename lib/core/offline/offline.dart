@@ -51,7 +51,7 @@ class Offline {
   late AgendaEventsOffline agendaEvents;
   late RemindersOffline reminders;
   late LessonsOffline lessons;
-  late SchoolLifeOffline schoolLifeTickets;
+  late SchoolLifeOffline schoolLife;
   late DisciplinesOffline disciplines;
 
   late PollsOffline polls;
@@ -117,7 +117,7 @@ class Offline {
         Hive.registerAdapter(AgendaReminderAdapter());
         Hive.registerAdapter(AgendaEventAdapter());
         Hive.registerAdapter(RecipientAdapter());
-        Hive.registerAdapter(SchoolLifeAdapter());
+        Hive.registerAdapter(SchoolLifeTicketAdapter());
 
         Hive.registerAdapter(alarmTypeAdapter());
       } catch (e) {

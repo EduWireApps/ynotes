@@ -266,8 +266,8 @@ class APIEcoleDirecte extends API {
 
   Future<List<SchoolLifeTicket>> getSchoolLife({bool forceReload = false}) async {
     return await EcoleDirecteMethod.fetchAnyData(
-        EcoleDirecteMethod(this.offlineController).schoolLife, offlineController.disciplines.getPeriods);
-    ;
+        EcoleDirecteMethod(this.offlineController).schoolLife, offlineController.schoolLife.get,
+        forceFetch: forceReload);
   }
 
   Future<List> login(username, password, {url, cas, mobileCasLogin}) async {

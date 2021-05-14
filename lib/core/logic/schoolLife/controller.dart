@@ -13,19 +13,16 @@ class SchoolLifeController extends ChangeNotifier {
     _api = api;
   }
 
-  Future<void> refresh({bool force = false, refreshFromOffline = false}) async {
-    print("Refresh school_life tickets");
+  Future<void> refresh({bool force = false}) async {
+    print("Refresh schoolLife tickets");
     loading = true;
     notifyListeners();
     try {
-      if (refreshFromOffline) {
-        tickets = await _api!.getSchoolLife();
-        notifyListeners();
-      } else {
-        tickets = await _api!.getSchoolLife();
-        notifyListeners();
-      }
-    } catch (e) {}
+      tickets = await _api!.getSchoolLife(forceReload: force);
+      notifyListeners();
+    } catch (e) {
+      loading = false;
+    }
     loading = false;
     notifyListeners();
   }

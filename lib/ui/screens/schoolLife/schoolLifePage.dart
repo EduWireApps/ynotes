@@ -7,6 +7,7 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/schoolLife/controller.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
+import 'package:ynotes/ui/components/columnGenerator.dart';
 
 class SchoolLifePage extends StatefulWidget {
   const SchoolLifePage({Key? key}) : super(key: key);
@@ -18,30 +19,35 @@ class _SchoolLifePageState extends State<SchoolLifePage> {
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
-    return Container(
-        height: screenSize.size.height,
-        width: screenSize.size.width,
-        child: ChangeNotifierProvider<SchoolLifeController>.value(
-            value: appSys.schoolLifeController,
-            child: Consumer<SchoolLifeController>(builder: (context, model, child) {
-              //if there is no tickets
-              if ((model.tickets ?? []).length == 0) {
-                return buildNoTickets();
-              } else {
-                return Container(
-                  height: screenSize.size.height,
-                  width: screenSize.size.width,
-                  child: ListView.builder(
-                      physics: AlwaysScrollableScrollPhysics(),
+    return RefreshIndicator(
+      onRefresh: refreshTickets,
+      child: SingleChildScrollView(
+        physics: AlwaysScrollableScrollPhysics(),
+        child: Container(
+            height: screenSize.size.height,
+            width: screenSize.size.width,
+            child: ChangeNotifierProvider<SchoolLifeController>.value(
+                value: appSys.schoolLifeController,
+                child: Consumer<SchoolLifeController>(builder: (context, model, child) {
+                  //if there is no tickets
+                  if ((model.tickets ?? []).length == 0) {
+                    return buildNoTickets();
+                  } else {
+                    return Container(
+                      height: screenSize.size.height,
+                      width: screenSize.size.width,
                       padding: EdgeInsets.symmetric(
                           vertical: screenSize.size.width / 5 * 0.1, horizontal: screenSize.size.width / 5 * 0.05),
-                      itemCount: (model.tickets ?? []).length,
-                      itemBuilder: (BuildContext context, int index) {
-                        return buildTicket(model.tickets![index]);
-                      }),
-                );
-              }
-            })));
+                      child: ColumnBuilder(
+                          itemCount: (model.tickets ?? []).length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return buildTicket(model.tickets![index]);
+                          }),
+                    );
+                  }
+                }))),
+      ),
+    );
   }
 
   Widget buildCircle(SchoolLifeTicket ticket) {
@@ -119,7 +125,6 @@ class _SchoolLifePageState extends State<SchoolLifePage> {
   Widget buildTicket(SchoolLifeTicket ticket) {
     MediaQueryData screenSize = MediaQuery.of(context);
     return Container(
-      width: screenSize.size.width / 5 * 4.2,
       child: Card(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
         color: Theme.of(context).primaryColor,
@@ -141,19 +146,19 @@ class _SchoolLifePageState extends State<SchoolLifePage> {
                       textAlign: TextAlign.left,
                     ),
                     Text(
-                      "Motif : " + ticket.motif!,
+                      "Motif : " + (ticket.motif ?? "(Sans motif)"),
                       style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontSize: 15),
                       textAlign: TextAlign.left,
                     ),
                     Text(
-                      "Date : " + ticket.displayDate!,
+                      "Date : " + (ticket.displayDate ?? "(Sans date)"),
                       style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontSize: 15),
                       textAlign: TextAlign.left,
                     ),
                     RichText(
                         text: TextSpan(
                             style: TextStyle(
-                                color: ticket.isJustified! ? Colors.green : Colors.orange,
+                                color: (ticket.isJustified ?? false) ? Colors.green : Colors.orange,
                                 fontFamily: "Asap",
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16),
@@ -162,8 +167,8 @@ class _SchoolLifePageState extends State<SchoolLifePage> {
                             text: ticket.isJustified! ? "Justifié " : "A justifier ",
                           ),
                           WidgetSpan(
-                              child: Icon(ticket.isJustified! ? MdiIcons.check : MdiIcons.exclamation,
-                                  color: ticket.isJustified! ? Colors.green : Colors.orange))
+                              child: Icon((ticket.isJustified ?? false) ? MdiIcons.check : MdiIcons.exclamation,
+                                  color: (ticket.isJustified ?? false) ? Colors.green : Colors.orange))
                         ])),
                   ],
                 ),
@@ -178,7 +183,11 @@ class _SchoolLifePageState extends State<SchoolLifePage> {
   @override
   void initState() {
     super.initState();
-    appSys.schoolLifeController.refresh(force: true);
+  }
+
+  Future<void> refreshTickets() async {
+    await appSys.schoolLifeController.refresh();
+    await appSys.schoolLifeController.refresh(force: true);
   }
 
   Widget separator(BuildContext context, String text) {
