@@ -94,7 +94,7 @@ class ApplicationSystem extends ChangeNotifier {
     if (api != null) {
       account = await api!.account();
       if (account != null && account!.managableAccounts != null)
-        currentSchoolAccount = account!.managableAccounts![settings!["system"]["accountIndex"]];
+        currentSchoolAccount = account!.managableAccounts![settings!["system"]["accountIndex"] ?? 0];
     }
     //Set background fetch
     await _initBackgroundFetch();
