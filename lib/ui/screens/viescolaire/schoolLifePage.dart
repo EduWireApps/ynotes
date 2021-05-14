@@ -1,21 +1,11 @@
-import 'dart:convert';
-
-import 'package:auto_size_text/auto_size_text.dart';
-import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
-import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/main.dart';
-import 'package:ynotes/globals.dart';
-import 'package:ynotes/core/utils/themeUtils.dart';
-import 'package:ynotes/core/logic/schoolLife/controller.dart';
 import 'package:provider/provider.dart';
+import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/logic/schoolLife/controller.dart';
+import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/globals.dart';
 
 class SchoolLifePage extends StatefulWidget {
   const SchoolLifePage({Key? key}) : super(key: key);
@@ -25,34 +15,32 @@ class SchoolLifePage extends StatefulWidget {
 
 class _SchoolLifePageState extends State<SchoolLifePage> {
   @override
-  void initState() {
-    super.initState();
-    // refreshPolls();
-  }
-
-  Widget separator(BuildContext context, String text) {
+  Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
-
     return Container(
-      height: screenSize.size.height / 10 * 0.35,
-      margin: EdgeInsets.only(
-        top: screenSize.size.height / 10 * 0.1,
-        left: screenSize.size.width / 5 * 0.25,
-        bottom: screenSize.size.height / 10 * 0.1,
-      ),
-      child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
-        Text(
-          text,
-          style:
-              TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontSize: 25, fontWeight: FontWeight.w600),
-        ),
-      ]),
-    );
+        height: screenSize.size.height,
+        width: screenSize.size.width,
+        child: ChangeNotifierProvider<SchoolLifeController>.value(
+            value: appSys.schoolLifeController,
+            child: Consumer<SchoolLifeController>(builder: (context, model, child) {
+              return Container(
+                height: screenSize.size.height,
+                width: screenSize.size.width,
+                child: ListView.builder(
+                    physics: AlwaysScrollableScrollPhysics(),
+                    padding: EdgeInsets.symmetric(
+                        vertical: screenSize.size.width / 5 * 0.1, horizontal: screenSize.size.width / 5 * 0.05),
+                    itemCount: (model.tickets ?? []).length,
+                    itemBuilder: (BuildContext context, int index) {
+                      return buildTicket(model.tickets![index]);
+                    }),
+              );
+            })));
   }
 
   Widget buildCircle(SchoolLifeTicket ticket) {
     IconData? icon;
-    if (ticket.type == "absence") {
+    if (ticket.type == "Absence") {
       icon = MdiIcons.alert;
     }
     if (ticket.type == "Retard") {
@@ -61,11 +49,7 @@ class _SchoolLifePageState extends State<SchoolLifePage> {
     if (ticket.type == "Repas") {
       icon = MdiIcons.foodOff;
     }
-    /*
-    return CircleAvatar(
-      child: Icon(icon),
-    );
-    */
+
     var screenSize = MediaQuery.of(context);
     return Container(
         decoration: BoxDecoration(shape: BoxShape.circle, color: Theme.of(context).primaryColorDark),
@@ -78,6 +62,30 @@ class _SchoolLifePageState extends State<SchoolLifePage> {
         width: screenSize.size.width / 5 * 0.8,
         height: screenSize.size.width / 5 * 0.8,
         margin: EdgeInsets.all(10));
+  }
+
+  Widget buildNoTickets() {
+    MediaQueryData screenSize = MediaQuery.of(context);
+
+    return Center(
+      child: Container(
+        height: screenSize.size.height,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              MdiIcons.stamper,
+              size: screenSize.size.width / 5 * 1.2,
+              color: ThemeUtils.textColor(),
+            ),
+            Text(
+              "Pas de données.",
+              style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: 20),
+            )
+          ],
+        ),
+      ),
+    );
   }
 
   Widget buildTicket(SchoolLifeTicket ticket) {
@@ -139,52 +147,29 @@ class _SchoolLifePageState extends State<SchoolLifePage> {
     );
   }
 
-  Widget buildNoTickets() {
-    MediaQueryData screenSize = MediaQuery.of(context);
-
-    return Center(
-      child: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              MdiIcons.stamper,
-              size: screenSize.size.width / 5 * 1.2,
-              color: ThemeUtils.textColor(),
-            ),
-            Text(
-              "Pas de données.",
-              style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: 20),
-            )
-          ],
-        ),
-      ),
-    );
+  @override
+  void initState() {
+    super.initState();
+    appSys.schoolLifeController.refresh(force: true);
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Widget separator(BuildContext context, String text) {
     MediaQueryData screenSize = MediaQuery.of(context);
+
     return Container(
-        child: ChangeNotifierProvider<SchoolLifeController>.value(
-            value: appSys.schoolLifeController,
-            child: Consumer<SchoolLifeController>(builder: (context, model, child) {
-              return Stack(children: [
-                Container(
-                  child: Column(
-                    children: [
-                      separator(context, "Abscences"),
-                      ListView.builder(
-                          physics: AlwaysScrollableScrollPhysics(),
-                          padding: EdgeInsets.symmetric(
-                              vertical: screenSize.size.width / 5 * 0.1, horizontal: screenSize.size.width / 5 * 0.05),
-                          itemBuilder: (BuildContext context, int index) {
-                            return buildTicket(model.abscences![index]);
-                          }),
-                    ],
-                  ),
-                )
-              ]);
-            })));
+      height: screenSize.size.height / 10 * 0.35,
+      margin: EdgeInsets.only(
+        top: screenSize.size.height / 10 * 0.1,
+        left: screenSize.size.width / 5 * 0.25,
+        bottom: screenSize.size.height / 10 * 0.1,
+      ),
+      child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
+        Text(
+          text,
+          style:
+              TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontSize: 25, fontWeight: FontWeight.w600),
+        ),
+      ]),
+    );
   }
 }

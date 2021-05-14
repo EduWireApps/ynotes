@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/usefulMethods.dart';
 
 class SchoolLifeController extends ChangeNotifier {
   final api;
   API? _api;
-
-  List<SchoolLifeTicket>? abscences;
-  List<SchoolLifeTicket>? retards;
-  List<SchoolLifeTicket>? abscences_cantine;
-
-  List<SchoolLifeTicket>? tickets_list;
+ 
+  List<SchoolLifeTicket>? tickets;
 
   SchoolLifeController(this.api) {
     _api = api;
@@ -22,14 +17,12 @@ class SchoolLifeController extends ChangeNotifier {
     notifyListeners();
 
     if (refreshFromOffline) {
-      tickets_list = await _api!.getSchoolLife();
+      tickets = await _api!.getSchoolLife();
       notifyListeners();
     } else {
-      tickets_list = await _api!.getSchoolLife();
+      tickets = await _api!.getSchoolLife();
       notifyListeners();
     }
-
-    print(tickets_list);
     notifyListeners();
   }
 }
