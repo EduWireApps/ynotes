@@ -21,6 +21,7 @@ class SchoolLifeController extends ChangeNotifier {
       tickets = await _api!.getSchoolLife(forceReload: force);
       notifyListeners();
     } catch (e) {
+      print(e);
       loading = false;
     }
     loading = false;

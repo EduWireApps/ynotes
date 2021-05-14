@@ -11,7 +11,6 @@ import 'package:ynotes/core/offline/data/mails/recipients.dart';
 import 'package:ynotes/core/offline/data/polls/polls.dart';
 import 'package:ynotes/core/offline/data/schoolLife/schoolLife.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
-import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
 
 ///An offline class to deal with the `hivedb` package
@@ -148,6 +147,7 @@ class Offline {
     disciplines = DisciplinesOffline(this.locked, this);
     polls = PollsOffline(this.locked, this);
     recipients = RecipientsOffline(this.locked, this);
+    schoolLife = SchoolLifeOffline(this.locked, this);
   }
 
   openBoxes() {}
@@ -164,6 +164,8 @@ class Offline {
         var offlineRemindersData = await agendaBox?.get("reminders");
         var offlineAgendaEventsData = await agendaBox?.get("agendaEvents");
         var offlineRecipientsData = await offlineBox?.get("recipients");
+        var offlineSchoolLifeData = await offlineBox?.get("schoolLife");
+
         //ensure that fetched data isn't null and if not, add it to the final value
         if (offlineLessonsData != null) {
           this.lessonsData = Map<dynamic, dynamic>.from(offlineLessonsData);
@@ -186,9 +188,11 @@ class Offline {
         if (offlineRecipientsData != null) {
           this.recipientsData = offlineRecipientsData.cast<Recipient>();
         }
+        if (offlineSchoolLifeData != null) {
+          this.schoolLifeData = offlineSchoolLifeData.cast<SchoolLifeTicket>();
+        }
       } catch (e) {
         print("Error while refreshing " + e.toString());
-
       }
     }
   }

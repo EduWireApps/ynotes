@@ -183,10 +183,11 @@ class _SchoolLifePageState extends State<SchoolLifePage> {
   @override
   void initState() {
     super.initState();
+    appSys.schoolLifeController.refresh();
+    refreshTickets();
   }
 
   Future<void> refreshTickets() async {
-    await appSys.schoolLifeController.refresh();
     await appSys.schoolLifeController.refresh(force: true);
   }
 

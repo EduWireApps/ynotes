@@ -1,4 +1,3 @@
-import 'package:hive/hive.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/offline/offline.dart';
 
@@ -13,7 +12,7 @@ class SchoolLifeOffline extends Offline {
         return parent.schoolLifeData;
       } else {
         await refreshData();
-        return parent.schoolLifeData!.cast<SchoolLifeTicket>();
+        return (parent.schoolLifeData ?? []).cast<SchoolLifeTicket>();
       }
     } catch (e) {
       print("Error while returning school life tickets " + e.toString());
