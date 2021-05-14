@@ -13,6 +13,7 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/buttons.dart';
+import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/homeworkReaderOptions.dart';
 
 class HomeworkDayViewPage extends StatefulWidget {
@@ -82,7 +83,7 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
     var screenSize = MediaQuery.of(context);
 
     return Container(
-      color: Theme.of(context).primaryColor,
+      color: pageColor(appSys),
       width: screenSize.size.width,
       padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.1),
       child: Column(
@@ -131,7 +132,9 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                           context,
                           null,
                           screenSize.size.height / 10 * 0.5,
-                          () {},
+                          () {
+                            CustomDialogs.showUnimplementedSnackBar(context);
+                          },
                           backgroundColor: color,
                           label: "RENDRE MON DEVOIR",
                           icon: MdiIcons.fileMoveOutline,
@@ -139,7 +142,8 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                           padding: EdgeInsets.symmetric(
                               horizontal: screenSize.size.width / 5 * 0.5,
                               vertical: screenSize.size.height / 10 * 0.12),
-                          textStyle: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w600, color: Colors.white),
+                          textStyle:
+                              TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w600, color: ThemeUtils.textColor()),
                         )
                       : Container()),
             ],
@@ -197,7 +201,7 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                   ],
                 )),
                 Visibility(
-                  visible: page != widget.homework.length-1,
+                  visible: page != widget.homework.length - 1,
                   maintainAnimation: true,
                   maintainState: true,
                   maintainSize: true,

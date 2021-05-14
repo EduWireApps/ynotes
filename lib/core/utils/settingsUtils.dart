@@ -139,11 +139,11 @@ class SettingsUtils {
     if (settings == null) {
       settings = json.encode(settingsForm);
     }
-    print(settings);
     print(settingsForm);
+    print(settings);
 
     Map? _settings = json.decode(settings);
-    return {...json.decode(json.encode(settingsForm)), ..._settings ?? {}};
+    return Map.from(json.decode(json.encode(settingsForm)))..addAll(_settings??{});
   }
 
   //Oops
