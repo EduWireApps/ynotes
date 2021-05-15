@@ -74,6 +74,7 @@ dependencies:
   dotted_border: ^2.0.0-nullsafety.0
   dotted_line: ^3.0.0
   encrypt: ^5.0.0
+  sliding_up_panel: ^2.0.0+1
   expandable: ^5.0.1
   fl_chart: ^0.35.0
   flare_flutter: ^3.0.0
