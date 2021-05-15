@@ -28,16 +28,20 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
     return ChangeNotifierProvider<HomeworkController>.value(
       value: appSys.homeworkController,
       child: Consumer<HomeworkController>(builder: (context, model, child) {
-        return Container(
-          height: screenSize.size.height,
-          width: screenSize.size.width,
-          child: ListView.builder(
-              itemCount: groupHomeworkByDate(model.getHomework ?? []).length,
-              itemBuilder: (context, index) {
-                return buildHomeworkBlock(
-                    groupHomeworkByDate(model.getHomework ?? [])[index].first.date ?? DateTime.now(),
-                    groupHomeworkByDate(model.getHomework ?? [])[index]);
-              }),
+        return RefreshIndicator(
+          onRefresh: refresh,
+          child: Container(
+            height: screenSize.size.height,
+            width: screenSize.size.width,
+            child: ListView.builder(
+                physics: AlwaysScrollableScrollPhysics(),
+                itemCount: groupHomeworkByDate(model.getHomework ?? []).length,
+                itemBuilder: (context, index) {
+                  return buildHomeworkBlock(
+                      groupHomeworkByDate(model.getHomework ?? [])[index].first.date ?? DateTime.now(),
+                      groupHomeworkByDate(model.getHomework ?? [])[index]);
+                }),
+          ),
         );
       }),
     );
@@ -169,7 +173,6 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
     );
   }
 
-  //Date on the left of the homework
   List<List<Homework>> groupHomeworkByDate(List<Homework> homeworkList) {
     List<DateTime> dates = [];
     List<List<Homework>> subList = [];
@@ -183,5 +186,10 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
       subList.add(homeworkList.where((element) => element.date == date).toList());
     });
     return subList;
+  }
+
+  //Date on the left of the homework
+  Future<void> refresh() async {
+    await appSys.homeworkController.refresh(force: true);
   }
 }

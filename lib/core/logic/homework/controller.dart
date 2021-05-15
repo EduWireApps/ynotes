@@ -103,7 +103,9 @@ class HomeworkController extends ChangeNotifier {
       //remove duplicates
       if (!element.loaded! &&
           !unloadedHW.any((unloadedelement) =>
-              unloadedelement.rawContent == element.rawContent &&
+              unloadedelement.teacherName == element.teacherName &&
+              unloadedelement.entryDate == element.entryDate &&
+              unloadedelement.date == element.date &&
               unloadedelement.disciplineCode == element.disciplineCode)) {
         //Add element at the end of the task
         try {
@@ -111,6 +113,7 @@ class HomeworkController extends ChangeNotifier {
         } catch (e) {}
       }
     });
+    print(unloadedHW);
     await loadAll();
   }
 
@@ -118,7 +121,6 @@ class HomeworkController extends ChangeNotifier {
     print("Refreshing homework " + (refreshFromOffline ? "from offline" : "online"));
     isFetching = true;
     notifyListeners();
-    //ED
     if (refreshFromOffline) {
       _old = await HomeworkUtils.getReducedListHomework();
       _old!.sort((a, b) => a.date!.compareTo(b.date!));
@@ -129,6 +131,7 @@ class HomeworkController extends ChangeNotifier {
       notifyListeners();
     }
 
+    notifyListeners();
     await prepareOld((_old ?? []));
     isFetching = false;
     notifyListeners();

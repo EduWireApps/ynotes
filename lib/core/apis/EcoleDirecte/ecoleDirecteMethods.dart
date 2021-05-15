@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:connectivity/connectivity.dart';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:ynotes/core/apis/EcoleDirecte/converters/cloud.dart';
@@ -15,6 +16,7 @@ import 'package:ynotes/usefulMethods.dart';
 import '../EcoleDirecte.dart';
 
 class EcoleDirecteMethod {
+  static const fakeToken = "a95fd30b-ca20-467b-8128-679f48e1498e";
   final Offline? _offlineController;
 
   EcoleDirecteMethod(this._offlineController);
@@ -92,8 +94,15 @@ class EcoleDirecteMethod {
     String rootUrl = 'https://api.ecoledirecte.com/v3/Eleves/';
     String method = "cahierdetexte/$dateToUse.awp?verbe=get&";
     String data = 'data={"token": "$token"}';
+    if (kDebugMode) {
+      rootUrl = 'https://still-earth-97911.herokuapp.com/ecoledirecte/homework/' + dateToUse;
+      method = "cahierdetexte.awp?verbe=get&";
+      data = 'data={"token": "$fakeToken"}';
+    }
+
     List<Homework> homework = await request(
-        data, rootUrl, method, EcoleDirecteHomeworkConverter.homework, "Homework request returned an error:");
+        data, rootUrl, method, EcoleDirecteHomeworkConverter.homework, "Homework request returned an error:",
+        ignoreMethodAndId: kDebugMode);
     homework.forEach((hw) {
       hw.date = date;
     });
@@ -104,12 +113,28 @@ class EcoleDirecteMethod {
   nextHomework() async {
     await EcoleDirecteMethod.testToken();
 
-    List<Homework> homeworkList = [];
     String rootUrl = 'https://api.ecoledirecte.com/v3/Eleves/';
     String method = "cahierdetexte.awp?verbe=get&";
     String data = 'data={"token": "$token"}';
+    List<Homework> homeworkList = [];
+    if (kDebugMode) {
+      rootUrl = 'https://still-earth-97911.herokuapp.com/ecoledirecte/homework';
+      method = "cahierdetexte.awp?verbe=get&";
+      data = 'data={"token": "$fakeToken"}';
+    }
+
     homeworkList = await request(
-        data, rootUrl, method, EcoleDirecteHomeworkConverter.unloadedHomework, "UHomework request returned an error:");
+        data, rootUrl, method, EcoleDirecteHomeworkConverter.unloadedHomework, "UHomework request returned an error:",
+        ignoreMethodAndId: kDebugMode);
+    List<Homework> offline = (await appSys.offline.homework.getHomework()) ?? [];
+    homeworkList.forEach((element) {
+      if (offline.any((offlineElement) => offlineElement.id == element.id)) {
+        //we replace it
+        homeworkList[homeworkList.indexWhere(
+                (hl) => offline.firstWhere((offlineElement) => offlineElement.id == element.id).id == hl.id)] =
+            offline.firstWhere((offlineElement) => offlineElement.id == element.id);
+      }
+    });
     await appSys.offline.homework.updateHomework(homeworkList);
     List<DateTime> pinnedDates = await appSys.offline.pinnedHomework.getPinnedHomeworkDates();
 
