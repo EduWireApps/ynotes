@@ -118,7 +118,7 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
                           ),
                         ),
                       ),
-                      LinearProgressIndicator()
+                      if (!(homework[index].loaded ?? true)) LinearProgressIndicator()
                     ],
                   ),
                 ),

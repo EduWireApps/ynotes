@@ -29,26 +29,26 @@ class _HomeworkReaderOptionsBottomSheetState extends State<HomeworkReaderOptions
     return Container(
       width: screenSize.size.width,
       padding: EdgeInsets.symmetric(
-          vertical: screenSize.size.height / 10 * 0.2, horizontal: screenSize.size.width / 5 * 0.1),
+          vertical: screenSize.size.height / 10 * 0.2, horizontal: screenSize.size.width / 5 * 0.2),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Center(child: DragHandle()),
           SizedBox(
-            height: screenSize.size.height / 10 * 0.2,
+            height: screenSize.size.height / 10 * 0.15,
           ),
           SizedBox(
             width: screenSize.size.width,
             child: Text(
               "Paramètres d'affichage",
               style: TextStyle(
-                  fontFamily: "Asap", fontSize: 22, fontWeight: FontWeight.w500, color: ThemeUtils.textColor()),
+                  fontFamily: "Asap", fontSize: 22, fontWeight: FontWeight.w600, color: ThemeUtils.textColor()),
               textAlign: TextAlign.center,
             ),
           ),
           SizedBox(
-            height: screenSize.size.height / 10 * 0.2,
+            height: screenSize.size.height / 10 * 0.15,
           ),
           buildForceTextColorSwitch(),
           SizedBox(
@@ -73,7 +73,7 @@ class _HomeworkReaderOptionsBottomSheetState extends State<HomeworkReaderOptions
       children: [
         Row(
           children: [
-            Icon(MdiIcons.eye),
+            Icon(MdiIcons.eye, color: ThemeUtils.textColor()),
             SizedBox(
               width: screenSize.size.width / 5 * 0.1,
             ),
@@ -95,8 +95,11 @@ class _HomeworkReaderOptionsBottomSheetState extends State<HomeworkReaderOptions
           ],
         ),
         Text("Les textes des devoirs ne s’afficheront que dans la couleur primaire du thème choisi",
-            style:
-                TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: 13, fontWeight: FontWeight.w400))
+            style: TextStyle(
+                fontFamily: "Asap",
+                color: ThemeUtils.textColor().withOpacity(0.7),
+                fontSize: 13,
+                fontWeight: FontWeight.w400))
       ],
     );
   }
@@ -111,7 +114,7 @@ class _PageColorChoiceState extends State<PageColorChoice> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          Icon(MdiIcons.palette),
+          Icon(MdiIcons.palette, color: ThemeUtils.textColor()),
           SizedBox(
             width: screenSize.size.width / 5 * 0.1,
           ),
@@ -170,7 +173,10 @@ class _PageTextChoiceState extends State<PageTextChoice> with TickerProviderStat
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Icon(MdiIcons.formatSize),
+          Icon(
+            MdiIcons.formatSize,
+            color: ThemeUtils.textColor(),
+          ),
           SizedBox(
             width: screenSize.size.width / 5 * 0.1,
           ),
@@ -197,7 +203,7 @@ class _PageTextChoiceState extends State<PageTextChoice> with TickerProviderStat
             height: screenSize.size.height / 10 * 0.4,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5),
-              color: Theme.of(context).primaryColor,
+              color: Theme.of(context).primaryColorDark,
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -214,7 +220,7 @@ class _PageTextChoiceState extends State<PageTextChoice> with TickerProviderStat
                   child: Container(
                     decoration: BoxDecoration(
                         border: Border(
-                      right: BorderSide(color: ThemeUtils.textColor()),
+                      right: BorderSide(color: ThemeUtils.textColor().withOpacity(0.2)),
                     )),
                     child: Center(
                       child: AnimatedBuilder(

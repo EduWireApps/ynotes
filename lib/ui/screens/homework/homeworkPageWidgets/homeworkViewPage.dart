@@ -45,6 +45,24 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
               style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
             ),
             systemOverlayStyle: ThemeUtils.isThemeDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+            actions: [
+              FlatButton(
+                color: Colors.transparent,
+                child: Icon(MdiIcons.eyePlus, color: ThemeUtils.textColor()),
+                onPressed: () async {
+                  await showModalBottomSheet(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25))),
+                      context: context,
+                      backgroundColor: Theme.of(context).primaryColor,
+                      isScrollControlled: true,
+                      builder: (context) {
+                        return HomeworkReaderOptionsBottomSheet();
+                      });
+                  setState(() {});
+                },
+              )
+            ],
             brightness: ThemeUtils.isThemeDark ? Brightness.dark : Brightness.light,
             backgroundColor: Theme.of(context).primaryColor,
           ),
@@ -79,7 +97,7 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
       }),
     );
   }
-  
+
   buildButton(Homework hw, Color color) {
     var screenSize = MediaQuery.of(context);
     return Container(
@@ -117,22 +135,6 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                   borderRadius: BorderRadius.circular(11),
                   backgroundColor: color,
                   icon: MdiIcons.shareVariantOutline,
-                  iconColor: ThemeUtils.textColor()),
-              CustomButtons.materialButton(context, screenSize.size.width / 5 * 0.55, screenSize.size.width / 5 * 0.55,
-                  () async {
-                await showModalBottomSheet(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25))),
-                    context: context,
-                    isScrollControlled: true,
-                    builder: (context) {
-                      return HomeworkReaderOptionsBottomSheet();
-                    });
-                setState(() {});
-              },
-                  borderRadius: BorderRadius.circular(11),
-                  backgroundColor: color,
-                  icon: MdiIcons.eyePlusOutline,
                   iconColor: ThemeUtils.textColor()),
               AnimatedSwitcher(
                   duration: const Duration(milliseconds: 200),
