@@ -41,7 +41,7 @@ class _FilesBottomSheetState extends State<FilesBottomSheet> {
       constraints:
           BoxConstraints(minHeight: screenSize.size.height / 10 * 1.7, maxHeight: screenSize.size.height / 10 * 4.2),
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.1),
+        padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.2),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

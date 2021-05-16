@@ -79,10 +79,9 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
       }),
     );
   }
-
+  
   buildButton(Homework hw, Color color) {
     var screenSize = MediaQuery.of(context);
-
     return Container(
       color: pageColor(appSys),
       width: screenSize.size.width,
@@ -123,7 +122,7 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                   () async {
                 await showModalBottomSheet(
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.only(topLeft: Radius.circular(11), topRight: Radius.circular(11))),
+                        borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25))),
                     context: context,
                     isScrollControlled: true,
                     builder: (context) {

@@ -28,7 +28,8 @@ class _HomeworkReaderOptionsBottomSheetState extends State<HomeworkReaderOptions
 
     return Container(
       width: screenSize.size.width,
-      padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.2),
+      padding: EdgeInsets.symmetric(
+          vertical: screenSize.size.height / 10 * 0.2, horizontal: screenSize.size.width / 5 * 0.1),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -49,52 +50,17 @@ class _HomeworkReaderOptionsBottomSheetState extends State<HomeworkReaderOptions
           SizedBox(
             height: screenSize.size.height / 10 * 0.2,
           ),
-          Divider(
-            color: ThemeUtils.textColor().withOpacity(0.1),
-          ),
           buildForceTextColorSwitch(),
-          Divider(
-            color: ThemeUtils.textColor().withOpacity(0.1),
-          ),
           SizedBox(
             height: screenSize.size.height / 10 * 0.2,
-          ),
-          Divider(
-            color: ThemeUtils.textColor().withOpacity(0.1),
-          ),
-          Container(
-            width: screenSize.size.width,
-            margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.05),
-            child: Text(
-              "Couleur de la page",
-              style: TextStyle(
-                  fontFamily: "Asap", fontSize: 19, fontWeight: FontWeight.w500, color: ThemeUtils.textColor()),
-              textAlign: TextAlign.start,
-            ),
           ),
           PageColorChoice(),
-          Divider(
-            color: ThemeUtils.textColor().withOpacity(0.1),
-          ),
           SizedBox(
             height: screenSize.size.height / 10 * 0.2,
           ),
-          Divider(
-            color: ThemeUtils.textColor().withOpacity(0.1),
-          ),
-          Container(
-            width: screenSize.size.width,
-            margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.05),
-            child: Text(
-              "Taille de police",
-              style: TextStyle(
-                  fontFamily: "Asap", fontSize: 19, fontWeight: FontWeight.w500, color: ThemeUtils.textColor()),
-              textAlign: TextAlign.start,
-            ),
-          ),
           PageTextChoice(),
-          Divider(
-            color: ThemeUtils.textColor().withOpacity(0.1),
+          SizedBox(
+            height: screenSize.size.height / 10 * 0.2,
           ),
         ],
       ),
@@ -103,38 +69,35 @@ class _HomeworkReaderOptionsBottomSheetState extends State<HomeworkReaderOptions
 
   buildForceTextColorSwitch() {
     var screenSize = MediaQuery.of(context);
-
-    return /*CupertinoFormRow(
-      child: CupertinoSwitch(
-        value: appSys.settings!["user"]["homeworkPage"]["forceMonochromeContent"],
-        onChanged: (value) {
-          appSys.updateSetting(appSys.settings!["user"]["homeworkPage"], "forceMonochromeContent", value);
-          setState(() {});
-        },
-      ),
-      prefix: Text("Forcer le monochrome",
-          style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: 17)),
-      helper: Text(
-        "Les textes des devoirs ne s'afficheront que dans la couleur primaire du thème choisi",
-        style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: 13),
-      ),
-    );*/
-        SwitchListTile(
-      value: appSys.settings!["user"]["homeworkPage"]["forceMonochromeContent"],
-      title: Text("Forcer le monochrome",
-          style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: 19)),
-      subtitle: Text(
-        "Les textes des devoirs ne s'afficheront que dans la couleur primaire du thème choisi",
-        style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: 12),
-      ),
-      onChanged: (value) async {
-        appSys.updateSetting(appSys.settings!["user"]["homeworkPage"], "forceMonochromeContent", value);
-        setState(() {});
-      },
-      secondary: Icon(
-        MdiIcons.eye,
-        color: ThemeUtils.textColor(),
-      ),
+    return Column(
+      children: [
+        Row(
+          children: [
+            Icon(MdiIcons.eye),
+            SizedBox(
+              width: screenSize.size.width / 5 * 0.1,
+            ),
+            Expanded(
+                child: Container(
+                    child: Text("Forcer le monochrome",
+                        style: TextStyle(
+                            fontFamily: "Asap",
+                            color: ThemeUtils.textColor(),
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold)))),
+            Switch(
+              value: appSys.settings!["user"]["homeworkPage"]["forceMonochromeContent"],
+              onChanged: (value) async {
+                appSys.updateSetting(appSys.settings!["user"]["homeworkPage"], "forceMonochromeContent", value);
+                setState(() {});
+              },
+            )
+          ],
+        ),
+        Text("Les textes des devoirs ne s’afficheront que dans la couleur primaire du thème choisi",
+            style:
+                TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: 13, fontWeight: FontWeight.w400))
+      ],
     );
   }
 }
@@ -148,6 +111,18 @@ class _PageColorChoiceState extends State<PageColorChoice> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
+          Icon(MdiIcons.palette),
+          SizedBox(
+            width: screenSize.size.width / 5 * 0.1,
+          ),
+          Expanded(
+              child: Container(
+                  child: Text("Couleur de la page",
+                      style: TextStyle(
+                          fontFamily: "Asap",
+                          color: ThemeUtils.textColor(),
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold)))),
           buildColorDot(0, Theme.of(context).primaryColorDark),
           buildColorDot(1, ThemeUtils.textColor(revert: true)),
           if (!ThemeUtils.isThemeDark) buildColorDot(2, Color(0xfff2e7bf)),
@@ -192,85 +167,95 @@ class _PageTextChoiceState extends State<PageTextChoice> with TickerProviderStat
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
     return Container(
-      margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.05),
-      child: Column(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Expanded(
-                child: Text(
-                  appSys.settings!["user"]["homeworkPage"]["fontSize"].toString(),
-                  style: TextStyle(
-                      fontFamily: currentFont,
-                      fontSize: (appSys.settings!["user"]["homeworkPage"]["fontSize"] ?? 20).toDouble(),
-                      color: ThemeUtils.textColor()),
-                ),
-              ),
-              Container(
-                width: screenSize.size.width / 5 * 1.2,
-                height: screenSize.size.height / 10 * 0.5,
-                margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(11), border: Border.all(color: ThemeUtils.textColor())),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Expanded(
-                        child: GestureDetector(
-                      onTap: () {
-                        minusController.forward();
-                        if (appSys.settings!["user"]["homeworkPage"]["fontSize"] > 11)
-                          appSys.updateSetting(appSys.settings!["user"]["homeworkPage"], "fontSize",
-                              appSys.settings!["user"]["homeworkPage"]["fontSize"] - 1);
-                        setState(() {});
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                            border: Border(
-                          right: BorderSide(color: ThemeUtils.textColor()),
-                        )),
-                        child: Center(
-                          child: AnimatedBuilder(
-                              animation: minusController,
-                              builder: (context, child) {
-                                return Transform.scale(
-                                    scale: minusAnimation.value,
-                                    child: Text(
-                                      "-",
-                                      style: TextStyle(color: ThemeUtils.textColor()),
-                                    ));
-                              }),
-                        ),
-                      ),
-                    )),
-                    Expanded(
-                        child: GestureDetector(
-                      onTap: () {
-                        plusController.forward();
-                        if (appSys.settings!["user"]["homeworkPage"]["fontSize"] < 35)
-                          appSys.updateSetting(appSys.settings!["user"]["homeworkPage"], "fontSize",
-                              appSys.settings!["user"]["homeworkPage"]["fontSize"] + 1);
-                        setState(() {});
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(),
-                        child: Center(
-                          child: AnimatedBuilder(
-                              animation: plusAnimation,
-                              builder: (context, child) {
-                                return Transform.scale(
-                                    scale: plusAnimation.value,
-                                    child: Text("+", style: TextStyle(color: ThemeUtils.textColor())));
-                              }),
-                        ),
-                      ),
-                    )),
-                  ],
-                ),
-              )
-            ],
+          Icon(MdiIcons.formatSize),
+          SizedBox(
+            width: screenSize.size.width / 5 * 0.1,
           ),
+          Expanded(
+              child: Container(
+                  child: Text("Taille du texte",
+                      style: TextStyle(
+                          fontFamily: "Asap",
+                          color: ThemeUtils.textColor(),
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold)))),
+          Text(
+            appSys.settings!["user"]["homeworkPage"]["fontSize"].toString(),
+            style: TextStyle(
+                fontFamily: currentFont,
+                fontSize: (appSys.settings!["user"]["homeworkPage"]["fontSize"] ?? 20).toDouble(),
+                color: ThemeUtils.textColor()),
+          ),
+          SizedBox(
+            width: screenSize.size.width / 5 * 0.2,
+          ),
+          Container(
+            width: screenSize.size.width / 5 * 1.2,
+            height: screenSize.size.height / 10 * 0.4,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
+              color: Theme.of(context).primaryColor,
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                    child: GestureDetector(
+                  onTap: () {
+                    minusController.forward();
+                    if (appSys.settings!["user"]["homeworkPage"]["fontSize"] > 11)
+                      appSys.updateSetting(appSys.settings!["user"]["homeworkPage"], "fontSize",
+                          appSys.settings!["user"]["homeworkPage"]["fontSize"] - 1);
+                    setState(() {});
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                        border: Border(
+                      right: BorderSide(color: ThemeUtils.textColor()),
+                    )),
+                    child: Center(
+                      child: AnimatedBuilder(
+                          animation: minusController,
+                          builder: (context, child) {
+                            return Transform.scale(
+                                scale: minusAnimation.value,
+                                child: Text(
+                                  "-",
+                                  style: TextStyle(color: ThemeUtils.textColor(), fontWeight: FontWeight.bold),
+                                ));
+                          }),
+                    ),
+                  ),
+                )),
+                Expanded(
+                    child: GestureDetector(
+                  onTap: () {
+                    plusController.forward();
+                    if (appSys.settings!["user"]["homeworkPage"]["fontSize"] < 35)
+                      appSys.updateSetting(appSys.settings!["user"]["homeworkPage"], "fontSize",
+                          appSys.settings!["user"]["homeworkPage"]["fontSize"] + 1);
+                    setState(() {});
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(),
+                    child: Center(
+                      child: AnimatedBuilder(
+                          animation: plusAnimation,
+                          builder: (context, child) {
+                            return Transform.scale(
+                                scale: plusAnimation.value,
+                                child: Text("+",
+                                    style: TextStyle(color: ThemeUtils.textColor(), fontWeight: FontWeight.bold)));
+                          }),
+                    ),
+                  ),
+                )),
+              ],
+            ),
+          )
         ],
       ),
     );

@@ -57,7 +57,7 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
           return Card(
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
             color: Color(snapshot.data ?? 0),
-            margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.1),
+            margin: EdgeInsets.zero,
             child: InkWell(
               borderRadius: BorderRadius.circular(5),
               onTap: () {
@@ -70,41 +70,57 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
                 await CustomDialogs.showHomeworkDetailsDialog(context, homework[index]);
                 setState(() {});
               },
-              child: Container(
-                width: screenSize.size.width / 5 * 4.1,
-                height: screenSize.size.height / 10 * 0.6,
-                padding: EdgeInsets.symmetric(
-                    horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.height / 10 * 0.08),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            flex: 8,
-                            child: AutoSizeText(
-                              homework[index].discipline ?? "",
-                              textAlign: TextAlign.start,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                fontFamily: "Asap",
-                                fontWeight: FontWeight.bold,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(5),
+                child: Container(
+                  width: screenSize.size.width / 5 * 4.1,
+                  height: screenSize.size.height / 10 * 0.6,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Flexible(
+                                      flex: 8,
+                                      child: Container(
+                                        child: AutoSizeText(
+                                          homework[index].discipline ?? "",
+                                          textAlign: TextAlign.start,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            fontFamily: "Asap",
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Flexible(
+                                        flex: 7,
+                                        child: AutoSizeText(homework[index].teacherName?.trimLeft() ?? "",
+                                            overflow: TextOverflow.ellipsis,
+                                            textAlign: TextAlign.start,
+                                            style: TextStyle(fontFamily: "Asap")))
+                                  ],
+                                ),
                               ),
-                            ),
+                              if (homework[index].toReturn ?? false) Icon(MdiIcons.uploadOutline),
+                              if (homework[index].isATest ?? false) Icon(MdiIcons.bookEditOutline)
+                            ],
                           ),
-                          Expanded(
-                              flex: 7,
-                              child: AutoSizeText(homework[index].teacherName ?? "",
-                                  overflow: TextOverflow.ellipsis,
-                                  textAlign: TextAlign.start,
-                                  style: TextStyle(fontFamily: "Asap")))
-                        ],
+                        ),
                       ),
-                    ),
-                    if (homework[index].toReturn ?? false) Icon(MdiIcons.uploadOutline),
-                    if (homework[index].isATest ?? false) Icon(MdiIcons.bookEditOutline)
-                  ],
+                      LinearProgressIndicator()
+                    ],
+                  ),
                 ),
               ),
             ),
