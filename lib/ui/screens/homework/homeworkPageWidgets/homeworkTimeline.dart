@@ -115,7 +115,7 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
   buildHomeworkBlock(DateTime date, List<Homework> homework) {
     var screenSize = MediaQuery.of(context);
     return Container(
-        margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
+        margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
         width: screenSize.size.width,
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -140,10 +140,10 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
     String month = DateFormat("MMMM", "fr_FR").format(date);
 
     return Container(
-      height: screenSize.size.height / 10 * 1.2,
+      height: screenSize.size.height / 10 * 1,
       width: screenSize.size.width / 5 * 0.8,
       child: Column(
-        mainAxisSize: MainAxisSize.max,
+        mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Flexible(

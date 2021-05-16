@@ -94,15 +94,15 @@ class EcoleDirecteMethod {
     String rootUrl = 'https://api.ecoledirecte.com/v3/Eleves/';
     String method = "cahierdetexte/$dateToUse.awp?verbe=get&";
     String data = 'data={"token": "$token"}';
-    if (kDebugMode) {
+    /*if (kDebugMode) {
       rootUrl = 'https://still-earth-97911.herokuapp.com/ecoledirecte/homework/' + dateToUse;
       method = "cahierdetexte.awp?verbe=get&";
       data = 'data={"token": "$fakeToken"}';
-    }
+    }*/
 
     List<Homework> homework = await request(
         data, rootUrl, method, EcoleDirecteHomeworkConverter.homework, "Homework request returned an error:",
-        ignoreMethodAndId: kDebugMode);
+        ignoreMethodAndId: false);
     homework.forEach((hw) {
       hw.date = date;
     });
@@ -117,15 +117,15 @@ class EcoleDirecteMethod {
     String method = "cahierdetexte.awp?verbe=get&";
     String data = 'data={"token": "$token"}';
     List<Homework> homeworkList = [];
-    if (kDebugMode) {
+    /*if (kDebugMode) {
       rootUrl = 'https://still-earth-97911.herokuapp.com/ecoledirecte/homework';
       method = "cahierdetexte.awp?verbe=get&";
       data = 'data={"token": "$fakeToken"}';
     }
-
+    */
     homeworkList = await request(
         data, rootUrl, method, EcoleDirecteHomeworkConverter.unloadedHomework, "UHomework request returned an error:",
-        ignoreMethodAndId: kDebugMode);
+        ignoreMethodAndId: false);
     List<Homework> offline = (await appSys.offline.homework.getHomework()) ?? [];
     homeworkList.forEach((element) {
       if (offline.any((offlineElement) => offlineElement.id == element.id)) {

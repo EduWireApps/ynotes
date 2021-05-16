@@ -14,6 +14,7 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
+import 'package:ynotes/ui/components/modalBottomSheets/filesBottomSheet.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/homeworkReaderOptions.dart';
 
 class HomeworkDayViewPage extends StatefulWidget {
@@ -102,26 +103,38 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                       ? Container(
                           key: ValueKey<int>(0),
                           child: CustomButtons.materialButton(
-                              context, screenSize.size.width / 5 * 0.55, screenSize.size.width / 5 * 0.55, () {},
+                              context, screenSize.size.width / 5 * 0.55, screenSize.size.width / 5 * 0.55, () {
+                            showFilesModalBottomSheet(context, hw.documents!);
+                          },
                               borderRadius: BorderRadius.circular(11),
                               backgroundColor: color,
                               icon: MdiIcons.fileDocumentMultipleOutline,
-                              margin: EdgeInsets.zero),
+                              margin: EdgeInsets.zero,
+                              iconColor: ThemeUtils.textColor()),
                         )
                       : Container()),
               CustomButtons.materialButton(
                   context, screenSize.size.width / 5 * 0.55, screenSize.size.width / 5 * 0.55, () {},
-                  borderRadius: BorderRadius.circular(11), backgroundColor: color, icon: MdiIcons.shareVariantOutline),
+                  borderRadius: BorderRadius.circular(11),
+                  backgroundColor: color,
+                  icon: MdiIcons.shareVariantOutline,
+                  iconColor: ThemeUtils.textColor()),
               CustomButtons.materialButton(context, screenSize.size.width / 5 * 0.55, screenSize.size.width / 5 * 0.55,
                   () async {
                 await showModalBottomSheet(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.only(topLeft: Radius.circular(11), topRight: Radius.circular(11))),
                     context: context,
                     isScrollControlled: true,
                     builder: (context) {
                       return HomeworkReaderOptionsBottomSheet();
                     });
                 setState(() {});
-              }, borderRadius: BorderRadius.circular(11), backgroundColor: color, icon: MdiIcons.eyePlusOutline),
+              },
+                  borderRadius: BorderRadius.circular(11),
+                  backgroundColor: color,
+                  icon: MdiIcons.eyePlusOutline,
+                  iconColor: ThemeUtils.textColor()),
               AnimatedSwitcher(
                   duration: const Duration(milliseconds: 200),
                   transitionBuilder: (Widget child, Animation<double> animation) {

@@ -9,6 +9,8 @@ import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/hiddenSettings.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/HWsingleDayPage.dart';
+import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/homeworkViewPage.dart';
+import 'package:ynotes/usefulMethods.dart';
 
 import 'homeworkPageWidgets/HWsettingsPage.dart';
 import 'homeworkPageWidgets/homeworkTimeline.dart';
@@ -282,19 +284,11 @@ class HomeworkPageState extends State<HomeworkPage> {
                               );
                             },
                           );
-                          if (someDate != null) {
-                            setState(() {
-                              dateToUse = someDate;
-                              setState() {
-                                localListHomeworkDateToUse = null;
-                              }
-
-                              getPinnedStateDayToUse();
-                            });
-                            if (_pageControllerHW != null)
-                              _pageControllerHW!
-                                  .animateToPage(2, duration: Duration(milliseconds: 200), curve: Curves.easeIn);
-                          }
+                          if (someDate != null)
+                            Navigator.of(context).push(router(HomeworkDayViewPage(
+                              (await appSys.api!.getHomeworkFor(someDate)) ?? [],
+                              defaultPage: 0,
+                            )));
                         },
                         child: Container(
                             height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,

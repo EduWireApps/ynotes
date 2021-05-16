@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
+import 'package:ynotes/ui/components/modalBottomSheets/dragHandle.dart';
 
 class HomeworkReaderOptionsBottomSheet extends StatefulWidget {
   @override
@@ -26,13 +27,16 @@ class _HomeworkReaderOptionsBottomSheetState extends State<HomeworkReaderOptions
     var screenSize = MediaQuery.of(context);
 
     return Container(
-      color: Theme.of(context).primaryColor,
       width: screenSize.size.width,
       padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.2),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          Center(child: DragHandle()),
+          SizedBox(
+            height: screenSize.size.height / 10 * 0.2,
+          ),
           SizedBox(
             width: screenSize.size.width,
             child: Text(
@@ -191,7 +195,6 @@ class _PageTextChoiceState extends State<PageTextChoice> with TickerProviderStat
       margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.05),
       child: Column(
         children: [
-          
           Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
