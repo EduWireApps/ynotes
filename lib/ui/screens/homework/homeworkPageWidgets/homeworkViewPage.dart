@@ -116,6 +116,21 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              FutureBuilder<bool>(
+                  future: appSys.offline.doneHomework.getHWCompletion(hw!.id ?? ''),
+                  builder: (context, snapshot) {
+                    return CustomButtons.materialButton(
+                        context, screenSize.size.width / 5 * 0.55, screenSize.size.width / 5 * 0.55, () async {
+                      setState(() {
+                        hw.done = !(hw.done ?? false);
+                      });
+                      appSys.offline.doneHomework.setHWCompletion(hw!.id, hw.done);
+                    },
+                        borderRadius: BorderRadius.circular(11),
+                        backgroundColor: (snapshot.data ?? false) ? Colors.green : color,
+                        icon: MdiIcons.check,
+                        iconColor: ThemeUtils.textColor());
+                  }),
               AnimatedSwitcher(
                   duration: const Duration(milliseconds: 200),
                   transitionBuilder: (Widget child, Animation<double> animation) {
