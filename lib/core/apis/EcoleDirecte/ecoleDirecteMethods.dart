@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:connectivity/connectivity.dart';
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:ynotes/core/apis/EcoleDirecte/converters/cloud.dart';
@@ -117,12 +116,13 @@ class EcoleDirecteMethod {
     String method = "cahierdetexte.awp?verbe=get&";
     String data = 'data={"token": "$token"}';
     List<Homework> homeworkList = [];
+
     /*if (kDebugMode) {
       rootUrl = 'https://still-earth-97911.herokuapp.com/ecoledirecte/homework';
       method = "cahierdetexte.awp?verbe=get&";
       data = 'data={"token": "$fakeToken"}';
-    }
-    */
+    }*/
+
     homeworkList = await request(
         data, rootUrl, method, EcoleDirecteHomeworkConverter.unloadedHomework, "UHomework request returned an error:",
         ignoreMethodAndId: false);

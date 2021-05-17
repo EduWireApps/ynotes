@@ -13,15 +13,142 @@ import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/homeworkViewPage.dart';
 import 'package:ynotes/usefulMethods.dart';
 
+class HomeworkElement extends StatefulWidget {
+  final List<Homework> homework;
+  final int index;
+
+  const HomeworkElement(
+    this.homework,
+    this.index, {
+    Key? key,
+  }) : super(key: key);
+  @override
+  _HomeworkElementState createState() => _HomeworkElementState();
+}
+// var screenSize = MediaQuery.of(context);
+
 class HomeworkTimeline extends StatefulWidget {
   const HomeworkTimeline({Key? key}) : super(key: key);
   @override
   _HomeworkTimelineState createState() => _HomeworkTimelineState();
 }
-// var screenSize = MediaQuery.of(context);
+
+class _HomeworkElementState extends State<HomeworkElement> with SingleTickerProviderStateMixin {
+  late AnimationController controller;
+  @override
+  @override
+  Widget build(BuildContext context) {
+    final Animation<double> offsetAnimation =
+        Tween(begin: 0.0, end: 24.0).chain(CurveTween(curve: Curves.elasticIn)).animate(controller)
+          ..addStatusListener((status) {
+            if (status == AnimationStatus.completed) {
+              controller.reverse();
+            }
+          });
+    MediaQueryData screenSize = MediaQuery.of(context);
+    return FutureBuilder<int>(
+        future: getColor(widget.homework[widget.index].disciplineCode),
+        initialData: 0,
+        builder: (context, snapshot) {
+          return AnimatedBuilder(
+              animation: offsetAnimation,
+              builder: (buildContext, child) {
+                return Transform.translate(
+                  offset: Offset(offsetAnimation.value, 0),
+                  child: Container(
+                    child: Card(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+                      color: Color(snapshot.data ?? 0),
+                      margin: EdgeInsets.zero,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(5),
+                        onTap: () async {
+                          if (!(widget.homework[widget.index].loaded ?? true)) {
+                            appSys.homeworkController.ugradePriority(widget.homework[widget.index]);
+                            controller.forward();
+                          } else {
+                            Navigator.of(context).push(router(HomeworkDayViewPage(
+                              widget.homework,
+                              defaultPage: widget.index,
+                            )));
+                          }
+                        },
+                        onLongPress: () async {
+                          await CustomDialogs.showHomeworkDetailsDialog(context, widget.homework[widget.index]);
+                          setState(() {});
+                        },
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(5),
+                          child: Container(
+                            width: screenSize.size.width / 5 * 4.1,
+                            height: screenSize.size.height / 10 * 0.6,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              Flexible(
+                                                flex: 8,
+                                                child: Container(
+                                                  child: AutoSizeText(
+                                                    widget.homework[widget.index].discipline ?? "",
+                                                    textAlign: TextAlign.start,
+                                                    overflow: TextOverflow.ellipsis,
+                                                    style: TextStyle(
+                                                      fontFamily: "Asap",
+                                                      fontWeight: FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                              Flexible(
+                                                  flex: 7,
+                                                  child: AutoSizeText(
+                                                      widget.homework[widget.index].teacherName?.trimLeft() ?? "",
+                                                      overflow: TextOverflow.ellipsis,
+                                                      textAlign: TextAlign.start,
+                                                      style: TextStyle(fontFamily: "Asap")))
+                                            ],
+                                          ),
+                                        ),
+                                        if (widget.homework[widget.index].toReturn ?? false)
+                                          Icon(MdiIcons.uploadOutline),
+                                        if (widget.homework[widget.index].isATest ?? false)
+                                          Icon(MdiIcons.bookEditOutline)
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                if (!(widget.homework[widget.index].loaded ?? true)) LinearProgressIndicator()
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              });
+        });
+  }
+
+  @override
+  void initState() {
+    controller = AnimationController(duration: const Duration(milliseconds: 500), vsync: this);
+    super.initState();
+  }
+}
 
 class _HomeworkTimelineState extends State<HomeworkTimeline> {
-  @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
 
@@ -47,87 +174,6 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
     );
   }
 
-  ///The basical homework element
-  buildHomework(List<Homework> homework, int index) {
-    var screenSize = MediaQuery.of(context);
-    return FutureBuilder<int>(
-        future: getColor(homework[index].disciplineCode),
-        initialData: 0,
-        builder: (context, snapshot) {
-          return Card(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-            color: Color(snapshot.data ?? 0),
-            margin: EdgeInsets.zero,
-            child: InkWell(
-              borderRadius: BorderRadius.circular(5),
-              onTap: () {
-                Navigator.of(context).push(router(HomeworkDayViewPage(
-                  homework,
-                  defaultPage: index,
-                )));
-              },
-              onLongPress: () async {
-                await CustomDialogs.showHomeworkDetailsDialog(context, homework[index]);
-                setState(() {});
-              },
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(5),
-                child: Container(
-                  width: screenSize.size.width / 5 * 4.1,
-                  height: screenSize.size.height / 10 * 0.6,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Flexible(
-                                      flex: 8,
-                                      child: Container(
-                                        child: AutoSizeText(
-                                          homework[index].discipline ?? "",
-                                          textAlign: TextAlign.start,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            fontFamily: "Asap",
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Flexible(
-                                        flex: 7,
-                                        child: AutoSizeText(homework[index].teacherName?.trimLeft() ?? "",
-                                            overflow: TextOverflow.ellipsis,
-                                            textAlign: TextAlign.start,
-                                            style: TextStyle(fontFamily: "Asap")))
-                                  ],
-                                ),
-                              ),
-                              if (homework[index].toReturn ?? false) Icon(MdiIcons.uploadOutline),
-                              if (homework[index].isATest ?? false) Icon(MdiIcons.bookEditOutline)
-                            ],
-                          ),
-                        ),
-                      ),
-                      if (!(homework[index].loaded ?? true)) LinearProgressIndicator()
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          );
-        });
-  }
-
   buildHomeworkBlock(DateTime date, List<Homework> homework) {
     var screenSize = MediaQuery.of(context);
     return Container(
@@ -142,7 +188,7 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
                 child: ColumnBuilder(
                   itemCount: homework.length,
                   itemBuilder: (context, index) {
-                    return buildHomework(homework, index);
+                    return HomeworkElement(homework, index);
                   },
                 )),
           ],

@@ -29,72 +29,77 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
   late PageController pageView;
   @override
   Widget build(BuildContext context) {
-    String date = "Pas de date !";
+    String date = "(vide)";
 
-    if (widget.homework.first.date != null) {
+    if (widget.homework.isNotEmpty && widget.homework.first.date != null) {
       date = DateFormat("EEEE dd MMMM", "fr_FR").format(widget.homework.first.date!).toUpperCase();
     }
-    return ChangeNotifierProvider<ApplicationSystem>.value(
-      value: appSys,
-      child: Consumer<ApplicationSystem>(builder: (context, model, child) {
-        return Scaffold(
-          backgroundColor: pageColor(model),
-          appBar: new AppBar(
-            title: new Text(
-              date,
-              style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
+    return Scaffold(
+      appBar: new AppBar(
+        title: new Text(
+          date,
+          style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
+        ),
+        systemOverlayStyle: ThemeUtils.isThemeDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+        actions: [
+          FlatButton(
+            color: Colors.transparent,
+            child: Icon(MdiIcons.eyePlus, color: ThemeUtils.textColor()),
+            onPressed: () async {
+              await showModalBottomSheet(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25))),
+                  context: context,
+                  backgroundColor: Theme.of(context).primaryColor,
+                  isScrollControlled: true,
+                  builder: (context) {
+                    return HomeworkReaderOptionsBottomSheet();
+                  });
+              setState(() {});
+            },
+          )
+        ],
+        brightness: ThemeUtils.isThemeDark ? Brightness.dark : Brightness.light,
+        backgroundColor: Theme.of(context).primaryColor,
+      ),
+      body: widget.homework.isEmpty
+          ? Container()
+          : ChangeNotifierProvider<ApplicationSystem>.value(
+              value: appSys,
+              child: Consumer<ApplicationSystem>(builder: (context, model, child) {
+                return Container(
+                  color: pageColor(model),
+                  child: Column(
+                    children: [
+                      ChangeNotifierProvider<PageController>.value(
+                        value: pageView,
+                        child: Consumer<PageController>(builder: (context, model, child) {
+                          return FutureBuilder<Color>(
+                              future: getBackgroundColor(((model.hasClients)
+                                  ? (model.page ?? widget.defaultPage.toDouble())
+                                  : widget.defaultPage.toDouble())),
+                              builder: (context, snapshot) {
+                                return buildHeader(
+                                    widget.homework[
+                                        ((model.hasClients) ? (model.page ?? widget.defaultPage) : widget.defaultPage)
+                                            .round()],
+                                    ThemeUtils.darken(snapshot.data ?? Colors.white, forceAmount: 0.1),
+                                    ((model.hasClients) ? (model.page ?? 0) : 0).round());
+                              });
+                        }),
+                      ),
+                      Expanded(
+                          child: PageView.builder(
+                              controller: pageView,
+                              itemCount: widget.homework.length,
+                              itemBuilder: (context, index) {
+                                return buildPage(widget.homework[index]);
+                              })),
+                    ],
+                  ),
+                );
+              }),
             ),
-            systemOverlayStyle: ThemeUtils.isThemeDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
-            actions: [
-              FlatButton(
-                color: Colors.transparent,
-                child: Icon(MdiIcons.eyePlus, color: ThemeUtils.textColor()),
-                onPressed: () async {
-                  await showModalBottomSheet(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25))),
-                      context: context,
-                      backgroundColor: Theme.of(context).primaryColor,
-                      isScrollControlled: true,
-                      builder: (context) {
-                        return HomeworkReaderOptionsBottomSheet();
-                      });
-                  setState(() {});
-                },
-              )
-            ],
-            brightness: ThemeUtils.isThemeDark ? Brightness.dark : Brightness.light,
-            backgroundColor: Theme.of(context).primaryColor,
-          ),
-          body: Column(
-            children: [
-              ChangeNotifierProvider<PageController>.value(
-                value: pageView,
-                child: Consumer<PageController>(builder: (context, model, child) {
-                  return FutureBuilder<Color>(
-                      future: getBackgroundColor(((model.hasClients)
-                          ? (model.page ?? widget.defaultPage.toDouble())
-                          : widget.defaultPage.toDouble())),
-                      builder: (context, snapshot) {
-                        return buildHeader(
-                            widget.homework[
-                                ((model.hasClients) ? (model.page ?? widget.defaultPage) : widget.defaultPage).round()],
-                            ThemeUtils.darken(snapshot.data ?? Colors.white, forceAmount: 0.1),
-                            ((model.hasClients) ? (model.page ?? 0) : 0).round());
-                      });
-                }),
-              ),
-              Expanded(
-                  child: PageView.builder(
-                      controller: pageView,
-                      itemCount: widget.homework.length,
-                      itemBuilder: (context, index) {
-                        return buildPage(widget.homework[index]);
-                      })),
-            ],
-          ),
-        );
-      }),
     );
   }
 
@@ -130,8 +135,11 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                               iconColor: ThemeUtils.textColor()),
                         )
                       : Container()),
-              CustomButtons.materialButton(
-                  context, screenSize.size.width / 5 * 0.55, screenSize.size.width / 5 * 0.55, () {},
+              CustomButtons.materialButton(context, screenSize.size.width / 5 * 0.55, screenSize.size.width / 5 * 0.55,
+                  () async {
+                await CustomDialogs.showHomeworkDetailsDialog(context, hw);
+                setState(() {});
+              },
                   borderRadius: BorderRadius.circular(11),
                   backgroundColor: color,
                   icon: MdiIcons.shareVariantOutline,

@@ -21,7 +21,6 @@ class HomeworkController extends ChangeNotifier {
 
   ///Returns [donePercent, doneLength, length]
   List get homeworkCompletion => _hwCompletion;
-
   void getHomeworkDonePercent() async {
     List<Homework> list = [];
     if (_old != null) {
@@ -59,7 +58,6 @@ class HomeworkController extends ChangeNotifier {
     }
   }
 
-  //Load all events
   Future<void> loadAll() async {
     try {
       isFetching = true;
@@ -87,6 +85,7 @@ class HomeworkController extends ChangeNotifier {
     }
   }
 
+  //Load all events
   void prepareExamsCount() {
     List<Homework> hwList = (getHomework ?? []);
     if (hwList != null) {
@@ -135,5 +134,15 @@ class HomeworkController extends ChangeNotifier {
     await prepareOld((_old ?? []));
     isFetching = false;
     notifyListeners();
+  }
+
+  void ugradePriority(Homework hw) {
+    try {
+      if (!((hw.loaded) ?? true)) {
+        unloadedHW.remove(hw);
+        unloadedHW.insert(0, hw);
+        notifyListeners();
+      }
+    } catch (e) {}
   }
 }
