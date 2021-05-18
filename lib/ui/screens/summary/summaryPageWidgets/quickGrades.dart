@@ -1,37 +1,55 @@
-import 'dart:math';
-
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
-import 'package:ynotes/ui/components/dialogs.dart';
-import 'package:ynotes/ui/screens/grades/gradesPage.dart';
-import 'package:ynotes/core/apis/Pronote.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/main.dart';
+import 'package:ynotes/ui/components/customLoader.dart';
+import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/screens/summary/summaryPageWidgets/chart.dart';
 import 'package:ynotes/usefulMethods.dart';
-import 'package:ynotes/core/utils/themeUtils.dart';
+
+class CustomHalfCircleClipper extends CustomClipper<Path> {
+  @override
+  Path getClip(Size size) {
+    final Path path = new Path();
+    path.lineTo(0.0, size.height / 2);
+    path.lineTo(size.width, size.height / 2);
+    path.lineTo(size.width, 0);
+    return path;
+  }
+
+  @override
+  bool shouldReclip(CustomClipper<Path> oldClipper) {
+    return true;
+  }
+}
 
 class QuickGrades extends StatefulWidget {
-  final Function switchPage;
-  final GradesController gradesController;
-  const QuickGrades({Key key, this.gradesController, this.switchPage}) : super(key: key);
+  final Function? switchPage;
+  QuickGrades({Key? key, this.switchPage}) : super(key: key);
   @override
   _QuickGradesState createState() => _QuickGradesState();
 }
 
 class _QuickGradesState extends State<QuickGrades> {
-  Future<void> forceRefreshModel() async {
-    await this.widget.gradesController.refresh(force: true);
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider<GradesController>.value(
+      value: appSys.gradesController,
+      child: Consumer<GradesController>(builder: (context, model, child) {
+        return Column(children: [
+          buildCHart(context, model.disciplines(showAll: true), model.isFetching),
+          buildGradesList(
+              context, getAllGrades(model.disciplines(showAll: true), overrideLimit: true, sortByWritingDate: true)),
+        ]);
+      }),
+    );
   }
 
-  Widget buildCHart(BuildContext context, List<Discipline> disciplines, bool fetching) {
+  Widget buildCHart(BuildContext context, List<Discipline>? disciplines, bool fetching) {
     var screenSize = MediaQuery.of(context);
 
     //First division (gauge)
@@ -49,17 +67,23 @@ class _QuickGradesState extends State<QuickGrades> {
               color: Colors.transparent,
               width: screenSize.size.width / 5 * 4.5,
               height: (screenSize.size.height / 10 * 8.8) / 10 * 2,
-              child: Row(
+              child: Stack(
                 children: [
-                  Container(
-                      color: Colors.transparent,
-                      width: screenSize.size.width / 5 * 4.5,
-                      child: (disciplines != null && !fetching)
-                          ? SummaryChart(
-                              getAllGrades(disciplines, overrideLimit: true, sortByWritingDate: true),
-                            )
-                          : SpinKitThreeBounce(
-                              color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4))
+                  Row(
+                    children: [
+                      Container(
+                          color: Colors.transparent,
+                          width: screenSize.size.width / 5 * 4.5,
+                          child: (disciplines != null && !fetching)
+                              ? ClipRRect(
+                                  child: SummaryChart(
+                                    getAllGrades(disciplines, overrideLimit: true, sortByWritingDate: true),
+                                  ),
+                                )
+                              : CustomLoader(
+                                  screenSize.size.width / 5 * 2.5, screenSize.size.width / 5 * 2.5, Color(0xff5c66c1)))
+                    ],
+                  ),
                 ],
               ),
             )));
@@ -76,7 +100,7 @@ class _QuickGradesState extends State<QuickGrades> {
         child: AutoSizeText.rich(
           //MARK
           TextSpan(
-            text: (grade.notSignificant ? "(" + grade.value : grade.value),
+            text: (grade.notSignificant! ? "(" + grade.value! : grade.value),
             style: TextStyle(
                 color: (ThemeUtils.textColor()),
                 fontFamily: "Asap",
@@ -86,7 +110,7 @@ class _QuickGradesState extends State<QuickGrades> {
               if (grade.scale != "20")
                 //MARK ON
                 TextSpan(
-                    text: '/' + grade.scale,
+                    text: '/' + grade.scale!,
                     style: TextStyle(
                         color: (ThemeUtils.textColor()),
                         fontWeight: FontWeight.normal,
@@ -122,7 +146,7 @@ class _QuickGradesState extends State<QuickGrades> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (grade.disciplineName != null && grade.disciplineName != "")
+              if (grade.disciplineName != null || grade.disciplineName != "")
                 Text(
                   grade.disciplineName ?? "",
                   style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
@@ -138,7 +162,7 @@ class _QuickGradesState extends State<QuickGrades> {
                 ),
               if (grade.date != null)
                 Text(
-                  grade.date != null ? df.format(grade.entryDate) : "",
+                  grade.date != null ? df.format(grade.entryDate!) : "",
                   style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.left,
@@ -150,7 +174,7 @@ class _QuickGradesState extends State<QuickGrades> {
     );
   }
 
-  buildGradesList(BuildContext context, List<Grade> grades) {
+  buildGradesList(BuildContext context, List<Grade>? grades) {
     var screenSize = MediaQuery.of(context);
     if (grades == null || grades.length == 0) {
       return Container(
@@ -185,7 +209,7 @@ class _QuickGradesState extends State<QuickGrades> {
                       CustomDialogs.showShareGradeDialog(context, grades[index]);
                     },
                     onTap: () {
-                      widget.switchPage(1);
+                      widget.switchPage!(1);
                     },
                     child: Container(
                       padding: EdgeInsets.symmetric(
@@ -201,33 +225,7 @@ class _QuickGradesState extends State<QuickGrades> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider<GradesController>.value(
-      value: widget.gradesController,
-      child: Consumer<GradesController>(builder: (context, model, child) {
-        return Column(children: [
-          buildCHart(context, model.disciplines(showAll: true), model.isFetching),
-          buildGradesList(
-              context, getAllGrades(model.disciplines(showAll: true), overrideLimit: true, sortByWritingDate: true)),
-        ]);
-      }),
-    );
-  }
-}
-
-class CustomHalfCircleClipper extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    final Path path = new Path();
-    path.lineTo(0.0, size.height / 2);
-    path.lineTo(size.width, size.height / 2);
-    path.lineTo(size.width, 0);
-    return path;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) {
-    return true;
+  Future<void> forceRefreshModel() async {
+    await appSys.gradesController.refresh(force: true);
   }
 }

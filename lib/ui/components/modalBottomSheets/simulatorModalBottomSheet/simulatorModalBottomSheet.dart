@@ -6,8 +6,8 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 
-Future<Grade> simulatorModalBottomSheet(
-  GradesController gradesController,
+Future<Grade?> simulatorModalBottomSheet(
+  GradesController? gradesController,
   BuildContext context,
 ) {
   MediaQueryData screenSize = MediaQuery.of(context);
@@ -28,11 +28,11 @@ Future<Grade> simulatorModalBottomSheet(
 
 class SimulatorModalBottomSheet extends StatefulWidget {
   const SimulatorModalBottomSheet({
-    Key key,
+    Key? key,
     this.gradesController,
   }) : super(key: key);
 
-  final GradesController gradesController;
+  final GradesController? gradesController;
   @override
   _SimulatorModalBottomSheetState createState() => _SimulatorModalBottomSheetState();
 }
@@ -41,8 +41,8 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
   //Grade attributes
 
   //Chosen discipline
-  Discipline disciplineChoice;
-  double gradeValue;
+  Discipline? disciplineChoice;
+  double? gradeValue;
   double gradeOn = 20;
   double gradeWeight = 1;
 
@@ -110,16 +110,16 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
     );
   }
 
-  Widget dropdown(List<Discipline> disciplines) {
+  Widget dropdown(List<Discipline>? disciplines) {
     var screenSize = MediaQuery.of(context);
 
-    List<Discipline> choices;
+    List<Discipline?>? choices;
     //Add disciplines in choices
     if (disciplines != null) {
-      choices = List();
+      choices = [];
       choices.clear();
       disciplines.forEach((element) {
-        choices.add(element);
+        choices!.add(element);
       });
       choices.add(null);
       print(choices);
@@ -171,18 +171,19 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
                                         fontFamily: "Asap",
                                         color: ThemeUtils.textColor(),
                                       ),
-                                      onChanged: (Discipline newValue) {
+                                      onChanged: (Discipline? newValue) {
                                         setState(() {
                                           disciplineChoice = newValue;
                                         });
                                       },
                                       focusColor: Theme.of(context).primaryColor,
-                                      items: choices.toSet().map<DropdownMenuItem<Discipline>>((Discipline discipline) {
+                                      items:
+                                          choices.toSet().map<DropdownMenuItem<Discipline>>((Discipline? discipline) {
                                         return DropdownMenuItem<Discipline>(
                                           value: discipline,
                                           child: Center(
                                             child: Text(
-                                              discipline != null ? discipline.disciplineName : "-",
+                                              discipline != null ? discipline.disciplineName! : "-",
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
                                                 fontSize: 18,
@@ -222,7 +223,7 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
                 SizedBox(
                   width: screenSize.size.width / 5 * 0.3,
                 ),
-                Expanded(child: dropdown(this.widget.gradesController.disciplines())),
+                Expanded(child: dropdown(this.widget.gradesController!.disciplines())),
                 Expanded(child: weightSelector()),
                 SizedBox(
                   width: screenSize.size.width / 5 * 0.3,
@@ -235,10 +236,10 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
             margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.25),
             child: CustomButtons.materialButton(
                 context, screenSize.size.width / 5 * 2.5, screenSize.size.height / 10 * 0.5, () async {
-              print(disciplineChoice.period);
+              print(disciplineChoice!.period);
 
               if (gradeValue != null && gradeOn != null && disciplineChoice != null) {
-                if (gradeValue > gradeOn) {
+                if (gradeValue! > gradeOn) {
                   CustomDialogs.showAnyDialog(context, "La note doit être inférieure à la note maximale possible");
                 } else {
                   Grade finalGrade = Grade(
@@ -249,18 +250,18 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
                       simulated: true,
                       notSignificant: false,
                       letters: false,
-                      subdisciplineCode:
-                          (disciplineChoice.subdisciplineCode != null && disciplineChoice.subdisciplineCode.length > 0)
-                              ? disciplineChoice.subdisciplineCode[0]
-                              : null,
+                      subdisciplineCode: (disciplineChoice!.subdisciplineCode != null &&
+                              disciplineChoice!.subdisciplineCode!.length > 0)
+                          ? disciplineChoice!.subdisciplineCode![0]
+                          : null,
                       weight: gradeWeight.toString(),
-                      periodName: disciplineChoice.period,
-                      periodCode: widget.gradesController.periods
-                          .firstWhere((period) => period.name == disciplineChoice.period)
+                      periodName: disciplineChoice!.period,
+                      periodCode: widget.gradesController!.periods!
+                          .firstWhere((period) => period.name == disciplineChoice!.period)
                           .id
                           .toString(),
-                      disciplineName: disciplineChoice.disciplineName,
-                      disciplineCode: disciplineChoice.disciplineCode);
+                      disciplineName: disciplineChoice!.disciplineName,
+                      disciplineCode: disciplineChoice!.disciplineCode);
                   Navigator.of(context).pop(finalGrade);
                 }
               } else {

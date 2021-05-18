@@ -9,34 +9,34 @@ part 'models.g.dart';
 @HiveType(typeId: 0)
 class Homework extends HiveObject {
   @HiveField(0)
-  final String discipline;
+  final String? discipline;
   @HiveField(1)
-  final String disciplineCode;
+  final String? disciplineCode;
   @HiveField(2)
-  final String id;
+  final String? id;
   @HiveField(3)
-  final String rawContent;
+  final String? rawContent;
   @HiveField(4)
-  String sessionRawContent;
+  String? sessionRawContent;
   @HiveField(5)
-  DateTime date;
+  DateTime? date;
   @HiveField(6)
-  final DateTime entryDate;
+  final DateTime? entryDate;
   @HiveField(7)
-  final bool done;
+  final bool? done;
   @HiveField(8)
-  final bool toReturn;
+  final bool? toReturn;
   @HiveField(9)
-  final bool isATest;
+  final bool? isATest;
   @HiveField(10)
-  final List<Document> documents;
+  final List<Document>? documents;
   @HiveField(11)
-  final List<Document> sessionDocuments;
+  final List<Document>? sessionDocuments;
   @HiveField(12)
-  final String teacherName;
+  final String? teacherName;
   //Useful for Ecole Directe users
   @HiveField(13)
-  final bool loaded;
+  final bool? loaded;
   Homework(
       this.discipline,
       this.disciplineCode,

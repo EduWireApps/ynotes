@@ -1,15 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:ynotes/core/services/shared_preferences.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/keyValues.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/usefulMethods.dart';
 
 ///Bottom windows with some infos on the discipline and the possibility to change the discipline color
-void disciplineModalBottomSheet(context, Discipline discipline, Function callback, var widget) {
-  Color colorGroup;
+void disciplineModalBottomSheet(context, Discipline? discipline, Function? callback, var widget) {
+  Color? colorGroup;
 
   if (widget.discipline == null) {
     colorGroup = Colors.blueAccent;
@@ -46,7 +46,7 @@ void disciplineModalBottomSheet(context, Discipline discipline, Function callbac
                           padding: EdgeInsets.all(5),
                           child: FittedBox(
                             child: Text(
-                              discipline.disciplineName,
+                              discipline!.disciplineName!,
                               style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w700),
                               textAlign: TextAlign.center,
                             ),
@@ -64,16 +64,17 @@ void disciplineModalBottomSheet(context, Discipline discipline, Function callbac
                                   radius: 25,
                                   onTap: () async {
                                     Navigator.pop(context);
-                                    Color color = await CustomDialogs.showColorPicker(context, Color(discipline.color));
+                                    Color? color =
+                                        await CustomDialogs.showColorPicker(context, Color(discipline.color!));
 
                                     if (color != null) {
                                       String test = color.toString();
                                       String finalColor = "#" + test.toString().substring(10, test.length - 1);
-                                      final prefs = await SharedPreferences.getInstance();
-                                      await prefs.setString(discipline.disciplineCode, finalColor);
+                                      final prefs = await (SharedPreferences.getInstance());
+                                      await prefs.setString(discipline.disciplineCode ?? "", finalColor);
                                       discipline.setcolor = color;
                                       //Call set state
-                                      callback();
+                                      callback!();
                                     }
                                   },
                                   splashColor: Colors.grey,
@@ -98,9 +99,10 @@ void disciplineModalBottomSheet(context, Discipline discipline, Function callbac
                       width: screenSize.size.width / 5 * 4.5,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
                           buildKeyValuesInfo(context, "Votre moyenne", [
-                            (chosenParser == 1)
+                            (appSys.settings!["system"]["chosenParser"] == 1)
                                 ? (widget.discipline.average ?? "-")
                                 : ((!widget.discipline.getAverage().isNaN)
                                     ? widget.discipline.getAverage().toString()

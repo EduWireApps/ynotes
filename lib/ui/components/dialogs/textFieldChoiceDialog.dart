@@ -4,7 +4,7 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 
 class TextFieldChoiceDialog extends StatefulWidget {
   final String unit;
-  final String defaultText;
+  final String? defaultText;
 
   const TextFieldChoiceDialog(this.unit, this.defaultText);
   @override
@@ -13,18 +13,17 @@ class TextFieldChoiceDialog extends StatefulWidget {
 
 class _TextFieldChoiceDialogState extends State<TextFieldChoiceDialog> {
   TextEditingController textController = TextEditingController(text: "");
-  String value;
+  String? value;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => setState(() {
-          var splits = widget.defaultText.split(".");
-          textController.text = widget.defaultText;
+    WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() {
+          var splits = widget.defaultText!.split(".");
+          textController.text = widget.defaultText!;
           if (splits.length > 1) {
             var withoutextension = splits.sublist(0, splits.length - 1).join("");
             String justExtension = "." + splits.last;
-            textController.text = widget.defaultText;
+            textController.text = widget.defaultText!;
             textController.selection = TextSelection(baseOffset: 0, extentOffset: withoutextension.length);
           }
         }));

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/apis/utils.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 
@@ -11,9 +12,9 @@ import '../agendaPage.dart';
 String weekName = "";
 
 class AgendaButtons extends StatefulWidget {
-  final Function getLessons;
+  final Function? getLessons;
 
-  const AgendaButtons({Key key, this.getLessons}) : super(key: key);
+  const AgendaButtons({Key? key, this.getLessons}) : super(key: key);
 
   @override
   _AgendaButtonsState createState() => _AgendaButtonsState();
@@ -26,8 +27,8 @@ class _AgendaButtonsState extends State<AgendaButtons> {
   }
 
   getWeekName() async {
-    bool isEven = (await get_week(agendaDate)).isEven;
-    bool reverse = await getSetting("reverseWeekNames");
+    bool isEven = (await getWeek(agendaDate!)).isEven;
+    bool reverse = appSys.settings!["user"]["agendaPage"]["reverseWeekNames"];
     if (isEven ^= reverse) {
       if (mounted) {
         setState(() {
@@ -78,7 +79,7 @@ class _AgendaButtonsState extends State<AgendaButtons> {
                         setState(() {
                           agendaDate = CalendarTime(agendaDate).startOfDay.subtract(Duration(hours: 24));
                         });
-                        await widget.getLessons(agendaDate);
+                        await widget.getLessons!(agendaDate);
                       },
                       child: Container(
                           height: screenSize.size.height / 10 * 0.45,
@@ -107,19 +108,19 @@ class _AgendaButtonsState extends State<AgendaButtons> {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                       onTap: () async {
-                        DateTime someDate = await showDatePicker(
+                        DateTime? someDate = await showDatePicker(
                           locale: Locale('fr', 'FR'),
                           context: context,
                           initialDate: DateTime.now(),
                           firstDate: DateTime(2018),
                           lastDate: DateTime(2030),
                           helpText: "",
-                          builder: (BuildContext context, Widget child) {
+                          builder: (BuildContext context, Widget? child) {
                             return FittedBox(
                               child: Material(
                                 color: Colors.transparent,
                                 child: Theme(
-                                  data: isDarkModeEnabled ? ThemeData.dark() : ThemeData.light(),
+                                  data: ThemeUtils.isThemeDark ? ThemeData.dark() : ThemeData.light(),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[SizedBox(child: child)],
@@ -133,7 +134,7 @@ class _AgendaButtonsState extends State<AgendaButtons> {
                           setState(() {
                             agendaDate = someDate;
                           });
-                          widget.getLessons(agendaDate);
+                          widget.getLessons!(agendaDate);
                         }
                       },
                       onLongPress: () {
@@ -141,7 +142,7 @@ class _AgendaButtonsState extends State<AgendaButtons> {
                           agendaDate = CalendarTime().startOfToday;
                         });
 
-                        widget.getLessons(agendaDate);
+                        widget.getLessons!(agendaDate);
                       },
                       child: Container(
                           height: screenSize.size.height / 10 * 0.45,
@@ -152,7 +153,7 @@ class _AgendaButtonsState extends State<AgendaButtons> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 Text(
-                                  DateFormat("EEEE dd MMMM", "fr_FR").format(agendaDate),
+                                  DateFormat("EEEE dd MMMM", "fr_FR").format(agendaDate!),
                                   style: TextStyle(
                                     fontFamily: "Asap",
                                     color: ThemeUtils.textColor(),
@@ -176,7 +177,7 @@ class _AgendaButtonsState extends State<AgendaButtons> {
                         setState(() {
                           agendaDate = CalendarTime(agendaDate).startOfDay.add(Duration(hours: 25));
                         });
-                        await widget.getLessons(agendaDate);
+                        await widget.getLessons!(agendaDate);
                       },
                       child: Container(
                           height: screenSize.size.height / 10 * 0.45,

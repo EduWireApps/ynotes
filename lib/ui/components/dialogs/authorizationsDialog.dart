@@ -5,9 +5,9 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 
 
 class AuthorizationsDialog extends StatefulWidget {
-  final String authName;
-  final String goal;
-  const AuthorizationsDialog({Key key, this.authName, this.goal}) : super(key: key);
+  final String? authName;
+  final String? goal;
+  const AuthorizationsDialog({Key? key, this.authName, this.goal}) : super(key: key);
   @override
   _AuthorizationsDialogState createState() => _AuthorizationsDialogState();
 }
@@ -78,7 +78,7 @@ class _AuthorizationsDialogState extends State<AuthorizationsDialog> {
                       TextSpan(
                         children: <TextSpan>[
                           TextSpan(text: "Pour quoi faire ?", style: TextStyle(fontWeight: FontWeight.bold)),
-                          TextSpan(text: "\n" + widget.goal),
+                          TextSpan(text: "\n" + widget.goal!),
                         ],
                       ),
                       style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),

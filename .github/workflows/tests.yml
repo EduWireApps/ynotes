@@ -1,0 +1,81 @@
+name: Tests 
+on:
+  push:
+    branches: tests-deploy-ios
+  pull_request:
+    branches: tests-deploy-ios
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+jobs:
+  tests:
+    name: Tests 
+    runs-on: macos-latest
+      
+    steps:      
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Select Xcode Version
+      uses: maxim-lobanov/setup-xcode@v1
+      with:
+        xcode-version: latest-stable
+    
+    - name: Setup SSH Keys and known_hosts for fastlane match
+      run: |
+          SSH_PATH="$HOME/.ssh"
+          mkdir -p "$SSH_PATH"
+          touch "$SSH_PATH/known_hosts"    
+          echo "$PRIVATE_KEY" > "$SSH_PATH/id_rsa"    
+          chmod 700 "$SSH_PATH"
+          ssh-keyscan github.com >> ~/.ssh/known_hosts
+          chmod 600 "$SSH_PATH/known_hosts"
+          chmod 600 "$SSH_PATH/id_rsa"    
+          eval $(ssh-agent)
+          ssh-add "$SSH_PATH/id_rsa"
+      env:
+        PRIVATE_KEY: ${{ secrets.SSH_KEY }}
+
+    - name: Decrypt iOS keys
+      run: sh ./.github/scripts/decrypt_ios_keys.sh
+      env:
+        ANDROID_KEYS_SECRET_PASSPHRASE: ${{ secrets.ANDROID_KEYS_SECRET_PASSPHRASE }}  
+
+    - name: Setup ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 2.7.2
+
+    
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v1
+      with:
+        flutter-version: '2.0.x'
+
+    - name: Install Flutter dependencies
+      run: flutter pub get
+     
+    - name: Install Pods
+      working-directory: ios
+
+      run: |
+        pod install
+    - name: Download bundle dependencies
+      run: |
+        gem install bundler:2.0.2
+        bundle config path vendor/bundle
+        bundle install   
+      working-directory: ios/fastlane
+
+    - name: Update to test flight
+      working-directory: ios
+      run: |
+        export LC_ALL=fr_FR.UTF-8
+        export LANG=fr_FR.UTF-8
+        bundle exec fastlane set_release_version 
+        bundle exec fastlane beta --verbose
+      env:
+        MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+        APP_STORE_API_KEY_ID: ${{ secrets.APP_STORE_API_KEY_ID }},
+        APP_STORE_API_KEY_ISSUER_ID: ${{ secrets.APP_STORE_API_KEY_ISSUER_ID }},
+        APP_STORE_API_KEY: ${{ secrets.APP_STORE_API_KEY }},
+        FASTLANE_USER: ${{ secrets.FASTLANE_USER }}
+        FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}

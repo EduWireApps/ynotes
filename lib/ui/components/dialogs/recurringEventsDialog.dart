@@ -3,29 +3,29 @@ import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import '../../../usefulMethods.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 
 class RecurringEventsDialog extends StatefulWidget {
-  String scheme;
+  String? scheme;
   RecurringEventsDialog(this.scheme);
   @override
   _RecurringEventsDialogState createState() => _RecurringEventsDialogState();
 }
 
 class _RecurringEventsDialogState extends State<RecurringEventsDialog> {
-  String _scheme;
+  String? _scheme;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _scheme = this.widget.scheme;
     getReverseAB();
   }
 
   getReverseAB() async {
-    bool reverse = await getSetting("reverseWeekNames");
+    bool reverse = appSys.settings!["user"]["agendaPage"]["reverseWeekNames"];
     if (reverse) {
       setState(() {
         weekTypes = ["Toutes les semaines", "Semaine B", "Semaine A"];
@@ -35,10 +35,10 @@ class _RecurringEventsDialogState extends State<RecurringEventsDialog> {
 
   export() {
     String scheme = "";
-    if (enabled) {
+    if (enabled!) {
       print(weekType.toString());
       scheme += weekType.toString();
-      scheme += (everyDay ? "1" : "0");
+      scheme += (everyDay! ? "1" : "0");
       for (int i = 1; i < 8; i++) {
         if (selectedDays.contains(i)) {
           scheme += "1";
@@ -91,9 +91,9 @@ class _RecurringEventsDialogState extends State<RecurringEventsDialog> {
     }
   }
 
-  bool enabled;
-  bool everyDay;
-  int weekType;
+  bool? enabled;
+  bool? everyDay;
+  late int weekType;
   List selectedDays = [];
   List weekTypes = ["Toutes les semaines", "Semaine A", "Semaine B"];
   @override
@@ -115,8 +115,8 @@ class _RecurringEventsDialogState extends State<RecurringEventsDialog> {
             children: [
               GestureDetector(
                 onTap: () {
-                  if (enabled) {
-                    if (everyDay ? true : selectedDays.isNotEmpty) {
+                  if (enabled!) {
+                    if (everyDay! ? true : selectedDays.isNotEmpty) {
                       var value = export();
                       Navigator.of(context).pop(value);
                     } else {
@@ -158,23 +158,22 @@ class _RecurringEventsDialogState extends State<RecurringEventsDialog> {
                             'Activée',
                             style: TextStyle(
                                 fontFamily: "Asap",
-                                color:
-                                    isDarkModeEnabled ? Colors.white.withOpacity(0.8) : Colors.black.withOpacity(0.8),
+                                color: ThemeUtils.textColor().withOpacity(0.8),
                                 fontSize: screenSize.size.width / 5 * 0.25),
                           ),
-                          value: enabled,
+                          value: enabled!,
                           onChanged: (nValue) {
                             setState(() {
                               enabled = nValue;
                             });
                           }),
-                      if (enabled)
+                      if (enabled!)
                         DropdownButton<String>(
                           value: weekTypes[weekType],
                           dropdownColor: Theme.of(context).primaryColor,
                           iconSize: 0.0,
                           style: TextStyle(fontSize: 18, fontFamily: "Asap", color: ThemeUtils.textColor()),
-                          onChanged: (String newValue) {
+                          onChanged: (String? newValue) {
                             setState(() {
                               weekType = weekTypes.indexOf(newValue);
                             });
@@ -197,19 +196,18 @@ class _RecurringEventsDialogState extends State<RecurringEventsDialog> {
                             'Tous les jours',
                             style: TextStyle(
                                 fontFamily: "Asap",
-                                color:
-                                    isDarkModeEnabled ? Colors.white.withOpacity(0.8) : Colors.black.withOpacity(0.8),
+                                color: ThemeUtils.textColor().withOpacity(0.8),
                                 fontSize: screenSize.size.width / 5 * 0.25),
                           ),
-                          value: everyDay,
-                          onChanged: enabled
+                          value: everyDay!,
+                          onChanged: enabled!
                               ? (nValue) {
                                   setState(() {
                                     everyDay = nValue;
                                   });
                                 }
                               : null),
-                      if (enabled && !everyDay)
+                      if (enabled! && !everyDay!)
                         Wrap(
                           runSpacing: screenSize.size.width / 5 * 0.1,
                           children: [

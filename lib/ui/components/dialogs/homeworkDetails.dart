@@ -1,22 +1,15 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:highlight_text/highlight_text.dart';
+import 'package:html/parser.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:share/share.dart';
-import 'package:ynotes/ui/screens/summary/summaryPage.dart';
-import 'package:ynotes/ui/screens/summary/summaryPageWidgets/quickHomework.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/main.dart';
-import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 
-import 'package:html/parser.dart';
-
 class DialogHomework extends StatefulWidget {
-  final Homework hw;
+  final Homework? hw;
 
   const DialogHomework(this.hw);
   State<StatefulWidget> createState() {
@@ -25,18 +18,16 @@ class DialogHomework extends StatefulWidget {
 }
 
 class _DialogHomeworkState extends State<DialogHomework> {
-  initState() {
-    super.initState();
-  }
-
-  HighlightMap highlightMap;
   int segmentedControlIndex = 0;
+
   Widget build(BuildContext context) {
     TextStyle textStyle = TextStyle(backgroundColor: Colors.yellow.shade100);
 
-    var document = parse(segmentedControlIndex == 0 ? widget.hw.rawContent : widget.hw.sessionRawContent);
+    var document = parse(segmentedControlIndex == 0
+        ? (widget.hw!.rawContent) ?? "Non chargé"
+        : (widget.hw!.sessionRawContent) ?? "Non chargé");
 
-    String parsedHtml = parse(document.body.text).documentElement.text;
+    String parsedHtml = parse(document.body!.text).documentElement!.text;
     MediaQueryData screenSize;
     screenSize = MediaQuery.of(context);
     return Container(
@@ -63,7 +54,7 @@ class _DialogHomeworkState extends State<DialogHomework> {
               ),
             ],
           ),
-          if (widget.hw.sessionRawContent != null && widget.hw.sessionRawContent != "")
+          if (widget.hw!.sessionRawContent != null && widget.hw!.sessionRawContent != "")
             Material(
               color: Colors.transparent,
               child: Container(
@@ -110,11 +101,11 @@ class _DialogHomeworkState extends State<DialogHomework> {
               ),
             ),
           ),
-          FutureBuilder(
-              future: getColor(this.widget.hw.disciplineCode),
+          FutureBuilder<int>(
+              future: getColor(this.widget.hw!.disciplineCode),
               initialData: 0,
               builder: (context, snapshot) {
-                Color color = Color(snapshot.data);
+                Color color = Color(snapshot.data ?? 0);
                 return Material(
                   type: MaterialType.transparency,
                   child: Container(
@@ -127,11 +118,11 @@ class _DialogHomeworkState extends State<DialogHomework> {
                       child: Column(
                         children: [
                           Text(
-                            this.widget.hw.discipline,
+                            this.widget.hw!.discipline!,
                             textAlign: TextAlign.left,
                             style: TextStyle(
                                 fontFamily: "Asap",
-                                color: isDarkModeEnabled ? Colors.grey.shade200 : Colors.black54,
+                                color: ThemeUtils.textColor().withOpacity(0.5),
                                 fontSize: screenSize.size.height / 10 * 0.25),
                           ),
                         ],
@@ -141,5 +132,9 @@ class _DialogHomeworkState extends State<DialogHomework> {
         ],
       ),
     );
+  }
+
+  initState() {
+    super.initState();
   }
 }

@@ -120,7 +120,7 @@ class _PathCatalog {
     this.path_0 = _build_0();
   }
 
-  Path path_0;
+  late Path path_0;
 
   static final _PathCatalog instance = _PathCatalog();
 
@@ -145,7 +145,7 @@ class _PaintCatalog {
     this.paint_0 = (Paint()..color = _ColorCatalog.instance.color_1);
   }
 
-  Paint paint_0;
+  late Paint paint_0;
 
   static final _PaintCatalog instance = _PaintCatalog();
 }
@@ -162,9 +162,9 @@ class _ColorCatalog {
     this.color_1 = Color.fromARGB(255, 255, 119, 21);
   }
 
-  Color color_0;
+  late Color color_0;
 
-  Color color_1;
+  late Color color_1;
 
   static final _ColorCatalog instance = _ColorCatalog();
 }
@@ -178,7 +178,7 @@ class _TextStyleCatalog {
 class Data {
   Data({this.isVisible});
 
-  final bool isVisible;
+  final bool? isVisible;
 
   @override
   bool operator ==(o) => o is Data && isVisible == o.isVisible;
@@ -193,7 +193,7 @@ class Data {
 class TextData extends Data {
   TextData({isVisible, this.text}) : super(isVisible: isVisible);
 
-  final String text;
+  final String? text;
 
   @override
   bool operator ==(o) => o is TextData && isVisible == o.isVisible && text == o.text;

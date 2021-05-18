@@ -11,6 +11,7 @@ import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
@@ -18,8 +19,8 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 class AgendaElement extends StatefulWidget {
   AgendaEvent event;
   final double height;
-  final double width;
-  final double position;
+  final double? width;
+  final double? position;
   final Function setStateCallback;
   AgendaElement(this.event, this.height, this.setStateCallback, {this.width = 4.3, this.position = 0});
 
@@ -31,8 +32,8 @@ class _AgendaElementState extends State<AgendaElement> {
   Future<void> refreshAgendaFuture() async {
     if (mounted) {
       setState(() {
-        spaceAgendaFuture = localApi.getEvents(agendaDate, true);
-        agendaFuture = localApi.getEvents(agendaDate, false);
+        spaceAgendaFuture = appSys.api!.getEvents(agendaDate!, true);
+        agendaFuture = appSys.api!.getEvents(agendaDate!, false);
       });
     }
     var realAF = await spaceAgendaFuture;
@@ -45,19 +46,19 @@ class _AgendaElementState extends State<AgendaElement> {
 
   getEventName() {
     if (this.widget.event != null && this.widget.event.name != null && this.widget.event.name != "") {
-      return "${widget.event.name[0].toUpperCase()}${widget.event.name.substring(1).toLowerCase()}";
+      return "${widget.event.name![0].toUpperCase()}${widget.event.name!.substring(1).toLowerCase()}";
     } else if (this.widget.event.name != "") {
-      return "${widget.event.lesson.discipline[0].toUpperCase()}${widget.event.lesson.discipline.substring(1).toLowerCase()}";
+      return "${widget.event.lesson!.discipline![0].toUpperCase()}${widget.event.lesson!.discipline!.substring(1).toLowerCase()}";
     } else {
       return "(sans nom)";
     }
   }
 
-  Future<int> _getRelatedColor() async {
+  Future<int?> _getRelatedColor() async {
     if (this.widget.event != null && this.widget.event.color != null) {
       return this.widget.event.color;
     } else {
-      return await getColor(this.widget.event.lesson.disciplineCode);
+      return await getColor(this.widget.event.lesson!.disciplineCode);
     }
   }
 
@@ -69,13 +70,13 @@ class _AgendaElementState extends State<AgendaElement> {
     return Stack(
       children: [
         Container(
-          child: FutureBuilder(
+          child: FutureBuilder<int?>(
               future: _getRelatedColor(),
               initialData: 0,
               builder: (context, snapshot) {
                 Color color = Colors.white;
                 if (snapshot.data != null) {
-                  color = Color(snapshot.data);
+                  color = Color(snapshot.data ?? 0);
                 }
                 final f = new DateFormat('H:mm');
                 return Container(
@@ -88,7 +89,7 @@ class _AgendaElementState extends State<AgendaElement> {
                   ]),
                   margin: EdgeInsets.only(
                       bottom: screenSize.size.height / 10 * 0.1,
-                      left: screenSize.size.width / 5 * this.widget.position),
+                      left: screenSize.size.width / 5 * this.widget.position!),
                   child: Material(
                     borderRadius: BorderRadius.only(
                         topLeft: Radius.circular(5),
@@ -102,9 +103,9 @@ class _AgendaElementState extends State<AgendaElement> {
                       borderRadius: BorderRadius.only(topLeft: Radius.circular(5), topRight: Radius.circular(5)),
                       onLongPress: () async {
                         var _event = this.widget.event;
-                        if (_event.isLesson) {
+                        if (_event.isLesson!) {
                           //Getting color before
-                          _event.color = await getColor(this.widget.event.lesson.disciplineCode);
+                          _event.color = await getColor(this.widget.event.lesson!.disciplineCode);
                         }
                         var temp = await agendaEventEdit(context, true,
                             defaultDate: this.widget.event.start, customEvent: _event);
@@ -113,13 +114,13 @@ class _AgendaElementState extends State<AgendaElement> {
                           if (temp != "removed") {
                             if (temp != null) {
                               if (temp.recurrenceScheme != null && temp.recurrenceScheme != "0") {
-                                await offline.agendaEvents.addAgendaEvent(temp, temp.recurrenceScheme);
+                                await appSys.offline.agendaEvents.addAgendaEvent(temp, temp.recurrenceScheme);
 
                                 setState(() {
                                   this.widget.event = temp;
                                 });
                               } else {
-                                await offline.agendaEvents.addAgendaEvent(temp, await get_week(temp.start));
+                                await appSys.offline.agendaEvents.addAgendaEvent(temp, await getWeek(temp.start));
 
                                 setState(() {
                                   this.widget.event = temp;
@@ -128,7 +129,7 @@ class _AgendaElementState extends State<AgendaElement> {
                               await AppNotification.scheduleAgendaReminders(temp);
                             }
                           } else {
-                            await offline.reminders.removeAll(_event.id);
+                            await appSys.offline.reminders.removeAll(_event.id);
                             await AppNotification.cancelNotification(_event.id.hashCode);
                           }
                           await refreshAgendaFuture();
@@ -136,9 +137,9 @@ class _AgendaElementState extends State<AgendaElement> {
                         }
                       },
                       onTap: () async {
-                        if (this.widget.event.isLesson) {
+                        if (this.widget.event.isLesson!) {
                           var _event = this.widget.event;
-                          _event.color = await getColor(this.widget.event.lesson.disciplineCode);
+                          _event.color = await getColor(this.widget.event.lesson!.disciplineCode);
                           await lessonDetails(context, _event);
                           await refreshAgendaFuture();
                         } else {
@@ -157,13 +158,13 @@ class _AgendaElementState extends State<AgendaElement> {
                                 color: ThemeUtils.darken(color),
                               ),
                               height: screenSize.size.height / 10 * 0.2,
-                              width: screenSize.size.width / 5 * this.widget.width,
+                              width: screenSize.size.width / 5 * this.widget.width!,
                             ),
 
                           //real content
                           Container(
                               key: ValueKey<bool>(buttons),
-                              width: screenSize.size.width / 5 * this.widget.width,
+                              width: screenSize.size.width / 5 * this.widget.width!,
                               height: (screenSize.size.height / 10 * (this.widget.height - 0.2)) > 0
                                   ? (screenSize.size.height / 10 * (this.widget.height - 0.2))
                                   : screenSize.size.height / 10 * 0.2,
@@ -171,7 +172,7 @@ class _AgendaElementState extends State<AgendaElement> {
                                 children: [
                                   AnimatedOpacity(
                                     duration: Duration(milliseconds: 250),
-                                    opacity: this.widget.event.canceled ? 0.5 : 0,
+                                    opacity: this.widget.event.canceled! ? 0.5 : 0,
                                     child: Container(
                                       decoration: BoxDecoration(
                                         image: DecorationImage(
@@ -206,13 +207,13 @@ class _AgendaElementState extends State<AgendaElement> {
                                                     child: FittedBox(child: Icon(Icons.notifications_active_outlined))),
                                             ],
                                           ),
-                                          if (this.widget.event.isLesson &&
-                                              widget.event.lesson.teachers != null &&
-                                              widget.event.lesson.teachers.length > 0 &&
-                                              widget.event.lesson.teachers[0] != "")
+                                          if (this.widget.event.isLesson! &&
+                                              widget.event.lesson!.teachers != null &&
+                                              widget.event.lesson!.teachers!.length > 0 &&
+                                              widget.event.lesson!.teachers![0] != "")
                                             Wrap(children: [
                                               AutoSizeText(
-                                                widget.event.lesson.teachers[0],
+                                                widget.event.lesson!.teachers![0]!,
                                                 style: TextStyle(fontFamily: "Asap"),
                                                 textAlign: TextAlign.left,
                                                 minFontSize: 12,
@@ -223,9 +224,9 @@ class _AgendaElementState extends State<AgendaElement> {
                                             spacing: screenSize.size.width / 5 * 0.1,
                                             children: [
                                               AutoSizeText(
-                                                f.format(widget.event.start) +
+                                                f.format(widget.event.start!) +
                                                     " - " +
-                                                    f.format(widget.event.end).toString(),
+                                                    f.format(widget.event.end!).toString(),
                                                 style: TextStyle(
                                                   fontFamily: "Asap",
                                                   fontWeight: FontWeight.w200,

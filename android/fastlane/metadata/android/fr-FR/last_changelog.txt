@@ -1,2 +1,2 @@
-Différent correctifs importants pour Pronote, notamment la connexion depuis un serveur HTTP. 
-Cette mise à jour contient également des correctifs de bugs mineurs.
+Merci d'utiliser yNotes !
+Nous publions régulièrement des mises à jour de l'application qui incluent de nouvelles fonctionnalités ainsi que des améliorations destinées à renforcer la rapidité et la fiabilité.

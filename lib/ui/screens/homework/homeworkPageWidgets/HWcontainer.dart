@@ -7,13 +7,14 @@ import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/HWelement.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/main.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 
 ///Homework container to access the homeworks on the right page
 
 class HomeworkContainer extends StatefulWidget {
-  final DateTime date;
+  final DateTime? date;
   final Function callback;
   final List<Homework> listHW;
   const HomeworkContainer(this.date, this.callback, this.listHW);
@@ -24,19 +25,19 @@ class HomeworkContainer extends StatefulWidget {
 
 class _HomeworkContainerState extends State<HomeworkContainer> {
   ///Label to show on the left (I.E : "Tomorrow")
-  String mainLabel = "";
+  String? mainLabel = "";
 
   /// Show a small label if the main label doesn't show a date
   bool showSmallLabel = true;
   int containerSize = 0;
-  bool isPinned = false;
+  bool? isPinned = false;
   @override
   initState() {
     getPinnedStatus();
   }
 
   getPinnedStatus() async {
-    var defaultValue = await offline.pinnedHomework.getPinnedHomeworkSingleDate(widget.date.toString());
+    var defaultValue = await appSys.offline.pinnedHomework.getPinnedHomeworkSingleDate(widget.date.toString());
     setState(() {
       isPinned = defaultValue;
     });
@@ -44,7 +45,7 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
 
   ///Really important function that indicate for example if homework DateTime is tomorrow
   getTimeRelation() {
-    DateTime dateToUse = widget.date;
+    DateTime dateToUse = widget.date!;
     var now = new DateFormat("yyyy-MM-dd").format(DateTime.now());
     var difference = dateToUse.difference(DateTime.parse(now)).inDays;
     //Value that indicate the number of day offset with today when it's not considered as near
@@ -73,7 +74,7 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
 
   getAllHWCompletion(List<Homework> list) async {}
   getHomeworkInList(List<Homework> list) {
-    List<Homework> listToReturn = new List<Homework>();
+    List<Homework> listToReturn = [];
     listToReturn.clear();
     list.forEach((element) {
       if (element.date == widget.date) {
@@ -145,7 +146,7 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
                                   alignment: Alignment.center,
                                   child: AutoSizeText(
                                     //The main date or date relation
-                                    mainLabel,
+                                    mainLabel!,
                                     textAlign: TextAlign.left,
                                     style: TextStyle(
                                         color: ThemeUtils.textColor(),
@@ -155,7 +156,7 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
                                     maxLines: 1,
                                   ),
                                 ),
-                                if (isPinned)
+                                if (isPinned!)
                                   Align(
                                     alignment: Alignment.centerRight,
                                     child: Icon(
@@ -169,10 +170,10 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
                             //Small date
                             if (showSmallLabel == true)
                               Text(
-                                DateFormat("EEEE d MMMM", "fr_FR").format(widget.date),
+                                DateFormat("EEEE d MMMM", "fr_FR").format(widget.date!),
                                 textAlign: TextAlign.left,
                                 style: TextStyle(
-                                    color: isDarkModeEnabled ? Colors.white70 : Colors.grey,
+                                    color: ThemeUtils.isThemeDark ? Colors.white70 : Colors.grey,
                                     fontFamily: "Asap",
                                     fontSize: screenSize.size.height / 10 * 0.2),
                               )
@@ -183,7 +184,7 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
                           duration: Duration(milliseconds: 170),
                           curve: Curves.ease,
                           decoration: BoxDecoration(
-                            color: isDarkModeEnabled ? Color(0xff656565) : Colors.white,
+                            color: ThemeUtils.isThemeDark ? Color(0xff656565) : Colors.white,
                           ),
                           padding: EdgeInsets.only(
                               top: screenSize.size.height / 10 * 0.1, bottom: screenSize.size.height / 10 * 0.1),
@@ -199,19 +200,19 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
                                   null,
                                   () async {
                                     setState(() {
-                                      isPinned = !isPinned;
-                                      offline.pinnedHomework.set(widget.date.toString(), isPinned);
+                                      isPinned = !isPinned!;
+                                      appSys.offline.pinnedHomework.set(widget.date.toString(), isPinned);
                                       //If date pinned is before actual date (can be deleted)
                                     });
-                                    if (isPinned != true && widget.date.isBefore(DateTime.now())) {
+                                    if (isPinned != true && widget.date!.isBefore(DateTime.now())) {
                                       CustomDialogs.showAnyDialog(
                                           context, "Cette date sera supprimée au prochain rafraichissement.");
                                     }
                                     widget.callback();
                                   },
                                   icon: MdiIcons.pin,
-                                  label: (isPinned) ? "Epinglé" : "Epingler",
-                                  textColor: (isPinned) ? Colors.green : null,
+                                  label: isPinned! ? "Epinglé" : "Epingler",
+                                  textColor: isPinned! ? Colors.green : null,
                                 ),
 
                                 /* //Pin button
@@ -220,7 +221,7 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
                                   onPressed: () async {
                                     setState(() {
                                       isPinned = !isPinned;
-                                      offline.pinnedHomework.set(widget.date.toString(), isPinned);
+                                      appSys.offline.pinnedHomework.set(widget.date.toString(), isPinned);
                                       //If date pinned is before actual date (can be deleted)
                                     });
                                     if (isPinned != true && widget.date.isBefore(DateTime.now())) {
@@ -270,6 +271,8 @@ class _HomeworkContainerState extends State<HomeworkContainer> {
           ],
         ),
       );
+    } else {
+      return Container();
     }
   }
 }

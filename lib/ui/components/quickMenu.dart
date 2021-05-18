@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:ynotes/ui/components/customLoader.dart';
 import 'package:ynotes/ui/screens/settings/settingsPage.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
@@ -22,11 +23,11 @@ class QuickMenu extends StatefulWidget {
 bool visibility = true;
 
 class _QuickMenuState extends State<QuickMenu> with TickerProviderStateMixin {
-  OverlayEntry overlayEntry;
+  OverlayEntry? overlayEntry;
   PageController _pageController = PageController(initialPage: 0);
 
-  Animation<double> quickMenuShowAnimation;
-  AnimationController quickMenuController;
+  late Animation<double> quickMenuShowAnimation;
+  late AnimationController quickMenuController;
 
   @override
   void initState() {
@@ -154,19 +155,20 @@ class _QuickMenuState extends State<QuickMenu> with TickerProviderStateMixin {
                               ///PAGE 2
                               Material(
                                 color: Theme.of(context).primaryColor,
-                                child: FutureBuilder(
+                                child: FutureBuilder<List<FileInfo>>(
                                   future: FileAppUtil.getFilesList(""),
                                   builder: (context, snapshot) {
                                     if (snapshot.hasData) {
-                                      if (snapshot.data.length != 0) {
-                                        List<FileInfo> listFiles = snapshot.data;
+                                      if ((snapshot.data ?? []).length != 0) {
+                                        List<FileInfo>? listFiles = snapshot.data;
                                         return Container(
                                           height: screenSize.size.height / 10 * 8,
                                           child: ListView.builder(
                                             padding: EdgeInsets.all(0.0),
-                                            itemCount: listFiles.length,
+                                            itemCount: listFiles!.length,
                                             itemBuilder: (context, index) {
                                               final item = listFiles[index].fileName;
+
                                               return Dismissible(
                                                 direction: DismissDirection.endToStart,
                                                 background: Container(color: Colors.red),
@@ -183,7 +185,7 @@ class _QuickMenuState extends State<QuickMenu> with TickerProviderStateMixin {
                                                     listFiles.removeAt(index);
                                                   });
                                                 },
-                                                key: Key(item),
+                                                key: Key(item ?? ""),
                                                 child: Container(
                                                   child: Column(
                                                     children: <Widget>[
@@ -214,7 +216,7 @@ class _QuickMenuState extends State<QuickMenu> with TickerProviderStateMixin {
                                                                         Align(
                                                                           alignment: Alignment.centerLeft,
                                                                           child: Text(
-                                                                            snapshot.data[index].fileName,
+                                                                            snapshot.data ?? [][index].fileName,
                                                                             style: TextStyle(
                                                                                 fontFamily: "Asap",
                                                                                 fontSize:
@@ -228,11 +230,12 @@ class _QuickMenuState extends State<QuickMenu> with TickerProviderStateMixin {
                                                                       alignment: Alignment.centerLeft,
                                                                       child: Text(
                                                                         DateFormat("yyyy-MM-dd HH:mm").format(
-                                                                            snapshot.data[index].lastModifiedDate),
+                                                                            snapshot.data ??
+                                                                                [][index].lastModifiedDate),
                                                                         style: TextStyle(
                                                                             fontFamily: "Asap",
                                                                             fontSize: screenSize.size.height / 10 * 0.2,
-                                                                            color: isDarkModeEnabled
+                                                                            color: ThemeUtils.isThemeDark
                                                                                 ? Colors.white.withOpacity(0.5)
                                                                                 : Colors.black.withOpacity(0.5)),
                                                                       ),
@@ -272,9 +275,10 @@ class _QuickMenuState extends State<QuickMenu> with TickerProviderStateMixin {
                                         );
                                       }
                                     } else {
-                                      return SpinKitFadingFour(
-                                        color: Theme.of(context).primaryColorDark,
-                                        size: screenSize.size.width / 5 * 1,
+                                      return CustomLoader(
+                                        screenSize.size.width / 5 * 1,
+                                        screenSize.size.width / 5 * 1,
+                                        Theme.of(context).primaryColorDark,
                                       );
                                     }
                                   },
