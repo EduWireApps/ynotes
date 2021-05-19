@@ -45,6 +45,7 @@ class EcoleDirecteAccountConverter {
       if (element["enable"] == true) {
         switch (element["code"]) {
           case "VIE_SCOLAIRE":
+            tabs.add(appTabs.SCHOOL_LIFE);
             break;
           case "NOTES":
             tabs.add(appTabs.GRADES);
