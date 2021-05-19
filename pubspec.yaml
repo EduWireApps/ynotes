@@ -21,10 +21,7 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  awesome_notifications:
-    git:
-      url: https://github.com/aaqibism/awesome_notifications
-      ref: master
+  awesome_notifications: ^0.0.6+7
   battery_optimization:
     git:
       url: https://github.com/ChangJoo-Park/battery_optimization

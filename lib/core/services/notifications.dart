@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:android_alarm_manager/android_alarm_manager.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:html/parser.dart';
 import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
@@ -80,13 +82,15 @@ class AppNotification {
     Lesson? lesson;
     //Show next lesson if this one is after current datetime
     if (nextLesson != null && nextLesson.start!.isAfter(DateTime.now())) {
-      if (await appSys.settings!["user"]["agendaPage"]["enableDNDWhenOnGoingNotifEnabled"]) {
+      if (await appSys.settings!["user"]["agendaPage"]
+          ["enableDNDWhenOnGoingNotifEnabled"]) {
         AndroidPlatformChannel.enableDND();
       }
       lesson = nextLesson;
       await showOngoingNotification(lesson);
     } else {
-      final prefs = await (SharedPreferences.getInstance() as Future<SharedPreferences>);
+      final prefs =
+          await (SharedPreferences.getInstance() as Future<SharedPreferences>);
       bool? value = prefs.getBool("disableAtDayEnd");
       print(value);
       print(appSys.settings!["user"]["agendaPage"]["disableAtDayEnd"]);
@@ -102,7 +106,8 @@ class AppNotification {
       await logFile(
           "Persistant notification next lesson callback triggered for the lesson ${lesson.disciplineCode} ${lesson.room}");
     } else {
-      await logFile("Persistant notification next lesson callback triggered : you are in break.");
+      await logFile(
+          "Persistant notification next lesson callback triggered : you are in break.");
     }
   }
 
@@ -118,24 +123,31 @@ class AppNotification {
     print("Cancelled on going notification");
   }
 
-  static getRelatedAction(
-      ReceivedNotification receivedNotification, BuildContext context, Function navigatorCallback) async {
-    if (receivedNotification.channelKey == "newmail" && receivedNotification.toMap()["buttonKeyPressed"] == "REPLY") {
+  static getRelatedAction(ReceivedNotification receivedNotification,
+      BuildContext context, Function navigatorCallback) async {
+    if (receivedNotification.channelKey == "newmail" &&
+        receivedNotification.toMap()["buttonKeyPressed"] == "REPLY") {
       CustomDialogs.writeModalBottomSheet(context,
           defaultListRecipients: [
-            Recipient(receivedNotification.payload!["name"], receivedNotification.payload!["surname"],
-                receivedNotification.payload!["id"], receivedNotification.payload!["isTeacher"] == "true", null)
+            Recipient(
+                receivedNotification.payload!["name"],
+                receivedNotification.payload!["surname"],
+                receivedNotification.payload!["id"],
+                receivedNotification.payload!["isTeacher"] == "true",
+                null)
           ],
           defaultSubject: receivedNotification.payload!["subject"]);
       return;
     }
 
-    if (receivedNotification.channelKey == "newmail" && receivedNotification.toMap()["buttonKeyPressed"] != null) {
+    if (receivedNotification.channelKey == "newmail" &&
+        receivedNotification.toMap()["buttonKeyPressed"] != null) {
       navigatorCallback(4);
       return;
     }
 
-    if (receivedNotification.channelKey == "newgrade" && receivedNotification.toMap()["buttonKeyPressed"] != null) {
+    if (receivedNotification.channelKey == "newgrade" &&
+        receivedNotification.toMap()["buttonKeyPressed"] != null) {
       navigatorCallback(3);
       return;
     }
@@ -146,14 +158,16 @@ class AppNotification {
     }
     if (receivedNotification.channelKey == "persisnotif" &&
         receivedNotification.toMap()["buttonKeyPressed"] == "KILL") {
-      appSys.updateSetting(appSys.settings!["user"]["agendaPage"], "agendaOnGoingNotification", false);
+      appSys.updateSetting(appSys.settings!["user"]["agendaPage"],
+          "agendaOnGoingNotification", false);
 
       await AppNotification.cancelOnGoingNotification();
       return;
     }
   }
 
-  static initNotifications(BuildContext context, Function navigatorCallback) async {
+  static initNotifications(
+      BuildContext context, Function navigatorCallback) async {
     AwesomeNotifications().initialize(null, [
       NotificationChannel(
           channelKey: 'alarm',
@@ -166,7 +180,8 @@ class AppNotification {
     ]);
     try {
       AwesomeNotifications().actionStream.listen((receivedNotification) async {
-        await getRelatedAction(receivedNotification, context, navigatorCallback);
+        await getRelatedAction(
+            receivedNotification, context, navigatorCallback);
       });
     } catch (e) {}
   }
@@ -210,11 +225,16 @@ class AppNotification {
                 channelKey: 'alarm',
                 title: (event.name ?? "(Sans titre)") + " à $time",
                 body: event.description,
-                notificationLayout: parse(event.description).documentElement!.text.length < 49
-                    ? NotificationLayout.Default
-                    : NotificationLayout.BigText),
-            schedule: NotificationSchedule(preciseSchedules: [event.start!.subtract(delay).toUtc()]));
-        print("Scheduled an alarm" + event.start!.subtract(delay).toString() + " " + event.id.hashCode.toString());
+                notificationLayout:
+                    parse(event.description).documentElement!.text.length < 49
+                        ? NotificationLayout.Default
+                        : NotificationLayout.BigText),
+            schedule: NotificationCalendar.fromDate(
+                date: event.start!.subtract(delay).toUtc()));
+        print("Scheduled an alarm" +
+            event.start!.subtract(delay).toString() +
+            " " +
+            event.id.hashCode.toString());
       }
     } catch (e) {
       print(e);
@@ -232,8 +252,8 @@ class AppNotification {
           defaultColor: ThemeUtils.spaceColor(),
           ledColor: Colors.white)
     ]);
-    List<AgendaReminder> reminders =
-        await (appSys.offline.reminders.getReminders(event.lesson!.id) as Future<List<AgendaReminder>>);
+    List<AgendaReminder> reminders = await (appSys.offline.reminders
+        .getReminders(event.lesson!.id) as Future<List<AgendaReminder>>);
     await Future.forEach(reminders, (AgendaReminder rmd) async {
       //Unschedule existing
       if (rmd.alarm == alarmType.none) {
@@ -256,7 +276,8 @@ class AppNotification {
         if (rmd.alarm == alarmType.oneDay) {
           delay = Duration(days: 1);
         }
-        String text = "Rappel relié à l'évènement ${event.name} : \n <b>${rmd.name}</b> ${rmd.description}";
+        String text =
+            "Rappel relié à l'évènement ${event.name} : \n <b>${rmd.name}</b> ${rmd.description}";
         print(event.start!.subtract(delay));
         print(text);
 
@@ -266,15 +287,18 @@ class AppNotification {
                 channelKey: 'reminder',
                 title: "Rappel d'évènement",
                 body: text,
-                notificationLayout:
-                    event.description!.length < 49 ? NotificationLayout.Default : NotificationLayout.BigText),
-            schedule: NotificationSchedule(preciseSchedules: [event.start!.subtract(delay).toUtc()]));
+                notificationLayout: event.description!.length < 49
+                    ? NotificationLayout.Default
+                    : NotificationLayout.BigText),
+            schedule: NotificationCalendar.fromDate(
+                date: event.start!.subtract(delay).toUtc()));
       }
     });
   }
 
   ///Set an on going notification which is automatically refreshed (online or not) each hour
-  static Future<void> setOnGoingNotification({bool dontShowActual = false}) async {
+  static Future<void> setOnGoingNotification(
+      {bool dontShowActual = false}) async {
     //Logs for tests
     await logFile("Setting on going notification");
     print("Setting on going notification");
@@ -330,8 +354,10 @@ class AppNotification {
     if (appSys.settings!["user"]["agendaPage"]["agendaOnGoingNotification"]) {
       Lesson? getActualLesson = getCurrentLesson(lessons);
       if (!dontShowActual) {
-        if (appSys.settings!["user"]["agendaPage"]["enableDNDWhenOnGoingNotifEnabled"]) {
-          AndroidPlatformChannel.enableDND(); // Turn on DND - All notifications are suppressed.
+        if (appSys.settings!["user"]["agendaPage"]
+            ["enableDNDWhenOnGoingNotifEnabled"]) {
+          AndroidPlatformChannel
+              .enableDND(); // Turn on DND - All notifications are suppressed.
         }
         await showOngoingNotification(getActualLesson);
       }
@@ -341,9 +367,14 @@ class AppNotification {
         if (lesson.start!.isAfter(date)) {
           try {
             if (await AndroidAlarmManager.oneShotAt(
-                lesson.start!.subtract(Duration(minutes: minutes ?? 15)), lesson.start.hashCode, callback,
-                allowWhileIdle: true, rescheduleOnReboot: true))
-              print("scheduled " + lesson.start.hashCode.toString() + " $minutes minutes before.");
+                lesson.start!.subtract(Duration(minutes: minutes ?? 15)),
+                lesson.start.hashCode,
+                callback,
+                allowWhileIdle: true,
+                rescheduleOnReboot: true))
+              print("scheduled " +
+                  lesson.start.hashCode.toString() +
+                  " $minutes minutes before.");
           } catch (e) {
             print("failed " + e.toString());
           }
@@ -351,8 +382,11 @@ class AppNotification {
       });
       try {
         if (await AndroidAlarmManager.oneShotAt(
-            lessons.last.end!.subtract(Duration(minutes: minutes ?? 15)), lessons.last.end.hashCode, callback,
-            allowWhileIdle: true, rescheduleOnReboot: true)) print("Scheduled last lesson");
+            lessons.last.end!.subtract(Duration(minutes: minutes ?? 15)),
+            lessons.last.end.hashCode,
+            callback,
+            allowWhileIdle: true,
+            rescheduleOnReboot: true)) print("Scheduled last lesson");
       } catch (e) {}
       print("Success !");
     }
@@ -378,7 +412,8 @@ class AppNotification {
       channelKey: 'debug',
       title: 'Notification de test',
       notificationLayout: NotificationLayout.BigText,
-      body: "Si vous voyez cette notification, alors yNotes est bien autorisé à vous envoyer des notifications.",
+      body:
+          "Si vous voyez cette notification, alors yNotes est bien autorisé à vous envoyer des notifications.",
     ));
   }
 
@@ -393,17 +428,29 @@ class AppNotification {
           importance: NotificationImportance.Low,
           ledColor: Colors.white),
     ]);
-    await AwesomeNotifications().createNotification(
-        content: NotificationContent(
-            id: id,
-            channelKey: 'loading',
-            title: "Rafraichissement des données",
-            notificationLayout: NotificationLayout.ProgressBar,
-            progress: null));
+    /*if (Platform.isIOS) {
+      if (await Permission.notification.request().isGranted)
+        await AwesomeNotifications().createNotification(
+            content: NotificationContent(
+                id: id,
+                channelKey: 'loading',
+                title: "Rafraichissement des données",
+                notificationLayout: NotificationLayout.ProgressBar));
+    }*/
+    if (Platform.isAndroid) {
+      await AwesomeNotifications().createNotification(
+          content: NotificationContent(
+              id: id,
+              channelKey: 'loading',
+              title: "Rafraichissement des données",
+              notificationLayout: NotificationLayout.ProgressBar,
+              progress: null));
+    }
   }
 
   static showNewGradeNotification() async {
-    await AwesomeNotifications().initialize('resource://drawable/newgradeicon', [
+    await AwesomeNotifications()
+        .initialize('resource://drawable/newgradeicon', [
       NotificationChannel(
           channelKey: 'newgrade',
           defaultPrivacy: NotificationPrivacy.Public,
@@ -440,7 +487,9 @@ class AppNotification {
     AwesomeNotifications().createNotification(
       content: NotificationContent(
           id: int.parse(mail.id),
-          notificationLayout: parse(content).documentElement!.text.length < 49 ? null : NotificationLayout.BigText,
+          notificationLayout: parse(content).documentElement!.text.length < 49
+              ? null
+              : NotificationLayout.BigText,
           channelKey: 'newmail',
           title: 'Nouveau mail de ${mail.from["name"]}',
           summary: 'Nouveau mail de ${mail.from["name"]}',
@@ -454,7 +503,10 @@ class AppNotification {
           }),
       actionButtons: [
         NotificationActionButton(
-            key: "REPLY", label: "Répondre", autoCancel: true, buttonType: ActionButtonType.Default),
+            key: "REPLY",
+            label: "Répondre",
+            autoCancel: true,
+            buttonType: ActionButtonType.Default),
       ],
     );
   }
@@ -477,7 +529,8 @@ class AppNotification {
 
       String defaultSentence = "";
       if (lesson != null) {
-        defaultSentence = 'Vous êtes en <b>${lesson.discipline}</b> dans la salle <b>${lesson.room}</b>';
+        defaultSentence =
+            'Vous êtes en <b>${lesson.discipline}</b> dans la salle <b>${lesson.room}</b>';
         if (lesson.room == null || lesson.room == "") {
           defaultSentence = "Vous êtes en ${lesson.discipline}";
         }
@@ -496,7 +549,10 @@ class AppNotification {
         await AwesomeNotifications().createNotification(
           content: NotificationContent(
             id: id,
-            notificationLayout: parse(sentence).documentElement!.text.length < 49 ? null : NotificationLayout.BigText,
+            notificationLayout:
+                parse(sentence).documentElement!.text.length < 49
+                    ? null
+                    : NotificationLayout.BigText,
             channelKey: 'persisnotif',
             title: 'Rappel de cours constant',
             body: sentence,
@@ -505,9 +561,15 @@ class AppNotification {
           ),
           actionButtons: [
             NotificationActionButton(
-                key: "REFRESH", label: "Actualiser", autoCancel: false, buttonType: ActionButtonType.KeepOnTop),
+                key: "REFRESH",
+                label: "Actualiser",
+                autoCancel: false,
+                buttonType: ActionButtonType.KeepOnTop),
             NotificationActionButton(
-                key: "KILL", label: "Désactiver", autoCancel: true, buttonType: ActionButtonType.Default),
+                key: "KILL",
+                label: "Désactiver",
+                autoCancel: true,
+                buttonType: ActionButtonType.Default),
           ],
         );
       } catch (e) {

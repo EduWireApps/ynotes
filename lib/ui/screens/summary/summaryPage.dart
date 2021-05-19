@@ -4,6 +4,7 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
@@ -50,11 +51,12 @@ class SummaryPageState extends State<SummaryPage> {
 
     return VisibilityDetector(
       key: Key('sumpage'),
-      onVisibilityChanged: (visibilityInfo) {
+      onVisibilityChanged: (visibilityInfo) async {
+        await Permission.notification.request();
         //Ensure that page is visible
         var visiblePercentage = visibilityInfo.visibleFraction * 100;
         if (visiblePercentage == 100) {
-          showUpdateNote();
+          await showUpdateNote();
         }
       },
       child: HiddenSettings(
@@ -70,8 +72,18 @@ class SummaryPageState extends State<SummaryPage> {
                   return LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [Colors.purple, Colors.transparent, Colors.transparent, Colors.purple],
-                    stops: [0.0, 0.0, 0.94, 1.0], // 10% purple, 80% transparent, 10% purple
+                    colors: [
+                      Colors.purple,
+                      Colors.transparent,
+                      Colors.transparent,
+                      Colors.purple
+                    ],
+                    stops: [
+                      0.0,
+                      0.0,
+                      0.94,
+                      1.0
+                    ], // 10% purple, 80% transparent, 10% purple
                   ).createShader(rect);
                 },
                 blendMode: BlendMode.dstOut,
@@ -146,11 +158,15 @@ class SummaryPageState extends State<SummaryPage> {
         left: screenSize.size.width / 5 * 0.25,
         bottom: screenSize.size.height / 10 * 0.1,
       ),
-      child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
+      child:
+          Row(crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
         Text(
           text,
-          style:
-              TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontSize: 25, fontWeight: FontWeight.w600),
+          style: TextStyle(
+              color: ThemeUtils.textColor(),
+              fontFamily: "Asap",
+              fontSize: 25,
+              fontWeight: FontWeight.w600),
         ),
       ]),
     );
@@ -163,14 +179,16 @@ class SummaryPageState extends State<SummaryPage> {
 
   showUpdateNote() async {
     if ((appSys.settings!["system"]["lastReadUpdateNote"] != "0.11")) {
-      appSys.updateSetting(appSys.settings!["system"], "lastReadUpdateNote", "0.11");
-
+      appSys.updateSetting(
+          appSys.settings!["system"], "lastReadUpdateNote", "0.11");
       await CustomDialogs.showUpdateNoteDialog(context);
     }
   }
 
   void triggerSettings() {
-    summarySettingsController.animateToPage(summarySettingsController.page == 1 ? 0 : 1,
-        duration: Duration(milliseconds: 300), curve: Curves.ease);
+    summarySettingsController.animateToPage(
+        summarySettingsController.page == 1 ? 0 : 1,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.ease);
   }
 }
