@@ -183,15 +183,27 @@ flutter:
   fonts:
     - family: Asap
       fonts:
-        - asset: fonts/Asap-Regular.otf
-        - asset: fonts/Asap-Italic.otf
+        - asset: fonts/Asap-Regular.ttf
+        - asset: fonts/Asap-Medium.ttf
+          weight: 500
+        - asset: fonts/Asap-SemiBold.ttf
+          weight: 600
+        - asset: fonts/Asap-Bold.ttf
+          weight: 700
+        - asset: fonts/Asap-Italic.ttf
           style: italic
-        - asset: fonts/Asap-Bold.otf
+        - asset: fonts/Asap-MediumItalic.ttf
+          style: italic
+          weight: 500
+        - asset: fonts/Asap-SemiBoldItalic.ttf
+          style: italic
+          weight: 600
+        - asset: fonts/Asap-BoldItalic.ttf
+          style: italic
           weight: 700
-    - family: ProximaNova
-      fonts:
-        - asset: fonts/proxima-nova-soft-bold.otf
-          weight: 700
+
+        
+        
 
   assets:
     - assets/images/logoED.svg
