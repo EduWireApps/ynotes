@@ -303,7 +303,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
       },
       {
         "menuName": "Vie scolaire",
-        "relatedApi": -1,
+        "relatedApi": 0,
         "icon": MdiIcons.stamper,
         "page": SchoolLifePage(),
       },
