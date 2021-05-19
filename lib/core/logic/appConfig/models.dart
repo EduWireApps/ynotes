@@ -17,4 +17,6 @@ enum appTabs {
   CLOUD,
   @JsonValue("FILES")
   FILES,
+  @JsonValue("SCHOOL_LIFE")
+  SCHOOL_LIFE,
 }

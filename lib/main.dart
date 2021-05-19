@@ -11,6 +11,7 @@ import 'package:uuid/uuid.dart';
 import 'package:wiredash/wiredash.dart';
 import 'package:ynotes/core/logic/appConfig/controller.dart';
 import 'package:ynotes/core/services/background.dart';
+import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/screens/carousel/carousel.dart';
 import 'package:ynotes/ui/screens/drawer/drawerBuilder.dart';
@@ -42,6 +43,11 @@ var uuid = Uuid();
 ///
 _headlessTask(HeadlessTask? task) async {
   if (task != null) {
+    if (task.timeout) {
+      await AppNotification.cancelNotification(task.taskId.hashCode);
+      BackgroundFetch.finish(task.taskId);
+      
+    }
     await BackgroundService.backgroundFetchHeadlessTask(task.taskId, headless: true);
   }
 }

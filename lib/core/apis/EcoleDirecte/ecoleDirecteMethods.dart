@@ -165,6 +165,9 @@ class EcoleDirecteMethod {
     String data = 'data={"token": "$token"}';
     List<SchoolLifeTicket> schoolLifeList = await request(
         data, rootUrl, method, EcoleDirecteSchoolLifeConverter.schoolLife, "School Life request returned an error:");
+    if (schoolLifeList != null) {
+      await appSys.offline.schoolLife.update(schoolLifeList);
+    }
     return schoolLifeList;
   }
 

@@ -41,6 +41,11 @@ class APIPronote extends API {
   }
 
   @override
+  Future<List<SchoolLifeTicket>> getSchoolLife({bool forceReload = false}) async {
+    return [];
+  }
+
+  @override
   Future<List> apiStatus() async {
     return [1, "Pas de problème connu."];
   }
@@ -64,7 +69,6 @@ class APIPronote extends API {
   }
 
   @override
-
   @override
   Future<List<Discipline>?> getGrades({bool? forceReload}) async {
     return (await pronoteMethod.fetchAnyData(
