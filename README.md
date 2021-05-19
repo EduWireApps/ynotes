@@ -80,7 +80,8 @@ Si vous êtes utilisateur et souhaitez télécharger l'application sur votre sma
 - [Télécharger la dernière release (.apk)](https://github.com/ModernChocolate/ynotes/releases)
 - [Compiler vous même votre application](#compilation)
 ### iOS
-- Étant donné que les frais d'inscriptions obligatoires pour devenir Apple Developer sont hors budgets, vous ne pourrez pas trouver l'application sur l'App Store. Vous pouvez donc compiler l'application à l'étape suivante si vous possédez un Mac.
+- [Installer l'application depuis l'App Store](https://apps.apple.com/fr/app/ynotes/id1563624059)
+- [Compiler vous même votre application](#compilation)
 
 
 # Compilation 
