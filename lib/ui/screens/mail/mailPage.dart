@@ -181,7 +181,7 @@ class _MailPageState extends State<MailPage> {
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: <Widget>[
                                               Material(
-                                                color: localList[index].read
+                                                color: localList[index].read ?? false
                                                     ? Theme.of(context).backgroundColor
                                                     : Theme.of(context).primaryColor,
                                                 child: InkWell(
@@ -212,7 +212,7 @@ class _MailPageState extends State<MailPage> {
                                                             children: <Widget>[
                                                               Container(
                                                                 child: Text(
-                                                                  localList[index].subject,
+                                                                  localList[index].subject ?? "",
                                                                   textAlign: TextAlign.start,
                                                                   style: TextStyle(
                                                                     fontFamily: "Asap",
@@ -223,7 +223,7 @@ class _MailPageState extends State<MailPage> {
                                                                 ),
                                                               ),
                                                               Text(
-                                                                localList[index].from["name"],
+                                                                localList[index].from?["name"] ?? "",
                                                                 textAlign: TextAlign.start,
                                                                 style: TextStyle(
                                                                   fontFamily: "Asap",
@@ -260,7 +260,7 @@ class _MailPageState extends State<MailPage> {
                                                             ],
                                                           ),
                                                         ),
-                                                        if (!localList[index].read)
+                                                        if (!(localList[index].read ?? true))
                                                           Expanded(child: Container(width: 10, color: Colors.blue))
                                                       ],
                                                     ),
@@ -370,7 +370,7 @@ class _MailPageState extends State<MailPage> {
             return datea.compareTo(dateb);
             break;
           case (sortValue.author):
-            return b.from["nom"].compareTo(a.from["nom"]);
+            return b.from?["nom"].compareTo(a.from?["nom"]);
             break;
         }
         return 1;

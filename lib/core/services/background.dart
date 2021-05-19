@@ -42,7 +42,7 @@ class BackgroundService {
 
         Mail? mail = await testNewMails();
         if (mail != null) {
-          String content = (await readMail(mail.id, mail.read)) ?? "";
+          String content = (await readMail(mail.id ?? "", mail.read ?? false)) ?? "";
           await AppNotification.showNewMailNotification(mail, content);
         } else {
           print("Nothing updated");

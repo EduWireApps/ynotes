@@ -17,10 +17,10 @@ class DocumentAdapter extends TypeAdapter<Document> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Document(
-      fields[0] as String?,
-      fields[1] as String?,
-      fields[2] as String?,
-      fields[3] as int?,
+      documentName: fields[0] as String?,
+      id: fields[1] as String?,
+      type: fields[2] as String?,
+      length: fields[3] as int?,
     );
   }
 
@@ -55,14 +55,15 @@ class DocumentAdapter extends TypeAdapter<Document> {
 
 Document _$DocumentFromJson(Map<String, dynamic> json) {
   return Document(
-    json['documentName'] as String?,
-    json['id'] as String?,
-    json['type'] as String?,
-    json['length'] as int?,
-  );
+    documentName: json['documentName'] as String?,
+    id: json['id'] as String?,
+    type: json['type'] as String?,
+    length: json['length'] as int?,
+  )..dbId = json['dbId'] as int?;
 }
 
 Map<String, dynamic> _$DocumentToJson(Document instance) => <String, dynamic>{
+      'dbId': instance.dbId,
       'documentName': instance.documentName,
       'id': instance.id,
       'type': instance.type,

@@ -13,11 +13,13 @@ import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:wiredash/wiredash.dart';
 import 'package:ynotes/core/logic/appConfig/controller.dart';
+import 'package:ynotes/core/offline/isar/test.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/services/platform.dart';
 import 'package:ynotes/core/utils/settingsUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
+import 'package:ynotes/isar.g.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/accountPage.dart';
@@ -500,8 +502,10 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                           title: 'Bouton magique',
                           leading: Icon(MdiIcons.testTube, color: ThemeUtils.textColor()),
                           onTap: () async {
-                            await Future.delayed(Duration(seconds: 5), () => "1");
-                            await AppNotification.cancelNotification(0);
+                            /*await appSys.initIsar();*/
+                            await appSys.isar.writeTxn((isar) async {
+                              await isar.homework2s.put(Homework2(teacherName: "Marguerite"));
+                            });
                           },
                           titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                           subtitleTextStyle: TextStyle(

@@ -210,8 +210,11 @@ class _CloudPageState extends State<CloudPage> {
                                                                     localFoldersList![index].title,
                                                                     usingFileName: true);
                                                               } else {
-                                                                model.download(Document(localFoldersList![index].title,
-                                                                    localFoldersList![index].id, "CLOUD", 0));
+                                                                model.download(Document(
+                                                                    documentName: localFoldersList![index].title,
+                                                                    id: localFoldersList![index].id,
+                                                                    type: "CLOUD",
+                                                                    length: 0));
                                                               }
                                                             }
                                                           },

@@ -294,6 +294,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.0"
+  dartx:
+    dependency: transitive
+    description:
+      name: dartx
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.7.1"
   day_night_switcher:
     dependency: "direct main"
     description:
@@ -500,6 +507,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.0-rc.2021031201"
+  freezed_annotation:
+    dependency: transitive
+    description:
+      name: freezed_annotation
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.14.2"
   geolocator:
     dependency: "direct main"
     description:
@@ -619,6 +633,27 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.3.4"
+  isar:
+    dependency: "direct main"
+    description:
+      name: isar
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.0"
+  isar_flutter_libs:
+    dependency: "direct main"
+    description:
+      name: isar_flutter_libs
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.0"
+  isar_generator:
+    dependency: "direct dev"
+    description:
+      name: isar_generator
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.4.0"
   js:
     dependency: transitive
     description:
@@ -1108,6 +1143,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.19"
+  time:
+    dependency: transitive
+    description:
+      name: time
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "2.0.0"
   timing:
     dependency: transitive
     description:

@@ -553,7 +553,7 @@ class PronoteClient {
         try {
           value["ListePieceJointe"]["V"].forEach((pj) {
             try {
-              downloadUrl(Document(pj["L"], pj["N"], pj["G"].toString(), 0));
+              downloadUrl(Document(documentName: pj["L"], id: pj["N"], type: pj["G"].toString(), length: 0));
             } catch (e) {}
           });
         } catch (e) {}

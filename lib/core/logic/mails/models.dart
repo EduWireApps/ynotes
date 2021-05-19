@@ -1,25 +1,9 @@
 import 'package:hive/hive.dart';
+import 'package:isar/isar.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
-part 'models.g.dart';
+import 'package:ynotes/core/offline/isar/data/adapters.dart';
 
-class Mail {
-  //E.G: "69627"
-  final String id;
-  //E.G : "archived"/"sent"/"received"
-  final String mtype;
-  bool read;
-  //E.G : 183 ==> To class mails in folders
-  final String idClasseur;
-  final Map<String, dynamic> from;
-  final to;
-  //E.G : "Coronavirus school prank"
-  final String subject;
-  final String? date;
-  final String? content;
-  final List<Document>? files;
-  Mail(this.id, this.mtype, this.read, this.idClasseur, this.from, this.subject, this.date,
-      {this.content, this.to, this.files});
-}
+part 'models.g.dart';
 
 class Classeur {
   //E.G: "Mails Maths"
@@ -28,6 +12,33 @@ class Classeur {
   final int? id;
 
   Classeur(this.libelle, this.id);
+}
+
+@Collection()
+class Mail {
+  @Id()
+  int? dbId;
+  //E.G: "69627"
+  String? id;
+  //E.G : "archived"/"sent"/"received"
+  String? mtype;
+  bool? read;
+  //E.G : 183 ==> To class mails in folders
+  String? idClasseur;
+
+  @MapConverter()
+  Map? from;
+
+  @ListMapConverter()
+  List<Map?>? to;
+  //E.G : "Coronavirus school prank"
+  String? subject;
+  String? date;
+  String? content;
+
+  @Backlink(to: 'teacher')
+  IsarLinks<Document> files = IsarLinks<Document>();
+  Mail({this.id, this.mtype, this.read, this.idClasseur, this.from, this.subject, this.date, this.content, this.to});
 }
 
 @HiveType(typeId: 9)
