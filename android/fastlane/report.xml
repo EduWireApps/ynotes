@@ -5,32 +5,32 @@
     
     
       
-      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.000252363">
+      <testcase classname="fastlane.lanes" name="0: default_platform" time="0.000231144">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="1: number_of_commits" time="0.011490192">
+      <testcase classname="fastlane.lanes" name="1: number_of_commits" time="0.017394194">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="2: flutter clean" time="0.982845013">
+      <testcase classname="fastlane.lanes" name="2: flutter clean" time="1.34902614">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="3: flutter build apk --flavor prod --release --build-number\=728 --split-per-abi" time="117.569767135">
+      <testcase classname="fastlane.lanes" name="3: flutter build apk --flavor prod --release --build-number\=729 --split-per-abi" time="110.842601933">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="4: adb install build/app/outputs/flutter-apk/app-arm64-v8a-prod-release.apk" time="4.553905672">
+      <testcase classname="fastlane.lanes" name="4: adb install build/app/outputs/flutter-apk/app-arm64-v8a-prod-release.apk" time="4.477274315">
         
       </testcase>
     
       
-      <testcase classname="fastlane.lanes" name="5: adb shell am start -n fr.ynotes/.MainActivity" time="0.18894765">
+      <testcase classname="fastlane.lanes" name="5: adb shell am start -n fr.ynotes/.MainActivity" time="0.158521739">
         
       </testcase>
     
