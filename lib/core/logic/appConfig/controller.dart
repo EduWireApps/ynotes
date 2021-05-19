@@ -8,13 +8,14 @@ import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
-import 'package:ynotes/core/logic/schoolLife/controller.dart';
 import 'package:ynotes/core/logic/agenda/controller.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/core/logic/homework/controller.dart';
+import 'package:ynotes/core/logic/schoolLife/controller.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/background.dart';
+import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/utils/settingsUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/ui/themes/themesList.dart';
@@ -55,11 +56,8 @@ class ApplicationSystem extends ChangeNotifier {
   SchoolAccount? get currentSchoolAccount => _currentSchoolAccount;
   set currentSchoolAccount(SchoolAccount? newValue) {
     _currentSchoolAccount = newValue;
-    if (account != null &&
-        account!.managableAccounts != null &&
-        newValue != null) {
-      this.updateSetting(this.settings!["system"], "accountIndex",
-          this.account!.managableAccounts!.indexOf(newValue));
+    if (account != null && account!.managableAccounts != null && newValue != null) {
+      this.updateSetting(this.settings!["system"], "accountIndex", this.account!.managableAccounts!.indexOf(newValue));
     }
     notifyListeners();
   }
@@ -68,8 +66,7 @@ class ApplicationSystem extends ChangeNotifier {
     try {
       await this.offline.clearAll();
       //Delete sharedPref
-      SharedPreferences preferences =
-          await (SharedPreferences.getInstance() as Future<SharedPreferences>);
+      SharedPreferences preferences = await (SharedPreferences.getInstance() as Future<SharedPreferences>);
       await preferences.clear();
       //delte local setings and init them
       this.settings!.clear();
@@ -100,8 +97,7 @@ class ApplicationSystem extends ChangeNotifier {
     if (api != null) {
       account = await api!.account();
       if (account != null && account!.managableAccounts != null)
-        currentSchoolAccount = account!
-            .managableAccounts![settings!["system"]["accountIndex"] ?? 0];
+        currentSchoolAccount = account!.managableAccounts![settings!["system"]["accountIndex"] ?? 0];
     }
     //Set background fetch
     await _initBackgroundFetch();
@@ -130,9 +126,8 @@ class ApplicationSystem extends ChangeNotifier {
     theme = appThemes[themeName];
     this.themeName = themeName;
     updateSetting(this.settings!["user"]["global"], "theme", themeName);
-    SystemChrome.setSystemUIOverlayStyle(ThemeUtils.isThemeDark
-        ? SystemUiOverlayStyle.light
-        : SystemUiOverlayStyle.dark);
+    SystemChrome.setSystemUIOverlayStyle(
+        ThemeUtils.isThemeDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark);
     notifyListeners();
   }
 
@@ -141,18 +136,25 @@ class ApplicationSystem extends ChangeNotifier {
     if (Platform.isAndroid || Platform.isIOS) {
       print("Background fetch configuration...");
       int i = await BackgroundFetch.configure(
-          BackgroundFetchConfig(
-              minimumFetchInterval: 15,
-              stopOnTerminate: false,
-              startOnBoot: true,
-              enableHeadless: true,
-              requiresBatteryNotLow: false,
-              requiresCharging: false,
-              requiresStorageNotLow: false,
-              requiresDeviceIdle: false), (taskId) async {
-        await BackgroundService.backgroundFetchHeadlessTask(taskId);
-        BackgroundFetch.finish(taskId);
-      });
+        BackgroundFetchConfig(
+            minimumFetchInterval: 15,
+            stopOnTerminate: false,
+            startOnBoot: true,
+            enableHeadless: true,
+            requiresBatteryNotLow: false,
+            requiresCharging: false,
+            requiresStorageNotLow: false,
+            requiresDeviceIdle: false,
+            requiredNetworkType: NetworkType.ANY),
+        (String taskId) async {
+          await BackgroundService.backgroundFetchHeadlessTask(taskId);
+          BackgroundFetch.finish(taskId);
+        },
+        (String taskId) async {
+          await AppNotification.cancelNotification(taskId.hashCode);
+          BackgroundFetch.finish(taskId);
+        },
+      );
       print(i);
       print("Configured background fetch");
     }
