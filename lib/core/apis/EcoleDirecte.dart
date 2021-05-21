@@ -149,7 +149,6 @@ Future<String?> readMail(String mailId, bool read) async {
       Map<String, dynamic> req = jsonDecode(response.body);
       if (req['code'] == 200) {
         String toDecode = req['data']['content'];
-
         toDecode = utf8.decode(base64.decode(toDecode.replaceAll("\n", "")));
 
         return toDecode;

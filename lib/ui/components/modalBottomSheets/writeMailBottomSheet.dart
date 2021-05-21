@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:html_character_entities/html_character_entities.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -77,8 +78,10 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                       children: [
                         IconButton(
                           onPressed: () async {
+                            print(await controller.getText());
+                            print(HtmlCharacterEntities.encode(await controller.getText() ?? "", characters: "zàâçéèêëîïôûùüÿñæœ"));
                             if (!selectedRecipients!.isEmpty) {
-                              Navigator.pop(context, [
+                               Navigator.pop(context, [
                                 subjectController.text,
                                 await controller.getText(),
                                 selectedRecipients,
