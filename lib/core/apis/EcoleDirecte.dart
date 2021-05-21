@@ -217,7 +217,6 @@ class APIEcoleDirecte extends API {
     return await EcoleDirecteMethod(this.offlineController).homeworkDates();
   }
 
-//Get dates of the the next homework (based on the EcoleDirecte API)
   @override
 //Getting grades
   Future<List<Discipline>> getGrades({bool? forceReload}) async {
@@ -226,11 +225,12 @@ class APIEcoleDirecte extends API {
         forceFetch: forceReload ?? false, isOfflineLocked: this.offlineController.locked);
   }
 
-//Get homeworks for a specific date
+//Get dates of the the next homework (based on the EcoleDirecte API)
   Future<List<Homework>> getHomeworkFor(DateTime? dateHomework) async {
     return await EcoleDirecteMethod(this.offlineController).homeworkFor(dateHomework!);
   }
 
+//Get homeworks for a specific date
   Future<List<Homework>> getNextHomework({bool? forceReload}) async {
     return await EcoleDirecteMethod.fetchAnyData(
         EcoleDirecteMethod(this.offlineController).nextHomework, offlineController.homework.getHomework,
@@ -346,6 +346,11 @@ class APIEcoleDirecte extends API {
     } else {
       return [0, "Erreur"];
     }
+  }
+
+  Future<List<Recipient>?> mailRecipients() async {
+    return (await EcoleDirecteMethod.fetchAnyData(
+        EcoleDirecteMethod(this.offlineController).recipients, offlineController.recipients.getRecipients));
   }
 
   @override

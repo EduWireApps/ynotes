@@ -153,7 +153,7 @@ class EcoleDirecteMethod {
         data, rootUrl, "", EcoleDirecteMailConverter.recipients, "Recipients request returned an error:",
         ignoreMethodAndId: true);
     if (recipients != null) {
-      await appSys.offline.recipients.recipients.updateRecipients(recipients);
+      await appSys.offline.recipients.updateRecipients(recipients);
     }
     return recipients;
   }
