@@ -7,7 +7,7 @@ class ListMapConverter extends TypeConverter<List<Map?>?, String?> {
 
   @override
   List<Map?> fromIsar(String? listMap) {
-    return jsonDecode(listMap ?? "");
+    return jsonDecode(listMap ?? "").cast<Map?>();
   }
 
   @override

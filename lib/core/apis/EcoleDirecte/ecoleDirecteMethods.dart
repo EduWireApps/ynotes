@@ -3,11 +3,13 @@ import 'dart:convert';
 import 'package:connectivity/connectivity.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:isar/isar.dart';
 import 'package:ynotes/core/apis/EcoleDirecte/converters/cloud.dart';
 import 'package:ynotes/core/apis/EcoleDirecte/convertersExporter.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/offline/isar/data/mail.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/usefulMethods.dart';
@@ -16,8 +18,8 @@ import '../EcoleDirecte.dart';
 
 class EcoleDirecteMethod {
   final Offline? _offlineController;
-
-  EcoleDirecteMethod(this._offlineController);
+  final Isar? isar;
+  EcoleDirecteMethod(this._offlineController, {this.isar});
   Future<List<CloudItem>> cloudFolders() async {
     await EcoleDirecteMethod.testToken();
     String rootUrl = 'https://api.ecoledirecte.com/v3/E/';
@@ -101,6 +103,70 @@ class EcoleDirecteMethod {
     return homework;
   }
 
+  mails() async {
+    await EcoleDirecteMethod.testToken();
+    String data = 'data={"token": "$token"}';
+    String rootUrl = "https://api.ecoledirecte.com/v3/eleves/";
+
+    String method = "messages.awp?verbe=getall&typeRecuperation=all";
+    List<Mail> mails = await request(
+      data,
+      rootUrl,
+      method,
+      EcoleDirecteMailConverter.mails,
+      "Mails request returned an error:",
+    );
+    if (this.isar != null) {
+      await OfflineMail(isar).updateMails(mails);
+      print("Updated mails");
+    }
+    return mails;
+
+/*
+  await EcoleDirecteMethod.testToken();
+  String? id = appSys.currentSchoolAccount?.studentID;
+  var url = 'https://api.ecoledirecte.com/v3/eleves/$id/messages.awp?verbe=getall&typeRecuperation=all';
+
+  Map<String, String> headers = {"Content-type": "text/plain"};
+  String data = 'data={"token": "$token"}';
+  //encode Map to JSON
+  var body = data;
+  var response = await http.post(Uri.parse(url), headers: headers, body: body).catchError((e) {
+    throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou reessayez plus tard.");
+  });
+  print("Starting the mails collection");
+
+  if (response.statusCode == 200) {
+    Map<String, dynamic> req = jsonDecode(utf8.decode(response.bodyBytes));
+    if (req['code'] == 200) {
+      print("Mail request succeeded");
+      List<Mail> mailsList = [];
+      
+      List messagesList = [];
+      if (req['data']['messages'] != null) {
+       
+      }
+      print("Returned mails");
+      if (checking == null) {
+        print("checking mails");
+        List<Mail> receivedMails = mailsList.where((element) => element.mtype == "received").toList();
+        appSys.updateSetting(appSys.settings!["system"], "lastMailCount", receivedMails.length);
+        print("checked mails");
+      }
+
+      return mailsList;
+    }
+    //Return an error
+    else {
+      throw "Error.";
+    }
+  } else {
+    print(response.statusCode);
+    throw "Error.";
+  }
+}*/
+  }
+
   nextHomework() async {
     await EcoleDirecteMethod.testToken();
 
@@ -180,18 +246,29 @@ class EcoleDirecteMethod {
       return await ((offlineArguments != null) ? offlineFetch(offlineArguments) : offlineFetch());
     } else if (forceFetch && !isOfflineLocked) {
       try {
-        return await ((onlineArguments != null) ? onlineFetch(onlineArguments) : onlineFetch());
+        await ((onlineArguments != null) ? onlineFetch(onlineArguments) : onlineFetch());
+        return await ((offlineArguments != null) ? offlineFetch(offlineArguments) : offlineFetch());
       } catch (e) {
+        print("Error " + e.toString());
         return await ((offlineArguments != null) ? offlineFetch(offlineArguments) : offlineFetch());
       }
     } else {
       //Offline data;
       var data;
       if (!isOfflineLocked) {
-        data = await ((offlineArguments != null) ? offlineFetch(offlineArguments) : offlineFetch());
+        try {
+          data = await ((offlineArguments != null) ? offlineFetch(offlineArguments) : offlineFetch());
+        } catch (e) {
+          print("Error " + e.toString());
+        }
       }
       if (data == null) {
-        data = await ((onlineArguments != null) ? onlineFetch(onlineArguments) : onlineFetch());
+        try {
+          await ((onlineArguments != null) ? onlineFetch(onlineArguments) : onlineFetch());
+          return await ((offlineArguments != null) ? offlineFetch(offlineArguments) : offlineFetch());
+        } catch (e) {
+          print("Error " + e.toString());
+        }
       }
       return data;
     }

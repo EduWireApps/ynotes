@@ -17,9 +17,8 @@ import 'package:ynotes/ui/components/dialogs.dart';
 
 class ReadMailBottomSheet extends StatefulWidget {
   final Mail mail;
-  final int? index;
 
-  const ReadMailBottomSheet(this.mail, this.index, {Key? key}) : super(key: key);
+  const ReadMailBottomSheet(this.mail, {Key? key}) : super(key: key);
 
   @override
   _ReadMailBottomSheetState createState() => _ReadMailBottomSheetState();
@@ -29,13 +28,12 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
   bool monochromatic = false;
   DateFormat format = DateFormat("dd-MM-yyyy HH:hh");
 
-  //Get monochromatic colors or not
   @override
   Widget build(BuildContext context) {
     print(this.widget.mail.id);
     MediaQueryData screenSize = MediaQuery.of(context);
     return FutureBuilder<String?>(
-        future: readMail(this.widget.mail.id ?? "", this.widget.mail.read ?? false),
+        future: getMail(),
         builder: (context, snapshot) {
           return Container(
               height: screenSize.size.height,
@@ -189,9 +187,9 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                       AnimatedContainer(
                                         duration: Duration(milliseconds: 75),
                                         width: screenSize.size.width / 5 * 4.4,
-                                        height: this.widget.mail.files!.length * (screenSize.size.height / 10 * 0.7),
+                                        height: this.widget.mail.files.length * (screenSize.size.height / 10 * 0.7),
                                         child: ListView.builder(
-                                            itemCount: this.widget.mail.files!.length,
+                                            itemCount: this.widget.mail.files.length,
                                             itemBuilder: (BuildContext context, int index) {
                                               return Container(
                                                 margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.2),
@@ -349,7 +347,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                                                                     child: InkWell(
                                                                                   onTap: () async {
                                                                                     FileAppUtil.openFile(
-                                                                                            this
+                                                                                        this
                                                                                             .widget
                                                                                             .mail
                                                                                             .files
@@ -404,6 +402,16 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                 ],
               ));
         });
+  }
+
+  //Get monochromatic colors or not
+  ///TO DO PUT IT IN A CONTROLLER
+  Future<String?> getMail() async {
+    if (widget.mail.content != null && widget.mail.content != "") {
+      return widget.mail.content;
+    } else {
+      return await readMail(widget.mail.id ?? "", true);
+    }
   }
 
   htmlColors(String? html) {

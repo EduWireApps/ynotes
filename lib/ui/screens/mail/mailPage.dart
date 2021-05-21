@@ -6,7 +6,6 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/core/logic/shared/loginController.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/customLoader.dart';
@@ -18,8 +17,8 @@ String? dossier = "Reçus";
 
 List<Mail> localList = [];
 StreamSubscription? loginconnexion;
-late Future<List<Mail>?> mailsListFuture;
-void mailModalBottomSheet(context, Mail mail, {int? index}) {
+late Future<List<Mail>?>? mailsListFuture;
+Future<void> mailModalBottomSheet(context, Mail mail, {int? index}) async {
   showModalBottomSheet(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
@@ -28,7 +27,7 @@ void mailModalBottomSheet(context, Mail mail, {int? index}) {
       context: context,
       isScrollControlled: true,
       builder: (BuildContext bc) {
-        return ReadMailBottomSheet(mail, index);
+        return ReadMailBottomSheet(mail);
       });
 }
 
@@ -151,7 +150,7 @@ class _MailPageState extends State<MailPage> {
                             //Get all the mails
                             future: mailsListFuture,
                             builder: (context, snapshot) {
-                              if (appSys.loginController.actualState == loginStatus.offline) {
+                              /*if (appSys.loginController.actualState == loginStatus.offline) {
                                 return Center(
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -166,7 +165,7 @@ class _MailPageState extends State<MailPage> {
                                   ),
                                 );
                               }
-
+*/
                               if (snapshot.connectionState == ConnectionState.done) {
                                 localList = getCorrespondingClasseur(dossier, snapshot.data);
                                 return ClipRRect(
@@ -185,8 +184,9 @@ class _MailPageState extends State<MailPage> {
                                                     ? Theme.of(context).backgroundColor
                                                     : Theme.of(context).primaryColor,
                                                 child: InkWell(
-                                                  onTap: () {
-                                                    mailModalBottomSheet(context, localList[index], index: index);
+                                                  onTap: () async {
+                                                    await mailModalBottomSheet(context, localList[index], index: index);
+                                                    refreshLocalMailsList(forceReload: false);
                                                   },
                                                   child: Container(
                                                     height: screenSize.size.height / 10 * 1,
@@ -248,7 +248,7 @@ class _MailPageState extends State<MailPage> {
                                                                     ),
                                                                     overflow: TextOverflow.ellipsis,
                                                                   ),
-                                                                  if (localList[index].files!.length > 0)
+                                                                  if (localList[index].files.length > 0)
                                                                     Icon(
                                                                       MdiIcons.attachment,
                                                                       color: ThemeUtils.isThemeDark
@@ -383,12 +383,12 @@ class _MailPageState extends State<MailPage> {
 
   void initState() {
     super.initState();
-    mailsListFuture = getMails();
+    mailsListFuture = (appSys.api as APIEcoleDirecte?)?.getMails();
   }
 
-  Future<void> refreshLocalMailsList() async {
+  Future<void> refreshLocalMailsList({forceReload = true}) async {
     setState(() {
-      mailsListFuture = getMails();
+      mailsListFuture = (appSys.api as APIEcoleDirecte?)?.getMails(forceReload: forceReload);
     });
     var realdisciplinesListFuture = await mailsListFuture;
   }

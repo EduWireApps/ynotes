@@ -16,12 +16,13 @@ import 'package:ynotes/core/logic/schoolLife/controller.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/background.dart';
-import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/services/notifications.dart';
+import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/utils/settingsUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
-import 'package:ynotes/ui/themes/themesList.dart';
 import 'package:ynotes/isar.g.dart';
+import 'package:ynotes/ui/themes/themesList.dart';
+
 ///Top level application sytem class
 class ApplicationSystem extends ChangeNotifier {
   Map? settings;
@@ -84,16 +85,11 @@ class ApplicationSystem extends ChangeNotifier {
     }
   }
 
-  initIsar() async {
-          var dir = await FolderAppUtil.getDirectory();
-   
-    
-    isar = await openIsar(directory: "${dir.path}/offline");
-  }
-
   ///The most important function
   ///It will intialize Offline, APIs and background fetch
   initApp() async {
+    await initIsar();
+
     logger = Logger();
     //set settings
     await _initSettings();
@@ -122,6 +118,11 @@ class ApplicationSystem extends ChangeNotifier {
   initControllers() async {
     await this.gradesController.refresh(force: true);
     await this.homeworkController.refresh(force: true);
+  }
+
+  initIsar() async {
+    var dir = await FolderAppUtil.getDirectory();
+    isar = await openIsar(directory: "${dir.path}/offline");
   }
 
 //Leave app

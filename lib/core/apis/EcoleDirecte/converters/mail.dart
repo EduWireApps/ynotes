@@ -3,7 +3,7 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 
 class EcoleDirecteMailConverter {
   static Mail mail(Map<String, dynamic> mailData) {
-    var to = mailData["to"];
+    List<Map<String, dynamic>> to = mailData["to"].cast<Map<String, dynamic>>();
     String id = mailData["id"].toString();
     String messageType = mailData["mtype"] ?? "";
     bool isMailRead = mailData["read"] ?? false;
@@ -25,6 +25,23 @@ class EcoleDirecteMailConverter {
         to: to);
     mail.files.addAll(files);
     return mail;
+  }
+
+  static List<Mail> mails(Map<String, dynamic> mailData) {
+    List rawMailsList = [];
+    List<Mail> mails = [];
+    Map rawMails = mailData['data']['messages'];
+    rawMails.forEach((key, value) {
+      //We finally get in message items
+      value.forEach((e) {
+        rawMailsList.add(e);
+      });
+    });
+    rawMailsList.forEach((element) {
+      Map<String, dynamic> mailData = element;
+      mails.add(EcoleDirecteMailConverter.mail(mailData));
+    });
+    return mails;
   }
 
   static List<Recipient> recipients(var recipientsData) {

@@ -108,7 +108,7 @@ class BackgroundService {
       var oldMailLength = appSys.settings!["system"]["lastMailCount"];
       print("Old length is $oldMailLength");
       //Get new mails
-      List<Mail>? mails = await getMails();
+      List<Mail>? mails = await (appSys.api as APIEcoleDirecte?)?.getMails();
       //filter mails by type
       (mails ?? []).retainWhere((element) => element.mtype == "received");
       (mails ?? []).sort((a, b) {
