@@ -1,25 +1,19 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:intl/intl.dart';
 import 'package:marquee/marquee.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:stacked/stacked.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:ynotes/ui/components/customLoader.dart';
-import 'package:ynotes/ui/components/dialogs.dart';
-import 'package:ynotes/core/logic/shared/downloadController.dart';
-import 'package:ynotes/core/utils/themeUtils.dart';
-import 'package:ynotes/main.dart';
-import 'package:ynotes/globals.dart';
-import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
-import '../../../usefulMethods.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/logic/shared/downloadController.dart';
+import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/ui/components/customLoader.dart';
+import 'package:ynotes/ui/components/dialogs.dart';
 
 class ReadMailBottomSheet extends StatefulWidget {
   final Mail mail;
@@ -36,28 +30,12 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
   DateFormat format = DateFormat("dd-MM-yyyy HH:hh");
 
   //Get monochromatic colors or not
-  htmlColors(String? html) {
-    if (!monochromatic) {
-      return html;
-    }
-    String color = ThemeUtils.isThemeDark ? "white" : "black";
-    String finalHTML = html!.replaceAll("color", color);
-    return finalHTML;
-  }
-
-  recipientFromMap() {
-    return [
-      Recipient(this.widget.mail.from["prenom"], this.widget.mail.from["nom"], this.widget.mail.from["id"].toString(),
-          this.widget.mail.from["type"] == "P", this.widget.mail.from["matiere"])
-    ];
-  }
-
   @override
   Widget build(BuildContext context) {
     print(this.widget.mail.id);
     MediaQueryData screenSize = MediaQuery.of(context);
     return FutureBuilder<String?>(
-        future: readMail(this.widget.mail.id, this.widget.mail.read),
+        future: readMail(this.widget.mail.id, this.widget.mail.read, this.widget.mail.mtype == "received"),
         builder: (context, snapshot) {
           return Container(
               height: screenSize.size.height,
@@ -413,5 +391,21 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                 ],
               ));
         });
+  }
+
+  htmlColors(String? html) {
+    if (!monochromatic) {
+      return html;
+    }
+    String color = ThemeUtils.isThemeDark ? "white" : "black";
+    String finalHTML = html!.replaceAll("color", color);
+    return finalHTML;
+  }
+
+  recipientFromMap() {
+    return [
+      Recipient(this.widget.mail.from["prenom"], this.widget.mail.from["nom"], this.widget.mail.from["id"].toString(),
+          this.widget.mail.from["type"] == "P", this.widget.mail.from["matiere"])
+    ];
   }
 }

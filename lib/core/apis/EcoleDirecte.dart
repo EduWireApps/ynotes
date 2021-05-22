@@ -131,10 +131,11 @@ Future<List<Mail>?> getMails({bool? checking}) async {
   }
 }
 
-Future<String?> readMail(String mailId, bool read) async {
+Future<String?> readMail(String mailId, bool read, bool received) async {
   await EcoleDirecteMethod.testToken();
   String? id = appSys.currentSchoolAccount?.studentID;
-  var url = 'https://api.ecoledirecte.com/v3/eleves/$id/messages/$mailId.awp?verbe=get&mode=destinataire';
+  String settingMode = received ? "destinataire" : "expediteur";
+  var url = 'https://api.ecoledirecte.com/v3/eleves/$id/messages/$mailId.awp?verbe=get&mode=$settingMode';
 
   Map<String, String> headers = {"Content-type": "text/plain"};
   String data = 'data={"token": "$token"}';
