@@ -13,6 +13,7 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/buttons.dart';
+import 'package:ynotes/ui/components/customLoader.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/filesBottomSheet.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/homeworkReaderOptions.dart';
@@ -29,6 +30,8 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
   late PageController pageView;
   @override
   Widget build(BuildContext context) {
+    var screenSize = MediaQuery.of(context);
+
     String date = "(vide)";
 
     if (widget.homework.isNotEmpty && widget.homework.first.date != null) {
@@ -65,41 +68,42 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
       body: widget.homework.isEmpty
           ? Container()
           : ChangeNotifierProvider<ApplicationSystem>.value(
-              value: appSys,
-              child: Consumer<ApplicationSystem>(builder: (context, model, child) {
-                return Container(
-                  color: pageColor(model),
-                  child: Column(
-                    children: [
-                      ChangeNotifierProvider<PageController>.value(
-                        value: pageView,
-                        child: Consumer<PageController>(builder: (context, model, child) {
-                          return FutureBuilder<Color>(
-                              future: getBackgroundColor(((model.hasClients)
-                                  ? (model.page ?? widget.defaultPage.toDouble())
-                                  : widget.defaultPage.toDouble())),
-                              builder: (context, snapshot) {
-                                return buildHeader(
-                                    widget.homework[
-                                        ((model.hasClients) ? (model.page ?? widget.defaultPage) : widget.defaultPage)
-                                            .round()],
-                                    ThemeUtils.darken(snapshot.data ?? Colors.white, forceAmount: 0.1),
-                                    ((model.hasClients) ? (model.page ?? 0) : 0).round());
-                              });
-                        }),
-                      ),
-                      Expanded(
-                          child: PageView.builder(
-                              controller: pageView,
-                              itemCount: widget.homework.length,
-                              itemBuilder: (context, index) {
-                                return buildPage(widget.homework[index]);
-                              })),
-                    ],
-                  ),
-                );
-              }),
-            ),
+            value: appSys,
+            child: Consumer<ApplicationSystem>(builder: (context, model, child) {
+              return Container(
+                color: pageColor(model),
+                child: Column(
+                  children: [
+                    ChangeNotifierProvider<PageController>.value(
+                      value: pageView,
+                      child: Consumer<PageController>(builder: (context, model, child) {
+                        return FutureBuilder<Color>(
+                            future: getBackgroundColor(((model.hasClients)
+                                ? (model.page ?? widget.defaultPage.toDouble())
+                                : widget.defaultPage.toDouble())),
+                            builder: (context, snapshot) {
+                              return buildHeader(
+                                  widget.homework[((model.hasClients)
+                                          ? (model.page ?? widget.defaultPage)
+                                          : widget.defaultPage)
+                                      .round()],
+                                  ThemeUtils.darken(snapshot.data ?? Colors.white, forceAmount: 0.1),
+                                  ((model.hasClients) ? (model.page ?? 0) : 0).round());
+                            });
+                      }),
+                    ),
+                    Expanded(
+                        child: PageView.builder(
+                            controller: pageView,
+                            itemCount: widget.homework.length,
+                            itemBuilder: (context, index) {
+                              return buildPage(widget.homework[index]);
+                            })),
+                  ],
+                ),
+              );
+            }),
+          ),
     );
   }
 

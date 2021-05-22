@@ -1,5 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
@@ -9,6 +10,7 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/columnGenerator.dart';
+import 'package:ynotes/ui/components/customLoader.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/homeworkViewPage.dart';
 import 'package:ynotes/usefulMethods.dart';
@@ -149,28 +151,49 @@ class _HomeworkElementState extends State<HomeworkElement> with SingleTickerProv
 }
 
 class _HomeworkTimelineState extends State<HomeworkTimeline> {
+  bool loading = false;
+
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
 
-    return ChangeNotifierProvider<HomeworkController>.value(
-      value: appSys.homeworkController,
-      child: Consumer<HomeworkController>(builder: (context, model, child) {
-        return RefreshIndicator(
-          onRefresh: refresh,
-          child: Container(
-            height: screenSize.size.height,
-            width: screenSize.size.width,
-            child: ListView.builder(
-                physics: AlwaysScrollableScrollPhysics(),
-                itemCount: groupHomeworkByDate(model.getHomework ?? []).length,
-                itemBuilder: (context, index) {
-                  return buildHomeworkBlock(
-                      groupHomeworkByDate(model.getHomework ?? [])[index].first.date ?? DateTime.now(),
-                      groupHomeworkByDate(model.getHomework ?? [])[index]);
-                }),
+    return Container(
+      decoration: BoxDecoration(color: Theme.of(context).backgroundColor),
+      child: Stack(
+        children: [
+          ChangeNotifierProvider<HomeworkController>.value(
+            value: appSys.homeworkController,
+            child: Consumer<HomeworkController>(builder: (context, model, child) {
+              return RefreshIndicator(
+                onRefresh: refresh,
+                child: Container(
+                    height: screenSize.size.height,
+                    width: screenSize.size.width,
+                    child: groupHomeworkByDate(model.getHomework ?? []).length > 0
+                        ? ListView.builder(
+                            physics: AlwaysScrollableScrollPhysics(),
+                            itemCount: groupHomeworkByDate(model.getHomework ?? []).length,
+                            itemBuilder: (context, index) {
+                              return buildHomeworkBlock(
+                                  groupHomeworkByDate(model.getHomework ?? [])[index].first.date ?? DateTime.now(),
+                                  groupHomeworkByDate(model.getHomework ?? [])[index]);
+                            })
+                        : buildNoHomework(model)),
+              );
+            }),
           ),
-        );
-      }),
+          if (loading)
+            Container(
+              color: Colors.black.withOpacity(0.4),
+            ),
+          if (loading)
+            Center(
+                child: CustomLoader(
+              screenSize.size.width / 5 * 2.5,
+              screenSize.size.width / 5 * 2.5,
+              Theme.of(context).primaryColorDark,
+            )),
+        ],
+      ),
     );
   }
 
@@ -232,6 +255,52 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
               ))
         ],
       ),
+    );
+  }
+
+  Widget buildNoHomework(HomeworkController model) {
+    MediaQueryData screenSize = MediaQuery.of(context);
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          height: screenSize.size.height / 10 * 7.5,
+          width: screenSize.size.width / 5 * 4.7,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Image(fit: BoxFit.fitWidth, image: AssetImage('assets/images/noHomework.png')),
+              Text(
+                "Pas de devoirs à l'horizon... \non se détend ?",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: "Asap",
+                  color: ThemeUtils.textColor(),
+                ),
+              ),
+              FlatButton(
+                onPressed: () {
+                  //Reload list
+                  appSys.homeworkController.refresh(force: true);
+                },
+                child: !model.isFetching
+                    ? Text("Recharger",
+                        style: TextStyle(
+                          fontFamily: "Asap",
+                          color: ThemeUtils.textColor(),
+                        ))
+                    : FittedBox(
+                        child: SpinKitThreeBounce(
+                            color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: new BorderRadius.circular(18.0),
+                    side: BorderSide(color: Theme.of(context).primaryColorDark)),
+              )
+            ],
+          ),
+        )
+      ],
     );
   }
 
