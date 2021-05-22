@@ -1,9 +1,11 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:html_character_entities/html_character_entities.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
@@ -76,8 +78,10 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                       children: [
                         IconButton(
                           onPressed: () async {
+                            print(await controller.getText());
+                            print(HtmlCharacterEntities.encode(await controller.getText() ?? "", characters: "zàâçéèêëîïôûùüÿñæœ"));
                             if (!selectedRecipients!.isEmpty) {
-                              Navigator.pop(context, [
+                               Navigator.pop(context, [
                                 subjectController.text,
                                 await controller.getText(),
                                 selectedRecipients,
@@ -158,8 +162,7 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                       child: IconButton(
                         onPressed: () async {
                           //Get the recipients
-                          List<Recipient>? recipients =
-                              await (appSys.api!.app("mailRecipients") as Future<List<Recipient>?>);
+                          List<Recipient>? recipients = await ((appSys.api as APIEcoleDirecte).mailRecipients());
                           List<String> recipientsName = [];
                           if (recipients != null) {
                             recipients.forEach((element) {

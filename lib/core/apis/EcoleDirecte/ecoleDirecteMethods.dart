@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:connectivity/connectivity.dart';
+import 'package:html_character_entities/html_character_entities.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:ynotes/core/apis/EcoleDirecte/converters/cloud.dart';
@@ -153,7 +154,7 @@ class EcoleDirecteMethod {
         data, rootUrl, "", EcoleDirecteMailConverter.recipients, "Recipients request returned an error:",
         ignoreMethodAndId: true);
     if (recipients != null) {
-      await appSys.offline.recipients.recipients.updateRecipients(recipients);
+      await appSys.offline.recipients.updateRecipients(recipients);
     }
     return recipients;
   }
@@ -165,6 +166,9 @@ class EcoleDirecteMethod {
     String data = 'data={"token": "$token"}';
     List<SchoolLifeTicket> schoolLifeList = await request(
         data, rootUrl, method, EcoleDirecteSchoolLifeConverter.schoolLife, "School Life request returned an error:");
+    if (schoolLifeList != null) {
+      await appSys.offline.schoolLife.update(schoolLifeList);
+    }
     return schoolLifeList;
   }
 
@@ -295,7 +299,8 @@ class EcoleDirecteMethod {
 
   static Future sendMail(String? subject, String content, List<Recipient> recipientsList) async {
     String recipients = "";
-    String parsedContent = base64.encode(utf8.encode(content));
+
+    String parsedContent = base64Encode(utf8.encode(HtmlCharacterEntities.encode(content, characters: "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿŒœŠšŸƒˆ˜")));
     recipientsList.forEach((element) {
       String eOrp = element.isTeacher! ? "P" : "E";
       int? id = int.tryParse(element.id!);

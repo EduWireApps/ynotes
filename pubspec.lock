@@ -74,12 +74,10 @@ packages:
   awesome_notifications:
     dependency: "direct main"
     description:
-      path: "."
-      ref: master
-      resolved-ref: d604c0c72f44ac7d969bef6bdb15070d1c7a5aab
-      url: "https://github.com/aaqibism/awesome_notifications"
-    source: git
-    version: "0.0.5+8"
+      name: awesome_notifications
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.6+7"
   background_fetch:
     dependency: "direct main"
     description:
@@ -577,6 +575,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.15.0"
+  html_character_entities:
+    dependency: "direct main"
+    description:
+      name: html_character_entities
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0+1"
   html_editor_enhanced:
     dependency: "direct main"
     description:
@@ -1254,4 +1259,4 @@ packages:
     version: "3.1.0"
 sdks:
   dart: ">=2.12.0 <3.0.0"
-  flutter: ">=2.0.0"
+  flutter: ">=2.0.4"

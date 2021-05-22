@@ -1,3 +1,13 @@
+## Mise à jour 0.11.2
+Fonctionnalités :
+- Ajout des tickets de Vie Scolaire (EcoleDirecte seulement pour l'instant)
+
+Correctifs :
+- Correctifs pour le rafraichissement en arrière plan (notifications de nouvelles notes et de nouveaux mails)
+  - Les utilisateurs iOS devraient désormais pouvoir recevoir correctement les notifications
+  - Le rafraichissement n'a désormais lieu que lorsque vous êtes connecté à Internet 
+- Les mails EcoleDirecte peuvent désormais contenir des caractères spéciaux
+
 ## Note de mise à jour 0.11
 *La 0.10 est passée bien vite mais accueillait surtout la compatibilité multi ENT et l'arrivée sur l'App Store de l'application.
 Dans cette version, nous avons beaucoup modifié le code source de l'application pour nous aligner sur les toutes dernières nouveautés du monde du développement mobile.
