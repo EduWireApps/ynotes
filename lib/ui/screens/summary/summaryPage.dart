@@ -64,6 +64,15 @@ class SummaryPageState extends State<SummaryPage> {
               widget.parentScaffoldState.currentState?.openDrawer();
             },
           ),
+          actions: [
+            FlatButton(
+              color: Colors.transparent,
+              child: Icon(MdiIcons.tuneVariant, color: ThemeUtils.textColor()),
+              onPressed: () async {
+                triggerSettings();
+              },
+            )
+          ],
           backgroundColor: Theme.of(context).primaryColor),
       backgroundColor: Theme.of(context).backgroundColor,
       body: VisibilityDetector(

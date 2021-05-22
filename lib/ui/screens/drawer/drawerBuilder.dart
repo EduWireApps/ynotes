@@ -236,8 +236,6 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
         "tabName": appTabs.SUMMARY,
         "icon": MdiIcons.home,
         "page": SummaryPage(
-          switchPage: _switchPage,
-          key: summaryPage,
           parentScaffoldState: drawerKey,
         ),
         "key": summaryPage
@@ -255,7 +253,6 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
         "tabName": appTabs.HOMEWORK,
         "icon": MdiIcons.calendarCheck,
         "page": HomeworkPage(
-          key: homeworkPage,
           hwController: appSys.homeworkController,
           parentScaffoldState: drawerKey,
         ),
@@ -266,7 +263,6 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
         "tabName": appTabs.AGENDA,
         "icon": MdiIcons.calendar,
         "page": AgendaPage(
-          key: agendaPage,
           parentScaffoldState: drawerKey,
         ),
         "key": agendaPage,
