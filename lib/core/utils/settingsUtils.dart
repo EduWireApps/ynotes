@@ -8,7 +8,6 @@ class SettingsUtils {
     //System global settings
     "system": {
       "firstUse": false,
-      "agreedTermsAndConfiguredApp": false,
       "lastReadUpdateNote": "",
       "chosenParser": 0,
       "lastMailCount": 0,

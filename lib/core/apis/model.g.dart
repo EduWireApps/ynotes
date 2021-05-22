@@ -96,4 +96,5 @@ const _$appTabsEnumMap = {
   appTabs.MESSAGING: 'MESSAGING',
   appTabs.CLOUD: 'CLOUD',
   appTabs.FILES: 'FILES',
+  appTabs.SCHOOL_LIFE: 'SCHOOL_LIFE',
 };

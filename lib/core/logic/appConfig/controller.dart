@@ -11,10 +11,11 @@ import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/agenda/controller.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/core/logic/homework/controller.dart';
+import 'package:ynotes/core/logic/schoolLife/controller.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/background.dart';
-import 'package:ynotes/core/utils/nullSafeMap.dart';
+import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/utils/settingsUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/ui/themes/themesList.dart';
@@ -48,6 +49,7 @@ class ApplicationSystem extends ChangeNotifier {
 
   late HomeworkController homeworkController;
   late AgendaController agendaController;
+  late SchoolLifeController schoolLifeController;
 
   ///All the app controllers
 
@@ -95,7 +97,7 @@ class ApplicationSystem extends ChangeNotifier {
     if (api != null) {
       account = await api!.account();
       if (account != null && account!.managableAccounts != null)
-        currentSchoolAccount = account!.managableAccounts![mapGet(settings, ["system","accountIndex"])??0];
+        currentSchoolAccount = account!.managableAccounts![settings!["system"]["accountIndex"] ?? 0];
     }
     //Set background fetch
     await _initBackgroundFetch();
@@ -104,6 +106,7 @@ class ApplicationSystem extends ChangeNotifier {
     gradesController = GradesController(this.api);
     homeworkController = HomeworkController(this.api);
     agendaController = AgendaController(this.api);
+    schoolLifeController = SchoolLifeController(this.api);
   }
 
   initControllers() async {
@@ -131,19 +134,29 @@ class ApplicationSystem extends ChangeNotifier {
 // This "Headless Task" is run when app is terminated.
   _initBackgroundFetch() async {
     if (Platform.isAndroid || Platform.isIOS) {
-      await BackgroundFetch.configure(
-          BackgroundFetchConfig(
-              minimumFetchInterval: 15,
-              stopOnTerminate: false,
-              startOnBoot: true,
-              enableHeadless: true,
-              requiresBatteryNotLow: false,
-              requiresCharging: false,
-              requiresStorageNotLow: false,
-              requiresDeviceIdle: false), (taskId) async {
-        await BackgroundService.backgroundFetchHeadlessTask(taskId);
-        BackgroundFetch.finish(taskId);
-      });
+      print("Background fetch configuration...");
+      int i = await BackgroundFetch.configure(
+        BackgroundFetchConfig(
+            minimumFetchInterval: 15,
+            stopOnTerminate: false,
+            startOnBoot: true,
+            enableHeadless: true,
+            requiresBatteryNotLow: false,
+            requiresCharging: false,
+            requiresStorageNotLow: false,
+            requiresDeviceIdle: false,
+            requiredNetworkType: NetworkType.ANY),
+        (String taskId) async {
+          await BackgroundService.backgroundFetchHeadlessTask(taskId);
+          BackgroundFetch.finish(taskId);
+        },
+        (String taskId) async {
+          await AppNotification.cancelNotification(taskId.hashCode);
+          BackgroundFetch.finish(taskId);
+        },
+      );
+      print(i);
+      print("Configured background fetch");
     }
   }
 

@@ -20,12 +20,11 @@ import 'package:ynotes/ui/screens/grades/gradesPage.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPage.dart';
 import 'package:ynotes/ui/screens/mail/mailPage.dart';
 import 'package:ynotes/ui/screens/polls/pollsPage.dart';
+import 'package:ynotes/ui/screens/schoolLife/schoolLifePage.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/accountPage.dart';
 import 'package:ynotes/ui/screens/statspage/statspage.dart';
 import 'package:ynotes/ui/screens/summary/summaryPage.dart';
-import 'package:ynotes/ui/screens/viescolaire/schoolLifePage.dart';
 import 'package:ynotes/usefulMethods.dart';
-
 import 'drawerBuilderWidgets/drawer.dart';
 
 bool isQuickMenuShown = false;
@@ -304,9 +303,10 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
       },
       {
         "menuName": "Vie scolaire",
-        "relatedApi": -1,
+        "relatedApi": 0,
         "icon": MdiIcons.stamper,
-        "page": SingleChildScrollView(physics: NeverScrollableScrollPhysics(), child: SchoolLifePage()),
+        "page": SchoolLifePage(),
+        "tabName": appTabs.SCHOOL_LIFE
       },
       {"menuName": "Cloud", "icon": MdiIcons.cloud, "relatedApi": 0, "page": CloudPage(), "tabName": appTabs.CLOUD},
       {

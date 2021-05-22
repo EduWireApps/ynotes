@@ -9,6 +9,7 @@ import 'package:ynotes/core/offline/data/homework/homework.dart';
 import 'package:ynotes/core/offline/data/homework/pinnedHomework.dart';
 import 'package:ynotes/core/offline/data/mails/recipients.dart';
 import 'package:ynotes/core/offline/data/polls/polls.dart';
+import 'package:ynotes/core/offline/data/schoolLife/schoolLife.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
 
@@ -28,6 +29,8 @@ class Offline {
   Map<dynamic, dynamic>? lessonsData;
   //Return polls
   List<PollInfo>? pollsData;
+  //Return school life tickets
+  List<SchoolLifeTicket>? schoolLifeData;
   //Return agenda reminder
   List<AgendaReminder>? remindersData;
   //Return agenda event
@@ -40,14 +43,14 @@ class Offline {
   Box? pinnedHomeworkBox;
   Box? agendaBox;
 
-//Imports
+  //Imports
   late HomeworkOffline homework;
   late DoneHomeworkOffline doneHomework;
   late PinnedHomeworkOffline pinnedHomework;
   late AgendaEventsOffline agendaEvents;
   late RemindersOffline reminders;
   late LessonsOffline lessons;
-
+  late SchoolLifeOffline schoolLife;
   late DisciplinesOffline disciplines;
 
   late PollsOffline polls;
@@ -78,6 +81,7 @@ class Offline {
       lessonsData?.clear();
       remindersData?.clear();
       agendaEventsData?.clear();
+      schoolLifeData?.clear();
       recipientsData?.clear();
       await this.init();
     } catch (e) {
@@ -112,6 +116,8 @@ class Offline {
         Hive.registerAdapter(AgendaReminderAdapter());
         Hive.registerAdapter(AgendaEventAdapter());
         Hive.registerAdapter(RecipientAdapter());
+        Hive.registerAdapter(SchoolLifeTicketAdapter());
+
         Hive.registerAdapter(alarmTypeAdapter());
       } catch (e) {
         print("Error " + e.toString());
@@ -141,6 +147,7 @@ class Offline {
     disciplines = DisciplinesOffline(this.locked, this);
     polls = PollsOffline(this.locked, this);
     recipients = RecipientsOffline(this.locked, this);
+    schoolLife = SchoolLifeOffline(this.locked, this);
   }
 
   openBoxes() {}
@@ -157,6 +164,8 @@ class Offline {
         var offlineRemindersData = await agendaBox?.get("reminders");
         var offlineAgendaEventsData = await agendaBox?.get("agendaEvents");
         var offlineRecipientsData = await offlineBox?.get("recipients");
+        var offlineSchoolLifeData = await offlineBox?.get("schoolLife");
+
         //ensure that fetched data isn't null and if not, add it to the final value
         if (offlineLessonsData != null) {
           this.lessonsData = Map<dynamic, dynamic>.from(offlineLessonsData);
@@ -178,6 +187,9 @@ class Offline {
         }
         if (offlineRecipientsData != null) {
           this.recipientsData = offlineRecipientsData.cast<Recipient>();
+        }
+        if (offlineSchoolLifeData != null) {
+          this.schoolLifeData = offlineSchoolLifeData.cast<SchoolLifeTicket>();
         }
       } catch (e) {
         print("Error while refreshing " + e.toString());
