@@ -15,19 +15,7 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
-import 'package:ynotes/ui/screens/summary/summaryPageWidgets/quickHomeworkCurvedContainer.dart';
 
-class HomeworkTicket extends StatefulWidget {
-  final Homework _homework;
-  final Color color;
-  final Function refreshCallback;
-  final bool load;
-  final Function? pageSwitcher;
-  const HomeworkTicket(this._homework, this.color, this.pageSwitcher, this.refreshCallback, this.load);
-  State<StatefulWidget> createState() {
-    return _HomeworkTicketState();
-  }
-}
 
 class QuickHomework extends StatefulWidget {
   final Function? switchPage;
@@ -37,122 +25,6 @@ class QuickHomework extends StatefulWidget {
 }
 
 //The basic ticket for homeworks with the discipline and the description and a checkbox
-class _HomeworkTicketState extends State<HomeworkTicket> {
-  @override
-  Widget build(BuildContext context) {
-    MediaQueryData screenSize = MediaQuery.of(context);
-    return Container(
-      width: screenSize.size.width,
-      margin: EdgeInsets.only(
-          bottom: (screenSize.size.height / 10 * 8.8) / 10 * 0.1, left: screenSize.size.width / 5 * 0.25),
-      child: Stack(
-        children: [
-          Material(
-            color: widget.color,
-            borderRadius: BorderRadius.circular(8),
-            child: InkWell(
-              borderRadius: BorderRadius.circular(8),
-              onTap: () {
-                widget.pageSwitcher!(2);
-              },
-              onLongPress: !widget._homework.loaded!
-                  ? null
-                  : () async {
-                      await CustomDialogs.showHomeworkDetailsDialog(context, this.widget._homework);
-                      setState(() {});
-                    },
-              child: Container(
-                width: screenSize.size.width / 5 * 4.5,
-                height: (screenSize.size.height / 10 * 8.8) / 10 * 0.8,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(39),
-                ),
-                child: Row(
-                  children: <Widget>[
-                    Container(
-                      width: screenSize.size.width / 5 * 0.8,
-                      child: FutureBuilder<bool>(
-                          future: appSys.offline.doneHomework.getHWCompletion(widget._homework.id ?? ''),
-                          initialData: false,
-                          builder: (context, snapshot) {
-                            bool? done = snapshot.data ?? false;
-                            return Checkbox(
-                              side: BorderSide(width: 1, color: Colors.white),
-                              fillColor: MaterialStateColor.resolveWith(ThemeUtils.getCheckBoxColor),
-                              shape: const CircleBorder(),
-                              activeColor: Color(0xff15803D),
-                              value: done,
-                              materialTapTargetSize: MaterialTapTargetSize.padded,
-                              onChanged: this
-                                      .widget
-                                      ._homework
-                                      .date!
-                                      .isBefore(DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now())))
-                                  ? null
-                                  : (bool? x) async {
-                                      widget.refreshCallback();
-                                      await appSys.offline.doneHomework.setHWCompletion(widget._homework.id, x);
-                                    },
-                            );
-                          }),
-                    ),
-                    FittedBox(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Container(
-                              width: screenSize.size.width / 5 * 3.5,
-                              child: Row(
-                                children: [
-                                  Container(
-                                    width: screenSize.size.width / 5 * 3,
-                                    child: AutoSizeText(widget._homework.discipline!,
-                                        textScaleFactor: 1.0,
-                                        textAlign: TextAlign.left,
-                                        overflow: TextOverflow.ellipsis,
-                                        style:
-                                            TextStyle(fontSize: 14, fontFamily: "Asap", fontWeight: FontWeight.bold)),
-                                  ),
-                                  if (widget.load)
-                                    Container(
-                                        width: screenSize.size.width / 5 * 0.4,
-                                        child: FittedBox(
-                                          child: SpinKitThreeBounce(
-                                            color: ThemeUtils.darken(widget.color),
-                                          ),
-                                        )),
-                                ],
-                              )),
-                          if (widget._homework.loaded!)
-                            Container(
-                              width: screenSize.size.width / 5 * 2.7,
-                              child: AutoSizeText(
-                                parse(widget._homework.rawContent ?? "").documentElement!.text,
-                                style: TextStyle(fontFamily: "Asap"),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            )
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
-          if (widget._homework.isATest!)
-            Container(
-                height: (screenSize.size.height / 10 * 8.8) / 10 * 0.8,
-                width: screenSize.size.width / 5 * 0.2,
-                child: TestBadge()),
-        ],
-      ),
-    );
-  }
-}
-
 class _QuickHomeworkState extends State<QuickHomework> {
   @override
   Widget build(BuildContext context) {

@@ -14,6 +14,7 @@ import 'package:ynotes/ui/components/hiddenSettings.dart';
 import 'package:ynotes/ui/screens/grades/gradesPage.dart';
 import 'package:ynotes/ui/screens/summary/summaryPageWidgets/quickGrades.dart';
 import 'package:ynotes/ui/screens/summary/summaryPageWidgets/quickHomework.dart';
+import 'package:ynotes/ui/screens/summary/summaryPageWidgets/quickSchoolLife.dart';
 import 'package:ynotes/ui/screens/summary/summaryPageWidgets/summaryPageSettings.dart';
 
 Future? donePercentFuture;
@@ -116,6 +117,11 @@ class SummaryPageState extends State<SummaryPage> {
                         separator(context, "Devoirs", 2),
                         QuickHomework(
                           switchPage: widget.switchPage,
+                        ),
+                        if (appSys.settings?["system"]["chosenApi"] == 0) separator(context, "Vie scolaire", 2),
+                        if (appSys.settings?["system"]["chosenApi"] == 0) QuickSchoolLife(),
+                        SizedBox(
+                          height: screenSize.size.height / 10 * 0.2,
                         )
                       ],
                     ),
