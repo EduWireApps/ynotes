@@ -8,6 +8,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:shake/shake.dart';
+import 'package:wiredash/wiredash.dart';
 import 'package:ynotes/core/logic/appConfig/models.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
 import 'package:ynotes/core/services/notifications.dart';
@@ -216,8 +218,6 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
         });
   }
 
-  callbackOnShake(BuildContext context) async {}
-
   @override
   void dispose() {
     _notifier.dispose();
@@ -348,6 +348,11 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
 
   @override
   void initState() {
+    ShakeDetector detector = ShakeDetector.autoStart(onPhoneShake: () {
+      if (appSys.settings?["user"]["global"]["shakeToReport"]) {
+        Wiredash.of(context)?.show();
+      }
+    });
     super.initState();
     //Init hw controller
     if (firstStart == true) {

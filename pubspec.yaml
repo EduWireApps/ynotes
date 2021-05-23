@@ -120,6 +120,7 @@ dependencies:
   uuid: ^3.0.3
   visibility_detector: ^0.2.0-nullsafety.1
   html_character_entities: ^1.0.0+1
+  shake: ^1.0.0
 dependency_overrides:
   intl: ^0.17.0-nullsafety.2
   mime: ^1.0.0
