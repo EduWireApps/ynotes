@@ -431,11 +431,14 @@ class _StickyHeaderState extends State<StickyHeader> {
                       await appSys.updateSetting(
                           appSys.settings?["user"]["homeworkPage"],
                           "customDisciplinesList",
-                          jsonEncode(disciplines.mapIndexed((element, index) {
-                            if (temp.contains(index)) {
-                              return element;
-                            }
-                          }).toList()));
+                          jsonEncode(disciplines
+                              .mapIndexed((element, index) {
+                                if (temp.contains(index)) {
+                                  return element;
+                                }
+                              })
+                              .toList()
+                              .where((element) => element != null)));
                       setState(() {});
                     }
                   }

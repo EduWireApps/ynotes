@@ -9,7 +9,7 @@ class SettingsUtils {
     "system": {
       "firstUse": false,
       "lastReadUpdateNote": "",
-      "chosenParser": 0,
+      "chosenParser": null,
       "lastMailCount": 0,
       "lastGradeCount": 0
     },
@@ -32,7 +32,7 @@ class SettingsUtils {
         "forceMonochromeContent": false,
         "fontSize": 20,
         "pageColorVariant": 0,
-        "customDisciplinesList":"[]"
+        "customDisciplinesList": "[]"
       },
       "agendaPage": {
         "lighteningOverride": false,
@@ -143,7 +143,7 @@ class SettingsUtils {
     print(settings);
 
     Map? _settings = json.decode(settings);
-    return Map.from(json.decode(json.encode(settingsForm)))..addAll(_settings??{});
+    return Map.from(json.decode(json.encode(settingsForm)))..addAll(_settings ?? {});
   }
 
   //Oops

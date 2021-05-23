@@ -28,25 +28,7 @@ class HomeworkUtils {
   }
 
   static Future<List<Homework>?> getReducedListHomework({forceReload = false}) async {
-    int? reduce = await appSys.settings!["user"]["summaryPage"]["summaryQuickHomework"];
-    if (reduce == 11) {
-      reduce = 770;
-    }
     List<Homework>? localList = await appSys.api?.getNextHomework(forceReload: forceReload);
-    if (localList != null) {
-      List<Homework> listToReturn = [];
-      localList.forEach((element) {
-        var now = DateTime.now();
-        var date = element.date!;
-
-        //ensure that the list doesn't contain the pinned homework
-        if (date.difference(now).inDays < reduce!) {
-          listToReturn.add(element);
-        }
-      });
-      return listToReturn;
-    } else {
-      return null;
-    }
+    return localList;
   }
 }
