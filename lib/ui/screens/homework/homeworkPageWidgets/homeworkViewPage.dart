@@ -18,9 +18,9 @@ import 'package:ynotes/ui/components/modalBottomSheets/filesBottomSheet.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/homeworkReaderOptions.dart';
 
 class HomeworkDayViewPage extends StatefulWidget {
-  final List<Homework> homework;
+  List<Homework> homework;
   final int defaultPage;
-  const HomeworkDayViewPage(this.homework, {Key? key, this.defaultPage = 0}) : super(key: key);
+  HomeworkDayViewPage(this.homework, {Key? key, this.defaultPage = 0}) : super(key: key);
   @override
   _HomeworkPageState createState() => _HomeworkPageState();
 }
@@ -65,7 +65,7 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
         backgroundColor: Theme.of(context).primaryColor,
       ),
       body: widget.homework.isEmpty
-          ? Container()
+          ? buildNoHomework()
           : ChangeNotifierProvider<ApplicationSystem>.value(
               value: appSys,
               child: Consumer<ApplicationSystem>(builder: (context, model, child) {
@@ -257,6 +257,37 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
             )),
         buildButtons(hw, color),
       ],
+    );
+  }
+
+  Widget buildNoHomework() {
+    var screenSize = MediaQuery.of(context);
+
+    return Container(
+      color: Theme.of(context).primaryColor,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            height: screenSize.size.height / 10 * 7.5,
+            width: screenSize.size.width,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Image(fit: BoxFit.fitWidth, image: AssetImage('assets/images/noHomework.png')),
+                Text(
+                  "Pas de devoirs pour cette journée.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: "Asap",
+                    color: ThemeUtils.textColor(),
+                  ),
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 

@@ -385,7 +385,9 @@ class _StickyHeaderState extends State<StickyHeader> {
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: [buildOptionsHeader(), buildPinnedHomeworkLabel()],
+      children: [
+        buildOptionsHeader(), /* buildPinnedHomeworkLabel()*/
+      ],
     );
   }
 
@@ -425,9 +427,6 @@ class _StickyHeaderState extends State<StickyHeader> {
                     List? temp = await CustomDialogs.showMultipleChoicesDialog(context, disciplines, indexes,
                         label: "Choisissez une matière parmi les suivantes :");
                     if (temp != null) {
-                      print(disciplines.mapIndexed((element, index) {
-                        return temp.contains(index);
-                      }).toList());
                       await appSys.updateSetting(
                           appSys.settings?["user"]["homeworkPage"],
                           "customDisciplinesList",
@@ -438,7 +437,8 @@ class _StickyHeaderState extends State<StickyHeader> {
                                 }
                               })
                               .toList()
-                              .where((element) => element != null)));
+                              .where((element) => element != null)
+                              .toList()));
                       setState(() {});
                     }
                   }
@@ -472,7 +472,35 @@ class _StickyHeaderState extends State<StickyHeader> {
             child: Material(
               color: Theme.of(context).primaryColorLight,
               child: InkWell(
-                onTap: () {},
+                onTap: () async {
+                  DateTime? someDate = await showDatePicker(
+                    locale: Locale('fr', 'FR'),
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(2018),
+                    lastDate: DateTime(2030),
+                    helpText: "",
+                    builder: (BuildContext context, Widget? child) {
+                      return FittedBox(
+                        child: Material(
+                          color: Colors.transparent,
+                          child: Theme(
+                            data: appSys.theme!,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[SizedBox(child: child)],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                  if (someDate != null)
+                    Navigator.of(context).push(router(HomeworkDayViewPage(
+                      (await appSys.api!.getHomeworkFor(someDate)) ?? [],
+                      defaultPage: 0,
+                    )));
+                },
                 child: Container(
                   height: screenSize.size.height / 10 * 0.6,
                   child: Row(
