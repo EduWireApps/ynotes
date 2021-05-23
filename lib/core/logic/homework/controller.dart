@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:calendar_time/calendar_time.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ynotes/core/apis/model.dart';
@@ -17,6 +18,8 @@ class HomeworkController extends ChangeNotifier {
   API? _api;
   bool isFetching = false;
   int examsCount = 0;
+  int tomorrowCount = 0;
+  int weekCount = 0;
 
   HomeworkController(this.api) {
     _api = api;
@@ -162,12 +165,16 @@ class HomeworkController extends ChangeNotifier {
         notifyListeners();
       });
       prepareExamsCount();
+      prepareTomorrowAndWeekCount();
+
       getHomeworkDonePercent();
 
       isFetching = false;
       notifyListeners();
     } catch (e) {
       prepareExamsCount();
+      prepareTomorrowAndWeekCount();
+
       getHomeworkDonePercent();
 
       isFetching = false;
@@ -187,6 +194,7 @@ class HomeworkController extends ChangeNotifier {
     }
   }
 
+//Load all events
   Future<void> prepareOld(List<Homework> oldHW) async {
     oldHW.forEach((element) {
       //remove duplicates
@@ -204,6 +212,20 @@ class HomeworkController extends ChangeNotifier {
     });
     print(unloadedHW);
     await loadAll();
+  }
+
+  void prepareTomorrowAndWeekCount() {
+    List<Homework> hwList = (getHomework ?? []);
+    if (hwList != null) {
+      tomorrowCount = hwList.where((element) => CalendarTime(element.date).isTomorrow).length;
+      weekCount = hwList.where((element) => CalendarTime(element.date).isLastWeek).length;
+
+      notifyListeners();
+    } else {
+      tomorrowCount = 0;
+      weekCount = 0;
+      notifyListeners();
+    }
   }
 
   Future<void> refresh({bool force = false, refreshFromOffline = false}) async {

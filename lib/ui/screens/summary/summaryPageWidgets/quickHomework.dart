@@ -10,13 +10,10 @@ import 'package:intl/intl.dart';
 import 'package:liquid_progress_indicator_ns/liquid_progress_indicator.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/homework/controller.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/main.dart';
-import 'package:ynotes/ui/components/columnGenerator.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/screens/summary/summaryPageWidgets/quickHomeworkCurvedContainer.dart';
 
@@ -313,122 +310,109 @@ class _QuickHomeworkState extends State<QuickHomework> {
                                     ),
                                   ],
                                 ),
-                              ],
-                            ))),
-                    Align(
-                      alignment: Alignment.topCenter,
-                      child: Container(
-                        margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.8),
-                        child: RefreshIndicator(
-                          onRefresh: model.refresh,
-                          child: CupertinoScrollbar(
-                            child: ChangeNotifierProvider<HomeworkController>.value(
-                              value: appSys.homeworkController,
-                              child: Consumer<HomeworkController>(
-                                builder: (context, model, child) {
-                                  if (model.homework() != null && (model.homework() ?? []).length != 0) {
-                                    return Padding(
-                                      padding: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.4),
-                                      child: ColumnBuilder(
-                                          itemCount: (model.homework() ?? []).length,
-                                          itemBuilder: (context, index) {
-                                            return FutureBuilder<int>(
-                                              initialData: 0,
-                                              future: getColor((model.homework() ?? [])[index].disciplineCode),
-                                              builder: (context, color) => Column(
-                                                children: <Widget>[
-                                                  if (index == 0 ||
-                                                      (model.homework() ?? [])[index - 1].date !=
-                                                          (model.homework() ?? [])[index].date)
-                                                    Container(
-                                                      margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.25),
-                                                      child: Row(children: <Widget>[
-                                                        Text(
-                                                          DateFormat("EEEE d", "fr_FR")
-                                                                  .format((model.homework() ?? [])[index].date!)
-                                                                  .toString()
-                                                                  .capitalize() +
-                                                              " " +
-                                                              DateFormat("MMMM", "fr_FR")
-                                                                  .format((model.homework() ?? [])[index].date!)
-                                                                  .toString()
-                                                                  .capitalize(),
-                                                          style: TextStyle(
-                                                              color: ThemeUtils.textColor(),
-                                                              fontFamily: "Asap",
-                                                              fontSize: 17,
-                                                              fontWeight: FontWeight.w600),
-                                                        ),
-                                                      ]),
-                                                    ),
-                                                  SizedBox(height: screenSize.size.height / 10 * 0.1),
-                                                  HomeworkTicket(
-                                                      (model.homework() ?? [])[index],
-                                                      Color(color.data ?? 0),
-                                                      widget.switchPage,
-                                                      appSys.homeworkController.refresh,
-                                                      model.isFetching && !(model.homework() ?? [])[index].loaded!),
+                                Card(
+                                  color: Theme.of(context).primaryColor,
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.08),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                            width: screenSize.size.width / 5 * 0.4,
+                                            height: screenSize.size.width / 5 * 0.4,
+                                            padding: EdgeInsets.all(screenSize.size.width / 5 * 0.01),
+                                            child: Icon(
+                                              MdiIcons.calendarAlert,
+                                              color: Colors.white,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: Color(0xff27272A),
+                                              borderRadius: BorderRadius.circular(500),
+                                            )),
+                                        ChangeNotifierProvider<HomeworkController?>.value(
+                                          value: appSys.homeworkController,
+                                          child: Consumer<HomeworkController>(builder: (context, model, child) {
+                                            return Container(
+                                              margin: EdgeInsets.only(
+                                                  left: screenSize.size.width / 5 * 0.3,
+                                                  right: screenSize.size.width / 5 * 0.3),
+                                              child: Row(
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                children: [
+                                                  Text(model.tomorrowCount.toString(),
+                                                      style: TextStyle(
+                                                        fontFamily: "Asap",
+                                                        color: ThemeUtils.textColor(),
+                                                        fontWeight: FontWeight.bold,
+                                                      )),
+                                                  Text(" pour demain" + (model.tomorrowCount > 1 ? "s" : ""),
+                                                      style: TextStyle(
+                                                        fontFamily: "Asap",
+                                                        color: ThemeUtils.textColor(),
+                                                      )),
                                                 ],
                                               ),
                                             );
                                           }),
-                                    );
-                                  } else {
-                                    return Padding(
-                                      padding: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.4),
-                                      child: Center(
-                                        child: FittedBox(
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: <Widget>[
-                                              Container(
-                                                height: (screenSize.size.height / 10 * 8.8) / 10 * 1.5,
-                                                child: Image(
-                                                    fit: BoxFit.fitWidth,
-                                                    image: AssetImage('assets/images/noHomework.png')),
-                                              ),
-                                              Text(
-                                                "Pas de devoirs à l'horizon... \non se détend ?",
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                    fontFamily: "Asap",
-                                                    color: ThemeUtils.textColor(),
-                                                    fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
-                                              ),
-                                              FlatButton(
-                                                  textColor: ThemeUtils.textColor(),
-                                                  onPressed: () async {
-                                                    await model.refresh(force: true);
-                                                  },
-                                                  shape: RoundedRectangleBorder(
-                                                      side: BorderSide(
-                                                          color: ThemeUtils.textColor(),
-                                                          width: 0.2,
-                                                          style: BorderStyle.solid),
-                                                      borderRadius: BorderRadius.circular(50)),
-                                                  child: !model.isFetching
-                                                      ? Text("Recharger",
-                                                          style: TextStyle(
-                                                            fontFamily: "Asap",
-                                                            color: ThemeUtils.textColor(),
-                                                          ))
-                                                      : FittedBox(
-                                                          child: SpinKitThreeBounce(
-                                                              color: Theme.of(context).primaryColorDark,
-                                                              size: screenSize.size.width / 5 * 0.4))),
-                                            ],
-                                          ),
                                         ),
-                                      ),
-                                    );
-                                  }
-                                },
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                Card(
+                                  color: Theme.of(context).primaryColor,
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.08),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                            width: screenSize.size.width / 5 * 0.4,
+                                            height: screenSize.size.width / 5 * 0.4,
+                                            padding: EdgeInsets.all(screenSize.size.width / 5 * 0.01),
+                                            child: Icon(
+                                              MdiIcons.calendarWeek,
+                                              color: Colors.white,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: Color(0xff27272A),
+                                              borderRadius: BorderRadius.circular(500),
+                                            )),
+                                        ChangeNotifierProvider<HomeworkController?>.value(
+                                          value: appSys.homeworkController,
+                                          child: Consumer<HomeworkController>(builder: (context, model, child) {
+                                            return Container(
+                                              margin: EdgeInsets.only(
+                                                  left: screenSize.size.width / 5 * 0.3,
+                                                  right: screenSize.size.width / 5 * 0.3),
+                                              child: Row(
+                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                                children: [
+                                                  Text(model.weekCount.toString(),
+                                                      style: TextStyle(
+                                                        fontFamily: "Asap",
+                                                        color: ThemeUtils.textColor(),
+                                                        fontWeight: FontWeight.bold,
+                                                      )),
+                                                  Text(" cette semaine",
+                                                      style: TextStyle(
+                                                        fontFamily: "Asap",
+                                                        color: ThemeUtils.textColor(),
+                                                      )),
+                                                ],
+                                              ),
+                                            );
+                                          }),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: screenSize.size.height / 10 * 0.2,
+                                )
+                              ],
+                            ))),
                   ],
                 ),
               ),

@@ -109,11 +109,11 @@ class SummaryPageState extends State<SummaryPage> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: <Widget>[
-                        separator(context, "Notes"),
+                        separator(context, "Notes", 1),
                         QuickGrades(
                           switchPage: widget.switchPage,
                         ),
-                        separator(context, "Devoirs"),
+                        separator(context, "Devoirs", 2),
                         QuickHomework(
                           switchPage: widget.switchPage,
                         )
@@ -166,7 +166,7 @@ class SummaryPageState extends State<SummaryPage> {
     await appSys.homeworkController.refresh(force: true);
   }
 
-  Widget separator(BuildContext context, String text) {
+  Widget separator(BuildContext context, String text, int pageIndex) {
     MediaQueryData screenSize = MediaQuery.of(context);
 
     return Container(
@@ -175,16 +175,31 @@ class SummaryPageState extends State<SummaryPage> {
         left: screenSize.size.width / 5 * 0.25,
         bottom: screenSize.size.height / 10 * 0.1,
       ),
-      child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
+      child: Row(crossAxisAlignment: CrossAxisAlignment.end, children: <Widget>[
         Text(
           text,
           style:
               TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontSize: 25, fontWeight: FontWeight.w600),
         ),
-        Text(
-          "Accéder à la page",
-          style:
-              TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontSize: 25, fontWeight: FontWeight.w400),
+        SizedBox(
+          width: screenSize.size.width / 5 * 0.25,
+        ),
+        GestureDetector(
+          onTap: () {
+            if (widget.switchPage != null) {
+              widget.switchPage!(pageIndex);
+            }
+          },
+          child: Row(
+            children: [
+              Text(
+                "Accéder à la page",
+                style: TextStyle(
+                    color: ThemeUtils.textColor(), fontFamily: "Asap", fontSize: 15, fontWeight: FontWeight.w400),
+              ),
+              Icon(Icons.chevron_right, color: ThemeUtils.textColor()),
+            ],
+          ),
         ),
       ]),
     );
