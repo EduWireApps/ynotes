@@ -1,4 +1,5 @@
 import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tex/flutter_tex.dart';
@@ -584,6 +585,9 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                               builder: (context, snapshot) {
                                                 bool? done = snapshot.data;
                                                 return Checkbox(
+                                                  side: BorderSide(width: 1, color: Colors.white),
+                                                  fillColor:
+                                                      MaterialStateColor.resolveWith(ThemeUtils.getCheckBoxColor),
                                                   shape: const CircleBorder(),
                                                   activeColor: Colors.blue,
                                                   value: done,

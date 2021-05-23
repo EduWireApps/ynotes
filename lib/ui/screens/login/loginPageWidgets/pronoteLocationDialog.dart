@@ -1,10 +1,10 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:rive/rive.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/pronote/schoolsController.dart';
+import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/screens/login/loginPageWidgets/textField.dart';
 
@@ -306,7 +306,9 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
             children: [
               SizedBox(width: screenSize.size.width / 10 * 0.1),
               Checkbox(
-                  shape: const CircleBorder(),
+                  side: BorderSide(width: 1, color: Colors.white),
+                  fillColor: MaterialStateColor.resolveWith(ThemeUtils.getCheckBoxColor),
+                  shape: CircleBorder(),
                   value: selectedSchool == school,
                   onChanged: (newValue) {
                     setState(() {
@@ -365,6 +367,8 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
               children: [
                 SizedBox(width: screenSize.size.width / 10 * 0.1),
                 Checkbox(
+                    side: BorderSide(width: 1, color: Colors.white),
+                    fillColor: MaterialStateColor.resolveWith(ThemeUtils.getCheckBoxColor),
                     shape: const CircleBorder(),
                     value: space == _space,
                     onChanged: (newValue) {

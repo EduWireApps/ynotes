@@ -90,6 +90,9 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
                                             child: Row(
                                               children: <Widget>[
                                                 Checkbox(
+                                                  side: BorderSide(width: 1, color: Colors.white),
+                                                  fillColor:
+                                                      MaterialStateColor.resolveWith(ThemeUtils.getCheckBoxColor),
                                                   onChanged: (value) {
                                                     if (chosenSpecialties!.contains(disciplines[index])) {
                                                       setState(() {

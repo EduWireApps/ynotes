@@ -38,7 +38,7 @@ class EcoleDirecteMethod {
     }*/
     String method = "notes.awp?verbe=get&";
     String data = 'data={"token": "$token"}';
-    List<Discipline> disciplinesList = await request(
+    List<Discipline>? disciplinesList = await request(
       data,
       rootUrl,
       method,
@@ -48,7 +48,7 @@ class EcoleDirecteMethod {
     );
 
     //Update colors;
-    disciplinesList = await refreshDisciplinesListColors(disciplinesList);
+    disciplinesList = await refreshDisciplinesListColors(disciplinesList ?? []);
 
     if (!_offlineController!.locked) {
       await _offlineController!.disciplines.updateDisciplines(disciplinesList);
@@ -58,7 +58,7 @@ class EcoleDirecteMethod {
       appSys.updateSetting(
           appSys.settings!["system"], "lastGradeCount", getAllGrades(disciplinesList, overrideLimit: true)!.length);
     }
-    return disciplinesList;
+    return (disciplinesList ?? []);
   }
 
   homeworkDates() async {
@@ -175,13 +175,13 @@ class EcoleDirecteMethod {
     await EcoleDirecteMethod.testToken();
     String data = 'data={"token": "$token"}';
     String rootUrl = 'https://api.ecoledirecte.com/v3/messagerie/contacts/professeurs.awp?verbe=get';
-    List<Recipient> recipients = await request(
+    List<Recipient>? recipients = await request(
         data, rootUrl, "", EcoleDirecteMailConverter.recipients, "Recipients request returned an error:",
         ignoreMethodAndId: true);
     if (recipients != null) {
       await appSys.offline.recipients.updateRecipients(recipients);
     }
-    return recipients;
+    return recipients ?? [];
   }
 
   Future<List<SchoolLifeTicket>> schoolLife() async {
@@ -325,7 +325,8 @@ class EcoleDirecteMethod {
   static Future sendMail(String? subject, String content, List<Recipient> recipientsList) async {
     String recipients = "";
 
-    String parsedContent = base64Encode(utf8.encode(HtmlCharacterEntities.encode(content, characters: "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿŒœŠšŸƒˆ˜")));
+    String parsedContent = base64Encode(utf8.encode(HtmlCharacterEntities.encode(content,
+        characters: "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿŒœŠšŸƒˆ˜")));
     recipientsList.forEach((element) {
       String eOrp = element.isTeacher! ? "P" : "E";
       int? id = int.tryParse(element.id!);

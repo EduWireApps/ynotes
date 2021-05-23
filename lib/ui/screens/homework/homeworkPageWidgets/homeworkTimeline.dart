@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -12,6 +14,7 @@ import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/columnGenerator.dart';
 import 'package:ynotes/ui/components/customLoader.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
+import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/homeworkFilterDialog.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/homeworkViewPage.dart';
 import 'package:ynotes/usefulMethods.dart';
 
@@ -176,14 +179,14 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
                     child: Column(
                       children: [
                         StickyHeader(),
-                        groupHomeworkByDate(model.getHomework ?? []).length > 0
+                        groupHomeworkByDate(model.homework() ?? []).length > 0
                             ? ListView.builder(
                                 physics: AlwaysScrollableScrollPhysics(),
-                                itemCount: groupHomeworkByDate(model.getHomework ?? []).length,
+                                itemCount: groupHomeworkByDate(model.homework() ?? []).length,
                                 itemBuilder: (context, index) {
                                   return buildHomeworkBlock(
-                                      groupHomeworkByDate(model.getHomework ?? [])[index].first.date ?? DateTime.now(),
-                                      groupHomeworkByDate(model.getHomework ?? [])[index]);
+                                      groupHomeworkByDate(model.homework() ?? [])[index].first.date ?? DateTime.now(),
+                                      groupHomeworkByDate(model.homework() ?? [])[index]);
                                 })
                             : buildNoHomework(model),
                       ],
@@ -354,9 +357,38 @@ class _StickyHeaderState extends State<StickyHeader> {
           Expanded(
             flex: 8,
             child: Material(
-              color: Theme.of(context).primaryColorLight,
+              color: appSys.homeworkController.currentFilter != homeworkFilter.ALL
+                  ? Colors.green
+                  : Theme.of(context).primaryColorLight,
               child: InkWell(
-                onTap: () {},
+                onTap: () async {
+                  await showDialog(
+                      context: context,
+                      builder: (context) {
+                        return HomeworkFilterDialog();
+                      });
+                  if (appSys.homeworkController.currentFilter == homeworkFilter.CUSTOM) {
+                    List disciplines =
+                        appSys.homeworkController.homework(showAll: true)?.map((e) => e.discipline).toList() ?? [];
+                    List<int> indexes = [];
+                    disciplines.forEach((element) {
+                      (jsonDecode(appSys.settings?["user"]["homeworkPage"]["customDisciplinesList"] ?? "[]") ?? [])
+                          .forEach((saved) {
+                        if (element == saved) {
+                          indexes.add(disciplines.indexOf(saved));
+                        }
+                      });
+                    });
+                    List? temp = await CustomDialogs.showMultipleChoicesDialog(context, disciplines, indexes,
+                        label: "Choisissez une matière parmi les suivantes :");
+                    if (temp != null) {
+                      await appSys.updateSetting(
+                          appSys.settings?["user"]["homeworkPage"], "customDisciplinesList", jsonEncode(temp));
+                      setState(() {});
+                    }
+                  }
+                  setState(() {});
+                },
                 child: Container(
                   height: screenSize.size.height / 10 * 0.6,
                   child: Row(

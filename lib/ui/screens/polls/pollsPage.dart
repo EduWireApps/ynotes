@@ -118,6 +118,9 @@ class _PollsAndInfoPageState extends State<PollsAndInfoPage> {
                                                     child: Row(
                                                       children: [
                                                         Checkbox(
+                                                          side: BorderSide(width: 1, color: Colors.white),
+                                                          fillColor: MaterialStateColor.resolveWith(
+                                                              ThemeUtils.getCheckBoxColor),
                                                           shape: const CircleBorder(),
                                                           onChanged: (value) async {
                                                             setState(() {
@@ -192,6 +195,8 @@ class _PollsAndInfoPageState extends State<PollsAndInfoPage> {
           child: Row(
             children: [
               Checkbox(
+                side: BorderSide(width: 1, color: Colors.white),
+                fillColor: MaterialStateColor.resolveWith(ThemeUtils.getCheckBoxColor),
                 shape: const CircleBorder(),
                 value: (question.answers ?? "").contains((question.choices ?? [])[i].rank.toString()),
                 onChanged: (value) async {

@@ -31,7 +31,8 @@ class SettingsUtils {
         "isExpandedByDefault": false,
         "forceMonochromeContent": false,
         "fontSize": 20,
-        "pageColorVariant": 0
+        "pageColorVariant": 0,
+        "customDisciplinesList":"[]"
       },
       "agendaPage": {
         "lighteningOverride": false,

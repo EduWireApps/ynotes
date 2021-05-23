@@ -86,6 +86,8 @@ class _MultipleChoicesDialogState extends State<MultipleChoicesDialog> {
                             child: Row(
                               children: <Widget>[
                                 Checkbox(
+                                  side: BorderSide(width: 1, color: Colors.white),
+                                  fillColor: MaterialStateColor.resolveWith(ThemeUtils.getCheckBoxColor),
                                   value: indexsSelected.contains(index),
                                   onChanged: (value) {
                                     if (widget.singleChoice) {
