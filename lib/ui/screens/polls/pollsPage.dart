@@ -1,5 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
@@ -118,7 +117,8 @@ class _PollsAndInfoPageState extends State<PollsAndInfoPage> {
                                                   FittedBox(
                                                     child: Row(
                                                       children: [
-                                                        CircularCheckBox(
+                                                        Checkbox(
+                                                          shape: const CircleBorder(),
                                                           onChanged: (value) async {
                                                             setState(() {
                                                               (snapshot.data ?? [])[index].read = value;
@@ -191,7 +191,8 @@ class _PollsAndInfoPageState extends State<PollsAndInfoPage> {
           padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
           child: Row(
             children: [
-              CircularCheckBox(
+              Checkbox(
+                shape: const CircleBorder(),
                 value: (question.answers ?? "").contains((question.choices ?? [])[i].rank.toString()),
                 onChanged: (value) async {
                   if ((await (appSys.api as APIPronote).setPronotePolls(poll, question, (question.choices ?? [])[i]))) {

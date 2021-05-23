@@ -26,10 +26,6 @@ dependencies:
     git:
       url: https://github.com/ChangJoo-Park/battery_optimization
       ref: master
-  circular_check_box:
-    git:
-      url: https://github.com/Supercaly/circular_check_box
-      ref: master
   ext_storage:
     git:
       url: https://github.com/GitJournal/ext_storage

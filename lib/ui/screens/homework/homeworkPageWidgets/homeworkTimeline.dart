@@ -35,6 +35,11 @@ class HomeworkTimeline extends StatefulWidget {
   _HomeworkTimelineState createState() => _HomeworkTimelineState();
 }
 
+class StickyHeader extends StatefulWidget {
+  @override
+  _StickyHeaderState createState() => _StickyHeaderState();
+}
+
 class _HomeworkElementState extends State<HomeworkElement> with SingleTickerProviderStateMixin {
   late AnimationController controller;
   @override
@@ -168,16 +173,21 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
                 child: Container(
                     height: screenSize.size.height,
                     width: screenSize.size.width,
-                    child: groupHomeworkByDate(model.getHomework ?? []).length > 0
-                        ? ListView.builder(
-                            physics: AlwaysScrollableScrollPhysics(),
-                            itemCount: groupHomeworkByDate(model.getHomework ?? []).length,
-                            itemBuilder: (context, index) {
-                              return buildHomeworkBlock(
-                                  groupHomeworkByDate(model.getHomework ?? [])[index].first.date ?? DateTime.now(),
-                                  groupHomeworkByDate(model.getHomework ?? [])[index]);
-                            })
-                        : buildNoHomework(model)),
+                    child: Column(
+                      children: [
+                        StickyHeader(),
+                        groupHomeworkByDate(model.getHomework ?? []).length > 0
+                            ? ListView.builder(
+                                physics: AlwaysScrollableScrollPhysics(),
+                                itemCount: groupHomeworkByDate(model.getHomework ?? []).length,
+                                itemBuilder: (context, index) {
+                                  return buildHomeworkBlock(
+                                      groupHomeworkByDate(model.getHomework ?? [])[index].first.date ?? DateTime.now(),
+                                      groupHomeworkByDate(model.getHomework ?? [])[index]);
+                                })
+                            : buildNoHomework(model),
+                      ],
+                    )),
               );
             }),
           ),
@@ -322,5 +332,105 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
   //Date on the left of the homework
   Future<void> refresh() async {
     await appSys.homeworkController.refresh(force: true);
+  }
+}
+
+class _StickyHeaderState extends State<StickyHeader> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [buildOptionsHeader(), buildPinnedHomeworkLabel()],
+    );
+  }
+
+  Widget buildOptionsHeader() {
+    MediaQueryData screenSize = MediaQuery.of(context);
+    return Container(
+      height: screenSize.size.height / 10 * 0.6,
+      width: screenSize.size.width,
+      color: Theme.of(context).primaryColorLight,
+      child: Row(
+        children: [
+          Expanded(
+            flex: 8,
+            child: Material(
+              color: Theme.of(context).primaryColorLight,
+              child: InkWell(
+                onTap: () {},
+                child: Container(
+                  height: screenSize.size.height / 10 * 0.6,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Icon(MdiIcons.filter, color: ThemeUtils.textColor()),
+                      Text("Filtrer",
+                          style: TextStyle(
+                              fontFamily: "Asap", fontWeight: FontWeight.bold, color: ThemeUtils.textColor())),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 8,
+            child: Material(
+              color: Theme.of(context).primaryColorLight,
+              child: InkWell(
+                onTap: () {},
+                child: Container(
+                  height: screenSize.size.height / 10 * 0.6,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Icon(MdiIcons.calendar, color: ThemeUtils.textColor()),
+                      Text("Choisir une date",
+                          style: TextStyle(
+                              fontFamily: "Asap", fontWeight: FontWeight.bold, color: ThemeUtils.textColor())),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildPinnedHomeworkLabel() {
+    MediaQueryData screenSize = MediaQuery.of(context);
+
+    return Material(
+      color: Theme.of(context).primaryColor,
+      child: InkWell(
+        onTap: () {},
+        child: Container(
+          height: screenSize.size.height / 10 * 0.6,
+          width: screenSize.size.width,
+          color: Colors.transparent,
+          child: Row(
+            children: [
+              Expanded(
+                child: SizedBox(),
+                flex: 1,
+              ),
+              Expanded(
+                flex: 8,
+                child: Text("6 devoirs épinglés",
+                    style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: ThemeUtils.textColor())),
+              ),
+              Expanded(
+                flex: 1,
+                child: Icon(
+                  MdiIcons.chevronRight,
+                  color: ThemeUtils.textColor(),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

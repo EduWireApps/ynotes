@@ -2,7 +2,6 @@ import 'dart:core';
 import 'dart:ui';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -21,28 +20,141 @@ import 'package:ynotes/ui/components/columnGenerator.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/screens/summary/summaryPageWidgets/quickHomeworkCurvedContainer.dart';
 
+class HomeworkTicket extends StatefulWidget {
+  final Homework _homework;
+  final Color color;
+  final Function refreshCallback;
+  final bool load;
+  final Function? pageSwitcher;
+  const HomeworkTicket(this._homework, this.color, this.pageSwitcher, this.refreshCallback, this.load);
+  State<StatefulWidget> createState() {
+    return _HomeworkTicketState();
+  }
+}
+
 class QuickHomework extends StatefulWidget {
   final Function? switchPage;
-    const QuickHomework({Key? key, this.switchPage}) : super(key: key);
+  const QuickHomework({Key? key, this.switchPage}) : super(key: key);
   @override
   _QuickHomeworkState createState() => _QuickHomeworkState();
 }
 
+//The basic ticket for homeworks with the discipline and the description and a checkbox
+class _HomeworkTicketState extends State<HomeworkTicket> {
+  @override
+  Widget build(BuildContext context) {
+    MediaQueryData screenSize = MediaQuery.of(context);
+    return Container(
+      width: screenSize.size.width,
+      margin: EdgeInsets.only(
+          bottom: (screenSize.size.height / 10 * 8.8) / 10 * 0.1, left: screenSize.size.width / 5 * 0.25),
+      child: Stack(
+        children: [
+          Material(
+            color: widget.color,
+            borderRadius: BorderRadius.circular(8),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(8),
+              onTap: () {
+                widget.pageSwitcher!(2);
+              },
+              onLongPress: !widget._homework.loaded!
+                  ? null
+                  : () async {
+                      await CustomDialogs.showHomeworkDetailsDialog(context, this.widget._homework);
+                      setState(() {});
+                    },
+              child: Container(
+                width: screenSize.size.width / 5 * 4.5,
+                height: (screenSize.size.height / 10 * 8.8) / 10 * 0.8,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(39),
+                ),
+                child: Row(
+                  children: <Widget>[
+                    Container(
+                      width: screenSize.size.width / 5 * 0.8,
+                      child: FutureBuilder<bool>(
+                          future: appSys.offline.doneHomework.getHWCompletion(widget._homework.id ?? ''),
+                          initialData: false,
+                          builder: (context, snapshot) {
+                            bool? done = snapshot.data ?? false;
+                            return Checkbox(
+                              shape: const CircleBorder(),
+                              activeColor: Color(0xff15803D),
+                              value: done,
+                              materialTapTargetSize: MaterialTapTargetSize.padded,
+                              onChanged: this
+                                      .widget
+                                      ._homework
+                                      .date!
+                                      .isBefore(DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now())))
+                                  ? null
+                                  : (bool? x) async {
+                                      widget.refreshCallback();
+                                      await appSys.offline.doneHomework.setHWCompletion(widget._homework.id, x);
+                                    },
+                            );
+                          }),
+                    ),
+                    FittedBox(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Container(
+                              width: screenSize.size.width / 5 * 3.5,
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: screenSize.size.width / 5 * 3,
+                                    child: AutoSizeText(widget._homework.discipline!,
+                                        textScaleFactor: 1.0,
+                                        textAlign: TextAlign.left,
+                                        overflow: TextOverflow.ellipsis,
+                                        style:
+                                            TextStyle(fontSize: 14, fontFamily: "Asap", fontWeight: FontWeight.bold)),
+                                  ),
+                                  if (widget.load)
+                                    Container(
+                                        width: screenSize.size.width / 5 * 0.4,
+                                        child: FittedBox(
+                                          child: SpinKitThreeBounce(
+                                            color: ThemeUtils.darken(widget.color),
+                                          ),
+                                        )),
+                                ],
+                              )),
+                          if (widget._homework.loaded!)
+                            Container(
+                              width: screenSize.size.width / 5 * 2.7,
+                              child: AutoSizeText(
+                                parse(widget._homework.rawContent ?? "").documentElement!.text,
+                                style: TextStyle(fontFamily: "Asap"),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          ),
+          if (widget._homework.isATest!)
+            Container(
+                height: (screenSize.size.height / 10 * 8.8) / 10 * 0.8,
+                width: screenSize.size.width / 5 * 0.2,
+                child: TestBadge()),
+        ],
+      ),
+    );
+  }
+}
+
 class _QuickHomeworkState extends State<QuickHomework> {
-  @override
-  void initState() {
-    super.initState(); //init homework
-  }
-
-  Future<void> forceRefreshModel() async {
-    await appSys.homeworkController.refresh(force: true);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
@@ -322,130 +434,18 @@ class _QuickHomeworkState extends State<QuickHomework> {
           );
         }));
   }
-}
 
-//The basic ticket for homeworks with the discipline and the description and a checkbox
-class HomeworkTicket extends StatefulWidget {
-  final Homework _homework;
-  final Color color;
-  final Function refreshCallback;
-  final bool load;
-  final Function? pageSwitcher;
-  const HomeworkTicket(this._homework, this.color, this.pageSwitcher, this.refreshCallback, this.load);
-  State<StatefulWidget> createState() {
-    return _HomeworkTicketState();
-  }
-}
-
-class _HomeworkTicketState extends State<HomeworkTicket> {
   @override
-  Widget build(BuildContext context) {
-    MediaQueryData screenSize = MediaQuery.of(context);
-    return Container(
-      width: screenSize.size.width,
-      margin: EdgeInsets.only(
-          bottom: (screenSize.size.height / 10 * 8.8) / 10 * 0.1, left: screenSize.size.width / 5 * 0.25),
-      child: Stack(
-        children: [
-          Material(
-            color: widget.color,
-            borderRadius: BorderRadius.circular(8),
-            child: InkWell(
-              borderRadius: BorderRadius.circular(8),
-              onTap: () {
-                widget.pageSwitcher!(2);
-              },
-              onLongPress: !widget._homework.loaded!
-                  ? null
-                  : () async {
-                      await CustomDialogs.showHomeworkDetailsDialog(context, this.widget._homework);
-                      setState(() {});
-                    },
-              child: Container(
-                width: screenSize.size.width / 5 * 4.5,
-                height: (screenSize.size.height / 10 * 8.8) / 10 * 0.8,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(39),
-                ),
-                child: Row(
-                  children: <Widget>[
-                    Container(
-                      width: screenSize.size.width / 5 * 0.8,
-                      child: FutureBuilder<bool>(
-                          future: appSys.offline.doneHomework.getHWCompletion(widget._homework.id ?? ''),
-                          initialData: false,
-                          builder: (context, snapshot) {
-                            bool? done = snapshot.data ?? false;
-                            return CircularCheckBox(
-                              activeColor: Color(0xff15803D),
-                              value: done,
-                              materialTapTargetSize: MaterialTapTargetSize.padded,
-                              onChanged: this
-                                      .widget
-                                      ._homework
-                                      .date!
-                                      .isBefore(DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now())))
-                                  ? null
-                                  : (bool? x) async {
-                                      widget.refreshCallback();
-                                      await appSys.offline.doneHomework.setHWCompletion(widget._homework.id, x);
-                                    },
-                            );
-                          }),
-                    ),
-                    FittedBox(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Container(
-                              width: screenSize.size.width / 5 * 3.5,
-                              child: Row(
-                                children: [
-                                  Container(
-                                    width: screenSize.size.width / 5 * 3,
-                                    child: AutoSizeText(widget._homework.discipline!,
-                                        textScaleFactor: 1.0,
-                                        textAlign: TextAlign.left,
-                                        overflow: TextOverflow.ellipsis,
-                                        style:
-                                            TextStyle(fontSize: 14, fontFamily: "Asap", fontWeight: FontWeight.bold)),
-                                  ),
-                                  if (widget.load)
-                                    Container(
-                                        width: screenSize.size.width / 5 * 0.4,
-                                        child: FittedBox(
-                                          child: SpinKitThreeBounce(
-                                            color: ThemeUtils.darken(widget.color),
-                                          ),
-                                        )),
-                                ],
-                              )),
-                          if (widget._homework.loaded!)
-                            Container(
-                              width: screenSize.size.width / 5 * 2.7,
-                              child: AutoSizeText(
-                                parse(widget._homework.rawContent ?? "").documentElement!.text,
-                                style: TextStyle(fontFamily: "Asap"),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            )
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            ),
-          ),
-          if (widget._homework.isATest!)
-            Container(
-                height: (screenSize.size.height / 10 * 8.8) / 10 * 0.8,
-                width: screenSize.size.width / 5 * 0.2,
-                child: TestBadge()),
-        ],
-      ),
-    );
+  void dispose() {
+    super.dispose();
+  }
+
+  Future<void> forceRefreshModel() async {
+    await appSys.homeworkController.refresh(force: true);
+  }
+
+  @override
+  void initState() {
+    super.initState(); //init homework
   }
 }
