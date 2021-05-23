@@ -1,11 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
-import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/core/apis/Pronote.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
@@ -61,79 +59,60 @@ class _PollsAndInfoPageState extends State<PollsAndInfoPage> {
                                 itemCount: pollsList!.length,
                                 itemBuilder: (BuildContext context, int index) {
                                   return ClipRRect(
-                                    borderRadius: BorderRadius.circular(11),
-                                    child: Card(
-                                      color: Theme.of(context).primaryColor,
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(11),
-                                        child: ExpansionTile(
-                                          backgroundColor: Colors.transparent,
-                                          title: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              AutoSizeText(
-                                                (snapshot.data?[index].title != null
-                                                        ? (snapshot.data ?? [])[index].title ?? "" + " - "
-                                                        : "") +
-                                                    (((snapshot.data ?? [])[index].start != null)
-                                                        ? DateFormat("dd/MM/yyyy")
-                                                            .format((snapshot.data ?? [])[index].start!)
-                                                        : ""),
-                                                style: TextStyle(
-                                                    fontFamily: "Asap",
-                                                    fontWeight: FontWeight.bold,
-                                                    color: ThemeUtils.textColor()),
-                                              ),
-                                              AutoSizeText(
-                                                (snapshot.data ?? [])[index].author ?? "",
-                                                style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-                                              ),
-                                            ],
-                                          ),
-                                          children: [
-                                            Column(
+                                      borderRadius: BorderRadius.circular(11),
+                                      child: Card(
+                                        color: Theme.of(context).primaryColor,
+                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
+                                        child: ClipRRect(
+                                          borderRadius: BorderRadius.circular(11),
+                                          child: ExpansionTile(
+                                            backgroundColor: Colors.transparent,
+                                            title: Column(
+                                              crossAxisAlignment: CrossAxisAlignment.start,
                                               children: [
-                                                _buildPollQuestion((snapshot.data ?? [])[index], screenSize),
-                                                FittedBox(
-                                                  child: Row(
-                                                    children: [
-                                                      CircularCheckBox(
-                                                        onChanged: (value) async {
-                                                          setState(() {
-                                                            (snapshot.data ?? [])[index].read = value;
-                                                          });
-                                                          if ((await (appSys.api as APIPronote).setPronotePollRead(
+                                                Column(
+                                                  children: [
+                                                    _buildPollQuestion((snapshot.data ?? [])[index], screenSize),
+                                                    FittedBox(
+                                                      child: Row(
+                                                        children: [
+                                                          Checkbox(
+                                                            shape: const CircleBorder(),
+                                                            onChanged: (value) async {
+                                                              setState(() {
+                                                                (snapshot.data ?? [])[index].read = value;
+                                                              });
+                                                              if ((await (appSys.api as APIPronote).setPronotePollRead(
                                                                   (snapshot.data ?? [])[index],
                                                                   ((snapshot.data ?? [])[index].questions ?? [])
                                                                       .first))) {
-                                                            CustomDialogs.showAnyDialog(
-                                                                context, "Votre choix a été confirmé");
-                                                            refreshPolls(forced: true);
-                                                          } else {
-                                                            setState(() {
-                                                              (snapshot.data ?? [])[index].read = value!;
-                                                            });
-                                                          }
-                                                          await refreshPolls(forced: true);
-                                                        },
-                                                        value: pollsList![index].read,
+                                                                CustomDialogs.showAnyDialog(
+                                                                    context, "Votre choix a été confirmé");
+                                                                refreshPolls(forced: true);
+                                                              } else {
+                                                                setState(() {
+                                                                  (snapshot.data ?? [])[index].read = value!;
+                                                                });
+                                                              }
+                                                              await refreshPolls(forced: true);
+                                                            },
+                                                            value: pollsList![index].read,
+                                                          ),
+                                                          AutoSizeText(
+                                                            "J'ai pris connaissance de cette information",
+                                                            style: TextStyle(
+                                                                fontFamily: "Asap", color: ThemeUtils.textColor()),
+                                                          )
+                                                        ],
                                                       ),
-                                                      AutoSizeText(
-                                                        "J'ai pris connaissance de cette information",
-                                                        style: TextStyle(
-                                                            fontFamily: "Asap", color: ThemeUtils.textColor()),
-                                                      )
-                                                    ],
-                                                  ),
-                                                )
+                                                    )
+                                                  ],
+                                                ),
                                               ],
                                             ),
-                                          ],
+                                          ),
                                         ),
-                                      ),
-                                    ),
-                                  );
+                                      ));
                                 });
                           } else {
                             return SpinKitFadingFour(
@@ -170,7 +149,8 @@ class _PollsAndInfoPageState extends State<PollsAndInfoPage> {
           padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
           child: Row(
             children: [
-              CircularCheckBox(
+              Checkbox(
+                shape: const CircleBorder(),
                 value: (question.answers ?? "").contains((question.choices ?? [])[i].rank.toString()),
                 onChanged: (value) async {
                   if ((await (appSys.api as APIPronote).setPronotePolls(poll, question, (question.choices ?? [])[i]))) {

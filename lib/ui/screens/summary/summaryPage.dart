@@ -168,6 +168,11 @@ class SummaryPageState extends State<SummaryPage> {
               fontSize: 25,
               fontWeight: FontWeight.w600),
         ),
+        Text(
+          "Accéder à la page",
+          style:
+              TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontSize: 25, fontWeight: FontWeight.w400),
+        ),
       ]),
     );
   }

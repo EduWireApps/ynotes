@@ -63,7 +63,7 @@ packages:
       name: async
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.5.0"
+    version: "2.6.1"
   auto_size_text:
     dependency: "direct main"
     description:
@@ -192,15 +192,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.1"
-  circular_check_box:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: master
-      resolved-ref: bacdd9225da7a04a10a80c081272f3d987f7caae
-      url: "https://github.com/Supercaly/circular_check_box"
-    source: git
-    version: "1.0.3"
   cli_util:
     dependency: transitive
     description:
@@ -1042,7 +1033,7 @@ packages:
       name: source_span
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.8.0"
+    version: "1.8.1"
   stack:
     dependency: "direct main"
     description:
@@ -1112,7 +1103,7 @@ packages:
       name: test_api
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.19"
+    version: "0.3.0"
   timing:
     dependency: transitive
     description:
