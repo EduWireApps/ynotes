@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:html/parser.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
@@ -102,6 +103,31 @@ class _HomeworkElementState extends State<HomeworkElement> with SingleTickerProv
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
+                                        Container(
+                                          width: screenSize.size.width / 5 * 0.4,
+                                          height: screenSize.size.width / 5 * 0.4,
+                                          child: FutureBuilder<bool>(
+                                              future: appSys.offline.doneHomework
+                                                  .getHWCompletion(widget.homework[widget.index].id ?? ''),
+                                              initialData: false,
+                                              builder: (context, snapshot) {
+                                                bool? done = snapshot.data;
+                                                return Checkbox(
+                                                  side: BorderSide(width: 1, color: Colors.white),
+                                                  fillColor:
+                                                      MaterialStateColor.resolveWith(ThemeUtils.getCheckBoxColor),
+                                                  shape: const CircleBorder(),
+                                                  activeColor: Colors.blue,
+                                                  value: done,
+                                                  materialTapTargetSize: MaterialTapTargetSize.padded,
+                                                  onChanged: (bool? x) async {
+                                                    appSys.offline.doneHomework
+                                                        .setHWCompletion(widget.homework[widget.index].id, x);
+                                                    setState(() {});
+                                                  },
+                                                );
+                                              }),
+                                        ),
                                         Expanded(
                                           child: Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -121,10 +147,21 @@ class _HomeworkElementState extends State<HomeworkElement> with SingleTickerProv
                                                   ),
                                                 ),
                                               ),
+                                              if (widget.homework[widget.index].teacherName?.trimLeft() != null &&
+                                                  widget.homework[widget.index].teacherName != "")
+                                                Flexible(
+                                                    flex: 7,
+                                                    child: AutoSizeText(
+                                                        widget.homework[widget.index].teacherName?.trimLeft() ?? "",
+                                                        overflow: TextOverflow.ellipsis,
+                                                        textAlign: TextAlign.start,
+                                                        style: TextStyle(fontFamily: "Asap"))),
                                               Flexible(
                                                   flex: 7,
                                                   child: AutoSizeText(
-                                                      widget.homework[widget.index].teacherName?.trimLeft() ?? "",
+                                                      parse(widget.homework[widget.index].rawContent ?? "")
+                                                          .documentElement!
+                                                          .text,
                                                       overflow: TextOverflow.ellipsis,
                                                       textAlign: TextAlign.start,
                                                       style: TextStyle(fontFamily: "Asap")))
@@ -228,7 +265,9 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
                 child: ColumnBuilder(
                   itemCount: homework.length,
                   itemBuilder: (context, index) {
-                    return HomeworkElement(homework, index);
+                    return Container(
+                        margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.1),
+                        child: HomeworkElement(homework, index));
                   },
                 )),
           ],

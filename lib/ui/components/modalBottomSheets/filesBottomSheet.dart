@@ -1,5 +1,7 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:liquid_progress_indicator_ns/liquid_progress_indicator.dart';
+import 'package:marquee/marquee.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:stacked/stacked.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
@@ -87,6 +89,7 @@ class _FilesBottomSheetState extends State<FilesBottomSheet> {
             return Container(
               height: screenSize.size.height / 10 * 0.5,
               width: screenSize.size.width / 5 * 4.8,
+              margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.1),
               child: LiquidLinearProgressIndicator(
                   value: model.downloadProgress ?? 0.0, // Defaults to 0.5.
                   valueColor: AlwaysStoppedAnimation(Color(0xff27AE60)), // Defaults to the current Theme's accentColor.
@@ -104,20 +107,23 @@ class _FilesBottomSheetState extends State<FilesBottomSheet> {
       return FutureBuilder<Color>(
           future: getFileItemColor(model, document),
           builder: (context, snapshot) {
-            return Material(
-                color: snapshot.data ??
-                    (ThemeUtils.isThemeDark ? lightTheme.primaryColorDark : darkTheme.primaryColorDark),
-                borderRadius: BorderRadius.circular(5),
-                child: InkWell(
-                    borderRadius: BorderRadius.circular(5),
-                    onTap: () async {
-                      if (await model.fileExists(document.documentName)) {
-                        await FileAppUtil.openFile(document.documentName, usingFileName: true);
-                      } else {
-                        await model.download(document);
-                      }
-                    },
-                    child: child));
+            return Container(
+              margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.1),
+              child: Material(
+                  color: snapshot.data ??
+                      (ThemeUtils.isThemeDark ? lightTheme.primaryColorDark : darkTheme.primaryColorDark),
+                  borderRadius: BorderRadius.circular(5),
+                  child: InkWell(
+                      borderRadius: BorderRadius.circular(5),
+                      onTap: () async {
+                        if (await model.fileExists(document.documentName)) {
+                          await FileAppUtil.openFile(document.documentName, usingFileName: true);
+                        } else {
+                          await model.download(document);
+                        }
+                      },
+                      child: child)),
+            );
           });
     }
   }
@@ -136,9 +142,22 @@ class _FilesBottomSheetState extends State<FilesBottomSheet> {
                   children: [
                     Expanded(
                       child: Container(
-                          padding: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
-                          child: Text(document.documentName ?? "",
-                              style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(revert: true)))),
+                          padding: EdgeInsets.only(
+                              left: screenSize.size.width / 5 * 0.1, right: screenSize.size.width / 5 * 0.1),
+                          child: AutoSizeText(
+                            document.documentName ?? "",
+                            style: TextStyle(
+                              fontFamily: "Asap",
+                              color: ThemeUtils.textColor(revert: true),
+                            ),
+                            overflowReplacement: Marquee(
+                              text: document.documentName ?? "",
+                              style: TextStyle(
+                                fontFamily: "Asap",
+                                color: ThemeUtils.textColor(revert: true),
+                              ),
+                            ),
+                          )),
                     ),
                     FutureBuilder<List>(
                         future: getIconColors(model, document),

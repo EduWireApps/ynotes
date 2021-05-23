@@ -105,7 +105,7 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
     );
   }
 
-  buildButton(Homework hw, Color color) {
+  buildButtons(Homework hw, Color color) {
     var screenSize = MediaQuery.of(context);
     return Container(
       color: pageColor(appSys),
@@ -148,7 +148,6 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                               borderRadius: BorderRadius.circular(11),
                               backgroundColor: color,
                               icon: MdiIcons.fileDocumentMultipleOutline,
-                              margin: EdgeInsets.zero,
                               iconColor: ThemeUtils.textColor()),
                         )
                       : Container()),
@@ -229,14 +228,15 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                           textAlign: TextAlign.center,
                           style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Asap", color: Colors.white)),
                     ),
-                    Flexible(
-                      flex: 9,
-                      child: AutoSizeText(
-                        hw.teacherName ?? "",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontFamily: "Asap", color: Colors.white60),
+                    if (hw.teacherName != null && hw.teacherName != "")
+                      Flexible(
+                        flex: 9,
+                        child: AutoSizeText(
+                          hw.teacherName?.trimLeft() ?? "",
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontFamily: "Asap", color: Colors.white60),
+                        ),
                       ),
-                    ),
                   ],
                 )),
                 Visibility(
@@ -255,7 +255,7 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                 )
               ],
             )),
-        buildButton(hw, color),
+        buildButtons(hw, color),
       ],
     );
   }

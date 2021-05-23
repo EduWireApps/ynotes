@@ -237,6 +237,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
         "icon": MdiIcons.home,
         "page": SummaryPage(
           parentScaffoldState: drawerKey,
+          switchPage: _switchPage,
         ),
         "key": summaryPage
       },
