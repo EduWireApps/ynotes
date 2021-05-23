@@ -64,7 +64,7 @@ class HomeworkController extends ChangeNotifier {
           break;
         case homeworkFilter.SCIENCES:
           if (appSys.settings!["system"]["chosenParser"] == 0) {
-            List<String> codeMatiere = FILTERS["science"]["ED"];
+            List<String> codeMatiere = FILTERS["sciences"]["ED"];
             if (codeMatiere.any((test) {
               if (test == f.disciplineCode) {
                 return true;
@@ -75,8 +75,8 @@ class HomeworkController extends ChangeNotifier {
               toReturn.add(f);
             }
           } else {
-            List<String> codeMatiere = FILTERS["science"]["Pronote"];
-            List<String> blackList = FILTERS["science"]["blacklist"];
+            List<String> codeMatiere = FILTERS["sciences"]["Pronote"];
+            List<String> blackList = FILTERS["sciences"]["blacklist"];
             if (codeMatiere.any((test) {
               if (f.discipline!.contains(test) && !blackList.any((element) => f.discipline!.contains(element))) {
                 return true;
@@ -92,10 +92,10 @@ class HomeworkController extends ChangeNotifier {
           break;
 
         case homeworkFilter.CUSTOM:
-          List<String> codeMatiere =
+          List codeMatiere =
               jsonDecode(appSys.settings?["user"]["homeworkPage"]["customDisciplinesList"] ?? "[]") ?? [];
           if (codeMatiere.any((test) {
-            if (test == f.disciplineCode) {
+            if (test == f.discipline) {
               return true;
             } else {
               return false;

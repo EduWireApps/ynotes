@@ -88,6 +88,7 @@ class _MultipleChoicesDialogState extends State<MultipleChoicesDialog> {
                                 Checkbox(
                                   side: BorderSide(width: 1, color: Colors.white),
                                   fillColor: MaterialStateColor.resolveWith(ThemeUtils.getCheckBoxColor),
+                                  shape: CircleBorder(),
                                   value: indexsSelected.contains(index),
                                   onChanged: (value) {
                                     if (widget.singleChoice) {

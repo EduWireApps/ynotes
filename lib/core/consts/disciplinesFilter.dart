@@ -6,6 +6,6 @@ Map FILTERS = {
   "sciences": {
     "ED": ["SVT", "MATHS", "G-SCI", "PH-CH"],
     "Pronote": ["SVT", "MATH", "PHY", "PHYSIQUE", "SCI", "BIO"],
-    "blackList": ["SPORT"]
+    "blacklist": ["SPORT"]
   }
 };

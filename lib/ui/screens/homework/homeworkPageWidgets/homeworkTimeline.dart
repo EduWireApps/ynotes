@@ -11,6 +11,7 @@ import 'package:ynotes/core/logic/homework/controller.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
+import 'package:ynotes/main.dart';
 import 'package:ynotes/ui/components/columnGenerator.dart';
 import 'package:ynotes/ui/components/customLoader.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
@@ -180,14 +181,17 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
                       children: [
                         StickyHeader(),
                         groupHomeworkByDate(model.homework() ?? []).length > 0
-                            ? ListView.builder(
-                                physics: AlwaysScrollableScrollPhysics(),
-                                itemCount: groupHomeworkByDate(model.homework() ?? []).length,
-                                itemBuilder: (context, index) {
-                                  return buildHomeworkBlock(
-                                      groupHomeworkByDate(model.homework() ?? [])[index].first.date ?? DateTime.now(),
-                                      groupHomeworkByDate(model.homework() ?? [])[index]);
-                                })
+                            ? Expanded(
+                                child: ListView.builder(
+                                    physics: AlwaysScrollableScrollPhysics(),
+                                    itemCount: groupHomeworkByDate(model.homework() ?? []).length,
+                                    itemBuilder: (context, index) {
+                                      return buildHomeworkBlock(
+                                          groupHomeworkByDate(model.homework() ?? [])[index].first.date ??
+                                              DateTime.now(),
+                                          groupHomeworkByDate(model.homework() ?? [])[index]);
+                                    }),
+                              )
                             : buildNoHomework(model),
                       ],
                     )),
@@ -382,11 +386,21 @@ class _StickyHeaderState extends State<StickyHeader> {
                     List? temp = await CustomDialogs.showMultipleChoicesDialog(context, disciplines, indexes,
                         label: "Choisissez une matière parmi les suivantes :");
                     if (temp != null) {
+                      print(disciplines.mapIndexed((element, index) {
+                        return temp.contains(index);
+                      }).toList());
                       await appSys.updateSetting(
-                          appSys.settings?["user"]["homeworkPage"], "customDisciplinesList", jsonEncode(temp));
+                          appSys.settings?["user"]["homeworkPage"],
+                          "customDisciplinesList",
+                          jsonEncode(disciplines.mapIndexed((element, index) {
+                            if (temp.contains(index)) {
+                              return element;
+                            }
+                          }).toList()));
                       setState(() {});
                     }
                   }
+                  appSys.homeworkController.refresh();
                   setState(() {});
                 },
                 child: Container(
@@ -395,7 +409,14 @@ class _StickyHeaderState extends State<StickyHeader> {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Icon(MdiIcons.filter, color: ThemeUtils.textColor()),
-                      Text("Filtrer",
+                      Text(
+                          case2(appSys.homeworkController.currentFilter, {
+                            homeworkFilter.ALL: "Filtrer",
+                            homeworkFilter.SPECIALTIES: "Spécialités",
+                            homeworkFilter.CUSTOM: "Personnalisé",
+                            homeworkFilter.SCIENCES: "Sciences",
+                            homeworkFilter.LITERARY: "Littérature",
+                          }) as String,
                           style: TextStyle(
                               fontFamily: "Asap", fontWeight: FontWeight.bold, color: ThemeUtils.textColor())),
                     ],

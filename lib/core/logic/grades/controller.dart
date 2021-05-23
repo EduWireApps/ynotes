@@ -232,7 +232,7 @@ class GradesController extends ChangeNotifier {
           break;
         case "sciences":
           if (appSys.settings!["system"]["chosenParser"] == 0) {
-            List<String> codeMatiere = FILTERS["science"]["ED"];;
+            List<String> codeMatiere = FILTERS["sciences"]["ED"];;
             if (f.period == _period &&
                 codeMatiere.any((test) {
                   if (test == f.disciplineCode) {
@@ -244,8 +244,8 @@ class GradesController extends ChangeNotifier {
               toReturn.add(f);
             }
           } else {
-            List<String> codeMatiere = FILTERS["science"]["Pronote"];
-            List<String> blackList = FILTERS["science"]["blacklist"];
+            List<String> codeMatiere = FILTERS["sciences"]["Pronote"];
+            List<String> blackList = FILTERS["sciences"]["blacklist"];
             if (f.period == _period &&
                 codeMatiere.any((test) {
                   if (f.disciplineName!.contains(test) &&
