@@ -23,7 +23,7 @@ class Homework extends HiveObject {
   @HiveField(6)
   final DateTime? entryDate;
   @HiveField(7)
-  final bool? done;
+  bool? done;
   @HiveField(8)
   final bool? toReturn;
   @HiveField(9)

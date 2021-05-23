@@ -26,10 +26,6 @@ dependencies:
     git:
       url: https://github.com/ChangJoo-Park/battery_optimization
       ref: master
-  circular_check_box:
-    git:
-      url: https://github.com/Supercaly/circular_check_box
-      ref: master
   ext_storage:
     git:
       url: https://github.com/GitJournal/ext_storage
@@ -53,7 +49,7 @@ dependencies:
   simple_animations:
     git:
       url: https://github.com/felixblaschke/simple_animations
-      ref: nullsafety3
+      ref: nullsafety3 
   tinycolor:
     git:
       url: https://github.com/lslv1243/tinycolor
@@ -125,6 +121,8 @@ dependencies:
   url_launcher: ^6.0.3
   uuid: ^3.0.3
   visibility_detector: ^0.2.0-nullsafety.1
+  html_character_entities: ^1.0.0+1
+  shake: ^1.0.0
 dependency_overrides:
   intl: ^0.17.0-nullsafety.2
   mime: ^1.0.0

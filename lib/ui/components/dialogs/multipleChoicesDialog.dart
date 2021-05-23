@@ -1,5 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
@@ -35,13 +34,17 @@ class _MultipleChoicesDialogState extends State<MultipleChoicesDialog> {
             children: [
               if (this.widget.label != null)
                 Container(
+                  padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.1),
                   child: Text(
                     widget.label!,
                     textAlign: TextAlign.center,
                     style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                   ),
                 ),
-              if (this.widget.label != null) Divider(),
+              if (this.widget.label != null)
+                Divider(
+                  color: ThemeUtils.textColor(),
+                ),
               Container(
                 height: screenSize.size.height / 10 * 3.5,
                 width: screenSize.size.width / 5 * 4,
@@ -86,7 +89,11 @@ class _MultipleChoicesDialogState extends State<MultipleChoicesDialog> {
                             ),
                             child: Row(
                               children: <Widget>[
-                                CircularCheckBox(
+                                Checkbox(
+                                  side: BorderSide(width: 1, color: Colors.white),
+                                  fillColor: MaterialStateColor.resolveWith(ThemeUtils.getCheckBoxColor),
+                                  shape: CircleBorder(),
+                                  value: indexsSelected.contains(index),
                                   onChanged: (value) {
                                     if (widget.singleChoice) {
                                       indexsSelected.clear();
@@ -105,7 +112,6 @@ class _MultipleChoicesDialogState extends State<MultipleChoicesDialog> {
                                       }
                                     }
                                   },
-                                  value: indexsSelected.contains(index),
                                 ),
                                 Container(
                                   width: screenSize.size.width / 5 * 3,

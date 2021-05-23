@@ -500,8 +500,8 @@ class PronoteClient {
     try {
       Map data = {"N": document.id, "G": int.parse(document.type!)};
       //Used by pronote to encrypt the data (I don't know why)
-      var magicStuff = this.encryption.aesEncryptFromString(conv.jsonEncode(data));
-      String libelle = Uri.encodeComponent(Uri.encodeComponent(document.documentName!));
+      var magicStuff = this.encryption.aesEncrypt(conv.utf8.encode(conv.jsonEncode(data)));
+      String libelle = document.documentName ?? "";
       String? url = this.communication!.rootSite +
           '/FichiersExternes/' +
           magicStuff +
@@ -509,7 +509,7 @@ class PronoteClient {
           libelle +
           '?Session=' +
           this.attributes['h'].toString();
-
+      print(url);
       return url;
     } catch (e) {
       print(e);
@@ -986,6 +986,7 @@ class PronoteClient {
         if (isOldAPIUsed == false) {
           try {
             paramsUser = await this.communication!.post("ParametresUtilisateur", data: {'donnees': {}});
+            this.encryption.aesKey = this.communication?.encryption.aesKey;
 
             this.communication!.authorizedTabs =
                 prepareTabs(mapGet(paramsUser, ['donneesSec', 'donnees', 'listeOnglets']));

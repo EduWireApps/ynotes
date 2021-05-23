@@ -1,6 +1,5 @@
 import 'dart:math';
 
-import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tex/flutter_tex.dart';
@@ -9,17 +8,15 @@ import 'package:marquee/marquee.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:stacked/stacked.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:ynotes/core/logic/homework/utils.dart';
-import 'package:ynotes/core/logic/shared/downloadController.dart';
-import 'package:ynotes/ui/components/dialogs.dart';
-import 'package:ynotes/ui/screens/summary/summaryPage.dart';
 import 'package:ynotes/core/apis/utils.dart';
+import 'package:ynotes/core/logic/homework/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/main.dart';
-import 'package:ynotes/globals.dart';
-import 'package:ynotes/usefulMethods.dart';
+import 'package:ynotes/core/logic/shared/downloadController.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/globals.dart';
+import 'package:ynotes/ui/components/dialogs.dart';
+import 'package:ynotes/ui/screens/summary/summaryPage.dart';
 
 //Represents the element containing details about homework
 class HomeworkElement extends StatefulWidget {
@@ -48,32 +45,6 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
 
   late AnimationController _rotationController;
   late Animation<double> _rotationAnimation;
-  @override
-  void initState() {
-    super.initState();
-    //Define the default expanding state
-    getDefaultValue();
-    _rotationController = AnimationController(
-      duration: const Duration(milliseconds: 250),
-      vsync: this,
-    );
-    _rotationAnimation = new Tween(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(
-      parent: _rotationController,
-      curve: Curves.ease,
-    ));
-  }
-
-  void getDefaultValue() async {
-    var defaultValue = appSys.settings!["user"]["homeworkPage"]["isExpandedByDefault"];
-
-    setState(() {
-      isExpanded = defaultValue;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     ///Expand the element or not
@@ -613,7 +584,11 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                               initialData: false,
                                               builder: (context, snapshot) {
                                                 bool? done = snapshot.data;
-                                                return CircularCheckBox(
+                                                return Checkbox(
+                                                  side: BorderSide(width: 1, color: Colors.white),
+                                                  fillColor:
+                                                      MaterialStateColor.resolveWith(ThemeUtils.getCheckBoxColor),
+                                                  shape: const CircleBorder(),
                                                   activeColor: Colors.blue,
                                                   value: done,
                                                   materialTapTargetSize: MaterialTapTargetSize.padded,
@@ -644,5 +619,31 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
             );
           }),
     );
+  }
+
+  void getDefaultValue() async {
+    var defaultValue = appSys.settings!["user"]["homeworkPage"]["isExpandedByDefault"];
+
+    setState(() {
+      isExpanded = defaultValue;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    //Define the default expanding state
+    getDefaultValue();
+    _rotationController = AnimationController(
+      duration: const Duration(milliseconds: 250),
+      vsync: this,
+    );
+    _rotationAnimation = new Tween(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(
+      parent: _rotationController,
+      curve: Curves.ease,
+    ));
   }
 }

@@ -59,18 +59,18 @@ void createStack() {
   });
 }
 
-Future<int> getColor(String? disciplineName) async {
+Future<int> getColor(String? disciplineCode) async {
   SharedPreferences prefs = await (SharedPreferences.getInstance());
-  if (disciplineName != null) {
-    if (prefs.containsKey(disciplineName)) {
-      String color = prefs.getString(disciplineName)!;
+  if (disciplineCode != null) {
+    if (prefs.containsKey(disciplineCode)) {
+      String color = prefs.getString(disciplineCode)!;
       return HexColor(color).value;
     } else {
       if (colorStack.isEmpty) {
         createStack();
       }
-      await prefs.setString(disciplineName, colorStack.pop());
-      String color = prefs.getString(disciplineName)!;
+      await prefs.setString(disciplineCode, colorStack.pop());
+      String color = prefs.getString(disciplineCode)!;
       return HexColor(color).value;
     }
   }
@@ -114,6 +114,12 @@ getWeek(DateTime date) async {
   } else {
     return 0;
   }
+}
+
+String linkify(String link) {
+  return link.replaceAllMapped(new RegExp(r'(>|\s)+(https?.+?)(<|\s)', multiLine: true, caseSensitive: false), (match) {
+    return '${match.group(1)}<a href="${match.group(2)}">${match.group(2)}</a>${match.group(3)}';
+  });
 }
 
 setChosenParser(int? chosen) async {

@@ -347,7 +347,7 @@ class _AgendaState extends State<Agenda> {
               child: Container(
                 margin: EdgeInsets.only(
                     right: screenSize.size.width / 5 * 0.1,
-                    bottom: screenSize.size.height / 10 * 0.4),
+                    bottom: screenSize.size.height / 10 * 0.7),
                 child: _buildFloatingButton(context),
               ),
             ),

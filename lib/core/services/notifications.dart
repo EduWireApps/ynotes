@@ -425,7 +425,7 @@ class AppNotification {
           channelName: 'Chargement',
           channelDescription: 'Indicateur des chargements de yNotes',
           defaultColor: ThemeUtils.spaceColor(),
-          importance: NotificationImportance.Low,
+          importance: NotificationImportance.Min,
           ledColor: Colors.white),
     ]);
     /*if (Platform.isIOS) {

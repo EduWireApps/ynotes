@@ -70,10 +70,11 @@ Future<List<CloudItem>?> getCloud(String? args, String? action, CloudItem? item)
   }
 }
 
-Future<String?> readMail(String mailId, bool read) async {
+Future<String?> readMail(String mailId, bool read, bool received) async {
   await EcoleDirecteMethod.testToken();
   String? id = appSys.currentSchoolAccount?.studentID;
-  var url = 'https://api.ecoledirecte.com/v3/eleves/$id/messages/$mailId.awp?verbe=get&mode=destinataire';
+  String settingMode = received ? "destinataire" : "expediteur";
+  var url = 'https://api.ecoledirecte.com/v3/eleves/$id/messages/$mailId.awp?verbe=get&mode=$settingMode';
 
   Map<String, String> headers = {"Content-type": "text/plain"};
   String data = 'data={"token": "$token"}';
@@ -88,7 +89,6 @@ Future<String?> readMail(String mailId, bool read) async {
       Map<String, dynamic> req = jsonDecode(response.body);
       if (req['code'] == 200) {
         String toDecode = req['data']['content'];
-
         toDecode = utf8.decode(base64.decode(toDecode.replaceAll("\n", "")));
         await OfflineMail(appSys.isar).updateMailContent(toDecode, mailId);
         return toDecode;
@@ -292,6 +292,11 @@ class APIEcoleDirecte extends API {
     } else {
       return [0, "Erreur"];
     }
+  }
+
+  Future<List<Recipient>?> mailRecipients() async {
+    return (await EcoleDirecteMethod.fetchAnyData(
+        EcoleDirecteMethod(this.offlineController).recipients, offlineController.recipients.getRecipients));
   }
 
   @override

@@ -410,7 +410,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
     if (widget.mail.content != null && widget.mail.content != "") {
       return widget.mail.content;
     } else {
-      return await readMail(widget.mail.id ?? "", true);
+      return await readMail(widget.mail.id ?? "", true, widget.mail.mtype == "received");
     }
   }
 

@@ -41,11 +41,6 @@ class APIPronote extends API {
   }
 
   @override
-  Future<List<SchoolLifeTicket>> getSchoolLife({bool forceReload = false}) async {
-    return [];
-  }
-
-  @override
   Future<List> apiStatus() async {
     return [1, "Pas de problème connu."];
   }
@@ -188,10 +183,19 @@ class APIPronote extends API {
   }
 
   @override
+  Future<List<SchoolLifeTicket>> getSchoolLife({bool forceReload = false}) async {
+    return [];
+  }
+
+  @override
   Future<List> login(username, password, {url, cas, mobileCasLogin}) async {
+    var stack = StackTrace.current;
+    var stackString = "$stack";
+    print(stackString);
     print(username + " " + password + " " + url);
     int req = 0;
-    while (loginLock == true && req < 5 && appSys.loginController.actualState != loginStatus.loggedIn) {
+
+    while (loginLock == true && req < 8 && appSys.loginController.actualState != loginStatus.loggedIn) {
       print("Locked, trying in 5 seconds...");
       req++;
       await Future.delayed(Duration(seconds: 5), () => "1");
@@ -226,6 +230,7 @@ class APIPronote extends API {
           return ([1, "Bienvenue ${appSys.account?.name ?? "Invité"}!"]);
         } else {
           loginLock = false;
+          print(localClient.stepsLogger);
           return ([
             0,
             "Oups, une erreur a eu lieu. Vérifiez votre mot de passe et les autres informations de connexion.",
