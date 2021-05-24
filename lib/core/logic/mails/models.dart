@@ -36,7 +36,6 @@ class Mail {
   String? date;
   String? content;
 
-  @Backlink(to: 'teacher')
   IsarLinks<Document> files = IsarLinks<Document>();
   Mail({this.id, this.mtype, this.read, this.idClasseur, this.from, this.subject, this.date, this.content, this.to});
 }

@@ -24,12 +24,26 @@ class PronoteHomeworkConverter {
 
       List<Document> documents =
           PronoteDocumentConverter.documents(mapGet(singleHomeworkData, ["ListePieceJointe", "V"]));
+
       List<Document> sessionDocuments = [];
       String teacherName = "";
       bool loaded = true;
 
-      hwList.add(Homework(discipline, disciplineCode, id, rawContent, sessionRawContent, date, entryDate, done,
-          toReturn, isATest, documents, sessionDocuments, teacherName, loaded));
+      hwList.add(Homework(
+          discipline: discipline,
+          disciplineCode: disciplineCode,
+          id: id,
+          rawContent: rawContent,
+          sessionRawContent: sessionRawContent,
+          date: date,
+          entryDate: entryDate,
+          done: done,
+          toReturn: toReturn,
+          isATest: isATest,
+          documents: documents,
+          sessionDocuments: sessionDocuments,
+          teacherName: teacherName,
+          loaded: loaded));
     });
     return hwList;
   }

@@ -20,7 +20,7 @@ import 'package:ynotes/core/offline/isar/data/adapters.dart';
 const _utf8Encoder = Utf8Encoder();
 
 final _schema =
-    '[{"name":"Homework2","idProperty":"dbId","properties":[{"name":"dbId","type":3},{"name":"discipline","type":5},{"name":"disciplineCode","type":5},{"name":"id","type":5},{"name":"rawContent","type":5},{"name":"sessionRawContent","type":5},{"name":"date","type":3},{"name":"entryDate","type":3},{"name":"done","type":0},{"name":"toReturn","type":0},{"name":"isATest","type":0},{"name":"teacherName","type":5},{"name":"loaded","type":0}],"indexes":[],"links":[]},{"name":"Mail","idProperty":"dbId","properties":[{"name":"dbId","type":3},{"name":"id","type":5},{"name":"mtype","type":5},{"name":"read","type":0},{"name":"idClasseur","type":5},{"name":"from","type":5},{"name":"to","type":5},{"name":"subject","type":5},{"name":"date","type":5},{"name":"content","type":5}],"indexes":[],"links":[]},{"name":"Document","idProperty":"dbId","properties":[{"name":"dbId","type":3},{"name":"documentName","type":5},{"name":"id","type":5},{"name":"type","type":5},{"name":"length","type":3}],"indexes":[],"links":[]}]';
+    '[{"name":"Homework2","idProperty":"dbId","properties":[{"name":"dbId","type":3},{"name":"discipline","type":5},{"name":"disciplineCode","type":5},{"name":"id","type":5},{"name":"rawContent","type":5},{"name":"sessionRawContent","type":5},{"name":"date","type":3},{"name":"entryDate","type":3},{"name":"done","type":0},{"name":"toReturn","type":0},{"name":"isATest","type":0},{"name":"teacherName","type":5},{"name":"loaded","type":0}],"indexes":[],"links":[]},{"name":"Mail","idProperty":"dbId","properties":[{"name":"dbId","type":3},{"name":"id","type":5},{"name":"mtype","type":5},{"name":"read","type":0},{"name":"idClasseur","type":5},{"name":"from","type":5},{"name":"to","type":5},{"name":"subject","type":5},{"name":"date","type":5},{"name":"content","type":5}],"indexes":[],"links":[{"name":"files","collection":"Document"}]},{"name":"Document","idProperty":"dbId","properties":[{"name":"dbId","type":3},{"name":"documentName","type":5},{"name":"id","type":5},{"name":"type","type":5},{"name":"length","type":3}],"indexes":[],"links":[]}]';
 
 Future<Isar> openIsar(
     {String name = 'isar',
@@ -89,8 +89,8 @@ Future<Isar> openIsar(
             'content': 9
           },
           indexIds: {},
-          linkIds: {},
-          backlinkIds: {'files': 0},
+          linkIds: {'files': 0},
+          backlinkIds: {},
           getId: (obj) => obj.dbId,
           setId: (obj, id) => obj.dbId = id,
         );
@@ -372,7 +372,7 @@ class _MailAdapter extends TypeAdapter<Mail> {
         collection.isar.documents as IsarCollectionImpl<Document>,
         object,
         0,
-        true,
+        false,
       );
     }
     return bufferSize;
@@ -400,7 +400,7 @@ class _MailAdapter extends TypeAdapter<Mail> {
         collection.isar.documents as IsarCollectionImpl<Document>,
         object,
         0,
-        true,
+        false,
       );
 
     return object;

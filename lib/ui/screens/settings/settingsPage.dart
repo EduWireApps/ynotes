@@ -24,7 +24,6 @@ import 'package:ynotes/main.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/homeworkViewPage.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/accountPage.dart';
-import 'package:ynotes/ui/screens/settings/sub_pages/exportPage.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
 
 import '../../../tests.dart';
@@ -409,19 +408,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     titleTextStyle: TextStyle(color: ThemeUtils.textColor()),
                     title: 'Autres paramètres',
                     tiles: [
-                      SettingsTile(
-                        title: 'Gestionnaire de sauvegarde',
-                        leading: Icon(MdiIcons.contentSave, color: ThemeUtils.textColor()),
-                        onTap: () async {
-                          Navigator.of(context).push(router(ExportPage()));
-                        },
-                        titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-                        subtitleTextStyle: TextStyle(
-                            fontFamily: "Asap",
-                            color:
-                                ThemeUtils.isThemeDark ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
-                        iosChevron: Icon(Icons.chevron_right),
-                      ),
+              
                       SettingsTile(
                         title: 'Réinitialiser le tutoriel',
                         leading: Icon(MdiIcons.restore, color: ThemeUtils.textColor()),
