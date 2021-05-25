@@ -1,3 +1,4 @@
+import 'package:calendar_time/calendar_time.dart';
 import 'package:isar/isar.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/isar.g.dart';
@@ -9,9 +10,11 @@ class OfflineHomework {
   Future<List<Homework>?> getAllHomework() async {
     return await isarInstance.homeworks.where().findAll();
   }
-  
+
   Future<List<Homework>?> getHomeworkFor(DateTime date) async {
-    return await isarInstance.homeworks.where().filter().dateEqualTo(date).findAll();
+    return ((await isarInstance.homeworks.where().findAll()) ?? [])
+        .where((Homework e) => CalendarTime(e.date).isSameDayAs(date))
+        .toList();
   }
 
   Future<void> updateDoneStatus(Homework homework) async {
@@ -58,8 +61,6 @@ class OfflineHomework {
           .findAll();
       newHomeworks
           .removeWhere((newHomework) => old.any((oldPieceOfHomework) => oldPieceOfHomework.id == newHomework.id));
-      await isar.homeworks.putAll(old);
-
       //we put the old mails
       //no need to remove the old ones (Isar will automatically update them)
       await isar.homeworks.putAll(newHomeworks);

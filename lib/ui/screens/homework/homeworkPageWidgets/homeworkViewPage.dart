@@ -175,7 +175,7 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                   if (temp != null) {
                     await OfflineHomework(appSys.isar).updateHomework([temp]);
                   }
-                  refreshSelf();
+                  await refreshSelf();
                   setState(() {});
                 },
                     borderRadius: BorderRadius.circular(11),
@@ -188,7 +188,7 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                   if (hw.dbId != null) {
                     await appSys.isar.writeTxn((isar) => isar.homeworks.delete(hw.dbId!));
                   }
-                  refreshSelf();
+                  await refreshSelf();
                   setState(() {});
                 },
                     borderRadius: BorderRadius.circular(11),
