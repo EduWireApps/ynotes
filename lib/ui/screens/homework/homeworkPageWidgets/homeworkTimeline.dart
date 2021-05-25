@@ -10,6 +10,7 @@ import 'package:provider/provider.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/homework/controller.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/offline/isar/data/homework.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/main.dart';
@@ -104,30 +105,22 @@ class _HomeworkElementState extends State<HomeworkElement> with SingleTickerProv
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         Container(
-                                          width: screenSize.size.width / 5 * 0.4,
-                                          height: screenSize.size.width / 5 * 0.4,
-                                          child: FutureBuilder<bool>(
-                                              future: appSys.offline.doneHomework
-                                                  .getHWCompletion(widget.homework[widget.index].id ?? ''),
-                                              initialData: false,
-                                              builder: (context, snapshot) {
-                                                bool? done = snapshot.data;
-                                                return Checkbox(
-                                                  side: BorderSide(width: 1, color: Colors.white),
-                                                  fillColor:
-                                                      MaterialStateColor.resolveWith(ThemeUtils.getCheckBoxColor),
-                                                  shape: const CircleBorder(),
-                                                  activeColor: Colors.blue,
-                                                  value: done,
-                                                  materialTapTargetSize: MaterialTapTargetSize.padded,
-                                                  onChanged: (bool? x) async {
-                                                    appSys.offline.doneHomework
-                                                        .setHWCompletion(widget.homework[widget.index].id, x);
-                                                    setState(() {});
-                                                  },
-                                                );
-                                              }),
-                                        ),
+                                            width: screenSize.size.width / 5 * 0.4,
+                                            height: screenSize.size.width / 5 * 0.4,
+                                            child: Checkbox(
+                                              side: BorderSide(width: 1, color: Colors.white),
+                                              fillColor: MaterialStateColor.resolveWith(ThemeUtils.getCheckBoxColor),
+                                              shape: const CircleBorder(),
+                                              activeColor: Colors.blue,
+                                              value: widget.homework[widget.index].done,
+                                              materialTapTargetSize: MaterialTapTargetSize.padded,
+                                              onChanged: (bool? x) async {
+                                                widget.homework[widget.index].done = x;
+                                                setState(() {});
+                                                await OfflineHomework(appSys.isar)
+                                                    .updateDoneStatus(widget.homework[widget.index]);
+                                              },
+                                            )),
                                         Expanded(
                                           child: Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -171,7 +164,9 @@ class _HomeworkElementState extends State<HomeworkElement> with SingleTickerProv
                                         if (widget.homework[widget.index].toReturn ?? false)
                                           Icon(MdiIcons.uploadOutline),
                                         if (widget.homework[widget.index].isATest ?? false)
-                                          Icon(MdiIcons.bookEditOutline)
+                                          Icon(MdiIcons.bookEditOutline),
+                                        if (widget.homework[widget.index].files.toList().length > 0)
+                                          Icon(MdiIcons.attachment)
                                       ],
                                     ),
                                   ),

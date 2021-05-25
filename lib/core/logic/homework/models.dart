@@ -7,10 +7,9 @@ part 'models.g.dart';
 
 ///Class of a piece of homework
 
-@HiveType(typeId: 0)
-@JsonSerializable()
 @Collection()
-class Homework extends HiveObject {
+@HiveType(typeId: 0)
+class Homework {
   @Id()
   int? dbId;
   @HiveField(0)
@@ -33,12 +32,6 @@ class Homework extends HiveObject {
   bool? toReturn;
   @HiveField(9)
   bool? isATest;
-  @HiveField(10)
-  @Ignore()
-  List<Document>? documents;
-  @HiveField(11)
-  @Ignore()
-  List<Document>? sessionDocuments;
   @HiveField(12)
   String? teacherName;
   //Useful for Ecole Directe users
@@ -57,8 +50,6 @@ class Homework extends HiveObject {
       this.done,
       this.toReturn,
       this.isATest,
-      this.documents,
-      this.sessionDocuments,
       this.teacherName,
       this.loaded});
 }

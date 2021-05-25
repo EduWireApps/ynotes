@@ -52,7 +52,6 @@ class AppNotification {
       Hive.registerAdapter(GradeAdapter());
       Hive.registerAdapter(DisciplineAdapter());
       Hive.registerAdapter(DocumentAdapter());
-      Hive.registerAdapter(HomeworkAdapter());
       Hive.registerAdapter(LessonAdapter());
       Hive.registerAdapter(PollInfoAdapter());
     } catch (e) {

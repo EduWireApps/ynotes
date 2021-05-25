@@ -27,8 +27,6 @@ class HomeworkAdapter extends TypeAdapter<Homework> {
       done: fields[7] as bool?,
       toReturn: fields[8] as bool?,
       isATest: fields[9] as bool?,
-      documents: (fields[10] as List?)?.cast<Document>(),
-      sessionDocuments: (fields[11] as List?)?.cast<Document>(),
       teacherName: fields[12] as String?,
       loaded: fields[13] as bool?,
     );
@@ -37,7 +35,7 @@ class HomeworkAdapter extends TypeAdapter<Homework> {
   @override
   void write(BinaryWriter writer, Homework obj) {
     writer
-      ..writeByte(14)
+      ..writeByte(12)
       ..writeByte(0)
       ..write(obj.discipline)
       ..writeByte(1)
@@ -58,10 +56,6 @@ class HomeworkAdapter extends TypeAdapter<Homework> {
       ..write(obj.toReturn)
       ..writeByte(9)
       ..write(obj.isATest)
-      ..writeByte(10)
-      ..write(obj.documents)
-      ..writeByte(11)
-      ..write(obj.sessionDocuments)
       ..writeByte(12)
       ..write(obj.teacherName)
       ..writeByte(13)

@@ -10,6 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/appConfig/controller.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/offline/isar/data/homework.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/buttons.dart';
@@ -118,32 +119,28 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              FutureBuilder<bool>(
-                  future: appSys.offline.doneHomework.getHWCompletion(hw.id ?? ''),
-                  builder: (context, snapshot) {
-                    return CustomButtons.materialButton(
-                        context, screenSize.size.width / 5 * 0.55, screenSize.size.width / 5 * 0.55, () async {
-                      setState(() {
-                        hw.done = !(hw.done ?? false);
-                      });
-                      appSys.offline.doneHomework.setHWCompletion(hw.id, hw.done);
-                    },
-                        borderRadius: BorderRadius.circular(11),
-                        backgroundColor: (snapshot.data ?? false) ? Colors.green : color,
-                        icon: MdiIcons.check,
-                        iconColor: ThemeUtils.textColor());
-                  }),
+              CustomButtons.materialButton(context, screenSize.size.width / 5 * 0.55, screenSize.size.width / 5 * 0.55,
+                  () async {
+                setState(() {
+                  hw.done = !(hw.done ?? false);
+                });
+                await OfflineHomework(appSys.isar).updateDoneStatus(hw);
+              },
+                  borderRadius: BorderRadius.circular(11),
+                  backgroundColor: (hw.done ?? false) ? Colors.green : color,
+                  icon: MdiIcons.check,
+                  iconColor: ThemeUtils.textColor()),
               AnimatedSwitcher(
                   duration: const Duration(milliseconds: 200),
                   transitionBuilder: (Widget child, Animation<double> animation) {
                     return ScaleTransition(child: child, scale: animation);
                   },
-                  child: (hw.documents ?? []).length > 0
+                  child: (hw.files.toList()).length > 0
                       ? Container(
                           key: ValueKey<int>(0),
                           child: CustomButtons.materialButton(
                               context, screenSize.size.width / 5 * 0.55, screenSize.size.width / 5 * 0.55, () {
-                            showFilesModalBottomSheet(context, hw.documents!);
+                            showFilesModalBottomSheet(context, hw.files.toList());
                           },
                               borderRadius: BorderRadius.circular(11),
                               backgroundColor: color,

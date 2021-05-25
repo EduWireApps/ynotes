@@ -12,6 +12,7 @@ import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/offline/isar/data/homework.dart';
 import 'package:ynotes/core/offline/isar/data/mail.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/globals.dart';
@@ -179,7 +180,8 @@ class APIEcoleDirecte extends API {
 
   Future<List<Homework>> getNextHomework({bool? forceReload}) async {
     return await EcoleDirecteMethod.fetchAnyData(
-        EcoleDirecteMethod(this.offlineController).nextHomework, offlineController.homework.getHomework,
+        EcoleDirecteMethod(this.offlineController, isar: appSys.isar).nextHomework,
+        OfflineHomework(appSys.isar).getAllHomework,
         forceFetch: forceReload ?? false);
   }
 

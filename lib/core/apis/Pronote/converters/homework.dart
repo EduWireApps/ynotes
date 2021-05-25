@@ -29,7 +29,7 @@ class PronoteHomeworkConverter {
       String teacherName = "";
       bool loaded = true;
 
-      hwList.add(Homework(
+      Homework hw = Homework(
           discipline: discipline,
           disciplineCode: disciplineCode,
           id: id,
@@ -40,10 +40,11 @@ class PronoteHomeworkConverter {
           done: done,
           toReturn: toReturn,
           isATest: isATest,
-          documents: documents,
-          sessionDocuments: sessionDocuments,
           teacherName: teacherName,
-          loaded: loaded));
+          loaded: loaded);
+      hw.files.addAll(documents);
+      hw.sessionFiles.addAll(sessionDocuments);
+      hwList.add(hw);
     });
     return hwList;
   }

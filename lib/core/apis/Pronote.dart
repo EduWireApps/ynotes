@@ -11,6 +11,7 @@ import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
+import 'package:ynotes/core/offline/isar/data/homework.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/utils/nullSafeMap.dart';
 import 'package:ynotes/globals.dart';
@@ -81,8 +82,9 @@ class APIPronote extends API {
 
   @override
   Future<List<Homework>?> getNextHomework({bool? forceReload}) async {
+    pronoteMethod.isar = appSys.isar;
     return (await pronoteMethod.fetchAnyData(
-        pronoteMethod.nextHomework, offlineController.homework.getHomework, "homework",
+        pronoteMethod.nextHomework, OfflineHomework(appSys.isar).getAllHomework, "homework",
         forceFetch: forceReload ?? false, isOfflineLocked: super.offlineController.locked));
   }
 
@@ -189,9 +191,6 @@ class APIPronote extends API {
 
   @override
   Future<List> login(username, password, {url, cas, mobileCasLogin}) async {
-    var stack = StackTrace.current;
-    var stackString = "$stack";
-    print(stackString);
     print(username + " " + password + " " + url);
     int req = 0;
 

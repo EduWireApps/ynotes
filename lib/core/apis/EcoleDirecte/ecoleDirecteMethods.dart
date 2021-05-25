@@ -10,6 +10,7 @@ import 'package:ynotes/core/apis/EcoleDirecte/convertersExporter.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/offline/isar/data/homework.dart';
 import 'package:ynotes/core/offline/isar/data/mail.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/globals.dart';
@@ -130,91 +131,21 @@ class EcoleDirecteMethod {
       print("Updated mails");
     }
     return mails;
-
-/*
-  await EcoleDirecteMethod.testToken();
-  String? id = appSys.currentSchoolAccount?.studentID;
-  var url = 'https://api.ecoledirecte.com/v3/eleves/$id/messages.awp?verbe=getall&typeRecuperation=all';
-
-  Map<String, String> headers = {"Content-type": "text/plain"};
-  String data = 'data={"token": "$token"}';
-  //encode Map to JSON
-  var body = data;
-  var response = await http.post(Uri.parse(url), headers: headers, body: body).catchError((e) {
-    throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou reessayez plus tard.");
-  });
-  print("Starting the mails collection");
-
-  if (response.statusCode == 200) {
-    Map<String, dynamic> req = jsonDecode(utf8.decode(response.bodyBytes));
-    if (req['code'] == 200) {
-      print("Mail request succeeded");
-      List<Mail> mailsList = [];
-      
-      List messagesList = [];
-      if (req['data']['messages'] != null) {
-       
-      }
-      print("Returned mails");
-      if (checking == null) {
-        print("checking mails");
-        List<Mail> receivedMails = mailsList.where((element) => element.mtype == "received").toList();
-        appSys.updateSetting(appSys.settings!["system"], "lastMailCount", receivedMails.length);
-        print("checked mails");
-      }
-
-      return mailsList;
-    }
-    //Return an error
-    else {
-      throw "Error.";
-    }
-  } else {
-    print(response.statusCode);
-    throw "Error.";
-  }
-}*/
   }
 
   nextHomework() async {
     await EcoleDirecteMethod.testToken();
-
     String rootUrl = 'https://api.ecoledirecte.com/v3/Eleves/';
     String method = "cahierdetexte.awp?verbe=get&";
     String data = 'data={"token": "$token"}';
     List<Homework> homeworkList = [];
-
-    /*if (kDebugMode) {
-      rootUrl = 'https://still-earth-97911.herokuapp.com/ecoledirecte/homework';
-      method = "cahierdetexte.awp?verbe=get&";
-      data = 'data={"token": "$fakeToken"}';
-    }*/
-
     homeworkList = await request(
         data, rootUrl, method, EcoleDirecteHomeworkConverter.unloadedHomework, "UHomework request returned an error:",
         ignoreMethodAndId: false);
-    List<Homework> offline = (await appSys.offline.homework.getHomework()) ?? [];
-    homeworkList.forEach((element) {
-      if (offline.any((offlineElement) => offlineElement.id == element.id)) {
-        //we replace it
-        homeworkList[homeworkList.indexWhere(
-                (hl) => offline.firstWhere((offlineElement) => offlineElement.id == element.id).id == hl.id)] =
-            offline.firstWhere((offlineElement) => offlineElement.id == element.id);
-      }
-    });
-    await appSys.offline.homework.updateHomework(homeworkList);
-    List<DateTime> pinnedDates = await appSys.offline.pinnedHomework.getPinnedHomeworkDates();
-
-    //Add pinned content
-    await Future.wait(pinnedDates.map((element) async {
-      List<Homework> pinnedHomework = await homeworkFor(element);
-      pinnedHomework.removeWhere((pinnedHWElement) => element.day != pinnedHWElement.date!.day);
-      pinnedHomework.forEach((pinned) {
-        if (!homeworkList.any((hw) => hw.id == pinned.id)) {
-          homeworkList.add(pinned);
-        }
-      });
-    }));
+    if (this.isar != null) {
+      await OfflineHomework(isar!).updateHomework(homeworkList);
+      print("Updated mails");
+    }
     return homeworkList;
   }
 

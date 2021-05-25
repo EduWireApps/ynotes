@@ -44,10 +44,10 @@ class EcoleDirecteHomeworkConverter {
           });
 
           DateTime entryDate = DateTime.parse(homework['aFaire']['donneLe']);
-          bool done = homework['aFaire']['effectue'] == 'true';
+          bool done = false;
           String teacherName = homework['nomProf'];
 
-          homeworkList.add(Homework(
+          Homework hw = Homework(
               discipline: discipline,
               disciplineCode: disciplineCode,
               id: id,
@@ -57,10 +57,11 @@ class EcoleDirecteHomeworkConverter {
               done: done,
               toReturn: toReturn,
               isATest: isATest,
-              documents: documents,
-              sessionDocuments: sessionDocuments,
               teacherName: teacherName,
-              loaded: true));
+              loaded: true);
+          hw.files?.addAll(documents);
+          hw.sessionFiles?.addAll(sessionDocuments);
+          homeworkList.add(hw);
         }
       } catch (e) {
         print(e.toString());

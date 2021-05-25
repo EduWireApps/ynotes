@@ -132,12 +132,8 @@ class HomeworkController extends ChangeNotifier {
       } else {
         int done = 0;
 
-        await Future.forEach(list, (dynamic element) async {
-          bool isDone = await appSys.offline.doneHomework.getHWCompletion(element.id);
-          if (isDone) {
-            done++;
-          }
-        });
+        done = list.where((element) => element.done ?? false).toList().length;
+
         int percent = (done * 100 / total).round();
 
         _hwCompletion = [percent, done, list.length];
@@ -196,7 +192,8 @@ class HomeworkController extends ChangeNotifier {
 
 //Load all events
   Future<void> prepareOld(List<Homework> oldHW) async {
-    oldHW.forEach((element) {
+    Future.forEach(oldHW, (Homework element) async {
+      await element.files.load();
       //remove duplicates
       if (!element.loaded! &&
           !unloadedHW.any((unloadedelement) =>
