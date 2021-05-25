@@ -118,7 +118,7 @@ class _DialogHomeworkState extends State<DialogHomework> {
                       child: Column(
                         children: [
                           Text(
-                            this.widget.hw!.discipline!,
+                            this.widget.hw!.discipline ?? "",
                             textAlign: TextAlign.left,
                             style: TextStyle(
                                 fontFamily: "Asap",

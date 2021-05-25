@@ -276,7 +276,7 @@ class _MailPageState extends State<MailPage> {
                                                                                   ? Colors.white38
                                                                                   : Colors.black38,
                                                                             ),
-                                                                          if (localList[index].files!.length > 0)
+                                                                          if (localList[index].files.length > 0)
                                                                             Icon(
                                                                               MdiIcons.attachment,
                                                                               color: ThemeUtils.isThemeDark

@@ -20,7 +20,7 @@ import 'package:ynotes/core/offline/isar/data/adapters.dart';
 const _utf8Encoder = Utf8Encoder();
 
 final _schema =
-    '[{"name":"Mail","idProperty":"dbId","properties":[{"name":"dbId","type":3},{"name":"id","type":5},{"name":"mtype","type":5},{"name":"read","type":0},{"name":"idClasseur","type":5},{"name":"from","type":5},{"name":"to","type":5},{"name":"subject","type":5},{"name":"date","type":5},{"name":"content","type":5}],"indexes":[],"links":[{"name":"files","collection":"Document"}]},{"name":"Document","idProperty":"dbId","properties":[{"name":"dbId","type":3},{"name":"documentName","type":5},{"name":"id","type":5},{"name":"type","type":5},{"name":"length","type":3}],"indexes":[],"links":[]},{"name":"Homework","idProperty":"dbId","properties":[{"name":"dbId","type":3},{"name":"discipline","type":5},{"name":"disciplineCode","type":5},{"name":"id","type":5},{"name":"rawContent","type":5},{"name":"sessionRawContent","type":5},{"name":"date","type":3},{"name":"entryDate","type":3},{"name":"done","type":0},{"name":"toReturn","type":0},{"name":"isATest","type":0},{"name":"teacherName","type":5},{"name":"loaded","type":0}],"indexes":[],"links":[{"name":"files","collection":"Document"},{"name":"sessionFiles","collection":"Document"}]}]';
+    '[{"name":"Mail","idProperty":"dbId","properties":[{"name":"dbId","type":3},{"name":"id","type":5},{"name":"mtype","type":5},{"name":"read","type":0},{"name":"idClasseur","type":5},{"name":"from","type":5},{"name":"to","type":5},{"name":"subject","type":5},{"name":"date","type":5},{"name":"content","type":5}],"indexes":[],"links":[{"name":"files","collection":"Document"}]},{"name":"Document","idProperty":"dbId","properties":[{"name":"dbId","type":3},{"name":"documentName","type":5},{"name":"id","type":5},{"name":"type","type":5},{"name":"length","type":3}],"indexes":[],"links":[]},{"name":"Homework","idProperty":"dbId","properties":[{"name":"dbId","type":3},{"name":"discipline","type":5},{"name":"disciplineCode","type":5},{"name":"id","type":5},{"name":"rawContent","type":5},{"name":"sessionRawContent","type":5},{"name":"date","type":3},{"name":"entryDate","type":3},{"name":"done","type":0},{"name":"toReturn","type":0},{"name":"isATest","type":0},{"name":"teacherName","type":5},{"name":"loaded","type":0},{"name":"editable","type":0}],"indexes":[],"links":[{"name":"files","collection":"Document"},{"name":"sessionFiles","collection":"Document"}]}]';
 
 Future<Isar> openIsar(
     {String name = 'isar',
@@ -36,8 +36,8 @@ Future<Isar> openIsar(
       schema: _schema,
       getCollections: (isar) {
         final collectionPtrPtr = malloc<Pointer>();
-        final propertyOffsetsPtr = malloc<Uint32>(13);
-        final propertyOffsets = propertyOffsetsPtr.asTypedList(13);
+        final propertyOffsetsPtr = malloc<Uint32>(14);
+        final propertyOffsets = propertyOffsetsPtr.asTypedList(14);
         final collections = <String, IsarCollection>{};
         nCall(IC.isar_get_collection(isar.ptr, collectionPtrPtr, 0));
         IC.isar_get_property_offsets(
@@ -93,7 +93,7 @@ Future<Isar> openIsar(
           isar: isar,
           adapter: _HomeworkAdapter(),
           ptr: collectionPtrPtr.value,
-          propertyOffsets: propertyOffsets.sublist(0, 13),
+          propertyOffsets: propertyOffsets.sublist(0, 14),
           propertyIds: {
             'dbId': 0,
             'discipline': 1,
@@ -107,7 +107,8 @@ Future<Isar> openIsar(
             'toReturn': 9,
             'isATest': 10,
             'teacherName': 11,
-            'loaded': 12
+            'loaded': 12,
+            'editable': 13
           },
           indexIds: {},
           linkIds: {'files': 0, 'sessionFiles': 1},
@@ -433,7 +434,9 @@ class _HomeworkAdapter extends TypeAdapter<Homework> {
     dynamicSize += _teacherName?.length ?? 0;
     final value12 = object.loaded;
     final _loaded = value12;
-    final size = dynamicSize + 78;
+    final value13 = object.editable;
+    final _editable = value13;
+    final size = dynamicSize + 79;
 
     late int bufferSize;
     if (existingBufferSize != null) {
@@ -450,7 +453,7 @@ class _HomeworkAdapter extends TypeAdapter<Homework> {
     }
     rawObj.buffer_length = size;
     final buffer = rawObj.buffer.asTypedList(size);
-    final writer = BinaryWriter(buffer, 78);
+    final writer = BinaryWriter(buffer, 79);
     writer.writeLong(offsets[0], _dbId);
     writer.writeBytes(offsets[1], _discipline);
     writer.writeBytes(offsets[2], _disciplineCode);
@@ -464,6 +467,7 @@ class _HomeworkAdapter extends TypeAdapter<Homework> {
     writer.writeBool(offsets[10], _isATest);
     writer.writeBytes(offsets[11], _teacherName);
     writer.writeBool(offsets[12], _loaded);
+    writer.writeBool(offsets[13], _editable);
     if (!(object.files as IsarLinksImpl).attached) {
       (object.files as IsarLinksImpl).attach(
         collection,
@@ -502,6 +506,7 @@ class _HomeworkAdapter extends TypeAdapter<Homework> {
     object.isATest = reader.readBoolOrNull(offsets[10]);
     object.teacherName = reader.readStringOrNull(offsets[11]);
     object.loaded = reader.readBoolOrNull(offsets[12]);
+    object.editable = reader.readBool(offsets[13]);
     object.files = IsarLinksImpl()
       ..attach(
         collection,
@@ -551,6 +556,8 @@ class _HomeworkAdapter extends TypeAdapter<Homework> {
         return (reader.readStringOrNull(offset)) as P;
       case 12:
         return (reader.readBoolOrNull(offset)) as P;
+      case 13:
+        return (reader.readBool(offset)) as P;
       default:
         throw 'Illegal propertyIndex';
     }
@@ -2053,6 +2060,14 @@ extension HomeworkQueryFilter on QueryBuilder<Homework, QFilterCondition> {
       value: value,
     ));
   }
+
+  QueryBuilder<Homework, QAfterFilterCondition> editableEqualTo(bool value) {
+    return addFilterCondition(FilterCondition(
+      type: ConditionType.Eq,
+      property: 'editable',
+      value: value,
+    ));
+  }
 }
 
 extension MailQueryLinks on QueryBuilder<Mail, QFilterCondition> {
@@ -2438,6 +2453,14 @@ extension HomeworkQueryWhereSortBy on QueryBuilder<Homework, QSortBy> {
   QueryBuilder<Homework, QAfterSortBy> sortByLoadedDesc() {
     return addSortByInternal('loaded', Sort.Desc);
   }
+
+  QueryBuilder<Homework, QAfterSortBy> sortByEditable() {
+    return addSortByInternal('editable', Sort.Asc);
+  }
+
+  QueryBuilder<Homework, QAfterSortBy> sortByEditableDesc() {
+    return addSortByInternal('editable', Sort.Desc);
+  }
 }
 
 extension HomeworkQueryWhereSortThenBy on QueryBuilder<Homework, QSortThenBy> {
@@ -2543,6 +2566,14 @@ extension HomeworkQueryWhereSortThenBy on QueryBuilder<Homework, QSortThenBy> {
 
   QueryBuilder<Homework, QAfterSortBy> thenByLoadedDesc() {
     return addSortByInternal('loaded', Sort.Desc);
+  }
+
+  QueryBuilder<Homework, QAfterSortBy> thenByEditable() {
+    return addSortByInternal('editable', Sort.Asc);
+  }
+
+  QueryBuilder<Homework, QAfterSortBy> thenByEditableDesc() {
+    return addSortByInternal('editable', Sort.Desc);
   }
 }
 
@@ -2672,6 +2703,10 @@ extension HomeworkQueryWhereDistinct on QueryBuilder<Homework, QDistinct> {
   QueryBuilder<Homework, QDistinct> distinctByLoaded() {
     return addDistinctByInternal('loaded');
   }
+
+  QueryBuilder<Homework, QDistinct> distinctByEditable() {
+    return addDistinctByInternal('editable');
+  }
 }
 
 extension MailQueryProperty on QueryBuilder<Mail, QQueryProperty> {
@@ -2789,5 +2824,9 @@ extension HomeworkQueryProperty on QueryBuilder<Homework, QQueryProperty> {
 
   QueryBuilder<bool?, QQueryOperations> loadedProperty() {
     return addPropertyName('loaded');
+  }
+
+  QueryBuilder<bool, QQueryOperations> editableProperty() {
+    return addPropertyName('editable');
   }
 }

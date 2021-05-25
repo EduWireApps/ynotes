@@ -4,18 +4,12 @@ import 'dart:ui';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:html/parser.dart';
-import 'package:intl/intl.dart';
 import 'package:liquid_progress_indicator_ns/liquid_progress_indicator.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:ynotes/core/logic/homework/controller.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/components/dialogs.dart';
-
 
 class QuickHomework extends StatefulWidget {
   final Function? switchPage;
@@ -66,6 +60,7 @@ class _QuickHomeworkState extends State<QuickHomework> {
                                               mainAxisAlignment: MainAxisAlignment.center,
                                               children: [
                                                 Container(
+                                                  margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
                                                   decoration: BoxDecoration(
                                                     borderRadius: BorderRadius.circular(500),
                                                   ),
@@ -87,14 +82,12 @@ class _QuickHomeworkState extends State<QuickHomework> {
                                                     ), // The direction the liquid moves (Axis.vertical = bottom to top, Axis.horizontal = left to right). Defaults to Axis.vertical.
                                                   ),
                                                 ),
-                                                Container(
-                                                  margin: EdgeInsets.only(
-                                                      left: screenSize.size.width / 5 * 0.3,
-                                                      right: screenSize.size.width / 5 * 0.3),
+                                                Expanded(
                                                   child: Row(
                                                     crossAxisAlignment: CrossAxisAlignment.center,
+                                                    mainAxisAlignment: MainAxisAlignment.center,
                                                     children: [
-                                                      Text(
+                                                      AutoSizeText(
                                                         model.homeworkCompletion[1].toString(),
                                                         textAlign: TextAlign.center,
                                                         style: TextStyle(
@@ -103,7 +96,7 @@ class _QuickHomeworkState extends State<QuickHomework> {
                                                           fontWeight: FontWeight.bold,
                                                         ),
                                                       ),
-                                                      Text(
+                                                      AutoSizeText(
                                                           " fait" +
                                                               (model.homeworkCompletion[1] > 1 ? "s " : " ") +
                                                               "sur ",
@@ -111,7 +104,7 @@ class _QuickHomeworkState extends State<QuickHomework> {
                                                             fontFamily: "Asap",
                                                             color: ThemeUtils.textColor(),
                                                           )),
-                                                      Text(
+                                                      AutoSizeText(
                                                         model.homeworkCompletion[2].toString(),
                                                         textAlign: TextAlign.center,
                                                         style: TextStyle(
@@ -138,6 +131,7 @@ class _QuickHomeworkState extends State<QuickHomework> {
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               Container(
+                                                  margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
                                                   width: screenSize.size.width / 5 * 0.4,
                                                   height: screenSize.size.width / 5 * 0.4,
                                                   padding: EdgeInsets.all(screenSize.size.width / 5 * 0.01),
@@ -149,31 +143,31 @@ class _QuickHomeworkState extends State<QuickHomework> {
                                                     color: Color(0xff27272A),
                                                     borderRadius: BorderRadius.circular(500),
                                                   )),
-                                              ChangeNotifierProvider<HomeworkController?>.value(
-                                                value: appSys.homeworkController,
-                                                child: Consumer<HomeworkController>(builder: (context, model, child) {
-                                                  return Container(
-                                                    margin: EdgeInsets.only(
-                                                        left: screenSize.size.width / 5 * 0.3,
-                                                        right: screenSize.size.width / 5 * 0.3),
-                                                    child: Row(
-                                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                                      children: [
-                                                        Text(model.examsCount.toString(),
-                                                            style: TextStyle(
-                                                              fontFamily: "Asap",
-                                                              color: ThemeUtils.textColor(),
-                                                              fontWeight: FontWeight.bold,
-                                                            )),
-                                                        Text(" contrôle" + (model.examsCount > 1 ? "s" : ""),
-                                                            style: TextStyle(
-                                                              fontFamily: "Asap",
-                                                              color: ThemeUtils.textColor(),
-                                                            )),
-                                                      ],
-                                                    ),
-                                                  );
-                                                }),
+                                              Expanded(
+                                                child: ChangeNotifierProvider<HomeworkController?>.value(
+                                                  value: appSys.homeworkController,
+                                                  child: Consumer<HomeworkController>(builder: (context, model, child) {
+                                                    return Container(
+                                                      child: Row(
+                                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Text(model.examsCount.toString(),
+                                                              style: TextStyle(
+                                                                fontFamily: "Asap",
+                                                                color: ThemeUtils.textColor(),
+                                                                fontWeight: FontWeight.bold,
+                                                              )),
+                                                          Text(" contrôle" + (model.examsCount > 1 ? "s" : ""),
+                                                              style: TextStyle(
+                                                                fontFamily: "Asap",
+                                                                color: ThemeUtils.textColor(),
+                                                              )),
+                                                        ],
+                                                      ),
+                                                    );
+                                                  }),
+                                                ),
                                               ),
                                             ],
                                           ),
@@ -217,7 +211,7 @@ class _QuickHomeworkState extends State<QuickHomework> {
                                                         color: ThemeUtils.textColor(),
                                                         fontWeight: FontWeight.bold,
                                                       )),
-                                                  Text(" pour demain" + (model.tomorrowCount > 1 ? "s" : ""),
+                                                  Text(" pour demain",
                                                       style: TextStyle(
                                                         fontFamily: "Asap",
                                                         color: ThemeUtils.textColor(),

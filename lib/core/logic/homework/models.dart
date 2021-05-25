@@ -1,6 +1,5 @@
 import 'package:hive/hive.dart';
 import 'package:isar/isar.dart';
-import 'package:json_annotation/json_annotation.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 
 part 'models.g.dart';
@@ -37,6 +36,7 @@ class Homework {
   //Useful for Ecole Directe users
   @HiveField(13)
   bool? loaded;
+  bool editable;
   IsarLinks<Document> files = IsarLinks<Document>();
   IsarLinks<Document> sessionFiles = IsarLinks<Document>();
   Homework(
@@ -51,5 +51,6 @@ class Homework {
       this.toReturn,
       this.isATest,
       this.teacherName,
-      this.loaded});
+      this.loaded,
+      this.editable = false});
 }

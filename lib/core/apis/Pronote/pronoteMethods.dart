@@ -91,6 +91,9 @@ class PronoteMethod {
     List<Homework>? hw =
         await request("PageCahierDeTexte", PronoteHomeworkConverter.homework, data: jsonData, onglet: 88);
     (hw ?? []).removeWhere((element) => element.date != date);
+    if (this.isar != null && hw != null) {
+      await OfflineHomework(isar!).updateHomework(hw);
+    }
     return hw;
   }
 
@@ -169,8 +172,6 @@ class PronoteMethod {
         if (!testLock("recursive_" + lockName)) {
           print("Refreshing client");
           locks["recursive_" + lockName] = true;
-/*
-          this.onlineFetchWithLock(onlineFetch, lockName, arguments: arguments);*/
         }
       }
     } else {

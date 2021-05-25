@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:calendar_time/calendar_time.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:html/parser.dart';
@@ -17,6 +18,7 @@ import 'package:ynotes/main.dart';
 import 'package:ynotes/ui/components/columnGenerator.dart';
 import 'package:ynotes/ui/components/customLoader.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
+import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/addHomeworkDialog.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/homeworkFilterDialog.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/homeworkViewPage.dart';
 import 'package:ynotes/usefulMethods.dart';
@@ -71,7 +73,7 @@ class _HomeworkElementState extends State<HomeworkElement> with SingleTickerProv
                   child: Container(
                     child: Card(
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                      color: Color(snapshot.data ?? 0),
+                      color: widget.homework[widget.index].editable ? Color(0xff7DD3FC) : Color(snapshot.data ?? 0),
                       margin: EdgeInsets.zero,
                       child: InkWell(
                         borderRadius: BorderRadius.circular(5),
@@ -80,15 +82,16 @@ class _HomeworkElementState extends State<HomeworkElement> with SingleTickerProv
                             appSys.homeworkController.ugradePriority(widget.homework[widget.index]);
                             controller.forward();
                           } else {
-                            Navigator.of(context).push(router(HomeworkDayViewPage(
+                            await Navigator.of(context).push(router(HomeworkDayViewPage(
+                              widget.homework.first.date,
                               widget.homework,
                               defaultPage: widget.index,
                             )));
                           }
+                          appSys.homeworkController.refresh();
                         },
                         onLongPress: () async {
                           await CustomDialogs.showHomeworkDetailsDialog(context, widget.homework[widget.index]);
-                          setState(() {});
                         },
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(5),
@@ -112,7 +115,7 @@ class _HomeworkElementState extends State<HomeworkElement> with SingleTickerProv
                                               fillColor: MaterialStateColor.resolveWith(ThemeUtils.getCheckBoxColor),
                                               shape: const CircleBorder(),
                                               activeColor: Colors.blue,
-                                              value: widget.homework[widget.index].done,
+                                              value: widget.homework[widget.index].done ?? false,
                                               materialTapTargetSize: MaterialTapTargetSize.padded,
                                               onChanged: (bool? x) async {
                                                 widget.homework[widget.index].done = x;
@@ -165,8 +168,6 @@ class _HomeworkElementState extends State<HomeworkElement> with SingleTickerProv
                                           Icon(MdiIcons.uploadOutline),
                                         if (widget.homework[widget.index].isATest ?? false)
                                           Icon(MdiIcons.bookEditOutline),
-                                        if (widget.homework[widget.index].files.toList().length > 0)
-                                          Icon(MdiIcons.attachment)
                                       ],
                                     ),
                                   ),
@@ -241,6 +242,14 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
               screenSize.size.width / 5 * 2.5,
               Theme.of(context).primaryColorDark,
             )),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Container(
+              margin:
+                  EdgeInsets.only(right: screenSize.size.width / 5 * 0.1, bottom: screenSize.size.height / 10 * 0.2),
+              child: _buildFloatingButton(context),
+            ),
+          ),
         ],
       ),
     );
@@ -357,6 +366,8 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
 
   List<List<Homework>> groupHomeworkByDate(List<Homework> homeworkList) {
     List<DateTime> dates = [];
+    List<DateTime> formattedDates = [];
+
     List<List<Homework>> subList = [];
     homeworkList.forEach((hw) {
       //add dates once
@@ -364,15 +375,46 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
         dates.add(hw.date!);
       }
     });
-    dates.forEach((date) {
-      subList.add(homeworkList.where((element) => element.date == date).toList());
+    dates.forEach((element) {
+      formattedDates.add(DateTime.parse(DateFormat("yyyy-MM-dd").format(element)));
+    });
+
+    formattedDates = formattedDates.toSet().toList();
+    formattedDates.forEach((date) {
+      subList.add(homeworkList.where((element) => CalendarTime(element.date).isSameDayAs(date)).toList());
     });
     return subList;
   }
 
-  //Date on the left of the homework
   Future<void> refresh() async {
     await appSys.homeworkController.refresh(force: true);
+  }
+
+  //Date on the left of the homework
+  _buildFloatingButton(BuildContext context) {
+    var screenSize = MediaQuery.of(context);
+    return FloatingActionButton(
+      heroTag: "addHomework",
+      backgroundColor: Colors.transparent,
+      child: Container(
+        width: screenSize.size.width / 5 * 0.8,
+        height: screenSize.size.width / 5 * 0.8,
+        child: Icon(
+          Icons.add,
+          size: screenSize.size.width / 5 * 0.5,
+        ),
+        decoration: BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
+      ),
+      onPressed: () async {
+        Homework? temp = await showAddHomeworkBottomSheet(context);
+        if (temp != null) {
+          await OfflineHomework(appSys.isar).updateHomework([temp]);
+        }
+        await appSys.homeworkController.refresh();
+
+        setState(() {});
+      },
+    );
   }
 }
 
@@ -491,10 +533,12 @@ class _StickyHeaderState extends State<StickyHeader> {
                     },
                   );
                   if (someDate != null)
-                    Navigator.of(context).push(router(HomeworkDayViewPage(
+                    await Navigator.of(context).push(router(HomeworkDayViewPage(
+                      someDate,
                       (await appSys.api!.getHomeworkFor(someDate)) ?? [],
                       defaultPage: 0,
                     )));
+                  appSys.homeworkController.refresh();
                 },
                 child: Container(
                   height: screenSize.size.height / 10 * 0.6,

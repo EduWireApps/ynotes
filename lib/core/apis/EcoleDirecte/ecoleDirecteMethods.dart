@@ -57,11 +57,11 @@ class EcoleDirecteMethod {
       await _offlineController!.disciplines.updateDisciplines(disciplinesList);
     }
     createStack();
-    if (disciplinesList != null) {
-      appSys.updateSetting(
-          appSys.settings!["system"], "lastGradeCount", getAllGrades(disciplinesList, overrideLimit: true)!.length);
-    }
-    return (disciplinesList ?? []);
+
+    appSys.updateSetting(appSys.settings!["system"], "lastGradeCount",
+        (getAllGrades(disciplinesList, overrideLimit: true) ?? []).length);
+
+    return disciplinesList;
   }
 
   homeworkDates() async {

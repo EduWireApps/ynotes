@@ -13,21 +13,25 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/offline/isar/data/homework.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
+import 'package:ynotes/isar.g.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/filesBottomSheet.dart';
+import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/addHomeworkDialog.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/homeworkReaderOptions.dart';
 
 class HomeworkDayViewPage extends StatefulWidget {
   List<Homework> homework;
+  DateTime? date;
   final int defaultPage;
-  HomeworkDayViewPage(this.homework, {Key? key, this.defaultPage = 0}) : super(key: key);
+  HomeworkDayViewPage(this.date, this.homework, {Key? key, this.defaultPage = 0}) : super(key: key);
   @override
   _HomeworkPageState createState() => _HomeworkPageState();
 }
 
 class _HomeworkPageState extends State<HomeworkDayViewPage> {
   late PageController pageView;
+
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
@@ -45,22 +49,32 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
         ),
         systemOverlayStyle: ThemeUtils.isThemeDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
         actions: [
-          FlatButton(
-            color: Colors.transparent,
-            child: Icon(MdiIcons.eyePlus, color: ThemeUtils.textColor()),
-            onPressed: () async {
-              await showModalBottomSheet(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25))),
-                  context: context,
-                  backgroundColor: Theme.of(context).primaryColor,
-                  isScrollControlled: true,
-                  builder: (context) {
-                    return HomeworkReaderOptionsBottomSheet();
-                  });
-              setState(() {});
-            },
-          )
+          Container(
+            width: screenSize.size.width / 5 * 0.6,
+            child: TextButton(
+                onPressed: () async {
+                  await refreshSelf();
+                },
+                child: Icon(MdiIcons.refresh, color: ThemeUtils.textColor())),
+          ),
+          Container(
+            width: screenSize.size.width / 5 * 0.6,
+            margin: EdgeInsets.only(right: screenSize.size.width / 5 * 0.1),
+            child: TextButton(
+                onPressed: () async {
+                  await showModalBottomSheet(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25))),
+                      context: context,
+                      backgroundColor: Theme.of(context).primaryColor,
+                      isScrollControlled: true,
+                      builder: (context) {
+                        return HomeworkReaderOptionsBottomSheet();
+                      });
+                  setState(() {});
+                },
+                child: Icon(MdiIcons.eyePlus, color: ThemeUtils.textColor())),
+          ),
         ],
         brightness: ThemeUtils.isThemeDark ? Brightness.dark : Brightness.light,
         backgroundColor: Theme.of(context).primaryColor,
@@ -78,14 +92,10 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                         value: pageView,
                         child: Consumer<PageController>(builder: (context, model, child) {
                           return FutureBuilder<Color>(
-                              future: getBackgroundColor(((model.hasClients)
-                                  ? (model.page ?? widget.defaultPage.toDouble())
-                                  : widget.defaultPage.toDouble())),
+                              future: getBackgroundColor(getPageIndex(model)),
                               builder: (context, snapshot) {
                                 return buildHeader(
-                                    widget.homework[
-                                        ((model.hasClients) ? (model.page ?? widget.defaultPage) : widget.defaultPage)
-                                            .round()],
+                                    widget.homework[getPageIndex(model).round()],
                                     ThemeUtils.darken(snapshot.data ?? Colors.white, forceAmount: 0.1),
                                     ((model.hasClients) ? (model.page ?? 0) : 0).round());
                               });
@@ -139,7 +149,8 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                       ? Container(
                           key: ValueKey<int>(0),
                           child: CustomButtons.materialButton(
-                              context, screenSize.size.width / 5 * 0.55, screenSize.size.width / 5 * 0.55, () {
+                              context, screenSize.size.width / 5 * 0.55, screenSize.size.width / 5 * 0.55, () async {
+                            await refreshSelf();
                             showFilesModalBottomSheet(context, hw.files.toList());
                           },
                               borderRadius: BorderRadius.circular(11),
@@ -157,6 +168,33 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                   backgroundColor: color,
                   icon: MdiIcons.shareVariantOutline,
                   iconColor: ThemeUtils.textColor()),
+              if (hw.editable)
+                CustomButtons.materialButton(
+                    context, screenSize.size.width / 5 * 0.55, screenSize.size.width / 5 * 0.55, () async {
+                  Homework? temp = await showAddHomeworkBottomSheet(context, hw: hw);
+                  if (temp != null) {
+                    await OfflineHomework(appSys.isar).updateHomework([temp]);
+                  }
+                  refreshSelf();
+                  setState(() {});
+                },
+                    borderRadius: BorderRadius.circular(11),
+                    backgroundColor: color,
+                    icon: MdiIcons.pencil,
+                    iconColor: ThemeUtils.textColor()),
+              if (hw.editable)
+                CustomButtons.materialButton(
+                    context, screenSize.size.width / 5 * 0.55, screenSize.size.width / 5 * 0.55, () async {
+                  if (hw.dbId != null) {
+                    await appSys.isar.writeTxn((isar) => isar.homeworks.delete(hw.dbId!));
+                  }
+                  refreshSelf();
+                  setState(() {});
+                },
+                    borderRadius: BorderRadius.circular(11),
+                    backgroundColor: color,
+                    icon: MdiIcons.trashCan,
+                    iconColor: ThemeUtils.textColor()),
               AnimatedSwitcher(
                   duration: const Duration(milliseconds: 200),
                   transitionBuilder: (Widget child, Animation<double> animation) {
@@ -291,31 +329,25 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
   buildPage(Homework hw) {
     var screenSize = MediaQuery.of(context);
 
-    return FutureBuilder<int>(
-        future: getColor(hw.disciplineCode),
-        initialData: 0,
-        builder: (context, snapshot) {
-          return SingleChildScrollView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                ChangeNotifierProvider<ApplicationSystem>.value(
-                  value: appSys,
-                  child: Consumer<ApplicationSystem>(builder: (context, model, child) {
-                    return Container(
-                        color: pageColor(appSys),
-                        padding: EdgeInsets.symmetric(
-                            vertical: screenSize.size.height / 10 * 0.2, horizontal: screenSize.size.width / 5 * 0.3),
-                        child: buildText(hw));
-                  }),
-                ),
-              ],
-            ),
-          );
-        });
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          ChangeNotifierProvider<ApplicationSystem>.value(
+            value: appSys,
+            child: Consumer<ApplicationSystem>(builder: (context, model, child) {
+              return Container(
+                  color: pageColor(appSys),
+                  padding: EdgeInsets.symmetric(
+                      vertical: screenSize.size.height / 10 * 0.2, horizontal: screenSize.size.width / 5 * 0.3),
+                  child: buildText(hw));
+            }),
+          ),
+        ],
+      ),
+    );
   }
 
-//Get monochromatic colors or not
   buildText(Homework hw) {
     return ChangeNotifierProvider<ApplicationSystem>.value(
       value: appSys,
@@ -365,16 +397,32 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
     );
   }
 
+//Get monochromatic colors or not
   Future<Color> getBackgroundColor(double offset) async {
     if (offset.toInt() + 1 < widget.homework.length) {
       //Current background color
-      Color? current = Color(await getColor(widget.homework[offset.toInt()].disciplineCode));
-      Color? next = Color(await getColor(widget.homework[offset.toInt() + 1].disciplineCode));
+      Color? current = widget.homework[offset.toInt()].editable
+          ? Color(0xff7DD3FC)
+          : Color(await getColor(widget.homework[offset.toInt()].disciplineCode));
+      Color? next = widget.homework[offset.toInt() + 1].editable
+          ? Color(0xff7DD3FC)
+          : Color(await getColor(widget.homework[offset.toInt() + 1].disciplineCode));
       ThemeUtils.isThemeDark ? Color(0xff313131) : Colors.white;
 
       return Color.lerp(current, next, offset - offset.toInt()) ?? Colors.white;
     } else {
-      return Color(await getColor(widget.homework.last.disciplineCode));
+      return widget.homework.last.editable
+          ? Color(0xff7DD3FC)
+          : Color(await getColor(widget.homework.last.disciplineCode));
+    }
+  }
+
+  double getPageIndex(PageController model) {
+    if ((((model.hasClients) ? (model.page ?? widget.defaultPage) : widget.defaultPage) + 1) <=
+        (widget.homework.length)) {
+      return ((model.hasClients) ? (model.page ?? widget.defaultPage) : widget.defaultPage).toDouble();
+    } else {
+      return (widget.homework.length - 1).toDouble();
     }
   }
 
@@ -404,6 +452,17 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
     }
     if (_appSys.settings!["user"]["homeworkPage"]["pageColorVariant"] == 2) {
       return Color(0xfff2e7bf);
+    }
+  }
+
+  Future<void> refreshSelf() async {
+    List<Homework>? hw = await appSys.api?.getHomeworkFor(widget.date, forceReload: false);
+    if (widget.date != null && hw != null) {
+      widget.homework = hw;
+      await Future.forEach(widget.homework, (Homework hw) async {
+        await hw.files.load();
+      });
+      setState(() {});
     }
   }
 }

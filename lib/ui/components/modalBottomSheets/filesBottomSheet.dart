@@ -201,6 +201,8 @@ class _FilesBottomSheetState extends State<FilesBottomSheet> {
   Future<List> getIconColors(DownloadController model, Document document) async {
     if (await model.fileExists(document.documentName)) {
       return [ThemeUtils.textColor(revert: true), Color(0xff27AE60), MdiIcons.eye];
+    } else if (model.hasError) {
+      return [Colors.red, ThemeUtils.textColor(revert: true), MdiIcons.fileAlert];
     } else {
       return [
         ThemeUtils.isThemeDark ? lightTheme.primaryColor : darkTheme.primaryColor,

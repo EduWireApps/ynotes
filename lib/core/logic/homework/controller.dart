@@ -215,7 +215,7 @@ class HomeworkController extends ChangeNotifier {
     List<Homework> hwList = (getHomework ?? []);
     if (hwList != null) {
       tomorrowCount = hwList.where((element) => CalendarTime(element.date).isTomorrow).length;
-      weekCount = hwList.where((element) => CalendarTime(element.date).isLastWeek).length;
+      weekCount = hwList.where((element) => CalendarTime(element.date).isNextWeek).length;
 
       notifyListeners();
     } else {

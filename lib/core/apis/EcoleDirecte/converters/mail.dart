@@ -23,7 +23,7 @@ class EcoleDirecteMailConverter {
         subject: subject,
         date: date,
         to: to);
-    mail.files?.addAll(files);
+    mail.files.addAll(files);
     return mail;
   }
 

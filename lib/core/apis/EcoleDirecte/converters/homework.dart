@@ -59,8 +59,8 @@ class EcoleDirecteHomeworkConverter {
               isATest: isATest,
               teacherName: teacherName,
               loaded: true);
-          hw.files?.addAll(documents);
-          hw.sessionFiles?.addAll(sessionDocuments);
+          hw.files.addAll(documents);
+          hw.sessionFiles.addAll(sessionDocuments);
           homeworkList.add(hw);
         }
       } catch (e) {

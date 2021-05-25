@@ -73,11 +73,13 @@ class APIPronote extends API {
   }
 
   @override
-  Future<List<Homework>?> getHomeworkFor(DateTime? dateHomework) async {
-    if (dateHomework != null) {
-      return (await pronoteMethod.onlineFetchWithLock(pronoteMethod.homeworkFor, "homeworkFor",
-          arguments: dateHomework));
-    }
+  Future<List<Homework>?> getHomeworkFor(DateTime? dateHomework, {bool? forceReload}) async {
+    pronoteMethod.isar = appSys.isar;
+    return (await pronoteMethod.fetchAnyData(
+        pronoteMethod.homeworkFor, OfflineHomework(appSys.isar).getHomeworkFor, "homework for",
+        forceFetch: forceReload ?? false,
+        offlineArguments: dateHomework,
+        onlineArguments: dateHomework));
   }
 
   @override
