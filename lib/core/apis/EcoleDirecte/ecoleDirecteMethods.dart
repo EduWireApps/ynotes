@@ -109,7 +109,11 @@ class EcoleDirecteMethod {
     homework.forEach((hw) {
       hw.date = date;
     });
-    await appSys.offline.homework.updateHomework(homework, add: true, forceAdd: true);
+    if (this.isar != null) {
+      await OfflineHomework(isar!).updateHomework(homework);
+      print("Updated hw");
+    }
+    //await appSys.offline.homework.updateHomework(homework, add: true, forceAdd: true);
     return homework;
   }
 
@@ -144,7 +148,7 @@ class EcoleDirecteMethod {
         ignoreMethodAndId: false);
     if (this.isar != null) {
       await OfflineHomework(isar!).updateHomework(homeworkList);
-      print("Updated mails");
+      print("Updated hw");
     }
     return homeworkList;
   }

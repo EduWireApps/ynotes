@@ -169,7 +169,8 @@ class APIEcoleDirecte extends API {
 //Get dates of the the next homework (based on the EcoleDirecte API)
   Future<List<Homework>> getHomeworkFor(DateTime? dateHomework, {bool? forceReload}) async {
     return await EcoleDirecteMethod.fetchAnyData(
-        EcoleDirecteMethod(this.offlineController).homeworkFor, OfflineHomework(appSys.isar).getHomeworkFor,
+        EcoleDirecteMethod(this.offlineController, isar: appSys.isar).homeworkFor,
+        OfflineHomework(appSys.isar).getHomeworkFor,
         forceFetch: forceReload ?? false,
         isOfflineLocked: this.offlineController.locked,
         offlineArguments: dateHomework,

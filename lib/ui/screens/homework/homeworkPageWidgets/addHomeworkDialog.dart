@@ -62,7 +62,7 @@ class _AddHomeworkBottomSheetState extends State<AddHomeworkBottomSheet> {
             height: screenSize.size.height / 10 * 0.1,
           ),
           Text(
-            "Ajouter un nouveau devoir",
+            widget.defaultHW == null ? "Ajouter un nouveau devoir" : "Modifier un devoir existant",
             style:
                 TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontWeight: FontWeight.bold, fontSize: 20),
           ),

@@ -23,10 +23,11 @@ import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/homeworkFilterDia
 import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/homeworkViewPage.dart';
 import 'package:ynotes/usefulMethods.dart';
 
+// var screenSize = MediaQuery.of(context);
+
 class HomeworkElement extends StatefulWidget {
   final List<Homework> homework;
   final int index;
-
   const HomeworkElement(
     this.homework,
     this.index, {
@@ -35,7 +36,6 @@ class HomeworkElement extends StatefulWidget {
   @override
   _HomeworkElementState createState() => _HomeworkElementState();
 }
-// var screenSize = MediaQuery.of(context);
 
 class HomeworkTimeline extends StatefulWidget {
   const HomeworkTimeline({Key? key}) : super(key: key);
@@ -44,6 +44,12 @@ class HomeworkTimeline extends StatefulWidget {
 }
 
 class StickyHeader extends StatefulWidget {
+  final Function setLoader;
+
+  const StickyHeader(
+    this.setLoader, {
+    Key? key,
+  }) : super(key: key);
   @override
   _StickyHeaderState createState() => _StickyHeaderState();
 }
@@ -212,7 +218,7 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
                     width: screenSize.size.width,
                     child: Column(
                       children: [
-                        StickyHeader(),
+                        StickyHeader(setLoading),
                         groupHomeworkByDate(model.homework() ?? []).length > 0
                             ? Expanded(
                                 child: ListView.builder(
@@ -390,6 +396,12 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
     await appSys.homeworkController.refresh(force: true);
   }
 
+  setLoading() {
+    setState(() {
+      loading = !loading;
+    });
+  }
+
   //Date on the left of the homework
   _buildFloatingButton(BuildContext context) {
     var screenSize = MediaQuery.of(context);
@@ -510,6 +522,7 @@ class _StickyHeaderState extends State<StickyHeader> {
               color: Theme.of(context).primaryColorLight,
               child: InkWell(
                 onTap: () async {
+                  widget.setLoader();
                   DateTime? someDate = await showDatePicker(
                     locale: Locale('fr', 'FR'),
                     context: context,
@@ -532,13 +545,22 @@ class _StickyHeaderState extends State<StickyHeader> {
                       );
                     },
                   );
-                  if (someDate != null)
+                  if (someDate != null) {
+                    //access a day after force loading a date
+
+                    var temp = (await appSys.api!.getHomeworkFor(someDate, forceReload: true)) ?? [];
+                    widget.setLoader();
+
                     await Navigator.of(context).push(router(HomeworkDayViewPage(
                       someDate,
-                      (await appSys.api!.getHomeworkFor(someDate)) ?? [],
+                      temp,
                       defaultPage: 0,
                     )));
-                  appSys.homeworkController.refresh();
+
+                    appSys.homeworkController.refresh();
+                  } else {
+                    widget.setLoader();
+                  }
                 },
                 child: Container(
                   height: screenSize.size.height / 10 * 0.6,
