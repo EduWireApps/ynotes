@@ -24,6 +24,12 @@ class BackgroundService {
         await appSys.initApp();
       }
       await logFile("Init appSys");
+      if (!readLastFetchStatus(appSys)) {
+        //we don't write the fetch status (because no one fetch has been executed)
+        print("Cancelled");
+        return;
+      }
+      await writeLastFetchStatus(appSys);
 //Ensure that grades notification are enabled and battery saver disabled
       if (appSys.settings!["user"]["global"]["notificationNewGrade"] &&
           !appSys.settings!["user"]["global"]["batterySaver"]) {
@@ -63,6 +69,25 @@ class BackgroundService {
       await logFile("An error occured during the background fetch : " + e.toString());
     }
     //BackgroundFetch.finish("");
+  }
+
+  ///Allows fetch only if time delay since last fetch is greater or equal to 5 minutes
+  static bool readLastFetchStatus(ApplicationSystem _appSys) {
+    try {
+      if (_appSys.settings?["system"]["lastFetchDate"] != null) {
+        DateTime date = DateTime.fromMillisecondsSinceEpoch(_appSys.settings?["system"]["lastFetchDate"]);
+        if (DateTime.now().difference(date).inMinutes >= 5) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return true;
+      }
+    } catch (e) {
+      print("Error while reading fetch status " + e.toString());
+      return false;
+    }
   }
 
   ///Returns true if there are new grades
@@ -137,5 +162,12 @@ class BackgroundService {
       print("Erreur dans la verification de nouveaux mails hors ligne " + e.toString());
       return null;
     }
+  }
+
+  //write last fetch in milliseconds since epoch
+  static writeLastFetchStatus(ApplicationSystem _appSys) async {
+    int date = DateTime.now().millisecondsSinceEpoch;
+    await _appSys.updateSetting(_appSys.settings?["system"], "lastFetchDate", date);
+    print("Written last fetch status " + date.toString());
   }
 }
