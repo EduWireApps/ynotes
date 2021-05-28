@@ -412,9 +412,6 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
         print("B");
 
         suffix = "/mobile." + (suffixMatches.firstMatch(suffix)?.group(2) ?? "");
-        if (!suffix.endsWith(".html")) {
-          suffix += ".html";
-        }
         return [0, (regExp.firstMatch(url)?.group(1) ?? "") + suffix];
       }
 
@@ -425,10 +422,7 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
         suffix = "/" +
             (suffixMatches.firstMatch(suffix)?.group(1) ?? "") +
             (suffixMatches.firstMatch(suffix)?.group(2) ?? "");
-        if (!suffix.endsWith(".html")) {
-          suffix += ".html";
-          return [0, (regExp.firstMatch(url)?.group(1) ?? "") + suffix];
-        }
+      
         return [1, (regExp.firstMatch(url)?.group(1) ?? "") + suffix];
       }
     } else {
