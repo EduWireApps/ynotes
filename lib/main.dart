@@ -46,9 +46,9 @@ _headlessTask(HeadlessTask? task) async {
     if (task.timeout) {
       await AppNotification.cancelNotification(task.taskId.hashCode);
       BackgroundFetch.finish(task.taskId);
-      
     }
     await BackgroundService.backgroundFetchHeadlessTask(task.taskId, headless: true);
+    BackgroundFetch.finish(task.taskId);
   }
 }
 
