@@ -150,12 +150,12 @@ class CustomDialogs {
     );
   }
 
-  static showErrorSnackBar(BuildContext context, String text, String logs) {
+  static showErrorSnackBar(BuildContext context, String text, String? logs) {
     Flushbar(
       flushbarPosition: FlushbarPosition.BOTTOM,
       backgroundColor: Colors.red,
       isDismissible: true,
-      duration: Duration(seconds: 2),
+      duration: Duration(seconds: 5),
       margin: EdgeInsets.all(8),
       messageText: Text(
         text,
@@ -166,10 +166,12 @@ class CustomDialogs {
         color: Colors.white,
       ),
       borderRadius: BorderRadius.circular(8),
-      mainButton: Text(
-        "Copier les logs",
-        style: TextStyle(fontFamily: "Asap", color: Colors.blueGrey),
-      ),
+      mainButton: logs != null
+          ? Text(
+              "Copier les logs",
+              style: TextStyle(fontFamily: "Asap", color: Colors.blueGrey),
+            )
+          : null,
     )..show(context);
   }
 

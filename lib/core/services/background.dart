@@ -2,8 +2,6 @@ import 'dart:async';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
-import 'package:ynotes/core/apis/model.dart';
-import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/appConfig/controller.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/services/notifications.dart';
@@ -24,9 +22,15 @@ class BackgroundService {
         await appSys.initApp();
       }
       await logFile("Init appSys");
+      if (!readLastFetchStatus(appSys)) {
+        //we don't write the fetch status (because no one fetch has been executed)
+        await logFile("Cancel background fetch.");
+        return;
+      }
+      await writeLastFetchStatus(appSys);
 //Ensure that grades notification are enabled and battery saver disabled
-      if (appSys.settings!["user"]["global"]["notificationNewGrade"] &&
-          !appSys.settings!["user"]["global"]["batterySaver"]) {
+      if (appSys.settings?["user"]["global"]["notificationNewGrade"] &&
+          !appSys.settings?["user"]["global"]["batterySaver"]) {
         await logFile("New grade test triggered");
         if (await testNewGrades()) {
           await AppNotification.showNewGradeNotification();
@@ -36,13 +40,12 @@ class BackgroundService {
       } else {
         print("New grade notification disabled");
       }
-      if (appSys.settings!["user"]["global"]["notificationNewMail"] &&
-          !appSys.settings!["user"]["global"]["batterySaver"]) {
-        await logFile("New mail test triggered");
-
+      if (appSys.settings?["user"]["global"]["notificationNewMail"] &&
+          !appSys.settings?["user"]["global"]["batterySaver"] &&
+          appSys.settings?["system"]["chosenApi"] == 0) {
         Mail? mail = await testNewMails();
         if (mail != null) {
-          String content = (await readMail(mail.id, mail.read)) ?? "";
+          String content = (await readMail(mail.id, mail.read, true)) ?? "";
           await AppNotification.showNewMailNotification(mail, content);
         } else {
           print("Nothing updated");
@@ -50,7 +53,7 @@ class BackgroundService {
       } else {
         print("New mail notification disabled");
       }
-      if (appSys.settings!["user"]["agendaPage"]["agendaOnGoingNotification"]) {
+      if (appSys.settings?["user"]["agendaPage"]["agendaOnGoingNotification"]) {
         print("Setting On going notification");
         await AppNotification.setOnGoingNotification(dontShowActual: true);
       } else {
@@ -62,7 +65,25 @@ class BackgroundService {
       await AppNotification.cancelNotification(a.hashCode);
       await logFile("An error occured during the background fetch : " + e.toString());
     }
-    //BackgroundFetch.finish("");
+  }
+
+  ///Allows fetch only if time delay since last fetch is greater or equal to 5 minutes
+  static bool readLastFetchStatus(ApplicationSystem _appSys) {
+    try {
+      if (_appSys.settings?["system"]["lastFetchDate"] != null) {
+        DateTime date = DateTime.fromMillisecondsSinceEpoch(_appSys.settings?["system"]["lastFetchDate"]);
+        if (DateTime.now().difference(date).inMinutes >= 5) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return true;
+      }
+    } catch (e) {
+      print("Error while reading fetch status " + e.toString());
+      return false;
+    }
   }
 
   ///Returns true if there are new grades
@@ -73,19 +94,14 @@ class BackgroundService {
       //Getting the offline count of grades
       //instanciate an offline controller read only
       await appSys.offline.init();
-      API backgroundFetchApi = apiManager(appSys.offline);
 
       print("Old grades length is ${oldGradesLength}");
       //Getting the online count of grades
 
       List<Grade>? listOnlineGrades = [];
       //Login creds
-      String? u = await readStorage("username");
-      String? p = await readStorage("password");
-      String? url = await readStorage("pronoteurl");
-      String? cas = await readStorage("pronotecas");
-      await backgroundFetchApi.login(u, p, url: url, cas: cas);
-      listOnlineGrades = getAllGrades(await backgroundFetchApi.getGrades(forceReload: true), overrideLimit: true);
+
+      listOnlineGrades = getAllGrades(await appSys.api?.getGrades(forceReload: true), overrideLimit: true);
 
       print("Online grade length is ${listOnlineGrades!.length}");
       if (oldGradesLength != null && oldGradesLength != 0 && oldGradesLength < listOnlineGrades.length) {
@@ -137,5 +153,12 @@ class BackgroundService {
       print("Erreur dans la verification de nouveaux mails hors ligne " + e.toString());
       return null;
     }
+  }
+
+  //write last fetch in milliseconds since epoch
+  static writeLastFetchStatus(ApplicationSystem _appSys) async {
+    int date = DateTime.now().millisecondsSinceEpoch;
+    await _appSys.updateSetting(_appSys.settings?["system"], "lastFetchDate", date);
+    print("Written last fetch status " + date.toString());
   }
 }

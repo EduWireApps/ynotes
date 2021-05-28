@@ -233,10 +233,9 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                                 ThemeUtils.isThemeDark ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
                         switchValue: _appSys.settings!["user"]["global"]["notificationNewMail"],
                         onToggle: (bool value) async {
-                          if (Platform.isIOS ||
-                              value == false ||
-                              (await Permission.ignoreBatteryOptimizations.isGranted) ||
-                              Platform.isIOS) {
+                          if (value == false ||
+                              (Platform.isIOS && await Permission.notification.request().isGranted) ||
+                              (await Permission.ignoreBatteryOptimizations.isGranted)) {
                             _appSys.updateSetting(_appSys.settings!["user"]["global"], "notificationNewMail", value);
                           } else {
                             if (await CustomDialogs.showAuthorizationsDialog(
@@ -262,8 +261,8 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                                 ThemeUtils.isThemeDark ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
                         switchValue: _appSys.settings!["user"]["global"]["notificationNewGrade"],
                         onToggle: (bool value) async {
-                          if (Platform.isIOS ||
-                              value == false ||
+                          if (value == false ||
+                              (Platform.isIOS && await Permission.notification.request().isGranted) ||
                               (await Permission.ignoreBatteryOptimizations.isGranted)) {
                             _appSys.updateSetting(_appSys.settings!["user"]["global"], "notificationNewGrade", value);
                           } else {
@@ -280,58 +279,62 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                           }
                         },
                       ),
-                      if (!Platform.isIOS)
-                        SettingsTile(
-                          title: 'Je ne reçois pas de notifications',
-                          leading: Icon(MdiIcons.bellAlert, color: ThemeUtils.textColor()),
-                          onTap: () async {
-                            //Check battery optimization setting
-                            if (!await Permission.ignoreBatteryOptimizations.isGranted &&
-                                await CustomDialogs.showAuthorizationsDialog(
-                                    context,
-                                    "la configuration d'optimisation de batterie",
-                                    "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")) {
-                              await Permission.ignoreBatteryOptimizations.request().isGranted;
-                            }
+                      SettingsTile(
+                        title: 'Je ne reçois pas de notifications',
+                        iosChevron: Icon(Icons.chevron_right),
+                        leading: Icon(MdiIcons.bellAlert, color: ThemeUtils.textColor()),
+                        onTap: () async {
+                          if (Platform.isIOS) {
+                            await Permission.notification.request();
+                            return;
+                          }
 
-                            if (await CustomDialogs.showAuthorizationsDialog(
-                                    context,
-                                    "la liste blanche de lancement en arrière plan / démarrage",
-                                    "Pouvoir lancer yNotes au démarrage de l'appareil et ainsi régulièrement rafraichir en arrière plan.") ??
-                                false) {
-                              await AndroidPlatformChannel.openAutoStartSettings();
-                            }
-                            await AppNotification.showDebugNotification();
-                            Flushbar(
-                              flushbarPosition: FlushbarPosition.BOTTOM,
-                              backgroundColor: Colors.orange.shade200,
-                              duration: Duration(seconds: 10),
-                              isDismissible: true,
-                              margin: EdgeInsets.all(8),
-                              messageText: Text(
-                                "Toujours pas de notifications ?",
-                                style: TextStyle(fontFamily: "Asap"),
+                          //Check battery optimization setting
+                          if (!await Permission.ignoreBatteryOptimizations.isGranted &&
+                              await CustomDialogs.showAuthorizationsDialog(
+                                  context,
+                                  "la configuration d'optimisation de batterie",
+                                  "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")) {
+                            await Permission.ignoreBatteryOptimizations.request().isGranted;
+                          }
+
+                          if (await CustomDialogs.showAuthorizationsDialog(
+                                  context,
+                                  "la liste blanche de lancement en arrière plan / démarrage",
+                                  "Pouvoir lancer yNotes au démarrage de l'appareil et ainsi régulièrement rafraichir en arrière plan.") ??
+                              false) {
+                            await AndroidPlatformChannel.openAutoStartSettings();
+                          }
+                          await AppNotification.showDebugNotification();
+                          Flushbar(
+                            flushbarPosition: FlushbarPosition.BOTTOM,
+                            backgroundColor: Colors.orange.shade200,
+                            duration: Duration(seconds: 10),
+                            isDismissible: true,
+                            margin: EdgeInsets.all(8),
+                            messageText: Text(
+                              "Toujours pas de notifications ?",
+                              style: TextStyle(fontFamily: "Asap"),
+                            ),
+                            mainButton: FlatButton(
+                              onPressed: () {
+                                const url = 'https://ynotes.fr/help/notifications';
+                                launchURL(url);
+                              },
+                              child: Text(
+                                "Aide liée aux notifications",
+                                style: TextStyle(color: Colors.blue, fontFamily: "Asap"),
                               ),
-                              mainButton: FlatButton(
-                                onPressed: () {
-                                  const url = 'https://ynotes.fr/help/notifications';
-                                  launchURL(url);
-                                },
-                                child: Text(
-                                  "Aide liée aux notifications",
-                                  style: TextStyle(color: Colors.blue, fontFamily: "Asap"),
-                                ),
-                              ),
-                              borderRadius: BorderRadius.circular(8),
-                            )..show(context);
-                          },
-                          titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-                          subtitleTextStyle: TextStyle(
-                              fontFamily: "Asap",
-                              color: ThemeUtils.isThemeDark
-                                  ? Colors.white.withOpacity(0.7)
-                                  : Colors.black.withOpacity(0.7)),
-                        ),
+                            ),
+                            borderRadius: BorderRadius.circular(8),
+                          )..show(context);
+                        },
+                        titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                        subtitleTextStyle: TextStyle(
+                            fontFamily: "Asap",
+                            color:
+                                ThemeUtils.isThemeDark ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
+                      ),
                     ],
                   ),
                   SettingsSection(
@@ -500,8 +503,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                           title: 'Bouton magique',
                           leading: Icon(MdiIcons.testTube, color: ThemeUtils.textColor()),
                           onTap: () async {
-                            await Future.delayed(Duration(seconds: 5), () => "1");
-                            await AppNotification.cancelNotification(0);
+                           
                           },
                           titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                           subtitleTextStyle: TextStyle(
@@ -527,6 +529,8 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
     rightToLeftAnimation.dispose();
     super.dispose();
   }
+
+  
 
   @override
   void initState() {

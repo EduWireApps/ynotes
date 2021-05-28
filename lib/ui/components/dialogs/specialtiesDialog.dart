@@ -1,5 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -8,8 +7,6 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/customLoader.dart';
-
-import '../../../usefulMethods.dart';
 
 class DialogSpecialties extends StatefulWidget {
   State<StatefulWidget> createState() {
@@ -92,7 +89,7 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
                                             ),
                                             child: Row(
                                               children: <Widget>[
-                                                CircularCheckBox(
+                                                Checkbox(
                                                   onChanged: (value) {
                                                     if (chosenSpecialties!.contains(disciplines[index])) {
                                                       setState(() {
@@ -110,6 +107,7 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
                                                       }
                                                     }
                                                   },
+                                                  shape: const CircleBorder(),
                                                   value: chosenSpecialties!.contains(disciplines[index]),
                                                 ),
                                                 Container(

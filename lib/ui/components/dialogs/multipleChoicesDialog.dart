@@ -1,5 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
@@ -86,7 +85,8 @@ class _MultipleChoicesDialogState extends State<MultipleChoicesDialog> {
                             ),
                             child: Row(
                               children: <Widget>[
-                                CircularCheckBox(
+                                Checkbox(
+                                  value: indexsSelected.contains(index),
                                   onChanged: (value) {
                                     if (widget.singleChoice) {
                                       indexsSelected.clear();
@@ -105,7 +105,6 @@ class _MultipleChoicesDialogState extends State<MultipleChoicesDialog> {
                                       }
                                     }
                                   },
-                                  value: indexsSelected.contains(index),
                                 ),
                                 Container(
                                   width: screenSize.size.width / 5 * 3,

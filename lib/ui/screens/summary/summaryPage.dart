@@ -4,6 +4,7 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
@@ -50,11 +51,12 @@ class SummaryPageState extends State<SummaryPage> {
 
     return VisibilityDetector(
       key: Key('sumpage'),
-      onVisibilityChanged: (visibilityInfo) {
+      onVisibilityChanged: (visibilityInfo) async {
+        await Permission.notification.request();
         //Ensure that page is visible
         var visiblePercentage = visibilityInfo.visibleFraction * 100;
         if (visiblePercentage == 100) {
-          showUpdateNote();
+          await showUpdateNote();
         }
       },
       child: HiddenSettings(
@@ -162,9 +164,8 @@ class SummaryPageState extends State<SummaryPage> {
   }
 
   showUpdateNote() async {
-    if ((appSys.settings!["system"]["lastReadUpdateNote"] != "0.11")) {
-      appSys.updateSetting(appSys.settings!["system"], "lastReadUpdateNote", "0.11");
-
+    if ((appSys.settings!["system"]["lastReadUpdateNote"] != "0.11.2")) {
+      appSys.updateSetting(appSys.settings!["system"], "lastReadUpdateNote", "0.11.2");
       await CustomDialogs.showUpdateNoteDialog(context);
     }
   }
