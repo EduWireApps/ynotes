@@ -26,8 +26,7 @@ class BackgroundService {
       await logFile("Init appSys");
       if (!readLastFetchStatus(appSys)) {
         //we don't write the fetch status (because no one fetch has been executed)
-        print("Cancelled");
-
+        await logFile("Cancel background fetch.");
         return;
       }
       await writeLastFetchStatus(appSys);
