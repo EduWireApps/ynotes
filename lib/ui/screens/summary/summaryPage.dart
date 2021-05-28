@@ -72,18 +72,8 @@ class SummaryPageState extends State<SummaryPage> {
                   return LinearGradient(
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.purple,
-                      Colors.transparent,
-                      Colors.transparent,
-                      Colors.purple
-                    ],
-                    stops: [
-                      0.0,
-                      0.0,
-                      0.94,
-                      1.0
-                    ], // 10% purple, 80% transparent, 10% purple
+                    colors: [Colors.purple, Colors.transparent, Colors.transparent, Colors.purple],
+                    stops: [0.0, 0.0, 0.94, 1.0], // 10% purple, 80% transparent, 10% purple
                   ).createShader(rect);
                 },
                 blendMode: BlendMode.dstOut,
@@ -158,20 +148,11 @@ class SummaryPageState extends State<SummaryPage> {
         left: screenSize.size.width / 5 * 0.25,
         bottom: screenSize.size.height / 10 * 0.1,
       ),
-      child:
-          Row(crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
+      child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
         Text(
           text,
-          style: TextStyle(
-              color: ThemeUtils.textColor(),
-              fontFamily: "Asap",
-              fontSize: 25,
-              fontWeight: FontWeight.w600),
-        ),
-        Text(
-          "Accéder à la page",
           style:
-              TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontSize: 25, fontWeight: FontWeight.w400),
+              TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontSize: 25, fontWeight: FontWeight.w600),
         ),
       ]),
     );
@@ -184,16 +165,13 @@ class SummaryPageState extends State<SummaryPage> {
 
   showUpdateNote() async {
     if ((appSys.settings!["system"]["lastReadUpdateNote"] != "0.11.2")) {
-      appSys.updateSetting(
-          appSys.settings!["system"], "lastReadUpdateNote", "0.11.2");
+      appSys.updateSetting(appSys.settings!["system"], "lastReadUpdateNote", "0.11.2");
       await CustomDialogs.showUpdateNoteDialog(context);
     }
   }
 
   void triggerSettings() {
-    summarySettingsController.animateToPage(
-        summarySettingsController.page == 1 ? 0 : 1,
-        duration: Duration(milliseconds: 300),
-        curve: Curves.ease);
+    summarySettingsController.animateToPage(summarySettingsController.page == 1 ? 0 : 1,
+        duration: Duration(milliseconds: 300), curve: Curves.ease);
   }
 }

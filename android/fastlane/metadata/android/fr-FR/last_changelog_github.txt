@@ -1,1 +1,1 @@
-Fix for account choice issue.
+Fix a log out issue and add a background fetch security delay
