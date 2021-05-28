@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -39,9 +37,8 @@ class _PronoteSetupPartState extends State<PronoteSetupPart> {
             SizedBox(
               height: screenSize.size.height / 10 * 0.1,
             ),*/
-            if (Platform.isIOS)
-              _buildPronoteLoginWay("Etablissements proches",
-                  "Utilisez la géolocalisation pour situer votre établissement.", MdiIcons.mapMarker, "location"),
+            _buildPronoteLoginWay("Etablissements proches",
+                "Utilisez la géolocalisation pour situer votre établissement.", MdiIcons.mapMarker, "location"),
             SizedBox(
               height: screenSize.size.height / 10 * 0.1,
             ),
