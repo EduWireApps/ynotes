@@ -89,7 +89,6 @@ class _HomeworkElementState extends State<HomeworkElement> with SingleTickerProv
                             controller.forward();
                           } else {
                             await Navigator.of(context).push(router(HomeworkDayViewPage(
-                              widget.homework.first.date,
                               widget.homework,
                               defaultPage: widget.index,
                             )));
@@ -127,7 +126,7 @@ class _HomeworkElementState extends State<HomeworkElement> with SingleTickerProv
                                                 widget.homework[widget.index].done = x;
                                                 setState(() {});
                                                 await OfflineHomework(appSys.isar)
-                                                    .updateDoneStatus(widget.homework[widget.index]);
+                                                    .updateSingleHW(widget.homework[widget.index]);
                                               },
                                             )),
                                         Expanded(
@@ -435,7 +434,8 @@ class _StickyHeaderState extends State<StickyHeader> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        buildOptionsHeader(), /* buildPinnedHomeworkLabel()*/
+        buildOptionsHeader(),
+        if ((appSys.homeworkController.pinned ?? []).isNotEmpty) buildPinnedHomeworkLabel()
       ],
     );
   }
@@ -552,7 +552,6 @@ class _StickyHeaderState extends State<StickyHeader> {
                     widget.setLoader();
 
                     await Navigator.of(context).push(router(HomeworkDayViewPage(
-                      someDate,
                       temp,
                       defaultPage: 0,
                     )));
@@ -588,7 +587,14 @@ class _StickyHeaderState extends State<StickyHeader> {
     return Material(
       color: Theme.of(context).primaryColor,
       child: InkWell(
-        onTap: () {},
+        onTap: () async {
+          await Navigator.of(context).push(router(HomeworkDayViewPage(
+            appSys.homeworkController.pinned!,
+            defaultPage: 0,
+          )));
+
+          appSys.homeworkController.refresh();
+        },
         child: Container(
           height: screenSize.size.height / 10 * 0.6,
           width: screenSize.size.width,
@@ -601,7 +607,10 @@ class _StickyHeaderState extends State<StickyHeader> {
               ),
               Expanded(
                 flex: 8,
-                child: Text("6 devoirs épinglés",
+                child: Text(
+                    appSys.homeworkController.pinned!.length.toString() +
+                        " devoirs épinglé" +
+                        ((appSys.homeworkController.pinned!.length > 1) ? "s" : ""),
                     style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: ThemeUtils.textColor())),
               ),
               Expanded(

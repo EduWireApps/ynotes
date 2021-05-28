@@ -22,9 +22,10 @@ import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/homeworkReaderOpt
 
 class HomeworkDayViewPage extends StatefulWidget {
   List<Homework> homework;
-  DateTime? date;
   final int defaultPage;
-  HomeworkDayViewPage(this.date, this.homework, {Key? key, this.defaultPage = 0}) : super(key: key);
+  final bool disableGlobalRefresh;
+  HomeworkDayViewPage(this.homework, {Key? key, this.defaultPage = 0, this.disableGlobalRefresh = false})
+      : super(key: key);
   @override
   _HomeworkPageState createState() => _HomeworkPageState();
 }
@@ -38,15 +39,21 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
 
     String date = "(vide)";
 
-    if (widget.homework.isNotEmpty && widget.homework.first.date != null) {
-      date = DateFormat("EEEE dd MMMM", "fr_FR").format(widget.homework.first.date!).toUpperCase();
-    }
     return Scaffold(
       appBar: new AppBar(
-        title: new Text(
-          date,
-          style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
-        ),
+        title: ChangeNotifierProvider<PageController>.value(
+            value: pageView,
+            child: Consumer<PageController>(builder: (context, model, child) {
+              if (widget.homework.isNotEmpty && widget.homework[getPageIndex(model).round()].date != null) {
+                date = DateFormat("EEEE dd MMMM", "fr_FR")
+                    .format(widget.homework[getPageIndex(model).round()].date!)
+                    .toUpperCase();
+              }
+              return new Text(
+                date,
+                style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
+              );
+            })),
         systemOverlayStyle: ThemeUtils.isThemeDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
         actions: [
           Container(
@@ -134,11 +141,22 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                 setState(() {
                   hw.done = !(hw.done ?? false);
                 });
-                await OfflineHomework(appSys.isar).updateDoneStatus(hw);
+                await OfflineHomework(appSys.isar).updateSingleHW(hw);
               },
                   borderRadius: BorderRadius.circular(11),
                   backgroundColor: (hw.done ?? false) ? Colors.green : color,
                   icon: MdiIcons.check,
+                  iconColor: ThemeUtils.textColor()),
+              CustomButtons.materialButton(context, screenSize.size.width / 5 * 0.55, screenSize.size.width / 5 * 0.55,
+                  () async {
+                setState(() {
+                  hw.pinned = !(hw.pinned ?? false);
+                });
+                await OfflineHomework(appSys.isar).updateSingleHW(hw);
+              },
+                  borderRadius: BorderRadius.circular(11),
+                  backgroundColor: (hw.pinned ?? false) ? Colors.green : color,
+                  icon: MdiIcons.pin,
                   iconColor: ThemeUtils.textColor()),
               AnimatedSwitcher(
                   duration: const Duration(milliseconds: 200),
@@ -456,9 +474,16 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
   }
 
   Future<void> refreshSelf() async {
-    List<Homework>? hw = await appSys.api?.getHomeworkFor(widget.date, forceReload: false);
-    if (widget.date != null && hw != null) {
-      widget.homework = hw;
+    List<Homework>? hw =
+        await appSys.api?.getHomeworkFor(widget.homework[getPageIndex(pageView).round()].date, forceReload: false);
+    if (widget.homework[getPageIndex(pageView).round()].date != null && hw != null) {
+      if (!widget.disableGlobalRefresh &&
+          hw.where((element) => element.id == widget.homework[getPageIndex(pageView).round()].id).isNotEmpty) {
+        widget.homework[getPageIndex(pageView).round()] =
+            hw.firstWhere((element) => element.id == widget.homework[getPageIndex(pageView).round()].id);
+      } else {
+        widget.homework = hw;
+      }
       await Future.forEach(widget.homework, (Homework hw) async {
         await hw.files.load();
       });

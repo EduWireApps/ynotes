@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsUtils {
@@ -11,7 +12,8 @@ class SettingsUtils {
       "lastReadUpdateNote": "",
       "chosenParser": null,
       "lastMailCount": 0,
-      "lastGradeCount": 0
+      "lastGradeCount": 0,
+      "migratedHW": false
     },
 
     ///The user's app global settings
@@ -143,7 +145,7 @@ class SettingsUtils {
     print(settings);
 
     Map? _settings = json.decode(settings);
-    return Map.from(json.decode(json.encode(settingsForm)))..addAll(_settings ?? {});
+    return mergeMaps(json.decode(json.encode(settingsForm)), _settings ?? {});
   }
 
   //Oops
@@ -157,7 +159,7 @@ class SettingsUtils {
 
     print(_newSettings == null);
     //merge settings
-    _settings = {..._oldSettings, ..._newSettings ?? {}};
+    _settings = Map.from(json.decode(json.encode(_oldSettings)))..addAll(_newSettings ?? {});
     if (_newSettings == null) {
       await setSetting(_settings);
     }

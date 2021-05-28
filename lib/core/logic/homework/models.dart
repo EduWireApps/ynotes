@@ -37,6 +37,7 @@ class Homework {
   @HiveField(13)
   bool? loaded;
   bool editable;
+  bool? pinned;
   IsarLinks<Document> files = IsarLinks<Document>();
   IsarLinks<Document> sessionFiles = IsarLinks<Document>();
   Homework(
@@ -52,5 +53,6 @@ class Homework {
       this.isATest,
       this.teacherName,
       this.loaded,
-      this.editable = false});
+      this.editable = false,
+      this.pinned});
 }

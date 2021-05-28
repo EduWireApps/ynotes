@@ -14,6 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:wiredash/wiredash.dart';
 import 'package:ynotes/core/logic/appConfig/controller.dart';
+import 'package:ynotes/core/offline/isar/data/homework.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/services/platform.dart';
 import 'package:ynotes/core/utils/settingsUtils.dart';
@@ -451,6 +452,19 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                         leading: Icon(MdiIcons.file, color: ThemeUtils.textColor()),
                         onTap: () async {
                           CustomDialogs.showUpdateNoteDialog(context);
+                        },
+                        titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                        subtitleTextStyle: TextStyle(
+                            fontFamily: "Asap",
+                            color:
+                                ThemeUtils.isThemeDark ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
+                        iosChevron: Icon(Icons.chevron_right),
+                      ),
+                      SettingsTile(
+                        title: 'Test',
+                        leading: Icon(MdiIcons.emoticonConfused, color: ThemeUtils.textColor()),
+                        onTap: () async {
+                          await OfflineHomework(appSys.isar).migrateOldDoneHomeworkStatus(_appSys);
                         },
                         titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                         subtitleTextStyle: TextStyle(

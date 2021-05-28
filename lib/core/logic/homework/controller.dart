@@ -28,6 +28,8 @@ class HomeworkController extends ChangeNotifier {
 
   ///Returns [donePercent, doneLength, length]
   List get homeworkCompletion => _hwCompletion;
+
+  List<Homework>? get pinned => _old?.where((element) => ((element.pinned ?? false))).toList();
   filterHW(List<Homework>? homeworkToFilter, showAll) {
     if (showAll == true || currentFilter == homeworkFilter.ALL) {
       return homeworkToFilter;
@@ -145,14 +147,20 @@ class HomeworkController extends ChangeNotifier {
     }
   }
 
-  List<Homework>? homework({bool showAll = false}) => filterHW(_old, showAll);
+  List<Homework>? homework({bool showAll = false}) => filterHW(_old, showAll).where((Homework e) {
+        if (e.date != null) {
+          return !e.date!.isBefore(CalendarTime(DateTime.now()).startOfDay);
+        } else {
+          return false;
+        }
+      }).toList();
 
   Future<void> loadAll() async {
     try {
       isFetching = true;
       notifyListeners();
       await Future.forEach(unloadedHW, (Homework hw) async {
-        await _api!.getHomeworkFor(hw.date);
+        await _api!.getHomeworkFor(hw.date, forceReload: true);
         try {
           unloadedHW.remove(hw);
         } catch (e) {}
