@@ -27,6 +27,7 @@ class BackgroundService {
       if (!readLastFetchStatus(appSys)) {
         //we don't write the fetch status (because no one fetch has been executed)
         print("Cancelled");
+
         return;
       }
       await writeLastFetchStatus(appSys);
@@ -68,7 +69,6 @@ class BackgroundService {
       await AppNotification.cancelNotification(a.hashCode);
       await logFile("An error occured during the background fetch : " + e.toString());
     }
-    //BackgroundFetch.finish("");
   }
 
   ///Allows fetch only if time delay since last fetch is greater or equal to 5 minutes
