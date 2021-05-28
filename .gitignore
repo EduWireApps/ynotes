@@ -43,3 +43,4 @@ pronoteAPI.py
 /android/fastlane/report.xml
 /ios/fastlane/.env.default
 /ios/fastlane/
+android/fastlane/report.xml
