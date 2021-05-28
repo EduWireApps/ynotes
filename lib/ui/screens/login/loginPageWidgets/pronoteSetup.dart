@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -13,7 +12,44 @@ class PronoteSetupPart extends StatefulWidget {
   _PronoteSetupPartState createState() => _PronoteSetupPartState();
 }
 
+class PronoteUrlFieldPart extends StatefulWidget {
+  final Function? loginCallback;
+  final Function? backButton;
+  final Function? onLongPressCallback;
+  final TextEditingController? pronoteUrl;
+  PronoteUrlFieldPart({Key? key, this.pronoteUrl, this.loginCallback, this.backButton, this.onLongPressCallback})
+      : super(key: key);
+  @override
+  _PronoteUrlFieldPartState createState() => _PronoteUrlFieldPartState();
+}
+
 class _PronoteSetupPartState extends State<PronoteSetupPart> {
+  @override
+  Widget build(BuildContext context) {
+    MediaQueryData screenSize = MediaQuery.of(context);
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Column(
+          children: [
+            /*_buildPronoteLoginWay(
+                "Scanner un QR Code", "Scannez le QR code fourni par votre établissement.", Icons.qr_code, "qrcode"),
+            SizedBox(
+              height: screenSize.size.height / 10 * 0.1,
+            ),*/
+            _buildPronoteLoginWay("Etablissements proches",
+                "Utilisez la géolocalisation pour situer votre établissement.", MdiIcons.mapMarker, "location"),
+            SizedBox(
+              height: screenSize.size.height / 10 * 0.1,
+            ),
+            _buildPronoteLoginWay("Saisir l'URL",
+                "Saisissez vous même l'adresse Pronote fournie par votre établissement.", MdiIcons.cursorText, "manual")
+          ],
+        ),
+      ],
+    );
+  }
+
   _buildPronoteLoginWay(String label, String description, IconData icon, String id) {
     MediaQueryData screenSize = MediaQuery.of(context);
 
@@ -64,54 +100,11 @@ class _PronoteSetupPartState extends State<PronoteSetupPart> {
       ),
     );
   }
-
-  @override
-  Widget build(BuildContext context) {
-    MediaQueryData screenSize = MediaQuery.of(context);
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Column(
-          children: [
-            /*_buildPronoteLoginWay(
-                "Scanner un QR Code", "Scannez le QR code fourni par votre établissement.", Icons.qr_code, "qrcode"),
-            SizedBox(
-              height: screenSize.size.height / 10 * 0.1,
-            ),*/
-            _buildPronoteLoginWay("Etablissements proches",
-                "Utilisez la géolocalisation pour situer votre établissement.", MdiIcons.mapMarker, "location"),
-            SizedBox(
-              height: screenSize.size.height / 10 * 0.1,
-            ),
-            _buildPronoteLoginWay("Saisir l'URL",
-                "Saisissez vous même l'adresse Pronote fournie par votre établissement.", MdiIcons.cursorText, "manual")
-          ],
-        ),
-      ],
-    );
-  }
-}
-
-class PronoteUrlFieldPart extends StatefulWidget {
-  final Function? loginCallback;
-  final Function? backButton;
-  final Function? onLongPressCallback;
-  final TextEditingController? pronoteUrl;
-  PronoteUrlFieldPart({Key? key, this.pronoteUrl, this.loginCallback, this.backButton, this.onLongPressCallback})
-      : super(key: key);
-  @override
-  _PronoteUrlFieldPartState createState() => _PronoteUrlFieldPartState();
 }
 
 class _PronoteUrlFieldPartState extends State<PronoteUrlFieldPart> {
   bool useEnt = false;
   TextEditingController? _url = TextEditingController();
-  @override
-  void initState() {
-    super.initState();
-    _url = widget.pronoteUrl;
-  }
-
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
@@ -120,7 +113,7 @@ class _PronoteUrlFieldPartState extends State<PronoteUrlFieldPart> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          LoginPageTextField(_url, "URL Pronote", false, MdiIcons.link, false),
+          LoginPageTextField(_url, "URL Pronote mobile", false, MdiIcons.link, false),
           SizedBox(height: screenSize.size.height / 10 * 0.2),
           GestureDetector(
             onTap: () {
@@ -156,5 +149,11 @@ class _PronoteUrlFieldPartState extends State<PronoteUrlFieldPart> {
         ],
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _url = widget.pronoteUrl;
   }
 }

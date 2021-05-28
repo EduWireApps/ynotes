@@ -386,6 +386,56 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
         ));
   }
 
+  formatURL(String url) {
+    RegExp regExp = new RegExp(
+      r"(https://.*\.index-education.net/pronote)(.*)",
+      caseSensitive: false,
+      multiLine: false,
+    );
+    if (regExp.hasMatch(url) && regExp.firstMatch(url)?.groupCount == 2) {
+      String suffix = regExp.firstMatch(url)?.group(2) ?? "";
+
+      RegExp suffixMatches = new RegExp(
+        r"/?(mobile\.)?(.*)?",
+        caseSensitive: false,
+        multiLine: false,
+      );
+      //situation where nothing matches (might be pronote/)
+      if (suffixMatches.firstMatch(suffix)?.groups([1, 2]).every((element) => element == null) ?? true) {
+        print("A");
+        suffix = "/mobile.eleve.html";
+        return [0, (regExp.firstMatch(url)?.group(1) ?? "") + suffix];
+      }
+      //situation where only mobile. is missing
+      else if (suffixMatches.firstMatch(suffix)?.group(1) == null &&
+          suffixMatches.firstMatch(suffix)?.group(2) != null) {
+        print("B");
+
+        suffix = "/mobile." + (suffixMatches.firstMatch(suffix)?.group(2) ?? "");
+        if (!suffix.endsWith(".html")) {
+          suffix += ".html";
+        }
+        return [0, (regExp.firstMatch(url)?.group(1) ?? "") + suffix];
+      }
+
+      //situation where everything matches
+      else if (suffixMatches.firstMatch(suffix)?.groups([1, 2]).every((element) => element != null) ?? false) {
+        print("C");
+
+        suffix = "/" +
+            (suffixMatches.firstMatch(suffix)?.group(1) ?? "") +
+            (suffixMatches.firstMatch(suffix)?.group(2) ?? "");
+        if (!suffix.endsWith(".html")) {
+          suffix += ".html";
+          return [0, (regExp.firstMatch(url)?.group(1) ?? "") + suffix];
+        }
+        return [1, (regExp.firstMatch(url)?.group(1) ?? "") + suffix];
+      }
+    } else {
+      throw ("Wrong url");
+    }
+  }
+
   initState() {
     super.initState();
 
@@ -614,6 +664,17 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
               },
               loginCallback: () async {
                 try {
+                  if (formatURL(_url.text)[0] == 0) {
+                    setState(() {
+                      _url.text = formatURL(_url.text)[1];
+                    });
+                    CustomDialogs.showErrorSnackBar(
+                        context,
+                        "Nous avons corrigé automatiquement l'adresse URL. Vérifiez puis appuyez à nouveau sur Se connecter",
+                        null);
+
+                    return;
+                  }
                   if (await checkPronoteURL(_url.text)) {
                     if (await testIfPronoteCas(_url.text)) {
                       var a = await Navigator.of(context)
