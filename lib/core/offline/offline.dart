@@ -108,6 +108,8 @@ class Offline {
       //Register adapters once
       try {
         Hive.registerAdapter(GradeAdapter());
+        Hive.registerAdapter(HomeworkAdapter());
+
         Hive.registerAdapter(DisciplineAdapter());
         Hive.registerAdapter(DocumentAdapter());
         Hive.registerAdapter(LessonAdapter());
