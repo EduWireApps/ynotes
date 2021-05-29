@@ -332,7 +332,7 @@ class _GradesPageState extends State<GradesPage> {
                                   try {
                                     lastDiscipline = model
                                         .disciplines()!
-                                        .lastWhere((disciplinesList) => disciplinesList.period == model.period);
+                                        .lastWhere((disciplinesList) => disciplinesList.periodName == model.period);
                                   } catch (exception) {}
 
                                   //If everything is ok, show stuff

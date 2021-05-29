@@ -64,7 +64,7 @@ class PronoteMethod {
           var temp =
               await request("DernieresNotes", PronoteDisciplineConverter.disciplines, data: jsonData, onglet: 198);
           temp.forEach((Discipline element) {
-            element.period = period.name;
+            element.periodName = period.name;
           });
           listDisciplines.addAll(temp);
           listDisciplines = await refreshDisciplinesListColors(listDisciplines);

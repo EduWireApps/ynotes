@@ -29,7 +29,7 @@ class Discipline {
   @HiveField(10)
   final List<String?>? teachers;
   @HiveField(11)
-  String? period;
+  String? periodName;
   @HiveField(12)
   List<Grade>? gradesList;
   @HiveField(13)
@@ -42,6 +42,8 @@ class Discipline {
   final String? generalRank;
   @HiveField(17)
   final String? weight;
+  @HiveField(18)
+  String? periodId;
   Discipline({
     this.gradesList,
     this.maxClassGeneralAverage,
@@ -55,7 +57,7 @@ class Discipline {
     this.average,
     this.teachers,
     this.disciplineName,
-    this.period,
+    this.periodName,
     this.color,
     this.disciplineRank,
     this.classNumber,
@@ -83,7 +85,7 @@ class Discipline {
         minClassAverage: json['moyenneMin'],
         maxClassAverage: json['moyenneMax'],
         teachers: profs,
-        period: periode,
+        periodName: periode,
         color: color.value,
         generalAverage: moyenneG,
         maxClassGeneralAverage: bmoyenneClasse,
@@ -109,7 +111,7 @@ class Discipline {
   bool operator ==(Object other) =>
       other is Discipline &&
       other.disciplineCode == disciplineCode &&
-      other.period == period &&
+      other.periodName == periodName &&
       other.subdisciplineCode == subdisciplineCode;
   //overrides == operator to avoid issues in selectors
   double getAverage() {
@@ -119,7 +121,7 @@ class Discipline {
     double counter = 0;
 
     gradesList!.forEach((Grade grade) {
-      if (!grade.notSignificant! && (!grade.letters! || grade.countAsZero!) && grade.periodName == this.period) {
+      if (!grade.notSignificant! && (!grade.letters! || grade.countAsZero!) && grade.periodName == this.periodName) {
         counter += double.parse(grade.weight!);
         String gradeStringValue = grade.countAsZero! ? "0" : grade.value!;
         average += double.parse(gradeStringValue.replaceAll(',', '.')) *

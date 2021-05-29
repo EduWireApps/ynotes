@@ -5,7 +5,7 @@ class GradesUtils {
   average(List<Discipline> disciplineList, String period) {
     double average = 0;
     List<double> averages = [];
-    disciplineList.where((i) => i.period == period).forEach((f) {
+    disciplineList.where((i) => i.periodName == period).forEach((f) {
       try {
         double _average = 0.0;
         double _counter = 0;

@@ -236,7 +236,7 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
             margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.25),
             child: CustomButtons.materialButton(
                 context, screenSize.size.width / 5 * 2.5, screenSize.size.height / 10 * 0.5, () async {
-              print(disciplineChoice!.period);
+              print(disciplineChoice!.periodName);
 
               if (gradeValue != null && gradeOn != null && disciplineChoice != null) {
                 if (gradeValue! > gradeOn) {
@@ -255,9 +255,9 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
                           ? disciplineChoice!.subdisciplineCode![0]
                           : null,
                       weight: gradeWeight.toString(),
-                      periodName: disciplineChoice!.period,
+                      periodName: disciplineChoice!.periodName,
                       periodCode: widget.gradesController!.periods!
-                          .firstWhere((period) => period.name == disciplineChoice!.period)
+                          .firstWhere((period) => period.name == disciplineChoice!.periodName)
                           .id
                           .toString(),
                       disciplineName: disciplineChoice!.disciplineName,

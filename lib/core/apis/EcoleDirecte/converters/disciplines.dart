@@ -39,7 +39,7 @@ class EcoleDirecteDisciplineConverter {
             try {
               disciplinesList[disciplinesList.lastIndexWhere((disciplinesList) =>
                       disciplinesList.disciplineCode == rawData['codeMatiere'] &&
-                      disciplinesList.period == periodeElement["periode"])]
+                      disciplinesList.periodName == periodeElement["periode"])]
                   .subdisciplineCode!
                   .add(rawData['codeSousMatiere']);
             } catch (e) {
@@ -49,7 +49,7 @@ class EcoleDirecteDisciplineConverter {
         });
         //Retrieve related grades for each discipline
         disciplinesList.forEach((discipline) {
-          if (discipline.period == periodeElement["periode"]) {
+          if (discipline.periodName == periodeElement["periode"]) {
             List<Grade> localGradesList = [];
 
             gradesData.forEach((element) {

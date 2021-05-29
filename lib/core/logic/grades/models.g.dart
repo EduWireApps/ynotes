@@ -29,7 +29,7 @@ class DisciplineAdapter extends TypeAdapter<Discipline> {
       average: fields[6] as String?,
       teachers: (fields[10] as List?)?.cast<String?>(),
       disciplineName: fields[5] as String?,
-      period: fields[11] as String?,
+      periodName: fields[11] as String?,
       color: fields[13] as int?,
       disciplineRank: fields[14] as int?,
       classNumber: fields[15] as String?,
@@ -65,7 +65,7 @@ class DisciplineAdapter extends TypeAdapter<Discipline> {
       ..writeByte(10)
       ..write(obj.teachers)
       ..writeByte(11)
-      ..write(obj.period)
+      ..write(obj.periodName)
       ..writeByte(12)
       ..write(obj.gradesList)
       ..writeByte(13)

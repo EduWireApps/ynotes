@@ -139,7 +139,7 @@ class GradesController extends ChangeNotifier {
               average: e.average,
               teachers: e.teachers,
               disciplineName: e.disciplineName,
-              period: e.period,
+              periodName: e.periodName,
               color: e.color,
               disciplineRank: e.disciplineRank,
               classNumber: e.classNumber,
@@ -150,9 +150,9 @@ class GradesController extends ChangeNotifier {
         discipline.gradesList!.removeWhere((_grade) => _removedGrades.any((element) =>
             element!.date == _grade.date && element.value == _grade.value && element.testName == _grade.testName));
         if (_addedGrades.any(
-            (_grade) => _grade.periodName == discipline.period && _grade.disciplineCode == discipline.disciplineCode)) {
+            (_grade) => _grade.periodName == discipline.periodName && _grade.disciplineCode == discipline.disciplineCode)) {
           discipline.gradesList!.addAll(_addedGrades.where((_grade) =>
-              _grade.periodName == discipline.period && _grade.disciplineCode == discipline.disciplineCode));
+              _grade.periodName == discipline.periodName && _grade.disciplineCode == discipline.disciplineCode));
         }
       });
     }
@@ -193,7 +193,7 @@ class GradesController extends ChangeNotifier {
     (li ?? []).forEach((f) {
       switch (_sorter) {
         case "all":
-          if (f.period == _period) {
+          if (f.periodName == _period) {
             toReturn.add(f);
           }
           break;
@@ -201,7 +201,7 @@ class GradesController extends ChangeNotifier {
           if (appSys.settings!["system"]["chosenParser"] == 0) {
             List<String> codeMatiere = ["FRANC", "HI-GE", "AGL1", "ESP2"];
 
-            if (f.period == _period &&
+            if (f.periodName == _period &&
                 codeMatiere.any((test) {
                   if (test == f.disciplineCode) {
                     return true;
@@ -214,7 +214,7 @@ class GradesController extends ChangeNotifier {
           } else {
             List<String> codeMatiere = ["FRANCAIS", "ANGLAIS", "ESPAGNOL", "ALLEMAND", "HISTOIRE", "PHILO"];
 
-            if (f.period == _period &&
+            if (f.periodName == _period &&
                 codeMatiere.any((test) {
                   if (f.disciplineName!.contains(test)) {
                     return true;
@@ -230,7 +230,7 @@ class GradesController extends ChangeNotifier {
         case "sciences":
           if (appSys.settings!["system"]["chosenParser"] == 0) {
             List<String> codeMatiere = ["SVT", "MATHS", "G-SCI", "PH-CH"];
-            if (f.period == _period &&
+            if (f.periodName == _period &&
                 codeMatiere.any((test) {
                   if (test == f.disciplineCode) {
                     return true;
@@ -243,7 +243,7 @@ class GradesController extends ChangeNotifier {
           } else {
             List<String> codeMatiere = ["SVT", "MATH", "PHY", "PHYSIQUE", "SCI", "BIO"];
             List<String> blackList = ["SPORT"];
-            if (f.period == _period &&
+            if (f.periodName == _period &&
                 codeMatiere.any((test) {
                   if (f.disciplineName!.contains(test) &&
                       !blackList.any((element) => f.disciplineName!.contains(element))) {
@@ -258,7 +258,7 @@ class GradesController extends ChangeNotifier {
           break;
         case "spécialités":
           if (specialties != null) {
-            if (f.period == _period &&
+            if (f.periodName == _period &&
                 specialties!.any((test) {
                   if (test == f.disciplineName) {
                     return true;
@@ -286,7 +286,7 @@ class GradesController extends ChangeNotifier {
     _average = 0;
     double? temp;
     List<double> averages = [];
-    for (Discipline f in disciplines()!.where((i) => i.period == _period)) {
+    for (Discipline f in disciplines()!.where((i) => i.periodName == _period)) {
       if (appSys.settings!["system"]["chosenParser"] == 1) {
         if (f.generalAverage != null) {
           double? _temp = double.tryParse(f.generalAverage!.replaceAll(",", "."));
