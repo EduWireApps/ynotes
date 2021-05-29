@@ -70,6 +70,7 @@ dependencies:
   collection: ^1.15.0-nullsafety.4
   connectivity: ^3.0.3
   csv: ^5.0.0
+  date_field: ^2.0.1
   day_night_switcher: ^0.2.0+1
   device_apps: ^2.0.2
   dotted_border: ^2.0.0-nullsafety.0

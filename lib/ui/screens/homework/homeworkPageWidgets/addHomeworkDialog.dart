@@ -1,7 +1,7 @@
+import 'package:date_field/date_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:intl/intl.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
@@ -96,15 +96,14 @@ class _AddHomeworkBottomSheetState extends State<AddHomeworkBottomSheet> {
           SizedBox(
             height: screenSize.size.height / 10 * 0.2,
           ),
-          CustomButtons.materialButton(
-            context,
-            screenSize.size.width / 5 * 2.5,
-            screenSize.size.height / 10 * 0.5,
-            () async {
-              process(context);
-            },
-            label: "J'ai fini",
-          )
+          CustomButtons.materialButton(context, screenSize.size.width / 5 * 2.5, screenSize.size.height / 10 * 0.5,
+              () async {
+            process(context);
+          },
+              label: "J'ai fini",
+              backgroundColor: (disciplineNameTextController.text != "" && contentTextController.text != "")
+                  ? Colors.green
+                  : Theme.of(context).primaryColorDark)
         ],
       ),
     );
@@ -114,36 +113,39 @@ class _AddHomeworkBottomSheetState extends State<AddHomeworkBottomSheet> {
     String day = DateFormat("EEEE dd MMMM yyyy", "fr_FR").format(date).toUpperCase();
     var screenSize = MediaQuery.of(context);
 
-    return TextButton(
-        onPressed: () async {
-          DateTime? temp = await showDatePicker(
-            locale: Locale('fr', 'FR'),
-            context: context,
-            initialDate: DateTime.now(),
-            firstDate: DateTime(2018),
-            lastDate: DateTime(2030),
-          );
-          if (temp != null) {
-            setState(() {
-              date = temp;
-            });
-          }
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.2),
+      child: DateTimeFormField(
+        decoration: InputDecoration(
+          hintStyle: TextStyle(color: ThemeUtils.textColor()),
+          labelStyle: TextStyle(color: ThemeUtils.textColor()),
+          counterStyle: TextStyle(color: ThemeUtils.textColor()),
+          helperStyle: TextStyle(color: ThemeUtils.textColor()),
+          prefixStyle: TextStyle(color: ThemeUtils.textColor()),
+          suffixStyle: TextStyle(color: ThemeUtils.textColor()),
+          errorStyle: TextStyle(color: Colors.redAccent),
+          border: OutlineInputBorder(borderSide: BorderSide(color: ThemeUtils.textColor())),
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: ThemeUtils.textColor().withOpacity(0.5)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: ThemeUtils.textColor().withOpacity(0.5)),
+          ),
+          suffixIcon: Icon(Icons.event_note, color: ThemeUtils.textColor()),
+          labelText: "Choisissez une date",
+        ),
+        dateTextStyle: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
+        dateFormat: DateFormat("EEEE dd MMMM yyyy", "fr_FR"),
+        initialValue: date,
+        mode: DateTimeFieldPickerMode.date,
+        autovalidateMode: AutovalidateMode.always,
+        onDateSelected: (DateTime value) {
+          setState(() {
+            date = value;
+          });
         },
-        child: Row(
-          children: [
-            Icon(MdiIcons.calendar, color: ThemeUtils.textColor()),
-            SizedBox(
-              width: screenSize.size.width / 5 * 0.1,
-            ),
-            Expanded(
-              child: Text(
-                day,
-                style: TextStyle(
-                    fontFamily: "Asap", color: ThemeUtils.textColor(), fontWeight: FontWeight.normal, fontSize: 20),
-              ),
-            ),
-          ],
-        ));
+      ),
+    );
   }
 
   Widget buildLargeTextField(TextEditingController con, String label, autoCompleter) {

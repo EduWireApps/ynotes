@@ -497,9 +497,12 @@ class _StickyHeaderState extends State<StickyHeader> {
                 child: Container(
                   height: screenSize.size.height / 10 * 0.6,
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(MdiIcons.filter, color: ThemeUtils.textColor()),
+                      SizedBox(
+                        width: screenSize.size.width / 5 * 0.1,
+                      ),
                       Text(
                           case2(appSys.homeworkController.currentFilter, {
                             homeworkFilter.ALL: "Filtrer",
@@ -564,9 +567,12 @@ class _StickyHeaderState extends State<StickyHeader> {
                 child: Container(
                   height: screenSize.size.height / 10 * 0.6,
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(MdiIcons.calendar, color: ThemeUtils.textColor()),
+                      SizedBox(
+                        width: screenSize.size.width / 5 * 0.1,
+                      ),
                       Text("Choisir une date",
                           style: TextStyle(
                               fontFamily: "Asap", fontWeight: FontWeight.bold, color: ThemeUtils.textColor())),
