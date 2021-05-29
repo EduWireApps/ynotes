@@ -43,9 +43,11 @@ class BackgroundService {
       if (appSys.settings?["user"]["global"]["notificationNewMail"] &&
           !appSys.settings?["user"]["global"]["batterySaver"] &&
           appSys.settings?["system"]["chosenApi"] == 0) {
+        await logFile("New mail test triggered");
+
         Mail? mail = await testNewMails();
         if (mail != null) {
-          String content = (await readMail(mail.id, mail.read, true)) ?? "";
+          String content = (await readMail(mail.id ?? "", mail.read ?? false, true)) ?? "";
           await AppNotification.showNewMailNotification(mail, content);
         } else {
           print("Nothing updated");
@@ -100,7 +102,6 @@ class BackgroundService {
 
       List<Grade>? listOnlineGrades = [];
       //Login creds
-
       listOnlineGrades = getAllGrades(await appSys.api?.getGrades(forceReload: true), overrideLimit: true);
 
       print("Online grade length is ${listOnlineGrades!.length}");
@@ -124,7 +125,7 @@ class BackgroundService {
       var oldMailLength = appSys.settings!["system"]["lastMailCount"];
       print("Old length is $oldMailLength");
       //Get new mails
-      List<Mail>? mails = await getMails();
+      List<Mail>? mails = await (appSys.api as APIEcoleDirecte?)?.getMails();
       //filter mails by type
       (mails ?? []).retainWhere((element) => element.mtype == "received");
       (mails ?? []).sort((a, b) {

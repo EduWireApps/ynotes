@@ -4,6 +4,7 @@ import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:isar/isar.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ynotes/core/apis/model.dart';
@@ -16,8 +17,10 @@ import 'package:ynotes/core/logic/shared/loginController.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/background.dart';
 import 'package:ynotes/core/services/notifications.dart';
+import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/utils/settingsUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/isar.g.dart';
 import 'package:ynotes/ui/themes/themesList.dart';
 
 ///Top level application sytem class
@@ -40,6 +43,7 @@ class ApplicationSystem extends ChangeNotifier {
 
   ///The chosen API
   late Offline offline;
+  late final Isar isar;
 
   ///App logger
   late Logger logger;
@@ -84,6 +88,8 @@ class ApplicationSystem extends ChangeNotifier {
   ///The most important function
   ///It will intialize Offline, APIs and background fetch
   initApp() async {
+    await initIsar();
+
     logger = Logger();
     //set settings
     await _initSettings();
@@ -112,6 +118,11 @@ class ApplicationSystem extends ChangeNotifier {
   initControllers() async {
     await this.gradesController.refresh(force: true);
     await this.homeworkController.refresh(force: true);
+  }
+
+  initIsar() async {
+    var dir = await FolderAppUtil.getDirectory();
+    isar = await openIsar(directory: "${dir.path}/offline");
   }
 
 //Leave app

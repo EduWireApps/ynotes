@@ -23,7 +23,8 @@ bool newGrades = false;
 List? specialties;
 
 class GradesPage extends StatefulWidget {
-  const GradesPage({Key? key}) : super(key: key);
+  final GlobalKey<ScaffoldState> parentScaffoldState;
+  const GradesPage({Key? key, required this.parentScaffoldState}) : super(key: key);
   State<StatefulWidget> createState() {
     return _GradesPageState();
   }
@@ -36,8 +37,22 @@ class _GradesPageState extends State<GradesPage> {
     MediaQueryData screenSize = MediaQuery.of(context);
     ScrollController controller = ScrollController();
 
-    return Container(
-      child: ChangeNotifierProvider<GradesController>.value(
+    return Scaffold(
+      appBar: new AppBar(
+          title: new Text(
+            "Notes",
+            style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
+          ),
+          leading: FlatButton(
+            color: Colors.transparent,
+            child: Icon(MdiIcons.menu, color: ThemeUtils.textColor()),
+            onPressed: () async {
+              widget.parentScaffoldState.currentState?.openDrawer();
+            },
+          ),
+          backgroundColor: Theme.of(context).primaryColor),
+      backgroundColor: Theme.of(context).backgroundColor,
+      body: ChangeNotifierProvider<GradesController>.value(
         value: appSys.gradesController,
         child: Consumer<GradesController>(builder: (context, model, child) {
           return Stack(
@@ -758,7 +773,6 @@ class _GradesPageState extends State<GradesPage> {
           );
         });
   }
-
 
   _buildFloatingButton(BuildContext context) {
     var screenSize = MediaQuery.of(context);

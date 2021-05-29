@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:isar/isar.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:package_info/package_info.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -13,15 +14,16 @@ import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:wiredash/wiredash.dart';
 import 'package:ynotes/core/logic/appConfig/controller.dart';
+import 'package:ynotes/core/offline/isar/data/homework.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/services/platform.dart';
 import 'package:ynotes/core/utils/settingsUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
+import 'package:ynotes/isar.g.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/accountPage.dart';
-import 'package:ynotes/ui/screens/settings/sub_pages/exportPage.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
 
 import '../../../tests.dart';
@@ -360,6 +362,19 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     titleTextStyle: TextStyle(color: ThemeUtils.textColor()),
                     title: 'Assistance',
                     tiles: [
+                      SettingsTile.switchTile(
+                          title: 'Secouer pour signaler',
+                          enabled: _appSys.settings?["user"]["global"]["shakeToReport"],
+                          titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                          subtitleTextStyle: TextStyle(
+                              fontFamily: "Asap",
+                              color: ThemeUtils.isThemeDark
+                                  ? Colors.white.withOpacity(0.7)
+                                  : Colors.black.withOpacity(0.7)),
+                          switchValue: _appSys.settings!["user"]["global"]["shakeToReport"],
+                          onToggle: (bool value) async {
+                            _appSys.updateSetting(_appSys.settings!["user"]["global"], "shakeToReport", value);
+                          }),
                       SettingsTile(
                         title: 'Afficher les logs',
                         leading: Icon(MdiIcons.bug, color: ThemeUtils.textColor()),
@@ -394,19 +409,6 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     title: 'Autres paramètres',
                     tiles: [
                       SettingsTile(
-                        title: 'Gestionnaire de sauvegarde',
-                        leading: Icon(MdiIcons.contentSave, color: ThemeUtils.textColor()),
-                        onTap: () async {
-                          Navigator.of(context).push(router(ExportPage()));
-                        },
-                        titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-                        subtitleTextStyle: TextStyle(
-                            fontFamily: "Asap",
-                            color:
-                                ThemeUtils.isThemeDark ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
-                        iosChevron: Icon(Icons.chevron_right),
-                      ),
-                      SettingsTile(
                         title: 'Réinitialiser le tutoriel',
                         leading: Icon(MdiIcons.restore, color: ThemeUtils.textColor()),
                         onTap: () async {
@@ -433,7 +435,9 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                                   alternativeText:
                                       "Etes-vous sûr de vouloir supprimer les données hors ligne ? (irréversible)")) ??
                               false) {
-                            await _appSys.offline.clearAll();
+                            await _appSys.isar.writeTxn((isar) async {
+                              await isar.homeworks.where().deleteAll();
+                            });
                           }
                         },
                         titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
@@ -448,6 +452,19 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                         leading: Icon(MdiIcons.file, color: ThemeUtils.textColor()),
                         onTap: () async {
                           CustomDialogs.showUpdateNoteDialog(context);
+                        },
+                        titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                        subtitleTextStyle: TextStyle(
+                            fontFamily: "Asap",
+                            color:
+                                ThemeUtils.isThemeDark ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
+                        iosChevron: Icon(Icons.chevron_right),
+                      ),
+                      SettingsTile(
+                        title: 'Test',
+                        leading: Icon(MdiIcons.emoticonConfused, color: ThemeUtils.textColor()),
+                        onTap: () async {
+                          await OfflineHomework(appSys.isar).migrateOldDoneHomeworkStatus(_appSys);
                         },
                         titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                         subtitleTextStyle: TextStyle(
@@ -502,9 +519,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                         SettingsTile(
                           title: 'Bouton magique',
                           leading: Icon(MdiIcons.testTube, color: ThemeUtils.textColor()),
-                          onTap: () async {
-                           
-                          },
+                          onTap: () async {},
                           titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                           subtitleTextStyle: TextStyle(
                               fontFamily: "Asap",

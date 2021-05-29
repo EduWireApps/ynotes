@@ -4,11 +4,14 @@ import 'package:connectivity/connectivity.dart';
 import 'package:html_character_entities/html_character_entities.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:isar/isar.dart';
 import 'package:ynotes/core/apis/EcoleDirecte/converters/cloud.dart';
 import 'package:ynotes/core/apis/EcoleDirecte/convertersExporter.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/offline/isar/data/homework.dart';
+import 'package:ynotes/core/offline/isar/data/mail.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/usefulMethods.dart';
@@ -16,9 +19,10 @@ import 'package:ynotes/usefulMethods.dart';
 import '../EcoleDirecte.dart';
 
 class EcoleDirecteMethod {
+  static const fakeToken = "a95fd30b-ca20-467b-8128-679f48e1498e";
   final Offline? _offlineController;
-
-  EcoleDirecteMethod(this._offlineController);
+  final Isar? isar;
+  EcoleDirecteMethod(this._offlineController, {this.isar});
   Future<List<CloudItem>> cloudFolders() async {
     await EcoleDirecteMethod.testToken();
     String rootUrl = 'https://api.ecoledirecte.com/v3/E/';
@@ -37,7 +41,7 @@ class EcoleDirecteMethod {
     }*/
     String method = "notes.awp?verbe=get&";
     String data = 'data={"token": "$token"}';
-    List<Discipline> disciplinesList = await request(
+    List<Discipline>? disciplinesList = await request(
       data,
       rootUrl,
       method,
@@ -47,16 +51,16 @@ class EcoleDirecteMethod {
     );
 
     //Update colors;
-    disciplinesList = await refreshDisciplinesListColors(disciplinesList);
+    disciplinesList = await refreshDisciplinesListColors(disciplinesList ?? []);
 
     if (!_offlineController!.locked) {
       await _offlineController!.disciplines.updateDisciplines(disciplinesList);
     }
     createStack();
-    if (disciplinesList != null) {
-      appSys.updateSetting(
-          appSys.settings!["system"], "lastGradeCount", getAllGrades(disciplinesList, overrideLimit: true)!.length);
-    }
+
+    appSys.updateSetting(appSys.settings!["system"], "lastGradeCount",
+        (getAllGrades(disciplinesList, overrideLimit: true) ?? []).length);
+
     return disciplinesList;
   }
 
@@ -93,37 +97,59 @@ class EcoleDirecteMethod {
     String rootUrl = 'https://api.ecoledirecte.com/v3/Eleves/';
     String method = "cahierdetexte/$dateToUse.awp?verbe=get&";
     String data = 'data={"token": "$token"}';
+    /*if (kDebugMode) {
+      rootUrl = 'https://still-earth-97911.herokuapp.com/ecoledirecte/homework/' + dateToUse;
+      method = "cahierdetexte.awp?verbe=get&";
+      data = 'data={"token": "$fakeToken"}';
+    }*/
+
     List<Homework> homework = await request(
-        data, rootUrl, method, EcoleDirecteHomeworkConverter.homework, "Homework request returned an error:");
+        data, rootUrl, method, EcoleDirecteHomeworkConverter.homework, "Homework request returned an error:",
+        ignoreMethodAndId: false);
     homework.forEach((hw) {
       hw.date = date;
     });
-    await appSys.offline.homework.updateHomework(homework, add: true, forceAdd: true);
+    if (this.isar != null) {
+      await OfflineHomework(isar!).updateHomework(homework);
+      print("Updated hw");
+    }
+    //await appSys.offline.homework.updateHomework(homework, add: true, forceAdd: true);
     return homework;
+  }
+
+  mails() async {
+    await EcoleDirecteMethod.testToken();
+    String data = 'data={"token": "$token"}';
+    String rootUrl = "https://api.ecoledirecte.com/v3/eleves/";
+
+    String method = "messages.awp?verbe=getall&typeRecuperation=all";
+    List<Mail> mails = await request(
+      data,
+      rootUrl,
+      method,
+      EcoleDirecteMailConverter.mails,
+      "Mails request returned an error:",
+    );
+    if (this.isar != null) {
+      await OfflineMail(isar).updateMails(mails);
+      print("Updated mails");
+    }
+    return mails;
   }
 
   nextHomework() async {
     await EcoleDirecteMethod.testToken();
-
-    List<Homework> homeworkList = [];
     String rootUrl = 'https://api.ecoledirecte.com/v3/Eleves/';
     String method = "cahierdetexte.awp?verbe=get&";
     String data = 'data={"token": "$token"}';
+    List<Homework> homeworkList = [];
     homeworkList = await request(
-        data, rootUrl, method, EcoleDirecteHomeworkConverter.unloadedHomework, "UHomework request returned an error:");
-    await appSys.offline.homework.updateHomework(homeworkList);
-    List<DateTime> pinnedDates = await appSys.offline.pinnedHomework.getPinnedHomeworkDates();
-
-    //Add pinned content
-    await Future.wait(pinnedDates.map((element) async {
-      List<Homework> pinnedHomework = await homeworkFor(element);
-      pinnedHomework.removeWhere((pinnedHWElement) => element.day != pinnedHWElement.date!.day);
-      pinnedHomework.forEach((pinned) {
-        if (!homeworkList.any((hw) => hw.id == pinned.id)) {
-          homeworkList.add(pinned);
-        }
-      });
-    }));
+        data, rootUrl, method, EcoleDirecteHomeworkConverter.unloadedHomework, "UHomework request returned an error:",
+        ignoreMethodAndId: false);
+    if (this.isar != null) {
+      await OfflineHomework(isar!).updateHomework(homeworkList);
+      print("Updated hw");
+    }
     return homeworkList;
   }
 
@@ -150,13 +176,13 @@ class EcoleDirecteMethod {
     await EcoleDirecteMethod.testToken();
     String data = 'data={"token": "$token"}';
     String rootUrl = 'https://api.ecoledirecte.com/v3/messagerie/contacts/professeurs.awp?verbe=get';
-    List<Recipient> recipients = await request(
+    List<Recipient>? recipients = await request(
         data, rootUrl, "", EcoleDirecteMailConverter.recipients, "Recipients request returned an error:",
         ignoreMethodAndId: true);
     if (recipients != null) {
       await appSys.offline.recipients.updateRecipients(recipients);
     }
-    return recipients;
+    return recipients ?? [];
   }
 
   Future<List<SchoolLifeTicket>> schoolLife() async {
@@ -181,18 +207,29 @@ class EcoleDirecteMethod {
       return await ((offlineArguments != null) ? offlineFetch(offlineArguments) : offlineFetch());
     } else if (forceFetch && !isOfflineLocked) {
       try {
-        return await ((onlineArguments != null) ? onlineFetch(onlineArguments) : onlineFetch());
+        await ((onlineArguments != null) ? onlineFetch(onlineArguments) : onlineFetch());
+        return await ((offlineArguments != null) ? offlineFetch(offlineArguments) : offlineFetch());
       } catch (e) {
+        print("Error " + e.toString());
         return await ((offlineArguments != null) ? offlineFetch(offlineArguments) : offlineFetch());
       }
     } else {
       //Offline data;
       var data;
       if (!isOfflineLocked) {
-        data = await ((offlineArguments != null) ? offlineFetch(offlineArguments) : offlineFetch());
+        try {
+          data = await ((offlineArguments != null) ? offlineFetch(offlineArguments) : offlineFetch());
+        } catch (e) {
+          print("Error " + e.toString());
+        }
       }
       if (data == null) {
-        data = await ((onlineArguments != null) ? onlineFetch(onlineArguments) : onlineFetch());
+        try {
+          await ((onlineArguments != null) ? onlineFetch(onlineArguments) : onlineFetch());
+          return await ((offlineArguments != null) ? offlineFetch(offlineArguments) : offlineFetch());
+        } catch (e) {
+          print("Error " + e.toString());
+        }
       }
       return data;
     }
@@ -300,7 +337,8 @@ class EcoleDirecteMethod {
   static Future sendMail(String? subject, String content, List<Recipient> recipientsList) async {
     String recipients = "";
 
-    String parsedContent = base64Encode(utf8.encode(HtmlCharacterEntities.encode(content, characters: "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿŒœŠšŸƒˆ˜")));
+    String parsedContent = base64Encode(utf8.encode(HtmlCharacterEntities.encode(content,
+        characters: "ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿŒœŠšŸƒˆ˜")));
     recipientsList.forEach((element) {
       String eOrp = element.isTeacher! ? "P" : "E";
       int? id = int.tryParse(element.id!);

@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ynotes/core/apis/model.dart';
+import 'package:ynotes/core/consts/disciplinesFilter.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/globals.dart';
 
@@ -199,7 +202,7 @@ class GradesController extends ChangeNotifier {
           break;
         case "littérature":
           if (appSys.settings!["system"]["chosenParser"] == 0) {
-            List<String> codeMatiere = ["FRANC", "HI-GE", "AGL1", "ESP2"];
+            List<String> codeMatiere = FILTERS["literary"]["ED"];
 
             if (f.periodName == _period &&
                 codeMatiere.any((test) {
@@ -212,7 +215,7 @@ class GradesController extends ChangeNotifier {
               toReturn.add(f);
             }
           } else {
-            List<String> codeMatiere = ["FRANCAIS", "ANGLAIS", "ESPAGNOL", "ALLEMAND", "HISTOIRE", "PHILO"];
+            List<String> codeMatiere = FILTERS["literary"]["Pronote"];
 
             if (f.periodName == _period &&
                 codeMatiere.any((test) {
@@ -229,7 +232,7 @@ class GradesController extends ChangeNotifier {
           break;
         case "sciences":
           if (appSys.settings!["system"]["chosenParser"] == 0) {
-            List<String> codeMatiere = ["SVT", "MATHS", "G-SCI", "PH-CH"];
+            List<String> codeMatiere = FILTERS["sciences"]["ED"];;
             if (f.periodName == _period &&
                 codeMatiere.any((test) {
                   if (test == f.disciplineCode) {
@@ -241,8 +244,8 @@ class GradesController extends ChangeNotifier {
               toReturn.add(f);
             }
           } else {
-            List<String> codeMatiere = ["SVT", "MATH", "PHY", "PHYSIQUE", "SCI", "BIO"];
-            List<String> blackList = ["SPORT"];
+            List<String> codeMatiere = FILTERS["sciences"]["Pronote"];
+            List<String> blackList = FILTERS["sciences"]["blacklist"];
             if (f.periodName == _period &&
                 codeMatiere.any((test) {
                   if (f.disciplineName!.contains(test) &&

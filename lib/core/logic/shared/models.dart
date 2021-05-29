@@ -1,20 +1,25 @@
 //Class of a downloadable document
 import 'package:hive/hive.dart';
+import 'package:isar/isar.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'models.g.dart';
 
 @JsonSerializable(nullable: false)
 @HiveType(typeId: 1)
+@Collection()
+
 class Document {
+  @Id()
+  int? dbId;
   @HiveField(0)
-  final String? documentName;
+  String? documentName;
   @HiveField(1)
-  final String? id;
+  String? id;
   @HiveField(2)
-  final String? type;
+  String? type;
   @HiveField(3)
-  final int? length;
-  Document(this.documentName, this.id, this.type, this.length);
+  int? length;
+  Document({this.documentName, this.id, this.type, this.length});
   factory Document.fromJson(Map<String, dynamic> json) => _$DocumentFromJson(json);
   Map<String, dynamic> toJson() => _$DocumentToJson(this);
 }

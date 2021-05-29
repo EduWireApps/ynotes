@@ -1,9 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:tinycolor/tinycolor.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/usefulMethods.dart';
+
+ThemeData darkTheme = ThemeData(
+    backgroundColor: Color(0xff313131),
+    primaryColor: Color(0xff414141),
+    primaryColorLight: Color(0xff525252),
+    //In reality that is primary ColorLighter
+    primaryColorDark: Color(0xff333333),
+    indicatorColor: Color(0xff525252),
+    tabBarTheme: TabBarTheme(labelColor: Colors.black));
+
+ThemeData lightTheme = ThemeData(
+    backgroundColor: Colors.white,
+    primaryColor: Color(0xffF3F3F3),
+    primaryColorDark: Color(0xffDCDCDC),
+    primaryColorLight: Colors.white,
+    indicatorColor: Color(0xffDCDCDC),
+    tabBarTheme: TabBarTheme(labelColor: Colors.black));
 
 class ThemeUtils {
+  static get isThemeDark => appSys.themeName!.contains("sombre");
+
   Map themeColors = {
     "light": {"primaryColor": Colors.red},
     "dark": {"primaryColor": Colors.red}
@@ -11,16 +29,6 @@ class ThemeUtils {
 //Theme utils colors
   primaryColor() => themeColors["light"]["primaryColor"];
 
-  static Color spaceColor() => Color(0xff282246);
-  static Color textColor({bool revert = false}) {
-    if (revert) {
-      return isThemeDark ? Colors.black : Colors.white;
-    } else {
-      return isThemeDark ? Colors.white : Colors.black;
-    }
-  }
-
-  static get isThemeDark => appSys.themeName!.contains("sombre");
   Color test() => Colors.blue;
 
   ///Make the selected color darker
@@ -49,24 +57,31 @@ class ThemeUtils {
 
     return hslDark.toColor();
   }
+
+  static Color getCheckBoxColor(Set<MaterialState> states) {
+    const Set<MaterialState> interactiveStates = <MaterialState>{
+      MaterialState.pressed,
+      MaterialState.hovered,
+      MaterialState.focused,
+    };
+    if (states.any(interactiveStates.contains)) {
+// the color to return when button is in pressed, hovered, focused state
+      return Colors.white;
+    }
+// the color to return when button is in it's normal/unfocused state
+    return Colors.green;
+  }
+
+  static Color spaceColor() => Color(0xff282246);
+
+  static Color textColor({bool revert = false}) {
+    if (revert) {
+      return isThemeDark ? Colors.black : Colors.white;
+    } else {
+      return isThemeDark ? Colors.white : Colors.black;
+    }
+  }
 }
-
-ThemeData darkTheme = ThemeData(
-    backgroundColor: Color(0xff313131),
-    primaryColor: Color(0xff414141),
-    primaryColorLight: Color(0xff525252),
-    //In reality that is primary ColorLighter
-    primaryColorDark: Color(0xff333333),
-    indicatorColor: Color(0xff525252),
-    tabBarTheme: TabBarTheme(labelColor: Colors.black));
-
-ThemeData lightTheme = ThemeData(
-    backgroundColor: Colors.white,
-    primaryColor: Color(0xffF3F3F3),
-    primaryColorDark: Color(0xffDCDCDC),
-    primaryColorLight: Colors.white,
-    indicatorColor: Color(0xffDCDCDC),
-    tabBarTheme: TabBarTheme(labelColor: Colors.black));
 
 extension HexColor on Color {
   /// String is in the format "aabbcc" or "ffaabbcc" with an optional leading "#".

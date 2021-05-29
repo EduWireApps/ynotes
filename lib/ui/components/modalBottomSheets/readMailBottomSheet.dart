@@ -17,9 +17,8 @@ import 'package:ynotes/ui/components/dialogs.dart';
 
 class ReadMailBottomSheet extends StatefulWidget {
   final Mail mail;
-  final int? index;
 
-  const ReadMailBottomSheet(this.mail, this.index, {Key? key}) : super(key: key);
+  const ReadMailBottomSheet(this.mail, {Key? key}) : super(key: key);
 
   @override
   _ReadMailBottomSheetState createState() => _ReadMailBottomSheetState();
@@ -29,13 +28,12 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
   bool monochromatic = false;
   DateFormat format = DateFormat("dd-MM-yyyy HH:hh");
 
-  //Get monochromatic colors or not
   @override
   Widget build(BuildContext context) {
     print(this.widget.mail.id);
     MediaQueryData screenSize = MediaQuery.of(context);
     return FutureBuilder<String?>(
-        future: readMail(this.widget.mail.id, this.widget.mail.read, this.widget.mail.mtype == "received"),
+        future: getMail(),
         builder: (context, snapshot) {
           return Container(
               height: screenSize.size.height,
@@ -88,7 +86,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                 horizontal: screenSize.size.width / 5 * 0.2,
                                 vertical: screenSize.size.height / 10 * 0.2),
                             child: AutoSizeText(
-                              this.widget.mail.subject != "" ? this.widget.mail.subject : "(Sans sujet)",
+                              this.widget.mail.subject != "" ? this.widget.mail.subject ?? "" : "(Sans sujet)",
                               maxLines: 100,
                               style: TextStyle(
                                   fontFamily: "Asap", color: ThemeUtils.textColor(), fontWeight: FontWeight.bold),
@@ -106,7 +104,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                     width: screenSize.size.width / 5 * 0.8,
                                     child: CircleAvatar(
                                       child: Text(
-                                        this.widget.mail.from["name"][0],
+                                        this.widget.mail.from?["name"][0] ?? "",
                                         style: TextStyle(
                                             fontFamily: "Asap",
                                             color: ThemeUtils.textColor(),
@@ -125,7 +123,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                         spacing: screenSize.size.width / 5 * 0.1,
                                         children: [
                                           Text(
-                                            this.widget.mail.from["name"],
+                                            this.widget.mail.from?["name"] ?? "",
                                             style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                                             overflow: TextOverflow.ellipsis,
                                           ),
@@ -139,9 +137,9 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                           ),
                                         ],
                                       ),
-                                      if (!this.widget.mail.to.isEmpty)
+                                      if ((this.widget.mail.to ?? []).isNotEmpty)
                                         Text(
-                                          this.widget.mail.to[0]["name"],
+                                          this.widget.mail.to![0]?["name"] ?? "",
                                           style: TextStyle(
                                               fontFamily: "Asap",
                                               color: ThemeUtils.isThemeDark
@@ -189,9 +187,9 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                       AnimatedContainer(
                                         duration: Duration(milliseconds: 75),
                                         width: screenSize.size.width / 5 * 4.4,
-                                        height: this.widget.mail.files!.length * (screenSize.size.height / 10 * 0.7),
+                                        height: this.widget.mail.files.length * (screenSize.size.height / 10 * 0.7),
                                         child: ListView.builder(
-                                            itemCount: this.widget.mail.files!.length,
+                                            itemCount: this.widget.mail.files.length,
                                             itemBuilder: (BuildContext context, int index) {
                                               return Container(
                                                 margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.2),
@@ -217,7 +215,12 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                                               width: screenSize.size.width / 5 * 2.8,
                                                               child: ClipRRect(
                                                                 child: Marquee(
-                                                                    text: this.widget.mail.files![index].documentName!,
+                                                                    text: this
+                                                                        .widget
+                                                                        .mail
+                                                                        .files
+                                                                        .toList()[index]
+                                                                        .documentName!,
                                                                     blankSpace: screenSize.size.width / 5 * 0.2,
                                                                     style: TextStyle(
                                                                         fontFamily: "Asap", color: Colors.white)),
@@ -242,7 +245,8 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                                                             future: model.fileExists(this
                                                                                 .widget
                                                                                 .mail
-                                                                                .files![index]
+                                                                                .files
+                                                                                .toList()[index]
                                                                                 .documentName),
                                                                             initialData: false,
                                                                             builder: (context, snapshot) {
@@ -293,7 +297,8 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                                                                             this
                                                                                                 .widget
                                                                                                 .mail
-                                                                                                .files![index]
+                                                                                                .files
+                                                                                                .toList()[index]
                                                                                                 .documentName,
                                                                                             usingFileName: true);
                                                                                       },
@@ -302,7 +307,8 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                                                                         await model.download(this
                                                                                             .widget
                                                                                             .mail
-                                                                                            .files![index]);
+                                                                                            .files
+                                                                                            .toList()[index]);
                                                                                       },
                                                                                       child: Container(
                                                                                         width: screenSize.size.width /
@@ -328,7 +334,8 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                                                                       await model.download(this
                                                                                           .widget
                                                                                           .mail
-                                                                                          .files![index]);
+                                                                                          .files
+                                                                                          .toList()[index]);
                                                                                     },
                                                                                   );
                                                                                 }
@@ -343,14 +350,18 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                                                                         this
                                                                                             .widget
                                                                                             .mail
-                                                                                            .files![index]
+                                                                                            .files
+                                                                                            .toList()[index]
                                                                                             .documentName,
                                                                                         usingFileName: true);
                                                                                   },
                                                                                   //Force download
                                                                                   onLongPress: () async {
-                                                                                    await model.download(
-                                                                                        this.widget.mail.files![index]);
+                                                                                    await model.download(this
+                                                                                        .widget
+                                                                                        .mail
+                                                                                        .files
+                                                                                        .toList()[index]);
                                                                                   },
                                                                                   child: Container(
                                                                                     width:
@@ -393,6 +404,16 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
         });
   }
 
+  //Get monochromatic colors or not
+  ///TO DO PUT IT IN A CONTROLLER
+  Future<String?> getMail() async {
+    if (widget.mail.content != null && widget.mail.content != "") {
+      return widget.mail.content;
+    } else {
+      return await readMail(widget.mail.id ?? "", true, widget.mail.mtype == "received");
+    }
+  }
+
   htmlColors(String? html) {
     if (!monochromatic) {
       return html;
@@ -404,8 +425,12 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
 
   recipientFromMap() {
     return [
-      Recipient(this.widget.mail.from["prenom"], this.widget.mail.from["nom"], this.widget.mail.from["id"].toString(),
-          this.widget.mail.from["type"] == "P", this.widget.mail.from["matiere"])
+      Recipient(
+          this.widget.mail.from?["prenom"],
+          this.widget.mail.from?["nom"],
+          this.widget.mail.from?["id"].toString(),
+          this.widget.mail.from?["type"] == "P",
+          this.widget.mail.from?["matiere"])
     ];
   }
 }
