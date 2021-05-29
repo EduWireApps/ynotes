@@ -281,8 +281,10 @@ class GradesController extends ChangeNotifier {
 
   _refreshPeriods() async {
     List<Period> temp = this.disciplines(showAll: true)?.map((e) => Period(e.periodName, e.periodCode)).toList() ?? [];
+    final ids = temp.map((e) => e.name).toSet();
+    temp.retainWhere((x) => ids.remove(x.name));
     List<Period> unicalPeriods = temp.toSet().toList();
-    print(unicalPeriods.length);
+    print(unicalPeriods.map((e) => e.name));
     _schoolPeriods = unicalPeriods;
   }
 
