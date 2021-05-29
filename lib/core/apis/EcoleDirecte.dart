@@ -207,17 +207,6 @@ class APIEcoleDirecte extends API {
         .toList();
   }
 
-  @override
-  Future<List<Period>?> getPeriods() async {
-    try {
-      var a = await EcoleDirecteMethod.fetchAnyData(
-          EcoleDirecteMethod(this.offlineController).periods, offlineController.disciplines.getPeriods);
-      return a;
-    } catch (e) {
-      print(e);
-    }
-  }
-
   Future<List<SchoolLifeTicket>> getSchoolLife({bool forceReload = false}) async {
     return await EcoleDirecteMethod.fetchAnyData(
         EcoleDirecteMethod(this.offlineController).schoolLife, offlineController.schoolLife.get,

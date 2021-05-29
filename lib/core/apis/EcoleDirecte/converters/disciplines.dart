@@ -26,6 +26,7 @@ class EcoleDirecteDisciplineConverter {
                 json: rawData,
                 profs: teachersNames,
                 periode: periodeElement["periode"],
+                periodeId: periodeElement["idPeriode"],
                 moyenneG: periodeElement["ensembleMatieres"]["moyenneGenerale"],
                 bmoyenneClasse: periodeElement["ensembleMatieres"]["moyenneMax"],
                 moyenneClasse: periodeElement["ensembleMatieres"]["moyenneClasse"],

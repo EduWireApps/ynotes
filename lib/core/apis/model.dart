@@ -133,8 +133,6 @@ abstract class API {
 
   Future<List<Lesson>?> getNextLessons(DateTime from, {bool? forceReload});
 
-  ///Get years periods
-  Future<List<Period>?> getPeriods();
 
   ///SchoolLife
   Future<List<SchoolLifeTicket>?> getSchoolLife({bool forceReload = false});

@@ -149,30 +149,6 @@ class APIPronote extends API {
     }
   }
 
-  @override
-  Future<List<Period>> getPeriods() async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    try {
-      return await getOfflinePeriods();
-    } catch (e) {
-      print("Erreur while getting offline period " + e.toString());
-      if (connectivityResult != ConnectivityResult.none && localClient != null) {
-        if (localClient.loggedIn ?? false) {
-          print("getting periods online");
-          return await getOnlinePeriods();
-        } else {
-          throw "Pronote isn't logged in";
-        }
-      } else {
-        try {
-          return await getOfflinePeriods();
-        } catch (e) {
-          throw ("Error while collecting offline periods");
-        }
-      }
-    }
-  }
-
   Future<List<PollInfo>?> getPronotePolls({bool? forceReload}) async {
     List<PollInfo>? listPolls = [];
     List<PollInfo>? pollsFromInternet = (await pronoteMethod.fetchAnyData(

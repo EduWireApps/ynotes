@@ -43,7 +43,7 @@ class Discipline {
   @HiveField(17)
   final String? weight;
   @HiveField(18)
-  String? periodId;
+  String? periodCode;
   Discipline({
     this.gradesList,
     this.maxClassGeneralAverage,
@@ -63,12 +63,15 @@ class Discipline {
     this.classNumber,
     this.generalRank,
     this.weight,
+    this.periodCode
   });
 
   factory Discipline.fromEcoleDirecteJson(
       {required Map<String, dynamic> json,
       required List<String?> profs,
       required String? periode,
+            required String? periodeId,
+
       required String? moyenneG,
       required String? bmoyenneClasse,
       required String? moyenneClasse,
@@ -86,6 +89,7 @@ class Discipline {
         maxClassAverage: json['moyenneMax'],
         teachers: profs,
         periodName: periode,
+        periodCode:periodeId,
         color: color.value,
         generalAverage: moyenneG,
         maxClassGeneralAverage: bmoyenneClasse,

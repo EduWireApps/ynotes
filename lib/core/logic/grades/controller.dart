@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ynotes/core/apis/model.dart';
@@ -152,8 +150,8 @@ class GradesController extends ChangeNotifier {
       _simulatedDisciplines.forEach((discipline) {
         discipline.gradesList!.removeWhere((_grade) => _removedGrades.any((element) =>
             element!.date == _grade.date && element.value == _grade.value && element.testName == _grade.testName));
-        if (_addedGrades.any(
-            (_grade) => _grade.periodName == discipline.periodName && _grade.disciplineCode == discipline.disciplineCode)) {
+        if (_addedGrades.any((_grade) =>
+            _grade.periodName == discipline.periodName && _grade.disciplineCode == discipline.disciplineCode)) {
           discipline.gradesList!.addAll(_addedGrades.where((_grade) =>
               _grade.periodName == discipline.periodName && _grade.disciplineCode == discipline.disciplineCode));
         }
@@ -232,7 +230,8 @@ class GradesController extends ChangeNotifier {
           break;
         case "sciences":
           if (appSys.settings!["system"]["chosenParser"] == 0) {
-            List<String> codeMatiere = FILTERS["sciences"]["ED"];;
+            List<String> codeMatiere = FILTERS["sciences"]["ED"];
+            ;
             if (f.periodName == _period &&
                 codeMatiere.any((test) {
                   if (test == f.disciplineCode) {
@@ -281,7 +280,10 @@ class GradesController extends ChangeNotifier {
   }
 
   _refreshPeriods() async {
-    _schoolPeriods = await _api!.getPeriods();
+    List<Period> temp = this.disciplines(showAll: true)?.map((e) => Period(e.periodName, e.periodCode)).toList() ?? [];
+    List<Period> unicalPeriods = temp.toSet().toList();
+    print(unicalPeriods.length);
+    _schoolPeriods = unicalPeriods;
   }
 
   ///Set the user average

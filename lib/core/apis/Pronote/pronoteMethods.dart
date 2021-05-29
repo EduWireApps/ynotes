@@ -60,20 +60,18 @@ class PronoteMethod {
     List<Discipline> listDisciplines = [];
     if (periods != null) {
       await Future.forEach(periods, (PronotePeriod period) async {
-    
-          var jsonData = {
-            'donnees': {
-              'Periode': {'N': period.id, 'L': period.name}
-            },
-          };
-          var temp =
-              await request("DernieresNotes", PronoteDisciplineConverter.disciplines, data: jsonData, onglet: 198);
-          temp.forEach((Discipline element) {
-            element.periodName = period.name;
-          });
-          listDisciplines.addAll(temp);
-          listDisciplines = await refreshDisciplinesListColors(listDisciplines);
-        
+        var jsonData = {
+          'donnees': {
+            'Periode': {'N': period.id, 'L': period.name}
+          },
+        };
+        var temp = await request("DernieresNotes", PronoteDisciplineConverter.disciplines, data: jsonData, onglet: 198);
+        temp.forEach((Discipline element) {
+          element.periodName = period.name;
+          element.periodCode = period.id;
+        });
+        listDisciplines.addAll(temp);
+        listDisciplines = await refreshDisciplinesListColors(listDisciplines);
       });
     }
     print("Completed disciplines request");
