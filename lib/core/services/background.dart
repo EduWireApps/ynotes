@@ -24,6 +24,7 @@ class BackgroundService {
       await logFile("Init appSys");
       if (!readLastFetchStatus(appSys)) {
         //we don't write the fetch status (because no one fetch has been executed)
+        await AppNotification.cancelNotification(a.hashCode);
         await logFile("Cancel background fetch.");
         return;
       }
