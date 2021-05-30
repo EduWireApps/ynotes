@@ -189,7 +189,7 @@ class _PageTextChoiceState extends State<PageTextChoice> with TickerProviderStat
                           fontSize: 14,
                           fontWeight: FontWeight.bold)))),
           Text(
-            appSys.settings!["user"]["homeworkPage"]["fontSize"].toString(),
+            (appSys.settings!["user"]["homeworkPage"]["fontSize"] ?? 20).toString(),
             style: TextStyle(
                 fontFamily: currentFont,
                 fontSize: (appSys.settings!["user"]["homeworkPage"]["fontSize"] ?? 20).toDouble(),
@@ -212,7 +212,7 @@ class _PageTextChoiceState extends State<PageTextChoice> with TickerProviderStat
                     child: GestureDetector(
                   onTap: () {
                     minusController.forward();
-                    if (appSys.settings!["user"]["homeworkPage"]["fontSize"] > 11)
+                    if ((appSys.settings!["user"]["homeworkPage"]["fontSize"] ?? 20) > 11)
                       appSys.updateSetting(appSys.settings!["user"]["homeworkPage"], "fontSize",
                           appSys.settings!["user"]["homeworkPage"]["fontSize"] - 1);
                     setState(() {});
