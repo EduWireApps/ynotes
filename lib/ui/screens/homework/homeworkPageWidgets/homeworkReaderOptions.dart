@@ -214,7 +214,7 @@ class _PageTextChoiceState extends State<PageTextChoice> with TickerProviderStat
                     minusController.forward();
                     if ((appSys.settings!["user"]["homeworkPage"]["fontSize"] ?? 20) > 11)
                       appSys.updateSetting(appSys.settings!["user"]["homeworkPage"], "fontSize",
-                          appSys.settings!["user"]["homeworkPage"]["fontSize"] - 1);
+                          (appSys.settings!["user"]["homeworkPage"]["fontSize"] ?? 20) - 1);
                     setState(() {});
                   },
                   child: Container(
@@ -240,9 +240,9 @@ class _PageTextChoiceState extends State<PageTextChoice> with TickerProviderStat
                     child: GestureDetector(
                   onTap: () {
                     plusController.forward();
-                    if (appSys.settings!["user"]["homeworkPage"]["fontSize"] < 35)
+                    if ((appSys.settings!["user"]["homeworkPage"]["fontSize"] ?? 20) < 35)
                       appSys.updateSetting(appSys.settings!["user"]["homeworkPage"], "fontSize",
-                          appSys.settings!["user"]["homeworkPage"]["fontSize"] + 1);
+                          (appSys.settings!["user"]["homeworkPage"]["fontSize"] ?? 20) + 1);
                     setState(() {});
                   },
                   child: Container(
