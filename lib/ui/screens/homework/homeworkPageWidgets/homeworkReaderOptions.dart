@@ -86,7 +86,7 @@ class _HomeworkReaderOptionsBottomSheetState extends State<HomeworkReaderOptions
                             fontSize: 14,
                             fontWeight: FontWeight.bold)))),
             Switch(
-              value: appSys.settings!["user"]["homeworkPage"]["forceMonochromeContent"],
+              value: (appSys.settings!["user"]["homeworkPage"]["forceMonochromeContent"] ?? false),
               onChanged: (value) async {
                 appSys.updateSetting(appSys.settings!["user"]["homeworkPage"], "forceMonochromeContent", value);
                 setState(() {});

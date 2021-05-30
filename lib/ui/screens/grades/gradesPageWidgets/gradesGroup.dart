@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:calendar_time/calendar_time.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
@@ -55,6 +56,12 @@ class _GradesGroupState extends State<GradesGroup> {
         }
       }
     }
+    double impact = 0.0;
+    if ((widget.discipline?.gradesList ?? []).length > 0) {
+      GradesStats stats =
+          GradesStats(widget.discipline!.gradesList!.last, getGradesForDiscipline(0, appSys.gradesController.period));
+      impact = stats.calculateAverageImpact();
+    }
     //BLOCK BUILDER
     return Container(
       width: screenSize.size.width / 5 * 3.2,
@@ -82,77 +89,43 @@ class _GradesGroupState extends State<GradesGroup> {
                   child: Stack(children: <Widget>[
                     if (widget.discipline != null && capitalizedNomDiscipline != null)
                       Container(
-                        child: Wrap(
-                          direction: Axis.vertical,
-                          crossAxisAlignment: WrapCrossAlignment.start,
-                          children: <Widget>[
-                            Wrap(
-                              spacing: screenSize.size.width / 5 * 0.1,
-                              children: [
-                                if (capitalizedNomDiscipline != null)
-                                  Container(
-                                    width: screenSize.size.width / 5 * 4.5,
-                                    child: Text(
-                                      capitalizedNomDiscipline,
-                                      overflow: TextOverflow.ellipsis,
-                                      textAlign: TextAlign.left,
-                                      style: TextStyle(
-                                          fontFamily: "Asap",
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: screenSize.size.height / 10 * 0.2),
-                                    ),
+                        child: Row(
+                          children: [
+                            buildVariation(impact),
+                            SizedBox(
+                              width: screenSize.size.width / 5 * 0.1,
+                            ),
+                            Container(
+                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(0)),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(0),
+                                  child: Text(
+                                    ((appSys.settings!["system"]["chosenParser"] == 1)
+                                        ? (widget.discipline!.average ?? "-")
+                                        : ((!widget.discipline!.getAverage().isNaN)
+                                            ? widget.discipline!.getAverage().toString()
+                                            : widget.discipline!.average ?? "-")),
+                                    style: TextStyle(fontFamily: "Asap", fontSize: 20, fontWeight: FontWeight.bold),
                                   ),
-                                if (nomsProfesseurs != null)
-                                  Container(
-                                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(0)),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(0),
-                                        child: Text(nomsProfesseurs!,
-                                            textAlign: TextAlign.left,
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                                fontFamily: "Asap", fontSize: screenSize.size.height / 10 * 0.2)),
-                                      )),
-                              ],
+                                )),
+                            SizedBox(
+                              width: screenSize.size.width / 5 * 0.1,
                             ),
-                            Row(
-                              children: [
-                                Container(
-                                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(0)),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(0),
-                                      child: Text(
-                                        "Moyenne : " +
-                                            ((appSys.settings!["system"]["chosenParser"] == 1)
-                                                ? (widget.discipline!.average ?? "-")
-                                                : ((!widget.discipline!.getAverage().isNaN)
-                                                    ? widget.discipline!.getAverage().toString()
-                                                    : widget.discipline!.average ?? "-")),
-                                        style: TextStyle(
-                                            fontFamily: "Asap",
-                                            fontSize: screenSize.size.height / 10 * 0.17,
-                                            fontStyle: FontStyle.italic),
-                                      ),
-                                    )),
-                                if (widget.discipline!.weight != null && widget.discipline!.weight != "1")
-                                  Container(
-                                      padding: EdgeInsets.all(screenSize.size.width / 5 * 0.03),
-                                      margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.09),
-                                      width: screenSize.size.width / 5 * 0.25,
-                                      height: screenSize.size.width / 5 * 0.25,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.all(Radius.circular(50)),
-                                        color: Colors.grey.shade600,
-                                      ),
-                                      child: FittedBox(
-                                          child: AutoSizeText(
-                                        widget.discipline!.weight ?? "",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            fontFamily: "Asap", color: Colors.white, fontWeight: FontWeight.bold),
-                                      ))),
-                              ],
+                            Container(
+                              child: Text(
+                                capitalizedNomDiscipline,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.left,
+                                style: TextStyle(
+                                    fontFamily: "Asap",
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: screenSize.size.height / 10 * 0.2),
+                              ),
                             ),
+                            Expanded(
+                              child: SizedBox(),
+                            ),
+                            Icon(MdiIcons.information, color: Theme.of(context).primaryColorDark)
                           ],
                         ),
                       ),
@@ -233,6 +206,62 @@ class _GradesGroupState extends State<GradesGroup> {
     );
   }
 
+  Widget buildVariation(double impact) {
+    getIcon() {
+      if (impact.isNaN || impact == null || impact == 0) {
+        return MdiIcons.minusThick;
+      }
+      if (impact < 0) {
+        return MdiIcons.chevronDown;
+      } else {
+        return MdiIcons.chevronUp;
+      }
+    }
+
+    getAdaptedColor() {
+      if (impact.isNaN || impact == null || impact == 0) {
+        return Color(0xffA7E5C1);
+      }
+      if (impact < 0) {
+        return Color(0xffDCBDBD);
+      } else {
+        return Color(0xffA7E5C1);
+      }
+    }
+
+    getAdaptedIconColor() {
+      if (impact.isNaN || impact == null || impact == 0) {
+        return Color(0xffC59A1A);
+      }
+      if (impact < 0) {
+        return Color(0xffEB5757);
+      } else {
+        return Color(0xff219653);
+      }
+    }
+
+    MediaQueryData screenSize = MediaQuery.of(context);
+
+    return Container(
+      width: screenSize.size.width / 5 * 0.3,
+      height: screenSize.size.width / 5 * 0.3,
+      padding: EdgeInsets.all(screenSize.size.width / 5 * 0.05),
+      decoration:
+          BoxDecoration(color: getAdaptedColor(), shape: BoxShape.rectangle, borderRadius: BorderRadius.circular(5)),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          FittedBox(
+              child: Icon(
+            getIcon(),
+            color: getAdaptedIconColor(),
+          )),
+        ],
+      ),
+    );
+  }
+
   List<Grade>? getGradesForDiscipline(int sousMatiereIndex, String? chosenPeriode) {
     List<Grade> toReturn = [];
 
@@ -282,6 +311,7 @@ class _GradesGroupState extends State<GradesGroup> {
         colorGroup = Color(widget.discipline!.color!);
       }
     }
+
     MediaQueryData screenSize = MediaQuery.of(context);
     ScrollController marksColumnController = ScrollController();
     return Container(

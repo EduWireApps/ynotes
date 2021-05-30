@@ -445,7 +445,7 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
   }
 
   htmlColors(String? html) {
-    if (!appSys.settings!["user"]["homeworkPage"]["forceMonochromeContent"]) {
+    if (!(appSys.settings!["user"]["homeworkPage"]["forceMonochromeContent"] ?? true)) {
       return html;
     }
     String color = ThemeUtils.isThemeDark ? "white" : "black";
