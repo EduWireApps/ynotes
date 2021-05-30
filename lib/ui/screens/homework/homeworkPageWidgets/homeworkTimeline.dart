@@ -250,8 +250,7 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
           Align(
             alignment: Alignment.bottomRight,
             child: Container(
-              margin:
-                  EdgeInsets.only(right: screenSize.size.width / 5 * 0.1, bottom: screenSize.size.height / 10 * 0.2),
+              margin: EdgeInsets.only(right: screenSize.size.width / 5 * 0.1, bottom: screenSize.size.width / 5 * 0.1),
               child: _buildFloatingButton(context),
             ),
           ),
@@ -489,6 +488,8 @@ class _StickyHeaderState extends State<StickyHeader> {
                               .where((element) => element != null)
                               .toList()));
                       setState(() {});
+                    } else {
+                      appSys.homeworkController.currentFilter = homeworkFilter.ALL;
                     }
                   }
                   appSys.homeworkController.refresh();
