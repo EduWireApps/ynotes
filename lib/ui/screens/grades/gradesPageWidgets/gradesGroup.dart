@@ -394,8 +394,8 @@ class _GradesGroupState extends State<GradesGroup> {
                                 child: AutoSizeText(
                                   gradesForSelectedDiscipline[index].weight!,
                                   textAlign: TextAlign.center,
-                                  style:
-                                      TextStyle(fontFamily: "Asap", color: Colors.white, fontWeight: FontWeight.bold),
+                                  style: TextStyle(
+                                      fontFamily: "Asap", color: ThemeUtils.textColor(), fontWeight: FontWeight.bold),
                                 ),
                               ),
                             ],
