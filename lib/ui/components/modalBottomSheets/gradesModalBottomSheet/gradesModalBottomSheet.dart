@@ -1,13 +1,16 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:expandable/expandable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/stats/gradesStats.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/ui/components/modalBottomSheets/dragHandle.dart';
 
 void gradesModalBottomSheet(
   context,
@@ -24,9 +27,12 @@ void gradesModalBottomSheet(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
       ),
-      backgroundColor: Colors.transparent,
       context: context,
+      backgroundColor: Colors.transparent,
+      isDismissible: true,
+      barrierColor: Colors.black.withOpacity(0.5),
       isScrollControlled: true,
+      clipBehavior: Clip.hardEdge,
       builder: (BuildContext bc) {
         return GradesModalBottomSheetContainer(
           grade: grade,
@@ -54,8 +60,12 @@ class GradesModalBottomSheetContainer extends StatefulWidget {
 
 class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheetContainer> {
   var oldSize;
+  var statsPartOldSize;
   bool open = false;
   GlobalKey headerPart = new GlobalKey(debugLabel: 'headerPart');
+  GlobalKey statsPart = new GlobalKey(debugLabel: 'statsPart');
+  ExpandableController a = ExpandableController();
+  PanelController panelController = PanelController();
   @override
   Widget build(BuildContext context) {
     Color? colorGroup;
@@ -67,27 +77,32 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
       }
     }
     SchedulerBinding.instance?.addPostFrameCallback(postFrameCallback);
+    SchedulerBinding.instance?.addPostFrameCallback(postFrameCallbackLowerPart);
 
     MediaQueryData screenSize = MediaQuery.of(context);
     return SlidingUpPanel(
-      padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.2),
-      minHeight: oldSize ?? 0.0,
-      maxHeight: screenSize.size.height,
-      panel: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          buildHeaderPart(),
-        ],
-      ),
-      body: Center(
-        child: Text("This is the Widget behind the sliding panel"),
-      ),
-    );
+        backdropEnabled: false,
+        backdropOpacity: 0.0,
+        body: GestureDetector(
+          onTap: () {
+            Navigator.pop(context);
+          },
+        ),
+        controller: panelController,
+        color: Theme.of(context).primaryColor,
+        padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.2),
+        minHeight: oldSize ?? 0.0,
+        maxHeight: (oldSize ?? 0.0) + (statsPartOldSize ?? 0),
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(11), topRight: Radius.circular(11)),
+        panelBuilder: (scroll) {
+          return Column(
+            children: [buildHeaderPart(scroll), buildStatsPart()],
+          );
+        });
   }
 
   Widget buildDragChevron() {
     MediaQueryData screenSize = MediaQuery.of(context);
-
     return Column(
       children: [
         Text(
@@ -97,20 +112,12 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
         Container(
           width: screenSize.size.width / 5 * 0.3,
           height: screenSize.size.width / 5 * 0.3,
-          child: Icon(MdiIcons.chevronDoubleUp),
+          child: Icon(
+            MdiIcons.chevronDown,
+            color: ThemeUtils.textColor(),
+          ),
         ),
       ],
-    );
-  }
-
-  Widget buildDraggingHandle() {
-    MediaQueryData screenSize = MediaQuery.of(context);
-
-    return Container(
-      margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.2),
-      height: 5,
-      width: screenSize.size.width / 5 * 2.5,
-      decoration: BoxDecoration(color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(16)),
     );
   }
 
@@ -159,19 +166,23 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              "Questionnaire de lecture",
+              widget.grade?.testName ?? "",
               style: TextStyle(
                   fontFamily: "Asap", fontWeight: FontWeight.bold, fontSize: screenSize.size.height / 10 * 0.24),
             ),
             Text(
-              "ENSEIGNMENT HESP ECRIRE",
+              widget.grade?.disciplineName ?? "",
               style: TextStyle(
                   fontFamily: "Asap", fontWeight: FontWeight.w400, fontSize: screenSize.size.height / 10 * 0.18),
             ),
             Container(
                 margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
                 child: Text(
-                  "Interros écrites - 03 mai 2021",
+                  (widget.grade?.testType ?? "") +
+                      " - " +
+                      ((widget.grade != null && widget.grade?.date != null)
+                          ? (DateFormat("dd MMMM yyyy", "fr_FR").format(widget.grade!.date!))
+                          : ""),
                   style: TextStyle(
                       fontFamily: "Asap", fontWeight: FontWeight.normal, fontSize: screenSize.size.height / 10 * 0.18),
                 ))
@@ -218,20 +229,27 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
     );
   }
 
-  Widget buildHeaderPart() {
+  Widget buildHeaderPart(ScrollController con) {
     MediaQueryData screenSize = MediaQuery.of(context);
 
     return Container(
+      padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.1),
+      decoration:
+          BoxDecoration(borderRadius: BorderRadius.only(topLeft: Radius.circular(11), topRight: Radius.circular(11))),
       key: headerPart,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          buildDraggingHandle(),
+          DragHandle(),
+          SizedBox(
+            height: screenSize.size.height / 10 * 0.1,
+          ),
           buildGradeHeader(),
           SizedBox(height: screenSize.size.height / 10 * 0.25),
           buildGradeAveragesAndDetails(),
           SizedBox(height: screenSize.size.height / 10 * 0.15),
-          buildDragChevron()
+          buildDragChevron(),
+          Divider()
         ],
       ),
     );
@@ -243,7 +261,7 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
     return Container(
       width: screenSize.size.width / 5 * 0.9,
       height: screenSize.size.width / 5 * 0.9,
-      decoration: BoxDecoration(color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(15)),
+      decoration: BoxDecoration(color: Theme.of(context).primaryColorDark, borderRadius: BorderRadius.circular(15)),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -260,6 +278,137 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
     );
   }
 
+  Widget buildStat(double impact, String label, String explanation) {
+    MediaQueryData screenSize = MediaQuery.of(context);
+    return Container(
+      margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.1),
+      child: ExpandableNotifier(
+        child: ExpandableTheme(
+          data: ExpandableThemeData(
+              hasIcon: false, animationDuration: const Duration(milliseconds: 500), useInkWell: true),
+          child: ScrollOnExpand(
+            child: ExpandablePanel(
+              header: Container(
+                padding: EdgeInsets.only(
+                  top: screenSize.size.height / 10 * 0.1,
+                  left: screenSize.size.width / 5 * 0.1,
+                ),
+                decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor,
+                    borderRadius: BorderRadius.only(topLeft: Radius.circular(11), topRight: Radius.circular(11))),
+                height: screenSize.size.height / 10 * 0.8,
+                child: Row(
+                  children: [
+                    Container(
+                      width: screenSize.size.width / 5 * 0.8,
+                      height: screenSize.size.width / 5 * 0.8,
+                      padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
+                      decoration:
+                          BoxDecoration(color: getAdaptedColor(impact), borderRadius: BorderRadius.circular(20)),
+                      child: FittedBox(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              getText(impact),
+                              style: TextStyle(
+                                fontFamily: "Asap",
+                                fontWeight: FontWeight.w600,
+                              ),
+                              textAlign: TextAlign.center,
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: screenSize.size.width / 5 * 0.1),
+                    Expanded(
+                      child: Text(
+                        "Points de moyenne pour la matière (à l’obtention)",
+                        style:
+                            TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w600, color: ThemeUtils.textColor()),
+                        maxLines: 2,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+              collapsed: Container(
+                padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
+                height: screenSize.size.height / 10 * 0.1,
+                decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor,
+                    borderRadius: BorderRadius.only(bottomLeft: Radius.circular(11), bottomRight: Radius.circular(11))),
+              ),
+              expanded: Container(
+                padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
+                child: Text(
+                  "Indique le nombre de points d’impact sur la moyenne de la matière au moment de l’obtention de cette note",
+                  style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w500, color: ThemeUtils.textColor()),
+                ),
+                decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor,
+                    borderRadius: BorderRadius.only(bottomLeft: Radius.circular(11), bottomRight: Radius.circular(11))),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildStatsPart() {
+    MediaQueryData screenSize = MediaQuery.of(context);
+    SchedulerBinding.instance?.addPostFrameCallback(postFrameCallbackLowerPart);
+
+    return Column(
+      key: statsPart,
+      children: [
+        Text(
+          "Statistiques",
+          style:
+              TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w600, fontSize: 20, color: ThemeUtils.textColor()),
+        ),
+        Container(
+            width: screenSize.size.width / 5 * 4.8,
+            height: screenSize.size.height / 10 * 3.2,
+            padding: EdgeInsets.symmetric(
+                horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.height / 10 * 0.1),
+            decoration:
+                BoxDecoration(color: Theme.of(context).primaryColorDark, borderRadius: BorderRadius.circular(11)),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  buildStat(0.5, "Test", "test"),
+                  buildStat(0.5, "Test", "test"),
+                  buildStat(0.5, "Test", "test"),
+                ],
+              ),
+            ))
+      ],
+    );
+  }
+
+  getAdaptedColor(double impact) {
+    if (impact.isNaN || impact == null || impact == 0) {
+      return Colors.grey;
+    }
+    if (impact < 0) {
+      return Colors.orange;
+    } else {
+      return Colors.green;
+    }
+  }
+
+  getText(double impact) {
+    if (impact.isNaN || impact == null || impact == 0) {
+      return "+0.0";
+    } else {
+      return (impact < 0 ? "" : "+") + impact.toStringAsFixed(1);
+    }
+  }
+
   void postFrameCallback(_) {
     var context = headerPart.currentContext;
     if (context == null) return;
@@ -269,6 +418,18 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
 
     setState(() {
       oldSize = newSize;
+    });
+  }
+
+  void postFrameCallbackLowerPart(_) {
+    var context = statsPart.currentContext;
+    if (context == null) return;
+
+    var newSize = context.size?.height;
+    if (statsPartOldSize == newSize) return;
+
+    setState(() {
+      statsPartOldSize = newSize;
     });
   }
 }

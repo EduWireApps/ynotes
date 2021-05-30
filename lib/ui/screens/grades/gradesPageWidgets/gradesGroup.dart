@@ -1,21 +1,16 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:badges/badges.dart';
-import 'package:dotted_border/dotted_border.dart';
+import 'package:calendar_time/calendar_time.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:marquee/marquee.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/stats/gradesStats.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
-import 'package:ynotes/main.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/disciplinesModalBottomSheet.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/gradesModalBottomSheet/gradesModalBottomSheet.dart';
-import 'package:ynotes/ui/screens/grades/gradesPage.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 class GradesGroup extends StatefulWidget {
@@ -186,6 +181,7 @@ class _GradesGroupState extends State<GradesGroup> {
           //Body with columns
           Container(
               width: screenSize.size.width / 5 * 4.51,
+              padding: EdgeInsets.symmetric(vertical: screenSize.size.width / 10 * 0.3),
               decoration: BoxDecoration(
                 color: Theme.of(context).primaryColor,
                 borderRadius: BorderRadius.only(
@@ -200,28 +196,33 @@ class _GradesGroupState extends State<GradesGroup> {
                 ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     if (widget.discipline != null)
                       if (widget.discipline!.subdisciplineCode!.length > 0)
-                        Container(
-                            margin: EdgeInsets.only(top: 5),
-                            child: Text(
-                              "Ecrit",
-                              style: TextStyle(
-                                fontFamily: "Asap",
-                                color: ThemeUtils.textColor(),
-                              ),
-                            )),
+                        Center(
+                          child: Container(
+                              margin: EdgeInsets.only(top: 5),
+                              child: Text(
+                                "Ecrit",
+                                style: TextStyle(
+                                  fontFamily: "Asap",
+                                  color: ThemeUtils.textColor(),
+                                ),
+                              )),
+                        ),
                     gradesList(0, widget.gradesController!.period),
                     if (widget.discipline != null)
                       if (widget.discipline!.subdisciplineCode!.length > 0) Divider(thickness: 2),
                     if (widget.discipline != null)
                       if (widget.discipline!.subdisciplineCode!.length > 0)
-                        Text("Oral",
-                            style: TextStyle(
-                              fontFamily: "Asap",
-                              color: ThemeUtils.textColor(),
-                            )),
+                        Center(
+                          child: Text("Oral",
+                              style: TextStyle(
+                                fontFamily: "Asap",
+                                color: ThemeUtils.textColor(),
+                              )),
+                        ),
                     if (widget.discipline != null)
                       if (widget.discipline!.subdisciplineCode!.length > 0)
                         gradesList(1, widget.gradesController!.period),
@@ -285,164 +286,103 @@ class _GradesGroupState extends State<GradesGroup> {
     MediaQueryData screenSize = MediaQuery.of(context);
     ScrollController marksColumnController = ScrollController();
     return Container(
-        height: (screenSize.size.height / 10 * 8.8) / 10 * 0.8,
-        child: ListView.builder(
-            itemCount: (gradesForSelectedDiscipline != null ? gradesForSelectedDiscipline.length : 1),
-            controller: marksColumnController,
-            scrollDirection: Axis.horizontal,
-            padding: EdgeInsets.symmetric(
-                horizontal: screenSize.size.width / 5 * 0.1, vertical: (screenSize.size.height / 10 * 8.8) / 10 * 0.15),
-            itemBuilder: (BuildContext context, int index) {
-              if (gradesForSelectedDiscipline != null && gradesForSelectedDiscipline.length != null) {
-                try {
-                  if (marksColumnController != null && marksColumnController.hasClients) {
-                    // marksColumnController.animateTo(localList.length * screenSize.size.width / 5 * 1.2, duration: new Duration(microseconds: 5), curve: Curves.ease);
-                  }
-                } catch (e) {}
-                if (DateFormat('yyyy-MM-dd').format(gradesForSelectedDiscipline[index].entryDate!) ==
-                    DateFormat('yyyy-MM-dd').format(DateTime.now())) {
-                  newGrades = true;
-                }
-              }
+        margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
+        child: Wrap(
+          spacing: screenSize.size.width / 5 * 0.1,
+          alignment: WrapAlignment.start,
+          direction: Axis.horizontal,
+          children: List.generate(gradesForSelectedDiscipline?.length ?? 0, (index) {
+            if (gradesForSelectedDiscipline != null) {
+              return Material(
+                borderRadius: BorderRadius.circular(8),
+                color: Theme.of(context).primaryColor,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(8),
+                  splashColor: Theme.of(context).primaryColorDark,
+                  hoverColor: Theme.of(context).primaryColorDark,
+                  highlightColor: Theme.of(context).primaryColorDark,
+                  onTap: () {
+                    GradesStats stats = GradesStats(
+                        gradesForSelectedDiscipline![index],
+                        getAllGrades(widget.gradesController!.disciplines(),
+                            overrideLimit: true, sortByWritingDate: false));
+                    gradesModalBottomSheet(context, gradesForSelectedDiscipline[index], stats, widget.discipline,
+                        callback, this.widget, widget.gradesController);
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.width / 10 * 0.1),
+                    child: Badge(
+                      animationType: BadgeAnimationType.scale,
+                      toAnimate: true,
+                      elevation: 0,
+                      showBadge: (gradesForSelectedDiscipline != null) &&
+                          CalendarTime(gradesForSelectedDiscipline[index].entryDate!).isToday,
+                      position: BadgePosition.topEnd(top: 0, end: 0),
+                      badgeColor: Colors.blue,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          //Grades
+                          AutoSizeText.rich(
+                            //MARK
+                            TextSpan(
+                              text: (gradesForSelectedDiscipline[index].notSignificant!
+                                  ? "(" + gradesForSelectedDiscipline[index].value!
+                                  : gradesForSelectedDiscipline[index].value),
+                              style: TextStyle(
+                                  color: ThemeUtils.textColor(),
+                                  fontFamily: "Asap",
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.3),
+                              children: <TextSpan>[
+                                if (gradesForSelectedDiscipline[index].scale != "20")
 
-              return Badge(
-                animationType: BadgeAnimationType.scale,
-                toAnimate: true,
-                elevation: 0,
-                showBadge: (gradesForSelectedDiscipline != null) &&
-                    (DateFormat('yyyy-MM-dd').format(gradesForSelectedDiscipline[index].entryDate!) ==
-                            DateFormat('yyyy-MM-dd').format(DateTime.now()) &&
-                        !gradesForSelectedDiscipline[index].simulated!),
-                position: BadgePosition.topEnd(top: 0, end: 0),
-                badgeColor: Colors.blue,
-                child: Container(
-                  decoration: BoxDecoration(border: Border.all(width: 0, color: Colors.transparent)),
-                  margin: EdgeInsets.only(
-                      left: screenSize.size.width / 5 * 0.025, right: screenSize.size.width / 5 * 0.025),
-                  child: DottedBorder(
-                    borderType: BorderType.RRect,
-                    color: getGradesForDiscipline(sousMatiereIndex, periodName) == null
-                        ? Colors.transparent
-                        : (gradesForSelectedDiscipline![index].simulated! ? Colors.blue : Colors.transparent),
-                    strokeWidth: 1,
-                    radius: Radius.circular(11),
-                    child: Material(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(11)), side: BorderSide.none),
-                      borderOnForeground: false,
-                      color: (getGradesForDiscipline(sousMatiereIndex, periodName) == null)
-                          ? Colors.transparent
-                          : ((gradesForSelectedDiscipline![index].simulated != null &&
-                                  gradesForSelectedDiscipline[index].simulated!)
-                              ? Colors.blue.withOpacity(0.7)
-                              : colorGroup),
-                      child: InkWell(
-                        borderRadius: BorderRadius.all(Radius.circular(11)),
-                        splashColor: colorGroup,
-                        onTap: () async {
-                          GradesStats stats = GradesStats(
-                              gradesForSelectedDiscipline![index],
-                              getAllGrades(widget.gradesController!.disciplines(),
-                                  overrideLimit: true, sortByWritingDate: false));
-                          gradesModalBottomSheet(context, gradesForSelectedDiscipline[index], stats, widget.discipline,
-                              callback, this.widget, widget.gradesController);
-                        },
-                        onLongPress: () {
-                          CustomDialogs.showShareGradeDialog(context, gradesForSelectedDiscipline![index]);
-                        },
-                        child: ClipRRect(
-                          child: Stack(
-                            children: <Widget>[
-                              if (gradesForSelectedDiscipline != null)
-                                //Grade box
+                                  //MARK ON
+                                  TextSpan(
+                                      text: '/' + gradesForSelectedDiscipline[index].scale!,
+                                      style: TextStyle(
+                                          color: ThemeUtils.textColor(),
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2)),
+                                if (gradesForSelectedDiscipline[index].notSignificant == true)
+                                  TextSpan(
+                                      text: ")",
+                                      style: TextStyle(
+                                          color: ThemeUtils.textColor(),
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.3)),
+                              ],
+                            ),
+                          ),
+                          //COEFF
+                          if (gradesForSelectedDiscipline[index].weight != "1")
+                            Column(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
                                 Container(
-                                  decoration: BoxDecoration(
-                                    //don't show it if simulator enabled
-                                    border: gradesForSelectedDiscipline[index].simulated!
-                                        ? null
-                                        : Border.all(width: 1.2, color: Colors.black),
-                                    borderRadius: BorderRadius.circular(11),
-                                  ),
-                                  padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.12),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: <Widget>[
-                                      //Grades
-                                      Container(
-                                        padding: EdgeInsets.symmetric(
-                                            vertical: (screenSize.size.height / 10 * 8.8) / 10 * 0.02),
-                                        child: AutoSizeText.rich(
-                                          //MARK
-                                          TextSpan(
-                                            text: (gradesForSelectedDiscipline[index].notSignificant!
-                                                ? "(" + gradesForSelectedDiscipline[index].value!
-                                                : gradesForSelectedDiscipline[index].value),
-                                            style: TextStyle(
-                                                color: Colors.black,
-                                                fontFamily: "Asap",
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.3),
-                                            children: <TextSpan>[
-                                              if (gradesForSelectedDiscipline[index].scale != "20")
-
-                                                //MARK ON
-                                                TextSpan(
-                                                    text: '/' + gradesForSelectedDiscipline[index].scale!,
-                                                    style: TextStyle(
-                                                        color: Colors.black,
-                                                        fontWeight: FontWeight.bold,
-                                                        fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2)),
-                                              if (gradesForSelectedDiscipline[index].notSignificant == true)
-                                                TextSpan(
-                                                    text: ")",
-                                                    style: TextStyle(
-                                                        color: Colors.black,
-                                                        fontWeight: FontWeight.bold,
-                                                        fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.3)),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                      //COEFF
-                                      if (gradesForSelectedDiscipline[index].weight != "1")
-                                        Container(
-                                            padding: EdgeInsets.all(screenSize.size.width / 5 * 0.03),
-                                            margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.05),
-                                            width: screenSize.size.width / 5 * 0.25,
-                                            height: screenSize.size.width / 5 * 0.25,
-                                            decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.all(Radius.circular(50)),
-                                              color: Colors.grey.shade600,
-                                            ),
-                                            child: FittedBox(
-                                                child: AutoSizeText(
-                                              gradesForSelectedDiscipline[index].weight!,
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  fontFamily: "Asap", color: Colors.white, fontWeight: FontWeight.bold),
-                                            ))),
-                                    ],
+                                  child: AutoSizeText(
+                                    gradesForSelectedDiscipline[index].weight!,
+                                    textAlign: TextAlign.center,
+                                    style:
+                                        TextStyle(fontFamily: "Asap", color: Colors.white, fontWeight: FontWeight.bold),
                                   ),
                                 ),
-                              if (widget.discipline == null)
-                                Shimmer.fromColors(
-                                    baseColor: Color(0xff5D6469),
-                                    highlightColor: Color(0xff8D9499),
-                                    child: Container(
-                                      width: screenSize.size.width / 5 * 3.8,
-                                      height: (screenSize.size.height / 10 * 8.8) / 10 * 0.8,
-                                      decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.5),
-                                          color: Theme.of(context).primaryColorDark),
-                                    )),
-                            ],
-                          ),
-                        ),
+                              ],
+                            ),
+                        ],
                       ),
                     ),
                   ),
                 ),
               );
-            }));
+            } else {
+              return Container();
+            }
+          }),
+        ));
   }
 }
