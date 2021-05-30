@@ -1,5 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:badges/badges.dart';
 import 'package:calendar_time/calendar_time.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -288,7 +287,7 @@ class _GradesGroupState extends State<GradesGroup> {
     return Container(
         margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
         child: Wrap(
-          spacing: screenSize.size.width / 5 * 0.1,
+          spacing: screenSize.size.width / 5 * 0.05,
           alignment: WrapAlignment.start,
           direction: Axis.horizontal,
           children: List.generate(gradesForSelectedDiscipline?.length ?? 0, (index) {
@@ -312,69 +311,66 @@ class _GradesGroupState extends State<GradesGroup> {
                   child: Container(
                     padding: EdgeInsets.symmetric(
                         horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.width / 10 * 0.1),
-                    child: Badge(
-                      animationType: BadgeAnimationType.scale,
-                      toAnimate: true,
-                      elevation: 0,
-                      showBadge: (gradesForSelectedDiscipline != null) &&
-                          CalendarTime(gradesForSelectedDiscipline[index].entryDate!).isToday,
-                      position: BadgePosition.topEnd(top: 0, end: 0),
-                      badgeColor: Colors.blue,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          //Grades
-                          AutoSizeText.rich(
-                            //MARK
-                            TextSpan(
-                              text: (gradesForSelectedDiscipline[index].notSignificant!
-                                  ? "(" + gradesForSelectedDiscipline[index].value!
-                                  : gradesForSelectedDiscipline[index].value),
-                              style: TextStyle(
-                                  color: ThemeUtils.textColor(),
-                                  fontFamily: "Asap",
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.3),
-                              children: <TextSpan>[
-                                if (gradesForSelectedDiscipline[index].scale != "20")
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        //Grades
+                        AutoSizeText.rich(
+                          //MARK
+                          TextSpan(
+                            text: (gradesForSelectedDiscipline[index].notSignificant!
+                                ? "(" + gradesForSelectedDiscipline[index].value!
+                                : gradesForSelectedDiscipline[index].value),
+                            style: TextStyle(
+                                color: ThemeUtils.textColor(),
+                                fontFamily: "Asap",
+                                fontWeight: FontWeight.bold,
+                                fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.3),
+                            children: <TextSpan>[
+                              if (gradesForSelectedDiscipline[index].scale != "20")
 
-                                  //MARK ON
-                                  TextSpan(
-                                      text: '/' + gradesForSelectedDiscipline[index].scale!,
-                                      style: TextStyle(
-                                          color: ThemeUtils.textColor(),
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2)),
-                                if (gradesForSelectedDiscipline[index].notSignificant == true)
-                                  TextSpan(
-                                      text: ")",
-                                      style: TextStyle(
-                                          color: ThemeUtils.textColor(),
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.3)),
-                              ],
-                            ),
+                                //MARK ON
+                                TextSpan(
+                                    text: '/' + gradesForSelectedDiscipline[index].scale!,
+                                    style: TextStyle(
+                                        color: ThemeUtils.textColor(),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2)),
+                              if (gradesForSelectedDiscipline[index].notSignificant == true)
+                                TextSpan(
+                                    text: ")",
+                                    style: TextStyle(
+                                        color: ThemeUtils.textColor(),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.3)),
+                            ],
                           ),
-                          //COEFF
-                          if (gradesForSelectedDiscipline[index].weight != "1")
-                            Column(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Container(
-                                  child: AutoSizeText(
-                                    gradesForSelectedDiscipline[index].weight!,
-                                    textAlign: TextAlign.center,
-                                    style:
-                                        TextStyle(fontFamily: "Asap", color: Colors.white, fontWeight: FontWeight.bold),
-                                  ),
+                          style: TextStyle(
+                              decoration: CalendarTime(gradesForSelectedDiscipline[index].entryDate).isToday
+                                  ? TextDecoration.underline
+                                  : TextDecoration.none,
+                              decorationThickness: 1.9,
+                              decorationColor: Colors.blue),
+                        ),
+                        //COEFF
+                        if (gradesForSelectedDiscipline[index].weight != "1")
+                          Column(
+                            mainAxisSize: MainAxisSize.max,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Container(
+                                child: AutoSizeText(
+                                  gradesForSelectedDiscipline[index].weight!,
+                                  textAlign: TextAlign.center,
+                                  style:
+                                      TextStyle(fontFamily: "Asap", color: Colors.white, fontWeight: FontWeight.bold),
                                 ),
-                              ],
-                            ),
-                        ],
-                      ),
+                              ),
+                            ],
+                          ),
+                      ],
                     ),
                   ),
                 ),

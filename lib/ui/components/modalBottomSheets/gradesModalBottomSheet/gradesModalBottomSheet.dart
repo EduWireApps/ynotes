@@ -6,6 +6,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
+import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/stats/gradesStats.dart';
@@ -154,42 +155,48 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
 
   Widget buildGradesMetas() {
     MediaQueryData screenSize = MediaQuery.of(context);
-
-    return Container(
-      decoration: BoxDecoration(color: Colors.blue, borderRadius: BorderRadius.circular(15)),
-      padding: EdgeInsets.symmetric(
-          horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.height / 10 * 0.1),
-      child: ConstrainedBox(
-        constraints: BoxConstraints(minHeight: screenSize.size.width / 5 * 1),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              widget.grade?.testName ?? "",
-              style: TextStyle(
-                  fontFamily: "Asap", fontWeight: FontWeight.bold, fontSize: screenSize.size.height / 10 * 0.24),
+    return FutureBuilder<int>(
+        future: getColor(widget.grade?.disciplineCode ?? ""),
+        initialData: 0,
+        builder: (context, snapshot) {
+          return Container(
+            decoration: BoxDecoration(color: Color(snapshot.data ?? 0), borderRadius: BorderRadius.circular(15)),
+            padding: EdgeInsets.symmetric(
+                horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.height / 10 * 0.1),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: screenSize.size.width / 5 * 1),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    widget.grade?.testName ?? "",
+                    style: TextStyle(
+                        fontFamily: "Asap", fontWeight: FontWeight.bold, fontSize: screenSize.size.height / 10 * 0.24),
+                  ),
+                  Text(
+                    widget.grade?.disciplineName ?? "",
+                    style: TextStyle(
+                        fontFamily: "Asap", fontWeight: FontWeight.w400, fontSize: screenSize.size.height / 10 * 0.18),
+                  ),
+                  Container(
+                      margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
+                      child: Text(
+                        (widget.grade?.testType ?? "") +
+                            " - " +
+                            ((widget.grade != null && widget.grade?.date != null)
+                                ? (DateFormat("dd MMMM yyyy", "fr_FR").format(widget.grade!.date!))
+                                : ""),
+                        style: TextStyle(
+                            fontFamily: "Asap",
+                            fontWeight: FontWeight.normal,
+                            fontSize: screenSize.size.height / 10 * 0.18),
+                      ))
+                ],
+              ),
             ),
-            Text(
-              widget.grade?.disciplineName ?? "",
-              style: TextStyle(
-                  fontFamily: "Asap", fontWeight: FontWeight.w400, fontSize: screenSize.size.height / 10 * 0.18),
-            ),
-            Container(
-                margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
-                child: Text(
-                  (widget.grade?.testType ?? "") +
-                      " - " +
-                      ((widget.grade != null && widget.grade?.date != null)
-                          ? (DateFormat("dd MMMM yyyy", "fr_FR").format(widget.grade!.date!))
-                          : ""),
-                  style: TextStyle(
-                      fontFamily: "Asap", fontWeight: FontWeight.normal, fontSize: screenSize.size.height / 10 * 0.18),
-                ))
-          ],
-        ),
-      ),
-    );
+          );
+        });
   }
 
   Widget buildGradeSquare() {
