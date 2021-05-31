@@ -1,5 +1,4 @@
 import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
 
 class GradesStats {
   final Grade grade;
@@ -14,7 +13,6 @@ class GradesStats {
 
     List<Grade> _sortedGrades = [];
     _sortedGrades.addAll(this.allGrades!);
-    print(grade.disciplineCode);
     //Remove unconcerned grades
     _sortedGrades.removeWhere(
         (_grade) => _grade.disciplineCode != this.grade.disciplineCode || _grade.periodCode != this.grade.periodCode);

@@ -3,6 +3,7 @@ import 'package:calendar_time/calendar_time.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
@@ -57,152 +58,161 @@ class _GradesGroupState extends State<GradesGroup> {
       }
     }
     double impact = 0.0;
-    if ((widget.discipline?.gradesList ?? []).length > 0) {
-      GradesStats stats =
-          GradesStats(widget.discipline!.gradesList!.last, getGradesForDiscipline(0, appSys.gradesController.period));
-      impact = stats.calculateAverageImpact();
-    }
-    //BLOCK BUILDER
-    return Container(
-      width: screenSize.size.width / 5 * 3.2,
-      margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
-      child: Column(
-        children: <Widget>[
-          //Label
-          Container(
-            margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.0005),
-            child: Material(
-              borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
-              color: colorGroup,
-              child: InkWell(
-                borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
-                onTap: () {
-                  if (widget.discipline != null) {
-                    disciplineModalBottomSheet(context, widget.discipline, callback, this.widget);
-                  }
-                },
-                child: Container(
-                  padding: EdgeInsets.symmetric(
-                      vertical: (screenSize.size.height / 10 * 0.1), horizontal: screenSize.size.width / 5 * 0.1),
-                  decoration: BoxDecoration(border: Border.all(width: 0.0, color: Colors.transparent)),
-                  width: screenSize.size.width / 5 * 4.5,
-                  child: Stack(children: <Widget>[
-                    if (widget.discipline != null && capitalizedNomDiscipline != null)
-                      Container(
-                        child: Row(
-                          children: [
-                            buildVariation(impact),
-                            SizedBox(
-                              width: screenSize.size.width / 5 * 0.1,
-                            ),
-                            Container(
-                                decoration: BoxDecoration(borderRadius: BorderRadius.circular(0)),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(0),
-                                  child: Text(
-                                    ((appSys.settings!["system"]["chosenParser"] == 1)
-                                        ? (widget.discipline!.average ?? "-")
-                                        : ((!widget.discipline!.getAverage().isNaN)
-                                            ? widget.discipline!.getAverage().toString()
-                                            : widget.discipline!.average ?? "-")),
-                                    style: TextStyle(fontFamily: "Asap", fontSize: 20, fontWeight: FontWeight.bold),
-                                  ),
-                                )),
-                            SizedBox(
-                              width: screenSize.size.width / 5 * 0.1,
-                            ),
-                            Container(
-                              child: Text(
-                                capitalizedNomDiscipline,
-                                overflow: TextOverflow.ellipsis,
-                                textAlign: TextAlign.left,
-                                style: TextStyle(
-                                    fontFamily: "Asap",
-                                    fontWeight: FontWeight.w400,
-                                    fontSize: screenSize.size.height / 10 * 0.2),
-                              ),
-                            ),
-                            Expanded(
-                              child: SizedBox(),
-                            ),
-                            Icon(MdiIcons.information, color: ThemeUtils.textColor(revert: true).withOpacity(0.8))
-                          ],
-                        ),
-                      ),
-                    if (widget.discipline == null)
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Shimmer.fromColors(
-                            baseColor: Color(0xff5D6469),
-                            highlightColor: Color(0xff8D9499),
-                            child: Container(
-                              margin: EdgeInsets.only(
-                                  left: screenSize.size.width / 5 * 0.3, bottom: screenSize.size.width / 5 * 0.2),
-                              width: screenSize.size.width / 5 * 1.5,
-                              height: (screenSize.size.height / 10 * 8.8) / 10 * 0.3,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8), color: Theme.of(context).primaryColorDark),
-                            )),
-                      ),
-                  ]),
-                ),
-              ),
-            ),
-          ),
 
-          //Body with columns
-          Container(
-              width: screenSize.size.width / 5 * 4.51,
-              padding: EdgeInsets.symmetric(vertical: screenSize.size.width / 10 * 0.3),
-              decoration: BoxDecoration(
-                color: Theme.of(context).primaryColor,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(15),
-                  bottomRight: Radius.circular(15),
+    //BLOCK BUILDER
+    return ChangeNotifierProvider<GradesController>.value(
+      value: appSys.gradesController,
+      child: Consumer<GradesController>(builder: (context, model, _widget) {
+        if ((widget.discipline?.gradesList ?? []).length > 0 && getGradesForDiscipline(0, model.period) != null) {
+          List<Grade> grades = getGradesForDiscipline(0, model.period)!;
+          grades.sort((a, b) => b.entryDate!.compareTo(a.entryDate!));
+          GradesStats stats = GradesStats(grades.first, grades);
+          impact = stats.calculateAverageImpact();
+          print(impact);
+        }
+        return Container(
+          width: screenSize.size.width / 5 * 3.2,
+          margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
+          child: Column(
+            children: <Widget>[
+              //Label
+              Container(
+                margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.0005),
+                child: Material(
+                  borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
+                  color: colorGroup,
+                  child: InkWell(
+                    borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
+                    onTap: () {
+                      if (widget.discipline != null) {
+                        disciplineModalBottomSheet(context, widget.discipline, callback, this.widget);
+                      }
+                    },
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                          vertical: (screenSize.size.height / 10 * 0.1), horizontal: screenSize.size.width / 5 * 0.1),
+                      decoration: BoxDecoration(border: Border.all(width: 0.0, color: Colors.transparent)),
+                      width: screenSize.size.width / 5 * 4.5,
+                      child: Stack(children: <Widget>[
+                        if (widget.discipline != null && capitalizedNomDiscipline != null)
+                          Container(
+                            child: Row(
+                              children: [
+                                buildVariation(impact),
+                                SizedBox(
+                                  width: screenSize.size.width / 5 * 0.1,
+                                ),
+                                Container(
+                                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(0)),
+                                    child: ClipRRect(
+                                      borderRadius: BorderRadius.circular(0),
+                                      child: Text(
+                                        ((appSys.settings!["system"]["chosenParser"] == 1)
+                                            ? (widget.discipline!.average ?? "-")
+                                            : ((!widget.discipline!.getAverage().isNaN)
+                                                ? widget.discipline!.getAverage().toString()
+                                                : widget.discipline!.average ?? "-")),
+                                        style: TextStyle(fontFamily: "Asap", fontSize: 20, fontWeight: FontWeight.bold),
+                                      ),
+                                    )),
+                                SizedBox(
+                                  width: screenSize.size.width / 5 * 0.1,
+                                ),
+                                Container(
+                                  child: Text(
+                                    capitalizedNomDiscipline,
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.left,
+                                    style: TextStyle(
+                                        fontFamily: "Asap",
+                                        fontWeight: FontWeight.w400,
+                                        fontSize: screenSize.size.height / 10 * 0.2),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: SizedBox(),
+                                ),
+                                Icon(MdiIcons.information, color: ThemeUtils.textColor(revert: true).withOpacity(0.8))
+                              ],
+                            ),
+                          ),
+                        if (widget.discipline == null)
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Shimmer.fromColors(
+                                baseColor: Color(0xff5D6469),
+                                highlightColor: Color(0xff8D9499),
+                                child: Container(
+                                  margin: EdgeInsets.only(
+                                      left: screenSize.size.width / 5 * 0.3, bottom: screenSize.size.width / 5 * 0.2),
+                                  width: screenSize.size.width / 5 * 1.5,
+                                  height: (screenSize.size.height / 10 * 8.8) / 10 * 0.3,
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(8),
+                                      color: Theme.of(context).primaryColorDark),
+                                )),
+                          ),
+                      ]),
+                    ),
+                  ),
                 ),
               ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(15),
-                  bottomRight: Radius.circular(15),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    if (widget.discipline != null)
-                      if (widget.discipline!.subdisciplineCode!.length > 0)
-                        Center(
-                          child: Container(
-                              margin: EdgeInsets.only(top: 5),
-                              child: Text(
-                                "Ecrit",
-                                style: TextStyle(
-                                  fontFamily: "Asap",
-                                  color: ThemeUtils.textColor(),
-                                ),
-                              )),
-                        ),
-                    gradesList(0, widget.gradesController!.period),
-                    if (widget.discipline != null)
-                      if (widget.discipline!.subdisciplineCode!.length > 0) Divider(thickness: 2),
-                    if (widget.discipline != null)
-                      if (widget.discipline!.subdisciplineCode!.length > 0)
-                        Center(
-                          child: Text("Oral",
-                              style: TextStyle(
-                                fontFamily: "Asap",
-                                color: ThemeUtils.textColor(),
-                              )),
-                        ),
-                    if (widget.discipline != null)
-                      if (widget.discipline!.subdisciplineCode!.length > 0)
-                        gradesList(1, widget.gradesController!.period),
-                  ],
-                ),
-              ))
-        ],
-      ),
+
+              //Body with columns
+              Container(
+                  width: screenSize.size.width / 5 * 4.51,
+                  padding: EdgeInsets.symmetric(vertical: screenSize.size.width / 10 * 0.3),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor,
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(15),
+                      bottomRight: Radius.circular(15),
+                    ),
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(15),
+                      bottomRight: Radius.circular(15),
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        if (widget.discipline != null)
+                          if (widget.discipline!.subdisciplineCode!.length > 0)
+                            Center(
+                              child: Container(
+                                  margin: EdgeInsets.only(top: 5),
+                                  child: Text(
+                                    "Ecrit",
+                                    style: TextStyle(
+                                      fontFamily: "Asap",
+                                      color: ThemeUtils.textColor(),
+                                    ),
+                                  )),
+                            ),
+                        gradesList(0, widget.gradesController!.period),
+                        if (widget.discipline != null)
+                          if (widget.discipline!.subdisciplineCode!.length > 0) Divider(thickness: 2),
+                        if (widget.discipline != null)
+                          if (widget.discipline!.subdisciplineCode!.length > 0)
+                            Center(
+                              child: Text("Oral",
+                                  style: TextStyle(
+                                    fontFamily: "Asap",
+                                    color: ThemeUtils.textColor(),
+                                  )),
+                            ),
+                        if (widget.discipline != null)
+                          if (widget.discipline!.subdisciplineCode!.length > 0)
+                            gradesList(1, widget.gradesController!.period),
+                      ],
+                    ),
+                  ))
+            ],
+          ),
+        );
+      }),
     );
   }
 

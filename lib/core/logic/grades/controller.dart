@@ -284,7 +284,6 @@ class GradesController extends ChangeNotifier {
     final ids = temp.map((e) => e.name).toSet();
     temp.retainWhere((x) => ids.remove(x.name));
     List<Period> unicalPeriods = temp.toSet().toList();
-    print(unicalPeriods.map((e) => e.name));
     _schoolPeriods = unicalPeriods;
   }
 
@@ -298,7 +297,6 @@ class GradesController extends ChangeNotifier {
         if (f.generalAverage != null) {
           double? _temp = double.tryParse(f.generalAverage!.replaceAll(",", "."));
           if (temp != null && !temp.isNaN) {
-            print("uwu");
             temp = _temp;
             notifyListeners();
             break;
