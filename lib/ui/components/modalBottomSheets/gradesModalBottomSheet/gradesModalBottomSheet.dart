@@ -19,11 +19,10 @@ void gradesModalBottomSheet(
   var widget,
   GradesController? gradesController,
 ) {
-  MediaQueryData screenSize = MediaQuery.of(context);
-
   showModalBottomSheet(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(25), topRight: Radius.circular(25)),
       ),
       backgroundColor: Theme.of(context).primaryColorDark,
       context: context,
@@ -41,7 +40,12 @@ void gradesModalBottomSheet(
 
 class GradesModalBottomSheetContainer extends StatefulWidget {
   const GradesModalBottomSheetContainer(
-      {Key? key, this.grade, this.stats, this.discipline, this.callback, this.gradesController})
+      {Key? key,
+      this.grade,
+      this.stats,
+      this.discipline,
+      this.callback,
+      this.gradesController})
       : super(key: key);
 
   final Grade? grade;
@@ -50,10 +54,12 @@ class GradesModalBottomSheetContainer extends StatefulWidget {
   final Function? callback;
   final GradesController? gradesController;
   @override
-  _GradesModalBottomSheetContainerState createState() => _GradesModalBottomSheetContainerState();
+  _GradesModalBottomSheetContainerState createState() =>
+      _GradesModalBottomSheetContainerState();
 }
 
-class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheetContainer> {
+class _GradesModalBottomSheetContainerState
+    extends State<GradesModalBottomSheetContainer> {
   bool open = false;
   @override
   Widget build(BuildContext context) {
@@ -85,9 +91,11 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                           height: screenSize.size.height / 10 * 1.5,
                           width: (screenSize.size.width / 5) * 1.5,
                           decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.only(bottomRight: Radius.circular(25), topLeft: Radius.circular(25)),
-                            border: Border.all(width: 0.000, color: Colors.transparent),
+                            borderRadius: BorderRadius.only(
+                                bottomRight: Radius.circular(25),
+                                topLeft: Radius.circular(25)),
+                            border: Border.all(
+                                width: 0.000, color: Colors.transparent),
                             color: Theme.of(context).primaryColor,
                           ),
                           child: Column(
@@ -95,30 +103,39 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                             children: <Widget>[
                               FittedBox(
                                 child: Text(
-                                  widget.grade!.value != null ? widget.grade!.value! : "-",
+                                  widget.grade!.value != null
+                                      ? widget.grade!.value!
+                                      : "-",
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                       color: ThemeUtils.textColor(),
                                       fontFamily: "Asap",
                                       fontWeight: FontWeight.w600,
-                                      fontSize: (screenSize.size.width / 5) * 0.3),
+                                      fontSize:
+                                          (screenSize.size.width / 5) * 0.3),
                                 ),
                               ),
                               Container(
-                                padding: EdgeInsets.symmetric(horizontal: (screenSize.size.width / 5) * 0.4),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal:
+                                        (screenSize.size.width / 5) * 0.4),
                                 child: Divider(
                                     height: (screenSize.size.height / 3) / 75,
-                                    thickness: (screenSize.size.height / 3) / 75,
+                                    thickness:
+                                        (screenSize.size.height / 3) / 75,
                                     color: ThemeUtils.textColor()),
                               ),
                               FittedBox(
                                 child: Text(
-                                  widget.grade!.scale != null ? widget.grade!.scale! : "-",
+                                  widget.grade!.scale != null
+                                      ? widget.grade!.scale!
+                                      : "-",
                                   style: TextStyle(
                                       color: ThemeUtils.textColor(),
                                       fontFamily: "Asap",
                                       fontWeight: FontWeight.w600,
-                                      fontSize: (screenSize.size.width / 5) * 0.3),
+                                      fontSize:
+                                          (screenSize.size.width / 5) * 0.3),
                                 ),
                               ),
                             ],
@@ -144,11 +161,13 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                                     if (widget.gradesController!.isSimulating)
                                       IconButton(
                                         icon: Icon(Icons.delete),
-                                        iconSize: screenSize.size.width / 5 * 0.4,
+                                        iconSize:
+                                            screenSize.size.width / 5 * 0.4,
                                         color: Colors.blue,
                                         onPressed: () {
                                           Navigator.of(context).pop();
-                                          widget.gradesController!.simulationRemove(widget.grade);
+                                          widget.gradesController!
+                                              .simulationRemove(widget.grade);
                                         },
                                       ),
                                     Material(
@@ -159,14 +178,21 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                                         onTap: () {
                                           Navigator.pop(context);
                                           disciplineModalBottomSheet(
-                                              context, widget.discipline, widget.callback, widget);
+                                              context,
+                                              widget.discipline,
+                                              widget.callback,
+                                              widget);
                                         },
                                         borderRadius: BorderRadius.circular(15),
                                         child: Container(
                                           padding: EdgeInsets.all(5),
-                                          child: Text(widget.discipline!.disciplineName!,
+                                          child: Text(
+                                              widget
+                                                  .discipline!.disciplineName!,
                                               style: TextStyle(
-                                                  fontFamily: "Asap", fontSize: 15, fontWeight: FontWeight.w100)),
+                                                  fontFamily: "Asap",
+                                                  fontSize: 15,
+                                                  fontWeight: FontWeight.w100)),
                                         ),
                                       ),
                                     ),
@@ -175,10 +201,14 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                                 Container(
                                   width: (screenSize.size.width / 5) * 3,
                                   child: AutoSizeText(
-                                    widget.grade!.testName != null ? widget.grade!.testName! : "-",
+                                    widget.grade!.testName != null
+                                        ? widget.grade!.testName!
+                                        : "-",
                                     minFontSize: 18,
                                     style: TextStyle(
-                                        fontFamily: "Asap", fontWeight: FontWeight.bold, color: ThemeUtils.textColor()),
+                                        fontFamily: "Asap",
+                                        fontWeight: FontWeight.bold,
+                                        color: ThemeUtils.textColor()),
                                     textAlign: TextAlign.center,
                                   ),
                                 ),
@@ -192,8 +222,10 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                 ),
                 Container(
                   child: Card(
-                    color: ThemeUtils.darken(Theme.of(context).primaryColorDark, forceAmount: 0.05),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
+                    color: ThemeUtils.darken(Theme.of(context).primaryColorDark,
+                        forceAmount: 0.05),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(11)),
                     child: Container(
                       padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
                       width: screenSize.size.width / 5 * 4.5,
@@ -201,38 +233,57 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: <Widget>[
-                          buildKeyValuesInfo(context, "Moyenne de la classe :", [
-                            widget.grade!.classAverage != "" && widget.grade!.classAverage != null
+                          buildKeyValuesInfo(
+                              context, "Moyenne de la classe :", [
+                            widget.grade!.classAverage != "" &&
+                                    widget.grade!.classAverage != null
                                 ? widget.grade!.classAverage
                                 : "-"
                           ]),
-                          if (widget.grade!.max != "" && widget.grade!.max != null)
+                          if (widget.grade!.max != "" &&
+                              widget.grade!.max != null)
                             SizedBox(
                               height: (screenSize.size.height / 3) / 25,
                             ),
-                          if (widget.grade!.max != "" && widget.grade!.max != null)
-                            buildKeyValuesInfo(context, "Note la plus haute",
-                                [widget.grade!.max != "" && widget.grade!.max != null ? widget.grade!.max : "-"]),
-                          if (widget.grade!.max != "" && widget.grade!.max != null)
+                          if (widget.grade!.max != "" &&
+                              widget.grade!.max != null)
+                            buildKeyValuesInfo(context, "Note la plus haute", [
+                              widget.grade!.max != "" &&
+                                      widget.grade!.max != null
+                                  ? widget.grade!.max
+                                  : "-"
+                            ]),
+                          if (widget.grade!.max != "" &&
+                              widget.grade!.max != null)
                             SizedBox(
                               height: (screenSize.size.height / 3) / 25,
                             ),
-                          if (widget.grade!.max != "" && widget.grade!.max != null)
-                            buildKeyValuesInfo(context, "Note la plus basse",
-                                [widget.grade!.min != "" && widget.grade!.min != null ? widget.grade!.min : "-"]),
+                          if (widget.grade!.max != "" &&
+                              widget.grade!.max != null)
+                            buildKeyValuesInfo(context, "Note la plus basse", [
+                              widget.grade!.min != "" &&
+                                      widget.grade!.min != null
+                                  ? widget.grade!.min
+                                  : "-"
+                            ]),
                           SizedBox(
                             height: (screenSize.size.height / 3) / 25,
                           ),
-                          buildKeyValuesInfo(context, "Type de devoir :",
-                              [widget.grade!.testType != null ? widget.grade!.testType : "-"]),
+                          buildKeyValuesInfo(context, "Type de devoir :", [
+                            widget.grade!.testType != null
+                                ? widget.grade!.testType
+                                : "-"
+                          ]),
                           SizedBox(
                             height: (screenSize.size.height / 3) / 25,
                           ),
                           GestureDetector(
                             onTap: () {},
-                            child: buildKeyValuesInfo(context, "Date du devoir :", [
+                            child: buildKeyValuesInfo(
+                                context, "Date du devoir :", [
                               widget.grade!.date != null
-                                  ? DateFormat("dd MMMM yyyy", "fr_FR").format(widget.grade!.date!)
+                                  ? DateFormat("dd MMMM yyyy", "fr_FR")
+                                      .format(widget.grade!.date!)
                                   : "-"
                             ]),
                           )
@@ -248,14 +299,19 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                     });
                   },
                   child: Card(
-                      margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
-                      color: ThemeUtils.darken(Theme.of(context).primaryColorDark, forceAmount: 0.05),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
+                      margin: EdgeInsets.only(
+                          top: screenSize.size.height / 10 * 0.1),
+                      color: ThemeUtils.darken(
+                          Theme.of(context).primaryColorDark,
+                          forceAmount: 0.05),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(11)),
                       child: Container(
                         width: screenSize.size.width / 5 * 4.5,
                         height: screenSize.size.height / 10 * 0.6,
                         padding: EdgeInsets.symmetric(
-                            horizontal: screenSize.size.width / 5 * 0.2, vertical: screenSize.size.height / 10 * 0.1),
+                            horizontal: screenSize.size.width / 5 * 0.2,
+                            vertical: screenSize.size.height / 10 * 0.1),
                         child: FittedBox(
                           child: Wrap(
                             direction: Axis.horizontal,
@@ -275,12 +331,16 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                                   },
                                   child: FittedBox(
                                     child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
                                       children: [
                                         Container(
-                                          width: screenSize.size.width / 5 * 0.3,
-                                          height: screenSize.size.width / 5 * 0.3,
+                                          width:
+                                              screenSize.size.width / 5 * 0.3,
+                                          height:
+                                              screenSize.size.width / 5 * 0.3,
                                           padding: EdgeInsets.all(
                                             screenSize.size.width / 5 * 0.05,
                                           ),
@@ -311,7 +371,8 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                                         style: TextStyle(
                                             fontFamily: "Asap",
                                             color: ThemeUtils.textColor(),
-                                            textBaseline: TextBaseline.ideographic,
+                                            textBaseline:
+                                                TextBaseline.ideographic,
                                             fontWeight: FontWeight.bold),
                                       ),
                                     ],
@@ -325,15 +386,19 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                 ),
                 Card(
                     margin: EdgeInsets.only(
-                        top: screenSize.size.height / 10 * 0.1, bottom: screenSize.size.height / 10 * 0.1),
-                    color: ThemeUtils.darken(Theme.of(context).primaryColorDark, forceAmount: 0.05),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
+                        top: screenSize.size.height / 10 * 0.1,
+                        bottom: screenSize.size.height / 10 * 0.1),
+                    color: ThemeUtils.darken(Theme.of(context).primaryColorDark,
+                        forceAmount: 0.05),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(11)),
                     child: AnimatedContainer(
                       duration: Duration(milliseconds: 250),
                       width: screenSize.size.width / 5 * 4.5,
                       height: screenSize.size.height / 10 * (open ? 4 : 0),
                       padding: EdgeInsets.symmetric(
-                          horizontal: screenSize.size.width / 5 * 0.2, vertical: screenSize.size.height / 10 * 0.1),
+                          horizontal: screenSize.size.width / 5 * 0.2,
+                          vertical: screenSize.size.height / 10 * 0.1),
                       child: SingleChildScrollView(
                         child: Column(
                           mainAxisSize: MainAxisSize.max,
@@ -342,46 +407,66 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                           children: [
                             Tooltip(
                               decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(11), color: Theme.of(context).primaryColorLight),
-                              margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.7),
+                                  borderRadius: BorderRadius.circular(11),
+                                  color: Theme.of(context).primaryColorLight),
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: screenSize.size.width / 5 * 0.7),
                               message:
                                   "Indique le nombre de points d'impact sur la moyenne de la matière au moment de l'obtention de cette note.",
-                              textStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                              textStyle: TextStyle(
+                                  fontFamily: "Asap",
+                                  color: ThemeUtils.textColor()),
                               child: ImpactStat(
                                 impact: widget.stats!.calculateAverageImpact(),
-                                label: "points de moyenne pour la matière (à l'obtention).",
+                                label:
+                                    "points de moyenne pour la matière (à l'obtention).",
                               ),
                             ),
                             SizedBox(height: screenSize.size.height / 10 * 0.1),
                             Tooltip(
                               decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(11), color: Theme.of(context).primaryColorLight),
-                              margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.7),
+                                  borderRadius: BorderRadius.circular(11),
+                                  color: Theme.of(context).primaryColorLight),
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: screenSize.size.width / 5 * 0.7),
                               message:
                                   "Indique le nombre de points d'impact sur la moyenne générale au moment de l'obtention de cette note.",
-                              textStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                              textStyle: TextStyle(
+                                  fontFamily: "Asap",
+                                  color: ThemeUtils.textColor()),
                               child: ImpactStat(
-                                impact: widget.stats!.calculateGlobalAverageImpact(),
-                                label: "points de moyenne générale (à l'obtention).",
+                                impact: widget.stats!
+                                    .calculateGlobalAverageImpact(),
+                                label:
+                                    "points de moyenne générale (à l'obtention).",
                               ),
                             ),
                             SizedBox(height: screenSize.size.height / 10 * 0.1),
                             Tooltip(
                               decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(11), color: Theme.of(context).primaryColorLight),
-                              margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.7),
+                                  borderRadius: BorderRadius.circular(11),
+                                  color: Theme.of(context).primaryColorLight),
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: screenSize.size.width / 5 * 0.7),
                               message:
                                   "Indique le nombre de points d'impact sur la moyenne générale avec ou sans la note.",
-                              textStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                              textStyle: TextStyle(
+                                  fontFamily: "Asap",
+                                  color: ThemeUtils.textColor()),
                               child: ImpactStat(
-                                impact: widget.stats!.calculateGlobalAverageImpactOverall(),
-                                label: "points de moyenne générale (tout le temps).",
+                                impact: widget.stats!
+                                    .calculateGlobalAverageImpactOverall(),
+                                label:
+                                    "points de moyenne générale (tout le temps).",
                               ),
                             ),
                             SizedBox(height: screenSize.size.height / 10 * 0.1),
                             Text(
                               "A venir...",
-                              style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor().withOpacity(0.5)),
+                              style: TextStyle(
+                                  fontFamily: "Asap",
+                                  color:
+                                      ThemeUtils.textColor().withOpacity(0.5)),
                             )
                           ],
                         ),

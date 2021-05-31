@@ -1,11 +1,10 @@
-
 import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 part 'models.g.dart';
 
 ///Class of a piece of homework
-@JsonSerializable(nullable: false)
+@JsonSerializable()
 @HiveType(typeId: 0)
 class Homework extends HiveObject {
   @HiveField(0)
@@ -52,6 +51,7 @@ class Homework extends HiveObject {
       this.sessionDocuments,
       this.teacherName,
       this.loaded);
-  factory Homework.fromJson(Map<String, dynamic> json) => _$HomeworkFromJson(json);
+  factory Homework.fromJson(Map<String, dynamic> json) =>
+      _$HomeworkFromJson(json);
   Map<String, dynamic> toJson() => _$HomeworkToJson(this);
 }

@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 
 Map spaceCoolSentences = {
-  "gradesImprovement": ["Envie de voir l'évolution de vos notes ?", "Les statistiques d'évolution de vos notes sont disponibles.", "Voulez-vous voir si vos notes se portent bien ?"],
-  "doneHomeworkStatistics": ["Voir vos statistiques de travail.", "Envie de savoir si vous travaillez régulièrement ?", "J'ai calculé vos statistiques de travail !"],
+  "gradesImprovement": [
+    "Envie de voir l'évolution de vos notes ?",
+    "Les statistiques d'évolution de vos notes sont disponibles.",
+    "Voulez-vous voir si vos notes se portent bien ?"
+  ],
+  "doneHomeworkStatistics": [
+    "Voir vos statistiques de travail.",
+    "Envie de savoir si vous travaillez régulièrement ?",
+    "J'ai calculé vos statistiques de travail !"
+  ],
 };
 
 ///Build a Stack with space overlay
@@ -17,7 +25,8 @@ class SpaceOverlay extends StatefulWidget {
 
 Offset i = Offset(0, 0);
 
-class _SpaceOverlayState extends State<SpaceOverlay> with TickerProviderStateMixin {
+class _SpaceOverlayState extends State<SpaceOverlay>
+    with TickerProviderStateMixin {
   GlobalKey spaceKey = GlobalKey();
   bool deployed = false;
   Animation<double>? showAnimation;
@@ -27,9 +36,10 @@ class _SpaceOverlayState extends State<SpaceOverlay> with TickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
-    var screenSize = MediaQuery.of(context);
-    showAnimationController = AnimationController(duration: Duration(milliseconds: 350), vsync: this);
-    showAnimation = Tween<double>(begin: 1, end: 15).animate(CurvedAnimation(parent: showAnimationController, curve: Curves.easeInCubic));
+    showAnimationController =
+        AnimationController(duration: Duration(milliseconds: 350), vsync: this);
+    showAnimation = Tween<double>(begin: 1, end: 15).animate(CurvedAnimation(
+        parent: showAnimationController, curve: Curves.easeInCubic));
 
     return Stack(children: [
       buildChild(),
@@ -42,7 +52,9 @@ class _SpaceOverlayState extends State<SpaceOverlay> with TickerProviderStateMix
             child: Container(
               child: Stack(
                 children: [
-                  Align(alignment: Alignment.bottomLeft, child: Container(child: buildBlurAndSpaceLabel())),
+                  Align(
+                      alignment: Alignment.bottomLeft,
+                      child: Container(child: buildBlurAndSpaceLabel())),
                 ],
               ),
               height: getWidgetHeight(),
@@ -68,7 +80,6 @@ class _SpaceOverlayState extends State<SpaceOverlay> with TickerProviderStateMix
     final keyContext = spaceKey.currentContext;
     if (keyContext != null) {
       final box = keyContext.findRenderObject() as RenderBox;
-      final pos = box.localToGlobal(Offset.zero);
       return box.size.height;
     } else {
       return 0.0;
@@ -79,7 +90,6 @@ class _SpaceOverlayState extends State<SpaceOverlay> with TickerProviderStateMix
     final keyContext = spaceKey.currentContext;
     if (keyContext != null) {
       final box = keyContext.findRenderObject() as RenderBox;
-      final pos = box.localToGlobal(Offset.zero);
       return box.size.width;
     } else {
       return 0.0;

@@ -1,7 +1,5 @@
-import 'package:hive/hive.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/offline/offline.dart';
-import 'package:ynotes/globals.dart';
 
 class RemindersOffline extends Offline {
   late Offline parent;
@@ -11,12 +9,16 @@ class RemindersOffline extends Offline {
   Future<List<AgendaReminder>?> getReminders(String? idLesson) async {
     try {
       if (parent.remindersData != null) {
-        return parent.remindersData!.where((element) => element.lessonID == idLesson).toList();
+        return parent.remindersData!
+            .where((element) => element.lessonID == idLesson)
+            .toList();
       } else {
         await parent.refreshData();
         var toCollect = parent.remindersData;
         if (toCollect != null) {
-          toCollect = toCollect.where((element) => element.lessonID == idLesson).toList();
+          toCollect = toCollect
+              .where((element) => element.lessonID == idLesson)
+              .toList();
         }
         return toCollect;
       }

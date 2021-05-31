@@ -28,33 +28,27 @@ class HomeworkController extends ChangeNotifier {
       list.addAll(_old!);
     }
     //Remove antecedent hw
-    if (list != null) {
-      list.removeWhere(
-          (element) => element.date!.isBefore(DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now()))));
-    }
-    if (list != null) {
-      //Number of elements in list
-      int total = list.length;
+    list.removeWhere((element) => element.date!.isBefore(
+        DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now()))));
+    //Number of elements in list
+    int total = list.length;
 
-      if (total == 0) {
-        _hwCompletion = [100, 0, 0];
-        notifyListeners();
-      } else {
-        int done = 0;
-
-        await Future.forEach(list, (dynamic element) async {
-          bool isDone = await appSys.offline.doneHomework.getHWCompletion(element.id);
-          if (isDone) {
-            done++;
-          }
-        });
-        int percent = (done * 100 / total).round();
-
-        _hwCompletion = [percent, done, list.length];
-        notifyListeners();
-      }
-    } else {
+    if (total == 0) {
       _hwCompletion = [100, 0, 0];
+      notifyListeners();
+    } else {
+      int done = 0;
+
+      await Future.forEach(list, (dynamic element) async {
+        bool isDone =
+            await appSys.offline.doneHomework.getHWCompletion(element.id);
+        if (isDone) {
+          done++;
+        }
+      });
+      int percent = (done * 100 / total).round();
+
+      _hwCompletion = [percent, done, list.length];
       notifyListeners();
     }
   }
@@ -89,13 +83,8 @@ class HomeworkController extends ChangeNotifier {
 
   void prepareExamsCount() {
     List<Homework> hwList = (getHomework ?? []);
-    if (hwList != null) {
-      examsCount = hwList.where((element) => element.isATest!).length;
-      notifyListeners();
-    } else {
-      examsCount = 0;
-      notifyListeners();
-    }
+    examsCount = hwList.where((element) => element.isATest!).length;
+    notifyListeners();
   }
 
   Future<void> prepareOld(List<Homework> oldHW) async {
@@ -115,7 +104,8 @@ class HomeworkController extends ChangeNotifier {
   }
 
   Future<void> refresh({bool force = false, refreshFromOffline = false}) async {
-    print("Refreshing homework " + (refreshFromOffline ? "from offline" : "online"));
+    print("Refreshing homework " +
+        (refreshFromOffline ? "from offline" : "online"));
     isFetching = true;
     notifyListeners();
     //ED

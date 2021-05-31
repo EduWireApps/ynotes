@@ -1,4 +1,3 @@
-import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:ynotes/core/offline/offline.dart';
 
@@ -26,7 +25,8 @@ class PinnedHomeworkOffline extends Offline {
       List<DateTime> parsedList = [];
       notParsedList.removeWhere((key, value) => value == false);
       notParsedList.keys.forEach((element) {
-        parsedList.add(DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.parse(element))));
+        parsedList.add(DateTime.parse(
+            DateFormat("yyyy-MM-dd").format(DateTime.parse(element))));
       });
       return parsedList;
     } catch (e) {

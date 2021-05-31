@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 
-
 class ReorderableShortcuts extends StatefulWidget {
   @override
   _ReorderableShortcutsState createState() => _ReorderableShortcutsState();
@@ -16,7 +15,9 @@ class _ReorderableShortcutsState extends State<ReorderableShortcuts> {
     var screenSize = MediaQuery.of(context);
     return Container(
       height: screenSize.size.height / 10 * 0.8,
-      decoration: BoxDecoration(color: Theme.of(context).primaryColorDark, borderRadius: BorderRadius.circular(1000)),
+      decoration: BoxDecoration(
+          color: Theme.of(context).primaryColorDark,
+          borderRadius: BorderRadius.circular(1000)),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

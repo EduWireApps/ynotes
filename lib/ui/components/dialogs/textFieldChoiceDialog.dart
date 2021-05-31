@@ -21,10 +21,11 @@ class _TextFieldChoiceDialogState extends State<TextFieldChoiceDialog> {
           var splits = widget.defaultText!.split(".");
           textController.text = widget.defaultText!;
           if (splits.length > 1) {
-            var withoutextension = splits.sublist(0, splits.length - 1).join("");
-            String justExtension = "." + splits.last;
+            var withoutextension =
+                splits.sublist(0, splits.length - 1).join("");
             textController.text = widget.defaultText!;
-            textController.selection = TextSelection(baseOffset: 0, extentOffset: withoutextension.length);
+            textController.selection = TextSelection(
+                baseOffset: 0, extentOffset: withoutextension.length);
           }
         }));
   }
@@ -44,7 +45,8 @@ class _TextFieldChoiceDialogState extends State<TextFieldChoiceDialog> {
             Container(
               child: Text(
                 "Choisir ${widget.unit}",
-                style: TextStyle(fontFamily: 'Asap', color: ThemeUtils.textColor()),
+                style: TextStyle(
+                    fontFamily: 'Asap', color: ThemeUtils.textColor()),
                 textAlign: TextAlign.left,
               ),
             ),
@@ -77,13 +79,14 @@ class _TextFieldChoiceDialogState extends State<TextFieldChoiceDialog> {
         ),
       ),
       actions: [
-        FlatButton(
-          child: const Text('ANNULER', style: TextStyle(color: Colors.red), textScaleFactor: 1.0),
+        TextButton(
+          child: const Text('ANNULER',
+              style: TextStyle(color: Colors.red), textScaleFactor: 1.0),
           onPressed: () {
             Navigator.pop(context, null);
           },
         ),
-        FlatButton(
+        TextButton(
           child: Text(
             "VALIDER",
             style: TextStyle(color: Colors.green),

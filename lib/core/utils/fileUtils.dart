@@ -63,7 +63,6 @@ class FileAppUtil {
 
   static Future<List<FileInfo>> getFilesList(String path) async {
     try {
-      String directory;
       List file = [];
 
       if (await Permission.storage.request().isGranted) {
@@ -77,7 +76,9 @@ class FileAppUtil {
 
         await Future.forEach(file, (dynamic element) async {
           try {
-            listFiles.add(new FileInfo(element, await FileAppUtil.getLastModifiedDate(element),
+            listFiles.add(new FileInfo(
+                element,
+                await FileAppUtil.getLastModifiedDate(element),
                 await FileAppUtil.getFileNameWithExtension(element)));
           } catch (e) {
             print(e);
@@ -108,7 +109,8 @@ class FileAppUtil {
     return await rootBundle.loadString(path);
   }
 
-  static Future<void> openFile(String? filePath, {bool usingFileName = false}) async {
+  static Future<void> openFile(String? filePath,
+      {bool usingFileName = false}) async {
     try {
       String? path = "";
 
@@ -152,7 +154,8 @@ class FileInfo {
   final DateTime? lastModifiedDate;
   final String? fileName;
   bool selected;
-  FileInfo(this.element, this.lastModifiedDate, this.fileName, {this.selected = false});
+  FileInfo(this.element, this.lastModifiedDate, this.fileName,
+      {this.selected = false});
 }
 
 class FolderAppUtil {
@@ -161,14 +164,13 @@ class FolderAppUtil {
 
     if (!await _appDocDirFolder.exists()) {
       print("creating $path");
-
-      final Directory _appDocDirNewFolder = await _appDocDirFolder.create(recursive: true);
-    } else {}
+    }
   }
 
   static getDirectory({bool download = false}) async {
     if (download && Platform.isAndroid) {
-      final dir = await ExtStorage.getExternalStoragePublicDirectory(ExtStorage.DIRECTORY_DOWNLOADS);
+      final dir = await ExtStorage.getExternalStoragePublicDirectory(
+          ExtStorage.DIRECTORY_DOWNLOADS);
 
       return dir;
     }
