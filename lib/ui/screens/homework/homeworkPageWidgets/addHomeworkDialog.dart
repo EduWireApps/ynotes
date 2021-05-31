@@ -118,7 +118,7 @@ class _AddHomeworkBottomSheetState extends State<AddHomeworkBottomSheet> {
       child: DateTimeFormField(
         decoration: InputDecoration(
           hintStyle: TextStyle(color: ThemeUtils.textColor()),
-          labelStyle: TextStyle(color: ThemeUtils.textColor()),
+          labelStyle: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
           counterStyle: TextStyle(color: ThemeUtils.textColor()),
           helperStyle: TextStyle(color: ThemeUtils.textColor()),
           prefixStyle: TextStyle(color: ThemeUtils.textColor()),

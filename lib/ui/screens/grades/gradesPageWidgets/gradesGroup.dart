@@ -63,7 +63,7 @@ class _GradesGroupState extends State<GradesGroup> {
     return ChangeNotifierProvider<GradesController>.value(
       value: appSys.gradesController,
       child: Consumer<GradesController>(builder: (context, model, _widget) {
-        if ((widget.discipline?.gradesList ?? []).length > 0 && getGradesForDiscipline(0, model.period) != null) {
+        if (getGradesForDiscipline(0, model.period) != null && getGradesForDiscipline(0, model.period)!.length > 0) {
           List<Grade> grades = getGradesForDiscipline(0, model.period)!;
           grades.sort((a, b) => b.entryDate!.compareTo(a.entryDate!));
           GradesStats stats = GradesStats(grades.first, grades);

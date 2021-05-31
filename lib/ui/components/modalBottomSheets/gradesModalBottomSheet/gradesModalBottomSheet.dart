@@ -11,6 +11,7 @@ import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/stats/gradesStats.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/dragHandle.dart';
 
 void gradesModalBottomSheet(
@@ -30,7 +31,6 @@ void gradesModalBottomSheet(
       ),
       context: context,
       backgroundColor: Colors.transparent,
-      isDismissible: true,
       barrierColor: Colors.black.withOpacity(0.5),
       isScrollControlled: true,
       clipBehavior: Clip.hardEdge,
@@ -203,9 +203,10 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
     MediaQueryData screenSize = MediaQuery.of(context);
 
     return Container(
-      decoration: BoxDecoration(color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(15)),
+      decoration: BoxDecoration(color: Theme.of(context).primaryColorDark, borderRadius: BorderRadius.circular(15)),
       width: screenSize.size.width / 5 * 1,
       height: screenSize.size.width / 5 * 1,
+      padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -251,6 +252,16 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
           SizedBox(
             height: screenSize.size.height / 10 * 0.1,
           ),
+          if (widget.gradesController?.isSimulating ?? false)
+            CustomButtons.materialButton(context, null, null, () async {
+              Navigator.pop(context);
+              widget.gradesController!.simulationRemove(widget.grade);
+            },
+                label: "Supprimer virtuellement la note",
+                textColor: Colors.blue,
+                icon: MdiIcons.trashCan,
+                iconColor: Colors.blue),
+          if (widget.gradesController?.isSimulating ?? false) SizedBox(height: screenSize.size.height / 10 * 0.25),
           buildGradeHeader(),
           SizedBox(height: screenSize.size.height / 10 * 0.25),
           buildGradeAveragesAndDetails(),
