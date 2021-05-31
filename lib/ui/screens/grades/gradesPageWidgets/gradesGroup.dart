@@ -125,7 +125,7 @@ class _GradesGroupState extends State<GradesGroup> {
                             Expanded(
                               child: SizedBox(),
                             ),
-                            Icon(MdiIcons.information, color: Theme.of(context).primaryColorDark)
+                            Icon(MdiIcons.information, color: ThemeUtils.textColor(revert: true).withOpacity(0.8))
                           ],
                         ),
                       ),

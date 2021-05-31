@@ -331,7 +331,7 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                     SizedBox(width: screenSize.size.width / 5 * 0.1),
                     Expanded(
                       child: Text(
-                        "Points de moyenne pour la matière (à l’obtention)",
+                        label,
                         style:
                             TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w600, color: ThemeUtils.textColor()),
                         maxLines: 2,
@@ -348,9 +348,10 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                     borderRadius: BorderRadius.only(bottomLeft: Radius.circular(11), bottomRight: Radius.circular(11))),
               ),
               expanded: Container(
+                width: screenSize.size.width / 5 * 4.8,
                 padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
                 child: Text(
-                  "Indique le nombre de points d’impact sur la moyenne de la matière au moment de l’obtention de cette note",
+                  explanation,
                   style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w500, color: ThemeUtils.textColor()),
                 ),
                 decoration: BoxDecoration(
@@ -387,9 +388,18 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
-                  buildStat(0.5, "Test", "test"),
-                  buildStat(0.5, "Test", "test"),
-                  buildStat(0.5, "Test", "test"),
+                  buildStat(
+                      (widget.stats?.calculateAverageImpact() ?? 0.0),
+                      "Points de moyenne pour la matière (à l'obtention).",
+                      "Indique le nombre de points d'impact sur la moyenne de la matière au moment de l'obtention de cette note."),
+                  buildStat(
+                      (widget.stats?.calculateGlobalAverageImpact() ?? 0.0),
+                      "Points de moyenne générale (à l'obtention).",
+                      "Indique le nombre de points d'impact sur la moyenne générale au moment de l'obtention de cette note."),
+                  buildStat(
+                      (widget.stats?.calculateGlobalAverageImpactOverall() ?? 0.0),
+                      "Points de moyenne générale (tout le temps).",
+                      "Indique le nombre de points d'impact sur la moyenne générale avec ou sans la note."),
                 ],
               ),
             ))
