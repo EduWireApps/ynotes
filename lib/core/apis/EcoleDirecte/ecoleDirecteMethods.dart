@@ -131,7 +131,7 @@ class EcoleDirecteMethod {
       "Mails request returned an error:",
     );
     if (this.isar != null) {
-      await OfflineMail(isar).updateMails(mails);
+      await OfflineMail(isar!).updateMails(mails);
       print("Updated mails");
     }
     return mails;

@@ -437,6 +437,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                               false) {
                             await _appSys.isar.writeTxn((isar) async {
                               await isar.homeworks.where().deleteAll();
+                              await isar.mails.where().deleteAll();
                             });
                           }
                         },
@@ -519,7 +520,9 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                         SettingsTile(
                           title: 'Bouton magique',
                           leading: Icon(MdiIcons.testTube, color: ThemeUtils.textColor()),
-                          onTap: () async {},
+                          onTap: () async {
+                            await appSys.isar.close();
+                          },
                           titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                           subtitleTextStyle: TextStyle(
                               fontFamily: "Asap",
@@ -544,8 +547,6 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
     rightToLeftAnimation.dispose();
     super.dispose();
   }
-
-  
 
   @override
   void initState() {

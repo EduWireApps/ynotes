@@ -170,22 +170,6 @@ class _MailPageState extends State<MailPage> {
                               //Get all the mails
                               future: mailsListFuture,
                               builder: (context, snapshot) {
-                                /*if (appSys.loginController.actualState == loginStatus.offline) {
-                                return Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        MdiIcons.networkStrengthOff,
-                                        color: ThemeUtils.textColor(),
-                                      ),
-                                      Text("Les mails ne sont pas encore lisibles hors ligne...",
-                                          style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asapê"))
-                                    ],
-                                  ),
-                                );
-                              }
-*/
                                 if (snapshot.connectionState == ConnectionState.done) {
                                   localList = getCorrespondingClasseur(dossier, snapshot.data);
                                   return ClipRRect(
@@ -205,6 +189,8 @@ class _MailPageState extends State<MailPage> {
                                                         : Theme.of(context).primaryColor,
                                                     child: InkWell(
                                                         onTap: () async {
+                                                          await localList[index].files.load();
+                                                          print(localList[index].files.toList().length);
                                                           await mailModalBottomSheet(context, localList[index],
                                                               index: index);
                                                           refreshLocalMailsList(forceReload: false);
@@ -369,7 +355,7 @@ class _MailPageState extends State<MailPage> {
     );
   }
 
-  getCorrespondingClasseur(dossier, List<Mail>? list) {
+  List<Mail> getCorrespondingClasseur(dossier, List<Mail>? list) {
     String? trad;
     List<Mail> toReturn = [];
     switch (dossier) {
@@ -415,7 +401,7 @@ class _MailPageState extends State<MailPage> {
 
   Future<void> refreshLocalMailsList({forceReload = true}) async {
     setState(() {
-      mailsListFuture = (appSys.api as APIEcoleDirecte?)?.getMails(forceReload: forceReload);
+      mailsListFuture = _getMails(forceReload);
     });
     var realdisciplinesListFuture = await mailsListFuture;
   }
@@ -438,5 +424,13 @@ class _MailPageState extends State<MailPage> {
         await CustomDialogs.writeModalBottomSheet(context);
       },
     );
+  }
+
+  Future<List<Mail>?> _getMails(forceReload) async {
+    List<Mail> l = await (appSys.api as APIEcoleDirecte?)?.getMails(forceReload: forceReload) ?? [];
+    await Future.forEach(l, (Mail element) async {
+      await element.files.load();
+    });
+    return l;
   }
 }

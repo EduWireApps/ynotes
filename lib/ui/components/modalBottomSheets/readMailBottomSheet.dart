@@ -61,10 +61,13 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               IconButton(
-                                onPressed: () {
-                                  setState(() {
+                                onPressed: () async {
+                                  /* setState(() {
                                     monochromatic = !monochromatic;
-                                  });
+                                  });*/
+                                  await widget.mail.files.load();
+                                  print(widget.mail.files);
+                                  setState(() {});
                                 },
                                 icon: Icon((monochromatic ? MdiIcons.eye : MdiIcons.eyeOutline),
                                     color: ThemeUtils.textColor()),
@@ -187,9 +190,10 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                       AnimatedContainer(
                                         duration: Duration(milliseconds: 75),
                                         width: screenSize.size.width / 5 * 4.4,
-                                        height: this.widget.mail.files.length * (screenSize.size.height / 10 * 0.7),
+                                        height: this.widget.mail.files.toList().length *
+                                            (screenSize.size.height / 10 * 0.7),
                                         child: ListView.builder(
-                                            itemCount: this.widget.mail.files.length,
+                                            itemCount: this.widget.mail.files.toList().length,
                                             itemBuilder: (BuildContext context, int index) {
                                               return Container(
                                                 margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.2),
@@ -407,6 +411,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
   //Get monochromatic colors or not
   ///TO DO PUT IT IN A CONTROLLER
   Future<String?> getMail() async {
+    await widget.mail.files.load();
     if (widget.mail.content != null && widget.mail.content != "") {
       return widget.mail.content;
     } else {
