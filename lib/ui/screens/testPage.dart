@@ -23,6 +23,8 @@ class _TestPageState extends State<TestPage> with YPageMixin {
     ));
 
     return YPage(
+        primaryColor: Colors.teal[300],
+        secondaryColor: Colors.yellow,
         title: "TestPage",
         headerChildren: [Text("TEST")],
         body: Column(
@@ -31,6 +33,54 @@ class _TestPageState extends State<TestPage> with YPageMixin {
             TextButton(
                 child: Text("Show local page"),
                 onPressed: () => openLocalPage(settingsPage)),
+            Container(
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(25))),
+              padding: EdgeInsets.all(20),
+              child: Text("Dernières notes",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(25))),
+              padding: EdgeInsets.all(50),
+              child: Text("Box",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(25))),
+              padding: EdgeInsets.all(50),
+              child: Text("Box",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(25))),
+              padding: EdgeInsets.all(50),
+              child: Text("Box",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(25))),
+              padding: EdgeInsets.all(50),
+              child: Text("Box",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+            ),
+            Container(
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(25))),
+              padding: EdgeInsets.all(50),
+              child: Text("Box",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+            ),
           ],
         ));
   }

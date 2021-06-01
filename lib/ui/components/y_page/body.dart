@@ -12,7 +12,15 @@ class YPageBody extends StatefulWidget {
 class _YPageBodyState extends State<YPageBody> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-        color: Colors.red, width: double.infinity, child: widget.child);
+    return Expanded(
+      child: Container(
+          decoration: BoxDecoration(
+              color: Colors.grey[200],
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30), topRight: Radius.circular(30))),
+          padding: EdgeInsets.all(30),
+          width: double.infinity,
+          child: widget.child),
+    );
   }
 }

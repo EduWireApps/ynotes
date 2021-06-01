@@ -7,10 +7,14 @@ class YPage extends StatefulWidget {
   final String title;
   final List<Widget> headerChildren;
   final Widget? body;
+  final Color? primaryColor;
+  final Color? secondaryColor;
 
   const YPage(
       {Key? key,
       required this.title,
+      required this.primaryColor,
+      required this.secondaryColor,
       this.headerChildren = const [],
       this.body})
       : super(key: key);
@@ -23,8 +27,12 @@ class _YPageState extends State<YPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: widget.primaryColor,
       drawer: AppDrawer(),
-      appBar: AppBar(title: Text("Y Page")),
+      appBar: AppBar(
+        backgroundColor: widget.primaryColor,
+        shadowColor: Colors.transparent,
+      ),
       body: SafeArea(
         child: Column(
           children: [

@@ -17,7 +17,7 @@ class _YPageHeaderState extends State<YPageHeader> {
     return Container(
         padding: EdgeInsets.all(20),
         width: double.infinity,
-        color: Colors.green,
+        // color: Colors.green,
         child: Column(
           children: [
             Text(widget.title, style: TextStyle(color: Colors.red)),
