@@ -364,7 +364,9 @@ class _GradesGroupState extends State<GradesGroup> {
                                 ? "(" + gradesForSelectedDiscipline[index].value!
                                 : gradesForSelectedDiscipline[index].value),
                             style: TextStyle(
-                                color: ThemeUtils.textColor(),
+                                color: (gradesForSelectedDiscipline[index].simulated ?? false)
+                                    ? Colors.blue
+                                    : ThemeUtils.textColor(),
                                 fontFamily: "Asap",
                                 fontWeight: FontWeight.bold,
                                 fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.3),
@@ -375,20 +377,25 @@ class _GradesGroupState extends State<GradesGroup> {
                                 TextSpan(
                                     text: '/' + gradesForSelectedDiscipline[index].scale!,
                                     style: TextStyle(
-                                        color: ThemeUtils.textColor(),
+                                        color: (gradesForSelectedDiscipline[index].simulated ?? false)
+                                            ? Colors.blue
+                                            : ThemeUtils.textColor(),
                                         fontWeight: FontWeight.bold,
                                         fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2)),
                               if (gradesForSelectedDiscipline[index].notSignificant == true)
                                 TextSpan(
                                     text: ")",
                                     style: TextStyle(
-                                        color: ThemeUtils.textColor(),
+                                        color: (gradesForSelectedDiscipline[index].simulated ?? false)
+                                            ? Colors.blue
+                                            : ThemeUtils.textColor(),
                                         fontWeight: FontWeight.bold,
                                         fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.3)),
                             ],
                           ),
                           style: TextStyle(
-                              decoration: CalendarTime(gradesForSelectedDiscipline[index].entryDate).isToday
+                              decoration: (CalendarTime(gradesForSelectedDiscipline[index].entryDate).isToday &&
+                                      !(gradesForSelectedDiscipline[index].simulated ?? false))
                                   ? TextDecoration.underline
                                   : TextDecoration.none,
                               decorationThickness: 1.9,
@@ -405,7 +412,11 @@ class _GradesGroupState extends State<GradesGroup> {
                                   gradesForSelectedDiscipline[index].weight!,
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
-                                      fontFamily: "Asap", color: ThemeUtils.textColor(), fontWeight: FontWeight.bold),
+                                      fontFamily: "Asap",
+                                      color: (gradesForSelectedDiscipline[index].simulated ?? false)
+                                          ? Colors.blue
+                                          : ThemeUtils.textColor(),
+                                      fontWeight: FontWeight.bold),
                                 ),
                               ),
                             ],

@@ -12,6 +12,7 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/stats/gradesStats.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/ui/components/buttons.dart';
+import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/dragHandle.dart';
 
 void gradesModalBottomSheet(
@@ -94,7 +95,7 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
         padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.2),
         minHeight: oldSize ?? 0.0,
         maxHeight: (oldSize ?? 0.0) + (statsPartOldSize ?? 0),
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(11), topRight: Radius.circular(11)),
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
         panelBuilder: (scroll) {
           return Column(
             children: [buildHeaderPart(scroll), buildStatsPart()],
@@ -243,7 +244,7 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
     return Container(
       padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.1),
       decoration:
-          BoxDecoration(borderRadius: BorderRadius.only(topLeft: Radius.circular(11), topRight: Radius.circular(11))),
+          BoxDecoration(borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25))),
       key: headerPart,
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -271,14 +272,17 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
           SizedBox(height: screenSize.size.height / 10 * 0.25),
           buildGradeAveragesAndDetails(),
           SizedBox(height: screenSize.size.height / 10 * 0.15),
-          CustomButtons.materialButton(
-            context,
-            screenSize.size.width / 5 * 1.5,
-            null,
-            () {},
-            label: "Partager",
-            icon: MdiIcons.shareVariant,
-          ),
+          if (widget.grade != null)
+            CustomButtons.materialButton(
+              context,
+              screenSize.size.width / 5 * 1.5,
+              null,
+              () {
+                CustomDialogs.showShareGradeDialog(context, widget.grade!);
+              },
+              label: "Partager",
+              icon: MdiIcons.shareVariant,
+            ),
           SizedBox(height: screenSize.size.height / 10 * 0.15),
           buildDragChevron(),
         ],
