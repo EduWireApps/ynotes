@@ -12,7 +12,8 @@ import 'package:ynotes/usefulMethods.dart';
 //The main class for everything done in background
 class BackgroundService {
 //Background task when when app is closed
-  static Future<void> backgroundFetchHeadlessTask(String a, {bool headless = false}) async {
+  static Future<void> backgroundFetchHeadlessTask(String a,
+      {bool headless = false}) async {
     //await LocalNotification.showDebugNotification();
     try {
       print("Starting the headless closed bakground task");
@@ -63,7 +64,8 @@ class BackgroundService {
       await AppNotification.cancelNotification(a.hashCode);
     } catch (e) {
       await AppNotification.cancelNotification(a.hashCode);
-      await logFile("An error occured during the background fetch : " + e.toString());
+      await logFile(
+          "An error occured during the background fetch : " + e.toString());
     }
   }
 
@@ -71,7 +73,8 @@ class BackgroundService {
   static bool readLastFetchStatus(ApplicationSystem _appSys) {
     try {
       if (_appSys.settings?["system"]["lastFetchDate"] != null) {
-        DateTime date = DateTime.fromMillisecondsSinceEpoch(_appSys.settings?["system"]["lastFetchDate"]);
+        DateTime date = DateTime.fromMillisecondsSinceEpoch(
+            _appSys.settings?["system"]["lastFetchDate"]);
         if (DateTime.now().difference(date).inMinutes >= 5) {
           return true;
         } else {
@@ -95,16 +98,20 @@ class BackgroundService {
       //instanciate an offline controller read only
       await appSys.offline.init();
 
-      print("Old grades length is ${oldGradesLength}");
+      print("Old grades length is $oldGradesLength");
       //Getting the online count of grades
 
       List<Grade>? listOnlineGrades = [];
       //Login creds
 
-      listOnlineGrades = getAllGrades(await appSys.api?.getGrades(forceReload: true), overrideLimit: true);
+      listOnlineGrades = getAllGrades(
+          await appSys.api?.getGrades(forceReload: true),
+          overrideLimit: true);
 
       print("Online grade length is ${listOnlineGrades!.length}");
-      if (oldGradesLength != null && oldGradesLength != 0 && oldGradesLength < listOnlineGrades.length) {
+      if (oldGradesLength != null &&
+          oldGradesLength != 0 &&
+          oldGradesLength < listOnlineGrades.length) {
         final prefs = await (SharedPreferences.getInstance());
         await prefs.setInt("gradesNumber", listOnlineGrades.length);
         return true;
@@ -112,7 +119,8 @@ class BackgroundService {
         return false;
       }
     } catch (e) {
-      await logFile("An error occured during the new grades test : " + e.toString());
+      await logFile(
+          "An error occured during the new grades test : " + e.toString());
       return false;
     }
   }
@@ -135,12 +143,12 @@ class BackgroundService {
       var newMailLength = appSys.settings!["system"]["lastMailCount"];
 
       await logFile("Mails checking triggered");
-      print("New length is ${newMailLength}");
+      print("New length is $newMailLength");
       if (oldMailLength != 0) {
         if (oldMailLength < (newMailLength ?? 0)) {
           //Manually set the new mail number
-          final prefs = await (SharedPreferences.getInstance());
-          appSys.updateSetting(appSys.settings!["system"], "lastMailCount", newMailLength);
+          appSys.updateSetting(
+              appSys.settings!["system"], "lastMailCount", newMailLength);
 
           return (mails ?? []).last;
         } else {
@@ -150,7 +158,8 @@ class BackgroundService {
         return null;
       }
     } catch (e) {
-      print("Erreur dans la verification de nouveaux mails hors ligne " + e.toString());
+      print("Erreur dans la verification de nouveaux mails hors ligne " +
+          e.toString());
       return null;
     }
   }
@@ -158,7 +167,8 @@ class BackgroundService {
   //write last fetch in milliseconds since epoch
   static writeLastFetchStatus(ApplicationSystem _appSys) async {
     int date = DateTime.now().millisecondsSinceEpoch;
-    await _appSys.updateSetting(_appSys.settings?["system"], "lastFetchDate", date);
+    await _appSys.updateSetting(
+        _appSys.settings?["system"], "lastFetchDate", date);
     print("Written last fetch status " + date.toString());
   }
 }

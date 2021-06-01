@@ -58,7 +58,8 @@ getWeeksRelation(int index, List<Homework> list) {
           }
         }
       } else if (index == 1) {
-        if (getWeeksRelation(index - 1, list) != "La semaine prochaine") return "La semaine prochaine";
+        if (getWeeksRelation(index - 1, list) != "La semaine prochaine")
+          return "La semaine prochaine";
       } else {
         return "La semaine prochaine";
       }
@@ -78,7 +79,8 @@ getWeeksRelation(int index, List<Homework> list) {
           }
         }
       } else if (index == 1) {
-        if (getWeeksRelation(index - 1, list) != "Dans 2 semaines") return "Dans 2 semaines";
+        if (getWeeksRelation(index - 1, list) != "Dans 2 semaines")
+          return "Dans 2 semaines";
       } else {
         return "Dans 2 semaines";
       }
@@ -97,7 +99,8 @@ getWeeksRelation(int index, List<Homework> list) {
           }
         }
       } else if (index == 1) {
-        if (getWeeksRelation(index - 1, list) != "Dans 3 semaines") return "Dans 3 semaines";
+        if (getWeeksRelation(index - 1, list) != "Dans 3 semaines")
+          return "Dans 3 semaines";
       } else {
         return "Dans 3 semaines";
       }
@@ -117,7 +120,8 @@ getWeeksRelation(int index, List<Homework> list) {
           }
         }
       } else if (index == 1) {
-        if (getWeeksRelation(index - 1, list) != "Dans 4 semaines") return "Dans 4 semaines";
+        if (getWeeksRelation(index - 1, list) != "Dans 4 semaines")
+          return "Dans 4 semaines";
       } else {
         return "Dans 4 semaines";
       }
@@ -136,7 +140,8 @@ getWeeksRelation(int index, List<Homework> list) {
           }
         }
       } else if (index == 1) {
-        if (getWeeksRelation(index - 1, list) != "Dans plus d'un mois") return "Dans plus d'un mois";
+        if (getWeeksRelation(index - 1, list) != "Dans plus d'un mois")
+          return "Dans plus d'un mois";
       } else {
         return "Dans plus d'un mois";
       }
@@ -160,7 +165,8 @@ class HomeworkPageState extends State<HomeworkPage> {
   PageController agendaSettingsController = PageController(initialPage: 1);
 
   animateToPage(int index) {
-    _pageControllerHW!.animateToPage(index, duration: Duration(milliseconds: 250), curve: Curves.ease);
+    _pageControllerHW!.animateToPage(index,
+        duration: Duration(milliseconds: 250), curve: Curves.ease);
   }
 
   @override
@@ -183,7 +189,8 @@ class HomeworkPageState extends State<HomeworkPage> {
                       topLeft: Radius.circular(15),
                       topRight: Radius.circular(15),
                     ),
-                    border: Border.all(width: 0.00000, color: Colors.transparent),
+                    border:
+                        Border.all(width: 0.00000, color: Colors.transparent),
                     color: Theme.of(context).backgroundColor),
                 child: Stack(
                   children: <Widget>[
@@ -222,22 +229,27 @@ class HomeworkPageState extends State<HomeworkPage> {
                       bottomLeft: Radius.circular(15),
                       bottomRight: Radius.circular(15),
                     ),
-                    border: Border.all(width: 0.00000, color: Colors.transparent),
+                    border:
+                        Border.all(width: 0.00000, color: Colors.transparent),
                     color: Theme.of(context).backgroundColor),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: <Widget>[
                     Material(
                       color: Theme.of(context).primaryColor,
-                      borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                      borderRadius: BorderRadius.circular(
+                          screenSize.size.width / 5 * 0.15),
                       child: InkWell(
-                        borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                        borderRadius: BorderRadius.circular(
+                            screenSize.size.width / 5 * 0.15),
                         onTap: () {
                           CustomDialogs.showUnimplementedSnackBar(context);
                         },
                         child: Container(
-                            height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
-                            padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
+                            height:
+                                (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
+                            padding:
+                                EdgeInsets.all(screenSize.size.width / 5 * 0.1),
                             child: FittedBox(
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -260,9 +272,11 @@ class HomeworkPageState extends State<HomeworkPage> {
                     ),
                     Material(
                       color: Theme.of(context).primaryColor,
-                      borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                      borderRadius: BorderRadius.circular(
+                          screenSize.size.width / 5 * 0.15),
                       child: InkWell(
-                        borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                        borderRadius: BorderRadius.circular(
+                            screenSize.size.width / 5 * 0.15),
                         onTap: () async {
                           DateTime? someDate = await showDatePicker(
                             locale: Locale('fr', 'FR'),
@@ -278,8 +292,11 @@ class HomeworkPageState extends State<HomeworkPage> {
                                   child: Theme(
                                     data: appSys.theme!,
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: <Widget>[SizedBox(child: child)],
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        SizedBox(child: child)
+                                      ],
                                     ),
                                   ),
                                 ),
@@ -289,20 +306,21 @@ class HomeworkPageState extends State<HomeworkPage> {
                           if (someDate != null) {
                             setState(() {
                               dateToUse = someDate;
-                              setState() {
-                                localListHomeworkDateToUse = null;
-                              }
+                              localListHomeworkDateToUse = null;
 
                               getPinnedStateDayToUse();
                             });
                             if (_pageControllerHW != null)
-                              _pageControllerHW!
-                                  .animateToPage(2, duration: Duration(milliseconds: 200), curve: Curves.easeIn);
+                              _pageControllerHW!.animateToPage(2,
+                                  duration: Duration(milliseconds: 200),
+                                  curve: Curves.easeIn);
                           }
                         },
                         child: Container(
-                            height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
-                            padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
+                            height:
+                                (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
+                            padding:
+                                EdgeInsets.all(screenSize.size.width / 5 * 0.1),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
@@ -337,7 +355,8 @@ class HomeworkPageState extends State<HomeworkPage> {
 
   getPinnedStateDayToUse() async {
     print(dateToUse);
-    var pinnedStatus = await appSys.offline.pinnedHomework.getPinnedHomeworkSingleDate(dateToUse.toString());
+    var pinnedStatus = await appSys.offline.pinnedHomework
+        .getPinnedHomeworkSingleDate(dateToUse.toString());
     if (mounted) {
       setState(() {
         isPinnedDateToUse = pinnedStatus;
@@ -360,7 +379,9 @@ class HomeworkPageState extends State<HomeworkPage> {
 
 //Build the main widget container of the homeworkpage
   void triggerSettings() {
-    agendaSettingsController.animateToPage(agendaSettingsController.page == 1 ? 0 : 1,
-        duration: Duration(milliseconds: 300), curve: Curves.ease);
+    agendaSettingsController.animateToPage(
+        agendaSettingsController.page == 1 ? 0 : 1,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.ease);
   }
 }

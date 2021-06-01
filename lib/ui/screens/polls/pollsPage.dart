@@ -47,12 +47,15 @@ class _PollsAndInfoPageState extends State<PollsAndInfoPage> {
                     child: FutureBuilder<List<PollInfo>?>(
                         future: pollsFuture,
                         builder: (context, snapshot) {
-                          if (snapshot.hasData && snapshot.data != null && snapshot.data!.length != 0) {
-                            SchedulerBinding.instance!.addPostFrameCallback((_) => mounted
-                                ? setState(() {
-                                    pollsList = snapshot.data;
-                                  })
-                                : null);
+                          if (snapshot.hasData &&
+                              snapshot.data != null &&
+                              snapshot.data!.length != 0) {
+                            SchedulerBinding.instance!
+                                .addPostFrameCallback((_) => mounted
+                                    ? setState(() {
+                                        pollsList = snapshot.data;
+                                      })
+                                    : null);
 
                             return ListView.builder(
                                 physics: AlwaysScrollableScrollPhysics(),
@@ -62,46 +65,77 @@ class _PollsAndInfoPageState extends State<PollsAndInfoPage> {
                                       borderRadius: BorderRadius.circular(11),
                                       child: Card(
                                         color: Theme.of(context).primaryColor,
-                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(11)),
                                         child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(11),
+                                          borderRadius:
+                                              BorderRadius.circular(11),
                                           child: ExpansionTile(
                                             backgroundColor: Colors.transparent,
                                             title: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
                                                 Column(
                                                   children: [
-                                                    _buildPollQuestion((snapshot.data ?? [])[index], screenSize),
+                                                    _buildPollQuestion(
+                                                        (snapshot.data ??
+                                                            [])[index],
+                                                        screenSize),
                                                     FittedBox(
                                                       child: Row(
                                                         children: [
                                                           Checkbox(
-                                                            shape: const CircleBorder(),
-                                                            onChanged: (value) async {
+                                                            shape:
+                                                                const CircleBorder(),
+                                                            onChanged:
+                                                                (value) async {
                                                               setState(() {
-                                                                (snapshot.data ?? [])[index].read = value;
+                                                                (snapshot.data ??
+                                                                            [])[
+                                                                        index]
+                                                                    .read = value;
                                                               });
-                                                              if ((await (appSys.api as APIPronote).setPronotePollRead(
-                                                                  (snapshot.data ?? [])[index],
-                                                                  ((snapshot.data ?? [])[index].questions ?? [])
-                                                                      .first))) {
-                                                                CustomDialogs.showAnyDialog(
-                                                                    context, "Votre choix a été confirmé");
-                                                                refreshPolls(forced: true);
+                                                              if ((await (appSys
+                                                                          .api
+                                                                      as APIPronote)
+                                                                  .setPronotePollRead(
+                                                                      (snapshot.data ??
+                                                                              [])[
+                                                                          index],
+                                                                      ((snapshot.data ?? [])[index].questions ??
+                                                                              [])
+                                                                          .first))) {
+                                                                CustomDialogs
+                                                                    .showAnyDialog(
+                                                                        context,
+                                                                        "Votre choix a été confirmé");
+                                                                refreshPolls(
+                                                                    forced:
+                                                                        true);
                                                               } else {
                                                                 setState(() {
-                                                                  (snapshot.data ?? [])[index].read = value!;
+                                                                  (snapshot.data ??
+                                                                              [])[
+                                                                          index]
+                                                                      .read = value!;
                                                                 });
                                                               }
-                                                              await refreshPolls(forced: true);
+                                                              await refreshPolls(
+                                                                  forced: true);
                                                             },
-                                                            value: pollsList![index].read,
+                                                            value: pollsList![
+                                                                    index]
+                                                                .read,
                                                           ),
                                                           AutoSizeText(
                                                             "J'ai pris connaissance de cette information",
                                                             style: TextStyle(
-                                                                fontFamily: "Asap", color: ThemeUtils.textColor()),
+                                                                fontFamily:
+                                                                    "Asap",
+                                                                color: ThemeUtils
+                                                                    .textColor()),
                                                           )
                                                         ],
                                                       ),
@@ -136,7 +170,8 @@ class _PollsAndInfoPageState extends State<PollsAndInfoPage> {
 
   Future<void> refreshPolls({bool forced = false}) async {
     setState(() {
-      pollsFuture = (appSys.api as APIPronote).getPronotePolls(forceReload: forced);
+      pollsFuture =
+          (appSys.api as APIPronote).getPronotePolls(forceReload: forced);
     });
     var realFuture = await pollsFuture;
   }
@@ -151,13 +186,15 @@ class _PollsAndInfoPageState extends State<PollsAndInfoPage> {
             children: [
               Checkbox(
                 shape: const CircleBorder(),
-                value: (question.answers ?? "").contains((question.choices ?? [])[i].rank.toString()),
+                value: (question.answers ?? "")
+                    .contains((question.choices ?? [])[i].rank.toString()),
                 onChanged: (value) async {
-                  if ((await (appSys.api as APIPronote).setPronotePolls(poll, question, (question.choices ?? [])[i]))) {
-                    CustomDialogs.showAnyDialog(context, "Votre choix a été confirmé");
+                  if ((await (appSys.api as APIPronote).setPronotePolls(
+                      poll, question, (question.choices ?? [])[i]))) {
+                    CustomDialogs.showAnyDialog(
+                        context, "Votre choix a été confirmé");
                     refreshPolls(forced: true);
                   }
-                  ;
                 },
               ),
               Text((question.choices ?? [])[i].choiceName ?? "")
@@ -175,14 +212,17 @@ class _PollsAndInfoPageState extends State<PollsAndInfoPage> {
         child: Column(
           children: [
             HtmlWidget(((mainPoll.questions ?? [])[i].question) ?? "",
-                textStyle: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"), onTapUrl: (url) async {
+                textStyle: TextStyle(
+                    color: ThemeUtils.textColor(),
+                    fontFamily: "Asap"), onTapUrl: (url) async {
               if (await canLaunch(url)) {
                 await launch(url);
               } else {
                 throw "Unable to launch url";
               }
             }),
-            _buildPollChoices(mainPoll, (mainPoll.questions ?? [])[i], screenSize)
+            _buildPollChoices(
+                mainPoll, (mainPoll.questions ?? [])[i], screenSize)
           ],
         ),
       ));

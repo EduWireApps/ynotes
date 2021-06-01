@@ -1,11 +1,9 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
-import '../../../usefulMethods.dart';
-import 'package:ynotes/core/utils/themeUtils.dart';
 
 class RecurringEventsDialog extends StatefulWidget {
   String? scheme;
@@ -104,7 +102,8 @@ class _RecurringEventsDialogState extends State<RecurringEventsDialog> {
     screenSize = MediaQuery.of(context);
     return AlertDialog(
         backgroundColor: Theme.of(context).primaryColor,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0))),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(15.0))),
         contentPadding: EdgeInsets.only(top: 0.0),
         content: Container(
           height: screenSize.size.height / 10 * 3.7,
@@ -119,7 +118,8 @@ class _RecurringEventsDialogState extends State<RecurringEventsDialog> {
                       var value = export();
                       Navigator.of(context).pop(value);
                     } else {
-                      CustomDialogs.showAnyDialog(context, "Vous devez sélectionner au moins un jour");
+                      CustomDialogs.showAnyDialog(
+                          context, "Vous devez sélectionner au moins un jour");
                     }
                   } else {
                     Navigator.of(context).pop();
@@ -133,10 +133,13 @@ class _RecurringEventsDialogState extends State<RecurringEventsDialog> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
-                          margin: EdgeInsets.only(top: screenSize.size.width / 5 * 0.2),
-                          height: (screenSize.size.height / 10 * 8.8) / 10 * 0.75,
+                          margin: EdgeInsets.only(
+                              top: screenSize.size.width / 5 * 0.2),
+                          height:
+                              (screenSize.size.height / 10 * 8.8) / 10 * 0.75,
                           width: screenSize.size.width / 5 * 2,
-                          child: Icon(MdiIcons.check, color: ThemeUtils.textColor())),
+                          child: Icon(MdiIcons.check,
+                              color: ThemeUtils.textColor())),
                     ],
                   ),
                 ),
@@ -145,7 +148,8 @@ class _RecurringEventsDialogState extends State<RecurringEventsDialog> {
                 height: screenSize.size.height / 10 * 3.2,
                 width: screenSize.size.width,
                 padding: EdgeInsets.symmetric(
-                    horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.height / 10 * 0.1),
+                    horizontal: screenSize.size.width / 5 * 0.1,
+                    vertical: screenSize.size.height / 10 * 0.1),
                 child: SingleChildScrollView(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -171,20 +175,27 @@ class _RecurringEventsDialogState extends State<RecurringEventsDialog> {
                           value: weekTypes[weekType],
                           dropdownColor: Theme.of(context).primaryColor,
                           iconSize: 0.0,
-                          style: TextStyle(fontSize: 18, fontFamily: "Asap", color: ThemeUtils.textColor()),
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontFamily: "Asap",
+                              color: ThemeUtils.textColor()),
                           onChanged: (String? newValue) {
                             setState(() {
                               weekType = weekTypes.indexOf(newValue);
                             });
                           },
                           focusColor: Theme.of(context).primaryColor,
-                          items: weekTypes.map<DropdownMenuItem<String>>((var value) {
+                          items: weekTypes
+                              .map<DropdownMenuItem<String>>((var value) {
                             return DropdownMenuItem<String>(
                               value: value,
                               child: Text(
                                 value,
                                 textAlign: TextAlign.left,
-                                style: TextStyle(fontSize: 18, fontFamily: "Asap", color: ThemeUtils.textColor()),
+                                style: TextStyle(
+                                    fontSize: 18,
+                                    fontFamily: "Asap",
+                                    color: ThemeUtils.textColor()),
                               ),
                             );
                           }).toList(),
@@ -235,7 +246,9 @@ class _RecurringEventsDialogState extends State<RecurringEventsDialog> {
       margin: EdgeInsets.only(right: screenSize.size.width / 5 * 0.1),
       child: Material(
         shape: CircleBorder(),
-        color: selectedDays.contains(dayNumber) ? Colors.blue : Theme.of(context).primaryColorDark,
+        color: selectedDays.contains(dayNumber)
+            ? Colors.blue
+            : Theme.of(context).primaryColorDark,
         child: InkWell(
           customBorder: CircleBorder(),
           onTap: () {

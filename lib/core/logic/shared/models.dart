@@ -3,7 +3,7 @@ import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'models.g.dart';
 
-@JsonSerializable(nullable: false)
+@JsonSerializable()
 @HiveType(typeId: 1)
 class Document {
   @HiveField(0)
@@ -15,6 +15,7 @@ class Document {
   @HiveField(3)
   final int? length;
   Document(this.documentName, this.id, this.type, this.length);
-  factory Document.fromJson(Map<String, dynamic> json) => _$DocumentFromJson(json);
+  factory Document.fromJson(Map<String, dynamic> json) =>
+      _$DocumentFromJson(json);
   Map<String, dynamic> toJson() => _$DocumentToJson(this);
 }

@@ -119,7 +119,9 @@ class Discipline {
     double counter = 0;
 
     gradesList!.forEach((Grade grade) {
-      if (!grade.notSignificant! && (!grade.letters! || grade.countAsZero!) && grade.periodName == this.period) {
+      if (!grade.notSignificant! &&
+          (!grade.letters! || grade.countAsZero!) &&
+          grade.periodName == this.period) {
         counter += double.parse(grade.weight!);
         String gradeStringValue = grade.countAsZero! ? "0" : grade.value!;
         average += double.parse(gradeStringValue.replaceAll(',', '.')) *
@@ -132,6 +134,9 @@ class Discipline {
     average = double.parse((average / counter).toStringAsFixed(2));
     return (average);
   }
+
+  @override
+  int get hashCode => super.hashCode;
 }
 
 //Marks class
@@ -213,7 +218,8 @@ class Grade {
     this.countAsZero = false,
   });
 
-  factory Grade.fromEcoleDirecteJson(Map<String, dynamic> json, String? nomPeriode) {
+  factory Grade.fromEcoleDirecteJson(
+      Map<String, dynamic> json, String? nomPeriode) {
     return Grade(
       min: json["minClasse"],
       max: json["maxClasse"],
@@ -250,6 +256,9 @@ class Grade {
       other.testName == testName &&
       other.simulated == simulated &&
       other.scale == scale;
+
+  @override
+  int get hashCode => super.hashCode;
 }
 
 class Period {

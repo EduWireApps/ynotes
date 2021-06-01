@@ -68,13 +68,6 @@ class DownloadController extends ChangeNotifier {
         _progress = 100;
         notifyListeners();
         print("Téléchargement du fichier terminé : ${file.path}");
-        final dir = await FolderAppUtil.getDirectory(download: true);
-        final Directory _appDocDirFolder = Directory('$dir/yNotesDownloads/');
-
-        if (!await _appDocDirFolder.exists()) {
-          //if folder already exists return path
-          final Directory _appDocDirNewFolder = await _appDocDirFolder.create(recursive: true);
-        } //if folder not exists create folder and then return its path
 
         await file.writeAsBytes(bytes);
       },

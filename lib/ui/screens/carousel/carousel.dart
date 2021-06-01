@@ -747,7 +747,7 @@ class _Page4State extends State<Page4> {
                         context, null, screenSize.size.height / 10 * 0.5,
                         () async {
                       createStorage("agreedTermsAndConfiguredApp", "true");
-                      Navigator.of(context).pushReplacement(router(homePage()));
+                      Navigator.of(context).pushReplacement(router(HomePage()));
                     },
                         label: "Allons-y !",
                         textColor: ThemeUtils.textColor(),

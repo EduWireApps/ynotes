@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/usefulMethods.dart';
 
 class HomeworkSettingPage extends StatefulWidget {
   State<StatefulWidget> createState() {
@@ -41,7 +40,8 @@ class _HomeworkSettingPageState extends State<HomeworkSettingPage> {
                 textAlign: TextAlign.left,
               )),
           SwitchListTile(
-            value: appSys.settings!["user"]["homeworkPage"]["isExpandedByDefault"],
+            value: appSys.settings!["user"]["homeworkPage"]
+                ["isExpandedByDefault"],
             title: Text("Étendre les devoirs",
                 style: TextStyle(
                     fontFamily: "Asap",
@@ -55,8 +55,8 @@ class _HomeworkSettingPageState extends State<HomeworkSettingPage> {
                   fontSize: screenSize.size.height / 10 * 0.2),
             ),
             onChanged: (value) async {
-              appSys.updateSetting(appSys.settings!["user"]["homeworkPage"], "isExpandedByDefault", value);
-
+              appSys.updateSetting(appSys.settings!["user"]["homeworkPage"],
+                  "isExpandedByDefault", value);
 
               setState(() {});
             },

@@ -6,7 +6,7 @@ part of 'models.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-class alarmTypeAdapter extends TypeAdapter<alarmType> {
+class AlarmTypeAdapter extends TypeAdapter<alarmType> {
   @override
   final int typeId = 7;
 
@@ -60,7 +60,7 @@ class alarmTypeAdapter extends TypeAdapter<alarmType> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is alarmTypeAdapter &&
+      other is AlarmTypeAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
