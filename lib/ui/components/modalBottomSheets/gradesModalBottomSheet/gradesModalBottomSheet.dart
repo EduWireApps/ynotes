@@ -253,21 +253,34 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
             height: screenSize.size.height / 10 * 0.1,
           ),
           if (widget.gradesController?.isSimulating ?? false)
-            CustomButtons.materialButton(context, null, null, () async {
-              Navigator.pop(context);
-              widget.gradesController!.simulationRemove(widget.grade);
-            },
-                label: "Supprimer virtuellement la note",
-                textColor: Colors.blue,
-                icon: MdiIcons.trashCan,
-                iconColor: Colors.blue),
+            CustomButtons.materialButton(
+              context,
+              null,
+              null,
+              () async {
+                Navigator.pop(context);
+                widget.gradesController!.simulationRemove(widget.grade);
+              },
+              label: "Supprimer virtuellement la note",
+              textColor: Colors.blue,
+              icon: MdiIcons.trashCan,
+              iconColor: Colors.blue,
+            ),
           if (widget.gradesController?.isSimulating ?? false) SizedBox(height: screenSize.size.height / 10 * 0.25),
           buildGradeHeader(),
           SizedBox(height: screenSize.size.height / 10 * 0.25),
           buildGradeAveragesAndDetails(),
           SizedBox(height: screenSize.size.height / 10 * 0.15),
+          CustomButtons.materialButton(
+            context,
+            screenSize.size.width / 5 * 1.5,
+            null,
+            () {},
+            label: "Partager",
+            icon: MdiIcons.shareVariant,
+          ),
+          SizedBox(height: screenSize.size.height / 10 * 0.15),
           buildDragChevron(),
-          Divider()
         ],
       ),
     );
@@ -383,10 +396,16 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
     return Column(
       key: statsPart,
       children: [
+        Divider(
+          thickness: 2,
+        ),
         Text(
           "Statistiques",
           style:
               TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w600, fontSize: 20, color: ThemeUtils.textColor()),
+        ),
+        SizedBox(
+          height: screenSize.size.height / 10 * 0.1,
         ),
         Container(
             width: screenSize.size.width / 5 * 4.8,

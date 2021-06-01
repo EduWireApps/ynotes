@@ -218,6 +218,9 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
                     child: Column(
                       children: [
                         StickyHeader(setLoading),
+                        SizedBox(
+                          height: screenSize.size.height / 10 * 0.1,
+                        ),
                         groupHomeworkByDate(model.homework() ?? []).length > 0
                             ? Expanded(
                                 child: ListView.builder(
@@ -616,7 +619,9 @@ class _StickyHeaderState extends State<StickyHeader> {
                 flex: 8,
                 child: Text(
                     appSys.homeworkController.pinned!.length.toString() +
-                        " devoirs épinglé" +
+                        " devoir" +
+                        ((appSys.homeworkController.pinned!.length > 1) ? "s" : "") +
+                        " épinglé" +
                         ((appSys.homeworkController.pinned!.length > 1) ? "s" : ""),
                     style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: ThemeUtils.textColor())),
               ),

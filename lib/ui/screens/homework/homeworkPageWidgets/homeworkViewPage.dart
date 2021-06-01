@@ -60,7 +60,7 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
             width: screenSize.size.width / 5 * 0.6,
             child: TextButton(
                 onPressed: () async {
-                  await refreshSelf();
+                  await refreshSelf(force: true);
                 },
                 child: Icon(MdiIcons.refresh, color: ThemeUtils.textColor())),
           ),
@@ -103,7 +103,7 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                               builder: (context, snapshot) {
                                 return buildHeader(
                                     widget.homework[getPageIndex(model).round()],
-                                    ThemeUtils.darken(snapshot.data ?? Colors.white, forceAmount: 0.1),
+                                    (snapshot.data ?? Colors.white).withOpacity(0.4),
                                     ((model.hasClients) ? (model.page ?? 0) : 0).round());
                               });
                         }),
@@ -474,9 +474,9 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
     }
   }
 
-  Future<void> refreshSelf() async {
+  Future<void> refreshSelf({bool force = false}) async {
     List<Homework>? hw =
-        await appSys.api?.getHomeworkFor(widget.homework[getPageIndex(pageView).round()].date, forceReload: false);
+        await appSys.api?.getHomeworkFor(widget.homework[getPageIndex(pageView).round()].date, forceReload: force);
     if (widget.homework[getPageIndex(pageView).round()].date != null && hw != null) {
       if (!widget.disableGlobalRefresh &&
           hw.where((element) => element.id == widget.homework[getPageIndex(pageView).round()].id).isNotEmpty) {
