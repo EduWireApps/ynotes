@@ -27,7 +27,7 @@ class _TestPageState extends State<TestPage> with YPageMixin {
             TextButton(
                 child: Text("Show local page"),
                 // onPressed: () {},
-                onPressed: openLocalPage(context, settingsPage))
+                onPressed: openLocalPage(settingsPage))
           ],
         ));
   }
