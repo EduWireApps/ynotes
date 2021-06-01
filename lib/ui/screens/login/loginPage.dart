@@ -54,8 +54,7 @@ class _AlertBoxWidgetState extends State<AlertBoxWidget> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(32.0))),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0))),
       contentPadding: EdgeInsets.only(top: 10.0),
       content: Container(
         height: widget.screenSize.size.height / 10 * 6,
@@ -78,13 +77,11 @@ class _AlertBoxWidgetState extends State<AlertBoxWidget> {
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                             Container(
-                              padding: EdgeInsets.all(
-                                  widget.screenSize.size.width / 5 * 0.1),
+                              padding: EdgeInsets.all(widget.screenSize.size.width / 5 * 0.1),
                               child: FittedBox(
                                 child: Text(
                                   "Conditions d’utilisation",
-                                  style: TextStyle(
-                                      fontSize: 24.0, fontFamily: "Asap"),
+                                  style: TextStyle(fontSize: 24.0, fontFamily: "Asap"),
                                   textAlign: TextAlign.center,
                                 ),
                               ),
@@ -100,14 +97,12 @@ class _AlertBoxWidgetState extends State<AlertBoxWidget> {
                         height: 4.0,
                       ),
                       Padding(
-                          padding: EdgeInsets.only(
-                              left: 10.0, right: 10.0, top: 10, bottom: 10),
+                          padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 10, bottom: 10),
                           child: SingleChildScrollView(
                               child: Container(
                             child: FutureBuilder(
                                 //Read the TOS file
-                                future:
-                                    FileAppUtil.loadAsset("assets/TOS_fr.txt"),
+                                future: FileAppUtil.loadAsset("assets/TOS_fr.txt"),
                                 builder: (context, snapshot) {
                                   if (snapshot.hasError) {
                                     print(snapshot.error);
@@ -122,17 +117,14 @@ class _AlertBoxWidgetState extends State<AlertBoxWidget> {
                                 }),
                           ))),
                       RaisedButton(
-                        padding: EdgeInsets.only(
-                            left: 60, right: 60, top: 15, bottom: 18),
+                        padding: EdgeInsets.only(left: 60, right: 60, top: 15, bottom: 18),
                         color: Color(0xff27AE60),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.only(
-                              bottomLeft: Radius.circular(32.0),
-                              bottomRight: Radius.circular(32.0)),
+                          borderRadius:
+                              BorderRadius.only(bottomLeft: Radius.circular(32.0), bottomRight: Radius.circular(32.0)),
                         ),
                         onPressed: () async {
-                          Navigator.of(context)
-                              .pushReplacement(router(Carousel()));
+                          Navigator.of(context).pushReplacement(router(Carousel()));
                         },
                         child: Text(
                           "J'accepte",
@@ -145,25 +137,19 @@ class _AlertBoxWidgetState extends State<AlertBoxWidget> {
                 ),
               ),
               Visibility(
-                visible: (offset -
-                        (scrollViewController.hasClients
-                            ? scrollViewController.position.maxScrollExtent
-                            : 0) <
-                    -45),
+                visible:
+                    (offset - (scrollViewController.hasClients ? scrollViewController.position.maxScrollExtent : 0) <
+                        -45),
                 child: Align(
                   alignment: Alignment.bottomCenter,
                   child: Container(
-                    margin: EdgeInsets.only(
-                        bottom: widget.screenSize.size.height / 10 * 0.1),
+                    margin: EdgeInsets.only(bottom: widget.screenSize.size.height / 10 * 0.1),
                     child: FloatingActionButton(
                       onPressed: () {
-                        scrollViewController.animateTo(
-                            scrollViewController.position.maxScrollExtent,
-                            duration: Duration(milliseconds: 250),
-                            curve: Curves.easeIn);
+                        scrollViewController.animateTo(scrollViewController.position.maxScrollExtent,
+                            duration: Duration(milliseconds: 250), curve: Curves.easeIn);
                       },
-                      child: RotatedBox(
-                          quarterTurns: 3, child: Icon(Icons.chevron_left)),
+                      child: RotatedBox(quarterTurns: 3, child: Icon(Icons.chevron_left)),
                     ),
                   ),
                 ),
@@ -235,27 +221,23 @@ class _LoginPageState extends State<LoginPage> {
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(32.0))),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0))),
             contentPadding: EdgeInsets.only(top: 10.0),
             content: SingleChildScrollView(
               child: Container(
-                padding:
-                    EdgeInsets.only(left: 5, right: 5, top: 20, bottom: 20),
+                padding: EdgeInsets.only(left: 5, right: 5, top: 20, bottom: 20),
                 child: Column(
                   children: <Widget>[
                     FutureBuilder<List>(
                       future: connectionData,
                       builder: (context, snapshot) {
                         if (snapshot.hasData && snapshot.data![0] == 1) {
-                          Future.delayed(const Duration(milliseconds: 500),
-                              () async {
+                          Future.delayed(const Duration(milliseconds: 500), () async {
                             Navigator.pop(context);
                             if (_isFirstUse == true) {
                               openAlertBox();
                             } else {
-                              Navigator.of(context)
-                                  .pushReplacement(router(HomePage()));
+                              Navigator.of(context).pushReplacement(router(HomePage()));
                             }
                           });
                           return Column(
@@ -288,8 +270,7 @@ class _LoginPageState extends State<LoginPage> {
                                   snapshot.data![2] != null &&
                                   snapshot.data![2].length > 0)
                                 Container(
-                                  margin: EdgeInsets.only(
-                                      top: screenSize.size.height / 10 * 0.1),
+                                  margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
                                   child: CustomButtons.materialButton(
                                     context,
                                     MediaQuery.of(context).size.width / 5 * 1.5,
@@ -298,14 +279,11 @@ class _LoginPageState extends State<LoginPage> {
                                       List stepLogger = snapshot.data![2];
                                       try {
                                         //add step logs to clip board
-                                        await Clipboard.setData(
-                                            new ClipboardData(
-                                                text: stepLogger.join("\n")));
-                                        CustomDialogs.showAnyDialog(context,
-                                            "Logs copiés dans le presse papier.");
+                                        await Clipboard.setData(new ClipboardData(text: stepLogger.join("\n")));
+                                        CustomDialogs.showAnyDialog(context, "Logs copiés dans le presse papier.");
                                       } catch (e) {
-                                        CustomDialogs.showAnyDialog(context,
-                                            "Impossible de copier dans le presse papier !");
+                                        CustomDialogs.showAnyDialog(
+                                            context, "Impossible de copier dans le presse papier !");
                                       }
                                     },
                                     label: "Copier les logs",
@@ -346,14 +324,12 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
-class _LoginSliderState extends State<LoginSlider>
-    with TickerProviderStateMixin {
+class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin {
   PageController? sliderController;
   Map loginHelpTexts = {
     "pronoteSetupText":
         """Nous avons besoin de savoir quel est votre établissement avant que vous puissiez rentrer vos identifiants.""",
-    "pronoteUrlSetupText":
-        """Entrez ou vérifiez l'adresse URL Pronote communiquée par votre établissement."""
+    "pronoteUrlSetupText": """Entrez ou vérifiez l'adresse URL Pronote communiquée par votre établissement."""
   };
   TextEditingController _username = TextEditingController();
   TextEditingController _password = TextEditingController();
@@ -388,9 +364,7 @@ class _LoginSliderState extends State<LoginSlider>
             Spacer(),
             _loginTextAndHelpButton(),
             Container(
-                height: screenSize.size.height / 10 * 4,
-                width: screenSize.size.width,
-                child: _buildPageView(true)),
+                height: screenSize.size.height / 10 * 4, width: screenSize.size.width, child: _buildPageView(true)),
             Spacer(),
             _buildMetaPart()
           ],
@@ -412,10 +386,7 @@ class _LoginSliderState extends State<LoginSlider>
         multiLine: false,
       );
       //situation where nothing matches (might be pronote/)
-      if (suffixMatches
-              .firstMatch(suffix)
-              ?.groups([1, 2]).every((element) => element == null) ??
-          true) {
+      if (suffixMatches.firstMatch(suffix)?.groups([1, 2]).every((element) => element == null) ?? true) {
         print("A");
         suffix = "/mobile.eleve.html";
         return [0, (regExp.firstMatch(url)?.group(1) ?? "") + suffix];
@@ -425,16 +396,12 @@ class _LoginSliderState extends State<LoginSlider>
           suffixMatches.firstMatch(suffix)?.group(2) != null) {
         print("B");
 
-        suffix =
-            "/mobile." + (suffixMatches.firstMatch(suffix)?.group(2) ?? "");
+        suffix = "/mobile." + (suffixMatches.firstMatch(suffix)?.group(2) ?? "");
         return [0, (regExp.firstMatch(url)?.group(1) ?? "") + suffix];
       }
 
       //situation where everything matches
-      else if (suffixMatches
-              .firstMatch(suffix)
-              ?.groups([1, 2]).every((element) => element != null) ??
-          false) {
+      else if (suffixMatches.firstMatch(suffix)?.groups([1, 2]).every((element) => element != null) ?? false) {
         print("C");
 
         suffix = "/" +
@@ -454,8 +421,7 @@ class _LoginSliderState extends State<LoginSlider>
     sliderController = PageController(initialPage: widget.setupNeeded! ? 0 : 2);
     currentPage = widget.setupNeeded! ? 0 : 2;
     sliderController!.addListener(_pageViewPageCange);
-    iconSlideAnimationController = AnimationController(
-        vsync: this, value: 1, duration: Duration(milliseconds: 500));
+    iconSlideAnimationController = AnimationController(vsync: this, value: 1, duration: Duration(milliseconds: 500));
     iconSlideAnimation = CurvedAnimation(
       parent: iconSlideAnimationController,
       curve: Curves.easeIn,
@@ -481,13 +447,11 @@ class _LoginSliderState extends State<LoginSlider>
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(32.0))),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0))),
             contentPadding: EdgeInsets.only(top: 10.0),
             content: SingleChildScrollView(
               child: Container(
-                padding:
-                    EdgeInsets.only(left: 5, right: 5, top: 20, bottom: 20),
+                padding: EdgeInsets.only(left: 5, right: 5, top: 20, bottom: 20),
                 child: Column(
                   children: <Widget>[
                     FutureBuilder<List>(
@@ -532,8 +496,7 @@ class _LoginSliderState extends State<LoginSlider>
                                   snapshot.data![2] != null &&
                                   snapshot.data![2].length > 0)
                                 Container(
-                                  margin: EdgeInsets.only(
-                                      top: screenSize.size.height / 10 * 0.1),
+                                  margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
                                   child: CustomButtons.materialButton(
                                     context,
                                     MediaQuery.of(context).size.width / 5 * 1.5,
@@ -542,14 +505,11 @@ class _LoginSliderState extends State<LoginSlider>
                                       List stepLogger = snapshot.data![2];
                                       try {
                                         //add step logs to clip board
-                                        await Clipboard.setData(
-                                            new ClipboardData(
-                                                text: stepLogger.join("\n")));
-                                        CustomDialogs.showAnyDialog(context,
-                                            "Logs copiés dans le presse papier.");
+                                        await Clipboard.setData(new ClipboardData(text: stepLogger.join("\n")));
+                                        CustomDialogs.showAnyDialog(context, "Logs copiés dans le presse papier.");
                                       } catch (e) {
-                                        CustomDialogs.showAnyDialog(context,
-                                            "Impossible de copier dans le presse papier !");
+                                        CustomDialogs.showAnyDialog(
+                                            context, "Impossible de copier dans le presse papier !");
                                       }
                                     },
                                     label: "Copier les logs",
@@ -580,8 +540,7 @@ class _LoginSliderState extends State<LoginSlider>
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        LoginPageTextField(
-            _username, "Nom d'utilisateur", false, MdiIcons.account, false),
+        LoginPageTextField(_username, "Nom d'utilisateur", false, MdiIcons.account, false),
         SizedBox(
           height: screenSize.size.height / 10 * 0.1,
         ),
@@ -591,34 +550,21 @@ class _LoginSliderState extends State<LoginSlider>
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (widget.setupNeeded!)
-              CustomButtons.materialButton(
-                  context, null, screenSize.size.height / 10 * 0.5, () {
-                sliderController!.previousPage(
-                    duration: Duration(milliseconds: 300),
-                    curve: Curves.easeIn);
-              },
-                  backgroundColor: Colors.grey,
-                  label: "Retour",
-                  textColor: Colors.white),
-            CustomButtons.materialButton(
-                context, null, screenSize.size.height / 10 * 0.5, () async {
+              CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5, () {
+                sliderController!.previousPage(duration: Duration(milliseconds: 300), curve: Curves.easeIn);
+              }, backgroundColor: Colors.grey, label: "Retour", textColor: Colors.white),
+            CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5, () async {
               //Actions when pressing the ok button
-              if (_username.text != "" &&
-                  (appSys.settings!["system"]["chosenParser"] == 1)) {
+              if (_username.text != "" && (appSys.settings!["system"]["chosenParser"] == 1 ? _url.text != "" : true)) {
                 //Login using the chosen API
-                connectionData = appSys.api!.login(
-                    _username.text.trim(), _password.text.trim(),
-                    url: _url.text.trim(), mobileCasLogin: false);
+                connectionData = appSys.api!
+                    .login(_username.text.trim(), _password.text.trim(), url: _url.text.trim(), mobileCasLogin: false);
 
                 openLoadingDialog();
               } else {
-                CustomDialogs.showAnyDialog(
-                    context, "Remplissez tous les champs.");
+                CustomDialogs.showAnyDialog(context, "Remplissez tous les champs.");
               }
-            },
-                backgroundColor: Colors.green,
-                label: "Se connecter",
-                textColor: Colors.white),
+            }, backgroundColor: Colors.green, label: "Se connecter", textColor: Colors.white),
           ],
         )
       ],
@@ -630,8 +576,7 @@ class _LoginSliderState extends State<LoginSlider>
 
     return Container(
       margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
-      padding:
-          EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.4),
+      padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.4),
       width: screenSize.size.width,
       child: FittedBox(
         fit: BoxFit.fitWidth,
@@ -641,10 +586,7 @@ class _LoginSliderState extends State<LoginSlider>
             InkWell(
                 child: new Text(
                   'Foire aux questions',
-                  style: TextStyle(
-                      fontFamily: "Asap",
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white60),
+                  style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: Colors.white60),
                 ),
                 onTap: () => launch('https://ynotes.fr/faq')),
             SizedBox(
@@ -653,10 +595,7 @@ class _LoginSliderState extends State<LoginSlider>
             InkWell(
                 child: new Text(
                   'PDC',
-                  style: TextStyle(
-                      fontFamily: "Asap",
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white60),
+                  style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: Colors.white60),
                 ),
                 onTap: () => launch('https://ynotes.fr/legal/PDCYNotes.pdf')),
             SizedBox(
@@ -665,10 +604,7 @@ class _LoginSliderState extends State<LoginSlider>
             InkWell(
                 child: new Text(
                   'CGU',
-                  style: TextStyle(
-                      fontFamily: "Asap",
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white60),
+                  style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: Colors.white60),
                 ),
                 onTap: () => launch('https://ynotes.fr/legal/CGUYNotes.pdf')),
           ],
@@ -689,20 +625,15 @@ class _LoginSliderState extends State<LoginSlider>
           PronoteUrlFieldPart(
               pronoteUrl: _url,
               backButton: () {
-                sliderController!.previousPage(
-                    duration: Duration(milliseconds: 300),
-                    curve: Curves.easeIn);
+                sliderController!.previousPage(duration: Duration(milliseconds: 300), curve: Curves.easeIn);
               },
               onLongPressCallback: () {
                 if (appSys.settings!["system"]["chosenParser"] == 1 &&
                     _url.text.length == 0 &&
                     _password.text.length == 0 &&
                     _username.text.length == 0) {
-                  connectionData = appSys.api!.login(
-                      "demonstration", "pronotevs",
-                      url:
-                          "https://demo.index-education.net/pronote/parent.html",
-                      mobileCasLogin: false);
+                  connectionData = appSys.api!.login("demonstration", "pronotevs",
+                      url: "https://demo.index-education.net/pronote/parent.html", mobileCasLogin: false);
                 }
                 openLoadingDialog();
               },
@@ -721,29 +652,21 @@ class _LoginSliderState extends State<LoginSlider>
                   }
                   if (await checkPronoteURL(_url.text)) {
                     if (await testIfPronoteCas(_url.text)) {
-                      var a = await Navigator.of(context).push(router(
-                          LoginWebView(
-                              url: _url.text, controller: _controller)));
+                      var a = await Navigator.of(context)
+                          .push(router(LoginWebView(url: _url.text, controller: _controller)));
                       if (a != null) {
-                        connectionData = appSys.api!.login(a["login"], a["mdp"],
-                            url: _url.text, mobileCasLogin: true);
+                        connectionData = appSys.api!.login(a["login"], a["mdp"], url: _url.text, mobileCasLogin: true);
                         openLoadingDialog();
                       }
                     } else {
-                      sliderController!.animateToPage(2,
-                          duration: Duration(milliseconds: 300),
-                          curve: Curves.easeIn);
+                      sliderController!.animateToPage(2, duration: Duration(milliseconds: 300), curve: Curves.easeIn);
                     }
                   } else {
-                    CustomDialogs.showErrorSnackBar(
-                        context, "Adresse invalide", "(pas de log spécifique)");
+                    CustomDialogs.showErrorSnackBar(context, "Adresse invalide", "(pas de log spécifique)");
                   }
                 } catch (e) {
                   print(e);
-                  CustomDialogs.showErrorSnackBar(
-                      context,
-                      "Impossible de se connecter à cette adresse",
-                      e.toString());
+                  CustomDialogs.showErrorSnackBar(context, "Impossible de se connecter à cette adresse", e.toString());
                 }
               }),
         _buildLoginPart(),
@@ -757,12 +680,9 @@ class _LoginSliderState extends State<LoginSlider>
     return Container(
       height: screenSize.size.height / 10 * 1,
       width: screenSize.size.width,
-      padding:
-          EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.2),
+      padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.2),
       child: Text(_getStepText(currentPage),
-          textAlign: TextAlign.center,
-          style:
-              TextStyle(fontFamily: "Asap", color: Colors.white, fontSize: 15)),
+          textAlign: TextAlign.center, style: TextStyle(fontFamily: "Asap", color: Colors.white, fontSize: 15)),
     );
   }
 
@@ -783,8 +703,7 @@ class _LoginSliderState extends State<LoginSlider>
     return Container(
       child: Column(
         children: [
-          CustomButtons.materialButton(
-              context, null, screenSize.size.height / 10 * 0.5, () async {
+          CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5, () async {
             Navigator.of(context).pushReplacement(router(SchoolAPIChoice()));
           },
               label: "Retourner au selecteur d'application",
@@ -793,11 +712,7 @@ class _LoginSliderState extends State<LoginSlider>
               textColor: Colors.black),
           Text(
             "Se connecter",
-            style: TextStyle(
-                fontFamily: 'Asap',
-                color: Colors.white,
-                fontSize: 38,
-                fontWeight: FontWeight.bold),
+            style: TextStyle(fontFamily: 'Asap', color: Colors.white, fontSize: 38, fontWeight: FontWeight.bold),
           ),
           GestureDetector(
             onTap: () async {
@@ -820,11 +735,8 @@ class _LoginSliderState extends State<LoginSlider>
           Container(
               width: screenSize.size.height / 10 * 0.1,
               height: screenSize.size.height / 10 * 0.1,
-              margin: EdgeInsets.symmetric(
-                  vertical: screenSize.size.height / 10 * 0.1),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5000),
-                  color: Colors.white)),
+              margin: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.1),
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(5000), color: Colors.white)),
           _buildStepsText(),
         ],
       ),
@@ -841,26 +753,22 @@ class _LoginSliderState extends State<LoginSlider>
     switch (id) {
       case "qrcode":
         {
-          sliderController!.animateToPage(1,
-              duration: Duration(milliseconds: 300), curve: Curves.easeIn);
+          sliderController!.animateToPage(1, duration: Duration(milliseconds: 300), curve: Curves.easeIn);
         }
         break;
       case "location":
         {
-          var r =
-              await CustomDialogs.showPronoteSchoolGeolocationDialog(context);
+          var r = await CustomDialogs.showPronoteSchoolGeolocationDialog(context);
           if (r != null) {
             chosenSpace = r;
             _url.text = chosenSpace.url!;
           }
-          sliderController!.animateToPage(1,
-              duration: Duration(milliseconds: 300), curve: Curves.easeIn);
+          sliderController!.animateToPage(1, duration: Duration(milliseconds: 300), curve: Curves.easeIn);
         }
         break;
       case "manual":
         {
-          sliderController!.animateToPage(1,
-              duration: Duration(milliseconds: 300), curve: Curves.easeIn);
+          sliderController!.animateToPage(1, duration: Duration(milliseconds: 300), curve: Curves.easeIn);
         }
         break;
     }
