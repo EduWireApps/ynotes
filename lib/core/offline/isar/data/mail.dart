@@ -43,10 +43,6 @@ class OfflineMail {
       });
       final old = await isar.mails.where().filter().repeat(mails, (q, Mail mail) => q.idEqualTo(mail.id)).findAll();
 
-      await Future.forEach(old, (Mail element) async {
-        await element.files.load();
-        print(element.files.toList().length);
-      });
       mails.removeWhere((mail) => old.any((oldMail) => oldMail.id == mail.id));
       //we put the old mails
       //no need to remove the old ones (Isar will automatically update them)

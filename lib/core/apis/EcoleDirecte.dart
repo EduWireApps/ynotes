@@ -144,13 +144,16 @@ class APIEcoleDirecte extends API {
   }
 
   Future<http.Request> downloadRequest(Document document) async {
-    var url = 'https://api.ecoledirecte.com/v3/telechargement.awp?verbe=get';
-    await EcoleDirecteMethod.refreshToken();
     String? type = document.type;
-    String? id = appSys.currentSchoolAccount?.studentID;
-    String body = "leTypeDeFichier=$type&fichierId=$id&token=$token";
+    String? id = document.id;
+    String data = 'data={"token": "$token"}';
+    var url = "https://api.ecoledirecte.com/v3/telechargement.awp?verbe=post&leTypeDeFichier=$type&fichierId=$id";
+    await EcoleDirecteMethod.refreshToken();
+    //encode Map to JSON
+    var body = data;
     http.Request request = http.Request('POST', Uri.parse(url));
     request.body = body.toString();
+
     return request;
   }
 

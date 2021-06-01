@@ -24,6 +24,7 @@ class DownloadController extends ChangeNotifier {
     String? filename = document.documentName;
     notifyListeners();
     Request request = await appSys.api!.downloadRequest(document);
+    print(request.url);
     //Make a response client
     final StreamedResponse response = await Client().send(request);
     final contentLength = response.contentLength;

@@ -255,20 +255,6 @@ class _MailPageState extends State<MailPage> {
                                                                             ),
                                                                             overflow: TextOverflow.ellipsis,
                                                                           ),
-                                                                          if (localList[index].files.length > 0)
-                                                                            Icon(
-                                                                              MdiIcons.attachment,
-                                                                              color: ThemeUtils.isThemeDark
-                                                                                  ? Colors.white38
-                                                                                  : Colors.black38,
-                                                                            ),
-                                                                          if (localList[index].files.length > 0)
-                                                                            Icon(
-                                                                              MdiIcons.attachment,
-                                                                              color: ThemeUtils.isThemeDark
-                                                                                  ? Colors.white38
-                                                                                  : Colors.black38,
-                                                                            ),
                                                                         ],
                                                                       ),
                                                                     ],
