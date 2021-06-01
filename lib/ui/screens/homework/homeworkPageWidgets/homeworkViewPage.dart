@@ -457,6 +457,7 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
   void initState() {
     super.initState();
     pageView = PageController(initialPage: widget.defaultPage);
+    refreshSelf();
   }
 
   pageColor(ApplicationSystem _appSys) {

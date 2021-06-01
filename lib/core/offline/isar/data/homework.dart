@@ -68,11 +68,10 @@ class OfflineHomework {
               oldHW.teacherName = newHW.teacherName;
               oldHW.loaded = newHW.loaded;
             }
-            await oldHW.files.load();
+            await isar.homeworks.put(oldHW);
             oldHW.files.clear();
             oldHW.files.addAll(newHW.files);
             await oldHW.files.saveChanges();
-            await isar.homeworks.put(oldHW);
           }
         });
       });

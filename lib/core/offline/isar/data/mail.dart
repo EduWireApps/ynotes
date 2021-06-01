@@ -36,6 +36,7 @@ class OfflineMail {
               //Fields succeptible to be updated (technically mails are immutable but "read" boolean can change)
               oldMail.read = mail.read;
               oldMail.idClasseur = mail.idClasseur;
+              
             }
           });
         });
