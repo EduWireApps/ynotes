@@ -39,36 +39,33 @@ class LessonsOffline extends Offline {
   updateLessons(List<Lesson> newData, int week) async {
     if (!locked) {
       try {
-        if (newData != null) {
-          print("Update offline lessons (week : $week, length : ${newData.length})");
-          Map<dynamic, dynamic> timeTable = Map();
-          var offline = await parent.agendaBox?.get("lessons");
-          if (offline != null) {
-            timeTable = Map<dynamic, dynamic>.from(await parent.agendaBox?.get("lessons"));
-          }
-
-          if (timeTable == null) {
-            timeTable = Map();
-          }
-
-          int todayWeek = await getWeek(DateTime.now());
-
-          bool lighteningOverride = appSys.settings!["user"]["agendaPage"]["lighteningOverride"];
-
-          //Remove old lessons in order to lighten the db
-          //Can be overriden in settings
-          if (!lighteningOverride) {
-            timeTable.removeWhere((key, value) {
-              return ((key < todayWeek - 2) || key > todayWeek + 3);
-            });
-          }
-          //timeTable[week] = [];
-          //Update the timetable
-          timeTable[week] = newData;
-
-          await parent.agendaBox?.put("lessons", timeTable);
-          await parent.refreshData();
+        print(
+            "Update offline lessons (week : $week, length : ${newData.length})");
+        Map<dynamic, dynamic> timeTable = Map();
+        var offline = await parent.agendaBox?.get("lessons");
+        if (offline != null) {
+          timeTable = Map<dynamic, dynamic>.from(
+              await parent.agendaBox?.get("lessons"));
         }
+
+        int todayWeek = await getWeek(DateTime.now());
+
+        bool lighteningOverride =
+            appSys.settings!["user"]["agendaPage"]["lighteningOverride"];
+
+        //Remove old lessons in order to lighten the db
+        //Can be overriden in settings
+        if (!lighteningOverride) {
+          timeTable.removeWhere((key, value) {
+            return ((key < todayWeek - 2) || key > todayWeek + 3);
+          });
+        }
+        //timeTable[week] = [];
+        //Update the timetable
+        timeTable[week] = newData;
+
+        await parent.agendaBox?.put("lessons", timeTable);
+        await parent.refreshData();
 
         return true;
       } catch (e) {

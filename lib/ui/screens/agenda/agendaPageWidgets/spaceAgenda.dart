@@ -4,14 +4,12 @@ import 'package:calendar_time/calendar_time.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:ynotes/core/logic/agenda/addEvent.dart';
+import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/screens/agenda/agendaPage.dart';
 import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/agendaGrid.dart';
 import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/buttons.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/globals.dart';
-import 'package:ynotes/main.dart';
-import 'package:ynotes/globals.dart';
-import 'package:ynotes/core/utils/themeUtils.dart';
 
 class SpaceAgenda extends StatefulWidget {
   @override
@@ -22,7 +20,6 @@ bool extended = false;
 
 class _SpaceAgendaState extends State<SpaceAgenda> {
   @override
-
   void initState() {
     super.initState();
 
@@ -43,8 +40,10 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
   Future<void> refreshAgendaFutures({bool force = true}) async {
     if (mounted) {
       setState(() {
-        spaceAgendaFuture = appSys.api!.getEvents(agendaDate!, true, forceReload: false);
-        agendaFuture = appSys.api!.getEvents(agendaDate!, false, forceReload: force);
+        spaceAgendaFuture =
+            appSys.api!.getEvents(agendaDate!, true, forceReload: false);
+        agendaFuture =
+            appSys.api!.getEvents(agendaDate!, false, forceReload: force);
       });
     }
     var realAF = await spaceAgendaFuture;
@@ -86,8 +85,6 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
   }
 
   _buildAgendaButtons(BuildContext context) {
-    MediaQueryData screenSize = MediaQuery.of(context);
-
     return AgendaButtons(
       getLessons: getLessons,
     );
@@ -130,12 +127,18 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
                                   builder: (context, snapshot) {
                                     List<AgendaEvent>? lst = snapshot.data;
                                     if (lst != null) {
-                                      lst.removeWhere((element) => element.start!.isAfter(element.end!));
+                                      lst.removeWhere((element) =>
+                                          element.start!.isAfter(element.end!));
                                     }
                                     if (snapshot.hasData &&
                                         snapshot.data != null &&
                                         lst!.length != 0 &&
-                                        lst.where((element) => !element.isLesson!).toList().length != 0) {
+                                        lst
+                                                .where((element) =>
+                                                    !element.isLesson!)
+                                                .toList()
+                                                .length !=
+                                            0) {
                                       return RefreshIndicator(
                                           onRefresh: refreshAgendaFutures,
                                           child: AgendaGrid(
@@ -146,7 +149,12 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
                                     }
                                     if (snapshot.data != null &&
                                         (lst!.length == 0 ||
-                                            lst.where((element) => !element.isLesson!).toList().length == 0)) {
+                                            lst
+                                                    .where((element) =>
+                                                        !element.isLesson!)
+                                                    .toList()
+                                                    .length ==
+                                                0)) {
                                       return Center(
                                         child: FittedBox(
                                           child: Column(

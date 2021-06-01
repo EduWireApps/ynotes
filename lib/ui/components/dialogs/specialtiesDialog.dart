@@ -167,7 +167,7 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
   setChosenSpecialties() async {
     final prefs = await (SharedPreferences.getInstance());
     if (chosenSpecialties != null && chosenSpecialties!.every((element) => element != null)) {
-      prefs.setStringList("listSpecialties", chosenSpecialties as List<String>);
+      prefs.setStringList("listSpecialties", chosenSpecialties!.cast<String>());
     }
     print(prefs.getStringList("listSpecialties"));
   }

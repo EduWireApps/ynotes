@@ -15,7 +15,8 @@ class LoginWebView extends StatefulWidget {
   final String? spaceUrl;
   InAppWebViewController? controller;
 
-  LoginWebView({Key? key, this.url, this.controller, this.spaceUrl}) : super(key: key);
+  LoginWebView({Key? key, this.url, this.controller, this.spaceUrl})
+      : super(key: key);
   @override
   _LoginWebViewState createState() => _LoginWebViewState();
 }
@@ -40,7 +41,8 @@ class _LoginWebViewState extends State<LoginWebView> {
       });
       String loginDataProcess =
           "(function(){return window && window.loginState ? JSON.stringify(window.loginState) : \'\';})();";
-      String? loginDataProcessResult = await (widget.controller!.evaluateJavascript(source: loginDataProcess));
+      String? loginDataProcessResult = await (widget.controller!
+          .evaluateJavascript(source: loginDataProcess));
       getCreds(loginDataProcessResult);
       if (loginStatus != null) {
         setState(() {
@@ -48,7 +50,9 @@ class _LoginWebViewState extends State<LoginWebView> {
         });
         //url: widget.url + "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335"
         await widget.controller!.loadUrl(
-            urlRequest: URLRequest(url: Uri.parse(widget.url! + "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335")));
+            urlRequest: URLRequest(
+                url: Uri.parse(widget.url! +
+                    "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335")));
       }
     });
   }
@@ -88,7 +92,8 @@ class _LoginWebViewState extends State<LoginWebView> {
             onLoadStop: (controller, url) async {
               await stepper();
             },
-            onProgressChanged: (InAppWebViewController controller, int progress) {},
+            onProgressChanged:
+                (InAppWebViewController controller, int progress) {},
           ),
           Align(
             alignment: Alignment.bottomCenter,
@@ -130,7 +135,7 @@ class _LoginWebViewState extends State<LoginWebView> {
       printWrapped(credsData);
       Map temp = json.decode(credsData);
       print(temp["status"]);
-      if (temp != null && temp["status"] == 0) {
+      if (temp["status"] == 0) {
         loginStatus = temp;
         Navigator.of(context).pop(loginStatus);
       } else {}
@@ -143,7 +148,8 @@ class _LoginWebViewState extends State<LoginWebView> {
     print("Getting metas");
     //Injected function to get metas
     String metaGetFunction = "(function(){return document.body.innerText;})()";
-    String? metaGetResult = await (widget.controller!.evaluateJavascript(source: metaGetFunction));
+    String? metaGetResult =
+        await (widget.controller!.evaluateJavascript(source: metaGetFunction));
     if (metaGetResult != null && metaGetResult.length > 0) {
       loginData = json.decode(metaGetResult);
       setState(() {
@@ -176,41 +182,6 @@ class _LoginWebViewState extends State<LoginWebView> {
           "(function(){var lMessData = window.messageData && window.messageData.length ? window.messageData.splice(0, window.messageData.length) : \'\';return lMessData ? JSON.stringify(lMessData) : \'\';})()";
       String c = await widget.controller.evaluateJavascript(source: toexecute3);*/
 
-      String joker = 'if (IE.fModule) {' +
-          '  if (GApplication.initApp) {' +
-          '    GApplication.initApp({' +
-          '      estAppliMobile : true,' +
-          '      avecExitApp : true,' +
-          '      login : \'' +
-          loginStatus!["login"].replaceAll("'", "\\'") +
-          '\',' +
-          '      mdp : \'' +
-          loginStatus!["mdp"] +
-          '\',' +
-          '      uuid : \'' +
-          appSys.settings!["system"]["uuid"] +
-          '\',' +
-          '    })' +
-          '  }' +
-          '} else {' +
-          '  Invocateur.abonner(Invocateur.events.modificationPresenceUtilisateur, function(aPresence){' +
-          '    if (!aPresence) {' +
-          '      Invocateur.evenement (Invocateur.events.modificationPresenceUtilisateur, true);' +
-          '    }' +
-          '  }, null);' +
-          '  GApplication.estAppliMobile = true;' +
-          '  GApplication.infoAppliMobile = {' +
-          '    avecExitApp:true' +
-          '  };' +
-          '  if(GApplication.smartAppBanner) \$(\'#\'+GApplication.smartAppBanner.id.escapeJQ()).remove();' +
-          '  GInterface.traiterEvenementValidation(\'' +
-          loginStatus!["login"].replaceAll("'", "\\'") +
-          '\', \'' +
-          loginStatus!["mdp"] +
-          '\', null, \'' +
-          appSys.settings!["system"]["uuid"] +
-          '\');' +
-          '}';
       /*  String amiajoketou = await widget.controller.evaluateJavascript(source: joker);
       print(amiajoketou);*/
     });
@@ -259,13 +230,15 @@ class _LoginWebViewState extends State<LoginWebView> {
         'return "ok";' +
         '} else return "ko";' +
         '} catch(e){return "ko";}})();';
-    String? cookieFunctionResult = await (widget.controller!.evaluateJavascript(source: cookieFunction));
+    String? cookieFunctionResult =
+        await (widget.controller!.evaluateJavascript(source: cookieFunction));
     if (cookieFunctionResult == "ok") {
       String authFunction = 'location.assign("' + widget.url! + '?fd=1")';
       setState(() {
         step = 4;
       });
-      String? authFunctionResult = await (widget.controller!.evaluateJavascript(source: authFunction));
+      String? authFunctionResult =
+          await (widget.controller!.evaluateJavascript(source: authFunction));
 
       stepper();
     }
@@ -317,7 +290,8 @@ class _LoginWebViewState extends State<LoginWebView> {
             MdiIcons.exitRun,
             size: screenSize.size.width / 5 * 0.5,
           ),
-          decoration: BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
+          decoration:
+              BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
         ),
         onPressed: () async {
           Navigator.of(context).pop();
@@ -329,8 +303,6 @@ class _LoginWebViewState extends State<LoginWebView> {
   _buildText(String text) {
     return SelectableText(text);
   }
-
-  _validateUrl() {}
 
   //I have to get an address like that
   //https://0782540m.index-education.net/pronote/InfoMobileApp.json?id=0D264427-EEFC-4810-A9E9-346942A862A4

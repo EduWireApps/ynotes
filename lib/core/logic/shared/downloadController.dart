@@ -14,31 +14,6 @@ class DownloadController extends ChangeNotifier {
   get downloadProgress => _progress;
   get isDownloading => _isDownloading;
 
-  ///Check if file exists
-  Future<bool> fileExists(filename) async {
-    try {
-      if (await Permission.storage.request().isGranted) {
-        final dir = await FolderAppUtil.getDirectory(download: true);
-        FolderAppUtil.createDirectory("$dir/yNotesDownloads/");
-        Directory downloadsDir = Directory("$dir/yNotesDownloads/");
-        List<FileSystemEntity> list = downloadsDir.listSync();
-        bool toReturn = false;
-        await Future.forEach(list, (dynamic element) async {
-          if (filename == await FileAppUtil.getFileNameWithExtension(element)) {
-            toReturn = true;
-          }
-        });
-        return toReturn;
-      } else {
-        print("Not granted");
-        return false;
-      }
-    } catch (e) {
-      return false;
-    }
-  }
-
-//Download a file in the app directory
   download(Document document) async {
     _isDownloading = true;
     _progress = null;
@@ -83,5 +58,30 @@ class DownloadController extends ChangeNotifier {
       },
       cancelOnError: true,
     );
+  }
+
+//Download a file in the app directory
+  ///Check if file exists
+  Future<bool> fileExists(filename) async {
+    try {
+      if (await Permission.storage.request().isGranted) {
+        final dir = await FolderAppUtil.getDirectory(download: true);
+        FolderAppUtil.createDirectory("$dir/yNotesDownloads/");
+        Directory downloadsDir = Directory("$dir/yNotesDownloads/");
+        List<FileSystemEntity> list = downloadsDir.listSync();
+        bool toReturn = false;
+        await Future.forEach(list, (dynamic element) async {
+          if (filename == await FileAppUtil.getFileNameWithExtension(element)) {
+            toReturn = true;
+          }
+        });
+        return toReturn;
+      } else {
+        print("Not granted");
+        return false;
+      }
+    } catch (e) {
+      return false;
+    }
   }
 }

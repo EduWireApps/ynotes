@@ -395,9 +395,7 @@ class _CloudPageState extends State<CloudPage> {
       isLoading = true;
     });
     var realdisciplinesListFuture = await cloudFolderFuture;
-    setState(() {
-      isLoading = false;
-    });
+    isLoading = false;
   }
 
   //Change directory action

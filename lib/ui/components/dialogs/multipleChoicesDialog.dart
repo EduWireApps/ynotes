@@ -87,6 +87,7 @@ class _MultipleChoicesDialogState extends State<MultipleChoicesDialog> {
                               children: <Widget>[
                                 Checkbox(
                                   value: indexsSelected.contains(index),
+                                  shape: const CircleBorder(),
                                   onChanged: (value) {
                                     if (widget.singleChoice) {
                                       indexsSelected.clear();
@@ -172,7 +173,7 @@ class _MultipleChoicesDialogState extends State<MultipleChoicesDialog> {
   @override
   void initState() {
     super.initState();
-    if (widget.initialSelection != null && indexsSelected.isEmpty) {
+    if (indexsSelected.isEmpty) {
       indexsSelected.addAll(widget.initialSelection);
     }
   }

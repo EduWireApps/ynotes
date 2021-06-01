@@ -41,7 +41,8 @@ class APIPronote extends API {
   }
 
   @override
-  Future<List<SchoolLifeTicket>> getSchoolLife({bool forceReload = false}) async {
+  Future<List<SchoolLifeTicket>> getSchoolLife(
+      {bool forceReload = false}) async {
     return [];
   }
 
@@ -51,7 +52,8 @@ class APIPronote extends API {
   }
 
   @override
-  Future app(String appname, {String? args, String? action, CloudItem? folder}) async {
+  Future app(String appname,
+      {String? args, String? action, CloudItem? folder}) async {
     switch (appname) {
     }
   }
@@ -71,28 +73,32 @@ class APIPronote extends API {
   @override
   @override
   Future<List<Discipline>?> getGrades({bool? forceReload}) async {
-    return (await pronoteMethod.fetchAnyData(
-        pronoteMethod.grades, offlineController.disciplines.getDisciplines, "grades",
-        forceFetch: forceReload ?? false, isOfflineLocked: super.offlineController.locked));
+    return (await pronoteMethod.fetchAnyData(pronoteMethod.grades,
+        offlineController.disciplines.getDisciplines, "grades",
+        forceFetch: forceReload ?? false,
+        isOfflineLocked: super.offlineController.locked));
   }
 
   @override
   Future<List<Homework>?> getHomeworkFor(DateTime? dateHomework) async {
     if (dateHomework != null) {
-      return (await pronoteMethod.onlineFetchWithLock(pronoteMethod.homeworkFor, "homeworkFor",
+      return (await pronoteMethod.onlineFetchWithLock(
+          pronoteMethod.homeworkFor, "homeworkFor",
           arguments: dateHomework));
     }
   }
 
   @override
   Future<List<Homework>?> getNextHomework({bool? forceReload}) async {
-    return (await pronoteMethod.fetchAnyData(
-        pronoteMethod.nextHomework, offlineController.homework.getHomework, "homework",
-        forceFetch: forceReload ?? false, isOfflineLocked: super.offlineController.locked));
+    return (await pronoteMethod.fetchAnyData(pronoteMethod.nextHomework,
+        offlineController.homework.getHomework, "homework",
+        forceFetch: forceReload ?? false,
+        isOfflineLocked: super.offlineController.locked));
   }
 
   @override
-  Future<List<Lesson>?> getNextLessons(DateTime dateToUse, {bool? forceReload}) async {
+  Future<List<Lesson>?> getNextLessons(DateTime dateToUse,
+      {bool? forceReload}) async {
     List<Lesson>? lessons = await pronoteMethod.fetchAnyData(
         pronoteMethod.lessons, offlineController.lessons.get, "lessons",
         forceFetch: forceReload ?? false,
@@ -110,9 +116,14 @@ class APIPronote extends API {
   getOfflinePeriods() async {
     try {
       List<Period> listPeriods = [];
-      List<Discipline>? disciplines = await appSys.offline.disciplines.getDisciplines();
-      List<Grade> grades =
-          (disciplines ?? []).map((e) => e.gradesList).toList().map((e) => e).expand((element) => element!).toList();
+      List<Discipline>? disciplines =
+          await appSys.offline.disciplines.getDisciplines();
+      List<Grade> grades = (disciplines ?? [])
+          .map((e) => e.gradesList)
+          .toList()
+          .map((e) => e)
+          .expand((element) => element!)
+          .toList();
       grades.forEach((grade) {
         if (!listPeriods.any((period) => period.name == grade.periodName)) {
           listPeriods.add(Period(grade.periodName, grade.periodCode));
@@ -137,7 +148,7 @@ class APIPronote extends API {
 
         return listPeriod;
       } else {
-        var listPronotePeriods = await localClient.periods();
+        var listPronotePeriods = localClient.periods();
         //refresh local pronote periods
         localClient.localPeriods = [];
         (listPronotePeriods).forEach((pronotePeriod) {
@@ -157,7 +168,7 @@ class APIPronote extends API {
       return await getOfflinePeriods();
     } catch (e) {
       print("Erreur while getting offline period " + e.toString());
-      if (connectivityResult != ConnectivityResult.none && localClient != null) {
+      if (connectivityResult != ConnectivityResult.none) {
         if (localClient.loggedIn ?? false) {
           print("getting periods online");
           return await getOnlinePeriods();
@@ -191,7 +202,9 @@ class APIPronote extends API {
   Future<List> login(username, password, {url, cas, mobileCasLogin}) async {
     print(username + " " + password + " " + url);
     int req = 0;
-    while (loginLock == true && req < 5 && appSys.loginController.actualState != loginStatus.loggedIn) {
+    while (loginLock == true &&
+        req < 5 &&
+        appSys.loginController.actualState != loginStatus.loggedIn) {
       print("Locked, trying in 5 seconds...");
       req++;
       await Future.delayed(Duration(seconds: 5), () => "1");
@@ -201,17 +214,23 @@ class APIPronote extends API {
       loginLock = true;
       try {
         var cookies = await callCas(cas, username, password, url ?? "");
-        localClient =
-            PronoteClient(url, username: username, password: password, mobileLogin: mobileCasLogin, cookies: cookies);
+        localClient = PronoteClient(url,
+            username: username,
+            password: password,
+            mobileLogin: mobileCasLogin,
+            cookies: cookies);
 
         await localClient.init();
-        if (localClient != null && (localClient.loggedIn ?? false)) {
+        if (localClient.loggedIn ?? false) {
           if (localClient.paramsUser != null) {
-            appSys.account = PronoteAccountConverter.account(localClient.paramsUser!);
+            appSys.account =
+                PronoteAccountConverter.account(localClient.paramsUser!);
           }
 
-          if (appSys.account != null && appSys.account!.managableAccounts != null) {
-            await storage.write(key: "appAccount", value: jsonEncode(appSys.account!.toJson()));
+          if (appSys.account != null &&
+              appSys.account!.managableAccounts != null) {
+            await storage.write(
+                key: "appAccount", value: jsonEncode(appSys.account!.toJson()));
             appSys.currentSchoolAccount = appSys.account!.managableAccounts![0];
           } else {
             loginLock = false;
@@ -245,27 +264,33 @@ class APIPronote extends API {
               "Le format de l'URL entrée est invalide. Vérifiez qu'il correspond bien à celui fourni par votre établissement";
         }
         if (e.toString().contains("runes")) {
-          error = "Le mot de passe et/ou l'identifiant saisi(s) est/sont incorrect(s)";
+          error =
+              "Le mot de passe et/ou l'identifiant saisi(s) est/sont incorrect(s)";
         }
         if (e.toString().contains("IP")) {
           error =
               "Une erreur inattendue  a eu lieu. Pronote a peut-être temporairement suspendu votre adresse IP. Veuillez recommencer dans quelques minutes.";
         }
         if (e.toString().contains("SocketException")) {
-          error = "Impossible de se connecter à l'adresse saisie. Vérifiez cette dernière et votre connexion.";
+          error =
+              "Impossible de se connecter à l'adresse saisie. Vérifiez cette dernière et votre connexion.";
         }
         if (e.toString().contains("Invalid or corrupted pad block")) {
-          error = "Le mot de passe et/ou l'identifiant saisi(s) est/sont incorrect(s)";
+          error =
+              "Le mot de passe et/ou l'identifiant saisi(s) est/sont incorrect(s)";
         }
         if (e.toString().contains("HTML PAGE")) {
           error = "Problème de page HTML.";
         }
-        if (e.toString().contains("nombre d'erreurs d'authentification autorisées")) {
+        if (e
+            .toString()
+            .contains("nombre d'erreurs d'authentification autorisées")) {
           error =
               "Vous avez dépassé le nombre d'erreurs d'authentification authorisées ! Réessayez dans quelques minutes.";
         }
         if (e.toString().contains("Failed login request")) {
-          error = "Impossible de se connecter à l'URL renseignée. Vérifiez votre connexion et l'URL entrée.";
+          error =
+              "Impossible de se connecter à l'URL renseignée. Vérifiez votre connexion et l'URL entrée.";
         }
         print("test");
         await logFile(error);
@@ -279,9 +304,12 @@ class APIPronote extends API {
 
   Future<bool> setPronotePollRead(PollInfo poll, PollQuestion question) async {
     try {
-      String publicID = mapGet(localClient.paramsUser, ["donneesSec", "donnees", "ressource", "N"]);
-      int publicType = mapGet(localClient.paramsUser, ["donneesSec", "donnees", "ressource", "G"]);
-      String publicName = mapGet(localClient.paramsUser, ["donneesSec", "donnees", "ressource", "L"]);
+      String publicID = mapGet(
+          localClient.paramsUser, ["donneesSec", "donnees", "ressource", "N"]);
+      int publicType = mapGet(
+          localClient.paramsUser, ["donneesSec", "donnees", "ressource", "G"]);
+      String publicName = mapGet(
+          localClient.paramsUser, ["donneesSec", "donnees", "ressource", "L"]);
 
       var data = {
         "donnees": {
@@ -318,7 +346,8 @@ class APIPronote extends API {
         }
       };
       print(jsonEncode(data));
-      var a = await pronoteMethod.request("SaisieActualites", null, data: data, onglet: 8);
+      var a = await pronoteMethod.request("SaisieActualites", null,
+          data: data, onglet: 8);
       print(a);
       return true;
     } catch (e) {
@@ -326,11 +355,15 @@ class APIPronote extends API {
     }
   }
 
-  Future<bool> setPronotePolls(PollInfo poll, PollQuestion question, PollChoice choice) async {
+  Future<bool> setPronotePolls(
+      PollInfo poll, PollQuestion question, PollChoice choice) async {
     try {
-      String publicID = mapGet(localClient.paramsUser, ["donneesSec", "donnees", "ressource", "N"]);
-      int publicType = mapGet(localClient.paramsUser, ["donneesSec", "donnees", "ressource", "G"]);
-      String publicName = mapGet(localClient.paramsUser, ["donneesSec", "donnees", "ressource", "L"]);
+      String publicID = mapGet(
+          localClient.paramsUser, ["donneesSec", "donnees", "ressource", "N"]);
+      int publicType = mapGet(
+          localClient.paramsUser, ["donneesSec", "donnees", "ressource", "G"]);
+      String publicName = mapGet(
+          localClient.paramsUser, ["donneesSec", "donnees", "ressource", "L"]);
 
       var data = {
         "donnees": {
@@ -355,7 +388,10 @@ class APIPronote extends API {
                     "N": question.answerID,
                     "E": 2,
                     "Actif": true,
-                    "valeurReponse": {"_T": 8, "V": "[" + choice.rank.toString() + "]"},
+                    "valeurReponse": {
+                      "_T": 8,
+                      "V": "[" + choice.rank.toString() + "]"
+                    },
                     "avecReponse": true,
                     "_validationSaisie": true
                   }
@@ -367,7 +403,8 @@ class APIPronote extends API {
         }
       };
       print(jsonEncode(data));
-      var a = await pronoteMethod.request("SaisieActualites", null, data: data, onglet: 8);
+      var a = await pronoteMethod.request("SaisieActualites", null,
+          data: data, onglet: 8);
       print(a);
       return true;
     } catch (e) {

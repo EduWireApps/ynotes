@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -125,7 +124,7 @@ class _AlertBoxWidgetState extends State<AlertBoxWidget> {
                               BorderRadius.only(bottomLeft: Radius.circular(32.0), bottomRight: Radius.circular(32.0)),
                         ),
                         onPressed: () async {
-                          Navigator.of(context).pushReplacement(router(carousel()));
+                          Navigator.of(context).pushReplacement(router(Carousel()));
                         },
                         child: Text(
                           "J'accepte",
@@ -176,13 +175,7 @@ class _AlertBoxWidgetState extends State<AlertBoxWidget> {
 class _LoginPageState extends State<LoginPage> {
   String casValue = "Aucun";
   Future<List>? connectionData;
-  final _username = TextEditingController();
-  final _password = TextEditingController();
-  final _url = TextEditingController();
-  final _cas = TextEditingController();
   bool _isFirstUse = true;
-  String _obligationText = "";
-  StreamSubscription? loginconnexion;
 
   Widget build(BuildContext context) {
     return LoginSlider(
@@ -197,7 +190,7 @@ class _LoginPageState extends State<LoginPage> {
 
   getFirstUse() async {
     final prefs = await (SharedPreferences.getInstance());
-    if (prefs.getBool('firstUse') == true && storage.read(key: 'agreedTermsAndConfiguredApp') == null) {
+    if (prefs.getBool('firstUse') == true) {
       _isFirstUse = true;
     }
   }
@@ -212,8 +205,6 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   openAlertBox() {
-    var offset = 0.0;
-
     MediaQueryData screenSize;
     screenSize = MediaQuery.of(context);
     return showDialog(
@@ -246,7 +237,7 @@ class _LoginPageState extends State<LoginPage> {
                             if (_isFirstUse == true) {
                               openAlertBox();
                             } else {
-                              Navigator.of(context).pushReplacement(router(homePage()));
+                              Navigator.of(context).pushReplacement(router(HomePage()));
                             }
                           });
                           return Column(
@@ -323,7 +314,6 @@ class _LoginPageState extends State<LoginPage> {
     String? p = await readStorage("password");
     String? url = await readStorage("pronoteurl");
     String? cas = await readStorage("pronotecas");
-    String? isCas = await readStorage("pronotecas");
 
     String? z = await storage.read(key: "agreedTermsAndConfiguredApp");
 
@@ -331,11 +321,6 @@ class _LoginPageState extends State<LoginPage> {
       connectionData = appSys.api!.login(u, p, url: url, cas: cas);
       openLoadingDialog();
     }
-  }
-
-  static String utf8convert(String text) {
-    List<int> bytes = text.toString().codeUnits;
-    return utf8.decode(bytes);
   }
 }
 
@@ -422,7 +407,7 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
         suffix = "/" +
             (suffixMatches.firstMatch(suffix)?.group(1) ?? "") +
             (suffixMatches.firstMatch(suffix)?.group(2) ?? "");
-      
+
         return [1, (regExp.firstMatch(url)?.group(1) ?? "") + suffix];
       }
     } else {
@@ -446,8 +431,6 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
   }
 
   openAlertBox() {
-    var offset = 0.0;
-
     MediaQueryData screenSize;
     screenSize = MediaQuery.of(context);
     return showDialog(
@@ -572,9 +555,7 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
               }, backgroundColor: Colors.grey, label: "Retour", textColor: Colors.white),
             CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5, () async {
               //Actions when pressing the ok button
-              if (_username.text != "" &&
-                  (appSys.settings!["system"]["chosenParser"] == 1 ? _url.text != null : true) &&
-                  _password.text != null) {
+              if (_username.text != "" && (appSys.settings!["system"]["chosenParser"] == 1 ? _url.text != "" : true)) {
                 //Login using the chosen API
                 connectionData = appSys.api!
                     .login(_username.text.trim(), _password.text.trim(), url: _url.text.trim(), mobileCasLogin: false);
@@ -693,36 +674,6 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
     );
   }
 
-  _buildRoundedContainer(Widget child) {
-    MediaQueryData screenSize = MediaQuery.of(context);
-
-    return Container(
-        padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.2),
-        decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(topLeft: Radius.circular(32.0), topRight: Radius.circular(32.0))),
-        child: child);
-  }
-
-  _buildStartingAnimation() {
-    MediaQueryData screenSize = MediaQuery.of(context);
-    return AnimatedBuilder(
-        animation: iconSlideAnimation,
-        builder: (context, child) {
-          return Transform.scale(
-            scale: 1 + 0.2 * iconSlideAnimation.value,
-            child: Transform.translate(
-              //animation goes from 1 to 0
-              offset: Offset(0, 0 + iconSlideAnimation.value * screenSize.size.height / 10 * 0.2),
-              child: Container(
-                  width: screenSize.size.width / 5 * 2.2,
-                  height: screenSize.size.width / 5 * 2.2,
-                  decoration: BoxDecoration(color: Colors.white)),
-            ),
-          );
-        });
-  }
-
   _buildStepsText() {
     MediaQueryData screenSize = MediaQuery.of(context);
 
@@ -821,10 +772,5 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
         }
         break;
     }
-  }
-
-  static String utf8convert(String text) {
-    List<int> bytes = text.toString().codeUnits;
-    return utf8.decode(bytes);
   }
 }

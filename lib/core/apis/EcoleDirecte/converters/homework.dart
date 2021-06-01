@@ -24,13 +24,25 @@ class EcoleDirecteHomeworkConverter {
         String codeMatiere = mappedHomework["codeMatiere"].toString();
         String id = mappedHomework["idDevoir"].toString();
         DateTime date = DateTime.parse(key);
-        DateTime datePost = DateTime.parse(mappedHomework["donneLe"]);
         bool done = mappedHomework["effectue"] == "true";
         bool rendreEnLigne = mappedHomework["rendreEnLigne"] == "true";
         bool interrogation = mappedHomework["interrogation"] == "true";
 
-        unloadedHWList.add(Homework(matiere, codeMatiere, id, null, null, date, null, done, rendreEnLigne,
-            interrogation, null, null, null, loaded));
+        unloadedHWList.add(Homework(
+            matiere,
+            codeMatiere,
+            id,
+            null,
+            null,
+            date,
+            null,
+            done,
+            rendreEnLigne,
+            interrogation,
+            null,
+            null,
+            null,
+            loaded));
       });
     });
     return unloadedHWList;
@@ -58,7 +70,8 @@ class EcoleDirecteHomeworkConverter {
           var docsContenu = homework['aFaire']['contenuDeSeance']['documents'];
           if (docsContenu != null) {
             docsContenu.forEach((e) {
-              documentsContenuDeCours = EcoleDirecteDocumentConverter.documents(docsContenu);
+              documentsContenuDeCours =
+                  EcoleDirecteDocumentConverter.documents(docsContenu);
             });
           }
           interrogation = homework['interrogation'];
@@ -71,7 +84,8 @@ class EcoleDirecteHomeworkConverter {
           String id = homework['id'].toString();
 
           decodedContent = decodedContent.replaceAllMapped(
-              new RegExp(r'(>|\s)+(https?.+?)(<|\s)', multiLine: true, caseSensitive: false), (match) {
+              new RegExp(r'(>|\s)+(https?.+?)(<|\s)',
+                  multiLine: true, caseSensitive: false), (match) {
             return '${match.group(1)}<a href="${match.group(2)}">${match.group(2)}</a>${match.group(3)}';
           });
 

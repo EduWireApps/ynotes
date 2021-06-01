@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 
 import '../agendaPage.dart';
@@ -54,37 +53,46 @@ class _AgendaButtonsState extends State<AgendaButtons> {
     return Container(
       width: screenSize.size.width / 5 * 3.7,
       padding: EdgeInsets.symmetric(
-          vertical: screenSize.size.height / 10 * 0.005, horizontal: screenSize.size.width / 5 * 0.05),
+          vertical: screenSize.size.height / 10 * 0.005,
+          horizontal: screenSize.size.width / 5 * 0.05),
       decoration: BoxDecoration(
           color: Theme.of(context).primaryColorDark,
-          borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15)),
+          borderRadius:
+              BorderRadius.circular(screenSize.size.width / 5 * 0.15)),
       child: FittedBox(
         child: Column(
           children: [
             Text(
               weekName,
-              style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
+              style:
+                  TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.05),
+                  padding: EdgeInsets.symmetric(
+                      vertical: screenSize.size.height / 10 * 0.05),
                   child: Material(
                     color: Theme.of(context).primaryColor,
-                    borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                    borderRadius:
+                        BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                     child: InkWell(
-                      borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                      borderRadius: BorderRadius.circular(
+                          screenSize.size.width / 5 * 0.15),
                       onTap: () async {
                         setState(() {
-                          agendaDate = CalendarTime(agendaDate).startOfDay.subtract(Duration(hours: 24));
+                          agendaDate = CalendarTime(agendaDate)
+                              .startOfDay
+                              .subtract(Duration(hours: 24));
                         });
                         await widget.getLessons!(agendaDate);
                       },
                       child: Container(
                           height: screenSize.size.height / 10 * 0.45,
                           width: screenSize.size.width / 5 * 0.5,
-                          padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
+                          padding:
+                              EdgeInsets.all(screenSize.size.width / 5 * 0.1),
                           child: FittedBox(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -100,13 +108,17 @@ class _AgendaButtonsState extends State<AgendaButtons> {
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.only(left: (screenSize.size.height / 10 * 8.8) / 10 * 0.05),
-                  padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.05),
+                  margin: EdgeInsets.only(
+                      left: (screenSize.size.height / 10 * 8.8) / 10 * 0.05),
+                  padding: EdgeInsets.symmetric(
+                      vertical: screenSize.size.height / 10 * 0.05),
                   child: Material(
                     color: Theme.of(context).primaryColor,
-                    borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                    borderRadius:
+                        BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                     child: InkWell(
-                      borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                      borderRadius: BorderRadius.circular(
+                          screenSize.size.width / 5 * 0.15),
                       onTap: () async {
                         DateTime? someDate = await showDatePicker(
                           locale: Locale('fr', 'FR'),
@@ -120,7 +132,9 @@ class _AgendaButtonsState extends State<AgendaButtons> {
                               child: Material(
                                 color: Colors.transparent,
                                 child: Theme(
-                                  data: ThemeUtils.isThemeDark ? ThemeData.dark() : ThemeData.light(),
+                                  data: ThemeUtils.isThemeDark
+                                      ? ThemeData.dark()
+                                      : ThemeData.light(),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[SizedBox(child: child)],
@@ -147,13 +161,15 @@ class _AgendaButtonsState extends State<AgendaButtons> {
                       child: Container(
                           height: screenSize.size.height / 10 * 0.45,
                           width: screenSize.size.width / 5 * 2,
-                          padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
+                          padding:
+                              EdgeInsets.all(screenSize.size.width / 5 * 0.1),
                           child: FittedBox(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: <Widget>[
                                 Text(
-                                  DateFormat("EEEE dd MMMM", "fr_FR").format(agendaDate!),
+                                  DateFormat("EEEE dd MMMM", "fr_FR")
+                                      .format(agendaDate!),
                                   style: TextStyle(
                                     fontFamily: "Asap",
                                     color: ThemeUtils.textColor(),
@@ -166,23 +182,30 @@ class _AgendaButtonsState extends State<AgendaButtons> {
                   ),
                 ),
                 Container(
-                  margin: EdgeInsets.only(left: (screenSize.size.height / 10 * 8.8) / 10 * 0.05),
-                  padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.05),
+                  margin: EdgeInsets.only(
+                      left: (screenSize.size.height / 10 * 8.8) / 10 * 0.05),
+                  padding: EdgeInsets.symmetric(
+                      vertical: screenSize.size.height / 10 * 0.05),
                   child: Material(
                     color: Theme.of(context).primaryColor,
-                    borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                    borderRadius:
+                        BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                     child: InkWell(
-                      borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                      borderRadius: BorderRadius.circular(
+                          screenSize.size.width / 5 * 0.15),
                       onTap: () async {
                         setState(() {
-                          agendaDate = CalendarTime(agendaDate).startOfDay.add(Duration(hours: 25));
+                          agendaDate = CalendarTime(agendaDate)
+                              .startOfDay
+                              .add(Duration(hours: 25));
                         });
                         await widget.getLessons!(agendaDate);
                       },
                       child: Container(
                           height: screenSize.size.height / 10 * 0.45,
                           width: screenSize.size.width / 5 * 0.5,
-                          padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
+                          padding:
+                              EdgeInsets.all(screenSize.size.width / 5 * 0.1),
                           child: FittedBox(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,

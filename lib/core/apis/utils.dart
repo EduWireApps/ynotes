@@ -79,11 +79,8 @@ Future<int> getColor(String? disciplineName) async {
 
 ///Generate lesson ID using, the next scheme : week parity (1 or 2), day of week (1-7) and an hashcode
 ///composed of the lesson start datetime, the lesson end datetime and the discipline name
-Future<int> getLessonID(DateTime start, DateTime end, String disciplineName) async {
-  String _disciplineName = "";
-  if (disciplineName != null) {
-    _disciplineName = disciplineName;
-  }
+Future<int> getLessonID(
+    DateTime start, DateTime end, String disciplineName) async {
   int parity = ((await getWeek(start)).isEven) ? 1 : 2;
   int weekDay = start.weekday;
   TimeOfDay startTimeOfDay = TimeOfDay.fromDateTime(start);
@@ -94,7 +91,8 @@ Future<int> getLessonID(DateTime start, DateTime end, String disciplineName) asy
       endTimeOfDay.minute.toString();
   int endHash = (parsedStartAndEnd + disciplineName).hashCode;
 
-  int finalID = int.parse(parity.toString() + weekDay.toString() + endHash.toString());
+  int finalID =
+      int.parse(parity.toString() + weekDay.toString() + endHash.toString());
 
   return finalID;
 }
@@ -102,14 +100,23 @@ Future<int> getLessonID(DateTime start, DateTime end, String disciplineName) asy
 getRootAddress(addr) {
   return [
     (addr.split('/').sublist(0, addr.split('/').length - 1).join("/")),
-    (addr.split('/').sublist(addr.split('/').length - 1, addr.split('/').length).join("/"))
+    (addr
+        .split('/')
+        .sublist(addr.split('/').length - 1, addr.split('/').length)
+        .join("/"))
   ];
 }
 
 getWeek(DateTime date) async {
   final storage = new FlutterSecureStorage();
   if (await (storage.read(key: "startday")) != null) {
-    return (1 + (date.difference(DateTime.parse(await (storage.read(key: "startday")) ?? "")).inDays / 7).floor())
+    return (1 +
+            (date
+                        .difference(DateTime.parse(
+                            await (storage.read(key: "startday")) ?? ""))
+                        .inDays /
+                    7)
+                .floor())
         .round();
   } else {
     return 0;
@@ -117,7 +124,8 @@ getWeek(DateTime date) async {
 }
 
 setChosenParser(int? chosen) async {
-  await appSys.updateSetting(appSys.settings!["system"], "chosenParser", chosen);
+  await appSys.updateSetting(
+      appSys.settings!["system"], "chosenParser", chosen);
 }
 
 testIfPronoteCas(String url) async {

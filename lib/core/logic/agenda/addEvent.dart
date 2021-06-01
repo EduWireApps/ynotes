@@ -6,7 +6,7 @@ import 'package:ynotes/ui/components/modalBottomSheets/agendaEventEditBottomShee
 import 'package:ynotes/ui/screens/agenda/agendaPage.dart';
 
 addEvent(context) async {
-  AgendaEvent? temp = await (agendaEventEdit(context, true, defaultDate: agendaDate) as Future<AgendaEvent?>);
+  AgendaEvent? temp = (await (agendaEventEdit(context, true, defaultDate: agendaDate))) as AgendaEvent?;
   if (temp != null) {
     print(temp.recurrenceScheme);
     if (temp.recurrenceScheme != null && temp.recurrenceScheme != "0") {

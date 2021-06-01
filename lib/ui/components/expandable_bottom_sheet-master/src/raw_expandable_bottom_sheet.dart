@@ -92,20 +92,15 @@ class ExpandableBottomSheet extends StatefulWidget {
     this.animationDurationContract = const Duration(milliseconds: 250),
     this.onIsExtendedCallback,
     this.onIsContractedCallback,
-  })  : assert(expandableContent != null),
-        assert(background != null),
-        assert(persistentContentHeight != null && persistentContentHeight >= 0),
-        assert(animationCurveExpand != null),
-        assert(animationCurveContract != null),
-        assert(animationDurationExtend != null),
-        assert(animationDurationContract != null),
+  })  : assert(persistentContentHeight >= 0),
         super(key: key);
 
   @override
   ExpandableBottomSheetState createState() => ExpandableBottomSheetState();
 }
 
-class ExpandableBottomSheetState extends State<ExpandableBottomSheet> with TickerProviderStateMixin {
+class ExpandableBottomSheetState extends State<ExpandableBottomSheet>
+    with TickerProviderStateMixin {
   GlobalKey _contentKey = new GlobalKey(debugLabel: 'contentKey');
   GlobalKey _headerKey = new GlobalKey(debugLabel: 'headerKey');
   GlobalKey _footerKey = new GlobalKey(debugLabel: 'footerKey');
@@ -163,18 +158,20 @@ class ExpandableBottomSheetState extends State<ExpandableBottomSheet> with Ticke
       upperBound: 1.0,
     );
     _controller.addStatusListener(_handleAnimationStatusUpdate);
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _afterUpdateWidgetBuild(true));
+    WidgetsBinding.instance!
+        .addPostFrameCallback((_) => _afterUpdateWidgetBuild(true));
   }
 
   @override
   Widget build(BuildContext context) {
-    WidgetsBinding.instance!.addPostFrameCallback((_) => _afterUpdateWidgetBuild(false));
+    WidgetsBinding.instance!
+        .addPostFrameCallback((_) => _afterUpdateWidgetBuild(false));
     return Column(
       mainAxisSize: MainAxisSize.max,
       children: <Widget>[
         Expanded(
           child: Stack(
-            overflow: Overflow.clip,
+            clipBehavior: Clip.antiAlias,
             children: <Widget>[
               Align(
                 alignment: Alignment.topLeft,
@@ -184,7 +181,8 @@ class ExpandableBottomSheetState extends State<ExpandableBottomSheet> with Ticke
                 animation: _controller,
                 builder: (_, Widget? child) {
                   if (_controller.isAnimating) {
-                    _positionOffset = _animationMinOffset + _controller.value * _draggableHeight;
+                    _positionOffset = _animationMinOffset +
+                        _controller.value * _draggableHeight;
                   }
                   return Positioned(
                     top: _positionOffset,
@@ -200,7 +198,9 @@ class ExpandableBottomSheetState extends State<ExpandableBottomSheet> with Ticke
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      Container(key: _headerKey, child: widget.persistentHeader ?? Container()),
+                      Container(
+                          key: _headerKey,
+                          child: widget.persistentHeader ?? Container()),
                       Container(
                         key: _contentKey,
                         child: widget.expandableContent,
@@ -212,7 +212,8 @@ class ExpandableBottomSheetState extends State<ExpandableBottomSheet> with Ticke
             ],
           ),
         ),
-        Container(key: _footerKey, child: widget.persistentFooter ?? Container()),
+        Container(
+            key: _footerKey, child: widget.persistentFooter ?? Container()),
       ],
     );
   }
@@ -233,21 +234,31 @@ class ExpandableBottomSheetState extends State<ExpandableBottomSheet> with Ticke
           _draggableHeight = _maxOffset - _minOffset;
           _positionOffset = _maxOffset;
         });
-        if (widget.onIsContractedCallback != null && _callCallbacks) widget.onIsContractedCallback!();
+        if (widget.onIsContractedCallback != null && _callCallbacks)
+          widget.onIsContractedCallback!();
       }
     }
   }
 
   void _afterUpdateWidgetBuild(bool isFirstBuild) {
-    if (_headerKey.currentContext != null && _footerKey.currentContext != null && _headerKey.currentContext != null) {
+    if (_headerKey.currentContext != null &&
+        _footerKey.currentContext != null &&
+        _headerKey.currentContext != null) {
       double headerHeight = _headerKey.currentContext!.size!.height;
       double footerHeight = _footerKey.currentContext!.size!.height;
       double contentHeight = _contentKey.currentContext!.size!.height;
 
-      double checkedPersistentContentHeight = (widget.persistentContentHeight < contentHeight) ? widget.persistentContentHeight : contentHeight;
+      double checkedPersistentContentHeight =
+          (widget.persistentContentHeight < contentHeight)
+              ? widget.persistentContentHeight
+              : contentHeight;
 
-      _minOffset = context.size!.height - headerHeight - contentHeight - footerHeight;
-      _maxOffset = context.size!.height - headerHeight - footerHeight - checkedPersistentContentHeight;
+      _minOffset =
+          context.size!.height - headerHeight - contentHeight - footerHeight;
+      _maxOffset = context.size!.height -
+          headerHeight -
+          footerHeight -
+          checkedPersistentContentHeight;
 
       if (!isFirstBuild) {
         _positionOutOfBounds();
@@ -295,7 +306,8 @@ class ExpandableBottomSheetState extends State<ExpandableBottomSheet> with Ticke
   void _dragUpdate(DragUpdateDetails details) {
     if (!_useDrag) return;
     double offset = details.localPosition.dy;
-    double newOffset = _startPositionAtDragDown! + offset - _startOffsetAtDragDown;
+    double newOffset =
+        _startPositionAtDragDown! + offset - _startOffsetAtDragDown;
     if (_minOffset <= newOffset && _maxOffset >= newOffset) {
       setState(() {
         _positionOffset = newOffset;
@@ -324,10 +336,12 @@ class ExpandableBottomSheetState extends State<ExpandableBottomSheet> with Ticke
         _callCallbacks = true;
         _animateToBottom();
       } else {
-        if (_positionOffset == _maxOffset && widget.onIsContractedCallback != null) {
+        if (_positionOffset == _maxOffset &&
+            widget.onIsContractedCallback != null) {
           widget.onIsContractedCallback!();
         }
-        if (_positionOffset == _minOffset && widget.onIsExtendedCallback != null) {
+        if (_positionOffset == _minOffset &&
+            widget.onIsExtendedCallback != null) {
           widget.onIsExtendedCallback!();
         }
       }
@@ -366,7 +380,9 @@ class ExpandableBottomSheetState extends State<ExpandableBottomSheet> with Ticke
     _draggableHeight = _positionOffset! - _maxOffset;
     _animationMinOffset = _maxOffset;
     _oldStatus = AnimationStatus.reverse;
-    _controller.animateTo(0.0, duration: widget.animationDurationExtend, curve: widget.animationCurveExpand);
+    _controller.animateTo(0.0,
+        duration: widget.animationDurationExtend,
+        curve: widget.animationCurveExpand);
   }
 
   void _animateToMin() {

@@ -3,13 +3,11 @@ import 'dart:io';
 
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/globals.dart';
-
 
 //Parsers list
 ///Color theme switcher, actually 0 for darkmode and 1 for lightmode
@@ -21,7 +19,7 @@ List<Discipline> specialities = [];
 TValue? case2<TOptionType, TValue>(
   TOptionType selectedOption,
   Map<TOptionType, TValue> branches, [
-  TValue? defaultValue = null,
+  TValue? defaultValue,
 ]) {
   if (!branches.containsKey(selectedOption)) {
     return defaultValue;
@@ -32,18 +30,17 @@ TValue? case2<TOptionType, TValue>(
 
 //Connectivity  classs
 
-List<Grade>? getAllGrades(List<Discipline>? list, {bool overrideLimit = false, bool sortByWritingDate = true}) {
+List<Grade>? getAllGrades(List<Discipline>? list,
+    {bool overrideLimit = false, bool sortByWritingDate = true}) {
   if (appSys.api != null) {
     List<Grade> listToReturn = [];
     if (list != null) {
       list.forEach((element) {
-        if (element != null) {
-          element.gradesList?.forEach((grade) {
-            if (!listToReturn.contains(grade)) {
-              listToReturn.add(grade);
-            }
-          });
-        }
+        element.gradesList?.forEach((grade) {
+          if (!listToReturn.contains(grade)) {
+            listToReturn.add(grade);
+          }
+        });
       });
       if (appSys.api!.gradesList != null &&
           (appSys.api!.gradesList ?? []).length > 0 &&
@@ -53,25 +50,25 @@ List<Grade>? getAllGrades(List<Discipline>? list, {bool overrideLimit = false, b
 
       listToReturn = listToReturn.toSet().toList();
 
-      if (listToReturn != null) {
-        //sort grades
-        if (sortByWritingDate) {
-          listToReturn.sort(
-              (a, b) => (a.entryDate != null && b.entryDate != null) ? (a.entryDate!.compareTo(b.entryDate!)) : 1);
-        }
+      //sort grades
+      if (sortByWritingDate) {
+        listToReturn.sort((a, b) => (a.entryDate != null && b.entryDate != null)
+            ? (a.entryDate!.compareTo(b.entryDate!))
+            : 1);
+      }
 
-        //remove duplicates
-        listToReturn = listToReturn.toSet().toList();
-        listToReturn = listToReturn.reversed.toList();
-        if (appSys.api!.gradesList == null) {
-          appSys.api!.gradesList = [];
-        }
-        appSys.api!.gradesList?.clear();
-        appSys.api!.gradesList?.addAll(listToReturn);
+      //remove duplicates
+      listToReturn = listToReturn.toSet().toList();
+      listToReturn = listToReturn.reversed.toList();
+      if (appSys.api!.gradesList == null) {
+        appSys.api!.gradesList = [];
+      }
+      appSys.api!.gradesList?.clear();
+      appSys.api!.gradesList?.addAll(listToReturn);
 
-        if (overrideLimit == false && listToReturn != null) {
-          listToReturn = listToReturn.sublist(0, ((listToReturn.length >= 5) ? 5 : listToReturn.length));
-        }
+      if (overrideLimit == false) {
+        listToReturn = listToReturn.sublist(
+            0, ((listToReturn.length >= 5) ? 5 : listToReturn.length));
       }
       return listToReturn;
     } else {
@@ -98,7 +95,8 @@ Future<String?> readStorage(_key) async {
   return u;
 }
 
-Future<List<Discipline>> refreshDisciplinesListColors(List<Discipline> list) async {
+Future<List<Discipline>> refreshDisciplinesListColors(
+    List<Discipline> list) async {
   List<Discipline> newList = [];
   list.forEach((f) async {
     f.color = await getColor(f.disciplineCode);
@@ -126,15 +124,15 @@ Route router(Widget widget) {
   );
 }
 
-
-
 class ConnectionStatusSingleton {
   //This creates the single instance by calling the `_internal` constructor specified below
-  static final ConnectionStatusSingleton _singleton = new ConnectionStatusSingleton._internal();
+  static final ConnectionStatusSingleton _singleton =
+      new ConnectionStatusSingleton._internal();
   bool hasConnection = false;
 
   //This is what's used to retrieve the instance through the app
-  StreamController connectionChangeController = new StreamController.broadcast();
+  StreamController connectionChangeController =
+      new StreamController.broadcast();
 
   //This tracks the current connection status
   final Connectivity _connectivity = Connectivity();

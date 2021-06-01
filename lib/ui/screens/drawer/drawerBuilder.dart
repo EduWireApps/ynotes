@@ -30,8 +30,6 @@ import 'widgets/custom_drawer.dart';
 
 bool isQuickMenuShown = false;
 
-int _currentIndex = 0;
-
 ///Build a bottom tabbar and tabs
 class DrawerBuilder extends StatefulWidget {
   DrawerBuilder({Key? key}) : super(key: key);
@@ -52,8 +50,6 @@ class _DrawerBuilderState extends State<DrawerBuilder>
   late AnimationController quickMenuAnimationController;
   Animation<double>? quickMenuButtonAnimation;
 
-  StreamSubscription? tabBarconnexion;
-
   GlobalKey<AgendaPageState> agendaPage = new GlobalKey();
   GlobalKey<SummaryPageState> summaryPage = new GlobalKey();
   GlobalKey<HomeworkPageState> homeworkPage = new GlobalKey();
@@ -68,7 +64,6 @@ class _DrawerBuilderState extends State<DrawerBuilder>
   Animation<double>? buttonScaleAnimation;
   Animation<double>? fadeAnimation;
   bool isDrawerCollapsed = true;
-  int? _previousPage;
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
   bool wiredashShown = false;
   @override
@@ -80,7 +75,6 @@ class _DrawerBuilderState extends State<DrawerBuilder>
     MediaQueryData screenSize;
     screenSize = MediaQuery.of(context);
 
-    double extrasize = 0;
     return WillPopScope(
       onWillPop: () async {
         Future.value(false);
@@ -415,8 +409,6 @@ class _DrawerBuilderState extends State<DrawerBuilder>
     //Mvc init
 
     initPageControllers();
-    //Page sys
-    _previousPage = drawerPageViewController?.initialPage;
   }
 
   _onPageViewUpdate() {
