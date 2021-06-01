@@ -19,7 +19,7 @@ class CustomDrawer extends StatefulWidget {
     Key? key,
     required ValueNotifier<int> notifier,
     required this.drawerPageViewController,
-  })   : _notifier = notifier,
+  })  : _notifier = notifier,
         super(key: key);
 
   @override
@@ -48,11 +48,13 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         Align(
                           alignment: Alignment.centerLeft,
                           child: Container(
-                            margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
+                            margin: EdgeInsets.only(
+                                left: screenSize.size.width / 5 * 0.1),
                             child: Transform.rotate(
                                 angle: 0,
                                 child: Image(
-                                  image: AssetImage('assets/images/LogoYNotes.png'),
+                                  image: AssetImage(
+                                      'assets/images/LogoYNotes.png'),
                                   width: screenSize.size.width / 5 * 0.4,
                                 )),
                           ),
@@ -60,14 +62,16 @@ class _CustomDrawerState extends State<CustomDrawer> {
                         Align(
                           alignment: Alignment.centerRight,
                           child: Container(
-                            margin: EdgeInsets.only(right: screenSize.size.width / 5 * 0.1),
+                            margin: EdgeInsets.only(
+                                right: screenSize.size.width / 5 * 0.1),
                             child: SizedBox(
                               width: screenSize.size.width / 5 * 1,
                               height: screenSize.size.height / 10 * 0.7,
                               child: DayNightSwitcher(
                                 isDarkModeEnabled: ThemeUtils.isThemeDark,
                                 onStateChanged: (value) {
-                                  appSys.updateTheme(value ? "sombre" : "clair");
+                                  appSys
+                                      .updateTheme(value ? "sombre" : "clair");
                                   setState(() {});
                                 },
                               ),
@@ -84,7 +88,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
               ),
               for (var entry in this.widget.entries)
                 if ((entry["tabName"] != null &&
-                        appSys.currentSchoolAccount!.availableTabs.contains(entry["tabName"])) ||
+                        appSys.currentSchoolAccount!.availableTabs
+                            .contains(entry["tabName"])) ||
                     (entry["relatedApi"] == -1 && !kReleaseMode))
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -93,29 +98,37 @@ class _CustomDrawerState extends State<CustomDrawer> {
                           valueListenable: widget._notifier,
                           builder: (context, dynamic value, child) {
                             return Material(
-                              borderRadius:
-                                  BorderRadius.only(topRight: Radius.circular(11), bottomRight: Radius.circular(11)),
-                              color: (this.widget.entries.indexOf(entry) == value)
-                                  ? Theme.of(context).backgroundColor
-                                  : Colors.transparent,
+                              borderRadius: BorderRadius.only(
+                                  topRight: Radius.circular(11),
+                                  bottomRight: Radius.circular(11)),
+                              color:
+                                  (this.widget.entries.indexOf(entry) == value)
+                                      ? Theme.of(context).backgroundColor
+                                      : Colors.transparent,
                               child: InkWell(
                                 splashFactory: InkRipple.splashFactory,
                                 onTap: () {
                                   //Close drawer
-                                  if (appSys.settings!["user"]["global"]["autoCloseDrawer"]) {
+                                  if (appSys.settings!["user"]["global"]
+                                      ["autoCloseDrawer"]) {
                                     Navigator.of(context).pop();
                                   }
-                                  widget.drawerPageViewController!.jumpToPage(this.widget.entries.indexOf(entry));
+                                  widget.drawerPageViewController!.jumpToPage(
+                                      this.widget.entries.indexOf(entry));
                                 },
-                                borderRadius:
-                                    BorderRadius.only(topRight: Radius.circular(11), bottomRight: Radius.circular(11)),
+                                borderRadius: BorderRadius.only(
+                                    topRight: Radius.circular(11),
+                                    bottomRight: Radius.circular(11)),
                                 child: Container(
-                                  margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
+                                  margin: EdgeInsets.only(
+                                      left: screenSize.size.width / 5 * 0.1),
                                   width: screenSize.size.width / 5 * 3.4,
                                   height: screenSize.size.height / 10 * 0.6,
                                   child: Row(
                                     children: [
-                                      SizedBox(width: screenSize.size.width / 5 * 0.1),
+                                      SizedBox(
+                                          width:
+                                              screenSize.size.width / 5 * 0.1),
                                       Icon(
                                         entry["icon"],
                                         size: screenSize.size.width / 5 * 0.3,
@@ -128,7 +141,9 @@ class _CustomDrawerState extends State<CustomDrawer> {
                                           style: TextStyle(
                                               fontFamily: "Asap",
                                               color: ThemeUtils.textColor(),
-                                              fontSize: screenSize.size.width / 5 * 0.3)),
+                                              fontSize: screenSize.size.width /
+                                                  5 *
+                                                  0.3)),
                                     ],
                                   ),
                                 ),
@@ -146,16 +161,21 @@ class _CustomDrawerState extends State<CustomDrawer> {
           child: Container(
             margin: EdgeInsets.only(bottom: screenSize.size.width / 5 * 0.8),
             child: Material(
-              borderRadius: BorderRadius.only(topRight: Radius.circular(11), bottomRight: Radius.circular(11)),
+              borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(11),
+                  bottomRight: Radius.circular(11)),
               color: Colors.transparent,
               child: InkWell(
                 splashFactory: InkRipple.splashFactory,
                 onTap: () {
                   Wiredash.of(context)!.show();
                 },
-                borderRadius: BorderRadius.only(topRight: Radius.circular(11), bottomRight: Radius.circular(11)),
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(11),
+                    bottomRight: Radius.circular(11)),
                 child: Container(
-                  margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
+                  margin:
+                      EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
                   width: screenSize.size.width / 5 * 3.4,
                   height: screenSize.size.height / 10 * 0.6,
                   child: Row(
@@ -186,16 +206,21 @@ class _CustomDrawerState extends State<CustomDrawer> {
           child: Container(
             margin: EdgeInsets.only(bottom: screenSize.size.width / 5 * 0.1),
             child: Material(
-              borderRadius: BorderRadius.only(topRight: Radius.circular(11), bottomRight: Radius.circular(11)),
+              borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(11),
+                  bottomRight: Radius.circular(11)),
               color: Colors.transparent,
               child: InkWell(
                 splashFactory: InkRipple.splashFactory,
                 onTap: () {
                   Navigator.of(context).push(router(SettingsPage()));
                 },
-                borderRadius: BorderRadius.only(topRight: Radius.circular(11), bottomRight: Radius.circular(11)),
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(11),
+                    bottomRight: Radius.circular(11)),
                 child: Container(
-                  margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
+                  margin:
+                      EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
                   width: screenSize.size.width / 5 * 3.4,
                   height: screenSize.size.height / 10 * 0.6,
                   child: Row(

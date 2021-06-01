@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
 class YPageLocal extends StatefulWidget {
+  final Widget child;
+
+  const YPageLocal({Key? key, required this.child}) : super(key: key);
+
   @override
   _YPageLocalState createState() => _YPageLocalState();
 }
@@ -11,6 +15,7 @@ class _YPageLocalState extends State<YPageLocal> {
     void closePage() => Navigator.pop(context);
 
     return Scaffold(
+        backgroundColor: Theme.of(context).backgroundColor,
         appBar: AppBar(
             leading: IconButton(
               icon: Icon(Icons.arrow_back),
@@ -18,8 +23,6 @@ class _YPageLocalState extends State<YPageLocal> {
             ),
             centerTitle: false,
             title: Text("Test")),
-        body: Container(
-          child: Text("Body"),
-        ));
+        body: widget.child);
   }
 }

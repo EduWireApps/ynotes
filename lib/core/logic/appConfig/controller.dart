@@ -18,7 +18,7 @@ import 'package:ynotes/core/services/background.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/utils/settingsUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
-import 'package:ynotes/ui/themes/themesList.dart';
+import 'package:ynotes/ui/themes.dart';
 
 ///Top level application sytem class
 class ApplicationSystem extends ChangeNotifier {

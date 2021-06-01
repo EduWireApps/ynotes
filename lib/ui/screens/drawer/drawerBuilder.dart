@@ -24,7 +24,6 @@ import 'package:ynotes/ui/screens/schoolLife/schoolLifePage.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/accountPage.dart';
 import 'package:ynotes/ui/screens/statspage/statspage.dart';
 import 'package:ynotes/ui/screens/summary/summaryPage.dart';
-import 'package:ynotes/ui/screens/testPage.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'widgets/custom_drawer.dart';
 
@@ -360,13 +359,7 @@ class _DrawerBuilderState extends State<DrawerBuilder>
         "icon": MdiIcons.chartBar,
         "relatedApi": -1,
         "page": StatsPage(),
-      },
-      {
-        "menuName": "TestPage",
-        "icon": Icons.warning,
-        "relatedApi": -1,
-        "page": TestPage(controller: drawerPageViewController),
-      },
+      }
     ];
   }
 
