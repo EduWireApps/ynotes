@@ -60,22 +60,19 @@ class _CloudPageState extends State<CloudPage> {
               children: [
                 Card(
                   margin: EdgeInsets.zero,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(0)),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
                   color: Theme.of(context).primaryColor,
                   child: Column(
                     children: [
                       AnimatedContainer(
-                        margin: EdgeInsets.only(
-                            top: screenSize.size.height / 10 * 0.1),
+                        margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
                         duration: Duration(milliseconds: 250),
                         height: screenSize.size.height / 10 * 0.5,
                         width: screenSize.size.width,
                         child: Opacity(
                           opacity: path == "/" ? 0.4 : 1,
                           child: Material(
-                            borderRadius: BorderRadius.circular(
-                                screenSize.size.width / 5 * 0.15),
+                            borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                             color: Theme.of(context).primaryColorDark,
                             child: InkWell(
                               onTap: path == "/"
@@ -85,8 +82,7 @@ class _CloudPageState extends State<CloudPage> {
                                         var splits = path.split("/");
                                         print(splits.length);
                                         if (splits.length > 2) {
-                                          var finalList = splits.sublist(
-                                              1, splits.length - 2);
+                                          var finalList = splits.sublist(1, splits.length - 2);
                                           var concatenate = StringBuffer();
 
                                           finalList.forEach((item) {
@@ -106,12 +102,10 @@ class _CloudPageState extends State<CloudPage> {
                                     },
                               child: Container(
                                 height: screenSize.size.height / 10 * 0.5,
-                                padding: EdgeInsets.all(
-                                    screenSize.size.width / 5 * 0.1),
+                                padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
                                 child: FittedBox(
                                   child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: <Widget>[
                                       Icon(
@@ -142,13 +136,10 @@ class _CloudPageState extends State<CloudPage> {
                           child: FutureBuilder<List<CloudItem>?>(
                               future: cloudFolderFuture,
                               builder: (context, snapshot) {
-                                if (snapshot.hasData &&
-                                    snapshot.connectionState ==
-                                        ConnectionState.done) {
+                                if (snapshot.hasData && snapshot.connectionState == ConnectionState.done) {
                                   localFoldersList = snapshot.data;
                                   if (path == "/" && isLoading == false) {
-                                    localFoldersList =
-                                        sortByGroupMainPage(localFoldersList!);
+                                    localFoldersList = sortByGroupMainPage(localFoldersList!);
                                   }
 
                                   return ClipRRect(
@@ -161,156 +152,92 @@ class _CloudPageState extends State<CloudPage> {
                                           itemCount: localFoldersList!.length,
                                           itemBuilder: (context, index) {
                                             return Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
                                               children: <Widget>[
                                                 //Separator
                                                 if (path == "/" &&
                                                     isLoading == false &&
                                                     index != 0 &&
-                                                    localFoldersList![index - 1]
-                                                            .isMemberOf !=
-                                                        null &&
-                                                    localFoldersList![index]
-                                                            .isMemberOf !=
-                                                        null &&
-                                                    index !=
-                                                        localFoldersList!
-                                                                .length -
-                                                            1 &&
-                                                    localFoldersList![index - 1]
-                                                        .isMemberOf! &&
-                                                    !localFoldersList![index]
-                                                        .isMemberOf!)
+                                                    localFoldersList![index - 1].isMemberOf != null &&
+                                                    localFoldersList![index].isMemberOf != null &&
+                                                    index != localFoldersList!.length - 1 &&
+                                                    localFoldersList![index - 1].isMemberOf! &&
+                                                    !localFoldersList![index].isMemberOf!)
                                                   Row(children: <Widget>[
                                                     Expanded(
                                                       child: new Container(
-                                                          margin:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  left: 10.0,
-                                                                  right: 20.0),
+                                                          margin: const EdgeInsets.only(left: 10.0, right: 20.0),
                                                           child: Divider(
-                                                            color: ThemeUtils
-                                                                .textColor(),
+                                                            color: ThemeUtils.textColor(),
                                                             height: 36,
                                                           )),
                                                     ),
                                                     Text(
                                                       "Autres clouds",
-                                                      style: TextStyle(
-                                                          color: ThemeUtils
-                                                              .textColor(),
-                                                          fontFamily: "Asap"),
+                                                      style:
+                                                          TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
                                                     ),
                                                     Expanded(
                                                       child: new Container(
-                                                          margin:
-                                                              const EdgeInsets
-                                                                      .only(
-                                                                  left: 20.0,
-                                                                  right: 10.0),
+                                                          margin: const EdgeInsets.only(left: 20.0, right: 10.0),
                                                           child: Divider(
-                                                            color: ThemeUtils
-                                                                .textColor(),
+                                                            color: ThemeUtils.textColor(),
                                                             height: 36,
                                                           )),
                                                     ),
                                                   ]),
                                                 //Item builder
-                                                ViewModelBuilder<
-                                                        DownloadController>.reactive(
-                                                    viewModelBuilder: () =>
-                                                        DownloadController(),
-                                                    builder: (context, model,
-                                                        child) {
+                                                ViewModelBuilder<DownloadController>.reactive(
+                                                    viewModelBuilder: () => DownloadController(),
+                                                    builder: (context, model, child) {
                                                       return Material(
-                                                        color: Theme.of(context)
-                                                            .primaryColor,
+                                                        color: Theme.of(context).primaryColor,
                                                         child: InkWell(
                                                           onTap: () async {
-                                                            if (localFoldersList![
-                                                                        index]
-                                                                    .type ==
-                                                                "FOLDER") {
+                                                            if (localFoldersList![index].type == "FOLDER") {
                                                               if (path == "/") {
-                                                                cloudUsedFolder =
-                                                                    localFoldersList![
-                                                                            index]
-                                                                        .id;
+                                                                cloudUsedFolder = localFoldersList![index].id;
                                                               }
                                                               setState(() {
-                                                                path += localFoldersList![
-                                                                            index]
-                                                                        .title! +
-                                                                    "/";
+                                                                path += localFoldersList![index].title! + "/";
                                                               });
-                                                              changeDirectory(
-                                                                  localFoldersList![
-                                                                      index]);
+                                                              changeDirectory(localFoldersList![index]);
                                                             }
-                                                            if (localFoldersList![
-                                                                        index]
-                                                                    .type ==
-                                                                "FILE") {
-                                                              if (await model.fileExists(
-                                                                  localFoldersList![
-                                                                          index]
-                                                                      .title)) {
+                                                            if (localFoldersList![index].type == "FILE") {
+                                                              if (await model
+                                                                  .fileExists(localFoldersList![index].title)) {
                                                                 await FileAppUtil.openFile(
-                                                                    localFoldersList![
-                                                                            index]
-                                                                        .title,
-                                                                    usingFileName:
-                                                                        true);
+                                                                    localFoldersList![index].title,
+                                                                    usingFileName: true);
                                                               } else {
-                                                                model.download(Document(
-                                                                    localFoldersList![
-                                                                            index]
-                                                                        .title,
-                                                                    localFoldersList![
-                                                                            index]
-                                                                        .id,
-                                                                    "CLOUD",
-                                                                    0));
+                                                                model.download(Document(localFoldersList![index].title,
+                                                                    localFoldersList![index].id, "CLOUD", 0));
                                                               }
                                                             }
                                                           },
                                                           child: Container(
-                                                            padding: EdgeInsets
-                                                                .symmetric(
-                                                                    vertical: screenSize
-                                                                            .size
-                                                                            .height /
-                                                                        10 *
-                                                                        0.1),
-                                                            margin:
-                                                                EdgeInsets.all(
-                                                                    0),
+                                                            padding: EdgeInsets.symmetric(
+                                                                vertical: screenSize.size.height / 10 * 0.1),
+                                                            margin: EdgeInsets.all(0),
                                                             child: Row(
-                                                              children: <
-                                                                  Widget>[
-                                                                FutureBuilder<
-                                                                        bool>(
-                                                                    future: model.fileExists(
-                                                                        localFoldersList![index]
-                                                                            .title),
-                                                                    initialData:
-                                                                        false,
-                                                                    builder:
-                                                                        (context,
-                                                                            snapshot) {
+                                                              children: <Widget>[
+                                                                FutureBuilder<bool>(
+                                                                    future: model
+                                                                        .fileExists(localFoldersList![index].title),
+                                                                    initialData: false,
+                                                                    builder: (context, snapshot) {
                                                                       return Container(
                                                                         margin: EdgeInsets.only(
-                                                                            left: screenSize.size.width /
-                                                                                5 *
-                                                                                0.2),
-                                                                        child:
-                                                                            Icon(
+                                                                            left: screenSize.size.width / 5 * 0.2),
+                                                                        child: Icon(
                                                                           (localFoldersList![index].type == "FOLDER")
                                                                               ? MdiIcons.folder
-                                                                              : (snapshot.data! || model.downloadProgress == 100 ? MdiIcons.fileCheck : MdiIcons.file),
-                                                                          color: ((localFoldersList![index].type == "FOLDER")
+                                                                              : (snapshot.data! ||
+                                                                                      model.downloadProgress == 100
+                                                                                  ? MdiIcons.fileCheck
+                                                                                  : MdiIcons.file),
+                                                                          color: ((localFoldersList![index].type ==
+                                                                                  "FOLDER")
                                                                               ? Colors.yellow.shade600
                                                                               : ThemeUtils.isThemeDark
                                                                                   ? Colors.grey.shade300
@@ -320,81 +247,51 @@ class _CloudPageState extends State<CloudPage> {
                                                                     }),
                                                                 Container(
                                                                   margin: EdgeInsets.only(
-                                                                      left: screenSize
-                                                                              .size
-                                                                              .width /
-                                                                          5 *
-                                                                          0.4),
-                                                                  width: screenSize
-                                                                          .size
-                                                                          .width /
-                                                                      5 *
-                                                                      4,
+                                                                      left: screenSize.size.width / 5 * 0.4),
+                                                                  width: screenSize.size.width / 5 * 4,
                                                                   child: Column(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .start,
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .start,
-                                                                    children: <
-                                                                        Widget>[
+                                                                    mainAxisAlignment: MainAxisAlignment.start,
+                                                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                                                    children: <Widget>[
                                                                       Container(
-                                                                        child:
-                                                                            Text(
-                                                                          localFoldersList![index]
-                                                                              .title!,
-                                                                          textAlign:
-                                                                              TextAlign.start,
-                                                                          style:
-                                                                              TextStyle(
-                                                                            fontFamily:
-                                                                                "Asap",
-                                                                            fontSize: screenSize.size.height /
-                                                                                10 *
-                                                                                0.25,
-                                                                            color:
-                                                                                ThemeUtils.textColor(),
+                                                                        child: Text(
+                                                                          localFoldersList![index].title!,
+                                                                          textAlign: TextAlign.start,
+                                                                          style: TextStyle(
+                                                                            fontFamily: "Asap",
+                                                                            fontSize:
+                                                                                screenSize.size.height / 10 * 0.25,
+                                                                            color: ThemeUtils.textColor(),
                                                                           ),
-                                                                          overflow:
-                                                                              TextOverflow.ellipsis,
+                                                                          overflow: TextOverflow.ellipsis,
                                                                         ),
                                                                       ),
-                                                                      if (localFoldersList![index]
-                                                                              .author !=
-                                                                          "")
+                                                                      if (localFoldersList![index].author != "")
                                                                         Text(
-                                                                          localFoldersList![index]
-                                                                              .author!,
-                                                                          textAlign:
-                                                                              TextAlign.start,
-                                                                          style:
-                                                                              TextStyle(
-                                                                            fontFamily:
-                                                                                "Asap",
-                                                                            fontSize: screenSize.size.height /
-                                                                                10 *
-                                                                                0.2,
+                                                                          localFoldersList![index].author!,
+                                                                          textAlign: TextAlign.start,
+                                                                          style: TextStyle(
+                                                                            fontFamily: "Asap",
+                                                                            fontSize: screenSize.size.height / 10 * 0.2,
                                                                             color: ThemeUtils.isThemeDark
                                                                                 ? Colors.white60
                                                                                 : Colors.black87,
                                                                           ),
-                                                                          overflow:
-                                                                              TextOverflow.ellipsis,
+                                                                          overflow: TextOverflow.ellipsis,
                                                                         ),
-                                                                      if (localFoldersList![index]
-                                                                              .date !=
-                                                                          null)
+                                                                      if (localFoldersList![index].date != null)
                                                                         Row(
-                                                                          children: <
-                                                                              Widget>[
+                                                                          children: <Widget>[
                                                                             Text(
                                                                               localFoldersList![index].date.toString(),
                                                                               textAlign: TextAlign.start,
                                                                               style: TextStyle(
                                                                                 fontFamily: "Asap",
-                                                                                fontSize: screenSize.size.height / 10 * 0.2,
-                                                                                color: ThemeUtils.isThemeDark ? Colors.white38 : Colors.black38,
+                                                                                fontSize:
+                                                                                    screenSize.size.height / 10 * 0.2,
+                                                                                color: ThemeUtils.isThemeDark
+                                                                                    ? Colors.white38
+                                                                                    : Colors.black38,
                                                                               ),
                                                                               overflow: TextOverflow.ellipsis,
                                                                             ),
@@ -402,18 +299,12 @@ class _CloudPageState extends State<CloudPage> {
                                                                         ),
 
                                                                       //File downloading
-                                                                      if (model
-                                                                              .isDownloading &&
-                                                                          model.downloadProgress !=
-                                                                              null &&
-                                                                          model.downloadProgress <
-                                                                              100)
+                                                                      if (model.isDownloading &&
+                                                                          model.downloadProgress != null &&
+                                                                          model.downloadProgress < 100)
                                                                         Container(
-                                                                            width: screenSize.size.width /
-                                                                                5 *
-                                                                                4,
-                                                                            child:
-                                                                                LinearProgressIndicator(
+                                                                            width: screenSize.size.width / 5 * 4,
+                                                                            child: LinearProgressIndicator(
                                                                               value: model.downloadProgress,
                                                                             ))
                                                                     ],
@@ -428,14 +319,8 @@ class _CloudPageState extends State<CloudPage> {
                                                 Container(
                                                   child: Divider(
                                                     color: Colors.black45,
-                                                    height:
-                                                        screenSize.size.height /
-                                                            10 *
-                                                            0.005,
-                                                    thickness:
-                                                        screenSize.size.height /
-                                                            10 *
-                                                            0.005,
+                                                    height: screenSize.size.height / 10 * 0.005,
+                                                    thickness: screenSize.size.height / 10 * 0.005,
                                                   ),
                                                 )
                                               ],
@@ -447,14 +332,11 @@ class _CloudPageState extends State<CloudPage> {
                                 if (snapshot.hasError) {
                                   return Center(
                                     child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: <Widget>[
                                         Text(
                                           "Une erreur a eu lieu",
-                                          style: TextStyle(
-                                              fontFamily: "Asap",
-                                              color: ThemeUtils.textColor()),
+                                          style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                                         ),
                                         FlatButton(
                                           onPressed: () {
@@ -467,22 +349,16 @@ class _CloudPageState extends State<CloudPage> {
                                                 color: ThemeUtils.textColor(),
                                               )),
                                           shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  new BorderRadius.circular(
-                                                      18.0),
-                                              side: BorderSide(
-                                                  color: Theme.of(context)
-                                                      .primaryColorDark)),
+                                              borderRadius: new BorderRadius.circular(18.0),
+                                              side: BorderSide(color: Theme.of(context).primaryColorDark)),
                                         ),
                                       ],
                                     ),
                                   );
                                 } else {
                                   return Center(
-                                    child: CustomLoader(
-                                        screenSize.size.width / 5 * 2.5,
-                                        screenSize.size.width / 5 * 2.5,
-                                        Theme.of(context).primaryColorDark),
+                                    child: CustomLoader(screenSize.size.width / 5 * 2.5,
+                                        screenSize.size.width / 5 * 2.5, Theme.of(context).primaryColorDark),
                                   );
                                 }
                               }),
@@ -491,8 +367,7 @@ class _CloudPageState extends State<CloudPage> {
                       if (isLoading)
                         Container(
                           decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15),
-                              color: Colors.black.withOpacity(0.4)),
+                              borderRadius: BorderRadius.circular(15), color: Colors.black.withOpacity(0.4)),
                           margin: EdgeInsets.only(
                             top: screenSize.size.height / 10 * 1.35,
                           ),
@@ -520,9 +395,7 @@ class _CloudPageState extends State<CloudPage> {
       isLoading = true;
     });
     var realdisciplinesListFuture = await cloudFolderFuture;
-    setState(() {
-      isLoading = false;
-    });
+    isLoading = false;
   }
 
   //Change directory action

@@ -204,9 +204,9 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                               alreadySelected.add(recipients.indexOf(selected));
                           });
                           List<int>? selection =
-                              await (CustomDialogs.showMultipleChoicesDialog(
+                              (await (CustomDialogs.showMultipleChoicesDialog(
                                   context, recipientsName, alreadySelected,
-                                  singleChoice: false) as Future<List<int>?>);
+                                  singleChoice: false))) as List<int>;
                           if (selection != null) {
                             print(selection);
                             setState(() {
