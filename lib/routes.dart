@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/components/y_page/y_page.dart';
 import 'package:ynotes/ui/screens/carousel/carousel.dart';
 import 'package:ynotes/ui/screens/cloud/cloudPage.dart';
 import 'package:ynotes/ui/screens/downloads/downloadsExplorer.dart';
+import 'package:ynotes/ui/screens/error_page.dart';
 import 'package:ynotes/ui/screens/grades/gradesPage.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPage.dart';
 import 'package:ynotes/ui/screens/loading/loadingPage.dart';
@@ -16,22 +16,26 @@ import 'package:ynotes/ui/screens/summary/summaryPage.dart';
 import 'package:ynotes/ui/screens/testPage.dart';
 import 'package:ynotes/ui/screens/testPage2.dart';
 
-Map<String, Widget Function(BuildContext)> routes = {
-  "/loading": (_) => LoadingPage(),
-  "/login": (_) => LoginPage(),
-  "/intro": (_) => SlidingCarousel(),
-  "/summary": (_) => SummaryPage(),
-  "/grades": (_) => GradesPage(),
-  "/homework": (_) => HomeworkPage(hwController: appSys.homeworkController),
-  "/mailbox": (_) => MailPage(),
-  "/school_life": (_) => SchoolLifePage(),
-  "/cloud": (_) => CloudPage(),
-  "/files": (_) => DownloadsExplorer(),
-  "/polls": (_) => PollsAndInfoPage(),
-  "/settings": (_) => SettingsPage(),
-  "/test": (_) => TestPage(),
-  "/testtwo": (_) => TestPage2()
-};
+List<Map<String, dynamic>> routes = [
+  {"path": "/loading", "page": LoadingPage()},
+  {"path": "/login", "page": LoginPage()},
+  {"path": "/intro", "page": SlidingCarousel()},
+  {"path": "/summary", "page": SummaryPage()},
+  {"path": "/grades", "page": GradesPage()},
+  {
+    "path": "/homework",
+    "page": HomeworkPage(hwController: appSys.homeworkController)
+  },
+  {"path": "/mailbox", "page": MailPage()},
+  {"path": "/school_life", "page": SchoolLifePage()},
+  {"path": "/cloud", "page": CloudPage()},
+  {"path": "/files", "page": DownloadsExplorer()},
+  {"path": "/polls", "page": PollsAndInfoPage()},
+  {"path": "/settings", "page": SettingsPage()},
+  {"path": "/test", "page": TestPage()},
+  {"path": "/testtwo", "page": TestPage2()},
+  {"path": "/error", "page": ErrorPage()},
+];
 
 PageRouteBuilder generateRoute(dynamic page) {
   return PageRouteBuilder(
@@ -41,10 +45,12 @@ PageRouteBuilder generateRoute(dynamic page) {
 }
 
 Route<dynamic>? onGenerateRoute(RouteSettings settings) {
-  if (settings.name == "/test") {
-    return generateRoute(TestPage());
+  for (var route in routes) {
+    if (settings.name == route["path"]) {
+      return generateRoute(route["page"]);
+    }
   }
-  if (settings.name == "/testtwo") {
-    return generateRoute(TestPage2());
-  }
+
+  return generateRoute(
+      routes.firstWhere((route) => route["path"] == "/error")["page"]);
 }

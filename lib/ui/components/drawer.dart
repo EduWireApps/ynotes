@@ -37,6 +37,26 @@ class AppDrawer extends StatelessWidget {
               Navigator.pushReplacementNamed(context, "/testtwo");
             },
           ),
+          ListTile(
+            title: Text('Error page'),
+            onTap: () {
+              Navigator.pop(context);
+              if (ModalRoute.of(context)!.settings.name == "/error") {
+                return;
+              }
+              Navigator.pushReplacementNamed(context, "/error");
+            },
+          ),
+          ListTile(
+            title: Text('Fake page'),
+            onTap: () {
+              Navigator.pop(context);
+              if (ModalRoute.of(context)!.settings.name == "/fake") {
+                return;
+              }
+              Navigator.pushReplacementNamed(context, "/fake");
+            },
+          ),
         ],
       ),
     );
