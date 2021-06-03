@@ -103,7 +103,9 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                               builder: (context, snapshot) {
                                 return buildHeader(
                                     widget.homework[getPageIndex(model).round()],
-                                    (snapshot.data ?? Colors.white).withOpacity(0.4),
+                                    ThemeUtils.isThemeDark
+                                        ? (snapshot.data ?? Colors.white).withOpacity(0.4)
+                                        : (snapshot.data ?? Colors.white),
                                     ((model.hasClients) ? (model.page ?? 0) : 0).round());
                               });
                         }),

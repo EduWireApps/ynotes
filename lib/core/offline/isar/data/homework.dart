@@ -28,7 +28,8 @@ class OfflineHomework {
 
   ///Migrate from old done homework
   Future<void> migrateOldDoneHomeworkStatus(ApplicationSystem _appSys) async {
-    if (_appSys.settings?["system"]["migratedHW"]) {
+    if (_appSys.settings?["system"]["migratedHW"] ?? false) {
+      print("Migrate old HW");
       List<String> temp = _appSys.offline.doneHomework.getAllDoneHomeworkIDs() ?? [];
       await isarInstance.writeTxn((isar) async {
         print(temp);

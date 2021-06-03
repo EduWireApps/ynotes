@@ -14,6 +14,7 @@ import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/core/logic/homework/controller.dart';
 import 'package:ynotes/core/logic/schoolLife/controller.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
+import 'package:ynotes/core/offline/isar/data/homework.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/background.dart';
 import 'package:ynotes/core/services/notifications.dart';
@@ -60,11 +61,8 @@ class ApplicationSystem extends ChangeNotifier {
   SchoolAccount? get currentSchoolAccount => _currentSchoolAccount;
   set currentSchoolAccount(SchoolAccount? newValue) {
     _currentSchoolAccount = newValue;
-    if (account != null &&
-        account!.managableAccounts != null &&
-        newValue != null) {
-      this.updateSetting(this.settings!["system"], "accountIndex",
-          this.account!.managableAccounts!.indexOf(newValue));
+    if (account != null && account!.managableAccounts != null && newValue != null) {
+      this.updateSetting(this.settings!["system"], "accountIndex", this.account!.managableAccounts!.indexOf(newValue));
     }
     notifyListeners();
   }
@@ -83,6 +81,10 @@ class ApplicationSystem extends ChangeNotifier {
       //Delete all
       await storage.deleteAll();
       this.updateTheme("clair");
+      await this.isar.writeTxn((isar) async {
+        await isar.homeworks.where().deleteAll();
+        await isar.mails.where().deleteAll();
+      });
     } catch (e) {
       print(e);
     }
@@ -106,8 +108,7 @@ class ApplicationSystem extends ChangeNotifier {
     if (api != null) {
       account = await api!.account();
       if (account != null && account!.managableAccounts != null)
-        currentSchoolAccount = account!
-            .managableAccounts![settings!["system"]["accountIndex"] ?? 0];
+        currentSchoolAccount = account!.managableAccounts![settings!["system"]["accountIndex"] ?? 0];
     }
     //Set background fetch
     await _initBackgroundFetch();
@@ -127,6 +128,7 @@ class ApplicationSystem extends ChangeNotifier {
   initIsar() async {
     var dir = await FolderAppUtil.getDirectory();
     isar = await openIsar(directory: "${dir.path}/offline");
+    await OfflineHomework(isar).migrateOldDoneHomeworkStatus(this);
   }
 
 //Leave app
@@ -141,9 +143,8 @@ class ApplicationSystem extends ChangeNotifier {
     theme = appThemes[themeName];
     this.themeName = themeName;
     updateSetting(this.settings!["user"]["global"], "theme", themeName);
-    SystemChrome.setSystemUIOverlayStyle(ThemeUtils.isThemeDark
-        ? SystemUiOverlayStyle.light
-        : SystemUiOverlayStyle.dark);
+    SystemChrome.setSystemUIOverlayStyle(
+        ThemeUtils.isThemeDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark);
     notifyListeners();
   }
 
