@@ -69,7 +69,6 @@ class _GradesGroupState extends State<GradesGroup> {
           grades.sort((a, b) => b.entryDate!.compareTo(a.entryDate!));
           GradesStats stats = GradesStats(grades.first, grades);
           impact = stats.calculateAverageImpact();
-          print(impact);
         }
         return Container(
           width: screenSize.size.width / 5 * 3.2,

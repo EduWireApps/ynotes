@@ -54,8 +54,6 @@ class GradesStats {
       }
       //Returns the difference
     });
-    print(afterAverage);
-    print(beforeAverage);
 
     if ((afterAverage - beforeAverage).isNaN) {
       return afterAverage;
