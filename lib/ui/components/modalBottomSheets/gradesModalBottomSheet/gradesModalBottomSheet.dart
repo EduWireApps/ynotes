@@ -26,8 +26,7 @@ void gradesModalBottomSheet(
 ) {
   showModalBottomSheet(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
       ),
       context: context,
       backgroundColor: Colors.transparent,
@@ -56,8 +55,7 @@ class GradesModalBottomSheetContainer extends StatefulWidget {
       {Key? key, this.grade, this.stats, this.discipline, this.callback, this.gradesController})
       : super(key: key);
   @override
-  _GradesModalBottomSheetContainerState createState() =>
-      _GradesModalBottomSheetContainerState();
+  _GradesModalBottomSheetContainerState createState() => _GradesModalBottomSheetContainerState();
 }
 
 class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheetContainer> {
@@ -214,13 +212,28 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Expanded(
-            child: FittedBox(
-              child: AutoSizeText(
-                (widget.grade?.value) ?? "N/A",
-                style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: ThemeUtils.textColor()),
-              ),
-            ),
-          ),
+              child: FittedBox(
+                  child: AutoSizeText.rich(
+                      //MARK
+                      TextSpan(
+            text: ((widget.grade?.notSignificant ?? false)
+                ? "(" + (widget.grade?.value ?? "")
+                : (widget.grade?.value ?? "")),
+            style: TextStyle(
+                color: (widget.grade?.simulated ?? false) ? Colors.blue : ThemeUtils.textColor(),
+                fontFamily: "Asap",
+                fontWeight: FontWeight.bold,
+                fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.3),
+            children: <TextSpan>[
+              if (widget.grade?.notSignificant == true)
+                TextSpan(
+                    text: ")",
+                    style: TextStyle(
+                        color: (widget.grade?.simulated ?? false) ? Colors.blue : ThemeUtils.textColor(),
+                        fontWeight: FontWeight.bold,
+                        fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.3)),
+            ],
+          )))),
           Container(
             decoration: BoxDecoration(color: ThemeUtils.textColor(), borderRadius: BorderRadius.circular(55)),
             height: screenSize.size.height / 10 * 0.02,
@@ -454,7 +467,7 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
   }
 
   getText(double impact) {
-    if (impact.isNaN ||  impact == 0) {
+    if (impact.isNaN || impact == 0) {
       return "+0.0";
     } else {
       return (impact < 0 ? "" : "+") + impact.toStringAsFixed(1);
