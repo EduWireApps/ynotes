@@ -601,7 +601,7 @@ class _GradesPageState extends State<GradesPage> {
   _buildResetButton(GradesController controller) {
     var screenSize = MediaQuery.of(context);
     return Container(
-      margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.1),
+      margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.2),
       child:
           CustomButtons.materialButton(context, screenSize.size.width / 5 * 3.2, screenSize.size.height / 10 * 0.5, () {
         controller.simulationReset();
