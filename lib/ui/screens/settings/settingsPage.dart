@@ -520,7 +520,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                           title: 'Bouton magique',
                           leading: Icon(MdiIcons.testTube, color: ThemeUtils.textColor()),
                           onPressed: (context) async {
-                            print("test");
+                            await appSys.updateSetting(appSys.settings!["system"], "lastMailCount", 60);
                           },
                           titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                           subtitleTextStyle: TextStyle(
