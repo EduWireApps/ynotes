@@ -364,7 +364,6 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     tiles: [
                       SettingsTile.switchTile(
                           title: 'Secouer pour signaler',
-                          enabled: _appSys.settings?["user"]["global"]["shakeToReport"],
                           titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                           subtitleTextStyle: TextStyle(
                               fontFamily: "Asap",
