@@ -154,7 +154,6 @@ class SettingsUtils {
     Map _oldSettings;
     Map? _newSettings;
     _oldSettings = await getOldSettings();
-    print(_oldSettings == null);
     _newSettings = await getSavedSettings();
 
     print(_newSettings == null);

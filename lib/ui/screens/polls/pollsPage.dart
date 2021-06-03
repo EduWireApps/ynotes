@@ -204,7 +204,6 @@ class _PollsAndInfoPageState extends State<PollsAndInfoPage> {
                     CustomDialogs.showAnyDialog(context, "Votre choix a été confirmé");
                     refreshPolls(forced: true);
                   }
-                  ;
                 },
               ),
               Text((question.choices ?? [])[i].choiceName ?? "")

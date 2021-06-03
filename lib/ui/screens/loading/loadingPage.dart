@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:ynotes/core/apis/utils.dart';
-import 'package:ynotes/ui/animations/FadeAnimation.dart';
-import 'package:ynotes/main.dart';
-import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
+import 'package:ynotes/globals.dart';
+import 'package:ynotes/main.dart';
+import 'package:ynotes/ui/animations/FadeAnimation.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 class LoadingPage extends StatefulWidget {
@@ -28,15 +26,15 @@ class _LoadingPageState extends State<LoadingPage> {
     await Future.delayed(const Duration(milliseconds: 500), () => "1");
     String? u = await readStorage("username");
     String? p = await readStorage("password");
-    String? url = await readStorage("pronoteurl");
-    String? cas = await readStorage("pronotecas");
-    bool? iscas = (await readStorage("ispronotecas") == "true");
 
     z = await storage.read(key: "agreedTermsAndConfiguredApp");
-    if (u != null && p != null && z != null && appSys.settings!["system"]["chosenParser"] != null) {
-      Navigator.of(context).pushReplacement(router(homePage()));
+    if (u != null &&
+        p != null &&
+        z != null &&
+        appSys.settings!["system"]["chosenParser"] != null) {
+      Navigator.of(context).pushReplacement(router(HomePage()));
     } else {
-      Navigator.of(context).pushReplacement(router(login()));
+      Navigator.of(context).pushReplacement(router(Login()));
     }
   }
 

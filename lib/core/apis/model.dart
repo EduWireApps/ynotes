@@ -45,10 +45,12 @@ abstract class API {
   Future<List<DateTime>?> getDatesNextHomework();
 
   ///All events
-  Future<List<AgendaEvent>?> getEvents(DateTime date, bool afterSchool, {bool forceReload = false}) async {
+  Future<List<AgendaEvent>?> getEvents(DateTime date, bool afterSchool,
+      {bool forceReload = false}) async {
     List<AgendaEvent> events = [];
     List<AgendaEvent>? extracurricularEvents = [];
-    List<Lesson>? lessons = await (appSys.api!.getNextLessons(date, forceReload: forceReload));
+    List<Lesson>? lessons =
+        await (appSys.api!.getNextLessons(date, forceReload: forceReload));
     int week = await getWeek(date);
     //Add lessons for this day
     if (lessons != null) {
@@ -57,13 +59,11 @@ abstract class API {
       lessons.sort((a, b) => a.end!.compareTo(b.end!));
     }
     if (!afterSchool) {
-      extracurricularEvents = await (appSys.offline.agendaEvents.getAgendaEvents(week));
+      extracurricularEvents =
+          await (appSys.offline.agendaEvents.getAgendaEvents(week));
       if (extracurricularEvents != null) {
         if (lessons != null && lessons.length > 0) {
-          //Last date
-          DateTime? lastLessonEnd = lessons.last.end;
           //delete the last one
-
           extracurricularEvents.removeWhere((event) =>
               DateTime.parse(DateFormat("yyyy-MM-dd").format(event.start!)) !=
               DateTime.parse(DateFormat("yyyy-MM-dd").format(date)));
@@ -73,17 +73,17 @@ abstract class API {
         }
         //merge
         for (AgendaEvent extracurricularEvent in extracurricularEvents) {
-          events.removeWhere((element) => element.id == extracurricularEvent.id);
+          events
+              .removeWhere((element) => element.id == extracurricularEvent.id);
         }
       }
     } else {
-      extracurricularEvents = await (appSys.offline.agendaEvents.getAgendaEvents(week));
+      extracurricularEvents =
+          await (appSys.offline.agendaEvents.getAgendaEvents(week));
 
       if (extracurricularEvents != null) {
         //extracurricularEvents.removeWhere((element) => element.isLesson);
         if (lessons != null && lessons.length > 0) {
-          //Last date
-          DateTime? lastLessonEnd = lessons.last.end;
           //delete the last one
           extracurricularEvents.removeWhere((event) =>
               DateTime.parse(DateFormat("yyyy-MM-dd").format(event.start!)) !=
@@ -92,7 +92,8 @@ abstract class API {
         }
         //merge
         for (AgendaEvent extracurricularEvent in extracurricularEvents) {
-          events.removeWhere((element) => element.id == extracurricularEvent.id);
+          events
+              .removeWhere((element) => element.id == extracurricularEvent.id);
         }
       }
     }
@@ -102,15 +103,16 @@ abstract class API {
     RecurringEventSchemes recurr = RecurringEventSchemes();
     recurr.date = date;
     recurr.week = week;
-    var recurringEvents = await appSys.offline.agendaEvents.getAgendaEvents(week, selector: recurr.testRequest);
+    var recurringEvents = await appSys.offline.agendaEvents
+        .getAgendaEvents(week, selector: recurr.testRequest);
     if (recurringEvents != null && recurringEvents.length != 0) {
       recurringEvents.forEach((recurringEvent) {
         events.removeWhere((element) => element.id == recurringEvent.id);
         if (recurringEvent.start != null && recurringEvent.end != null) {
-          recurringEvent.start =
-              DateTime(date.year, date.month, date.day, recurringEvent.start!.hour, recurringEvent.start!.minute);
-          recurringEvent.end =
-              DateTime(date.year, date.month, date.day, recurringEvent.end!.hour, recurringEvent.end!.minute);
+          recurringEvent.start = DateTime(date.year, date.month, date.day,
+              recurringEvent.start!.hour, recurringEvent.start!.minute);
+          recurringEvent.end = DateTime(date.year, date.month, date.day,
+              recurringEvent.end!.hour, recurringEvent.end!.minute);
         }
       });
 
@@ -175,7 +177,8 @@ class AppAccount {
     required this.isParentMainAccount,
     required this.apiType,
   });
-  factory AppAccount.fromJson(Map<String, dynamic> json) => _$AppAccountFromJson(json);
+  factory AppAccount.fromJson(Map<String, dynamic> json) =>
+      _$AppAccountFromJson(json);
   Map<String, dynamic> toJson() => _$AppAccountToJson(this);
 }
 
@@ -199,8 +202,14 @@ class SchoolAccount {
   ///Configuration credentials
   Map? credentials;
   SchoolAccount(
-      {this.name, this.studentClass, this.studentID, required this.availableTabs, this.surname, this.schoolName})
+      {this.name,
+      this.studentClass,
+      this.studentID,
+      required this.availableTabs,
+      this.surname,
+      this.schoolName})
       : super();
-  factory SchoolAccount.fromJson(Map<String, dynamic> json) => _$SchoolAccountFromJson(json);
+  factory SchoolAccount.fromJson(Map<String, dynamic> json) =>
+      _$SchoolAccountFromJson(json);
   Map<String, dynamic> toJson() => _$SchoolAccountToJson(this);
 }

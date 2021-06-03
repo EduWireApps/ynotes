@@ -21,7 +21,7 @@ class OfflineHomework {
   }
 
   Future<List<Homework>?> getHomeworkFor(DateTime date) async {
-    return ((await isarInstance.homeworks.where().findAll()) ?? [])
+    return ((await isarInstance.homeworks.where().findAll()))
         .where((Homework e) => CalendarTime(e.date).isSameDayAs(date))
         .toList();
   }

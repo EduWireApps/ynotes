@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:html/parser.dart';
 import 'package:intl/intl.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
@@ -88,8 +87,7 @@ class AppNotification {
       lesson = nextLesson;
       await showOngoingNotification(lesson);
     } else {
-      final prefs =
-          await (SharedPreferences.getInstance() as Future<SharedPreferences>);
+      final prefs = await (SharedPreferences.getInstance());
       bool? value = prefs.getBool("disableAtDayEnd");
       print(value);
       print(appSys.settings!["user"]["agendaPage"]["disableAtDayEnd"]);

@@ -24,11 +24,10 @@ void gradesModalBottomSheet(
   var widget,
   GradesController? gradesController,
 ) {
-  MediaQueryData screenSize = MediaQuery.of(context);
-
   showModalBottomSheet(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(25), topRight: Radius.circular(25)),
       ),
       context: context,
       backgroundColor: Colors.transparent,
@@ -57,7 +56,8 @@ class GradesModalBottomSheetContainer extends StatefulWidget {
       {Key? key, this.grade, this.stats, this.discipline, this.callback, this.gradesController})
       : super(key: key);
   @override
-  _GradesModalBottomSheetContainerState createState() => _GradesModalBottomSheetContainerState();
+  _GradesModalBottomSheetContainerState createState() =>
+      _GradesModalBottomSheetContainerState();
 }
 
 class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheetContainer> {
@@ -70,6 +70,7 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
   PanelController panelController = PanelController();
   @override
   Widget build(BuildContext context) {
+    // ignore: unused_local_variable
     Color? colorGroup;
     if (widget.discipline == null) {
       colorGroup = Theme.of(context).primaryColor;
@@ -442,7 +443,7 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
   }
 
   getAdaptedColor(double impact) {
-    if (impact.isNaN || impact == null || impact == 0) {
+    if (impact.isNaN || impact == 0) {
       return Colors.grey;
     }
     if (impact < 0) {
@@ -453,7 +454,7 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
   }
 
   getText(double impact) {
-    if (impact.isNaN || impact == null || impact == 0) {
+    if (impact.isNaN ||  impact == 0) {
       return "+0.0";
     } else {
       return (impact < 0 ? "" : "+") + impact.toStringAsFixed(1);

@@ -21,8 +21,6 @@ class _DialogHomeworkState extends State<DialogHomework> {
   int segmentedControlIndex = 0;
 
   Widget build(BuildContext context) {
-    TextStyle textStyle = TextStyle(backgroundColor: Colors.yellow.shade100);
-
     var document = parse(segmentedControlIndex == 0
         ? (widget.hw!.rawContent) ?? "Non chargé"
         : (widget.hw!.sessionRawContent) ?? "Non chargé");
@@ -54,7 +52,8 @@ class _DialogHomeworkState extends State<DialogHomework> {
               ),
             ],
           ),
-          if (widget.hw!.sessionRawContent != null && widget.hw!.sessionRawContent != "")
+          if (widget.hw!.sessionRawContent != null &&
+              widget.hw!.sessionRawContent != "")
             Material(
               color: Colors.transparent,
               child: Container(
@@ -81,20 +80,25 @@ class _DialogHomeworkState extends State<DialogHomework> {
               ),
             ),
           ConstrainedBox(
-            constraints: BoxConstraints(maxHeight: screenSize.size.height / 10 * 3.5),
+            constraints:
+                BoxConstraints(maxHeight: screenSize.size.height / 10 * 3.5),
             child: Container(
               margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
               width: screenSize.size.width / 5 * 4.5,
               padding: EdgeInsets.all(screenSize.size.height / 10 * 0.2),
               decoration: BoxDecoration(
                   color: Theme.of(context).primaryColor,
-                  borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15)),
+                  borderRadius:
+                      BorderRadius.circular(screenSize.size.width / 5 * 0.15)),
               child: Material(
                 color: Colors.transparent,
                 child: SingleChildScrollView(
                   child: AutoSizeText(
                     parsedHtml,
-                    style: TextStyle(fontSize: 20, fontFamily: "Asap", color: ThemeUtils.textColor()),
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: "Asap",
+                        color: ThemeUtils.textColor()),
                     textAlign: TextAlign.justify,
                   ),
                 ),
@@ -105,16 +109,18 @@ class _DialogHomeworkState extends State<DialogHomework> {
               future: getColor(this.widget.hw!.disciplineCode),
               initialData: 0,
               builder: (context, snapshot) {
-                Color color = Color(snapshot.data ?? 0);
                 return Material(
                   type: MaterialType.transparency,
                   child: Container(
-                      margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
+                      margin: EdgeInsets.only(
+                          top: screenSize.size.height / 10 * 0.1),
                       width: screenSize.size.width / 5 * 4.5,
-                      padding: EdgeInsets.all(screenSize.size.height / 10 * 0.2),
+                      padding:
+                          EdgeInsets.all(screenSize.size.height / 10 * 0.2),
                       decoration: BoxDecoration(
                           color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15)),
+                          borderRadius: BorderRadius.circular(
+                              screenSize.size.width / 5 * 0.15)),
                       child: Column(
                         children: [
                           Text(

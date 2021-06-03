@@ -422,10 +422,8 @@ class _CloudPageState extends State<CloudPage> {
       cloudFolderFuture = getCloud(path, "CD", item);
       isLoading = true;
     });
-    var realdisciplinesListFuture = await cloudFolderFuture;
-    setState(() {
-      isLoading = false;
-    });
+    await cloudFolderFuture;
+    isLoading = false;
   }
 
   //Change directory action
@@ -441,7 +439,7 @@ class _CloudPageState extends State<CloudPage> {
 
       isLoading = true;
     });
-    var realdisciplinesListFuture = await cloudFolderFuture;
+    await cloudFolderFuture;
     setState(() {
       isLoading = false;
     });

@@ -21,7 +21,6 @@ void disciplineModalBottomSheet(context, Discipline? discipline, Function? callb
       colorGroup = Color(widget.discipline.color);
     }
   }
-  MediaQueryData screenSize = MediaQuery.of(context);
   showModalBottomSheet(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),

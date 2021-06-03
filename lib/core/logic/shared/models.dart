@@ -4,7 +4,7 @@ import 'package:isar/isar.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'models.g.dart';
 
-@JsonSerializable(nullable: false)
+@JsonSerializable()
 @HiveType(typeId: 1)
 @Collection()
 

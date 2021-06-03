@@ -185,12 +185,12 @@ class EcoleDirecteMethod {
     return recipients ?? [];
   }
 
-  Future<List<SchoolLifeTicket>> schoolLife() async {
+  Future<List<SchoolLifeTicket>?> schoolLife() async {
     await EcoleDirecteMethod.testToken();
     String rootUrl = 'https://api.ecoledirecte.com/v3/eleves/';
     String method = "viescolaire.awp?verbe=get&";
     String data = 'data={"token": "$token"}';
-    List<SchoolLifeTicket> schoolLifeList = await request(
+    List<SchoolLifeTicket>? schoolLifeList = await request(
         data, rootUrl, method, EcoleDirecteSchoolLifeConverter.schoolLife, "School Life request returned an error:");
     if (schoolLifeList != null) {
       await appSys.offline.schoolLife.update(schoolLifeList);
@@ -371,7 +371,7 @@ class EcoleDirecteMethod {
                     },""";
     });
 
-    await await EcoleDirecteMethod.testToken();
+    await EcoleDirecteMethod.testToken();
     String? id = appSys.currentSchoolAccount?.studentID ?? "";
     var url = 'https://api.ecoledirecte.com/v3/eleves/$id/messages.awp?verbe=post';
 
@@ -420,20 +420,19 @@ class EcoleDirecteMethod {
     }
   }
 
-  static testToken() async {
+  static Future<bool?> testToken() async {
     if (token == "" || token == null) {
       await EcoleDirecteMethod.refreshToken();
       return false;
     } else {
       String? id = appSys.currentSchoolAccount?.studentID ?? "";
-      var url = 'https://api.ecoledirecte.com/v3/$id/login.awp';
+      var url = 'https://api.ecoledirecte.com/v3/eleves/$id/timeline.awp?verbe=get&';
       Map<String, String> headers = {"Content-type": "text/plain"};
       String data = 'data={"token": "$token"}';
       //encode Map to JSON
       var body = data;
-      var response = await http.post(Uri.parse(url), headers: headers, body: body).catchError((e) {
-        return false;
-      });
+
+      var response = await http.post(Uri.parse(url), headers: headers, body: body);
 
       if (response.statusCode == 200) {
         Map<String, dynamic> req = jsonDecode(response.body);

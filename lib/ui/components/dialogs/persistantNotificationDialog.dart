@@ -186,7 +186,7 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
   }
 
   void initState() {
-
+    super.initState();
     getAuth();
   }
 }

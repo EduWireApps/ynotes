@@ -34,8 +34,6 @@ GlobalKey<ScaffoldState> drawerKey = GlobalKey();
 
 bool isQuickMenuShown = false;
 
-int _currentIndex = 0;
-
 ///Build a bottom tabbar and tabs
 class DrawerBuilder extends StatefulWidget {
   DrawerBuilder({Key? key}) : super(key: key);
@@ -45,7 +43,8 @@ class DrawerBuilder extends StatefulWidget {
   }
 }
 
-class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateMixin {
+class _DrawerBuilderState extends State<DrawerBuilder>
+    with TickerProviderStateMixin {
   PageController? drawerPageViewController;
   ValueNotifier<int> _notifier = ValueNotifier<int>(0);
 
@@ -54,8 +53,6 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
   //Boolean
   late AnimationController quickMenuAnimationController;
   Animation<double>? quickMenuButtonAnimation;
-
-  StreamSubscription? tabBarconnexion;
 
   GlobalKey<AgendaPageState> agendaPage = new GlobalKey();
   GlobalKey<SummaryPageState> summaryPage = new GlobalKey();
@@ -76,12 +73,12 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
   @override
   Widget build(BuildContext context) {
     //status bar info
-    SystemChrome.setSystemUIOverlayStyle(
-        ThemeUtils.isThemeDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark);
+    SystemChrome.setSystemUIOverlayStyle(ThemeUtils.isThemeDark
+        ? SystemUiOverlayStyle.light
+        : SystemUiOverlayStyle.dark);
     MediaQueryData screenSize;
     screenSize = MediaQuery.of(context);
 
-    double extrasize = 0;
     return WillPopScope(
       onWillPop: () async {
         Future.value(false);
@@ -93,7 +90,8 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
           resizeToAvoidBottomInset: false,
           drawer: Theme(
             data: Theme.of(context).copyWith(
-              canvasColor: Theme.of(context).primaryColor, //This will change the drawer background to blue.
+              canvasColor: Theme.of(context)
+                  .primaryColor, //This will change the drawer background to blue.
               //other styles
             ),
             child: ClipRRect(
@@ -112,7 +110,8 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                   )),
             ),
           ),
-          backgroundColor: ThemeUtils.darken(Theme.of(context).backgroundColor, forceAmount: 0.05),
+          backgroundColor: ThemeUtils.darken(Theme.of(context).backgroundColor,
+              forceAmount: 0.05),
           body: Stack(
             children: <Widget>[
               ClipRRect(
@@ -164,48 +163,58 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
                         loginStatus.error: Color(0xffF87171),
                         loginStatus.offline: Color(0xffFCD34D),
                       }),
-                      height: screenSize.size.height / 10 * 0.4 * (1 - showLoginControllerStatus.value),
+                      height: screenSize.size.height /
+                          10 *
+                          0.4 *
+                          (1 - showLoginControllerStatus.value),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           ClipRRect(
-                              child: Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-                            case2(
-                              con.actualState,
-                              {
-                                loginStatus.loggedOff: SpinKitThreeBounce(
-                                  size: screenSize.size.width / 5 * 0.3,
-                                  color: Color(0xff57534E),
-                                ),
-                                loginStatus.offline: Icon(
-                                  MdiIcons.networkStrengthOff,
-                                  size: screenSize.size.width / 5 * 0.3,
-                                  color: Color(0xff78716C),
-                                ),
-                                loginStatus.error: GestureDetector(
-                                  onTap: () async {},
-                                  child: Icon(
-                                    MdiIcons.exclamation,
-                                    size: screenSize.size.width / 5 * 0.3,
+                              child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                case2(
+                                  con.actualState,
+                                  {
+                                    loginStatus.loggedOff: SpinKitThreeBounce(
+                                      size: screenSize.size.width / 5 * 0.3,
+                                      color: Color(0xff57534E),
+                                    ),
+                                    loginStatus.offline: Icon(
+                                      MdiIcons.networkStrengthOff,
+                                      size: screenSize.size.width / 5 * 0.3,
+                                      color: Color(0xff78716C),
+                                    ),
+                                    loginStatus.error: GestureDetector(
+                                      onTap: () async {},
+                                      child: Icon(
+                                        MdiIcons.exclamation,
+                                        size: screenSize.size.width / 5 * 0.3,
+                                        color: Color(0xff57534E),
+                                      ),
+                                    ),
+                                    loginStatus.loggedIn: Icon(
+                                      MdiIcons.check,
+                                      size: screenSize.size.width / 5 * 0.3,
+                                      color: Color(0xff57534E),
+                                    )
+                                  },
+                                  SpinKitThreeBounce(
+                                    size: screenSize.size.width / 5 * 0.4,
                                     color: Color(0xff57534E),
                                   ),
-                                ),
-                                loginStatus.loggedIn: Icon(
-                                  MdiIcons.check,
-                                  size: screenSize.size.width / 5 * 0.3,
-                                  color: Color(0xff57534E),
-                                )
-                              },
-                              SpinKitThreeBounce(
-                                size: screenSize.size.width / 5 * 0.4,
-                                color: Color(0xff57534E),
-                              ),
-                            ) as Widget,
-                          ])),
-                          Text(con.details, style: TextStyle(fontFamily: "Asap", color: Color(0xff57534E))),
+                                ) as Widget,
+                              ])),
+                          Text(con.details,
+                              style: TextStyle(
+                                  fontFamily: "Asap",
+                                  color: Color(0xff57534E))),
                           Text(" Voir l'état du compte.",
-                              style:
-                                  TextStyle(fontFamily: "Asap", color: Color(0xff57534E), fontWeight: FontWeight.bold))
+                              style: TextStyle(
+                                  fontFamily: "Asap",
+                                  color: Color(0xff57534E),
+                                  fontWeight: FontWeight.bold))
                         ],
                       ),
                     ),
@@ -336,19 +345,22 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
     drawerPageViewController = PageController(
       initialPage: 0,
     )..addListener(_onPageViewUpdate);
-    bodyController = AnimationController(vsync: this, duration: drawerAnimationDuration);
+    bodyController =
+        AnimationController(vsync: this, duration: drawerAnimationDuration);
 
-    showLoginControllerStatusController = AnimationController(vsync: this, duration: Duration(milliseconds: 450));
+    showLoginControllerStatusController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 450));
     showLoginControllerStatus = new Tween(
       begin: 1.0,
       end: 0.0,
     ).animate(new CurvedAnimation(
-        parent: showLoginControllerStatusController, curve: Interval(0.1, 1.0, curve: Curves.fastOutSlowIn)));
+        parent: showLoginControllerStatusController,
+        curve: Interval(0.1, 1.0, curve: Curves.fastOutSlowIn)));
   }
 
   @override
   void initState() {
-    ShakeDetector detector = ShakeDetector.autoStart(onPhoneShake: () {
+   ShakeDetector.autoStart(onPhoneShake: () {
       if (appSys.settings?["user"]["global"]["shakeToReport"]) {
         Wiredash.of(context)?.show();
       }
@@ -363,12 +375,11 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
     //Mvc init
 
     initPageControllers();
-    //Page sys
-    _previousPage = drawerPageViewController?.initialPage;
   }
 
   _onPageViewUpdate() {
-    if (drawerPageViewController != null && drawerPageViewController!.page != null) {
+    if (drawerPageViewController != null &&
+        drawerPageViewController!.page != null) {
       _notifier.value = drawerPageViewController!.page!.round();
     }
   }

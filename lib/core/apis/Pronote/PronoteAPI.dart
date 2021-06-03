@@ -29,7 +29,8 @@ Map errorMessages = {
 };
 bool isOldAPIUsed = false;
 
-Uint8List int32BigEndianBytes(int value) => Uint8List(4)..buffer.asByteData().setInt32(0, value, Endian.big);
+Uint8List int32BigEndianBytes(int value) =>
+    Uint8List(4)..buffer.asByteData().setInt32(0, value, Endian.big);
 
 //Remove some random security in challenge
 prepareTabs(var tabsList) {
@@ -93,18 +94,24 @@ class Communication {
     this.lastResponse = null;
   }
 
-  afterAuth(var authentificationResponse, var data, var authentificationKey) async {
+  afterAuth(
+      var authentificationResponse, var data, var authentificationKey) async {
     this.encryption.aesKey = authentificationKey;
     if (this.cookies == null) {
       var host = Requests.getHostname(authentificationResponse.url.toString());
       this.cookies = await Requests.getStoredCookies(host);
     }
-    var work = this.encryption.aesDecrypt(conv.hex.decode(data['donneesSec']['donnees']['cle']));
+    var work = this
+        .encryption
+        .aesDecrypt(conv.hex.decode(data['donneesSec']['donnees']['cle']));
     try {
-      this.authorizedTabs = prepareTabs(data['donneesSec']['donnees']['listeOnglets']);
+      this.authorizedTabs =
+          prepareTabs(data['donneesSec']['donnees']['listeOnglets']);
 
-      createStorage("classe", data['donneesSec']['donnees']['ressource']["classeDEleve"]["L"]);
-      createStorage("userFullName", data['donneesSec']['donnees']['ressource']["L"]);
+      createStorage("classe",
+          data['donneesSec']['donnees']['ressource']["classeDEleve"]["L"]);
+      createStorage(
+          "userFullName", data['donneesSec']['donnees']['ressource']["L"]);
       isOldAPIUsed = true;
     } catch (e) {
       isOldAPIUsed = false;
@@ -119,7 +126,10 @@ class Communication {
   getRootAdress(addr) {
     return [
       (addr.split('/').sublist(0, addr.split('/').length - 1).join("/")),
-      (addr.split('/').sublist(addr.split('/').length - 1, addr.split('/').length).join("/"))
+      (addr
+          .split('/')
+          .sublist(addr.split('/').length - 1, addr.split('/').length)
+          .join("/"))
     ];
   }
 
@@ -136,13 +146,16 @@ class Communication {
 
     var headers = {
       'connection': 'keep-alive',
-      'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/74.0'
+      'User-Agent':
+          'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/74.0'
     };
 
     String url = this.rootSite +
         "/" +
         (this.cookies != null ? "?fd=1" : this.htmlPage) +
-        ((this.client.mobileLogin ?? false) ? "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335" : "");
+        ((this.client.mobileLogin ?? false)
+            ? "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335"
+            : "");
     if (url.contains("?login=true") || url.contains("?fd=1")) {
       url += "&fd=1";
     } else {
@@ -165,8 +178,12 @@ class Communication {
     this.attributes = this.parseHtml(getResponse.content());
     this.client.stepsLogger.add("✅ Parsed HTML");
     //uuid
-    this.encryption.rsaKeys = {'MR': this.attributes!['MR'], 'ER': this.attributes!['ER']};
-    var uuid = conv.base64.encode(await this.encryption.rsaEncrypt(this.encryption.aesIVTemp.bytes));
+    this.encryption.rsaKeys = {
+      'MR': this.attributes!['MR'],
+      'ER': this.attributes!['ER']
+    };
+    var uuid = conv.base64.encode(
+        await this.encryption.rsaEncrypt(this.encryption.aesIVTemp.bytes));
     this.client.stepsLogger.add("✅ Encrypted IV");
 
     //uuid
@@ -179,9 +196,11 @@ class Communication {
     if (this.attributes!["sCoA"] == null) {
       this.client.stepsLogger.add("ⓘ" + " Requests will be compressed");
     }
-    var initialResponse = await this.post('FonctionParametres',
-        data: {'donnees': jsonPost},
-        decryptionChange: {'iv': conv.hex.encode(md5.convert(this.encryption.aesIVTemp.bytes).bytes)});
+    var initialResponse = await this.post('FonctionParametres', data: {
+      'donnees': jsonPost
+    }, decryptionChange: {
+      'iv': conv.hex.encode(md5.convert(this.encryption.aesIVTemp.bytes).bytes)
+    });
 
     return [this.attributes, initialResponse];
   }
@@ -193,7 +212,8 @@ class Communication {
     String onloadC;
     print(onload);
     if (onload != null) {
-      onloadC = onload.attributes["onload"]!.substring(14, onload.attributes["onload"]!.length - 37);
+      onloadC = onload.attributes["onload"]!
+          .substring(14, onload.attributes["onload"]!.length - 37);
     } else {
       if (html.contains("IP")) {
         throw ('Your IP address is suspended.');
@@ -212,11 +232,15 @@ class Communication {
     return attributes;
   }
 
-  post(String functionName, {var data, bool recursive = false, var decryptionChange}) async {
+  post(String functionName,
+      {var data, bool recursive = false, var decryptionChange}) async {
     this.client.stepsLogger.add("✅ Posting " + functionName);
     if (data != null) {
       if (data["_Signature_"] != null &&
-          !this.authorizedTabs.toString().contains(data['_Signature_']['onglet'].toString())) {
+          !this
+              .authorizedTabs
+              .toString()
+              .contains(data['_Signature_']['onglet'].toString())) {
         throw ('Action not permitted. (onglet is not normally accessible)');
       }
     }
@@ -226,7 +250,8 @@ class Communication {
 
       print(data);
       var zlibInstance = ZLibCodec(level: 6, raw: true);
-      data = zlibInstance.encode(conv.utf8.encode(conv.hex.encode(conv.utf8.encode(data))));
+      data = zlibInstance
+          .encode(conv.utf8.encode(conv.hex.encode(conv.utf8.encode(data))));
       this.client.stepsLogger.add("✅ Compressed request");
     }
     if (this.shouldEncryptRequests) {
@@ -234,8 +259,8 @@ class Communication {
       data = encryption.aesEncrypt(data);
       this.client.stepsLogger.add("✅ Encrypted request");
     }
-    var zlibInstance = ZLibCodec(level: 6, raw: true);
-    var rNumber = encryption.aesEncrypt(conv.utf8.encode(this.requestNumber.toString()));
+    var rNumber =
+        encryption.aesEncrypt(conv.utf8.encode(this.requestNumber.toString()));
 
     var json = {
       'session': int.parse(this.attributes!['h']),
@@ -243,8 +268,13 @@ class Communication {
       'nom': functionName,
       'donneesSec': data
     };
-    String pSite =
-        this.rootSite + '/appelfonction/' + this.attributes!['a'] + '/' + this.attributes!['h'] + '/' + rNumber;
+    String pSite = this.rootSite +
+        '/appelfonction/' +
+        this.attributes!['a'] +
+        '/' +
+        this.attributes!['h'] +
+        '/' +
+        rNumber;
     print(pSite);
 
     this.requestNumber += 2;
@@ -273,11 +303,14 @@ class Communication {
         throw errorMessages["10"];
       }
 
-      if (recursive != null && recursive) {
+      if (recursive) {
         throw "Unknown error from pronote: ${responseJson["Erreur"]["G"]} | ${responseJson["Erreur"]["Titre"]}\n$responseJson";
       }
 
-      return await this.client.communication?.post(functionName, data: data, recursive: true);
+      return await this
+          .client
+          .communication
+          ?.post(functionName, data: data, recursive: true);
     }
 
     if (decryptionChange != null) {
@@ -298,19 +331,23 @@ class Communication {
     Map responseData = response.json();
 
     if (this.shouldEncryptRequests) {
-      responseData['donneesSec'] = this.encryption.aesDecryptAsBytes(conv.hex.decode(responseData['donneesSec']));
+      responseData['donneesSec'] = this
+          .encryption
+          .aesDecryptAsBytes(conv.hex.decode(responseData['donneesSec']));
       print("décrypté données sec");
       this.client.stepsLogger.add("✅ Decrypted response");
     }
     var zlibInstanceDecoder = ZLibDecoder(raw: true);
     if (this.shouldCompressRequests) {
       var toDecode = responseData['donneesSec'];
-      responseData['donneesSec'] = conv.utf8.decode(zlibInstanceDecoder.convert(toDecode));
+      responseData['donneesSec'] =
+          conv.utf8.decode(zlibInstanceDecoder.convert(toDecode));
       this.client.stepsLogger.add("✅ Decompressed response");
     }
     if (responseData['donneesSec'].runtimeType == String) {
       try {
-        responseData['donneesSec'] = conv.jsonDecode(responseData['donneesSec']);
+        responseData['donneesSec'] =
+            conv.jsonDecode(responseData['donneesSec']);
       } catch (e) {
         throw "JSONDecodeError";
       }
@@ -343,7 +380,8 @@ class Encryption {
   }
   aesDecrypt(var data) {
     var key = Key.fromBase16(this.aesKey.toString());
-    final aesEncrypter = Encrypter(AES(key, mode: AESMode.cbc, padding: "PKCS7"));
+    final aesEncrypter =
+        Encrypter(AES(key, mode: AESMode.cbc, padding: "PKCS7"));
     //generate AES CBC block encrypter with key and PKCS7 padding
 
     print(this.aesIV);
@@ -357,13 +395,16 @@ class Encryption {
 
   aesDecryptAsBytes(List<int> data) {
     var key = Key.fromBase16(this.aesKey.toString());
-    final aesEncrypter = Encrypter(AES(key, mode: AESMode.cbc, padding: "PKCS7"));
+    final aesEncrypter =
+        Encrypter(AES(key, mode: AESMode.cbc, padding: "PKCS7"));
     //generate AES CBC block encrypter with key and PKCS7 padding
 
     print(this.aesIV);
 
     try {
-      return aesEncrypter.decryptBytes(Encrypted.from64(conv.base64.encode(data)), iv: this.aesIV);
+      return aesEncrypter.decryptBytes(
+          Encrypted.from64(conv.base64.encode(data)),
+          iv: this.aesIV);
     } catch (e) {
       throw ("Error during decryption : $e");
     }
@@ -376,7 +417,8 @@ class Encryption {
       print("KEY :" + this.aesKey.toString());
       iv = this.aesIV;
       print(iv.base16);
-      final encrypter = Encrypter(AES(key, mode: AESMode.cbc, padding: padding ? "PKCS7" : null));
+      final encrypter = Encrypter(
+          AES(key, mode: AESMode.cbc, padding: padding ? "PKCS7" : null));
       final encrypted = encrypter.encryptBytes(data, iv: iv).base16;
 
       return (encrypted);
@@ -415,7 +457,8 @@ class Encryption {
       var exponent = BigInt.parse(this.rsaKeys['ER']!, radix: 16);
 
       var cipher = PKCS1Encoding(RSAEngine());
-      cipher.init(true, PublicKeyParameter<RSAPublicKey>(RSAPublicKey(modulus, exponent)));
+      cipher.init(true,
+          PublicKeyParameter<RSAPublicKey>(RSAPublicKey(modulus, exponent)));
       Uint8List output1 = cipher.process(data);
 
       return output1;
@@ -432,7 +475,9 @@ class KeepAlive {
 
   void alive() async {
     while (this.keepAlive) {
-      if (DateTime.now().millisecondsSinceEpoch / 1000 - this._connection!.lastPing >= 300) {
+      if (DateTime.now().millisecondsSinceEpoch / 1000 -
+              this._connection!.lastPing >=
+          300) {
         this._connection!.post("Presence", data: {
           '_Signature_': {'onglet': 7}
         });
@@ -486,7 +531,8 @@ class PronoteClient {
 
   List<String> stepsLogger = [];
   bool? mobileLogin;
-  PronoteClient(String pronoteUrl, {String? username, String? password, var cookies, bool? mobileLogin}) {
+  PronoteClient(String pronoteUrl,
+      {String? username, String? password, var cookies, bool? mobileLogin}) {
     this.username = username ?? "";
     this.password = password ?? "";
     this.pronoteUrl = pronoteUrl;
@@ -541,7 +587,9 @@ class PronoteClient {
       print("LOGIN AS REGULAR USER");
       this.ent = false;
     }
-    this.stepsLogger.add("✅ Login passed : using " + ((this.ent ?? false) ? "ent" : "direct") + "connection");
+    this.stepsLogger.add("✅ Login passed : using " +
+        ((this.ent ?? false) ? "ent" : "direct") +
+        "connection");
     //set up encryption
     this.encryption = Encryption();
     this.encryption.aesIV = this.communication!.encryption.aesIV;
@@ -553,7 +601,8 @@ class PronoteClient {
     this.date = DateTime.now();
     var inputFormat = DateFormat("dd/MM/yyyy");
 
-    this.startDay = inputFormat.parse(this.funcOptions['donneesSec']['donnees']['General']['PremierLundi']['V']);
+    this.startDay = inputFormat.parse(this.funcOptions['donneesSec']['donnees']
+        ['General']['PremierLundi']['V']);
 
     final storage = new FlutterSecureStorage();
     await storage.write(key: "startday", value: this.startDay.toString());
@@ -564,10 +613,10 @@ class PronoteClient {
 
     this.loggedIn = await this._login();
 
-    this.hourStart =
-        DateFormat("hh'h'mm").parse(this.funcOptions['donneesSec']['donnees']['General']['ListeHeures']['V'][0]['L']);
-    this.hourEnd = DateFormat("hh'h'mm")
-        .parse(this.funcOptions['donneesSec']['donnees']['General']['ListeHeuresFin']['V'][0]['L']);
+    this.hourStart = DateFormat("hh'h'mm").parse(this.funcOptions['donneesSec']
+        ['donnees']['General']['ListeHeures']['V'][0]['L']);
+    this.hourEnd = DateFormat("hh'h'mm").parse(this.funcOptions['donneesSec']
+        ['donnees']['General']['ListeHeuresFin']['V'][0]['L']);
 
     this.oneHourDuration = hourEnd.difference(hourStart).inMinutes;
     this.expired = false;
@@ -625,7 +674,8 @@ class PronoteClient {
     //printWrapped(this.func_options['donneesSec']['donnees'].toString());
     var json;
     try {
-      json = this.funcOptions['donneesSec']['donnees']['General']['ListePeriodes'];
+      json =
+          this.funcOptions['donneesSec']['donnees']['General']['ListePeriodes'];
     } catch (e) {
       print("ERROR WHILE PARSING JSON " + e.toString());
     }
@@ -699,10 +749,12 @@ class PronoteClient {
     this.localPeriods = this.periods();
     this.week = await getWeek(DateTime.now());
 
-    this.hourStart = DateFormat("""'hh'h'mm'""")
-        .parse(this.funcOptions['donneesSec']['donnees']['General']['ListeHeures']['V'][0]['L']);
-    this.hourEnd = DateFormat("""'hh'h'mm'""")
-        .parse(this.funcOptions['donneesSec']['donnees']['General']['ListeHeuresFin']['V'][0]['L']);
+    this.hourStart = DateFormat("""'hh'h'mm'""").parse(
+        this.funcOptions['donneesSec']['donnees']['General']['ListeHeures']['V']
+            [0]['L']);
+    this.hourEnd = DateFormat("""'hh'h'mm'""").parse(
+        this.funcOptions['donneesSec']['donnees']['General']['ListeHeuresFin']
+            ['V'][0]['L']);
 
     this.oneHourDuration = hourEnd.difference(hourStart).inMinutes;
     print("ohduration " + oneHourDuration.toString());
@@ -733,7 +785,8 @@ class PronoteClient {
       }
     };
 
-    var response = await this.communication!.post('SaisieActualites', data: data);
+    var response =
+        await this.communication!.post('SaisieActualites', data: data);
     print(response);
   }
 
@@ -770,7 +823,8 @@ class PronoteClient {
           "saisieActualite": false
         }
       };
-      var response = await this.communication!.post('SaisieActualites', data: data);
+      var response =
+          await this.communication!.post('SaisieActualites', data: data);
       print(response);
     } catch (e) {
       print(e);
@@ -789,7 +843,8 @@ class PronoteClient {
         password = await storage.read(key: "password");
       }
       await storage.write(key: "pronoteurl", value: this.pronoteUrl);
-      await storage.write(key: "ispronotecas", value: this.mobileLogin.toString());
+      await storage.write(
+          key: "ispronotecas", value: this.mobileLogin.toString());
       print("Saved credentials");
     } catch (e) {
       print("failed to write values");
@@ -811,7 +866,9 @@ class PronoteClient {
       "uuidAppliMobile": appSys.settings!["system"]["uuid"],
       "loginTokenSAV": ""
     };
-    var idr = await this.communication!.post("Identification", data: {'donnees': indentJson});
+    var idr = await this
+        .communication!
+        .post("Identification", data: {'donnees': indentJson});
     this.stepsLogger.add("✅ Posted identification successfully");
 
     print("Identification");
@@ -826,20 +883,23 @@ class PronoteClient {
       motdepasse = sha256.convert(encoded).bytes;
       motdepasse = conv.hex.encode(motdepasse);
       motdepasse = motdepasse.toString().toUpperCase();
-      e.aesKey = conv.hex.encode(md5.convert(conv.utf8.encode(motdepasse)).bytes);
+      e.aesKey =
+          conv.hex.encode(md5.convert(conv.utf8.encode(motdepasse)).bytes);
     } else {
       var u = this.username;
       var p = this.password;
 
       //Convert credentials to lowercase if needed (API returns 1)
-      if (idr['donneesSec']['donnees']['modeCompLog'] != null && idr['donneesSec']['donnees']['modeCompLog'] != 0) {
+      if (idr['donneesSec']['donnees']['modeCompLog'] != null &&
+          idr['donneesSec']['donnees']['modeCompLog'] != 0) {
         print("LOWER CASE ID");
         print(idr['donneesSec']['donnees']['modeCompLog']);
         u = u.toString().toLowerCase();
         this.stepsLogger.add("ⓘ Lowercased id");
       }
 
-      if (idr['donneesSec']['donnees']['modeCompMdp'] != null && idr['donneesSec']['donnees']['modeCompMdp'] != 0) {
+      if (idr['donneesSec']['donnees']['modeCompMdp'] != null &&
+          idr['donneesSec']['donnees']['modeCompMdp'] != 0) {
         print("LOWER CASE PASSWORD");
         print(idr['donneesSec']['donnees']['modeCompMdp']);
         p = p.toString().toLowerCase();
@@ -860,7 +920,8 @@ class PronoteClient {
     var rawChallengeWithoutAlea = removeAlea(rawChallenge);
     this.stepsLogger.add("✅ Removed alea");
 
-    var encryptedChallenge = e.aesEncrypt(conv.utf8.encode(rawChallengeWithoutAlea));
+    var encryptedChallenge =
+        e.aesEncrypt(conv.utf8.encode(rawChallengeWithoutAlea));
     this.stepsLogger.add("✅ Encrypted credentials");
 
     Map authentificationJson = {
@@ -872,9 +933,8 @@ class PronoteClient {
 
     try {
       print("Authentification");
-      this.authResponse = await this
-          .communication!
-          .post("Authentification", data: {'donnees': authentificationJson, 'identifiantNav': ''});
+      this.authResponse = await this.communication!.post("Authentification",
+          data: {'donnees': authentificationJson, 'identifiantNav': ''});
     } catch (e) {
       this.stepsLogger.add("❌  Authentification failed : " + e.toString());
       throw ("Error during auth" + e.toString());
@@ -884,24 +944,42 @@ class PronoteClient {
       if (mobileLogin!) {
         print("Saving token");
         await storage.write(
-            key: "password", value: this.authResponse['donneesSec']['donnees']["jetonConnexionAppliMobile"]);
-        this.password = this.authResponse['donneesSec']['donnees']["jetonConnexionAppliMobile"];
+            key: "password",
+            value: this.authResponse['donneesSec']['donnees']
+                ["jetonConnexionAppliMobile"]);
+        this.password = this.authResponse['donneesSec']['donnees']
+            ["jetonConnexionAppliMobile"];
       }
-      if (this.authResponse['donneesSec']['donnees'].toString().contains("cle")) {
-        await this.communication!.afterAuth(this.communication!.lastResponse, this.authResponse, e.aesKey);
+      if (this
+          .authResponse['donneesSec']['donnees']
+          .toString()
+          .contains("cle")) {
+        await this.communication!.afterAuth(
+            this.communication!.lastResponse, this.authResponse, e.aesKey);
         if (isOldAPIUsed == false) {
           try {
             paramsUser = await this.communication!.post("ParametresUtilisateur", data: {'donnees': {}});
             this.encryption.aesKey = this.communication?.encryption.aesKey;
 
-            this.communication!.authorizedTabs =
-                prepareTabs(mapGet(paramsUser, ['donneesSec', 'donnees', 'listeOnglets']));
+            this.communication!.authorizedTabs = prepareTabs(
+                mapGet(paramsUser, ['donneesSec', 'donnees', 'listeOnglets']));
 
             this.stepsLogger.add("✅ Prepared tabs");
 
             try {
-              createStorage("classe", mapGet(paramsUser, ['donneesSec', 'donnees', 'ressource', "classeDEleve", "L"]));
-              createStorage("userFullName", mapGet(paramsUser, ['donneesSec', 'donnees', 'ressource', "L"]));
+              createStorage(
+                  "classe",
+                  mapGet(paramsUser, [
+                    'donneesSec',
+                    'donnees',
+                    'ressource',
+                    "classeDEleve",
+                    "L"
+                  ]));
+              createStorage(
+                  "userFullName",
+                  mapGet(
+                      paramsUser, ['donneesSec', 'donnees', 'ressource', "L"]));
             } catch (e) {
               this.stepsLogger.add("❌ Failed to register UserInfos");
 
@@ -969,7 +1047,8 @@ class PronotePeriod {
     List services = json['donneesSec']['donnees']['listeServices']['V'];
     //The average data for the given matiere
 
-    var averageData = services.firstWhere((element) => element["L"].hashCode.toString() == codeMatiere);
+    var averageData = services.firstWhere(
+        (element) => element["L"].hashCode.toString() == codeMatiere);
     //print(averageData["moyEleve"]["V"]);
 
     return [
@@ -996,11 +1075,15 @@ class PronotePeriod {
 
     var response = (codePeriode == 2) ? a.json() : {};
     */
-    var response = await _client.communication!.post('DernieresNotes', data: jsonData);
-    var grades = mapGet(response, ['donneesSec', 'donnees', 'listeDevoirs', 'V']) ?? [];
-    this.moyenneGenerale = gradeTranslate(mapGet(response, ['donneesSec', 'donnees', 'moyGenerale', 'V']) ?? "");
-    this.moyenneGeneraleClasse =
-        gradeTranslate(mapGet(response, ['donneesSec', 'donnees', 'moyGeneraleClasse', 'V']) ?? "");
+    var response =
+        await _client.communication!.post('DernieresNotes', data: jsonData);
+    var grades =
+        mapGet(response, ['donneesSec', 'donnees', 'listeDevoirs', 'V']) ?? [];
+    this.moyenneGenerale = gradeTranslate(
+        mapGet(response, ['donneesSec', 'donnees', 'moyGenerale', 'V']) ?? "");
+    this.moyenneGeneraleClasse = gradeTranslate(
+        mapGet(response, ['donneesSec', 'donnees', 'moyGeneraleClasse', 'V']) ??
+            "");
 
     var other = [];
     grades.forEach((element) async {
@@ -1009,7 +1092,9 @@ class PronotePeriod {
           testName: element["commentaire"],
           periodCode: this.id,
           periodName: this.name,
-          disciplineCode: (mapGet(element, ["service", "V", "L"]) ?? "").hashCode.toString(),
+          disciplineCode: (mapGet(element, ["service", "V", "L"]) ?? "")
+              .hashCode
+              .toString(),
           subdisciplineCode: null,
           disciplineName: mapGet(element, ["service", "V", "L"]),
           letters: (mapGet(element, ["note", "V"]) ?? "").contains("|"),
@@ -1017,15 +1102,22 @@ class PronotePeriod {
           scale: mapGet(element, ["bareme", "V"]),
           min: this.gradeTranslate(mapGet(element, ["noteMin", "V"]) ?? ""),
           max: this.gradeTranslate(mapGet(element, ["noteMax", "V"]) ?? ""),
-          classAverage: this.gradeTranslate(mapGet(element, ["moyenne", "V"]) ?? ""),
-          date: mapGet(element, ["date", "V"]) != null ? DateFormat("dd/MM/yyyy").parse(element["date"]["V"]) : null,
-          notSignificant: this.gradeTranslate(mapGet(element, ["note", "V"]) ?? "") == "NonNote",
+          classAverage:
+              this.gradeTranslate(mapGet(element, ["moyenne", "V"]) ?? ""),
+          date: mapGet(element, ["date", "V"]) != null
+              ? DateFormat("dd/MM/yyyy").parse(element["date"]["V"])
+              : null,
+          notSignificant:
+              this.gradeTranslate(mapGet(element, ["note", "V"]) ?? "") ==
+                  "NonNote",
           testType: "Interrogation",
           entryDate: mapGet(element, ["date", "V"]) != null
               ? DateFormat("dd/MM/yyyy").parse(mapGet(element, ["date", "V"]))
               : null,
-          countAsZero: shouldCountAsZero(this.gradeTranslate(mapGet(element, ["note", "V"]) ?? ""))));
-      other.add(average(response, (mapGet(element, ["service", "V", "L"]) ?? "").hashCode.toString()));
+          countAsZero: shouldCountAsZero(
+              this.gradeTranslate(mapGet(element, ["note", "V"]) ?? ""))));
+      other.add(average(response,
+          (mapGet(element, ["service", "V", "L"]) ?? "").hashCode.toString()));
     });
     return [list, other];
   }

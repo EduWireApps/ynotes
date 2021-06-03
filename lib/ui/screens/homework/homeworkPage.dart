@@ -31,7 +31,6 @@ class HomeworkPageState extends State<HomeworkPage> {
   Widget build(BuildContext context) {
     //Show the pin dialog
     showDialog();
-    MediaQueryData screenSize = MediaQuery.of(context);
     return Scaffold(
       appBar: new AppBar(
           title: new Text(

@@ -24,8 +24,8 @@ class _StatsPageState extends State<StatsPage> {
             "Statistiques",
             style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
           ),
-          leading: FlatButton(
-            color: Colors.transparent,
+          leading: TextButton(
+            style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent)),
             child: Icon(MdiIcons.menu, color: ThemeUtils.textColor()),
             onPressed: () async {
               widget.parentScaffoldState.currentState?.openDrawer();

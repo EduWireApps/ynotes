@@ -461,7 +461,6 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                             itemCount: _listFiles!.length,
                             itemBuilder: (context, index) {
                               final item = _listFiles![index].fileName!;
-                              bool selected = false;
                               return Dismissible(
                                 direction: DismissDirection.endToStart,
                                 background: Container(color: Colors.red),
@@ -645,7 +644,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
       setState(() {
         filesListFuture = FileAppUtil.getFilesList(initialPath! + path);
       });
-      var realLF = await filesListFuture;
+      await filesListFuture;
       sortList();
     }
   }

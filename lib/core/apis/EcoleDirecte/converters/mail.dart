@@ -11,8 +11,8 @@ class EcoleDirecteMailConverter {
     Map<String, dynamic> from = mailData["from"] ?? "";
     String subject = mailData["subject"] ?? "";
     String date = mailData["date"];
-    String loadedContent = "";
-    List<Map<String, dynamic>> filesData = mailData["files"].cast<Map<String, dynamic>>();
+    List<Map<String, dynamic>> filesData =
+        mailData["files"].cast<Map<String, dynamic>>();
     List<Document> files = EcoleDirecteDocumentConverter.documents(filesData);
     Mail mail = Mail(
         id: id,

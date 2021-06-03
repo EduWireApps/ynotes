@@ -12,7 +12,6 @@ import 'package:ynotes/ui/components/columnGenerator.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/dragHandle.dart';
 
 void showFilesModalBottomSheet(context, List<Document> files) {
-  MediaQueryData screenSize = MediaQuery.of(context);
 
   showModalBottomSheet(
       shape: RoundedRectangleBorder(

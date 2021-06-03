@@ -42,7 +42,7 @@ class HomeworkController extends ChangeNotifier {
           break;
         case homeworkFilter.LITERARY:
           if (appSys.settings!["system"]["chosenParser"] == 0) {
-            List<String> codeMatiere = FILTERS["literary"]["ED"];
+            List<String> codeMatiere = filters["literary"]["ED"];
             if (codeMatiere.any((test) {
               if (test == f.disciplineCode) {
                 return true;
@@ -53,7 +53,7 @@ class HomeworkController extends ChangeNotifier {
               toReturn.add(f);
             }
           } else {
-            List<String> codeMatiere = FILTERS["literary"]["Pronote"];
+            List<String> codeMatiere = filters["literary"]["Pronote"];
 
             if (codeMatiere.any((test) {
               if (f.discipline!.contains(test)) {
@@ -69,7 +69,7 @@ class HomeworkController extends ChangeNotifier {
           break;
         case homeworkFilter.SCIENCES:
           if (appSys.settings!["system"]["chosenParser"] == 0) {
-            List<String> codeMatiere = FILTERS["sciences"]["ED"];
+            List<String> codeMatiere = filters["sciences"]["ED"];
             if (codeMatiere.any((test) {
               if (test == f.disciplineCode) {
                 return true;
@@ -80,8 +80,8 @@ class HomeworkController extends ChangeNotifier {
               toReturn.add(f);
             }
           } else {
-            List<String> codeMatiere = FILTERS["sciences"]["Pronote"];
-            List<String> blackList = FILTERS["sciences"]["blacklist"];
+            List<String> codeMatiere = filters["sciences"]["Pronote"];
+            List<String> blackList = filters["sciences"]["blacklist"];
             if (codeMatiere.any((test) {
               if (f.discipline!.contains(test) && !blackList.any((element) => f.discipline!.contains(element))) {
                 return true;
@@ -120,29 +120,22 @@ class HomeworkController extends ChangeNotifier {
       list.addAll(_old!);
     }
     //Remove antecedent hw
-    if (list != null) {
-      list.removeWhere(
-          (element) => element.date!.isBefore(DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now()))));
-    }
-    if (list != null) {
-      //Number of elements in list
-      int total = list.length;
+    list.removeWhere((element) => element.date!.isBefore(
+        DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now()))));
+    //Number of elements in list
+    int total = list.length;
 
-      if (total == 0) {
-        _hwCompletion = [100, 0, 0];
-        notifyListeners();
-      } else {
-        int done = 0;
+    if (total == 0) {
+      _hwCompletion = [100, 0, 0];
+      notifyListeners();
+    } else {
+      int done = 0;
 
         done = list.where((element) => element.done ?? false).toList().length;
 
         int percent = (done * 100 / total).round();
 
-        _hwCompletion = [percent, done, list.length];
-        notifyListeners();
-      }
-    } else {
-      _hwCompletion = [100, 0, 0];
+      _hwCompletion = [percent, done, list.length];
       notifyListeners();
     }
   }
@@ -189,13 +182,8 @@ class HomeworkController extends ChangeNotifier {
   //Load all events
   void prepareExamsCount() {
     List<Homework> hwList = (getHomework ?? []);
-    if (hwList != null) {
-      examsCount = hwList.where((element) => element.isATest!).length;
-      notifyListeners();
-    } else {
-      examsCount = 0;
-      notifyListeners();
-    }
+    examsCount = hwList.where((element) => element.isATest!).length;
+    notifyListeners();
   }
 
 //Load all events
@@ -221,20 +209,16 @@ class HomeworkController extends ChangeNotifier {
 
   void prepareTomorrowAndWeekCount() {
     List<Homework> hwList = (getHomework ?? []);
-    if (hwList != null) {
       tomorrowCount = hwList.where((element) => CalendarTime(element.date).isTomorrow).length;
       weekCount = hwList.where((element) => CalendarTime(element.date).isNextWeek).length;
 
       notifyListeners();
-    } else {
-      tomorrowCount = 0;
-      weekCount = 0;
-      notifyListeners();
-    }
+    
   }
 
   Future<void> refresh({bool force = false, refreshFromOffline = false}) async {
-    print("Refreshing homework " + (refreshFromOffline ? "from offline" : "online"));
+    print("Refreshing homework " +
+        (refreshFromOffline ? "from offline" : "online"));
     isFetching = true;
     notifyListeners();
     if (refreshFromOffline) {

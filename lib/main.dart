@@ -47,12 +47,13 @@ _headlessTask(HeadlessTask? task) async {
       await AppNotification.cancelNotification(task.taskId.hashCode);
       BackgroundFetch.finish(task.taskId);
     }
-    await BackgroundService.backgroundFetchHeadlessTask(task.taskId, headless: true);
+    await BackgroundService.backgroundFetchHeadlessTask(task.taskId,
+        headless: true);
     BackgroundFetch.finish(task.taskId);
   }
 }
 
-class carousel extends StatelessWidget {
+class Carousel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,7 +73,7 @@ class HomeApp extends StatefulWidget {
   _HomeAppState createState() => _HomeAppState();
 }
 
-class homePage extends StatelessWidget {
+class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
@@ -86,7 +87,7 @@ class homePage extends StatelessWidget {
   }
 }
 
-class loader extends StatelessWidget {
+class Loader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
@@ -99,7 +100,7 @@ class loader extends StatelessWidget {
   }
 }
 
-class login extends StatelessWidget {
+class Login extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
@@ -125,9 +126,13 @@ class _HomeAppState extends State<HomeApp> {
           secret: "y9zengsvskpriizwniqxr6vxa1ka1n6u",
           navigatorKey: _navigatorKey,
           theme: WiredashThemeData(
-              backgroundColor: ThemeUtils.isThemeDark ? Color(0xff313131) : Colors.white,
-              primaryBackgroundColor: ThemeUtils.isThemeDark ? Color(0xff414141) : Color(0xffF3F3F3),
-              secondaryBackgroundColor: ThemeUtils.isThemeDark ? Color(0xff313131) : Colors.white,
+              backgroundColor:
+                  ThemeUtils.isThemeDark ? Color(0xff313131) : Colors.white,
+              primaryBackgroundColor: ThemeUtils.isThemeDark
+                  ? Color(0xff414141)
+                  : Color(0xffF3F3F3),
+              secondaryBackgroundColor:
+                  ThemeUtils.isThemeDark ? Color(0xff313131) : Colors.white,
               secondaryColor: Theme.of(context).primaryColorDark,
               primaryColor: Theme.of(context).primaryColor,
               primaryTextColor: ThemeUtils.textColor(),
@@ -153,7 +158,7 @@ class _HomeAppState extends State<HomeApp> {
             theme: model.theme,
             title: kDebugMode ? "yNotes DEV" : "yNotes",
             navigatorKey: _navigatorKey,
-            home: loader(),
+            home: Loader(),
             themeMode: ThemeMode.light,
           ),
         );
@@ -164,14 +169,6 @@ class _HomeAppState extends State<HomeApp> {
   initState() {
     super.initState();
   }
-}
-
-extension on TextStyle {
-  /// Temporary fix the following Flutter Web issues
-  /// https://github.com/flutter/flutter/issues/63467
-  /// https://github.com/flutter/flutter/issues/64904#issuecomment-699039851
-  /// https://github.com/flutter/flutter/issues/65526
-  TextStyle get withZoomFix => copyWith(wordSpacing: 0);
 }
 
 extension StringExtension on String {

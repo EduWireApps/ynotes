@@ -99,7 +99,7 @@ class _ExitDialogWidgetState extends State<ExitDialogWidget> {
               try {
                 appSys.updateTheme("clair");
               } catch (e) {}
-              Navigator.of(context).pushReplacement(router(login()));
+              Navigator.of(context).pushReplacement(router(Login()));
             },
           )
         ]);

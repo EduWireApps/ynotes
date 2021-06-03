@@ -11,8 +11,6 @@ import 'package:ynotes/ui/screens/agenda/agendaPage.dart';
 import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/agendaGrid.dart';
 import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/buttons.dart';
 
-bool extended = false;
-
 class SpaceAgenda extends StatefulWidget {
   @override
   _SpaceAgendaState createState() => _SpaceAgendaState();
@@ -53,12 +51,18 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
                                   builder: (context, snapshot) {
                                     List<AgendaEvent>? lst = snapshot.data;
                                     if (lst != null) {
-                                      lst.removeWhere((element) => element.start!.isAfter(element.end!));
+                                      lst.removeWhere((element) =>
+                                          element.start!.isAfter(element.end!));
                                     }
                                     if (snapshot.hasData &&
                                         snapshot.data != null &&
                                         lst!.length != 0 &&
-                                        lst.where((element) => !element.isLesson!).toList().length != 0) {
+                                        lst
+                                                .where((element) =>
+                                                    !element.isLesson!)
+                                                .toList()
+                                                .length !=
+                                            0) {
                                       return RefreshIndicator(
                                           onRefresh: refreshAgendaFutures,
                                           child: AgendaGrid(
@@ -69,7 +73,12 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
                                     }
                                     if (snapshot.data != null &&
                                         (lst!.length == 0 ||
-                                            lst.where((element) => !element.isLesson!).toList().length == 0)) {
+                                            lst
+                                                    .where((element) =>
+                                                        !element.isLesson!)
+                                                    .toList()
+                                                    .length ==
+                                                0)) {
                                       return Center(
                                         child: FittedBox(
                                           child: Column(
@@ -165,12 +174,11 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
         agendaFuture = appSys.api!.getEvents(agendaDate!, false, forceReload: force);
       });
     }
-    var realAF = await spaceAgendaFuture;
-    var realSAF = await agendaFuture;
+    await spaceAgendaFuture;
+    await agendaFuture;
   }
 
   _buildAgendaButtons(BuildContext context) {
-    MediaQueryData screenSize = MediaQuery.of(context);
 
     return AgendaButtons(
       getLessons: getLessons,

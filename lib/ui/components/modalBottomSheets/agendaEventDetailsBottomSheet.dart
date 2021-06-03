@@ -2,14 +2,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:ynotes/core/apis/utils.dart';
+import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/services/notifications.dart';
+import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/agendaEventEditBottomSheet.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/keyValues.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/core/utils/themeUtils.dart';
-import 'package:ynotes/core/apis/utils.dart';
-import 'package:ynotes/main.dart';
-import 'package:ynotes/globals.dart';
 
 Future<void> lessonDetails(context, AgendaEvent event) async {
   return showModalBottomSheet(
@@ -18,6 +17,7 @@ Future<void> lessonDetails(context, AgendaEvent event) async {
       ),
       backgroundColor: Theme.of(context).primaryColor,
       context: context,
+      isScrollControlled: true,
       builder: (BuildContext bc) {
         return LessonDetailsDialog(event);
       });
@@ -34,27 +34,12 @@ class LessonDetailsDialog extends StatefulWidget {
 class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
   List<AgendaReminder> reminders = [];
   @override
-  void initState() {
-    super.initState();
-    getAssociatedReminders();
-  }
-
-  void getAssociatedReminders() async {
-    List<AgendaReminder>? remindersOnline = await appSys.offline.reminders.getReminders(widget.event.id);
-    setState(() {
-      if (remindersOnline != null) {
-        reminders = remindersOnline;
-      }
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
     return Container(
-        height: screenSize.size.height / 10 * 5.0,
-        padding: EdgeInsets.all(0),
+        padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.5),
         child: new Column(
+          mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             if (widget.event.name != null)
@@ -136,47 +121,45 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                         Container(
                           padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
                           margin: EdgeInsets.only(top: (screenSize.size.height / 10 * 0.2)),
-                          child: FittedBox(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                buildKeyValuesInfo(context, "Horaires", [
-                                  "${DateFormat.Hm().format(widget.event.start!)} - ${DateFormat.Hm().format(widget.event.end!)}"
-                                ]),
-                                if (widget.event.location != null)
-                                  SizedBox(
-                                    height: (screenSize.size.height / 3) / 25,
-                                  ),
-                                if (widget.event.location != null)
-                                  buildKeyValuesInfo(context, widget.event.lesson != null ? "Salle" : "Emplacement",
-                                      [widget.event.location]),
-                                if (widget.event.lesson != null && widget.event.lesson!.teachers != null)
-                                  SizedBox(
-                                    height: (screenSize.size.height / 3) / 25,
-                                  ),
-                                if (widget.event.lesson != null && widget.event.lesson!.teachers != null)
-                                  buildKeyValuesInfo(
-                                      context,
-                                      "Professeur${widget.event.lesson!.teachers!.length > 1 ? "s" : ""}",
-                                      widget.event.lesson!.teachers),
-                                if (widget.event.lesson != null && widget.event.lesson!.groups != null)
-                                  SizedBox(
-                                    height: (screenSize.size.height / 3) / 25,
-                                  ),
-                                if (widget.event.lesson != null && widget.event.lesson!.groups != null)
-                                  buildKeyValuesInfo(context, "Groupes", widget.event.lesson!.groups),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              buildKeyValuesInfo(context, "Horaires", [
+                                "${DateFormat.Hm().format(widget.event.start!)} - ${DateFormat.Hm().format(widget.event.end!)}"
+                              ]),
+                              if (widget.event.location != null)
                                 SizedBox(
                                   height: (screenSize.size.height / 3) / 25,
                                 ),
-                                if (widget.event.canceled! ||
-                                    (widget.event.lesson != null && widget.event.lesson!.status != null))
-                                  buildKeyValuesInfo(context, "Statut",
-                                      [widget.event.canceled! ? "Annulé" : widget.event.lesson!.status]),
-                                if (widget.event.description != null && widget.event.description != "")
-                                  buildKeyValuesInfo(context, "Description", [widget.event.description]),
-                              ],
-                            ),
+                              if (widget.event.location != null)
+                                buildKeyValuesInfo(context, widget.event.lesson != null ? "Salle" : "Emplacement",
+                                    [widget.event.location]),
+                              if (widget.event.lesson != null && widget.event.lesson!.teachers != null)
+                                SizedBox(
+                                  height: (screenSize.size.height / 3) / 25,
+                                ),
+                              if (widget.event.lesson != null && widget.event.lesson!.teachers != null)
+                                buildKeyValuesInfo(
+                                    context,
+                                    "Professeur${widget.event.lesson!.teachers!.length > 1 ? "s" : ""}",
+                                    widget.event.lesson!.teachers),
+                              if (widget.event.lesson != null && widget.event.lesson!.groups != null)
+                                SizedBox(
+                                  height: (screenSize.size.height / 3) / 25,
+                                ),
+                              if (widget.event.lesson != null && widget.event.lesson!.groups != null)
+                                buildKeyValuesInfo(context, "Groupes", widget.event.lesson!.groups),
+                              SizedBox(
+                                height: (screenSize.size.height / 3) / 25,
+                              ),
+                              if (widget.event.canceled! ||
+                                  (widget.event.lesson != null && widget.event.lesson!.status != null))
+                                buildKeyValuesInfo(context, "Statut",
+                                    [widget.event.canceled! ? "Annulé" : widget.event.lesson!.status]),
+                              if (widget.event.description != null && widget.event.description != "")
+                                buildKeyValuesInfo(context, "Description", [widget.event.description]),
+                            ],
                           ),
                         ),
                       ],
@@ -413,5 +396,20 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
             )
           ],
         ));
+  }
+
+  void getAssociatedReminders() async {
+    List<AgendaReminder>? remindersOnline = await appSys.offline.reminders.getReminders(widget.event.id);
+    setState(() {
+      if (remindersOnline != null) {
+        reminders = remindersOnline;
+      }
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getAssociatedReminders();
   }
 }

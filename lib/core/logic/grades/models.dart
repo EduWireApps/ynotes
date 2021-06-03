@@ -137,6 +137,9 @@ class Discipline {
     average = double.parse((average / counter).toStringAsFixed(2));
     return (average);
   }
+
+  @override
+  int get hashCode => super.hashCode;
 }
 
 //Marks class
@@ -218,7 +221,8 @@ class Grade {
     this.countAsZero = false,
   });
 
-  factory Grade.fromEcoleDirecteJson(Map<String, dynamic> json, String? nomPeriode) {
+  factory Grade.fromEcoleDirecteJson(
+      Map<String, dynamic> json, String? nomPeriode) {
     return Grade(
       min: json["minClasse"],
       max: json["maxClasse"],
@@ -255,6 +259,9 @@ class Grade {
       other.testName == testName &&
       other.simulated == simulated &&
       other.scale == scale;
+
+  @override
+  int get hashCode => super.hashCode;
 }
 
 class Period {

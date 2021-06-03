@@ -10,7 +10,6 @@ ThemeData darkTheme = ThemeData(
     primaryColorDark: Color(0xff333333),
     indicatorColor: Color(0xff525252),
     tabBarTheme: TabBarTheme(labelColor: Colors.black));
-
 ThemeData lightTheme = ThemeData(
     backgroundColor: Colors.white,
     primaryColor: Color(0xffF3F3F3),

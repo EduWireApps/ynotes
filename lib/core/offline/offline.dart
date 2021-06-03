@@ -119,7 +119,7 @@ class Offline {
         Hive.registerAdapter(RecipientAdapter());
         Hive.registerAdapter(SchoolLifeTicketAdapter());
 
-        Hive.registerAdapter(alarmTypeAdapter());
+        Hive.registerAdapter(AlarmTypeAdapter());
       } catch (e) {
         print("Error " + e.toString());
       }
@@ -184,7 +184,8 @@ class Offline {
           this.remindersData = offlineRemindersData.cast<AgendaReminder>();
         }
         if (offlineAgendaEventsData != null) {
-          this.agendaEventsData = Map<dynamic, dynamic>.from(offlineAgendaEventsData);
+          this.agendaEventsData =
+              Map<dynamic, dynamic>.from(offlineAgendaEventsData);
         }
         if (offlineRecipientsData != null) {
           this.recipientsData = offlineRecipientsData.cast<Recipient>();

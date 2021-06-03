@@ -8,7 +8,6 @@ import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/customLoader.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/readMailBottomSheet.dart';
@@ -164,7 +163,6 @@ class _MailPageState extends State<MailPage> {
                             ),
                           ),
                         ),
-                     
                         Container(
                           padding: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
                           height: screenSize.size.height / 10 * 8.35,
@@ -185,7 +183,6 @@ class _MailPageState extends State<MailPage> {
                                               crossAxisAlignment: CrossAxisAlignment.start,
                                               mainAxisAlignment: MainAxisAlignment.center,
                                               children: <Widget>[
-
                                                 Material(
                                                     color: localList[index].read ?? false
                                                         ? Theme.of(context).backgroundColor
@@ -367,13 +364,10 @@ class _MailPageState extends State<MailPage> {
         switch (actualSort) {
           case (sortValue.date):
             return dateb.compareTo(datea);
-            break;
           case (sortValue.reversed_date):
             return datea.compareTo(dateb);
-            break;
           case (sortValue.author):
             return b.from?["nom"].compareTo(a.from?["nom"]);
-            break;
         }
         return 1;
       });

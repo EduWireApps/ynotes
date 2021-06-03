@@ -63,7 +63,6 @@ class FileAppUtil {
 
   static Future<List<FileInfo>> getFilesList(String path) async {
     try {
-      String directory;
       List file = [];
 
       if (await Permission.storage.request().isGranted) {
@@ -160,10 +159,9 @@ class FolderAppUtil {
     final Directory _appDocDirFolder = Directory(path);
 
     if (!await _appDocDirFolder.exists()) {
+      await _appDocDirFolder.create(recursive: true);
       print("creating $path");
-
-      final Directory _appDocDirNewFolder = await _appDocDirFolder.create(recursive: true);
-    } else {}
+    }
   }
 
   static getDirectory({bool download = false}) async {

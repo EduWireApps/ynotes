@@ -1,5 +1,4 @@
 import 'package:ynotes/core/offline/offline.dart';
-import 'package:ynotes/core/utils/fileUtils.dart';
 
 class DoneHomeworkOffline extends Offline {
   late Offline parent;
@@ -29,7 +28,6 @@ class DoneHomeworkOffline extends Offline {
 
   Future<bool> getHWCompletion(String? id) async {
     try {
-      final dir = await FolderAppUtil.getDirectory();
       /*Hive.init("${dir.path}/offline");
       if (homeworkDoneBox == null || !homeworkDoneBox.isOpen) {
         homeworkDoneBox = await Hive.openBox("doneHomework");

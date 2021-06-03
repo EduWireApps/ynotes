@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:html_character_entities/html_character_entities.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -14,7 +15,9 @@ import '../dialogs.dart';
 class WriteMailBottomSheet extends StatefulWidget {
   final List<Recipient>? defaultRecipients;
   final String? defaultSubject;
-  const WriteMailBottomSheet({Key? key, this.defaultRecipients, this.defaultSubject}) : super(key: key);
+  const WriteMailBottomSheet(
+      {Key? key, this.defaultRecipients, this.defaultSubject})
+      : super(key: key);
 
   @override
   _WriteMailBottomSheetState createState() => _WriteMailBottomSheetState();
@@ -30,8 +33,6 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
-    var toController;
-
     return Container(
       height: screenSize.size.height,
       color: Theme.of(context).backgroundColor,
@@ -51,14 +52,18 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                         alignment: Alignment.centerLeft,
                         child: IconButton(
                           onPressed: () async {
-                            if ((await (CustomDialogs.showConfirmationDialog(context, null,
-                                    alternativeText: "Êtes vous sûr de vouloir supprimer ce mail ?",
-                                    alternativeButtonConfirmText: "Supprimer ce mail")) ??
+                            if ((await (CustomDialogs.showConfirmationDialog(
+                                    context, null,
+                                    alternativeText:
+                                        "Êtes vous sûr de vouloir supprimer ce mail ?",
+                                    alternativeButtonConfirmText:
+                                        "Supprimer ce mail")) ??
                                 false)) {
                               Navigator.pop(context);
                             }
                           },
-                          icon: Icon(MdiIcons.arrowLeft, color: ThemeUtils.textColor()),
+                          icon: Icon(MdiIcons.arrowLeft,
+                              color: ThemeUtils.textColor()),
                         ),
                       ),
                       SizedBox(
@@ -66,7 +71,8 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                       ),
                       AutoSizeText(
                         "Ecrire un mail",
-                        style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                        style: TextStyle(
+                            fontFamily: "Asap", color: ThemeUtils.textColor()),
                       )
                     ],
                   ),
@@ -78,14 +84,18 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                         IconButton(
                           onPressed: () async {
                             print(await controller.getText());
-                            if (!selectedRecipients!.isEmpty) {
+                            print(HtmlCharacterEntities.encode(
+                                await controller.getText() ?? "",
+                                characters: "zàâçéèêëîïôûùüÿñæœ"));
+                            if (selectedRecipients!.isNotEmpty) {
                               Navigator.pop(context, [
                                 subjectController.text,
                                 await controller.getText(),
                                 selectedRecipients,
                               ]);
                             } else {
-                              CustomDialogs.showAnyDialog(context, "Ajoutez au moins un destinataire.");
+                              CustomDialogs.showAnyDialog(
+                                  context, "Ajoutez au moins un destinataire.");
                             }
                           },
                           icon: Icon(Icons.send, color: ThemeUtils.textColor()),
@@ -111,16 +121,21 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                           children: [
                             if (selectedRecipients!.length == 0)
                               Container(
-                                margin: EdgeInsets.only(right: screenSize.size.width / 5 * 0.1),
+                                margin: EdgeInsets.only(
+                                    right: screenSize.size.width / 5 * 0.1),
                                 child: Chip(
-                                  backgroundColor: Theme.of(context).primaryColor,
+                                  backgroundColor:
+                                      Theme.of(context).primaryColor,
                                   label: Text("(aucun destinataire)",
-                                      style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor())),
+                                      style: TextStyle(
+                                          fontFamily: "Asap",
+                                          color: ThemeUtils.textColor())),
                                 ),
                               ),
                             for (Recipient recipient in selectedRecipients!)
                               Container(
-                                margin: EdgeInsets.only(right: screenSize.size.width / 5 * 0.1),
+                                margin: EdgeInsets.only(
+                                    right: screenSize.size.width / 5 * 0.1),
                                 child: Chip(
                                   deleteIcon: Icon(Icons.delete),
                                   onDeleted: () {
@@ -128,7 +143,9 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                                       selectedRecipients!.remove(recipient);
                                     });
                                   },
-                                  label: Text(recipient.name! + " " + recipient.surname!),
+                                  label: Text(recipient.name! +
+                                      " " +
+                                      recipient.surname!),
                                 ),
                               )
                           ],
@@ -142,7 +159,9 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                       width: screenSize.size.width / 5 * 0.5,
                       child: IconButton(
                         onPressed: () async {
-                          var recipient = await CustomDialogs.showNewRecipientDialog(context);
+                          var recipient =
+                              await CustomDialogs.showNewRecipientDialog(
+                                  context);
                           if (recipient != null) {
                             setState(() {
                               selectedRecipients!.add(recipient);
@@ -160,7 +179,9 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                       child: IconButton(
                         onPressed: () async {
                           //Get the recipients
-                          List<Recipient>? recipients = await ((appSys.api as APIEcoleDirecte).mailRecipients());
+                          List<Recipient>? recipients =
+                              await ((appSys.api as APIEcoleDirecte)
+                                  .mailRecipients());
                           List<String> recipientsName = [];
                           if (recipients != null) {
                             recipients.forEach((element) {
@@ -168,28 +189,37 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                               String name = element.name ?? "";
                               String surname = element.surname ?? "";
                               String discipline = element.discipline ?? "";
-                              String toAdd = name + " " + surname + " - (" + discipline + ")";
+                              String toAdd = name +
+                                  " " +
+                                  surname +
+                                  " - (" +
+                                  discipline +
+                                  ")";
                               recipientsName.add(toAdd);
                             });
                           }
                           List<int> alreadySelected = [];
                           selectedRecipients!.forEach((selected) {
-                            if (recipients!.indexOf(selected) >= 0) alreadySelected.add(recipients.indexOf(selected));
+                            if (recipients!.indexOf(selected) >= 0)
+                              alreadySelected.add(recipients.indexOf(selected));
                           });
-                          List<int>? selection = await (CustomDialogs.showMultipleChoicesDialog(
-                              context, recipientsName, alreadySelected,
-                              singleChoice: false) as Future<List<int>?>);
+                          List<int>? selection =
+                              (await (CustomDialogs.showMultipleChoicesDialog(
+                                  context, recipientsName, alreadySelected,
+                                  singleChoice: false))) as List<int>?;
                           if (selection != null) {
                             print(selection);
                             setState(() {
                               selection.forEach((index) {
-                                if (!selectedRecipients!.contains(recipients![index]))
+                                if (!selectedRecipients!
+                                    .contains(recipients![index]))
                                   selectedRecipients!.add(recipients[index]);
                               });
                             });
                           }
                         },
-                        icon: Icon(Icons.contact_page, color: ThemeUtils.textColor()),
+                        icon: Icon(Icons.contact_page,
+                            color: ThemeUtils.textColor()),
                       ),
                     ),
                   ),
@@ -206,11 +236,14 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                 controller: subjectController,
                 maxLines: 1,
                 style: TextStyle(
-                    fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.width / 5 * 0.35),
+                    fontFamily: "Asap",
+                    color: ThemeUtils.textColor(),
+                    fontSize: screenSize.size.width / 5 * 0.35),
                 decoration: new InputDecoration(
                   border: OutlineInputBorder(),
                   contentPadding: EdgeInsets.symmetric(
-                      horizontal: screenSize.size.width / 5 * 0.04, vertical: screenSize.size.height / 10 * 0.1),
+                      horizontal: screenSize.size.width / 5 * 0.04,
+                      vertical: screenSize.size.height / 10 * 0.1),
                   labelText: 'Sujet',
                   labelStyle: TextStyle(
                     fontFamily: "Asap",
@@ -246,7 +279,6 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
     if (!monochromatic) {
       return html;
     }
-    String color = ThemeUtils.isThemeDark ? "white" : "black";
     String finalHTML = html.replaceAll("color", "");
     return finalHTML;
   }

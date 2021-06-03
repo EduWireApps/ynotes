@@ -15,10 +15,10 @@ class _CustomColorPickerState extends State<CustomColorPicker> {
 
   @override
   Widget build(BuildContext context) {
-    MediaQueryData screenSize = MediaQuery.of(context);
     return AlertDialog(
       backgroundColor: Theme.of(context).primaryColor,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0))),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(32.0))),
       content: Container(
         //padding: EdgeInsets.all(screenSize.size.height/100),
 
@@ -29,7 +29,6 @@ class _CustomColorPickerState extends State<CustomColorPicker> {
               pickerColor: pickerColor ?? widget.defaultColor,
               onColorChanged: changeColor,
               availableColors: [
-                //TODO : add the default colors
                 Colors.white,
                 Color(0xfffb6b1d),
                 Color(0xffe83b3b),
@@ -67,7 +66,7 @@ class _CustomColorPickerState extends State<CustomColorPicker> {
         ),
       ),
       actions: <Widget>[
-        FlatButton(
+        TextButton(
           child: const Text(
             "Annuler",
             style: TextStyle(fontFamily: "Asap", color: Colors.red),
@@ -76,7 +75,7 @@ class _CustomColorPickerState extends State<CustomColorPicker> {
             Navigator.pop(context, null);
           },
         ),
-        FlatButton(
+        TextButton(
           child: Text(
             "J'ai choisi",
             style: TextStyle(color: Colors.green, fontFamily: "Asap"),

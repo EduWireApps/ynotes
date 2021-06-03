@@ -14,25 +14,28 @@ import 'package:ynotes/ui/components/dialogs.dart';
 ///If this is a reminder `lessonID` can't be null otherwise it will throw an exception.
 ///It will return, "created", "edited" or "removed"
 Future agendaEventEdit(context, isCustomEvent,
-    {AgendaEvent? customEvent, AgendaReminder? reminder, String? lessonID, DateTime? defaultDate}) async {
-  Color colorGroup;
-
-  MediaQueryData screenSize = MediaQuery.of(context);
+    {AgendaEvent? customEvent,
+    AgendaReminder? reminder,
+    String? lessonID,
+    DateTime? defaultDate}) async {
   return showModalBottomSheet(
       isScrollControlled: true,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(25), topRight: Radius.circular(25)),
       ),
       backgroundColor: Theme.of(context).primaryColor,
       context: context,
       builder: (BuildContext bc) {
         //Assert for avoiding setting a new reminder without it's lesson ID
-        assert(!isCustomEvent ? lessonID != null : true, "Setting a reminder require a lessonID");
+        assert(!isCustomEvent ? lessonID != null : true,
+            "Setting a reminder require a lessonID");
 
         //Assert for avoiding setting a new custom event without default date
-        assert(isCustomEvent ? defaultDate != null : true, "Setting a custom event require a default date");
+        assert(isCustomEvent ? defaultDate != null : true,
+            "Setting a custom event require a default date");
 
-        return agendaEventEditLayout(
+        return AgendaEventEditLayout(
           isCustomEvent,
           customEvent: customEvent,
           reminder: reminder,
@@ -42,7 +45,7 @@ Future agendaEventEdit(context, isCustomEvent,
       });
 }
 
-class agendaEventEditLayout extends StatefulWidget {
+class AgendaEventEditLayout extends StatefulWidget {
   bool isCustomEvent;
   //Reminder stuff
   AgendaReminder? reminder;
@@ -51,13 +54,14 @@ class agendaEventEditLayout extends StatefulWidget {
   //Custom event stuff
   AgendaEvent? customEvent;
 
-  agendaEventEditLayout(this.isCustomEvent, {this.reminder, this.lessonID, this.customEvent, this.defaultDate});
+  AgendaEventEditLayout(this.isCustomEvent,
+      {reminder, this.lessonID, this.customEvent, this.defaultDate});
 
   @override
-  _agendaEventEditLayoutState createState() => _agendaEventEditLayoutState();
+  _AgendaEventEditLayoutState createState() => _AgendaEventEditLayoutState();
 }
 
-class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
+class _AgendaEventEditLayoutState extends State<AgendaEventEditLayout> {
   TextEditingController descriptionController = TextEditingController();
   TextEditingController titleController = TextEditingController();
   List alarmChoices = [
@@ -91,7 +95,8 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
     return Container(
         height: screenSize.size.height / 10 * 8.5,
         width: screenSize.size.width / 5 * 4.8,
-        padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
+        padding:
+            EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -107,23 +112,40 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                           Navigator.of(context).pop();
                         },
                         child: Container(
-                            margin: EdgeInsets.only(top: screenSize.size.width / 5 * 0.2),
-                            height: (screenSize.size.height / 10 * 8.8) / 10 * 0.75,
+                            margin: EdgeInsets.only(
+                                top: screenSize.size.width / 5 * 0.2),
+                            height:
+                                (screenSize.size.height / 10 * 8.8) / 10 * 0.75,
                             width: screenSize.size.width / 5 * 1,
-                            child: Icon(MdiIcons.cancel, color: Colors.orange))),
-                    if (this.widget.customEvent != null || this.widget.reminder != null)
+                            child:
+                                Icon(MdiIcons.cancel, color: Colors.orange))),
+                    if (this.widget.customEvent != null ||
+                        this.widget.reminder != null)
                       GestureDetector(
                           onTap: () async {
                             if (this.widget.customEvent != null) {
-                              if (this.widget.customEvent!.recurrenceScheme != null &&
-                                  this.widget.customEvent!.recurrenceScheme != "0") {
+                              if (this.widget.customEvent!.recurrenceScheme !=
+                                      null &&
+                                  this.widget.customEvent!.recurrenceScheme !=
+                                      "0") {
                                 await appSys.offline.agendaEvents
-                                    .removeAgendaEvent(id, await getWeek(this.widget.customEvent!.start!));
+                                    .removeAgendaEvent(
+                                        id,
+                                        await getWeek(
+                                            this.widget.customEvent!.start!));
                                 await appSys.offline.agendaEvents
-                                    .removeAgendaEvent(id, this.widget.customEvent!.recurrenceScheme);
+                                    .removeAgendaEvent(
+                                        id,
+                                        this
+                                            .widget
+                                            .customEvent!
+                                            .recurrenceScheme);
                               } else {
                                 await appSys.offline.agendaEvents
-                                    .removeAgendaEvent(id, await getWeek(this.widget.customEvent!.start!));
+                                    .removeAgendaEvent(
+                                        id,
+                                        await getWeek(
+                                            this.widget.customEvent!.start!));
                               }
                             }
                             if (this.widget.reminder != null) {
@@ -132,25 +154,35 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                             Navigator.of(context).pop("removed");
                           },
                           child: Container(
-                              margin: EdgeInsets.only(top: screenSize.size.width / 5 * 0.2),
-                              height: (screenSize.size.height / 10 * 8.8) / 10 * 0.75,
+                              margin: EdgeInsets.only(
+                                  top: screenSize.size.width / 5 * 0.2),
+                              height: (screenSize.size.height / 10 * 8.8) /
+                                  10 *
+                                  0.75,
                               width: screenSize.size.width / 5 * 1,
                               child: Icon(
-                                  (this.widget.isCustomEvent && this.widget.customEvent!.isLesson!)
+                                  (this.widget.isCustomEvent &&
+                                          this.widget.customEvent!.isLesson!)
                                       ? MdiIcons.restore
                                       : MdiIcons.trashCan,
                                   color: Colors.deepOrange))),
                     GestureDetector(
                         onTap: () {
                           //Exit with a value
-                          if (widget.isCustomEvent && !wholeDay! && start!.isAtSameMomentAs(end!)) {
-                            CustomDialogs.showAnyDialog(
-                                context, "Le début et la fin ne peuvent pas être au même moment.");
+                          if (widget.isCustomEvent &&
+                              !wholeDay! &&
+                              start!.isAtSameMomentAs(end!)) {
+                            CustomDialogs.showAnyDialog(context,
+                                "Le début et la fin ne peuvent pas être au même moment.");
                           } else {
                             if (!widget.isCustomEvent) {
                               AgendaReminder reminder = AgendaReminder(
-                                  widget.lessonID, titleController.text, alarm, id ?? (widget.lessonID! + "1"),
-                                  description: descriptionController.text, tagColor: tagColor.value);
+                                  widget.lessonID,
+                                  titleController.text,
+                                  alarm,
+                                  id ?? (widget.lessonID! + "1"),
+                                  description: descriptionController.text,
+                                  tagColor: tagColor.value);
                               Navigator.of(context).pop(reminder);
                             }
                             if (widget.isCustomEvent) {
@@ -170,17 +202,21 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                                   alarm: alarm,
                                   lesson: lesson,
                                   isLesson: lesson != null,
-                                  description: descriptionController.text.trim(),
+                                  description:
+                                      descriptionController.text.trim(),
                                   recurrenceScheme: recurringScheme);
                               Navigator.of(context).pop(event);
                             }
                           }
                         },
                         child: Container(
-                            margin: EdgeInsets.only(top: screenSize.size.width / 5 * 0.2),
-                            height: (screenSize.size.height / 10 * 8.8) / 10 * 0.75,
+                            margin: EdgeInsets.only(
+                                top: screenSize.size.width / 5 * 0.2),
+                            height:
+                                (screenSize.size.height / 10 * 8.8) / 10 * 0.75,
                             width: screenSize.size.width / 5 * 1,
-                            child: Icon(MdiIcons.check, color: ThemeUtils.textColor()))),
+                            child: Icon(MdiIcons.check,
+                                color: ThemeUtils.textColor()))),
                   ],
                 ),
               ),
@@ -191,7 +227,8 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                     children: [
                       SizedBox(height: screenSize.size.height / 10 * 0.2),
                       Container(
-                        margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
+                        margin: EdgeInsets.only(
+                            left: screenSize.size.width / 5 * 0.1),
                         child: TextField(
                           controller: titleController,
                           style: TextStyle(
@@ -200,13 +237,17 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                               fontSize: screenSize.size.width / 5 * 0.35),
                           decoration: new InputDecoration.collapsed(
                               hintText: 'Ajouter un titre',
-                              hintStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor().withOpacity(0.8))),
+                              hintStyle: TextStyle(
+                                  fontFamily: "Asap",
+                                  color:
+                                      ThemeUtils.textColor().withOpacity(0.8))),
                         ),
                       ),
                       Divider(height: screenSize.size.height / 10 * 0.4),
                       GestureDetector(
                         onTap: () async {
-                          Color? color = await CustomDialogs.showColorPicker(context, tagColor);
+                          Color? color = await CustomDialogs.showColorPicker(
+                              context, tagColor);
                           if (color != null) {
                             setState(() {
                               tagColor = color;
@@ -214,7 +255,8 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                           }
                         },
                         child: Container(
-                          margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
+                          margin: EdgeInsets.only(
+                              left: screenSize.size.width / 5 * 0.1),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
@@ -232,7 +274,8 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                                 'Choisir une couleur',
                                 style: TextStyle(
                                     fontFamily: "Asap",
-                                    color: ThemeUtils.textColor().withOpacity(0.8),
+                                    color:
+                                        ThemeUtils.textColor().withOpacity(0.8),
                                     fontSize: screenSize.size.width / 5 * 0.25),
                               )
                             ],
@@ -242,7 +285,8 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                       Divider(height: screenSize.size.height / 10 * 0.4),
                       if (widget.isCustomEvent)
                         Container(
-                          margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.05),
+                          margin: EdgeInsets.only(
+                              left: screenSize.size.width / 5 * 0.05),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -252,8 +296,10 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                                     'Annulé',
                                     style: TextStyle(
                                         fontFamily: "Asap",
-                                        color: ThemeUtils.textColor().withOpacity(0.8),
-                                        fontSize: screenSize.size.width / 5 * 0.25),
+                                        color: ThemeUtils.textColor()
+                                            .withOpacity(0.8),
+                                        fontSize:
+                                            screenSize.size.width / 5 * 0.25),
                                   ),
                                   value: canceled!,
                                   onChanged: (nValue) {
@@ -267,8 +313,10 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                                     'Toute la journée',
                                     style: TextStyle(
                                         fontFamily: "Asap",
-                                        color: ThemeUtils.textColor().withOpacity(0.8),
-                                        fontSize: screenSize.size.width / 5 * 0.25),
+                                        color: ThemeUtils.textColor()
+                                            .withOpacity(0.8),
+                                        fontSize:
+                                            screenSize.size.width / 5 * 0.25),
                                   ),
                                   value: wholeDay!,
                                   onChanged: (nValue) {
@@ -284,36 +332,58 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                                       child: InkWell(
                                         onTap: () async {
                                           var tempDate = await showTimePicker(
-                                              context: context, initialTime: TimeOfDay.fromDateTime(start!));
+                                              context: context,
+                                              initialTime:
+                                                  TimeOfDay.fromDateTime(
+                                                      start!));
                                           if (tempDate != null) {
                                             setState(() {
-                                              start = DateTime(start!.year, start!.month, start!.day, tempDate.hour,
+                                              start = DateTime(
+                                                  start!.year,
+                                                  start!.month,
+                                                  start!.day,
+                                                  tempDate.hour,
                                                   tempDate.minute);
                                               if (start!.isAfter(end!)) {
-                                                end = start!.add(Duration(minutes: 30));
+                                                end = start!
+                                                    .add(Duration(minutes: 30));
                                               }
                                             });
                                           }
                                         },
                                         child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
                                           children: [
                                             Container(
-                                              width: screenSize.size.width / 5 * 0.4,
-                                              height: screenSize.size.width / 5 * 0.4,
+                                              width: screenSize.size.width /
+                                                  5 *
+                                                  0.4,
+                                              height: screenSize.size.width /
+                                                  5 *
+                                                  0.4,
                                               child: Icon(
                                                 MdiIcons.calendar,
-                                                size: screenSize.size.width / 5 * 0.4,
+                                                size: screenSize.size.width /
+                                                    5 *
+                                                    0.4,
                                                 color: ThemeUtils.textColor(),
                                               ),
                                             ),
-                                            SizedBox(width: screenSize.size.width / 5 * 0.1),
+                                            SizedBox(
+                                                width: screenSize.size.width /
+                                                    5 *
+                                                    0.1),
                                             Text(
                                               'Début ${DateFormat.Hm().format(start!)}',
                                               style: TextStyle(
                                                   fontFamily: "Asap",
-                                                  color: ThemeUtils.textColor().withOpacity(0.8),
-                                                  fontSize: screenSize.size.width / 5 * 0.25),
+                                                  color: ThemeUtils.textColor()
+                                                      .withOpacity(0.8),
+                                                  fontSize:
+                                                      screenSize.size.width /
+                                                          5 *
+                                                          0.25),
                                             )
                                           ],
                                         ),
@@ -325,36 +395,57 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                                       child: InkWell(
                                         onTap: () async {
                                           var tempDate = await showTimePicker(
-                                              context: context, initialTime: TimeOfDay.fromDateTime(end!));
+                                              context: context,
+                                              initialTime:
+                                                  TimeOfDay.fromDateTime(end!));
                                           if (tempDate != null) {
                                             setState(() {
                                               end = DateTime(
-                                                  end!.year, end!.month, end!.day, tempDate.hour, tempDate.minute);
+                                                  end!.year,
+                                                  end!.month,
+                                                  end!.day,
+                                                  tempDate.hour,
+                                                  tempDate.minute);
                                               if (end!.isBefore(start!)) {
-                                                start = end!.subtract(Duration(minutes: 30));
+                                                start = end!.subtract(
+                                                    Duration(minutes: 30));
                                               }
                                             });
                                           }
                                         },
                                         child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
                                           children: [
                                             Container(
-                                              width: screenSize.size.width / 5 * 0.4,
-                                              height: screenSize.size.width / 5 * 0.4,
+                                              width: screenSize.size.width /
+                                                  5 *
+                                                  0.4,
+                                              height: screenSize.size.width /
+                                                  5 *
+                                                  0.4,
                                               child: Icon(
                                                 MdiIcons.calendar,
-                                                size: screenSize.size.width / 5 * 0.4,
+                                                size: screenSize.size.width /
+                                                    5 *
+                                                    0.4,
                                                 color: ThemeUtils.textColor(),
                                               ),
                                             ),
-                                            SizedBox(width: screenSize.size.width / 5 * 0.1),
+                                            SizedBox(
+                                                width: screenSize.size.width /
+                                                    5 *
+                                                    0.1),
                                             Text(
                                               'Fin  ${DateFormat.Hm().format(end!)}',
                                               style: TextStyle(
                                                   fontFamily: "Asap",
-                                                  color: ThemeUtils.textColor().withOpacity(0.8),
-                                                  fontSize: screenSize.size.width / 5 * 0.25),
+                                                  color: ThemeUtils.textColor()
+                                                      .withOpacity(0.8),
+                                                  fontSize:
+                                                      screenSize.size.width /
+                                                          5 *
+                                                          0.25),
                                             )
                                           ],
                                         ),
@@ -365,10 +456,13 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                             ],
                           ),
                         ),
-                      if (widget.isCustomEvent) Divider(height: screenSize.size.height / 10 * 0.4),
+                      if (widget.isCustomEvent)
+                        Divider(height: screenSize.size.height / 10 * 0.4),
                       GestureDetector(
                         onTap: () async {
-                          var temp = await CustomDialogs.showRecurringEventDialog(context, recurringScheme);
+                          var temp =
+                              await CustomDialogs.showRecurringEventDialog(
+                                  context, recurringScheme);
                           if (temp != null) {
                             setState(() {
                               recurringScheme = temp;
@@ -378,7 +472,8 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                           }
                         },
                         child: Container(
-                          margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.05),
+                          margin: EdgeInsets.only(
+                              left: screenSize.size.width / 5 * 0.05),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
@@ -396,19 +491,22 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                                 "Récurrence",
                                 style: TextStyle(
                                     fontFamily: "Asap",
-                                    color: ThemeUtils.textColor().withOpacity(0.8),
+                                    color:
+                                        ThemeUtils.textColor().withOpacity(0.8),
                                     fontSize: screenSize.size.width / 5 * 0.25),
                               )
                             ],
                           ),
                         ),
                       ),
-                      if (widget.isCustomEvent) Divider(height: screenSize.size.height / 10 * 0.4),
+                      if (widget.isCustomEvent)
+                        Divider(height: screenSize.size.height / 10 * 0.4),
                       GestureDetector(
                         onTap: () async {
-                          var choice = await CustomDialogs.showMultipleChoicesDialog(
-                              context, alarmChoices, [alarm.index],
-                              singleChoice: true);
+                          var choice =
+                              await CustomDialogs.showMultipleChoicesDialog(
+                                  context, alarmChoices, [alarm.index],
+                                  singleChoice: true);
                           if (choice != null && choice.length == 1) {
                             setState(() {
                               alarm = alarmType.values[choice[0]];
@@ -416,7 +514,8 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                           }
                         },
                         child: Container(
-                          margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.05),
+                          margin: EdgeInsets.only(
+                              left: screenSize.size.width / 5 * 0.05),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
@@ -434,7 +533,8 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                                 alarmChoices[alarm.index],
                                 style: TextStyle(
                                     fontFamily: "Asap",
-                                    color: ThemeUtils.textColor().withOpacity(0.8),
+                                    color:
+                                        ThemeUtils.textColor().withOpacity(0.8),
                                     fontSize: screenSize.size.width / 5 * 0.25),
                               )
                             ],
@@ -443,7 +543,8 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                       ),
                       Divider(height: screenSize.size.height / 10 * 0.4),
                       Container(
-                        margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
+                        margin: EdgeInsets.only(
+                            left: screenSize.size.width / 5 * 0.1),
                         width: screenSize.size.width / 5 * 4.5,
                         height: screenSize.size.height / 10 * 2,
                         child: TextField(
@@ -456,7 +557,10 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
                           maxLines: null,
                           decoration: new InputDecoration.collapsed(
                               hintText: 'Description',
-                              hintStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor().withOpacity(0.8))),
+                              hintStyle: TextStyle(
+                                  fontFamily: "Asap",
+                                  color:
+                                      ThemeUtils.textColor().withOpacity(0.8))),
                         ),
                       ),
                       Divider(height: screenSize.size.height / 10 * 0.4),
@@ -475,13 +579,15 @@ class _agendaEventEditLayoutState extends State<agendaEventEditLayout> {
     if (start == null && widget.isCustomEvent) {
       print(widget.defaultDate);
       setState(() {
-        widget.defaultDate = DateTime.parse(DateFormat("yyyy-MM-dd").format(widget.defaultDate!));
+        widget.defaultDate = DateTime.parse(
+            DateFormat("yyyy-MM-dd").format(widget.defaultDate!));
         start = widget.defaultDate!.add(Duration(hours: 8));
       });
     }
     if (end == null && widget.isCustomEvent) {
       setState(() {
-        widget.defaultDate = DateTime.parse(DateFormat("yyyy-MM-dd").format(widget.defaultDate!));
+        widget.defaultDate = DateTime.parse(
+            DateFormat("yyyy-MM-dd").format(widget.defaultDate!));
         end = widget.defaultDate!.add(Duration(hours: 9));
       });
     }

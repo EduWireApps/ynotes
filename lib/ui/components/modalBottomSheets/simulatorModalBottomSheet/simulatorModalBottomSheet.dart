@@ -11,11 +11,10 @@ Future<Grade?> simulatorModalBottomSheet(
   GradesController? gradesController,
   BuildContext context,
 ) {
-  MediaQueryData screenSize = MediaQuery.of(context);
-
   return showModalBottomSheet(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(25), topRight: Radius.circular(25)),
       ),
       backgroundColor: Theme.of(context).primaryColor,
       context: context,
@@ -35,7 +34,8 @@ class SimulatorModalBottomSheet extends StatefulWidget {
     this.gradesController,
   }) : super(key: key);
   @override
-  _SimulatorModalBottomSheetState createState() => _SimulatorModalBottomSheetState();
+  _SimulatorModalBottomSheetState createState() =>
+      _SimulatorModalBottomSheetState();
 }
 
 class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
@@ -95,14 +95,17 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
               ? Container(
                   child: Text(
                     "Pas de periode",
-                    style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                    style: TextStyle(
+                        fontFamily: "Asap", color: ThemeUtils.textColor()),
                   ),
                 )
               : Container(
-                  padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
+                  padding: EdgeInsets.symmetric(
+                      horizontal: screenSize.size.width / 5 * 0.1),
                   height: screenSize.size.height / 10 * 0.5,
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                    borderRadius:
+                        BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                     color: Theme.of(context).primaryColorLight,
                   ),
                   child: FittedBox(
@@ -118,7 +121,9 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
                                 ? Container(
                                     child: Text(
                                       "Pas de matières",
-                                      style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                                      style: TextStyle(
+                                          fontFamily: "Asap",
+                                          color: ThemeUtils.textColor()),
                                     ),
                                   )
                                 : DropdownButtonHideUnderline(
@@ -135,14 +140,19 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
                                           disciplineChoice = newValue;
                                         });
                                       },
-                                      focusColor: Theme.of(context).primaryColor,
-                                      items:
-                                          choices.toSet().map<DropdownMenuItem<Discipline>>((Discipline? discipline) {
+                                      focusColor:
+                                          Theme.of(context).primaryColor,
+                                      items: choices
+                                          .toSet()
+                                          .map<DropdownMenuItem<Discipline>>(
+                                              (Discipline? discipline) {
                                         return DropdownMenuItem<Discipline>(
                                           value: discipline,
                                           child: Center(
                                             child: Text(
-                                              discipline != null ? discipline.disciplineName! : "-",
+                                              discipline != null
+                                                  ? discipline.disciplineName!
+                                                  : "-",
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
                                                 fontSize: 18,
@@ -182,7 +192,9 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
                 SizedBox(
                   width: screenSize.size.width / 5 * 0.3,
                 ),
-                Expanded(child: dropdown(this.widget.gradesController!.disciplines())),
+                Expanded(
+                    child:
+                        dropdown(this.widget.gradesController!.disciplines())),
                 Expanded(child: weightSelector()),
                 SizedBox(
                   width: screenSize.size.width / 5 * 0.3,
@@ -197,9 +209,10 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
                 context, screenSize.size.width / 5 * 2.5, screenSize.size.height / 10 * 0.5, () async {
               print(disciplineChoice!.periodName);
 
-              if (gradeValue != null && gradeOn != null && disciplineChoice != null) {
+              if (gradeValue != null && disciplineChoice != null) {
                 if (gradeValue! > gradeOn) {
-                  CustomDialogs.showAnyDialog(context, "La note doit être inférieure à la note maximale possible");
+                  CustomDialogs.showAnyDialog(context,
+                      "La note doit être inférieure à la note maximale possible");
                 } else {
                   Grade finalGrade = Grade(
                       date: DateTime.now(),
@@ -209,7 +222,8 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
                       simulated: true,
                       notSignificant: false,
                       letters: false,
-                      subdisciplineCode: (disciplineChoice!.subdisciplineCode != null &&
+                      subdisciplineCode: (disciplineChoice!.subdisciplineCode !=
+                                  null &&
                               disciplineChoice!.subdisciplineCode!.length > 0)
                           ? disciplineChoice!.subdisciplineCode![0]
                           : null,
@@ -224,7 +238,8 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
                   Navigator.of(context).pop(finalGrade);
                 }
               } else {
-                CustomDialogs.showAnyDialog(context, "Remplissez tous les champs");
+                CustomDialogs.showAnyDialog(
+                    context, "Remplissez tous les champs");
               }
             },
                 label: "J'ajoute cette note",
@@ -270,7 +285,7 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
               gradeOn = temp;
             });
           }
-        }, label: gradeOn != null ? gradeOn.toString() : "--", backgroundColor: Theme.of(context).primaryColorLight)
+        }, label: gradeOn.toString(), backgroundColor: Theme.of(context).primaryColorLight)
       ],
     );
   }
@@ -294,7 +309,7 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
             });
           }
         },
-            label: gradeWeight != null ? gradeWeight.toString() : "--",
+            label: gradeWeight.toString(),
             backgroundColor: Theme.of(context).primaryColorLight)
       ],
     );

@@ -19,14 +19,14 @@ class GradesUtils {
           }
         });
         _average = _average / _counter;
-        if (_average != null && !_average.isNaN) {
+        if (!_average.isNaN) {
           averages.add(_average);
         }
       } catch (e) {}
     });
     double sum = 0.0;
     averages.forEach((element) {
-      if (element != null && !element.isNaN) {
+      if (!element.isNaN) {
         sum += element;
       }
     });

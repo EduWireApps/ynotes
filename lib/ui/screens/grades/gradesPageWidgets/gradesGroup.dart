@@ -72,7 +72,7 @@ class _GradesGroupState extends State<GradesGroup> {
         }
         return Container(
           width: screenSize.size.width / 5 * 3.2,
-          margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
+          margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.2),
           child: Column(
             children: <Widget>[
               //Label
@@ -218,7 +218,7 @@ class _GradesGroupState extends State<GradesGroup> {
 
   Widget buildVariation(double impact) {
     getIcon() {
-      if (impact.isNaN || impact == null || impact == 0) {
+      if (impact.isNaN || impact == 0) {
         return MdiIcons.minusThick;
       }
       if (impact < 0) {
@@ -229,7 +229,7 @@ class _GradesGroupState extends State<GradesGroup> {
     }
 
     getAdaptedColor() {
-      if (impact.isNaN || impact == null || impact == 0) {
+      if (impact.isNaN || impact == 0) {
         return Color(0xffA7E5C1);
       }
       if (impact < 0) {
@@ -240,7 +240,7 @@ class _GradesGroupState extends State<GradesGroup> {
     }
 
     getAdaptedIconColor() {
-      if (impact.isNaN || impact == null || impact == 0) {
+      if (impact.isNaN || impact == 0) {
         return Color(0xffC59A1A);
       }
       if (impact < 0) {
@@ -299,6 +299,7 @@ class _GradesGroupState extends State<GradesGroup> {
       setState(() {});
     }
 
+    // ignore: unused_local_variable
     bool canShow = false;
     List<Grade>? gradesForSelectedDiscipline = getGradesForDiscipline(sousMatiereIndex, periodName);
     if (gradesForSelectedDiscipline != null) {
@@ -313,6 +314,7 @@ class _GradesGroupState extends State<GradesGroup> {
       if (gradesForSelectedDiscipline.length > 2) canShow = true;
     }
 
+    // ignore: unused_local_variable
     Color? colorGroup;
     if (widget.discipline == null) {
       colorGroup = Theme.of(context).primaryColorDark;
@@ -323,7 +325,6 @@ class _GradesGroupState extends State<GradesGroup> {
     }
 
     MediaQueryData screenSize = MediaQuery.of(context);
-    ScrollController marksColumnController = ScrollController();
     return Container(
         margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
         child: Wrap(
