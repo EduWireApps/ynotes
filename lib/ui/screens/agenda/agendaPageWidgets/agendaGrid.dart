@@ -12,6 +12,7 @@ import 'package:ynotes/ui/components/modalBottomSheets/agendaEventEditBottomShee
 import 'package:ynotes/ui/screens/agenda/agendaPage.dart';
 import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/agendaElement.dart';
 
+// ignore: must_be_immutable
 class AgendaGrid extends StatefulWidget {
   List<AgendaEvent>? events;
   final bool afterSchool;
@@ -204,8 +205,8 @@ class _AgendaGridState extends State<AgendaGrid> {
         agendaFuture = appSys.api!.getEvents(agendaDate!, false);
       });
     }
-    var realAF = await spaceAgendaFuture;
-    var realSAF = await agendaFuture;
+    await spaceAgendaFuture;
+     await agendaFuture;
   }
 
   Widget _buildHeaderAllDays() {

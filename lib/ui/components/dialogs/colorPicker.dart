@@ -11,13 +11,8 @@ class CustomColorPicker extends StatefulWidget {
 }
 
 class _CustomColorPickerState extends State<CustomColorPicker> {
-  void changeColor(Color color) {
-    setState(() {
-      pickerColor = color;
-    });
-  }
-
   Color? pickerColor;
+
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -74,7 +69,7 @@ class _CustomColorPickerState extends State<CustomColorPicker> {
         TextButton(
           child: const Text(
             "Annuler",
-            style: TextStyle(fontFamily: "Asap"),
+            style: TextStyle(fontFamily: "Asap", color: Colors.red),
           ),
           onPressed: () {
             Navigator.pop(context, null);
@@ -92,5 +87,11 @@ class _CustomColorPickerState extends State<CustomColorPicker> {
         )
       ],
     );
+  }
+
+  void changeColor(Color color) {
+    setState(() {
+      pickerColor = color;
+    });
   }
 }

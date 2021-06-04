@@ -45,6 +45,7 @@ Future agendaEventEdit(context, isCustomEvent,
       });
 }
 
+// ignore: must_be_immutable
 class AgendaEventEditLayout extends StatefulWidget {
   bool isCustomEvent;
   //Reminder stuff
@@ -55,7 +56,7 @@ class AgendaEventEditLayout extends StatefulWidget {
   AgendaEvent? customEvent;
 
   AgendaEventEditLayout(this.isCustomEvent,
-      {this.reminder, this.lessonID, this.customEvent, this.defaultDate});
+      {reminder, this.lessonID, this.customEvent, this.defaultDate});
 
   @override
   _AgendaEventEditLayoutState createState() => _AgendaEventEditLayoutState();

@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:connectivity/connectivity.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteAPI.dart';
@@ -11,6 +10,7 @@ import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
+import 'package:ynotes/core/offline/isar/data/homework.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/utils/nullSafeMap.dart';
 import 'package:ynotes/globals.dart';
@@ -38,12 +38,6 @@ class APIPronote extends API {
   APIPronote(Offline offlineController) : super(offlineController) {
     localClient = PronoteClient("");
     pronoteMethod = PronoteMethod(localClient, this.offlineController);
-  }
-
-  @override
-  Future<List<SchoolLifeTicket>> getSchoolLife(
-      {bool forceReload = false}) async {
-    return [];
   }
 
   @override
@@ -80,20 +74,21 @@ class APIPronote extends API {
   }
 
   @override
-  Future<List<Homework>?> getHomeworkFor(DateTime? dateHomework) async {
-    if (dateHomework != null) {
-      return (await pronoteMethod.onlineFetchWithLock(
-          pronoteMethod.homeworkFor, "homeworkFor",
-          arguments: dateHomework));
-    }
+  Future<List<Homework>?> getHomeworkFor(DateTime? dateHomework, {bool? forceReload}) async {
+    pronoteMethod.isar = appSys.isar;
+    return (await pronoteMethod.fetchAnyData(
+        pronoteMethod.homeworkFor, OfflineHomework(appSys.isar).getHomeworkFor, "homework for",
+        forceFetch: forceReload ?? false,
+        offlineArguments: dateHomework,
+        onlineArguments: dateHomework));
   }
 
   @override
   Future<List<Homework>?> getNextHomework({bool? forceReload}) async {
-    return (await pronoteMethod.fetchAnyData(pronoteMethod.nextHomework,
-        offlineController.homework.getHomework, "homework",
-        forceFetch: forceReload ?? false,
-        isOfflineLocked: super.offlineController.locked));
+    pronoteMethod.isar = appSys.isar;
+    return (await pronoteMethod.fetchAnyData(
+        pronoteMethod.nextHomework, OfflineHomework(appSys.isar).getAllHomework, "homework",
+        forceFetch: forceReload ?? false, isOfflineLocked: super.offlineController.locked));
   }
 
   @override
@@ -161,30 +156,6 @@ class APIPronote extends API {
     }
   }
 
-  @override
-  Future<List<Period>> getPeriods() async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    try {
-      return await getOfflinePeriods();
-    } catch (e) {
-      print("Erreur while getting offline period " + e.toString());
-      if (connectivityResult != ConnectivityResult.none) {
-        if (localClient.loggedIn ?? false) {
-          print("getting periods online");
-          return await getOnlinePeriods();
-        } else {
-          throw "Pronote isn't logged in";
-        }
-      } else {
-        try {
-          return await getOfflinePeriods();
-        } catch (e) {
-          throw ("Error while collecting offline periods");
-        }
-      }
-    }
-  }
-
   Future<List<PollInfo>?> getPronotePolls({bool? forceReload}) async {
     List<PollInfo>? listPolls = [];
     List<PollInfo>? pollsFromInternet = (await pronoteMethod.fetchAnyData(
@@ -199,12 +170,16 @@ class APIPronote extends API {
   }
 
   @override
+  Future<List<SchoolLifeTicket>> getSchoolLife({bool forceReload = false}) async {
+    return [];
+  }
+
+  @override
   Future<List> login(username, password, {url, cas, mobileCasLogin}) async {
     print(username + " " + password + " " + url);
     int req = 0;
-    while (loginLock == true &&
-        req < 5 &&
-        appSys.loginController.actualState != loginStatus.loggedIn) {
+
+    while (loginLock == true && req < 8 && appSys.loginController.actualState != loginStatus.loggedIn) {
       print("Locked, trying in 5 seconds...");
       req++;
       await Future.delayed(Duration(seconds: 5), () => "1");
@@ -245,6 +220,7 @@ class APIPronote extends API {
           return ([1, "Bienvenue ${appSys.account?.name ?? "Invité"}!"]);
         } else {
           loginLock = false;
+          print(localClient.stepsLogger);
           return ([
             0,
             "Oups, une erreur a eu lieu. Vérifiez votre mot de passe et les autres informations de connexion.",

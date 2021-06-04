@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+// ignore: must_be_immutable
 class HiddenSettings extends StatefulWidget {
   final Widget? child;
   final Widget? settingsWidget;

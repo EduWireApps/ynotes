@@ -1,5 +1,6 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:intl/intl.dart';
+import 'package:isar/isar.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteAPI.dart';
 import 'package:ynotes/core/apis/Pronote/converters/polls.dart';
 import 'package:ynotes/core/apis/Pronote/convertersExporter.dart';
@@ -7,6 +8,7 @@ import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
+import 'package:ynotes/core/offline/isar/data/homework.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/utils/nullSafeMap.dart';
 import 'package:ynotes/globals.dart';
@@ -16,8 +18,9 @@ class PronoteMethod {
   Map locks = Map();
   PronoteClient? client;
   final Offline _offlineController;
+  Isar? isar;
 
-  PronoteMethod(this.client, this._offlineController);
+  PronoteMethod(this.client, this._offlineController, {this.isar});
 
   Future<List<SchoolAccount>?> accounts() async {}
 
@@ -36,8 +39,8 @@ class PronoteMethod {
       return await offlineFetch();
     } else if (forceFetch && !isOfflineLocked) {
       try {
-        return await onlineFetchWithLock(onlineFetch, lockName,
-            arguments: onlineArguments);
+        await onlineFetchWithLock(onlineFetch, lockName, arguments: onlineArguments);
+        return await offlineFetch();
       } catch (e) {
         return await (offlineArguments != null
             ? offlineFetch(offlineArguments)
@@ -53,8 +56,8 @@ class PronoteMethod {
       }
       if (data == null) {
         print("Online fetch because offline is null");
-        data = await onlineFetchWithLock(onlineFetch, lockName,
-            arguments: onlineArguments);
+        await onlineFetchWithLock(onlineFetch, lockName, arguments: onlineArguments);
+        return await offlineFetch();
       }
       return data;
     }
@@ -70,11 +73,10 @@ class PronoteMethod {
             'Periode': {'N': period.id, 'L': period.name}
           },
         };
-        var temp = await request(
-            "DernieresNotes", PronoteDisciplineConverter.disciplines,
-            data: jsonData, onglet: 198);
+        var temp = await request("DernieresNotes", PronoteDisciplineConverter.disciplines, data: jsonData, onglet: 198);
         temp.forEach((Discipline element) {
-          element.period = period.name;
+          element.periodName = period.name;
+          element.periodCode = period.id;
         });
         listDisciplines.addAll(temp);
         listDisciplines = await refreshDisciplinesListColors(listDisciplines);
@@ -102,6 +104,9 @@ class PronoteMethod {
         "PageCahierDeTexte", PronoteHomeworkConverter.homework,
         data: jsonData, onglet: 88);
     (hw ?? []).removeWhere((element) => element.date != date);
+    if (this.isar != null && hw != null) {
+      await OfflineHomework(isar!).updateHomework(hw);
+    }
     return hw;
   }
 
@@ -161,36 +166,9 @@ class PronoteMethod {
         (element) => element.date == null && element.date!.isBefore(now));
 
     listHW.addAll(hws ?? []);
-    List<DateTime> pinnedDates =
-        await _offlineController.pinnedHomework.getPinnedHomeworkDates();
-    //Add pinned content
-    await Future.wait(pinnedDates.map((element) async {
-      jsonData = {
-        'donnees': {
-          'domaine': {
-            '_T': 8,
-            'V': "[${await getWeek(element)}..${await getWeek(element)}]"
-          }
-        },
-      };
-      List<Homework> pinnedHomework = await request(
-          "PageCahierDeTexte", PronoteHomeworkConverter.homework,
-          data: jsonData, onglet: 88);
-      pinnedHomework.removeWhere((pinnedHWElement) =>
-          pinnedHWElement.date == null &&
-          element.day != pinnedHWElement.date!.day);
-      pinnedHomework.forEach((pinned) {
-        if (!listHW.any((hw) => hw.id == pinned.id)) {
-          listHW.add(pinned);
-        }
-      });
-    }));
-    //delete duplicates
-    listHW = listHW.toSet().toList();
-    if (!_offlineController.locked) {
-      await _offlineController.homework.updateHomework(listHW);
+    if (this.isar != null) {
+      await OfflineHomework(isar!).updateHomework(listHW);
     }
-
     return listHW;
   }
 
@@ -221,8 +199,6 @@ class PronoteMethod {
         if (!testLock("recursive_" + lockName)) {
           print("Refreshing client");
           locks["recursive_" + lockName] = true;
-/*
-          this.onlineFetchWithLock(onlineFetch, lockName, arguments: arguments);*/
         }
       }
     } else {

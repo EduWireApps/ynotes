@@ -23,6 +23,7 @@ Future<void> lessonDetails(context, AgendaEvent event) async {
       });
 }
 
+// ignore: must_be_immutable
 class LessonDetailsDialog extends StatefulWidget {
   AgendaEvent event;
   LessonDetailsDialog(this.event);

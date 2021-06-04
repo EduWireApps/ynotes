@@ -8,6 +8,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:shake/shake.dart';
+import 'package:wiredash/wiredash.dart';
 import 'package:ynotes/core/logic/appConfig/models.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
 import 'package:ynotes/core/services/notifications.dart';
@@ -26,6 +28,8 @@ import 'package:ynotes/ui/screens/statspage/statspage.dart';
 import 'package:ynotes/ui/screens/summary/summaryPage.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'widgets/custom_drawer.dart';
+
+GlobalKey<ScaffoldState> drawerKey = GlobalKey();
 
 bool isQuickMenuShown = false;
 
@@ -63,7 +67,6 @@ class _DrawerBuilderState extends State<DrawerBuilder>
   Animation<double>? buttonScaleAnimation;
   Animation<double>? fadeAnimation;
   bool isDrawerCollapsed = true;
-  GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
   bool wiredashShown = false;
   @override
   Widget build(BuildContext context) {
@@ -81,7 +84,7 @@ class _DrawerBuilderState extends State<DrawerBuilder>
       },
       //PAppbar
       child: Scaffold(
-          key: _drawerKey,
+          key: drawerKey,
           resizeToAvoidBottomInset: false,
           drawer: Theme(
             data: Theme.of(context).copyWith(
@@ -110,71 +113,24 @@ class _DrawerBuilderState extends State<DrawerBuilder>
           body: Stack(
             children: <Widget>[
               ClipRRect(
-                child: Scaffold(
-                  backgroundColor: Theme.of(context).backgroundColor,
-                  appBar: PreferredSize(
-                    preferredSize:
-                        Size.fromHeight(screenSize.size.height / 10 * 0.7),
-                    child: ValueListenableBuilder(
-                        valueListenable: _notifier,
-                        builder: (context, dynamic value, child) {
-                          return AppBar(
-                              centerTitle: false,
-                              systemOverlayStyle: ThemeUtils.isThemeDark
-                                  ? SystemUiOverlayStyle.light
-                                  : SystemUiOverlayStyle.dark,
-                              shadowColor: Colors.transparent,
-                              backgroundColor: ThemeUtils.isThemeDark
-                                  ? Theme.of(context).primaryColorLight
-                                  : Theme.of(context).primaryColorDark,
-                              title: Text(entries()[value]["menuName"],
-                                  textAlign: TextAlign.start),
-                              actions: [
-                                if (entries()[value]["key"] != null)
-                                  FlatButton(
-                                    color: Colors.transparent,
-                                    child: Icon(MdiIcons.wrench,
-                                        color: ThemeUtils.isThemeDark
-                                            ? Colors.white
-                                            : Colors.black),
-                                    onPressed: () {
-                                      entries()[value]["key"]
-                                          .currentState
-                                          .triggerSettings();
-                                    },
-                                  )
-                              ],
-                              leading: FlatButton(
-                                color: Colors.transparent,
-                                child: Icon(MdiIcons.menu,
-                                    color: ThemeUtils.isThemeDark
-                                        ? Colors.white
-                                        : Colors.black),
-                                onPressed: () async {
-                                  _drawerKey.currentState!.openDrawer(); //
-                                },
-                              ));
-                        }),
-                  ),
-                  body: PageView.builder(
-                    physics: NeverScrollableScrollPhysics(),
-                    controller: drawerPageViewController,
-                    itemBuilder: (context, index) {
-                      return ChangeNotifierProvider<LoginController>.value(
-                        value: appSys.loginController,
-                        child: Consumer<LoginController>(
-                            builder: (context, model, child) {
-                          if (model.actualState != loginStatus.loggedIn) {
-                            showLoginControllerStatusController.forward();
-                          } else {
-                            showLoginControllerStatusController.reverse();
-                          }
-                          return buildPageWithHeader(model,
-                              child: entries()[index]["page"]);
-                        }),
-                      );
-                    },
-                  ),
+                child: PageView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  controller: drawerPageViewController,
+                  itemBuilder: (context, index) {
+                    return ChangeNotifierProvider<LoginController>.value(
+                      value: appSys.loginController,
+                      child: Consumer<LoginController>(
+                          builder: (context, model, child) {
+                        if (model.actualState != loginStatus.loggedIn) {
+                          showLoginControllerStatusController.forward();
+                        } else {
+                          showLoginControllerStatusController.reverse();
+                        }
+                        return buildPageWithHeader(model,
+                            child: entries()[index]["page"]);
+                      }),
+                    );
+                  },
                 ),
               ),
             ],
@@ -271,8 +227,6 @@ class _DrawerBuilderState extends State<DrawerBuilder>
         });
   }
 
-  callbackOnShake(BuildContext context) async {}
-
   @override
   void dispose() {
     _notifier.dispose();
@@ -314,7 +268,7 @@ class _DrawerBuilderState extends State<DrawerBuilder>
         "menuName": "Agenda",
         "tabName": appTabs.AGENDA,
         "icon": MdiIcons.calendar,
-        "page": AgendaPage(key: agendaPage),
+        "page": AgendaPage(),
         "key": agendaPage,
       },
       {
@@ -352,12 +306,12 @@ class _DrawerBuilderState extends State<DrawerBuilder>
         "relatedApi": 0,
         "page": DownloadsExplorer(),
       },
-      {
-        "menuName": "Statistiques",
-        "icon": MdiIcons.chartBar,
-        "relatedApi": -1,
-        "page": StatsPage(),
-      }
+      // {
+      //   "menuName": "Statistiques",
+      //   "icon": MdiIcons.chartBar,
+      //   "relatedApi": -1,
+      //   "page": StatsPage(),
+      // }
     ];
   }
 
@@ -390,6 +344,11 @@ class _DrawerBuilderState extends State<DrawerBuilder>
 
   @override
   void initState() {
+    ShakeDetector.autoStart(onPhoneShake: () {
+      if (appSys.settings?["user"]["global"]["shakeToReport"]) {
+        Wiredash.of(context)?.show();
+      }
+    });
     super.initState();
     //Init hw controller
     if (firstStart == true) {

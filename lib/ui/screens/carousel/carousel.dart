@@ -861,6 +861,7 @@ class _SlidingCarouselState extends State<SlidingCarousel> {
                               margin: EdgeInsets.only(
                                   right: screenSize.size.width / 5 * 0.1,
                                   top: screenSize.size.height / 10 * 0.08),
+                              // ignore: deprecated_member_use
                               child: OutlineButton(
                                 color: Colors.transparent,
                                 highlightColor: Colors.black,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/ui/components/buttons.dart';
-import 'package:ynotes/ui/screens/login/loginPageWidgets/textField.dart';
+import 'package:ynotes/ui/components/textField.dart';
 
 class PronoteSetupPart extends StatefulWidget {
   final Function? callback;
@@ -113,7 +113,7 @@ class _PronoteUrlFieldPartState extends State<PronoteUrlFieldPart> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          LoginPageTextField(_url, "URL Pronote mobile", false, MdiIcons.link, false),
+          CustomTextField(_url, "URL Pronote mobile", false, MdiIcons.link, false),
           SizedBox(height: screenSize.size.height / 10 * 0.2),
           GestureDetector(
             onTap: () {

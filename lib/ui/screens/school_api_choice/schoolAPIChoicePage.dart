@@ -165,9 +165,11 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
                 Positioned(
                   bottom: screenSize.size.height / 10 * 0.4,
                   right: screenSize.size.width / 5 * 0.1,
-                  child: RaisedButton(
-                    color: chosen != null ? Color(0xff5DADE2) : Color(0xffECECEC),
-                    shape: StadiumBorder(),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: chosen != null ? Color(0xff5DADE2) : Color(0xffECECEC),
+                      shape: StadiumBorder(),
+                    ),
                     onPressed: chosen == null
                         ? null
                         : () async {

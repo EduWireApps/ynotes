@@ -5,6 +5,7 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
+import 'package:ynotes/ui/components/modalBottomSheets/dragHandle.dart';
 
 Future<Grade?> simulatorModalBottomSheet(
   GradesController? gradesController,
@@ -15,7 +16,7 @@ Future<Grade?> simulatorModalBottomSheet(
         borderRadius: BorderRadius.only(
             topLeft: Radius.circular(25), topRight: Radius.circular(25)),
       ),
-      backgroundColor: Theme.of(context).primaryColorDark,
+      backgroundColor: Theme.of(context).primaryColor,
       context: context,
       isScrollControlled: true,
       builder: (BuildContext bc) {
@@ -26,12 +27,12 @@ Future<Grade?> simulatorModalBottomSheet(
 }
 
 class SimulatorModalBottomSheet extends StatefulWidget {
+  final GradesController? gradesController;
+
   const SimulatorModalBottomSheet({
     Key? key,
     this.gradesController,
   }) : super(key: key);
-
-  final GradesController? gradesController;
   @override
   _SimulatorModalBottomSheetState createState() =>
       _SimulatorModalBottomSheetState();
@@ -47,73 +48,25 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
   double gradeWeight = 1;
 
   //Chose "coefficient"
-  Widget weightSelector() {
-    var screenSize = MediaQuery.of(context);
-
-    return Column(
-      children: [
-        Text(
-          "Coefficient",
-          style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-          textAlign: TextAlign.center,
-        ),
-        CustomButtons.materialButton(context, screenSize.size.width / 5 * 1.2,
-            screenSize.size.height / 10 * 0.5, () async {
-          var temp = await CustomDialogs.showNumberChoiceDialog(context,
-              isDouble: true, text: "coefficient");
-          if (temp != null) {
-            setState(() {
-              gradeWeight = temp;
-            });
-          }
-        },
-            label: gradeWeight.toString(),
-            backgroundColor: Theme.of(context).primaryColorLight)
-      ],
-    );
-  }
+  bool open = false;
 
 //Chose "coefficient"
-  Widget gradeOnSelector() {
-    var screenSize = MediaQuery.of(context);
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        CustomButtons.materialButton(context, screenSize.size.width / 5 * 1.2,
-            screenSize.size.height / 10 * 0.5, () async {
-          var temp = await CustomDialogs.showNumberChoiceDialog(context,
-              isDouble: true, text: "votre note");
-          if (temp != null) {
-            setState(() {
-              gradeValue = temp;
-            });
-          }
-        },
-            label: gradeValue != null ? gradeValue.toString() : "--",
-            backgroundColor: Theme.of(context).primaryColorLight),
-        Container(
-          padding:
-              EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
-          child: Text(
-            "/",
-            style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-          ),
-        ),
-        CustomButtons.materialButton(context, screenSize.size.width / 5 * 1.2,
-            screenSize.size.height / 10 * 0.5, () async {
-          var temp = await CustomDialogs.showNumberChoiceDialog(context,
-              isDouble: true, text: "la note maximale");
-          if (temp != null) {
-            setState(() {
-              gradeOn = temp;
-            });
-          }
-        },
-            label: gradeOn.toString(),
-            backgroundColor: Theme.of(context).primaryColorLight)
-      ],
-    );
+  @override
+  Widget build(BuildContext context) {
+    MediaQueryData screenSize = MediaQuery.of(context);
+    return Wrap(children: [
+      new AnimatedContainer(
+          duration: Duration(milliseconds: 250),
+          padding: EdgeInsets.all(0),
+          child: Column(
+            children: [
+              SizedBox(height: screenSize.size.height / 10 * 0.1),
+              DragHandle(),
+              SizedBox(height: screenSize.size.height / 10 * 0.1),
+              editorFields(context)
+            ],
+          ))
+    ]);
   }
 
   Widget dropdown(List<Discipline>? disciplines) {
@@ -253,10 +206,8 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
           Container(
             margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.25),
             child: CustomButtons.materialButton(
-                context,
-                screenSize.size.width / 5 * 2.5,
-                screenSize.size.height / 10 * 0.5, () async {
-              print(disciplineChoice!.period);
+                context, screenSize.size.width / 5 * 2.5, screenSize.size.height / 10 * 0.5, () async {
+              print(disciplineChoice!.periodName);
 
               if (gradeValue != null && disciplineChoice != null) {
                 if (gradeValue! > gradeOn) {
@@ -277,10 +228,9 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
                           ? disciplineChoice!.subdisciplineCode![0]
                           : null,
                       weight: gradeWeight.toString(),
-                      periodName: disciplineChoice!.period,
+                      periodName: disciplineChoice!.periodName,
                       periodCode: widget.gradesController!.periods!
-                          .firstWhere((period) =>
-                              period.name == disciplineChoice!.period)
+                          .firstWhere((period) => period.name == disciplineChoice!.periodName)
                           .id
                           .toString(),
                       disciplineName: disciplineChoice!.disciplineName,
@@ -303,16 +253,65 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
     );
   }
 
-  bool open = false;
-  @override
-  Widget build(BuildContext context) {
-    return Wrap(children: [
-      new AnimatedContainer(
-          duration: Duration(milliseconds: 250),
-          padding: EdgeInsets.all(0),
-          child: Column(
-            children: [editorFields(context)],
-          ))
-    ]);
+  Widget gradeOnSelector() {
+    var screenSize = MediaQuery.of(context);
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        CustomButtons.materialButton(context, screenSize.size.width / 5 * 1.2, screenSize.size.height / 10 * 0.5,
+            () async {
+          var temp = await CustomDialogs.showNumberChoiceDialog(context, isDouble: true, text: "votre note");
+          if (temp != null) {
+            setState(() {
+              gradeValue = temp;
+            });
+          }
+        },
+            label: gradeValue != null ? gradeValue.toString() : "--",
+            backgroundColor: Theme.of(context).primaryColorLight),
+        Container(
+          padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
+          child: Text(
+            "/",
+            style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+          ),
+        ),
+        CustomButtons.materialButton(context, screenSize.size.width / 5 * 1.2, screenSize.size.height / 10 * 0.5,
+            () async {
+          var temp = await CustomDialogs.showNumberChoiceDialog(context, isDouble: true, text: "la note maximale");
+          if (temp != null) {
+            setState(() {
+              gradeOn = temp;
+            });
+          }
+        }, label: gradeOn.toString(), backgroundColor: Theme.of(context).primaryColorLight)
+      ],
+    );
+  }
+
+  Widget weightSelector() {
+    var screenSize = MediaQuery.of(context);
+
+    return Column(
+      children: [
+        Text(
+          "Coefficient",
+          style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+          textAlign: TextAlign.center,
+        ),
+        CustomButtons.materialButton(context, screenSize.size.width / 5 * 1.2, screenSize.size.height / 10 * 0.5,
+            () async {
+          var temp = await CustomDialogs.showNumberChoiceDialog(context, isDouble: true, text: "coefficient");
+          if (temp != null) {
+            setState(() {
+              gradeWeight = temp;
+            });
+          }
+        },
+            label: gradeWeight.toString(),
+            backgroundColor: Theme.of(context).primaryColorLight)
+      ],
+    );
   }
 }

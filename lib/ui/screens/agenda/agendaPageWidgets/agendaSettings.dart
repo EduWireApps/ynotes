@@ -13,6 +13,7 @@ class AgendaSettings extends StatefulWidget {
 
 class _AgendaSettingsState extends State<AgendaSettings> {
   @override
+  // ignore: must_call_super
   void initState() {}
 
   @override

@@ -22,12 +22,9 @@ class RecipientsOffline extends Offline {
 
   updateRecipients(List<Recipient> newData) async {
     try {
-      /*if (!offlineBox.isOpen) {
-        offlineBox = await Hive.openBox("offlineData");
-      }*/
       var old = await parent.offlineBox!.get("recipients");
       newData.forEach((recipient) {
-        old.removeWhere((a) => a.id == recipient.id);
+        (old ?? []).removeWhere((a) => a.id == recipient.id);
       });
 
       await parent.offlineBox!.put("recipients", newData);

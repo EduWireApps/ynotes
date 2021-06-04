@@ -44,9 +44,6 @@ abstract class API {
   ///Get the dates of next homework (deprecated)
   Future<List<DateTime>?> getDatesNextHomework();
 
-  ///SchoolLife
-  Future<List<SchoolLifeTicket>?> getSchoolLife({bool forceReload = false});
-
   ///All events
   Future<List<AgendaEvent>?> getEvents(DateTime date, bool afterSchool,
       {bool forceReload = false}) async {
@@ -127,10 +124,10 @@ abstract class API {
   ///Get marks
   Future<List<Discipline>?> getGrades({bool? forceReload});
 
-  //Get a list of lessons for the agenda part
   ///Get the list of homework only for a specific day (time travel feature)
-  Future<List<Homework>?> getHomeworkFor(DateTime? dateHomework);
+  Future<List<Homework>?> getHomeworkFor(DateTime? dateHomework, {bool? forceReload});
 
+  //Get a list of lessons for the agenda part
   ///Get the list of all the next homework (sent by specifics API).
   ///
   ///Caution : `EcoleDirecte` api returns a list of unloaded homework
@@ -138,8 +135,9 @@ abstract class API {
 
   Future<List<Lesson>?> getNextLessons(DateTime from, {bool? forceReload});
 
-  ///Get years periods
-  Future<List<Period>?> getPeriods();
+
+  ///SchoolLife
+  Future<List<SchoolLifeTicket>?> getSchoolLife({bool forceReload = false});
 
   ///Connect to the API
   ///Should return a connection status

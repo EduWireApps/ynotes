@@ -14,9 +14,9 @@ import 'package:ynotes/globals.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
+import 'package:ynotes/ui/components/textField.dart';
 import 'package:ynotes/ui/screens/login/loginPageWidgets/loginWebView.dart';
 import 'package:ynotes/ui/screens/login/loginPageWidgets/pronoteSetup.dart';
-import 'package:ynotes/ui/screens/login/loginPageWidgets/textField.dart';
 import 'package:ynotes/ui/screens/school_api_choice/schoolAPIChoicePage.dart';
 import 'package:ynotes/usefulMethods.dart';
 
@@ -116,12 +116,14 @@ class _AlertBoxWidgetState extends State<AlertBoxWidget> {
                                   );
                                 }),
                           ))),
-                      RaisedButton(
-                        padding: EdgeInsets.only(left: 60, right: 60, top: 15, bottom: 18),
-                        color: Color(0xff27AE60),
-                        shape: RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.only(bottomLeft: Radius.circular(32.0), bottomRight: Radius.circular(32.0)),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.only(left: 60, right: 60, top: 15, bottom: 18),
+                          primary: Color(0xff27AE60),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(32.0), bottomRight: Radius.circular(32.0)),
+                          ),
                         ),
                         onPressed: () async {
                           Navigator.of(context).pushReplacement(router(Carousel()));
@@ -540,11 +542,11 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        LoginPageTextField(_username, "Nom d'utilisateur", false, MdiIcons.account, false),
+        CustomTextField(_username, "Nom d'utilisateur", false, MdiIcons.account, false),
         SizedBox(
           height: screenSize.size.height / 10 * 0.1,
         ),
-        LoginPageTextField(_password, "Mot de passe", true, MdiIcons.key, true),
+        CustomTextField(_password, "Mot de passe", true, MdiIcons.key, true),
         SizedBox(height: screenSize.size.height / 10 * 0.4),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,

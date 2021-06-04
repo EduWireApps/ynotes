@@ -11,6 +11,7 @@ import 'package:ynotes/ui/components/modalBottomSheets/agendaEventDetailsBottomS
 import 'package:ynotes/ui/components/modalBottomSheets/agendaEventEditBottomSheet.dart';
 import 'package:ynotes/ui/screens/agenda/agendaPage.dart';
 
+// ignore: must_be_immutable
 class AgendaElement extends StatefulWidget {
   AgendaEvent event;
   final double height;
@@ -32,8 +33,8 @@ class _AgendaElementState extends State<AgendaElement> {
         agendaFuture = appSys.api!.getEvents(agendaDate!, false);
       });
     }
-    var realAF = await spaceAgendaFuture;
-    var realSAF = await agendaFuture;
+    await spaceAgendaFuture;
+    await agendaFuture;
   }
 
   void initState() {

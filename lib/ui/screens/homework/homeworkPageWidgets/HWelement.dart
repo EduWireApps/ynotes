@@ -1,4 +1,5 @@
 import 'dart:math';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_tex/flutter_tex.dart';
@@ -27,8 +28,7 @@ class HomeworkElement extends StatefulWidget {
   _HomeworkElementState createState() => _HomeworkElementState();
 }
 
-class _HomeworkElementState extends State<HomeworkElement>
-    with TickerProviderStateMixin {
+class _HomeworkElementState extends State<HomeworkElement> with TickerProviderStateMixin {
   ///Label to show on the left (I.E : "Tomorrow")
   String mainLabel = "";
 
@@ -53,8 +53,7 @@ class _HomeworkElementState extends State<HomeworkElement>
     return Container(
       margin: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.1),
       child: FutureBuilder<int>(
-          future:
-              getColor(this.widget.homeworkForThisDay!.disciplineCode ?? ""),
+          future: getColor(this.widget.homeworkForThisDay!.disciplineCode ?? ""),
           initialData: 0,
           builder: (context, snapshot) {
             Color color = Color(snapshot.data ?? 0);
@@ -64,8 +63,7 @@ class _HomeworkElementState extends State<HomeworkElement>
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Container(
-                      margin: EdgeInsets.only(
-                          top: (screenSize.size.height / 10 * 8.8) / 10 * 0.5),
+                      margin: EdgeInsets.only(top: (screenSize.size.height / 10 * 8.8) / 10 * 0.5),
                       width: screenSize.size.width / 5 * 4.5,
                       decoration: BoxDecoration(
                         border: Border.all(width: 0, color: Colors.transparent),
@@ -76,20 +74,16 @@ class _HomeworkElementState extends State<HomeworkElement>
                             bottomRight: Radius.circular(15)),
                       ),
                       child: ClipRRect(
-                        borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(11),
-                            bottomRight: Radius.circular(11)),
+                        borderRadius:
+                            BorderRadius.only(bottomLeft: Radius.circular(11), bottomRight: Radius.circular(11)),
                         child: Column(
                           children: <Widget>[
-                            if (this.widget.homeworkForThisDay!.isATest ==
-                                    true &&
+                            if (this.widget.homeworkForThisDay!.isATest == true &&
                                 isExpanded! &&
                                 this.widget.homeworkForThisDay!.loaded!)
                               Container(
-                                margin: EdgeInsets.only(
-                                    top: screenSize.size.width / 10 * 0.15),
-                                padding: EdgeInsets.all(
-                                    screenSize.size.width / 10 * 0.01),
+                                margin: EdgeInsets.only(top: screenSize.size.width / 10 * 0.15),
+                                padding: EdgeInsets.all(screenSize.size.width / 10 * 0.01),
                                 width: screenSize.size.width / 5 * 4.5,
                                 height: screenSize.size.width / 10 * 0.6,
                                 decoration: BoxDecoration(
@@ -101,9 +95,7 @@ class _HomeworkElementState extends State<HomeworkElement>
                                 child: FittedBox(
                                   child: Text(
                                     "Interrogation",
-                                    style: TextStyle(
-                                        fontFamily: "Asap",
-                                        color: Colors.white),
+                                    style: TextStyle(fontFamily: "Asap", color: Colors.white),
                                     textAlign: TextAlign.center,
                                   ),
                                 ),
@@ -131,48 +123,27 @@ class _HomeworkElementState extends State<HomeworkElement>
                             if (this.widget.homeworkForThisDay!.loaded!)
                               Container(
                                 color: ThemeUtils.isThemeDark
-                                    ? ThemeUtils.darken(
-                                        Theme.of(context).primaryColorDark,
-                                        forceAmount: 0.1)
-                                    : ThemeUtils.darken(
-                                        Theme.of(context).primaryColor,
-                                        forceAmount: 0.03),
+                                    ? ThemeUtils.darken(Theme.of(context).primaryColorDark, forceAmount: 0.1)
+                                    : ThemeUtils.darken(Theme.of(context).primaryColor, forceAmount: 0.03),
                                 width: screenSize.size.width / 5 * 4.5,
                                 height: isExpanded! ? null : 0,
                                 child: Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          width: 0, color: Colors.transparent)),
+                                  decoration: BoxDecoration(border: Border.all(width: 0, color: Colors.transparent)),
                                   padding: isExpanded!
                                       ? EdgeInsets.only(
-                                          left:
-                                              screenSize.size.height / 10 * 0.1,
-                                          top:
-                                              screenSize.size.height / 10 * 0.1,
-                                          right:
-                                              screenSize.size.height / 10 * 0.1)
+                                          left: screenSize.size.height / 10 * 0.1,
+                                          top: screenSize.size.height / 10 * 0.1,
+                                          right: screenSize.size.height / 10 * 0.1)
                                       : null,
                                   child: Column(
                                     children: <Widget>[
-                                      if ((widget.homeworkForThisDay!
-                                                      .sessionRawContent !=
-                                                  null &&
-                                              widget.homeworkForThisDay!
-                                                      .sessionRawContent !=
-                                                  "") ||
-                                          (widget.homeworkForThisDay!
-                                                      .sessionDocuments !=
-                                                  null &&
-                                              widget
-                                                      .homeworkForThisDay!
-                                                      .sessionDocuments!
-                                                      .length >
-                                                  0))
+                                      if ((widget.homeworkForThisDay!.sessionRawContent != null &&
+                                              widget.homeworkForThisDay!.sessionRawContent != "") ||
+                                          (
+                                              widget.homeworkForThisDay!.sessionFiles.length > 0))
                                         Container(
-                                          height:
-                                              screenSize.size.height / 10 * 0.6,
-                                          width:
-                                              screenSize.size.width / 5 * 4.5,
+                                          height: screenSize.size.height / 10 * 0.6,
+                                          width: screenSize.size.width / 5 * 4.5,
                                           child: CupertinoSegmentedControl<int>(
                                               onValueChanged: (i) {
                                                 setState(() {
@@ -183,77 +154,48 @@ class _HomeworkElementState extends State<HomeworkElement>
                                               children: <int, Widget>{
                                                 0: Text(
                                                   'A faire',
-                                                  style: TextStyle(
-                                                      fontFamily: "Asap"),
+                                                  style: TextStyle(fontFamily: "Asap"),
                                                 ),
                                                 1: Text(
                                                   'Contenu',
-                                                  style: TextStyle(
-                                                      fontFamily: "Asap"),
+                                                  style: TextStyle(fontFamily: "Asap"),
                                                   textAlign: TextAlign.center,
                                                 ),
                                               }),
                                         ),
-                                      if (this
-                                              .widget
-                                              .homeworkForThisDay!
-                                              .teacherName!
-                                              .length >
-                                          0)
+                                      if (this.widget.homeworkForThisDay!.teacherName!.length > 0)
                                         Container(
                                             child: Text(
-                                          this
-                                              .widget
-                                              .homeworkForThisDay!
-                                              .teacherName!,
-                                          style: TextStyle(
-                                              fontFamily: "Asap",
-                                              color: ThemeUtils.textColor()),
+                                          this.widget.homeworkForThisDay!.teacherName!,
+                                          style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                                         )),
                                       HtmlWidget(
                                           segmentedControlIndex == 0
-                                              ? this
-                                                  .widget
-                                                  .homeworkForThisDay!
-                                                  .rawContent!
-                                              : this
-                                                  .widget
-                                                  .homeworkForThisDay!
-                                                  .sessionRawContent!,
+                                              ? this.widget.homeworkForThisDay!.rawContent!
+                                              : this.widget.homeworkForThisDay!.sessionRawContent!,
                                           textStyle: TextStyle(
                                               color: ThemeUtils.textColor(),
                                               fontFamily: "Asap",
-                                              backgroundColor:
-                                                  Colors.transparent),
+                                              backgroundColor: Colors.transparent),
                                           customStylesBuilder: (element) {
-                                            if (element.attributes['style'] !=
-                                                    null &&
-                                                element.attributes['style']!
-                                                    .contains("background")) {
+                                            if (element.attributes['style'] != null &&
+                                                element.attributes['style']!.contains("background")) {
                                               element.attributes['style'] = "";
                                               if (ThemeUtils.isThemeDark) {
-                                                return {
-                                                  'background': '#CF7545',
-                                                  'color': 'white'
-                                                };
+                                                return {'background': '#CF7545', 'color': 'white'};
                                               } else {
-                                                return {
-                                                  'background': '#F9DDA7',
-                                                  'color': 'black'
-                                                };
+                                                return {'background': '#F9DDA7', 'color': 'black'};
                                               }
                                             }
                                             return null;
                                           },
                                           hyperlinkColor: Colors.blueAccent,
                                           customWidgetBuilder: (element) {
-                                            if (element.attributes['class'] ==
-                                                'math-tex') {
+                                            if (element.attributes['class'] == 'math-tex') {
                                               try {
                                                 return Container(
                                                     child: TeXView(
-                                                  child: TeXViewDocument(
-                                                      element.text,
+                                                  child: TeXViewDocument(element.text,
                                                       style: TeXViewStyle.fromCSS(
                                                           """background-color: #${(ThemeUtils.isThemeDark ? ThemeUtils.darken(Theme.of(context).primaryColorDark, forceAmount: 0.1) : ThemeUtils.darken(Theme.of(context).primaryColor, forceAmount: 0.03)).toCSSColor()}; color: #${ThemeUtils.textColor().toCSSColor()}""")),
                                                 ));
@@ -276,19 +218,9 @@ class _HomeworkElementState extends State<HomeworkElement>
                                 ),
                               ),
                             if (this.widget.homeworkForThisDay!.loaded! &&
-                                this.widget.homeworkForThisDay!.documents !=
-                                    null &&
                                 (segmentedControlIndex == 0
-                                        ? this
-                                            .widget
-                                            .homeworkForThisDay!
-                                            .documents!
-                                            .length
-                                        : this
-                                            .widget
-                                            .homeworkForThisDay!
-                                            .sessionDocuments!
-                                            .length) !=
+                                        ? this.widget.homeworkForThisDay!.files.length
+                                        : this.widget.homeworkForThisDay!.sessionFiles.length) !=
                                     0 &&
                                 isExpanded!)
                               Container(
@@ -301,34 +233,23 @@ class _HomeworkElementState extends State<HomeworkElement>
                                         child: InkWell(
                                           onTap: () {
                                             setState(() {
-                                              isDocumentExpanded =
-                                                  !isDocumentExpanded;
+                                              isDocumentExpanded = !isDocumentExpanded;
                                             });
                                           },
                                           child: Container(
-                                            height: screenSize.size.height /
-                                                10 *
-                                                0.5,
-                                            width:
-                                                screenSize.size.width / 5 * 4.5,
+                                            height: screenSize.size.height / 10 * 0.5,
+                                            width: screenSize.size.width / 5 * 4.5,
                                             child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
+                                              mainAxisAlignment: MainAxisAlignment.center,
                                               children: <Widget>[
                                                 Text(
                                                   "Documents",
-                                                  style: TextStyle(
-                                                      fontFamily: "Asap",
-                                                      color: Colors.white),
+                                                  style: TextStyle(fontFamily: "Asap", color: Colors.white),
                                                 ),
-                                                Icon(MdiIcons.fileOutline,
-                                                    color: Colors.white),
+                                                Icon(MdiIcons.fileOutline, color: Colors.white),
                                                 if (isDocumentExpanded)
                                                   SizedBox(
-                                                    width:
-                                                        screenSize.size.width /
-                                                            5 *
-                                                            1.88,
+                                                    width: screenSize.size.width / 5 * 1.88,
                                                   ),
                                               ],
                                             ),
@@ -340,139 +261,85 @@ class _HomeworkElementState extends State<HomeworkElement>
                                       width: screenSize.size.width / 5 * 4.5,
                                       height: isDocumentExpanded
                                           ? (segmentedControlIndex == 0
-                                                  ? widget.homeworkForThisDay!
-                                                      .documents!.length
-                                                  : widget
-                                                      .homeworkForThisDay!
-                                                      .sessionDocuments!
-                                                      .length) *
-                                              (screenSize.size.height /
-                                                  10 *
-                                                  0.7)
+                                                  ? widget.homeworkForThisDay!.files.length
+                                                  : widget.homeworkForThisDay!.sessionFiles.length) *
+                                              (screenSize.size.height / 10 * 0.7)
                                           : 0,
                                       child: ListView.builder(
                                           itemCount: segmentedControlIndex == 0
-                                              ? widget.homeworkForThisDay!
-                                                  .documents!.length
-                                              : widget.homeworkForThisDay!
-                                                  .sessionDocuments!.length,
-                                          itemBuilder: (BuildContext context,
-                                              int index) {
+                                              ? widget.homeworkForThisDay!.files.length
+                                              : widget.homeworkForThisDay!.sessionFiles.length,
+                                          itemBuilder: (BuildContext context, int index) {
                                             return Material(
                                               color: Color(0xff5FA9DA),
                                               child: InkWell(
                                                 child: Container(
                                                   decoration: BoxDecoration(
-                                                      border: Border(
-                                                          bottom: BorderSide(
-                                                              width: 0.2,
-                                                              color: Colors
-                                                                  .white))),
-                                                  width: screenSize.size.width /
-                                                      5 *
-                                                      4.4,
-                                                  height:
-                                                      screenSize.size.height /
-                                                          10 *
-                                                          0.7,
+                                                      border:
+                                                          Border(bottom: BorderSide(width: 0.2, color: Colors.white))),
+                                                  width: screenSize.size.width / 5 * 4.4,
+                                                  height: screenSize.size.height / 10 * 0.7,
                                                   child: Stack(
                                                     children: <Widget>[
                                                       Align(
-                                                        alignment: Alignment
-                                                            .centerLeft,
+                                                        alignment: Alignment.centerLeft,
                                                         child: Container(
-                                                          margin: EdgeInsets.only(
-                                                              left: screenSize
-                                                                      .size
-                                                                      .width /
-                                                                  5 *
-                                                                  0.1),
-                                                          width: screenSize
-                                                                  .size.width /
-                                                              5 *
-                                                              3.8,
+                                                          margin:
+                                                              EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
+                                                          width: screenSize.size.width / 5 * 3.8,
                                                           child: ClipRRect(
                                                             child: Marquee(
-                                                                text: (segmentedControlIndex ==
-                                                                                0
-                                                                            ? widget
-                                                                                .homeworkForThisDay!.documents
-                                                                            : widget
-                                                                                .homeworkForThisDay!.sessionDocuments)![
-                                                                        index]
+                                                                text: (segmentedControlIndex == 0
+                                                                        ? widget.homeworkForThisDay!.files
+                                                                        : widget
+                                                                            .homeworkForThisDay!.sessionFiles).toList()[index]
                                                                     .documentName!,
-                                                                blankSpace:
-                                                                    screenSize
-                                                                            .size
-                                                                            .width /
-                                                                        5 *
-                                                                        0.2,
-                                                                style: TextStyle(
-                                                                    fontFamily:
-                                                                        "Asap",
-                                                                    color: Colors
-                                                                        .white)),
+                                                                blankSpace: screenSize.size.width / 5 * 0.2,
+                                                                style:
+                                                                    TextStyle(fontFamily: "Asap", color: Colors.white)),
                                                           ),
                                                         ),
                                                       ),
                                                       Positioned(
-                                                        right: screenSize
-                                                                .size.width /
-                                                            5 *
-                                                            0.1,
-                                                        top: screenSize
-                                                                .size.height /
-                                                            10 *
-                                                            0.11,
+                                                        right: screenSize.size.width / 5 * 0.1,
+                                                        top: screenSize.size.height / 10 * 0.11,
                                                         child: Container(
-                                                          height: screenSize
-                                                                  .size.height /
-                                                              10 *
-                                                              0.5,
+                                                          height: screenSize.size.height / 10 * 0.5,
                                                           decoration: BoxDecoration(
-                                                              color: ThemeUtils
-                                                                  .darken(Color(
-                                                                      0xff5FA9DA)),
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          50)),
-                                                          child: ViewModelBuilder<
-                                                                  DownloadController>.reactive(
-                                                              viewModelBuilder:
-                                                                  () =>
-                                                                      DownloadController(),
-                                                              builder: (context,
-                                                                  model,
-                                                                  child) {
+                                                              color: ThemeUtils.darken(Color(0xff5FA9DA)),
+                                                              borderRadius: BorderRadius.circular(50)),
+                                                          child: ViewModelBuilder<DownloadController>.reactive(
+                                                              viewModelBuilder: () => DownloadController(),
+                                                              builder: (context, model, child) {
                                                                 return FutureBuilder(
-                                                                    future: model.fileExists(
-                                                                        (segmentedControlIndex == 0 ? widget.homeworkForThisDay!.documents : widget.homeworkForThisDay!.sessionDocuments)![index]
-                                                                            .documentName),
-                                                                    initialData:
-                                                                        false,
-                                                                    builder:
-                                                                        (context,
-                                                                            snapshot) {
-                                                                      if (snapshot
-                                                                              .data ==
-                                                                          false) {
-                                                                        if (model
-                                                                            .isDownloading) {
+                                                                    future: model.fileExists((segmentedControlIndex == 0
+                                                                            ? widget.homeworkForThisDay!.files
+                                                                            : widget.homeworkForThisDay!
+                                                                                .sessionFiles).toList()[index]
+                                                                        .documentName),
+                                                                    initialData: false,
+                                                                    builder: (context, snapshot) {
+                                                                      if (snapshot.data == false) {
+                                                                        if (model.isDownloading) {
                                                                           /// If download is in progress or connecting
                                                                           if (model.downloadProgress == null ||
                                                                               model.downloadProgress < 100) {
                                                                             return Container(
                                                                               padding: EdgeInsets.symmetric(
-                                                                                horizontal: screenSize.size.width / 5 * 0.2,
+                                                                                horizontal:
+                                                                                    screenSize.size.width / 5 * 0.2,
                                                                               ),
                                                                               child: Center(
                                                                                 child: SizedBox(
-                                                                                  width: screenSize.size.width / 5 * 0.3,
-                                                                                  height: screenSize.size.width / 5 * 0.3,
+                                                                                  width:
+                                                                                      screenSize.size.width / 5 * 0.3,
+                                                                                  height:
+                                                                                      screenSize.size.width / 5 * 0.3,
                                                                                   child: CircularProgressIndicator(
                                                                                     backgroundColor: Colors.green,
-                                                                                    strokeWidth: screenSize.size.width / 5 * 0.05,
+                                                                                    strokeWidth: screenSize.size.width /
+                                                                                        5 *
+                                                                                        0.05,
                                                                                     value: model.downloadProgress,
                                                                                   ),
                                                                                 ),
@@ -484,9 +351,11 @@ class _HomeworkElementState extends State<HomeworkElement>
                                                                           else {
                                                                             return Container(
                                                                                 child: IconButton(
-                                                                              padding: EdgeInsets.symmetric(vertical: 0),
+                                                                              padding:
+                                                                                  EdgeInsets.symmetric(vertical: 0),
                                                                               icon: Row(
-                                                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                                                mainAxisAlignment:
+                                                                                    MainAxisAlignment.center,
                                                                                 children: <Widget>[
                                                                                   Icon(
                                                                                     MdiIcons.check,
@@ -495,27 +364,40 @@ class _HomeworkElementState extends State<HomeworkElement>
                                                                                 ],
                                                                               ),
                                                                               onPressed: () async {
-                                                                                print((segmentedControlIndex == 0 ? widget.homeworkForThisDay!.documents : widget.homeworkForThisDay!.sessionDocuments)![index].documentName);
-                                                                                FileAppUtil.openFile((segmentedControlIndex == 0 ? widget.homeworkForThisDay!.documents : widget.homeworkForThisDay!.sessionDocuments)![index].documentName, usingFileName: true);
+                                                                                print((segmentedControlIndex == 0
+                                                                                        ? widget.homeworkForThisDay!
+                                                                                            .files
+                                                                                        : widget.homeworkForThisDay!
+                                                                                            .sessionFiles).toList()[index]
+                                                                                    .documentName);
+                                                                                FileAppUtil.openFile(
+                                                                                    (segmentedControlIndex == 0
+                                                                                            ? widget.homeworkForThisDay!
+                                                                                                .files
+                                                                                            : widget.homeworkForThisDay!
+                                                                                                .sessionFiles).toList()[index]
+                                                                                        .documentName,
+                                                                                    usingFileName: true);
                                                                               },
                                                                             ));
                                                                           }
                                                                         }
 
                                                                         ///Isn't downloading
-                                                                        if (!model
-                                                                            .isDownloading) {
+                                                                        if (!model.isDownloading) {
                                                                           return IconButton(
-                                                                            padding:
-                                                                                EdgeInsets.symmetric(vertical: 0),
-                                                                            icon:
-                                                                                Icon(
+                                                                            padding: EdgeInsets.symmetric(vertical: 0),
+                                                                            icon: Icon(
                                                                               MdiIcons.fileDownloadOutline,
                                                                               color: Colors.white,
                                                                             ),
-                                                                            onPressed:
-                                                                                () async {
-                                                                              await model.download((segmentedControlIndex == 0 ? widget.homeworkForThisDay!.documents : widget.homeworkForThisDay!.sessionDocuments)![index]);
+                                                                            onPressed: () async {
+                                                                              await model.download(
+                                                                                  (segmentedControlIndex == 0
+                                                                                      ? widget
+                                                                                          .homeworkForThisDay!.files
+                                                                                      : widget.homeworkForThisDay!
+                                                                                          .sessionFiles).toList()[index]);
                                                                             },
                                                                           );
                                                                         }
@@ -524,18 +406,23 @@ class _HomeworkElementState extends State<HomeworkElement>
                                                                       ///If file already exists
                                                                       else {
                                                                         return Container(
-                                                                            height: screenSize.size.height /
-                                                                                10 *
-                                                                                8,
-                                                                            child:
-                                                                                IconButton(
-                                                                              padding: EdgeInsets.symmetric(vertical: 0),
+                                                                            height: screenSize.size.height / 10 * 8,
+                                                                            child: IconButton(
+                                                                              padding:
+                                                                                  EdgeInsets.symmetric(vertical: 0),
                                                                               icon: Icon(
                                                                                 MdiIcons.check,
                                                                                 color: Colors.green,
                                                                               ),
                                                                               onPressed: () async {
-                                                                                FileAppUtil.openFile((segmentedControlIndex == 0 ? widget.homeworkForThisDay!.documents : widget.homeworkForThisDay!.sessionDocuments)![index].documentName, usingFileName: true);
+                                                                                FileAppUtil.openFile(
+                                                                                    (segmentedControlIndex == 0
+                                                                                            ? widget.homeworkForThisDay!
+                                                                                                .files
+                                                                                            : widget.homeworkForThisDay!
+                                                                                                .sessionFiles).toList()[index]
+                                                                                        .documentName,
+                                                                                    usingFileName: true);
                                                                               },
                                                                             ));
                                                                       }
@@ -557,15 +444,13 @@ class _HomeworkElementState extends State<HomeworkElement>
 
                             //Show a button to send homework
                             if (this.widget.homeworkForThisDay!.loaded! &&
-                                this.widget.homeworkForThisDay!.toReturn ==
-                                    true &&
+                                this.widget.homeworkForThisDay!.toReturn == true &&
                                 isExpanded!)
                               Material(
                                 color: Color(0xff63A86A),
                                 child: InkWell(
                                   onTap: () async {
-                                    CustomDialogs.showUnimplementedSnackBar(
-                                        context);
+                                    CustomDialogs.showUnimplementedSnackBar(context);
                                     /*
                                         File file = await FilePicker.getFile();
                                         await api.uploadFile("CDT", this.widget.homeworkForThisDay.idDevoir, file.path);*/
@@ -574,17 +459,13 @@ class _HomeworkElementState extends State<HomeworkElement>
                                     width: screenSize.size.width / 5 * 4.9,
                                     height: screenSize.size.height / 10 * 0.5,
                                     child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: <Widget>[
                                         Text(
                                           "Rendre en ligne",
-                                          style: TextStyle(
-                                              fontFamily: "Asap",
-                                              color: Colors.white),
+                                          style: TextStyle(fontFamily: "Asap", color: Colors.white),
                                         ),
-                                        Icon(Icons.file_upload,
-                                            color: Colors.white)
+                                        Icon(Icons.file_upload, color: Colors.white)
                                       ],
                                     ),
                                   ),
@@ -594,8 +475,7 @@ class _HomeworkElementState extends State<HomeworkElement>
                             Material(
                                 color: color,
                                 borderRadius: BorderRadius.only(
-                                    bottomLeft: Radius.circular(15),
-                                    bottomRight: Radius.circular(15)),
+                                    bottomLeft: Radius.circular(15), bottomRight: Radius.circular(15)),
                                 child: InkWell(
                                     onTap: () {
                                       setState(() {
@@ -609,28 +489,18 @@ class _HomeworkElementState extends State<HomeworkElement>
                                     },
                                     child: Container(
                                         decoration: BoxDecoration(
-                                          border: Border.all(
-                                              width: 0.00000,
-                                              color: Colors.transparent),
+                                          border: Border.all(width: 0.00000, color: Colors.transparent),
                                         ),
                                         width: screenSize.size.width / 5 * 4.5,
-                                        height:
-                                            screenSize.size.height / 10 * 0.4,
-                                        child: widget
-                                                .homeworkForThisDay!.loaded!
+                                        height: screenSize.size.height / 10 * 0.4,
+                                        child: widget.homeworkForThisDay!.loaded!
                                             ? Center(
                                                 child: AnimatedBuilder(
-                                                    animation:
-                                                        _rotationAnimation,
-                                                    builder:
-                                                        (context, snapshot) {
+                                                    animation: _rotationAnimation,
+                                                    builder: (context, snapshot) {
                                                       return Transform.rotate(
-                                                          angle: pi *
-                                                              3 *
-                                                              _rotationAnimation
-                                                                  .value,
-                                                          child: Icon(Icons
-                                                              .expand_more));
+                                                          angle: pi * 3 * _rotationAnimation.value,
+                                                          child: Icon(Icons.expand_more));
                                                     }))
                                             : Icon(MdiIcons.dotsHorizontal)))),
                           ],
@@ -642,9 +512,7 @@ class _HomeworkElementState extends State<HomeworkElement>
                 Align(
                   alignment: Alignment.topCenter,
                   child: Material(
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(15),
-                        topRight: Radius.circular(15)),
+                    borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
                     color: color,
                     child: InkWell(
                       onTap: () {
@@ -657,20 +525,16 @@ class _HomeworkElementState extends State<HomeworkElement>
                           _rotationController.reverse();
                         }
                       },
-                      borderRadius: BorderRadius.only(
-                          topLeft: Radius.circular(15),
-                          topRight: Radius.circular(15)),
+                      borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
                       child: GestureDetector(
                         excludeFromSemantics: true,
                         onLongPress: () async {
-                          await CustomDialogs.showHomeworkDetailsDialog(
-                              context, this.widget.homeworkForThisDay);
+                          await CustomDialogs.showHomeworkDetailsDialog(context, this.widget.homeworkForThisDay);
                           setState(() {});
                         },
                         child: Container(
                           decoration: BoxDecoration(
-                            border:
-                                Border.all(width: 0, color: Colors.transparent),
+                            border: Border.all(width: 0, color: Colors.transparent),
                           ),
                           width: screenSize.size.width / 5 * 4.5,
                           height: isExpanded!
@@ -680,9 +544,7 @@ class _HomeworkElementState extends State<HomeworkElement>
                             Container(
                               margin: EdgeInsets.only(
                                   left: screenSize.size.width / 5 * 0.2,
-                                  top: (screenSize.size.height / 10 * 8.8) /
-                                      10 *
-                                      0.1),
+                                  top: (screenSize.size.height / 10 * 8.8) / 10 * 0.1),
                               padding: EdgeInsets.symmetric(horizontal: 4),
                               child: FittedBox(
                                   child: Row(
@@ -690,57 +552,32 @@ class _HomeworkElementState extends State<HomeworkElement>
                                   Row(
                                     children: <Widget>[
                                       Text(
-                                        this
-                                            .widget
-                                            .homeworkForThisDay!
-                                            .discipline!,
+                                        this.widget.homeworkForThisDay!.discipline!,
                                         overflow: TextOverflow.ellipsis,
                                         textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                            fontFamily: "Asap",
-                                            fontWeight: FontWeight.normal),
+                                        style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.normal),
                                       ),
-                                      if (widget.homeworkForThisDay!.isATest ==
-                                          true)
+                                      if (widget.homeworkForThisDay!.isATest == true)
                                         Container(
-                                          margin: EdgeInsets.only(
-                                              left: screenSize.size.width /
-                                                  5 *
-                                                  0.15),
-                                          width:
-                                              screenSize.size.width / 5 * 0.15,
-                                          height:
-                                              screenSize.size.width / 5 * 0.15,
-                                          decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: Colors.orangeAccent),
+                                          margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.15),
+                                          width: screenSize.size.width / 5 * 0.15,
+                                          height: screenSize.size.width / 5 * 0.15,
+                                          decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.orangeAccent),
                                         ),
-                                      if (widget.homeworkForThisDay!.toReturn ==
-                                          true)
+                                      if (widget.homeworkForThisDay!.toReturn == true)
                                         Container(
-                                          margin: EdgeInsets.only(
-                                              left: screenSize.size.width /
-                                                  5 *
-                                                  0.15),
-                                          width:
-                                              screenSize.size.width / 5 * 0.15,
-                                          height:
-                                              screenSize.size.width / 5 * 0.15,
-                                          decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: Colors.green),
+                                          margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.15),
+                                          width: screenSize.size.width / 5 * 0.15,
+                                          height: screenSize.size.width / 5 * 0.15,
+                                          decoration: BoxDecoration(shape: BoxShape.circle, color: Colors.green),
                                         ),
                                       Container(
                                         width: screenSize.size.width / 5 * 0.5,
                                         height: screenSize.size.width / 5 * 0.5,
                                         child: FittedBox(
                                           child: FutureBuilder<bool>(
-                                              future: appSys
-                                                  .offline.doneHomework
-                                                  .getHWCompletion(widget
-                                                          .homeworkForThisDay!
-                                                          .id ??
-                                                      ''),
+                                              future: appSys.offline.doneHomework
+                                                  .getHWCompletion(widget.homeworkForThisDay!.id ?? ''),
                                               initialData: false,
                                               builder: (context, snapshot) {
                                                 bool? done = snapshot.data;
@@ -748,22 +585,14 @@ class _HomeworkElementState extends State<HomeworkElement>
                                                   shape: const CircleBorder(),
                                                   activeColor: Colors.blue,
                                                   value: done,
-                                                  materialTapTargetSize:
-                                                      MaterialTapTargetSize
-                                                          .padded,
+                                                  materialTapTargetSize: MaterialTapTargetSize.padded,
                                                   onChanged: (bool? x) async {
                                                     setState(() {
                                                       done = !done!;
-                                                      donePercentFuture =
-                                                          HomeworkUtils
-                                                              .getHomeworkDonePercent();
+                                                      donePercentFuture = HomeworkUtils.getHomeworkDonePercent();
                                                     });
                                                     appSys.offline.doneHomework
-                                                        .setHWCompletion(
-                                                            widget
-                                                                .homeworkForThisDay!
-                                                                .id,
-                                                            x);
+                                                        .setHWCompletion(widget.homeworkForThisDay!.id, x);
                                                   },
                                                 );
                                               }),
@@ -787,8 +616,7 @@ class _HomeworkElementState extends State<HomeworkElement>
   }
 
   void getDefaultValue() async {
-    var defaultValue =
-        appSys.settings!["user"]["homeworkPage"]["isExpandedByDefault"];
+    var defaultValue = appSys.settings!["user"]["homeworkPage"]["isExpandedByDefault"];
 
     setState(() {
       isExpanded = defaultValue;

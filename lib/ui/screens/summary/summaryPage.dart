@@ -16,6 +16,7 @@ import 'package:ynotes/ui/components/y_page/y_page_local.dart';
 import 'package:ynotes/ui/screens/grades/gradesPage.dart';
 import 'package:ynotes/ui/screens/summary/summaryPageWidgets/quickGrades.dart';
 import 'package:ynotes/ui/screens/summary/summaryPageWidgets/quickHomework.dart';
+import 'package:ynotes/ui/screens/summary/summaryPageWidgets/quickSchoolLife.dart';
 import 'package:ynotes/ui/screens/summary/summaryPageWidgets/summaryPageSettings.dart';
 
 Future? donePercentFuture;
@@ -43,6 +44,8 @@ class SummaryPageState extends State<SummaryPage> with YPageMixin {
 
   @override
   Widget build(BuildContext context) {
+    MediaQueryData screenSize = MediaQuery.of(context);
+
     return YPage(
         title: "Résumé",
         actions: [
@@ -65,10 +68,17 @@ class SummaryPageState extends State<SummaryPage> with YPageMixin {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                separator(context, "Notes"),
+                separator(context, "Notes", "/grades"),
                 QuickGrades(),
-                separator(context, "Devoirs"),
-                QuickHomework()
+                separator(context, "Devoirs", "/homework"),
+                QuickHomework(),
+                if (appSys.settings?["system"]["chosenApi"] == 0)
+                  separator(context, "Vie scolaire", "/school_life"),
+                if (appSys.settings?["system"]["chosenApi"] == 0)
+                  QuickSchoolLife(),
+                SizedBox(
+                  height: screenSize.size.height / 10 * 0.2,
+                )
               ],
             )));
   }
@@ -112,7 +122,7 @@ class SummaryPageState extends State<SummaryPage> with YPageMixin {
     await appSys.homeworkController.refresh(force: true);
   }
 
-  Widget separator(BuildContext context, String text) {
+  Widget separator(BuildContext context, String text, String routeName) {
     MediaQueryData screenSize = MediaQuery.of(context);
 
     return Container(
@@ -121,8 +131,7 @@ class SummaryPageState extends State<SummaryPage> with YPageMixin {
         left: screenSize.size.width / 5 * 0.25,
         bottom: screenSize.size.height / 10 * 0.1,
       ),
-      child:
-          Row(crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
+      child: Row(crossAxisAlignment: CrossAxisAlignment.end, children: <Widget>[
         Text(
           text,
           style: TextStyle(
@@ -130,6 +139,25 @@ class SummaryPageState extends State<SummaryPage> with YPageMixin {
               fontFamily: "Asap",
               fontSize: 25,
               fontWeight: FontWeight.w600),
+        ),
+        SizedBox(
+          width: screenSize.size.width / 5 * 0.25,
+        ),
+        GestureDetector(
+          onTap: () => Navigator.pushNamed(context, routeName),
+          child: Row(
+            children: [
+              Text(
+                "Accéder à la page",
+                style: TextStyle(
+                    color: ThemeUtils.textColor(),
+                    fontFamily: "Asap",
+                    fontSize: 15,
+                    fontWeight: FontWeight.w400),
+              ),
+              Icon(Icons.chevron_right, color: ThemeUtils.textColor()),
+            ],
+          ),
         ),
       ]),
     );
