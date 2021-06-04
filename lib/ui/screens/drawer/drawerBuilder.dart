@@ -307,7 +307,6 @@ class _DrawerBuilderState extends State<DrawerBuilder>
         "icon": MdiIcons.calendarCheck,
         "page": HomeworkPage(
           key: homeworkPage,
-          hwController: appSys.homeworkController,
         ),
         "key": homeworkPage
       },

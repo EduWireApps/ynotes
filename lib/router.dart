@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:ynotes/globals.dart';
 import 'package:ynotes/core/logic/appConfig/models.dart';
 import 'package:ynotes/ui/screens/agenda/agendaPage.dart';
 import 'package:ynotes/ui/screens/carousel/carousel.dart';
@@ -13,6 +12,7 @@ import 'package:ynotes/ui/screens/login/loginPage.dart';
 import 'package:ynotes/ui/screens/mail/mailPage.dart';
 import 'package:ynotes/ui/screens/polls/pollsPage.dart';
 import 'package:ynotes/ui/screens/schoolLife/schoolLifePage.dart';
+import 'package:ynotes/ui/screens/settings/sub_pages/accountPage.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
 import 'package:ynotes/ui/screens/summary/summaryPage.dart';
 
@@ -51,8 +51,15 @@ List<Map<String, dynamic>> routes = [
     "path": "/homework",
     "icon": MdiIcons.calendarCheck,
     "title": "Devoirs",
-    "page": HomeworkPage(hwController: appSys.homeworkController),
+    "page": HomeworkPage(),
     "tab": appTabs.HOMEWORK
+  },
+  {
+    "path": "/agenda",
+    "icon": MdiIcons.calendar,
+    "title": "Agenda",
+    "page": AgendaPage(),
+    "tab": appTabs.AGENDA
   },
   {
     "path": "/mailbox",
@@ -61,13 +68,6 @@ List<Map<String, dynamic>> routes = [
     "page": MailPage(),
     "relatedApi": 0,
     "tab": appTabs.MESSAGING
-  },
-  {
-    "path": "/agenda",
-    "icon": MdiIcons.calendar,
-    "title": "Agenda",
-    "page": AgendaPage(),
-    "tab": appTabs.AGENDA
   },
   {
     "path": "/school_life",
@@ -100,6 +100,13 @@ List<Map<String, dynamic>> routes = [
     "page": PollsAndInfoPage(),
     "relatedApi": 1,
     "tab": appTabs.POLLS
+  },
+  {
+    "path": "/account",
+    "icon": Icons.person,
+    "title": "Compte",
+    "page": AccountPage(),
+    "tab": appTabs.ACCOUNT
   }
 ];
 

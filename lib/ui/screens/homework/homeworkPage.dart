@@ -152,8 +152,8 @@ getWeeksRelation(int index, List<Homework> list) {
 }
 
 class HomeworkPage extends StatefulWidget {
-  final HomeworkController? hwController;
-  HomeworkPage({Key? key, required this.hwController}) : super(key: key);
+  final HomeworkController hwController = appSys.homeworkController;
+  HomeworkPage({Key? key}) : super(key: key);
   State<StatefulWidget> createState() {
     return HomeworkPageState();
   }
