@@ -55,7 +55,7 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
             borderRadius: BorderRadius.circular(8),
             child: InkWell(
               borderRadius: BorderRadius.circular(8),
-              onTap: () => Navigator.pushReplacementNamed(context, "/homework"),
+              onTap: () => Navigator.pushNamed(context, "/homework"),
               onLongPress: !widget._homework.loaded!
                   ? null
                   : () async {

@@ -228,8 +228,7 @@ class _QuickGradesState extends State<QuickGrades> {
                       CustomDialogs.showShareGradeDialog(
                           context, grades[index]);
                     },
-                    onTap: () =>
-                        Navigator.pushReplacementNamed(context, "/grades"),
+                    onTap: () => Navigator.pushNamed(context, "/grades"),
                     child: Container(
                       padding: EdgeInsets.symmetric(
                           horizontal: screenSize.size.width / 5 * 0.1,

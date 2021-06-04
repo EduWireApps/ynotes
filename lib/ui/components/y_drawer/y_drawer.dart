@@ -71,7 +71,7 @@ class _YDrawerState extends State<YDrawer> with YPageMixin {
                         routes[i]["path"]) {
                       return;
                     }
-                    Navigator.pushReplacementNamed(context, routes[i]["path"]);
+                    Navigator.pushNamed(context, routes[i]["path"]);
                   },
                 );
               }),

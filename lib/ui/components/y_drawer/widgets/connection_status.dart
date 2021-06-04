@@ -26,7 +26,7 @@ class _ConnectionStatusState extends State<ConnectionStatus> {
           return Opacity(
             opacity: 0.8,
             child: GestureDetector(
-              onTap: () => Navigator.pushReplacementNamed(context, "/account"),
+              onTap: () => Navigator.pushNamed(context, "/account"),
               child: AnimatedContainer(
                 duration: Duration(milliseconds: 400),
                 color: case2(widget.con.actualState, {

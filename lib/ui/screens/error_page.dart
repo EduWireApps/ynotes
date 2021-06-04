@@ -28,7 +28,7 @@ class _ErrorPageState extends State<ErrorPage> {
             ),
             TextButton(
               child: Text("Go to safe area"),
-              onPressed: () => Navigator.pushReplacementNamed(context, "/test"),
+              onPressed: () => Navigator.pushNamed(context, "/test"),
             )
           ],
         )),
