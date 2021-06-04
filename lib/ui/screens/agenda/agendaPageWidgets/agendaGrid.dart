@@ -204,8 +204,8 @@ class _AgendaGridState extends State<AgendaGrid> {
         agendaFuture = appSys.api!.getEvents(agendaDate!, false);
       });
     }
-    var realAF = await spaceAgendaFuture;
-    var realSAF = await agendaFuture;
+    await spaceAgendaFuture;
+     await agendaFuture;
   }
 
   Widget _buildHeaderAllDays() {

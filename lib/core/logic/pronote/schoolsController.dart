@@ -104,7 +104,7 @@ class PronoteSchoolsController extends ChangeNotifier {
             (school!.url![school!.url!.length - 1] == "/" ? "" : "/") +
             "InfoMobileApp.json?id=0D264427-EEFC-4810-A9E9-346942A862A4";
         var response = await http.get(Uri.parse(url)).catchError((e) {
-          return "Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.";
+          throw "Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.";
         });
         List<PronoteSpace> _spaces = [];
         var data = json.decode(response.body);
@@ -149,7 +149,7 @@ class PronoteSchoolsController extends ChangeNotifier {
     var response = await http
         .post(Uri.parse(url), headers: headers, body: body)
         .catchError((e) {
-      return "Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.";
+      throw "Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.";
     });
     if (response.statusCode == 200) {
       convertToSchool(response.body, long, lat);

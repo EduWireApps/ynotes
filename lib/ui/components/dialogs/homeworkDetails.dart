@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:html/parser.dart';
@@ -93,7 +92,7 @@ class _DialogHomeworkState extends State<DialogHomework> {
               child: Material(
                 color: Colors.transparent,
                 child: SingleChildScrollView(
-                  child: AutoSizeText(
+                  child: SelectableText(
                     parsedHtml,
                     style: TextStyle(
                         fontSize: 20,
@@ -124,7 +123,7 @@ class _DialogHomeworkState extends State<DialogHomework> {
                       child: Column(
                         children: [
                           Text(
-                            this.widget.hw!.discipline!,
+                            this.widget.hw!.discipline ?? "",
                             textAlign: TextAlign.left,
                             style: TextStyle(
                                 fontFamily: "Asap",

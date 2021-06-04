@@ -10,7 +10,9 @@ import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/columnGenerator.dart';
 
 class SchoolLifePage extends StatefulWidget {
-  const SchoolLifePage({Key? key}) : super(key: key);
+  final GlobalKey<ScaffoldState> parentScaffoldState;
+
+  const SchoolLifePage({Key? key, required this.parentScaffoldState}) : super(key: key);
   @override
   _SchoolLifePageState createState() => _SchoolLifePageState();
 }
@@ -19,18 +21,30 @@ class _SchoolLifePageState extends State<SchoolLifePage> {
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
-    return RefreshIndicator(
-      onRefresh: refreshTickets,
-      child: SingleChildScrollView(
-        physics: AlwaysScrollableScrollPhysics(),
+    return Scaffold(
+      appBar: new AppBar(
+          title: new Text(
+            "Vie scolaire",
+            style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
+          ),
+          leading: FlatButton(
+            color: Colors.transparent,
+            child: Icon(MdiIcons.menu, color: ThemeUtils.textColor()),
+            onPressed: () async {
+              widget.parentScaffoldState.currentState?.openDrawer();
+            },
+          ),
+          backgroundColor: Theme.of(context).primaryColor),
+      backgroundColor: Theme.of(context).backgroundColor,
+      body: RefreshIndicator(
+        onRefresh: refreshTickets,
         child: Container(
-            height: screenSize.size.height,
             width: screenSize.size.width,
             child: ChangeNotifierProvider<SchoolLifeController>.value(
                 value: appSys.schoolLifeController,
                 child: Consumer<SchoolLifeController>(builder: (context, model, child) {
                   //if there is no tickets
-                  if ((model.tickets ?? []).length == 0) {
+                  if ((model.tickets ?? []).length == 0 || model.tickets == null) {
                     return buildNoTickets();
                   } else {
                     return Container(
@@ -38,11 +52,13 @@ class _SchoolLifePageState extends State<SchoolLifePage> {
                       width: screenSize.size.width,
                       padding: EdgeInsets.symmetric(
                           vertical: screenSize.size.width / 5 * 0.1, horizontal: screenSize.size.width / 5 * 0.05),
-                      child: ColumnBuilder(
-                          itemCount: (model.tickets ?? []).length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return buildTicket(model.tickets![index]);
-                          }),
+                      child: SingleChildScrollView(
+                        child: ColumnBuilder(
+                            itemCount: (model.tickets)!.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return buildTicket((model.tickets)!.reversed.toList()[index]);
+                            }),
+                      ),
                     );
                   }
                 }))),

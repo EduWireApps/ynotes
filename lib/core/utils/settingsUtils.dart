@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsUtils {
@@ -9,9 +10,10 @@ class SettingsUtils {
     "system": {
       "firstUse": false,
       "lastReadUpdateNote": "",
-      "chosenParser": 0,
+      "chosenParser": null,
       "lastMailCount": 0,
-      "lastGradeCount": 0
+      "lastGradeCount": 0,
+      "migratedHW": false
     },
 
     ///The user's app global settings
@@ -29,6 +31,10 @@ class SettingsUtils {
       "summaryPage": {"summaryQuickHomework": 11},
       "homeworkPage": {
         "isExpandedByDefault": false,
+        "forceMonochromeContent": false,
+        "fontSize": 20,
+        "pageColorVariant": 0,
+        "customDisciplinesList": "[]"
       },
       "agendaPage": {
         "lighteningOverride": false,
@@ -67,6 +73,9 @@ class SettingsUtils {
       value = 0;
       if (setting == "summaryQuickHomework") {
         value = 10;
+      }
+      if (setting == "fontSize") {
+        value = 11;
       }
       if (setting == "lessonReminderDelay") {
         value = 5;
@@ -132,9 +141,11 @@ class SettingsUtils {
     if (settings == null) {
       settings = json.encode(settingsForm);
     }
+    print(settingsForm);
     print(settings);
+
     Map? _settings = json.decode(settings);
-    return _settings;
+    return mergeMaps(json.decode(json.encode(settingsForm)), _settings ?? {});
   }
 
   //Oops
@@ -143,15 +154,15 @@ class SettingsUtils {
     Map _oldSettings;
     Map? _newSettings;
     _oldSettings = await getOldSettings();
-    print(_oldSettings == null);
     _newSettings = await getSavedSettings();
 
     print(_newSettings == null);
     //merge settings
-    _settings = {..._oldSettings, ..._newSettings ?? {}};
+    _settings = Map.from(json.decode(json.encode(_oldSettings)))..addAll(_newSettings ?? {});
     if (_newSettings == null) {
       await setSetting(_settings);
     }
+    print(_settings);
     return _settings;
   }
 

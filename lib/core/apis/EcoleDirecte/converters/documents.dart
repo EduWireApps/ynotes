@@ -10,7 +10,7 @@ class EcoleDirecteDocumentConverter {
 
       ///TO DO : replace length
       int length = 0;
-      documents.add(Document(libelle, id, type, length));
+      documents.add(Document(documentName: libelle, id: id, type: type, length: length));
     });
     return documents;
   }

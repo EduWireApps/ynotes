@@ -13,7 +13,6 @@ class GradesStats {
 
     List<Grade> _sortedGrades = [];
     _sortedGrades.addAll(this.allGrades!);
-    print(grade.disciplineCode);
     //Remove unconcerned grades
     _sortedGrades.removeWhere((_grade) =>
         _grade.disciplineCode != this.grade.disciplineCode ||
@@ -59,6 +58,8 @@ class GradesStats {
           //Calculate before average
 
           afterAverage = afterAverage / coeffCounter;
+        } else {
+          afterAverage = beforeAverage;
         }
       }
       //Returns the difference
@@ -66,6 +67,7 @@ class GradesStats {
     if ((afterAverage - beforeAverage).isNaN) {
       return afterAverage;
     }
+
     return (afterAverage - beforeAverage);
   }
 

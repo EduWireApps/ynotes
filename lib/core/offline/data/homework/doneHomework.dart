@@ -5,14 +5,24 @@ class DoneHomeworkOffline extends Offline {
   DoneHomeworkOffline(bool locked, Offline _parent) : super(locked) {
     parent = _parent;
   }
-  setHWCompletion(String? id, bool? state) async {
-    if (!locked) {
-      print("Setting done hw");
-      try {
-        await parent.homeworkDoneBox!.put(id.toString(), state);
-      } catch (e) {
-        print("Error during the setHomeworkDoneProcess $e");
-      }
+
+  List<String>? getAllDoneHomeworkIDs() {
+    List<String>? toReturn = parent.homeworkDoneBox
+        ?.toMap()
+        .entries
+        .where((element) => element.value == true)
+        .map((e) => e.key)
+        .toList()
+        .cast<String>();
+    return toReturn;
+  }
+
+  Future<int> getDoneHWNumber() async {
+    try {
+      return parent.homeworkDoneBox!.keys.length;
+    } catch (e) {
+      print("Error during the getHomeworkDoneProcess $e");
+      return 0;
     }
   }
 
@@ -34,12 +44,14 @@ class DoneHomeworkOffline extends Offline {
     }
   }
 
-  Future<int> getDoneHWNumber() async {
-    try {
-      return parent.homeworkDoneBox!.keys.length;
-    } catch (e) {
-      print("Error during the getHomeworkDoneProcess $e");
-      return 0;
+  setHWCompletion(String? id, bool? state) async {
+    if (!locked) {
+      print("Setting done hw");
+      try {
+        await parent.homeworkDoneBox!.put(id.toString(), state);
+      } catch (e) {
+        print("Error during the setHomeworkDoneProcess $e");
+      }
     }
   }
 }

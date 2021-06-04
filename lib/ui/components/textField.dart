@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:ynotes/core/utils/themeUtils.dart';
 
-class LoginPageTextField extends StatefulWidget {
+class CustomTextField extends StatefulWidget {
   final TextEditingController? controller;
   final String hint;
   bool isObscured;
   final IconData icon;
   final bool eyeButton;
 
-  LoginPageTextField(
+  CustomTextField(
     this.controller,
     this.hint,
     this.isObscured,
@@ -17,10 +18,10 @@ class LoginPageTextField extends StatefulWidget {
     Key? key,
   }) : super(key: key);
   @override
-  _LoginPageTextFieldState createState() => _LoginPageTextFieldState();
+  _CustomTextFieldState createState() => _CustomTextFieldState();
 }
 
-class _LoginPageTextFieldState extends State<LoginPageTextField> {
+class _CustomTextFieldState extends State<CustomTextField> {
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
@@ -29,9 +30,9 @@ class _LoginPageTextFieldState extends State<LoginPageTextField> {
         width: screenSize.size.width / 5 * 4.2,
         height: screenSize.size.width / 5 * 0.7,
         decoration: BoxDecoration(
-            border: Border.all(width: 0.7, color: Colors.white),
+            border: Border.all(width: 0.7, color: ThemeUtils.textColor().withOpacity(0.4)),
             borderRadius: BorderRadius.circular(10000),
-            color: Colors.white70),
+            color: Theme.of(context).primaryColorDark),
         padding: EdgeInsets.zero,
         child: Stack(
           fit: StackFit.loose,
@@ -46,7 +47,7 @@ class _LoginPageTextFieldState extends State<LoginPageTextField> {
                     maxLines: 1,
                     controller: widget.controller,
                     obscureText: widget.isObscured,
-                    style: TextStyle(color: Colors.black),
+                    style: TextStyle(color: ThemeUtils.textColor().withOpacity(0.8)),
                     textAlignVertical: TextAlignVertical.center,
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.only(
@@ -58,7 +59,7 @@ class _LoginPageTextFieldState extends State<LoginPageTextField> {
                           const Radius.circular(25),
                         ),
                       ),
-                      hintStyle: new TextStyle(color: Colors.grey[800]),
+                      hintStyle: new TextStyle(color: ThemeUtils.textColor().withOpacity(0.4)),
                       hintText: widget.hint,
                     ),
                   ),
@@ -68,12 +69,14 @@ class _LoginPageTextFieldState extends State<LoginPageTextField> {
             Container(
               width: screenSize.size.width / 5 * 0.7,
               height: screenSize.size.width / 5 * 0.7,
-              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(50000)),
+              decoration:
+                  BoxDecoration(color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(50000)),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Icon(widget.icon, size: screenSize.size.width / 5 * 0.5, color: Color(0xff22256A)),
+                  Icon(widget.icon,
+                      size: screenSize.size.width / 5 * 0.5, color: ThemeUtils.textColor().withOpacity(0.8)),
                 ],
               ),
             ),
@@ -89,7 +92,8 @@ class _LoginPageTextFieldState extends State<LoginPageTextField> {
                   child: Container(
                     width: screenSize.size.width / 5 * 0.7,
                     height: screenSize.size.width / 5 * 0.7,
-                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(50000)),
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColorDark, borderRadius: BorderRadius.circular(50000)),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,

@@ -229,7 +229,7 @@ class CustomDialogs {
 
   static Future<void> showHomeworkDetailsDialog(
       BuildContext context, Homework? hw) async {
-    String? returnVal = await showGeneralDialog(
+    await showGeneralDialog(
         context: context,
         barrierColor: Colors.black.withOpacity(0.5),
         transitionDuration: Duration(milliseconds: 200),

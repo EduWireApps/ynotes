@@ -10,16 +10,21 @@ import 'package:ynotes/globals.dart';
 ///Class download to notify view when download is ended
 class DownloadController extends ChangeNotifier {
   bool _isDownloading = false;
+  bool _hasError = false;
+
   double? _progress = 0;
   get downloadProgress => _progress;
+  get hasError => _hasError;
   get isDownloading => _isDownloading;
 
   download(Document document) async {
+    _hasError = false;
     _isDownloading = true;
     _progress = null;
     String? filename = document.documentName;
     notifyListeners();
     Request request = await appSys.api!.downloadRequest(document);
+    print(request.url);
     //Make a response client
     final StreamedResponse response = await Client().send(request);
     final contentLength = response.contentLength;
@@ -35,26 +40,36 @@ class DownloadController extends ChangeNotifier {
       (List<int> newBytes) {
         bytes.addAll(newBytes);
         final downloadedLength = bytes.length;
-        _progress = downloadedLength / contentLength!;
+        _progress = downloadedLength / (contentLength ?? 1);
 
         notifyListeners();
       },
       onDone: () async {
-        _progress = 100;
-        notifyListeners();
-        print("Téléchargement du fichier terminé : ${file.path}");
-        final dir = await FolderAppUtil.getDirectory(download: true);
-        final Directory _appDocDirFolder = Directory('$dir/yNotesDownloads/');
+        try {
+          _progress = 100;
+          notifyListeners();
+          print("Téléchargement du fichier terminé : ${file.path}");
+          final dir = await FolderAppUtil.getDirectory(download: true);
+          final Directory _appDocDirFolder = Directory('$dir/yNotesDownloads/');
 
-        if (!await _appDocDirFolder.exists()) {
-          //if folder already exists return path
-          final Directory _appDocDirNewFolder = await _appDocDirFolder.create(recursive: true);
-        } //if folder not exists create folder and then return its path
+          if (!await _appDocDirFolder.exists()) {
+            //if folder already exists return path
+            await _appDocDirFolder.create(recursive: true);
+          } //if folder not exists create folder and then return its path
 
-        await file.writeAsBytes(bytes);
+          await file.writeAsBytes(bytes);
+        } catch (e) {
+          print("Downloading file error : $e, on $filename");
+          _isDownloading = false;
+          _hasError = true;
+          notifyListeners();
+        }
       },
       onError: (e) {
         print("Downloading file error : $e, on $filename");
+        _isDownloading = false;
+        _hasError = true;
+        notifyListeners();
       },
       cancelOnError: true,
     );

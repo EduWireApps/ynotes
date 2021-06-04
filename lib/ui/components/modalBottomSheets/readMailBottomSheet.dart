@@ -3,23 +3,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:intl/intl.dart';
-import 'package:marquee/marquee.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:stacked/stacked.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/core/logic/shared/downloadController.dart';
-import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/customLoader.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
+import 'package:ynotes/ui/components/modalBottomSheets/filesBottomSheet.dart';
 
 class ReadMailBottomSheet extends StatefulWidget {
   final Mail mail;
-  final int? index;
 
-  const ReadMailBottomSheet(this.mail, this.index, {Key? key}) : super(key: key);
+  const ReadMailBottomSheet(this.mail, {Key? key}) : super(key: key);
 
   @override
   _ReadMailBottomSheetState createState() => _ReadMailBottomSheetState();
@@ -29,13 +26,12 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
   bool monochromatic = false;
   DateFormat format = DateFormat("dd-MM-yyyy HH:hh");
 
-  //Get monochromatic colors or not
   @override
   Widget build(BuildContext context) {
     print(this.widget.mail.id);
     MediaQueryData screenSize = MediaQuery.of(context);
     return FutureBuilder<String?>(
-        future: readMail(this.widget.mail.id, this.widget.mail.read, this.widget.mail.mtype == "received"),
+        future: getMail(),
         builder: (context, snapshot) {
           return Container(
               height: screenSize.size.height,
@@ -62,8 +58,16 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
+                              if (this.widget.mail.files.toList().length > 0)
+                                IconButton(
+                                  onPressed: () async {
+                                    showFilesModalBottomSheet(context, this.widget.mail.files.toList());
+                                  },
+                                  icon: Icon(MdiIcons.file),
+                                  color: ThemeUtils.textColor(),
+                                ),
                               IconButton(
-                                onPressed: () {
+                                onPressed: () async {
                                   setState(() {
                                     monochromatic = !monochromatic;
                                   });
@@ -88,7 +92,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                 horizontal: screenSize.size.width / 5 * 0.2,
                                 vertical: screenSize.size.height / 10 * 0.2),
                             child: AutoSizeText(
-                              this.widget.mail.subject != "" ? this.widget.mail.subject : "(Sans sujet)",
+                              this.widget.mail.subject != "" ? this.widget.mail.subject ?? "" : "(Sans sujet)",
                               maxLines: 100,
                               style: TextStyle(
                                   fontFamily: "Asap", color: ThemeUtils.textColor(), fontWeight: FontWeight.bold),
@@ -106,7 +110,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                     width: screenSize.size.width / 5 * 0.8,
                                     child: CircleAvatar(
                                       child: Text(
-                                        this.widget.mail.from["name"][0],
+                                        this.widget.mail.from?["name"][0] ?? "",
                                         style: TextStyle(
                                             fontFamily: "Asap",
                                             color: ThemeUtils.textColor(),
@@ -125,7 +129,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                         spacing: screenSize.size.width / 5 * 0.1,
                                         children: [
                                           Text(
-                                            this.widget.mail.from["name"],
+                                            this.widget.mail.from?["name"] ?? "",
                                             style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                                             overflow: TextOverflow.ellipsis,
                                           ),
@@ -139,9 +143,9 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                           ),
                                         ],
                                       ),
-                                      if (!this.widget.mail.to.isEmpty)
+                                      if ((this.widget.mail.to ?? []).isNotEmpty)
                                         Text(
-                                          this.widget.mail.to[0]["name"],
+                                          this.widget.mail.to![0]?["name"] ?? "",
                                           style: TextStyle(
                                               fontFamily: "Asap",
                                               color: ThemeUtils.isThemeDark
@@ -172,7 +176,9 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                 ? Column(
                                     children: <Widget>[
                                       Padding(
-                                        padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: screenSize.size.width / 5 * 0.1,
+                                            vertical: screenSize.size.height / 10 * 0.2),
                                         child: HtmlWidget(
                                           htmlColors(snapshot.data),
                                           hyperlinkColor: Colors.blue.shade300,
@@ -186,197 +192,16 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
                                           textStyle: TextStyle(color: ThemeUtils.textColor()),
                                         ),
                                       ),
-                                      AnimatedContainer(
-                                        duration: Duration(milliseconds: 75),
-                                        width: screenSize.size.width / 5 * 4.4,
-                                        height: this.widget.mail.files!.length * (screenSize.size.height / 10 * 0.7),
-                                        child: ListView.builder(
-                                            itemCount: this.widget.mail.files!.length,
-                                            itemBuilder: (BuildContext context, int index) {
-                                              return Container(
-                                                margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.2),
-                                                child: Material(
-                                                  borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.1),
-                                                  color: Color(0xff5FA9DA),
-                                                  child: InkWell(
-                                                    borderRadius:
-                                                        BorderRadius.circular(screenSize.size.width / 5 * 0.5),
-                                                    child: Container(
-                                                      decoration: BoxDecoration(
-                                                          border: Border(
-                                                              bottom: BorderSide(width: 0, color: Colors.transparent))),
-                                                      width: screenSize.size.width / 5 * 4.4,
-                                                      height: screenSize.size.height / 10 * 0.7,
-                                                      child: Stack(
-                                                        children: <Widget>[
-                                                          Align(
-                                                            alignment: Alignment.centerLeft,
-                                                            child: Container(
-                                                              margin: EdgeInsets.only(
-                                                                  left: screenSize.size.width / 5 * 0.1),
-                                                              width: screenSize.size.width / 5 * 2.8,
-                                                              child: ClipRRect(
-                                                                child: Marquee(
-                                                                    text: this.widget.mail.files![index].documentName!,
-                                                                    blankSpace: screenSize.size.width / 5 * 0.2,
-                                                                    style: TextStyle(
-                                                                        fontFamily: "Asap", color: Colors.white)),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Positioned(
-                                                            right: screenSize.size.width / 5 * 0.1,
-                                                            top: screenSize.size.height / 10 * 0.11,
-                                                            child: Container(
-                                                              height: screenSize.size.height / 10 * 0.5,
-                                                              decoration: BoxDecoration(
-                                                                  color: ThemeUtils.darken(Color(0xff5FA9DA)),
-                                                                  borderRadius: BorderRadius.circular(50)),
-                                                              child: Row(
-                                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                                children: <Widget>[
-                                                                  ViewModelBuilder<DownloadController>.reactive(
-                                                                      viewModelBuilder: () => DownloadController(),
-                                                                      builder: (context, model, child) {
-                                                                        return FutureBuilder(
-                                                                            future: model.fileExists(this
-                                                                                .widget
-                                                                                .mail
-                                                                                .files![index]
-                                                                                .documentName),
-                                                                            initialData: false,
-                                                                            builder: (context, snapshot) {
-                                                                              if (snapshot.data == false ||
-                                                                                  model.isDownloading) {
-                                                                                if (model.isDownloading) {
-                                                                                  /// If download is in progress or connecting
-                                                                                  if (model.downloadProgress == null ||
-                                                                                      model.downloadProgress < 100) {
-                                                                                    return Container(
-                                                                                      padding: EdgeInsets.symmetric(
-                                                                                        horizontal:
-                                                                                            screenSize.size.width /
-                                                                                                5 *
-                                                                                                0.2,
-                                                                                      ),
-                                                                                      child: Center(
-                                                                                        child: SizedBox(
-                                                                                          width: screenSize.size.width /
-                                                                                              5 *
-                                                                                              0.3,
-                                                                                          height:
-                                                                                              screenSize.size.width /
-                                                                                                  5 *
-                                                                                                  0.3,
-                                                                                          child:
-                                                                                              CircularProgressIndicator(
-                                                                                            backgroundColor:
-                                                                                                Colors.green,
-                                                                                            strokeWidth:
-                                                                                                screenSize.size.width /
-                                                                                                    5 *
-                                                                                                    0.05,
-                                                                                            value:
-                                                                                                model.downloadProgress,
-                                                                                          ),
-                                                                                        ),
-                                                                                      ),
-                                                                                    );
-                                                                                  }
-
-                                                                                  ///Download is ended
-                                                                                  else {
-                                                                                    return Container(
-                                                                                        child: InkWell(
-                                                                                      onTap: () async {
-                                                                                        FileAppUtil.openFile(
-                                                                                            this
-                                                                                                .widget
-                                                                                                .mail
-                                                                                                .files![index]
-                                                                                                .documentName,
-                                                                                            usingFileName: true);
-                                                                                      },
-                                                                                      //Force download
-                                                                                      onLongPress: () async {
-                                                                                        await model.download(this
-                                                                                            .widget
-                                                                                            .mail
-                                                                                            .files![index]);
-                                                                                      },
-                                                                                      child: Container(
-                                                                                        width: screenSize.size.width /
-                                                                                            5 *
-                                                                                            0.6,
-                                                                                        child: Icon(
-                                                                                          MdiIcons.check,
-                                                                                          color: Colors.green,
-                                                                                        ),
-                                                                                      ),
-                                                                                    ));
-                                                                                  }
-                                                                                }
-
-                                                                                ///Isn't downloading
-                                                                                if (!model.isDownloading) {
-                                                                                  return IconButton(
-                                                                                    icon: Icon(
-                                                                                      MdiIcons.fileDownloadOutline,
-                                                                                      color: Colors.white,
-                                                                                    ),
-                                                                                    onPressed: () async {
-                                                                                      await model.download(this
-                                                                                          .widget
-                                                                                          .mail
-                                                                                          .files![index]);
-                                                                                    },
-                                                                                  );
-                                                                                }
-                                                                              }
-
-                                                                              ///If file already exists
-                                                                              else {
-                                                                                return Container(
-                                                                                    child: InkWell(
-                                                                                  onTap: () async {
-                                                                                    FileAppUtil.openFile(
-                                                                                        this
-                                                                                            .widget
-                                                                                            .mail
-                                                                                            .files![index]
-                                                                                            .documentName,
-                                                                                        usingFileName: true);
-                                                                                  },
-                                                                                  //Force download
-                                                                                  onLongPress: () async {
-                                                                                    await model.download(
-                                                                                        this.widget.mail.files![index]);
-                                                                                  },
-                                                                                  child: Container(
-                                                                                    width:
-                                                                                        screenSize.size.width / 5 * 0.6,
-                                                                                    child: Icon(
-                                                                                      MdiIcons.check,
-                                                                                      color: Colors.green,
-                                                                                    ),
-                                                                                  ),
-                                                                                ));
-                                                                              }
-                                                                              return Container();
-                                                                            });
-                                                                      }),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              );
-                                            }),
-                                      )
+                                      if (this.widget.mail.files.toList().length > 0)
+                                        CustomButtons.materialButton(context, null, null, () {
+                                          showFilesModalBottomSheet(context, this.widget.mail.files.toList());
+                                        },
+                                            label: this.widget.mail.files.toList().length.toString() +
+                                                " pièce" +
+                                                (this.widget.mail.files.toList().length > 1 ? "s" : "") +
+                                                " jointe" +
+                                                (this.widget.mail.files.toList().length > 1 ? "s" : ""),
+                                            icon: MdiIcons.file),
                                     ],
                                   )
                                 : Center(
@@ -393,6 +218,17 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
         });
   }
 
+  //Get monochromatic colors or not
+  ///TO DO PUT IT IN A CONTROLLER
+  Future<String?> getMail() async {
+    await widget.mail.files.load();
+    if (widget.mail.content != null && widget.mail.content != "") {
+      return widget.mail.content;
+    } else {
+      return await readMail(widget.mail.id ?? "", true, widget.mail.mtype == "received");
+    }
+  }
+
   htmlColors(String? html) {
     if (!monochromatic) {
       return html;
@@ -404,8 +240,12 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
 
   recipientFromMap() {
     return [
-      Recipient(this.widget.mail.from["prenom"], this.widget.mail.from["nom"], this.widget.mail.from["id"].toString(),
-          this.widget.mail.from["type"] == "P", this.widget.mail.from["matiere"])
+      Recipient(
+          this.widget.mail.from?["prenom"],
+          this.widget.mail.from?["nom"],
+          this.widget.mail.from?["id"].toString(),
+          this.widget.mail.from?["type"] == "P",
+          this.widget.mail.from?["matiere"])
     ];
   }
 }

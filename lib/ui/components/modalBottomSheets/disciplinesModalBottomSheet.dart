@@ -1,11 +1,14 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
-import 'package:ynotes/globals.dart';
+import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
-import 'package:ynotes/ui/components/modalBottomSheets/keyValues.dart';
+import 'package:ynotes/ui/components/modalBottomSheets/dragHandle.dart';
 
 ///Bottom windows with some infos on the discipline and the possibility to change the discipline color
 void disciplineModalBottomSheet(context, Discipline? discipline, Function? callback, var widget) {
@@ -18,125 +21,188 @@ void disciplineModalBottomSheet(context, Discipline? discipline, Function? callb
       colorGroup = Color(widget.discipline.color);
     }
   }
-  MediaQueryData screenSize = MediaQuery.of(context);
   showModalBottomSheet(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
       ),
-      backgroundColor: Theme.of(context).primaryColorDark,
+      backgroundColor: Theme.of(context).primaryColor,
       context: context,
       isScrollControlled: true,
       builder: (BuildContext bc) {
-        return Wrap(
-          alignment: WrapAlignment.center,
-          children: [
-            Column(
-              children: <Widget>[
-                ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: screenSize.size.width * 0.8),
-                  child: FittedBox(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                          margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.05),
-                          decoration:
-                              BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(25)), color: colorGroup),
-                          padding: EdgeInsets.all(5),
-                          child: FittedBox(
-                            child: Text(
-                              discipline!.disciplineName!,
-                              style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w700),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
-                        Container(
-                            height: (screenSize.size.height / 3) / 6,
-                            width: (screenSize.size.height / 3) / 6,
-                            padding: EdgeInsets.all(5),
-                            child: Material(
-                                borderRadius: BorderRadius.circular(80),
-                                color: Colors.grey.withOpacity(0.5),
-                                child: InkWell(
-                                  borderRadius: BorderRadius.circular(80),
-                                  radius: 25,
-                                  onTap: () async {
-                                    Navigator.pop(context);
-                                    Color? color =
-                                        await CustomDialogs.showColorPicker(context, Color(discipline.color!));
-
-                                    if (color != null) {
-                                      String test = color.toString();
-                                      String finalColor = "#" + test.toString().substring(10, test.length - 1);
-                                      final prefs = await (SharedPreferences.getInstance());
-                                      await prefs.setString(discipline.disciplineCode ?? "", finalColor);
-                                      discipline.setcolor = color;
-                                      //Call set state
-                                      callback!();
-                                    }
-                                  },
-                                  splashColor: Colors.grey,
-                                  highlightColor: Colors.grey,
-                                  child: Container(
-                                    child: Icon(
-                                      Icons.color_lens,
-                                      color: Colors.black26,
-                                    ),
-                                  ),
-                                )))
-                      ],
-                    ),
-                  ),
-                ),
-                Container(
-                  child: Card(
-                    color: ThemeUtils.darken(Theme.of(context).primaryColorDark, forceAmount: 0.05),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
-                    child: Container(
-                      padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
-                      width: screenSize.size.width / 5 * 4.5,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: <Widget>[
-                          buildKeyValuesInfo(context, "Votre moyenne", [
-                            (appSys.settings!["system"]["chosenParser"] == 1)
-                                ? (widget.discipline.average ?? "-")
-                                : ((!widget.discipline.getAverage().isNaN)
-                                    ? widget.discipline.getAverage().toString()
-                                    : widget.discipline.average ?? "-")
-                          ]),
-                          SizedBox(
-                            height: (screenSize.size.height / 3) / 25,
-                          ),
-                          buildKeyValuesInfo(context, "Moyenne de la classe", [discipline.classAverage]),
-                          SizedBox(
-                            height: (screenSize.size.height / 3) / 25,
-                          ),
-                          buildKeyValuesInfo(context, "Moyenne la plus élevée", [discipline.maxClassAverage]),
-                          if (discipline.minClassAverage != null)
-                            SizedBox(
-                              height: (screenSize.size.height / 3) / 25,
-                            ),
-                          if (discipline.minClassAverage != null)
-                            buildKeyValuesInfo(context, "Moyenne la plus basse", [discipline.minClassAverage]),
-                          if (discipline.disciplineRank != null)
-                            SizedBox(
-                              height: (screenSize.size.height / 3) / 25,
-                            ),
-                          if (discipline.disciplineRank != null)
-                            buildKeyValuesInfo(context, "Rang",
-                                [discipline.disciplineRank.toString() + "/" + discipline.classNumber.toString()]),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        );
+        return DisciplineModalBottomSheet(discipline, callback, colorGroup);
       });
+}
+
+class DisciplineModalBottomSheet extends StatefulWidget {
+  final Discipline? discipline;
+  final Function? callback;
+  final Color? colorGroup;
+
+  const DisciplineModalBottomSheet(this.discipline, this.callback, this.colorGroup);
+
+  @override
+  _DisciplineModalBottomSheetState createState() => _DisciplineModalBottomSheetState();
+}
+
+class _DisciplineModalBottomSheetState extends State<DisciplineModalBottomSheet> {
+  @override
+  Widget build(BuildContext context) {
+    MediaQueryData screenSize = MediaQuery.of(context);
+
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.2),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          SizedBox(
+            height: screenSize.size.height / 10 * 0.1,
+          ),
+          DragHandle(),
+          SizedBox(
+            height: screenSize.size.height / 10 * 0.1,
+          ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              buildGradeSquare(),
+              SizedBox(
+                width: screenSize.size.width / 5 * 0.14,
+              ),
+              Expanded(child: buildDisciplineMetas()),
+            ],
+          ),
+          SizedBox(
+            height: screenSize.size.height / 10 * 0.25,
+          ),
+          buildDisciplineAverageAndDetails(),
+          SizedBox(
+            height: screenSize.size.height / 10 * 0.4,
+          ),
+          buildButtons(),
+          SizedBox(
+            height: screenSize.size.height / 10 * 0.1,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildButtons() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        CustomButtons.materialButton(context, null, null, () async {
+          Navigator.pop(context);
+          Color? color = await CustomDialogs.showColorPicker(context, Color(widget.discipline?.color ?? 0));
+
+          if (color != null) {
+            String test = color.toString();
+            String finalColor = "#" + test.toString().substring(10, test.length - 1);
+            final prefs = await (SharedPreferences.getInstance());
+            await prefs.setString(widget.discipline?.disciplineCode ?? "", finalColor);
+            widget.discipline?.setcolor = color;
+            //Call set state
+            if (widget.callback != null) {
+              widget.callback!();
+            }
+          }
+        }, label: "Couleur", icon: MdiIcons.palette),
+      ],
+    );
+  }
+
+  Widget buildDisciplineAverageAndDetails() {
+    return Row(
+      children: [
+        Expanded(flex: 5, child: SizedBox()),
+        buildSquareKeyValue("MAX", widget.discipline?.maxClassAverage ?? "N/A"),
+        Expanded(child: SizedBox()),
+        buildSquareKeyValue("MIN", widget.discipline?.minClassAverage ?? "N/A"),
+        Expanded(child: SizedBox()),
+        buildSquareKeyValue("CLASSE", widget.discipline?.classAverage ?? "N/A"),
+        Expanded(flex: 5, child: SizedBox()),
+      ],
+    );
+  }
+
+  Widget buildDisciplineMetas() {
+    MediaQueryData screenSize = MediaQuery.of(context);
+    return FutureBuilder<int>(
+        future: getColor(widget.discipline?.disciplineCode ?? ""),
+        initialData: 0,
+        builder: (context, snapshot) {
+          return Container(
+            decoration: BoxDecoration(color: Color(snapshot.data ?? 0), borderRadius: BorderRadius.circular(15)),
+            padding: EdgeInsets.symmetric(
+                horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.height / 10 * 0.1),
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: screenSize.size.width / 5 * 1),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    widget.discipline?.disciplineName ?? "",
+                    style: TextStyle(
+                        fontFamily: "Asap", fontWeight: FontWeight.bold, fontSize: screenSize.size.height / 10 * 0.24),
+                  ),
+                  Text(
+                    widget.discipline?.teachers?.join("-").trim() ?? "",
+                    style: TextStyle(
+                        fontFamily: "Asap", fontWeight: FontWeight.w400, fontSize: screenSize.size.height / 10 * 0.18),
+                  ),
+                ],
+              ),
+            ),
+          );
+        });
+  }
+
+  Widget buildGradeSquare() {
+    MediaQueryData screenSize = MediaQuery.of(context);
+
+    return Container(
+      decoration: BoxDecoration(color: Theme.of(context).primaryColorDark, borderRadius: BorderRadius.circular(15)),
+      width: screenSize.size.width / 5 * 1,
+      height: screenSize.size.width / 5 * 1,
+      padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.2),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(
+            child: FittedBox(
+              child: AutoSizeText(
+                ((widget.discipline?.average) ?? "N/A") != "" ? ((widget.discipline?.average) ?? "N/A") : "N/A",
+                style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: ThemeUtils.textColor()),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildSquareKeyValue(String key, String value) {
+    MediaQueryData screenSize = MediaQuery.of(context);
+
+    return Container(
+      width: screenSize.size.width / 5 * 0.9,
+      height: screenSize.size.width / 5 * 0.9,
+      decoration: BoxDecoration(color: Theme.of(context).primaryColorDark, borderRadius: BorderRadius.circular(15)),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            key,
+            style: TextStyle(color: ThemeUtils.textColor(), fontSize: 12),
+          ),
+          Text(
+            value,
+            style: TextStyle(color: ThemeUtils.textColor(), fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+        ],
+      ),
+    );
+  }
 }
