@@ -21,7 +21,7 @@ List<Mail> localList = [];
 StreamSubscription? loginconnexion;
 late Future<List<Mail>?>? mailsListFuture;
 Future<void> mailModalBottomSheet(context, Mail mail, {int? index}) async {
-  showModalBottomSheet(
+  await showModalBottomSheet(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
       ),
