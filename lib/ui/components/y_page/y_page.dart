@@ -66,40 +66,27 @@ class _YPageState extends State<YPage> with TickerProviderStateMixin {
               ? SystemUiOverlayStyle.light
               : SystemUiOverlayStyle.dark,
           actions: widget.actions),
-      body: SingleChildScrollView(
-        child: SafeArea(
-          child: ChangeNotifierProvider<LoginController>.value(
-            value: appSys.loginController,
-            child: Consumer<LoginController>(builder: (context, model, child) {
-              if (model.actualState != loginStatus.loggedIn) {
-                showLoginControllerStatusController.forward();
-              } else {
-                showLoginControllerStatusController.reverse();
-              }
-              return Container(
-                  height: screenSize.size.height,
-                  width: screenSize.size.width,
-                  child: Column(children: [
-                    ConnectionStatus(
-                      con: model,
-                      showLoginControllerStatus: showLoginControllerStatus,
-                    ),
-                    Expanded(
-                      child: widget.body,
-                    )
-                  ]));
-            }),
-          ),
-          // child: Column(
-          //   children: [
-          //     YPageHeader(
-          //       title: widget.title,
-          //       children: widget.headerChildren,
-          //     ),
-          //     if (widget.body != null) YPageBody(child: widget.body)
-          //   ],
-          // ),
-        ),
+      body: ChangeNotifierProvider<LoginController>.value(
+        value: appSys.loginController,
+        child: Consumer<LoginController>(builder: (context, model, child) {
+          if (model.actualState != loginStatus.loggedIn) {
+            showLoginControllerStatusController.forward();
+          } else {
+            showLoginControllerStatusController.reverse();
+          }
+          return Container(
+              height: screenSize.size.height,
+              width: screenSize.size.width,
+              child: SingleChildScrollView(
+                child: Column(children: [
+                  ConnectionStatus(
+                    con: model,
+                    showLoginControllerStatus: showLoginControllerStatus,
+                  ),
+                  widget.body
+                ]),
+              ));
+        }),
       ),
     );
   }

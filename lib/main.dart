@@ -13,7 +13,7 @@ import 'package:ynotes/core/logic/appConfig/controller.dart';
 import 'package:ynotes/core/services/background.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/routes.dart';
+import 'package:ynotes/router.dart';
 import 'package:ynotes/ui/screens/carousel/carousel.dart';
 import 'package:ynotes/ui/screens/loading/loadingPage.dart';
 import 'package:ynotes/ui/screens/summary/summaryPage.dart';
