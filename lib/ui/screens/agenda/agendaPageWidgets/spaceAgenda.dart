@@ -51,18 +51,12 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
                                   builder: (context, snapshot) {
                                     List<AgendaEvent>? lst = snapshot.data;
                                     if (lst != null) {
-                                      lst.removeWhere((element) =>
-                                          element.start!.isAfter(element.end!));
+                                      lst.removeWhere((element) => element.start!.isAfter(element.end!));
                                     }
                                     if (snapshot.hasData &&
                                         snapshot.data != null &&
                                         lst!.length != 0 &&
-                                        lst
-                                                .where((element) =>
-                                                    !element.isLesson!)
-                                                .toList()
-                                                .length !=
-                                            0) {
+                                        lst.where((element) => !element.isLesson!).toList().length != 0) {
                                       return RefreshIndicator(
                                           onRefresh: refreshAgendaFutures,
                                           child: AgendaGrid(
@@ -73,12 +67,7 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
                                     }
                                     if (snapshot.data != null &&
                                         (lst!.length == 0 ||
-                                            lst
-                                                    .where((element) =>
-                                                        !element.isLesson!)
-                                                    .toList()
-                                                    .length ==
-                                                0)) {
+                                            lst.where((element) => !element.isLesson!).toList().length == 0)) {
                                       return Center(
                                         child: FittedBox(
                                           child: Column(
@@ -98,7 +87,12 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
                                                     color: Colors.white,
                                                     fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
                                               ),
-                                              FlatButton(
+                                              TextButton(
+                                                style: TextButton.styleFrom(
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius: new BorderRadius.circular(18.0),
+                                                      side: BorderSide(color: Theme.of(context).primaryColorDark)),
+                                                ),
                                                 onPressed: () {
                                                   //Reload list
                                                   refreshAgendaFutures();
@@ -113,9 +107,6 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
                                                         child: SpinKitThreeBounce(
                                                             color: Theme.of(context).primaryColorDark,
                                                             size: screenSize.size.width / 5 * 0.4)),
-                                                shape: RoundedRectangleBorder(
-                                                    borderRadius: new BorderRadius.circular(18.0),
-                                                    side: BorderSide(color: Theme.of(context).primaryColorDark)),
                                               )
                                             ],
                                           ),
@@ -179,7 +170,6 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
   }
 
   _buildAgendaButtons(BuildContext context) {
-
     return AgendaButtons(
       getLessons: getLessons,
     );

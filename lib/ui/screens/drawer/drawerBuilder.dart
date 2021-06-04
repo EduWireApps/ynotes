@@ -68,7 +68,6 @@ class _DrawerBuilderState extends State<DrawerBuilder>
   Animation<double>? buttonScaleAnimation;
   Animation<double>? fadeAnimation;
   bool isDrawerCollapsed = true;
-  int? _previousPage;
   bool wiredashShown = false;
   @override
   Widget build(BuildContext context) {

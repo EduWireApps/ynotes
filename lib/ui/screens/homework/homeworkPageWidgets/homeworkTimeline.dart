@@ -346,7 +346,12 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
                   color: ThemeUtils.textColor(),
                 ),
               ),
-              FlatButton(
+              TextButton(
+                style: TextButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(18.0),
+                      side: BorderSide(color: Theme.of(context).primaryColorDark)),
+                ),
                 onPressed: () {
                   //Reload list
                   appSys.homeworkController.refresh(force: true);
@@ -360,9 +365,6 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
                     : FittedBox(
                         child: SpinKitThreeBounce(
                             color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4)),
-                shape: RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.circular(18.0),
-                    side: BorderSide(color: Theme.of(context).primaryColorDark)),
               )
             ],
           ),

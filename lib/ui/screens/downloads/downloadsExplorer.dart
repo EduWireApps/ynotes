@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/scheduler/binding.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -35,9 +35,8 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
   String? initialPath = "";
   var actualSort = explorerSortValue.date;
   List<FileInfo> clipboard = [];
-  @override
-  List<FileInfo>? _listFiles;
-  // ignore: must_call_super
+  
+  List<FileInfo>? listFiles;
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
@@ -47,8 +46,8 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
             "Fichiers",
             style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
           ),
-          leading: FlatButton(
-            color: Colors.transparent,
+          leading: TextButton(
+            style: TextButton.styleFrom(primary: Colors.transparent),
             child: Icon(MdiIcons.menu, color: ThemeUtils.textColor()),
             onPressed: () async {
               widget.parentScaffoldState.currentState?.openDrawer();
@@ -114,7 +113,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
 
                                           await refreshFileListFuture();
                                         }
-                                        _listFiles ??
+                                        listFiles ??
                                             [].forEach((element) {
                                               setState(() {
                                                 element.selected = false;
@@ -161,7 +160,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                                       setState(() {
                                         selectionMode = false;
                                       });
-                                      _listFiles ??
+                                      listFiles ??
                                           [].forEach((element) {
                                             setState(() {
                                               element.selected = false;
@@ -197,7 +196,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                           child: InkWell(
                             borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                             onTap: () async {
-                              CustomDialogs.showNewFolderDialog(context, (initialPath ?? "") + path, _listFiles,
+                              CustomDialogs.showNewFolderDialog(context, (initialPath ?? "") + path, listFiles,
                                   selectionMode, refreshFileListFuture);
 
                               await refreshFileListFuture();
@@ -226,10 +225,10 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                         transitionBuilder: (Widget child, Animation<double> animation) {
                           return ScaleTransition(child: child, scale: animation);
                         },
-                        child: (_listFiles == null || _listFiles!.where((element) => element.selected).length != 1)
+                        child: (listFiles == null || listFiles!.where((element) => element.selected).length != 1)
                             ? Container()
                             : Container(
-                                key: ValueKey<List?>(_listFiles),
+                                key: ValueKey<List?>(listFiles),
                                 margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
                                 child: Material(
                                   color: Theme.of(context).primaryColorDark,
@@ -240,17 +239,17 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                                       String? newName = await CustomDialogs.showTextChoiceDialog(context,
                                           text: "un nom pour l'élément",
                                           defaultText: await FileAppUtil.getFileNameWithExtension(
-                                              _listFiles!.firstWhere((element) => element.selected).element));
+                                              listFiles!.firstWhere((element) => element.selected).element));
                                       if (newName != null) {
                                         String dir = pathPackage.dirname(
-                                            _listFiles!.firstWhere((element) => element.selected).element.path);
+                                            listFiles!.firstWhere((element) => element.selected).element.path);
                                         String newPath = pathPackage.join(dir, newName);
-                                        await _listFiles!
+                                        await listFiles!
                                             .firstWhere((element) => element.selected)
                                             .element
                                             .rename(newPath);
                                       }
-                                      _listFiles!.forEach((element) {
+                                      listFiles!.forEach((element) {
                                         setState(() {
                                           element.selected = false;
                                         });
@@ -286,7 +285,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                               if (selectionMode) {
                                 bool response = await (CustomDialogs.showConfirmationDialog(context, null)) ?? false;
                                 if (response) {
-                                  await Future.forEach(_listFiles!.where((element) => element.selected),
+                                  await Future.forEach(listFiles!.where((element) => element.selected),
                                       (dynamic fileinfo) async {
                                     await FileAppUtil.remove(fileinfo.element);
                                   });
@@ -358,7 +357,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                                     onTap: () {
                                       setState(() {
                                         clipboard.clear();
-                                        clipboard.addAll((_listFiles ?? []).where((element) => element.selected));
+                                        clipboard.addAll((listFiles ?? []).where((element) => element.selected));
                                       });
                                     },
                                     child: Container(
@@ -452,15 +451,15 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     if ((snapshot.data ?? []).length != 0) {
-                      _listFiles = snapshot.data;
+                      listFiles = snapshot.data;
                       return Container(
                         child: RefreshIndicator(
                           onRefresh: refreshFileListFuture,
                           child: ListView.builder(
                             padding: EdgeInsets.all(0.0),
-                            itemCount: _listFiles!.length,
+                            itemCount: listFiles!.length,
                             itemBuilder: (context, index) {
-                              final item = _listFiles![index].fileName!;
+                              final item = listFiles![index].fileName!;
                               return Dismissible(
                                 direction: DismissDirection.endToStart,
                                 background: Container(color: Colors.red),
@@ -469,10 +468,10 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                                   return await CustomDialogs.showConfirmationDialog(context, null) == true;
                                 },
                                 onDismissed: (direction) async {
-                                  await FileAppUtil.remove(_listFiles![index].element);
+                                  await FileAppUtil.remove(listFiles![index].element);
 
                                   setState(() {
-                                    _listFiles!.removeAt(index);
+                                    listFiles!.removeAt(index);
                                   });
                                 },
                                 key: Key(item),
@@ -486,7 +485,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                                         child: Container(
                                           margin: EdgeInsets.only(bottom: (screenSize.size.height / 10 * 0.008)),
                                           child: Material(
-                                            color: _listFiles![index].selected
+                                            color: listFiles![index].selected
                                                 ? Colors.blue
                                                 : Theme.of(context).primaryColorDark,
                                             child: InkWell(
@@ -494,22 +493,22 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                                               onLongPress: () {
                                                 setState(() {
                                                   selectionMode = true;
-                                                  _listFiles![index].selected = true;
+                                                  listFiles![index].selected = true;
                                                 });
                                               },
                                               onTap: () async {
                                                 if (selectionMode) {
                                                   print(selectedFiles.length);
-                                                  _listFiles![index].selected = !_listFiles![index].selected;
+                                                  listFiles![index].selected = !listFiles![index].selected;
                                                   setState(() {});
                                                 } else {
-                                                  if (_listFiles![index].element is Directory) {
+                                                  if (listFiles![index].element is Directory) {
                                                     setState(() {
-                                                      path = path + "/" + _listFiles![index].fileName!;
+                                                      path = path + "/" + listFiles![index].fileName!;
                                                     });
                                                     await refreshFileListFuture();
                                                   } else {
-                                                    await FileAppUtil.openFile(_listFiles![index].element.path);
+                                                    await FileAppUtil.openFile(listFiles![index].element.path);
                                                   }
                                                 }
                                               },
@@ -523,10 +522,10 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                                                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                     children: <Widget>[
                                                       Icon(
-                                                        (_listFiles![index].element is Directory)
+                                                        (listFiles![index].element is Directory)
                                                             ? MdiIcons.folder
                                                             : MdiIcons.file,
-                                                        color: (_listFiles![index].element is Directory)
+                                                        color: (listFiles![index].element is Directory)
                                                             ? Colors.yellow.shade100
                                                             : ThemeUtils.textColor().withOpacity(0.5),
                                                       ),
@@ -626,7 +625,9 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
     await refreshFileListFuture();
   }
 
+  @override
   void initState() {
+    super.initState();
     SchedulerBinding.instance!.addPostFrameCallback((_) => mounted
         ? setState(() {
             getInitialPath();
@@ -650,18 +651,18 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
   }
 
   sortList() {
-    if (_listFiles != null) {
+    if (listFiles != null) {
       switch (actualSort) {
         case explorerSortValue.name:
           setState(() {
-            (_listFiles ?? []).sort((a, b) => (a.fileName!.toLowerCase()).compareTo(b.fileName!.toLowerCase()));
+            (listFiles ?? []).sort((a, b) => (a.fileName!.toLowerCase()).compareTo(b.fileName!.toLowerCase()));
           });
 
           break;
         case explorerSortValue.date:
           setState(() {
             try {
-              (_listFiles ?? []).sort((a, b) {
+              (listFiles ?? []).sort((a, b) {
                 if (a.lastModifiedDate != null && b.lastModifiedDate != null) {
                   return a.lastModifiedDate!.compareTo(b.lastModifiedDate!);
                 } else {
@@ -677,7 +678,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
         case explorerSortValue.reversed_date:
           setState(() {
             try {
-              (_listFiles ?? []).sort((a, b) {
+              (listFiles ?? []).sort((a, b) {
                 if (a.lastModifiedDate != null && b.lastModifiedDate != null) {
                   return b.lastModifiedDate!.compareTo(a.lastModifiedDate!);
                 } else {

@@ -18,7 +18,7 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
   PronoteSchoolsController pronoteSchoolsCon = PronoteSchoolsController();
 
   Artboard? _riveArtboard;
-  RiveAnimationController? _controller;
+  RiveAnimationController? controller;
   PronoteSchool? selectedSchool;
   TextEditingController? searchCon;
   PronoteSpace? space;
@@ -303,7 +303,7 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
         final artboard = file.mainArtboard;
         // Add a controller to play back a known animation on the main/default
         // artboard.We store a reference to it so we can toggle playback.
-        artboard.addController(_controller = SimpleAnimation('Locating'));
+        artboard.addController(controller = SimpleAnimation('Locating'));
         setState(() => _riveArtboard = artboard);
       },
     );

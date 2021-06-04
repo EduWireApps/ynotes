@@ -167,16 +167,16 @@ class _MailAdapter extends TypeAdapter<Mail> {
     dynamicSize += _idClasseur?.length ?? 0;
     final value5 = _MailAdapter._MapConverter.toIsar(object.from);
     Uint8List? _from;
-    if (value5 != null) {
+   
       _from = _utf8Encoder.convert(value5);
-    }
-    dynamicSize += _from?.length ?? 0;
+    
+    dynamicSize += _from.length;
     final value6 = _MailAdapter._ListMapConverter.toIsar(object.to);
     Uint8List? _to;
-    if (value6 != null) {
+
       _to = _utf8Encoder.convert(value6);
-    }
-    dynamicSize += _to?.length ?? 0;
+    
+    dynamicSize += _to.length;
     final value7 = object.subject;
     Uint8List? _subject;
     if (value7 != null) {
@@ -882,7 +882,6 @@ extension MailQueryFilter on QueryBuilder<Mail, QFilterCondition> {
       Map<dynamic, dynamic>? value,
       {bool caseSensitive = true}) {
     final convertedValue = _MailAdapter._MapConverter.toIsar(value);
-    assert(convertedValue != null, 'Null values are not allowed');
     return addFilterCondition(FilterCondition(
       type: ConditionType.StartsWith,
       property: 'from',
@@ -895,7 +894,6 @@ extension MailQueryFilter on QueryBuilder<Mail, QFilterCondition> {
       Map<dynamic, dynamic>? value,
       {bool caseSensitive = true}) {
     final convertedValue = _MailAdapter._MapConverter.toIsar(value);
-    assert(convertedValue != null, 'Null values are not allowed');
     return addFilterCondition(FilterCondition(
       type: ConditionType.EndsWith,
       property: 'from',
@@ -908,7 +906,6 @@ extension MailQueryFilter on QueryBuilder<Mail, QFilterCondition> {
       Map<dynamic, dynamic>? value,
       {bool caseSensitive = true}) {
     final convertedValue = _MailAdapter._MapConverter.toIsar(value);
-    assert(convertedValue != null, 'Null values are not allowed');
     return addFilterCondition(FilterCondition(
       type: ConditionType.Matches,
       property: 'from',
@@ -950,7 +947,6 @@ extension MailQueryFilter on QueryBuilder<Mail, QFilterCondition> {
       List<Map<dynamic, dynamic>?>? value,
       {bool caseSensitive = true}) {
     final convertedValue = _MailAdapter._ListMapConverter.toIsar(value);
-    assert(convertedValue != null, 'Null values are not allowed');
     return addFilterCondition(FilterCondition(
       type: ConditionType.StartsWith,
       property: 'to',
@@ -963,7 +959,6 @@ extension MailQueryFilter on QueryBuilder<Mail, QFilterCondition> {
       List<Map<dynamic, dynamic>?>? value,
       {bool caseSensitive = true}) {
     final convertedValue = _MailAdapter._ListMapConverter.toIsar(value);
-    assert(convertedValue != null, 'Null values are not allowed');
     return addFilterCondition(FilterCondition(
       type: ConditionType.EndsWith,
       property: 'to',
@@ -976,7 +971,6 @@ extension MailQueryFilter on QueryBuilder<Mail, QFilterCondition> {
       List<Map<dynamic, dynamic>?>? value,
       {bool caseSensitive = true}) {
     final convertedValue = _MailAdapter._ListMapConverter.toIsar(value);
-    assert(convertedValue != null, 'Null values are not allowed');
     return addFilterCondition(FilterCondition(
       type: ConditionType.Matches,
       property: 'to',

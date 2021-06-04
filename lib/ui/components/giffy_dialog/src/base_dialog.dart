@@ -3,6 +3,44 @@ import 'dart:ui';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+class BaseGiffyDialog extends StatefulWidget {
+  final Widget imageWidget;
+
+  final Text title;
+  final Text? description;
+  final bool onlyOkButton;
+  final bool onlyCancelButton;
+  final Text? buttonOkText;
+  final Text? buttonCancelText;
+  final Color buttonOkColor;
+  final Color buttonCancelColor;
+  final double buttonRadius;
+  final double cornerRadius;
+  final VoidCallback? onOkButtonPressed;
+  final VoidCallback? onCancelButtonPressed;
+  final EntryAnimation entryAnimation;
+  BaseGiffyDialog({
+    Key? key,
+    required this.imageWidget,
+    required this.title,
+    required this.onOkButtonPressed,
+    required this.description,
+    required this.onlyOkButton,
+    required this.onlyCancelButton,
+    required this.buttonOkText,
+    required this.buttonCancelText,
+    required this.buttonOkColor,
+    required this.buttonCancelColor,
+    required this.cornerRadius,
+    required this.buttonRadius,
+    required this.entryAnimation,
+    required this.onCancelButtonPressed,
+  }) : super(key: key);
+
+  @override
+  _BaseGiffyDialogState createState() => _BaseGiffyDialogState();
+}
+
 /// Defines variants of entry animations
 enum EntryAnimation {
   /// Appears in Center, standard Material dialog entrance animation, i.e. slow fade-in in the center of the screen.
@@ -33,47 +71,11 @@ enum EntryAnimation {
   BOTTOM_RIGHT,
 }
 
-class BaseGiffyDialog extends StatefulWidget {
-  BaseGiffyDialog({
-    Key? key,
-    required this.imageWidget,
-    required this.title,
-    required this.onOkButtonPressed,
-    required this.description,
-    required this.onlyOkButton,
-    required this.onlyCancelButton,
-    required this.buttonOkText,
-    required this.buttonCancelText,
-    required this.buttonOkColor,
-    required this.buttonCancelColor,
-    required this.cornerRadius,
-    required this.buttonRadius,
-    required this.entryAnimation,
-    required this.onCancelButtonPressed,
-  }) : super(key: key);
-
-  final Widget imageWidget;
-  final Text title;
-  final Text? description;
-  final bool onlyOkButton;
-  final bool onlyCancelButton;
-  final Text? buttonOkText;
-  final Text? buttonCancelText;
-  final Color buttonOkColor;
-  final Color buttonCancelColor;
-  final double buttonRadius;
-  final double cornerRadius;
-  final VoidCallback? onOkButtonPressed;
-  final VoidCallback? onCancelButtonPressed;
-  final EntryAnimation entryAnimation;
-
-  @override
-  _BaseGiffyDialogState createState() => _BaseGiffyDialogState();
-}
-
 class _BaseGiffyDialogState extends State<BaseGiffyDialog> with TickerProviderStateMixin {
   AnimationController? _animationController;
   late Animation<Offset> _entryAnimation;
+
+  get _isDefaultEntryAnimation => widget.entryAnimation == EntryAnimation.DEFAULT;
 
   get _start {
     switch (widget.entryAnimation) {
@@ -96,170 +98,6 @@ class _BaseGiffyDialogState extends State<BaseGiffyDialog> with TickerProviderSt
       case EntryAnimation.BOTTOM_RIGHT:
         return Offset(1.0, 1.0);
     }
-  }
-
-  get _isDefaultEntryAnimation => widget.entryAnimation == EntryAnimation.DEFAULT;
-
-  @override
-  void initState() {
-    super.initState();
-    if (!_isDefaultEntryAnimation) {
-      _animationController = AnimationController(
-        vsync: this,
-        duration: Duration(milliseconds: 300),
-      );
-      _entryAnimation = Tween<Offset>(begin: _start, end: Offset(0.0, 0.0)).animate(
-        CurvedAnimation(
-          parent: _animationController!,
-          curve: Curves.easeIn,
-        ),
-      )..addListener(() => setState(() {}));
-      _animationController!.forward();
-    }
-  }
-
-  @override
-  void dispose() {
-    _animationController?.dispose();
-    super.dispose();
-  }
-
-  Widget _buildPortraitWidget(BuildContext context, Widget imageWidget) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.55,
-      child: Stack(
-        children: <Widget>[
-          Align(
-            alignment: Alignment.topCenter,
-            child: Container(
-              height: MediaQuery.of(context).size.height * 0.2,
-              child: ClipRRect(
-                borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(widget.cornerRadius),
-                    topLeft: Radius.circular(widget.cornerRadius)),
-                child: imageWidget,
-              ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.center,
-            child: Container(
-              margin: EdgeInsets.only(
-                top: MediaQuery.of(context).size.height * 0.1,
-              ),
-              height: MediaQuery.of(context).size.height * 0.25,
-              child: CupertinoScrollbar(
-                              child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      Padding(
-                        padding: const EdgeInsets.only(top: 16.0),
-                        child: widget.title,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          top: 8.0,
-                          left: 8.0,
-                          right: 8.0,
-                        ),
-                        child: widget.description,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-          Align(alignment: Alignment.bottomCenter, child: _buildButtonsBar(context))
-        ],
-      ),
-    );
-  }
-
-  Widget _buildLandscapeWidget(BuildContext context, Widget imageWidget) {
-    return Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          Expanded(
-            child: ClipRRect(
-              borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(widget.cornerRadius),
-                  bottomLeft: Radius.circular(widget.cornerRadius)),
-              child: imageWidget,
-            ),
-          ),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.only(top: 16.0),
-                  child: widget.title,
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(3.0),
-                  child: SingleChildScrollView(child: widget.description),
-                ),
-                _buildButtonsBar(context),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildButtonsBar(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.1,
-      child: FittedBox(
-        child: Padding(
-          padding: const EdgeInsets.only(
-            top: 8.0,
-            left: 8.0,
-            right: 8.0,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              if (!widget.onlyOkButton) ...[
-                RaisedButton(
-                  color: widget.buttonCancelColor,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(widget.buttonRadius)),
-                  onPressed: widget.onCancelButtonPressed ?? () => Navigator.of(context).pop(),
-                  child: widget.buttonCancelText ??
-                      Text(
-                        'Cancel',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                )
-              ],
-              if (!widget.onlyOkButton)
-                SizedBox(
-                  width: 15,
-                ),
-              if (!widget.onlyCancelButton) ...[
-                RaisedButton(
-                  color: widget.buttonOkColor,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(widget.buttonRadius)),
-                  onPressed: widget.onOkButtonPressed,
-                  child: widget.buttonOkText ??
-                      Text(
-                        'OK',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                ),
-              ],
-            ],
-          ),
-        ),
-      ),
-    );
   }
 
   @override
@@ -287,6 +125,167 @@ class _BaseGiffyDialogState extends State<BaseGiffyDialog> with TickerProviderSt
               ? _buildPortraitWidget(context, widget.imageWidget)
               : _buildLandscapeWidget(context, widget.imageWidget),
         ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _animationController?.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (!_isDefaultEntryAnimation) {
+      _animationController = AnimationController(
+        vsync: this,
+        duration: Duration(milliseconds: 300),
+      );
+      _entryAnimation = Tween<Offset>(begin: _start, end: Offset(0.0, 0.0)).animate(
+        CurvedAnimation(
+          parent: _animationController!,
+          curve: Curves.easeIn,
+        ),
+      )..addListener(() => setState(() {}));
+      _animationController!.forward();
+    }
+  }
+
+  Widget _buildButtonsBar(BuildContext context) {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.1,
+      child: FittedBox(
+        child: Padding(
+          padding: const EdgeInsets.only(
+            top: 8.0,
+            left: 8.0,
+            right: 8.0,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              if (!widget.onlyOkButton) ...[
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      primary: widget.buttonCancelColor,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(widget.buttonRadius))),
+                  onPressed: widget.onCancelButtonPressed ?? () => Navigator.of(context).pop(),
+                  child: widget.buttonCancelText ??
+                      Text(
+                        'Cancel',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                )
+              ],
+              if (!widget.onlyOkButton)
+                SizedBox(
+                  width: 15,
+                ),
+              if (!widget.onlyCancelButton) ...[
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    primary: widget.buttonOkColor,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(widget.buttonRadius)),
+                  ),
+                  onPressed: widget.onOkButtonPressed,
+                  child: widget.buttonOkText ??
+                      Text(
+                        'OK',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLandscapeWidget(BuildContext context, Widget imageWidget) {
+    return Container(
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(widget.cornerRadius), bottomLeft: Radius.circular(widget.cornerRadius)),
+              child: imageWidget,
+            ),
+          ),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.only(top: 16.0),
+                  child: widget.title,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(3.0),
+                  child: SingleChildScrollView(child: widget.description),
+                ),
+                _buildButtonsBar(context),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPortraitWidget(BuildContext context, Widget imageWidget) {
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.55,
+      child: Stack(
+        children: <Widget>[
+          Align(
+            alignment: Alignment.topCenter,
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.2,
+              child: ClipRRect(
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(widget.cornerRadius), topLeft: Radius.circular(widget.cornerRadius)),
+                child: imageWidget,
+              ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: Container(
+              margin: EdgeInsets.only(
+                top: MediaQuery.of(context).size.height * 0.1,
+              ),
+              height: MediaQuery.of(context).size.height * 0.25,
+              child: CupertinoScrollbar(
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16.0),
+                        child: widget.title,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          top: 8.0,
+                          left: 8.0,
+                          right: 8.0,
+                        ),
+                        child: widget.description,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Align(alignment: Alignment.bottomCenter, child: _buildButtonsBar(context))
+        ],
       ),
     );
   }

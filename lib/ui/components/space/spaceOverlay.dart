@@ -32,6 +32,7 @@ class _SpaceOverlayState extends State<SpaceOverlay>
   Animation<double>? showAnimation;
   late AnimationController showAnimationController;
   @override
+  // ignore: must_call_super
   void initState() {}
 
   @override

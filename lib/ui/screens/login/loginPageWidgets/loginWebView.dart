@@ -10,6 +10,7 @@ import 'package:ynotes/globals.dart';
 import 'package:ynotes/main.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 
+// ignore: must_be_immutable
 class LoginWebView extends StatefulWidget {
   final String? url;
   final String? spaceUrl;
@@ -176,7 +177,7 @@ class _LoginWebViewState extends State<LoginWebView> {
           '  messageData.push({action: \'errorStatus\', msg: isError[1]});' +
           '}'*/
           ;
-      var a = await widget.controller!.evaluateJavascript(source: toexecute);
+      await widget.controller!.evaluateJavascript(source: toexecute);
       /* print("A" + a.toString());
       String toexecute3 =
           "(function(){var lMessData = window.messageData && window.messageData.length ? window.messageData.splice(0, window.messageData.length) : \'\';return lMessData ? JSON.stringify(lMessData) : \'\';})()";
@@ -236,9 +237,7 @@ class _LoginWebViewState extends State<LoginWebView> {
       String authFunction = 'location.assign("' + widget.url! + '?fd=1")';
       setState(() {
         step = 4;
-      });
-      String? authFunctionResult =
-          await (widget.controller!.evaluateJavascript(source: authFunction));
+      }); await (widget.controller!.evaluateJavascript(source: authFunction));
 
       stepper();
     }

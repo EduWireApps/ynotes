@@ -46,8 +46,8 @@ class _GradesPageState extends State<GradesPage> {
                 "Notes",
                 style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
               ),
-              leading: FlatButton(
-                color: Colors.transparent,
+              leading: TextButton(
+                style: TextButton.styleFrom(primary: Colors.transparent),
                 child: Icon(MdiIcons.menu, color: ThemeUtils.textColor()),
                 onPressed: () async {
                   widget.parentScaffoldState.currentState?.openDrawer();
@@ -184,7 +184,12 @@ class _GradesPageState extends State<GradesPage> {
                                                   style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor())),
                                             ),
                                           ),
-                                          FlatButton(
+                                          TextButton(
+                                            style: TextButton.styleFrom(
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius: new BorderRadius.circular(18.0),
+                                                  side: BorderSide(color: Theme.of(context).primaryColorDark)),
+                                            ),
                                             onPressed: () {
                                               //Reload list
                                               forceRefreshGrades();
@@ -199,15 +204,12 @@ class _GradesPageState extends State<GradesPage> {
                                                     child: SpinKitThreeBounce(
                                                         color: Theme.of(context).primaryColorDark,
                                                         size: screenSize.size.width / 5 * 0.4)),
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius: new BorderRadius.circular(18.0),
-                                                side: BorderSide(color: Theme.of(context).primaryColorDark)),
                                           )
                                         ],
                                       );
                                     }
                                   }
-                                  if (!model.isFetching && model.disciplines == null) {
+                                  if (!model.isFetching) {
                                     return Column(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: <Widget>[
@@ -253,7 +255,7 @@ class _GradesPageState extends State<GradesPage> {
                     width: screenSize.size.width,
                     child: Consumer<GradesController>(builder: (context, model, child) {
                       Discipline? lastDiscipline;
-                      if (model.disciplines != null) {
+                      if (model.disciplines()?.length != 0) {
                         try {
                           lastDiscipline = model
                               .disciplines()!
@@ -262,21 +264,6 @@ class _GradesPageState extends State<GradesPage> {
 
                         //If everything is ok, show stuff
                         return buildBottomBar(lastDiscipline, model);
-                      }
-
-                      //To do if it can't get the data
-                      if (model.average == null) {
-                        return Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Icon(
-                              Icons.error,
-                              color: ThemeUtils.textColor(),
-                              size: screenSize.size.width / 8,
-                            ),
-                          ],
-                        );
                       } else {
                         return SpinKitFadingFour(
                           color: Theme.of(context).primaryColorDark,
@@ -341,7 +328,7 @@ class _GradesPageState extends State<GradesPage> {
                 color: (model.sorter == "all" ? Colors.white : Colors.green)),
             child: FittedBox(
               child: AutoSizeText(
-                (model.average.toString() != null && !model.average.isNaN ? model.average.toStringAsFixed(2) : "-"),
+                (!model.average.isNaN ? model.average.toStringAsFixed(2) : "-"),
                 style: TextStyle(color: Colors.black, fontFamily: "Asap", fontWeight: FontWeight.bold),
                 textAlign: TextAlign.center,
               ),
@@ -472,12 +459,10 @@ class _GradesPageState extends State<GradesPage> {
                 Icons.add,
                 size: screenSize.size.width / 5 * 0.5,
               ),
-              decoration: BoxDecoration(
-                  shape: BoxShape.circle, color: Color(0xff100A30)),
+              decoration: BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
             ),
             onPressed: () async {
-              Grade? a = await simulatorModalBottomSheet(
-                  appSys.gradesController, context);
+              Grade? a = await simulatorModalBottomSheet(appSys.gradesController, context);
               if (a != null) {
                 appSys.gradesController.simulationAdd(a);
               }
@@ -495,10 +480,7 @@ class _GradesPageState extends State<GradesPage> {
       child:
           CustomButtons.materialButton(context, screenSize.size.width / 5 * 3.2, screenSize.size.height / 10 * 0.5, () {
         controller.simulationReset();
-      },
-          label: "Réinitialiser les notes",
-          textColor: Colors.white,
-          backgroundColor: Colors.blue),
+      }, label: "Réinitialiser les notes", textColor: Colors.white, backgroundColor: Colors.blue),
     );
   }
 }

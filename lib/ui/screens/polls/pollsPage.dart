@@ -41,8 +41,10 @@ class _PollsAndInfoPageState extends State<PollsAndInfoPage> {
             "Sondages",
             style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
           ),
-          leading: FlatButton(
-            color: Colors.transparent,
+          leading: TextButton(
+            style: TextButton.styleFrom(
+              primary: Colors.transparent,
+            ),
             child: Icon(MdiIcons.menu, color: ThemeUtils.textColor()),
             onPressed: () async {
               widget.parentScaffoldState.currentState?.openDrawer();
@@ -183,7 +185,7 @@ class _PollsAndInfoPageState extends State<PollsAndInfoPage> {
     setState(() {
       pollsFuture = (appSys.api as APIPronote).getPronotePolls(forceReload: forced);
     });
-    var realFuture = await pollsFuture;
+   await pollsFuture;
   }
 
   Widget _buildPollChoices(PollInfo poll, PollQuestion question, screenSize) {

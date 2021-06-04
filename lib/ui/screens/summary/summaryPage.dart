@@ -54,16 +54,22 @@ class SummaryPageState extends State<SummaryPage> {
             "Résumé",
             style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
           ),
-          leading: FlatButton(
-            color: Colors.transparent,
+          leading: TextButton(
+            style: TextButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                    borderRadius: new BorderRadius.circular(18.0),
+                    side: BorderSide(color: Theme.of(context).primaryColorDark))),
             child: Icon(MdiIcons.menu, color: ThemeUtils.textColor()),
             onPressed: () async {
               widget.parentScaffoldState.currentState?.openDrawer();
             },
           ),
           actions: [
-            FlatButton(
-              color: Colors.transparent,
+            TextButton(
+              style: TextButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(18.0),
+                      side: BorderSide(color: Theme.of(context).primaryColorDark))),
               child: Icon(MdiIcons.tuneVariant, color: ThemeUtils.textColor()),
               onPressed: () async {
                 triggerSettings();
@@ -180,11 +186,8 @@ class SummaryPageState extends State<SummaryPage> {
       child: Row(crossAxisAlignment: CrossAxisAlignment.end, children: <Widget>[
         Text(
           text,
-          style: TextStyle(
-              color: ThemeUtils.textColor(),
-              fontFamily: "Asap",
-              fontSize: 25,
-              fontWeight: FontWeight.w600),
+          style:
+              TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontSize: 25, fontWeight: FontWeight.w600),
         ),
         SizedBox(
           width: screenSize.size.width / 5 * 0.25,
@@ -217,16 +220,13 @@ class SummaryPageState extends State<SummaryPage> {
 
   showUpdateNote() async {
     if ((appSys.settings!["system"]["lastReadUpdateNote"] != "0.11.2")) {
-      appSys.updateSetting(
-          appSys.settings!["system"], "lastReadUpdateNote", "0.11.2");
+      appSys.updateSetting(appSys.settings!["system"], "lastReadUpdateNote", "0.11.2");
       await CustomDialogs.showUpdateNoteDialog(context);
     }
   }
 
   void triggerSettings() {
-    summarySettingsController.animateToPage(
-        summarySettingsController.page == 1 ? 0 : 1,
-        duration: Duration(milliseconds: 300),
-        curve: Curves.ease);
+    summarySettingsController.animateToPage(summarySettingsController.page == 1 ? 0 : 1,
+        duration: Duration(milliseconds: 300), curve: Curves.ease);
   }
 }

@@ -10,7 +10,6 @@ import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/dragHandle.dart';
 
 Future<Homework?> showAddHomeworkBottomSheet(context, {Homework? hw}) {
-  MediaQueryData screenSize = MediaQuery.of(context);
 
   return showModalBottomSheet(
       shape: RoundedRectangleBorder(
@@ -26,6 +25,7 @@ Future<Homework?> showAddHomeworkBottomSheet(context, {Homework? hw}) {
       });
 }
 
+// ignore: must_be_immutable
 class AddHomeworkBottomSheet extends StatefulWidget {
   Homework? defaultHW;
   AddHomeworkBottomSheet({Key? key, this.defaultHW}) : super(key: key);
@@ -110,7 +110,6 @@ class _AddHomeworkBottomSheetState extends State<AddHomeworkBottomSheet> {
   }
 
   Widget buildDateChoice() {
-    String day = DateFormat("EEEE dd MMMM yyyy", "fr_FR").format(date).toUpperCase();
     var screenSize = MediaQuery.of(context);
 
     return Container(

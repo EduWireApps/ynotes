@@ -347,7 +347,7 @@ class _SettingsPageState extends State<SettingsPage>
                         iosChevron: Icon(Icons.chevron_right),
                         leading: Icon(MdiIcons.bellAlert,
                             color: ThemeUtils.textColor()),
-                        onTap: () async {
+                        onPressed: (context) async {
                           if (Platform.isIOS) {
                             await Permission.notification.request();
                             return;
@@ -425,7 +425,7 @@ class _SettingsPageState extends State<SettingsPage>
                         leading: Icon(MdiIcons.formatListBulleted,
                             color: ThemeUtils.textColor()),
                         iosChevron: Icon(Icons.chevron_right),
-                        onTap: () {
+                        onPressed: (context)  {
                           CustomDialogs.showSpecialtiesChoice(context);
                         },
                       ),
@@ -451,7 +451,7 @@ class _SettingsPageState extends State<SettingsPage>
                         title: 'Afficher les logs',
                         leading:
                             Icon(MdiIcons.bug, color: ThemeUtils.textColor()),
-                        onTap: () {
+                        onPressed: (context)  {
                           Navigator.of(context).push(router(LogsPage()));
                         },
                         titleTextStyle: TextStyle(
@@ -468,7 +468,7 @@ class _SettingsPageState extends State<SettingsPage>
                         subtitle: 'Ou nous recommander quelque chose',
                         leading: Icon(MdiIcons.commentAlert,
                             color: ThemeUtils.textColor()),
-                        onTap: () {
+                        onPressed: (context)  {
                           Wiredash.of(context)?.show();
                         },
                         titleTextStyle: TextStyle(
@@ -490,7 +490,7 @@ class _SettingsPageState extends State<SettingsPage>
                         title: 'Réinitialiser le tutoriel',
                         leading: Icon(MdiIcons.restore,
                             color: ThemeUtils.textColor()),
-                        onTap: () async {
+                        onPressed: (context)  async {
                           if ((await CustomDialogs.showConfirmationDialog(
                                   context, null,
                                   alternativeText:
@@ -514,7 +514,7 @@ class _SettingsPageState extends State<SettingsPage>
                         title: 'Supprimer les données hors ligne',
                         leading: Icon(MdiIcons.deleteAlert,
                             color: ThemeUtils.textColor()),
-                        onTap: () async {
+                        onPressed: (context)  async {
                           if ((await CustomDialogs.showConfirmationDialog(
                                   context, null,
                                   alternativeText:
@@ -539,7 +539,7 @@ class _SettingsPageState extends State<SettingsPage>
                         title: 'Note de mise à jour',
                         leading:
                             Icon(MdiIcons.file, color: ThemeUtils.textColor()),
-                        onTap: () async {
+                        onPressed: (context)   async {
                           CustomDialogs.showUpdateNoteDialog(context);
                         },
                         titleTextStyle: TextStyle(
@@ -554,7 +554,7 @@ class _SettingsPageState extends State<SettingsPage>
                       SettingsTile(
                         title: 'Test',
                         leading: Icon(MdiIcons.emoticonConfused, color: ThemeUtils.textColor()),
-                        onTap: () async {
+                       onPressed: (context)  async {
                           await OfflineHomework(appSys.isar).migrateOldDoneHomeworkStatus(_appSys);
                         },
                         titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
@@ -568,7 +568,7 @@ class _SettingsPageState extends State<SettingsPage>
                         title: 'Forcer la restauration des anciens paramètres',
                         leading: Icon(MdiIcons.emoticonConfused,
                             color: ThemeUtils.textColor()),
-                        onTap: () async {
+                        onPressed: (context)  async {
                           var temp =
                               await SettingsUtils.forceRestoreOldSettings();
                           setState(() {
@@ -591,7 +591,7 @@ class _SettingsPageState extends State<SettingsPage>
                         leading: Icon(MdiIcons.information,
                             color: ThemeUtils.textColor()),
                         iosChevron: Icon(Icons.chevron_right),
-                        onTap: () async {
+                        onPressed: (context)  async {
                           PackageInfo packageInfo =
                               await PackageInfo.fromPlatform();
 

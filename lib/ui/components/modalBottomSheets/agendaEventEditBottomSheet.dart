@@ -45,6 +45,7 @@ Future agendaEventEdit(context, isCustomEvent,
       });
 }
 
+// ignore: must_be_immutable
 class AgendaEventEditLayout extends StatefulWidget {
   bool isCustomEvent;
   //Reminder stuff

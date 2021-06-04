@@ -139,8 +139,8 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                     children: <Widget>[
                                       if ((widget.homeworkForThisDay!.sessionRawContent != null &&
                                               widget.homeworkForThisDay!.sessionRawContent != "") ||
-                                          (widget.homeworkForThisDay!.sessionFiles != null &&
-                                              widget.homeworkForThisDay!.sessionFiles!.length > 0))
+                                          (
+                                              widget.homeworkForThisDay!.sessionFiles.length > 0))
                                         Container(
                                           height: screenSize.size.height / 10 * 0.6,
                                           width: screenSize.size.width / 5 * 4.5,
@@ -218,10 +218,9 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                 ),
                               ),
                             if (this.widget.homeworkForThisDay!.loaded! &&
-                                this.widget.homeworkForThisDay!.files!= null &&
                                 (segmentedControlIndex == 0
-                                        ? this.widget.homeworkForThisDay!.files!.length
-                                        : this.widget.homeworkForThisDay!.sessionFiles!.length) !=
+                                        ? this.widget.homeworkForThisDay!.files.length
+                                        : this.widget.homeworkForThisDay!.sessionFiles.length) !=
                                     0 &&
                                 isExpanded!)
                               Container(
@@ -262,14 +261,14 @@ class _HomeworkElementState extends State<HomeworkElement> with TickerProviderSt
                                       width: screenSize.size.width / 5 * 4.5,
                                       height: isDocumentExpanded
                                           ? (segmentedControlIndex == 0
-                                                  ? widget.homeworkForThisDay!.files!.length
-                                                  : widget.homeworkForThisDay!.sessionFiles!.length) *
+                                                  ? widget.homeworkForThisDay!.files.length
+                                                  : widget.homeworkForThisDay!.sessionFiles.length) *
                                               (screenSize.size.height / 10 * 0.7)
                                           : 0,
                                       child: ListView.builder(
                                           itemCount: segmentedControlIndex == 0
-                                              ? widget.homeworkForThisDay!.files!.length
-                                              : widget.homeworkForThisDay!.sessionFiles!.length,
+                                              ? widget.homeworkForThisDay!.files.length
+                                              : widget.homeworkForThisDay!.sessionFiles.length,
                                           itemBuilder: (BuildContext context, int index) {
                                             return Material(
                                               color: Color(0xff5FA9DA),

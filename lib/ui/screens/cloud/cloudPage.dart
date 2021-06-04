@@ -62,8 +62,10 @@ class _CloudPageState extends State<CloudPage> {
             "Agenda",
             style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
           ),
-          leading: FlatButton(
-            color: Colors.transparent,
+          leading: TextButton(
+            style: TextButton.styleFrom(
+              primary: Colors.transparent,
+            ),
             child: Icon(MdiIcons.menu, color: ThemeUtils.textColor()),
             onPressed: () async {
               widget.parentScaffoldState.currentState?.openDrawer();
@@ -365,7 +367,12 @@ class _CloudPageState extends State<CloudPage> {
                                             "Une erreur a eu lieu",
                                             style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                                           ),
-                                          FlatButton(
+                                          TextButton(
+                                            style: TextButton.styleFrom(
+                                              shape: RoundedRectangleBorder(
+                                                  borderRadius: new BorderRadius.circular(18.0),
+                                                  side: BorderSide(color: Theme.of(context).primaryColorDark)),
+                                            ),
                                             onPressed: () {
                                               //Reload list
                                               refreshLocalCloudItemsList();
@@ -375,9 +382,6 @@ class _CloudPageState extends State<CloudPage> {
                                                   fontFamily: "Asap",
                                                   color: ThemeUtils.textColor(),
                                                 )),
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius: new BorderRadius.circular(18.0),
-                                                side: BorderSide(color: Theme.of(context).primaryColorDark)),
                                           ),
                                         ],
                                       ),
@@ -428,6 +432,7 @@ class _CloudPageState extends State<CloudPage> {
 
   //Change directory action
   void initState() {
+    super.initState();
     WidgetsBinding.instance!.addPostFrameCallback((_) => setState(() {
           refreshLocalCloudItemsList();
         }));

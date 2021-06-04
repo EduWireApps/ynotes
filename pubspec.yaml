@@ -127,7 +127,7 @@ dependencies:
 dependency_overrides:
   intl: ^0.17.0-nullsafety.2
   mime: ^1.0.0
-  args: ^1.0.0
+  args: ^2.1.1
   markdown: ^4.0.0
   build: ^2.0.0
 dev_dependencies:

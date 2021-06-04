@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/logic/appConfig/controller.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
@@ -117,7 +116,6 @@ class BackgroundService {
       if (oldGradesLength != null && oldGradesLength != 0 && oldGradesLength < listOnlineGrades.length) {
         int diff = (listOnlineGrades.length - (listOnlineGrades.length - oldGradesLength).clamp(0, 5));
         List<Grade> newGrades = listOnlineGrades.sublist(diff);
-        final prefs = await (SharedPreferences.getInstance());
         return [true, newGrades];
       } else {
         return [false];
@@ -148,7 +146,7 @@ class BackgroundService {
       await logFile("Mails checking triggered");
       print("New length is $newMailLength");
       if (oldMailLength != 0) {
-        if (oldMailLength < (newMailLength ?? 0)) {
+        if (oldMailLength < (newMailLength)) {
           //Manually set the new mail number
           appSys.updateSetting(appSys.settings!["system"], "lastMailCount", newMailLength);
 

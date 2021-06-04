@@ -35,13 +35,14 @@ class DisciplineAdapter extends TypeAdapter<Discipline> {
       classNumber: fields[15] as String?,
       generalRank: fields[16] as String?,
       weight: fields[17] as String?,
+      periodCode: fields[18] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Discipline obj) {
     writer
-      ..writeByte(18)
+      ..writeByte(19)
       ..writeByte(0)
       ..write(obj.generalAverage)
       ..writeByte(1)
@@ -77,7 +78,9 @@ class DisciplineAdapter extends TypeAdapter<Discipline> {
       ..writeByte(16)
       ..write(obj.generalRank)
       ..writeByte(17)
-      ..write(obj.weight);
+      ..write(obj.weight)
+      ..writeByte(18)
+      ..write(obj.periodCode);
   }
 
   @override

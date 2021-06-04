@@ -20,6 +20,7 @@ import 'package:ynotes/ui/components/modalBottomSheets/filesBottomSheet.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/addHomeworkDialog.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/homeworkReaderOptions.dart';
 
+// ignore: must_be_immutable
 class HomeworkDayViewPage extends StatefulWidget {
   List<Homework> homework;
   final int defaultPage;
@@ -427,7 +428,6 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
       Color? next = widget.homework[offset.toInt() + 1].editable
           ? Color(0xff7DD3FC)
           : Color(await getColor(widget.homework[offset.toInt() + 1].disciplineCode));
-      ThemeUtils.isThemeDark ? Color(0xff313131) : Colors.white;
 
       return Color.lerp(current, next, offset - offset.toInt()) ?? Colors.white;
     } else {

@@ -27,8 +27,10 @@ class _SchoolLifePageState extends State<SchoolLifePage> {
             "Vie scolaire",
             style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
           ),
-          leading: FlatButton(
-            color: Colors.transparent,
+          leading: TextButton(
+            style: TextButton.styleFrom(
+              primary: Colors.transparent,
+            ),
             child: Icon(MdiIcons.menu, color: ThemeUtils.textColor()),
             onPressed: () async {
               widget.parentScaffoldState.currentState?.openDrawer();
@@ -113,7 +115,12 @@ class _SchoolLifePageState extends State<SchoolLifePage> {
                   "Pas de données.",
                   style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: 20),
                 ),
-                FlatButton(
+                TextButton(
+                style: TextButton.styleFrom(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(18.0),
+                      side: BorderSide(color: Theme.of(context).primaryColorDark)),
+                ),
                   onPressed: () {
                     model.refresh(force: true);
                   },
@@ -126,9 +133,7 @@ class _SchoolLifePageState extends State<SchoolLifePage> {
                       : FittedBox(
                           child: SpinKitThreeBounce(
                               color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4)),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.circular(18.0),
-                      side: BorderSide(color: Theme.of(context).primaryColorDark)),
+                 
                 )
               ],
             ),

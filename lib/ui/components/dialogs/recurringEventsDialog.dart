@@ -5,6 +5,7 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 
+// ignore: must_be_immutable
 class RecurringEventsDialog extends StatefulWidget {
   String? scheme;
   RecurringEventsDialog(this.scheme);

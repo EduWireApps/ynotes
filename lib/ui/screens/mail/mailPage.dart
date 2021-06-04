@@ -57,8 +57,10 @@ class _MailPageState extends State<MailPage> {
             "Messagerie",
             style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
           ),
-          leading: FlatButton(
-            color: Colors.transparent,
+          leading: TextButton(
+            style: TextButton.styleFrom(
+              primary: Colors.transparent,
+            ),
             child: Icon(MdiIcons.menu, color: ThemeUtils.textColor()),
             onPressed: () async {
               widget.parentScaffoldState.currentState?.openDrawer();
@@ -393,13 +395,5 @@ class _MailPageState extends State<MailPage> {
         await CustomDialogs.writeModalBottomSheet(context);
       },
     );
-  }
-
-  Future<List<Mail>?> _getMails(forceReload) async {
-    List<Mail> l = await (appSys.api as APIEcoleDirecte?)?.getMails(forceReload: forceReload) ?? [];
-    await Future.forEach(l, (Mail element) async {
-      await element.files.load();
-    });
-    return l;
   }
 }

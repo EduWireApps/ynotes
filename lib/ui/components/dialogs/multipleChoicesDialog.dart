@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 
+// ignore: must_be_immutable
 class MultipleChoicesDialog extends StatefulWidget {
   List choices;
   List<int> initialSelection;

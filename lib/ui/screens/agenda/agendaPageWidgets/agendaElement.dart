@@ -11,6 +11,7 @@ import 'package:ynotes/ui/components/modalBottomSheets/agendaEventDetailsBottomS
 import 'package:ynotes/ui/components/modalBottomSheets/agendaEventEditBottomSheet.dart';
 import 'package:ynotes/ui/screens/agenda/agendaPage.dart';
 
+// ignore: must_be_immutable
 class AgendaElement extends StatefulWidget {
   AgendaEvent event;
   final double height;

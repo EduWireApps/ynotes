@@ -48,10 +48,9 @@ class _StatsPageState extends State<StatsPage> {
               decoration: BoxDecoration(borderRadius: BorderRadius.circular(11)),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(11),
-                child: Plasma(
+                child: PlasmaRenderer(
                   particles: 5,
-                  foregroundColor: Color(0x552ac911),
-                  backgroundColor: Color(0x8a2513ef),
+                  color: Color(0x8a2513ef),
                   size: 1.67,
                   speed: 10,
                   offset: 0.00,

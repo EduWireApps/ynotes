@@ -123,8 +123,7 @@ class _AgendaState extends State<Agenda> {
                                             initState,
                                           ));
                                     }
-                                    if (snapshot.data != null &&
-                                        snapshot.data!.length == 0) {
+                                    if (snapshot.data != null && snapshot.data!.length == 0) {
                                       return Center(
                                         child: FittedBox(
                                           child: Column(
@@ -206,6 +205,7 @@ class _AgendaState extends State<Agenda> {
 
   @override
   void initState() {
+    super.initState();
     if (agendaDate == null) {
       setState(() {
         agendaDate = CalendarTime().startOfToday;

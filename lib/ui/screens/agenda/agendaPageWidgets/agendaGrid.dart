@@ -12,6 +12,7 @@ import 'package:ynotes/ui/components/modalBottomSheets/agendaEventEditBottomShee
 import 'package:ynotes/ui/screens/agenda/agendaPage.dart';
 import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/agendaElement.dart';
 
+// ignore: must_be_immutable
 class AgendaGrid extends StatefulWidget {
   List<AgendaEvent>? events;
   final bool afterSchool;

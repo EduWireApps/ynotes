@@ -19,6 +19,7 @@ class _LoadingPageState extends State<LoadingPage> {
   String? z;
   @override
   void initState() {
+    super.initState();
     tryToConnect();
   }
 
@@ -28,10 +29,7 @@ class _LoadingPageState extends State<LoadingPage> {
     String? p = await readStorage("password");
 
     z = await storage.read(key: "agreedTermsAndConfiguredApp");
-    if (u != null &&
-        p != null &&
-        z != null &&
-        appSys.settings!["system"]["chosenParser"] != null) {
+    if (u != null && p != null && z != null && appSys.settings!["system"]["chosenParser"] != null) {
       Navigator.of(context).pushReplacement(router(HomePage()));
     } else {
       Navigator.of(context).pushReplacement(router(Login()));
