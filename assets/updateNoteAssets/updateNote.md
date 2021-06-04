@@ -11,8 +11,8 @@ Vous découvrirez dans cette nouvelle version :
   - Désormais, **épingler des devoirs** est bien plus simple, une page dédiée sert à visualiser uniquement vos devoirs épinglés 📌
   - **Filtrez vos devoirs**, vous pouvez même choisir **une seule ou plusieurs matières** à afficher
 - Des améliorations pour **la page des mails (EcoleDirecte)** :
-  - Une **barre de recherche* pour accéder rapidement à un mail
-  - Les mails peuvent désormais être lus hors ligne
+  - Une **barre de recherche** pour accéder rapidement à un mail
+  - Les mails peuvent désormais être lus **hors ligne**
 - **Signalez un problème** en **secouant votre téléphone** *pas trop quand même* 🐛
 
 # Correctifs 
