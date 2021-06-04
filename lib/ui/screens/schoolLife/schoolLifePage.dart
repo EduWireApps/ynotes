@@ -38,32 +38,30 @@ class _SchoolLifePageState extends State<SchoolLifePage> {
       backgroundColor: Theme.of(context).backgroundColor,
       body: RefreshIndicator(
         onRefresh: refreshTickets,
-        child: SingleChildScrollView(
-          physics: AlwaysScrollableScrollPhysics(),
-          child: Container(
-              height: screenSize.size.height,
-              width: screenSize.size.width,
-              child: ChangeNotifierProvider<SchoolLifeController>.value(
-                  value: appSys.schoolLifeController,
-                  child: Consumer<SchoolLifeController>(builder: (context, model, child) {
-                    //if there is no tickets
-                    if ((model.tickets ?? []).length == 0) {
-                      return buildNoTickets();
-                    } else {
-                      return Container(
-                        height: screenSize.size.height,
-                        width: screenSize.size.width,
-                        padding: EdgeInsets.symmetric(
-                            vertical: screenSize.size.width / 5 * 0.1, horizontal: screenSize.size.width / 5 * 0.05),
+        child: Container(
+            width: screenSize.size.width,
+            child: ChangeNotifierProvider<SchoolLifeController>.value(
+                value: appSys.schoolLifeController,
+                child: Consumer<SchoolLifeController>(builder: (context, model, child) {
+                  //if there is no tickets
+                  if ((model.tickets ?? []).length == 0 || model.tickets == null) {
+                    return buildNoTickets();
+                  } else {
+                    return Container(
+                      height: screenSize.size.height,
+                      width: screenSize.size.width,
+                      padding: EdgeInsets.symmetric(
+                          vertical: screenSize.size.width / 5 * 0.1, horizontal: screenSize.size.width / 5 * 0.05),
+                      child: SingleChildScrollView(
                         child: ColumnBuilder(
-                            itemCount: (model.tickets ?? []).length,
+                            itemCount: (model.tickets)!.length,
                             itemBuilder: (BuildContext context, int index) {
-                              return buildTicket(model.tickets![index]);
+                              return buildTicket((model.tickets)!.reversed.toList()[index]);
                             }),
-                      );
-                    }
-                  }))),
-        ),
+                      ),
+                    );
+                  }
+                }))),
       ),
     );
   }
