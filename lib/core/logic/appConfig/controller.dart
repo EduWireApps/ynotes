@@ -63,8 +63,11 @@ class ApplicationSystem extends ChangeNotifier {
   SchoolAccount? get currentSchoolAccount => _currentSchoolAccount;
   set currentSchoolAccount(SchoolAccount? newValue) {
     _currentSchoolAccount = newValue;
-    if (account != null && account!.managableAccounts != null && newValue != null) {
-      this.updateSetting(this.settings!["system"], "accountIndex", this.account!.managableAccounts!.indexOf(newValue));
+    if (account != null &&
+        account!.managableAccounts != null &&
+        newValue != null) {
+      this.updateSetting(this.settings!["system"], "accountIndex",
+          this.account!.managableAccounts!.indexOf(newValue));
     }
     notifyListeners();
   }
@@ -110,7 +113,8 @@ class ApplicationSystem extends ChangeNotifier {
     if (api != null) {
       account = await api!.account();
       if (account != null && account!.managableAccounts != null)
-        currentSchoolAccount = account!.managableAccounts![settings!["system"]["accountIndex"] ?? 0];
+        currentSchoolAccount = account!
+            .managableAccounts![settings!["system"]["accountIndex"] ?? 0];
     }
     //Set background fetch
     await _initBackgroundFetch();
@@ -146,8 +150,9 @@ class ApplicationSystem extends ChangeNotifier {
     theme = appThemes[themeName];
     this.themeName = themeName;
     updateSetting(this.settings!["user"]["global"], "theme", themeName);
-    SystemChrome.setSystemUIOverlayStyle(
-        ThemeUtils.isThemeDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark);
+    SystemChrome.setSystemUIOverlayStyle(ThemeUtils.isThemeDark
+        ? SystemUiOverlayStyle.light
+        : SystemUiOverlayStyle.dark);
     notifyListeners();
   }
 

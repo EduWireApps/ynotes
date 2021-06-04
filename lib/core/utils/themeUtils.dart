@@ -92,7 +92,8 @@ extension HexColor on Color {
   }
 
   /// Prefixes a hash sign if [leadingHashSign] is set to `true` (default is `true`).
-  String toCSSColor({bool leadingHashSign = true}) => '${red.toRadixString(16).padLeft(2, '0')}'
+  String toCSSColor({bool leadingHashSign = true}) =>
+      '${red.toRadixString(16).padLeft(2, '0')}'
       '${green.toRadixString(16).padLeft(2, '0')}'
       '${blue.toRadixString(16).padLeft(2, '0')}';
 }

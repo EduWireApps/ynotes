@@ -51,7 +51,8 @@ class _DialogHomeworkState extends State<DialogHomework> {
               ),
             ],
           ),
-          if (widget.hw!.sessionRawContent != null && widget.hw!.sessionRawContent != "")
+          if (widget.hw!.sessionRawContent != null &&
+              widget.hw!.sessionRawContent != "")
             Material(
               color: Colors.transparent,
               child: Container(
@@ -78,20 +79,25 @@ class _DialogHomeworkState extends State<DialogHomework> {
               ),
             ),
           ConstrainedBox(
-            constraints: BoxConstraints(maxHeight: screenSize.size.height / 10 * 3.5),
+            constraints:
+                BoxConstraints(maxHeight: screenSize.size.height / 10 * 3.5),
             child: Container(
               margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
               width: screenSize.size.width / 5 * 4.5,
               padding: EdgeInsets.all(screenSize.size.height / 10 * 0.2),
               decoration: BoxDecoration(
                   color: Theme.of(context).primaryColor,
-                  borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15)),
+                  borderRadius:
+                      BorderRadius.circular(screenSize.size.width / 5 * 0.15)),
               child: Material(
                 color: Colors.transparent,
                 child: SingleChildScrollView(
                   child: SelectableText(
                     parsedHtml,
-                    style: TextStyle(fontSize: 20, fontFamily: "Asap", color: ThemeUtils.textColor()),
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: "Asap",
+                        color: ThemeUtils.textColor()),
                     textAlign: TextAlign.justify,
                   ),
                 ),
@@ -105,12 +111,15 @@ class _DialogHomeworkState extends State<DialogHomework> {
                 return Material(
                   type: MaterialType.transparency,
                   child: Container(
-                      margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
+                      margin: EdgeInsets.only(
+                          top: screenSize.size.height / 10 * 0.1),
                       width: screenSize.size.width / 5 * 4.5,
-                      padding: EdgeInsets.all(screenSize.size.height / 10 * 0.2),
+                      padding:
+                          EdgeInsets.all(screenSize.size.height / 10 * 0.2),
                       decoration: BoxDecoration(
                           color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15)),
+                          borderRadius: BorderRadius.circular(
+                              screenSize.size.width / 5 * 0.15)),
                       child: Column(
                         children: [
                           Text(

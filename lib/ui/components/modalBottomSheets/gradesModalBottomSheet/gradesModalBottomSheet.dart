@@ -26,7 +26,8 @@ void gradesModalBottomSheet(
 ) {
   showModalBottomSheet(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(25), topRight: Radius.circular(25)),
       ),
       context: context,
       backgroundColor: Colors.transparent,
@@ -55,7 +56,8 @@ class GradesModalBottomSheetContainer extends StatefulWidget {
       {Key? key, this.grade, this.stats, this.discipline, this.callback, this.gradesController})
       : super(key: key);
   @override
-  _GradesModalBottomSheetContainerState createState() => _GradesModalBottomSheetContainerState();
+  _GradesModalBottomSheetContainerState createState() =>
+      _GradesModalBottomSheetContainerState();
 }
 
 class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheetContainer> {
