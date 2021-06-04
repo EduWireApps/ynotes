@@ -359,7 +359,7 @@ class _GradesPageState extends State<GradesPage> {
               children: [
                 buildAverageContainer("MAX", discipline?.maxClassGeneralAverage ?? "N/A"),
                 buildAverageContainer("CLASSE", discipline?.classGeneralAverage ?? "N/A"),
-                buildAverageContainer("RANG", discipline?.generalRank ?? "N/A"),
+                if (discipline?.generalRank != null) buildAverageContainer("RANG", discipline?.generalRank ?? "N/A"),
               ],
             ),
           )
@@ -475,7 +475,6 @@ class _GradesPageState extends State<GradesPage> {
               ),
               decoration: BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
             ),
-            
             onPressed: () async {
               Grade? a = await simulatorModalBottomSheet(appSys.gradesController, context);
               if (a != null) {
