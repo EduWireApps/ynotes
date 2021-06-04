@@ -16,7 +16,7 @@ import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/screens/login/loginPageWidgets/loginWebView.dart';
 import 'package:ynotes/ui/screens/login/loginPageWidgets/pronoteSetup.dart';
-import 'package:ynotes/ui/screens/login/loginPageWidgets/textField.dart';
+import 'package:ynotes/ui/components/textField.dart';
 import 'package:ynotes/ui/screens/school_api_choice/schoolAPIChoicePage.dart';
 import 'package:ynotes/usefulMethods.dart';
 
@@ -540,11 +540,11 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        LoginPageTextField(_username, "Nom d'utilisateur", false, MdiIcons.account, false),
+        CustomTextField(_username, "Nom d'utilisateur", false, MdiIcons.account, false),
         SizedBox(
           height: screenSize.size.height / 10 * 0.1,
         ),
-        LoginPageTextField(_password, "Mot de passe", true, MdiIcons.key, true),
+        CustomTextField(_password, "Mot de passe", true, MdiIcons.key, true),
         SizedBox(height: screenSize.size.height / 10 * 0.4),
         Row(
           mainAxisAlignment: MainAxisAlignment.center,

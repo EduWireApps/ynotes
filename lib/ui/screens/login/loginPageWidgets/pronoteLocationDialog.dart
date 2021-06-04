@@ -6,7 +6,7 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/pronote/schoolsController.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/ui/components/buttons.dart';
-import 'package:ynotes/ui/screens/login/loginPageWidgets/textField.dart';
+import 'package:ynotes/ui/components/textField.dart';
 
 class PronoteGeolocationDialog extends StatefulWidget {
   @override
@@ -146,7 +146,7 @@ class _PronoteGeolocationDialogState extends State<PronoteGeolocationDialog> {
             style: TextStyle(fontFamily: "Asap"),
           ),
           SizedBox(height: screenSize.size.height / 10 * 0.1),
-          LoginPageTextField(
+          CustomTextField(
               searchCon, "Chercher une école", false, Icons.search, false),
           SizedBox(height: screenSize.size.height / 10 * 0.1),
           Container(
