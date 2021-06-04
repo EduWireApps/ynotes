@@ -94,7 +94,6 @@ class _MultipleChoicesDialogState extends State<MultipleChoicesDialog> {
                                   fillColor: MaterialStateColor.resolveWith(ThemeUtils.getCheckBoxColor),
                                   shape: CircleBorder(),
                                   value: indexsSelected.contains(index),
-                                  shape: const CircleBorder(),
                                   onChanged: (value) {
                                     if (widget.singleChoice) {
                                       indexsSelected.clear();

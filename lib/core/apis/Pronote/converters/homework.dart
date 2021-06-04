@@ -25,7 +25,7 @@ class PronoteHomeworkConverter {
       List<Document> documents =
           PronoteDocumentConverter.documents(mapGet(singleHomeworkData, ["ListePieceJointe", "V"]));
 
-      List<Document> sessionDocuments = [];
+      List<Document> sessionFiles = [];
       String teacherName = "";
       bool loaded = true;
 
@@ -43,7 +43,7 @@ class PronoteHomeworkConverter {
           teacherName: teacherName,
           loaded: loaded);
       hw.files.addAll(documents);
-      hw.sessionFiles.addAll(sessionDocuments);
+      hw.sessionFiles.addAll(sessionFiles);
       hwList.add(hw);
     });
     return hwList;
