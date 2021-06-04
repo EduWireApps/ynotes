@@ -12,6 +12,7 @@ import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/agenda/controller.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/core/logic/homework/controller.dart';
+import 'package:ynotes/core/logic/mails/controller.dart';
 import 'package:ynotes/core/logic/schoolLife/controller.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
 import 'package:ynotes/core/offline/isar/data/homework.dart';
@@ -55,6 +56,7 @@ class ApplicationSystem extends ChangeNotifier {
   late HomeworkController homeworkController;
   late AgendaController agendaController;
   late SchoolLifeController schoolLifeController;
+  late MailsController mailsController;
 
   ///All the app controllers
 
@@ -118,6 +120,7 @@ class ApplicationSystem extends ChangeNotifier {
     homeworkController = HomeworkController(this.api);
     agendaController = AgendaController(this.api);
     schoolLifeController = SchoolLifeController(this.api);
+    mailsController= MailsController(this.api);
   }
 
   initControllers() async {

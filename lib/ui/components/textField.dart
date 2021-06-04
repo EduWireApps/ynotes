@@ -47,7 +47,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                     maxLines: 1,
                     controller: widget.controller,
                     obscureText: widget.isObscured,
-                    style: TextStyle(color: ThemeUtils.textColor().withOpacity(0.4)),
+                    style: TextStyle(color: ThemeUtils.textColor().withOpacity(0.8)),
                     textAlignVertical: TextAlignVertical.center,
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.only(

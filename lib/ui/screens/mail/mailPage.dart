@@ -2,9 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
+import 'package:ynotes/core/logic/mails/controller.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
@@ -71,108 +72,108 @@ class _MailPageState extends State<MailPage> {
           children: [
             RefreshIndicator(
               onRefresh: refreshLocalMailsList,
-              child: Column(
-                children: [
-                  Container(
-                    margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
-                    width: (screenSize.size.width / 5) * 2.2,
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-                      child: Container(
-                        height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
+              child: ChangeNotifierProvider<MailsController>.value(
+                value: appSys.mailsController,
+                child: Consumer<MailsController>(builder: (context, model, child) {
+                  return Column(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
                         width: (screenSize.size.width / 5) * 2.2,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-                          color: Theme.of(context).primaryColor,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: <Widget>[
-                            Theme(
-                              data: Theme.of(context).copyWith(
-                                canvasColor: Theme.of(context).primaryColor,
-                              ),
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton<String>(
-                                  value: dossier,
-                                  iconSize: (screenSize.size.width / 5) * 0.3,
-                                  iconEnabledColor: ThemeUtils.textColor(),
-                                  style: TextStyle(fontSize: 18, fontFamily: "Asap", color: ThemeUtils.textColor()),
-                                  onChanged: (String? newValue) {
-                                    setState(() {
-                                      dossier = newValue;
-                                    });
-                                  },
-                                  focusColor: Theme.of(context).primaryColor,
-                                  items: <String>[
-                                    'Reçus',
-                                    'Envoyés',
-                                  ].map<DropdownMenuItem<String>>((String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(
-                                        value,
-                                        textAlign: TextAlign.center,
-                                        style:
-                                            TextStyle(fontSize: 18, fontFamily: "Asap", color: ThemeUtils.textColor()),
-                                      ),
-                                    );
-                                  }).toList(),
+                        child: Container(
+                          height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
+                          width: (screenSize.size.width / 5) * 2.2,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Theme(
+                                data: Theme.of(context).copyWith(
+                                  canvasColor: Theme.of(context).primaryColor,
                                 ),
-                              ),
-                            ),
-                            VerticalDivider(
-                              width: screenSize.size.width / 5 * 0.003,
-                              thickness: screenSize.size.width / 5 * 0.003,
-                              color: ThemeUtils.textColor(),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
-                              child: Material(
-                                color: Theme.of(context).primaryColor,
-                                borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-                                child: InkWell(
-                                  onTap: () {
-                                    setState(() {
-                                      int index = sortValue.values.indexOf(actualSort);
-                                      actualSort =
-                                          sortValue.values[index + (index == sortValue.values.length - 1 ? -2 : 1)];
-                                    });
-                                  },
-                                  borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-                                  child: Container(
-                                    height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
-                                    width: (screenSize.size.width / 5) * 0.6,
-                                    child: Icon(
-                                      case2(actualSort, {
-                                        sortValue.date: MdiIcons.sortAscending,
-                                        sortValue.reversed_date: MdiIcons.sortDescending,
-                                        sortValue.author: MdiIcons.account,
-                                      }),
-                                      color: ThemeUtils.textColor(),
-                                    ),
+                                child: DropdownButtonHideUnderline(
+                                  child: DropdownButton<String>(
+                                    value: dossier,
+                                    iconSize: (screenSize.size.width / 5) * 0.3,
+                                    iconEnabledColor: ThemeUtils.textColor(),
+                                    style: TextStyle(fontSize: 18, fontFamily: "Asap", color: ThemeUtils.textColor()),
+                                    onChanged: (String? newValue) {
+                                      setState(() {
+                                        dossier = newValue;
+                                      });
+                                    },
+                                    focusColor: Theme.of(context).primaryColor,
+                                    items: <String>[
+                                      'Reçus',
+                                      'Envoyés',
+                                    ].map<DropdownMenuItem<String>>((String value) {
+                                      return DropdownMenuItem<String>(
+                                        value: value,
+                                        child: Text(
+                                          value,
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                              fontSize: 18, fontFamily: "Asap", color: ThemeUtils.textColor()),
+                                        ),
+                                      );
+                                    }).toList(),
                                   ),
                                 ),
                               ),
-                            )
-                          ],
+                              VerticalDivider(
+                                width: screenSize.size.width / 5 * 0.003,
+                                thickness: screenSize.size.width / 5 * 0.003,
+                                color: ThemeUtils.textColor(),
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
+                                child: Material(
+                                  color: Theme.of(context).primaryColor,
+                                  borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                                  child: InkWell(
+                                    onTap: () {
+                                      setState(() {
+                                        int index = sortValue.values.indexOf(actualSort);
+                                        actualSort =
+                                            sortValue.values[index + (index == sortValue.values.length - 1 ? -2 : 1)];
+                                      });
+                                    },
+                                    borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                                    child: Container(
+                                      height: (screenSize.size.height / 10 * 8.8) / 10 * 0.6,
+                                      width: (screenSize.size.width / 5) * 0.6,
+                                      child: Icon(
+                                        case2(actualSort, {
+                                          sortValue.date: MdiIcons.sortAscending,
+                                          sortValue.reversed_date: MdiIcons.sortDescending,
+                                          sortValue.author: MdiIcons.account,
+                                        }),
+                                        color: ThemeUtils.textColor(),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                  Container(
-                      margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
-                      child: CustomTextField(searchCon, "Chercher un mail", false, Icons.search, false)),
-                  Expanded(
-                    child: Container(
-                      padding: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
-                      child: FutureBuilder<List<Mail>?>(
-                          //Get all the mails
-                          future: mailsListFuture,
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState == ConnectionState.done) {
-                              localList = getCorrespondingClasseur(dossier, snapshot.data);
+                      Container(
+                          margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
+                          child: CustomTextField(searchCon, "Chercher un mail", false, Icons.search, false)),
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
+                          child: Builder(
+                              //Get all the mails
+
+                              builder: (context) {
+                            if (!model.loading || !(model.mails == null)) {
+                              localList = getCorrespondingClasseur(dossier, model.mails);
                               return ClipRRect(
                                 child: MediaQuery.removePadding(
                                   removeTop: true,
@@ -274,38 +275,6 @@ class _MailPageState extends State<MailPage> {
                                       }),
                                 ),
                               );
-                            }
-                            if (snapshot.hasError) {
-                              return Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: <Widget>[
-                                    Text(
-                                      "Une erreur a eu lieu",
-                                      style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-                                    ),
-                                    FlatButton(
-                                      onPressed: () {
-                                        //Reload list
-                                        refreshLocalMailsList();
-                                      },
-                                      child: snapshot.connectionState != ConnectionState.waiting
-                                          ? Text("Recharger",
-                                              style: TextStyle(
-                                                fontFamily: "Asap",
-                                                color: ThemeUtils.textColor(),
-                                              ))
-                                          : FittedBox(
-                                              child: SpinKitThreeBounce(
-                                                  color: Theme.of(context).primaryColorDark,
-                                                  size: screenSize.size.width / 5 * 0.4)),
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius: new BorderRadius.circular(18.0),
-                                          side: BorderSide(color: Theme.of(context).primaryColorDark)),
-                                    ),
-                                  ],
-                                ),
-                              );
                             } else {
                               return SizedBox(
                                 width: screenSize.size.width,
@@ -317,9 +286,11 @@ class _MailPageState extends State<MailPage> {
                               );
                             }
                           }),
-                    ),
-                  ),
-                ],
+                        ),
+                      ),
+                    ],
+                  );
+                }),
               ),
             ),
             Align(
@@ -340,8 +311,8 @@ class _MailPageState extends State<MailPage> {
     if (mails != null && mails.length != 0) {
       return mails
           .where((element) =>
-              (element.subject??"").toUpperCase().contains(searchCon.text.toUpperCase()) ||
-              (element.content??"").toUpperCase().contains(searchCon.text.toUpperCase()) ||
+              (element.subject ?? "").toUpperCase().contains(searchCon.text.toUpperCase()) ||
+              (element.content ?? "").toUpperCase().contains(searchCon.text.toUpperCase()) ||
               element.from.toString().toUpperCase().contains(searchCon.text.toUpperCase()))
           .toList();
     }
@@ -387,16 +358,16 @@ class _MailPageState extends State<MailPage> {
   void initState() {
     super.initState();
     mailsListFuture = (appSys.api as APIEcoleDirecte?)?.getMails();
+    refreshLocalMailsList();
+    refreshLocalMailsList(forceReload: true);
+
     searchCon.addListener(() {
       setState(() {});
     });
   }
 
   Future<void> refreshLocalMailsList({forceReload = true}) async {
-    setState(() {
-      mailsListFuture = _getMails(forceReload);
-    });
-    var realdisciplinesListFuture = await mailsListFuture;
+    await appSys.mailsController.refresh(force: forceReload);
   }
 
   _buildFloatingButton(BuildContext context) {
