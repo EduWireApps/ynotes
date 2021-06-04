@@ -59,7 +59,7 @@ class _CloudPageState extends State<CloudPage> {
     return Scaffold(
       appBar: new AppBar(
           title: new Text(
-            "Agenda",
+            "Cloud",
             style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
           ),
           leading: TextButton(

@@ -56,9 +56,7 @@ class SummaryPageState extends State<SummaryPage> {
           ),
           leading: TextButton(
             style: TextButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.circular(18.0),
-                    side: BorderSide(color: Theme.of(context).primaryColorDark))),
+            ),
             child: Icon(MdiIcons.menu, color: ThemeUtils.textColor()),
             onPressed: () async {
               widget.parentScaffoldState.currentState?.openDrawer();
@@ -66,10 +64,7 @@ class SummaryPageState extends State<SummaryPage> {
           ),
           actions: [
             TextButton(
-              style: TextButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.circular(18.0),
-                      side: BorderSide(color: Theme.of(context).primaryColorDark))),
+             
               child: Icon(MdiIcons.tuneVariant, color: ThemeUtils.textColor()),
               onPressed: () async {
                 triggerSettings();
