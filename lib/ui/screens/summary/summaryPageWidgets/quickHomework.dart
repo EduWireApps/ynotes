@@ -25,16 +25,15 @@ class HomeworkTicket extends StatefulWidget {
   final Color color;
   final Function refreshCallback;
   final bool load;
-  final Function? pageSwitcher;
-  const HomeworkTicket(this._homework, this.color, this.pageSwitcher, this.refreshCallback, this.load);
+  const HomeworkTicket(
+      this._homework, this.color, this.refreshCallback, this.load);
   State<StatefulWidget> createState() {
     return _HomeworkTicketState();
   }
 }
 
 class QuickHomework extends StatefulWidget {
-  final Function? switchPage;
-  const QuickHomework({Key? key, this.switchPage}) : super(key: key);
+  const QuickHomework({Key? key}) : super(key: key);
   @override
   _QuickHomeworkState createState() => _QuickHomeworkState();
 }
@@ -47,7 +46,8 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
     return Container(
       width: screenSize.size.width,
       margin: EdgeInsets.only(
-          bottom: (screenSize.size.height / 10 * 8.8) / 10 * 0.1, left: screenSize.size.width / 5 * 0.25),
+          bottom: (screenSize.size.height / 10 * 8.8) / 10 * 0.1,
+          left: screenSize.size.width / 5 * 0.25),
       child: Stack(
         children: [
           Material(
@@ -55,13 +55,12 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
             borderRadius: BorderRadius.circular(8),
             child: InkWell(
               borderRadius: BorderRadius.circular(8),
-              onTap: () {
-                widget.pageSwitcher!(2);
-              },
+              onTap: () => Navigator.pushReplacementNamed(context, "/homework"),
               onLongPress: !widget._homework.loaded!
                   ? null
                   : () async {
-                      await CustomDialogs.showHomeworkDetailsDialog(context, this.widget._homework);
+                      await CustomDialogs.showHomeworkDetailsDialog(
+                          context, this.widget._homework);
                       setState(() {});
                     },
               child: Container(
@@ -75,7 +74,8 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
                     Container(
                       width: screenSize.size.width / 5 * 0.8,
                       child: FutureBuilder<bool>(
-                          future: appSys.offline.doneHomework.getHWCompletion(widget._homework.id ?? ''),
+                          future: appSys.offline.doneHomework
+                              .getHWCompletion(widget._homework.id ?? ''),
                           initialData: false,
                           builder: (context, snapshot) {
                             bool? done = snapshot.data ?? false;
@@ -83,16 +83,17 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
                               shape: const CircleBorder(),
                               activeColor: Color(0xff15803D),
                               value: done,
-                              materialTapTargetSize: MaterialTapTargetSize.padded,
-                              onChanged: this
-                                      .widget
-                                      ._homework
-                                      .date!
-                                      .isBefore(DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now())))
+                              materialTapTargetSize:
+                                  MaterialTapTargetSize.padded,
+                              onChanged: this.widget._homework.date!.isBefore(
+                                      DateTime.parse(DateFormat("yyyy-MM-dd")
+                                          .format(DateTime.now())))
                                   ? null
                                   : (bool? x) async {
                                       widget.refreshCallback();
-                                      await appSys.offline.doneHomework.setHWCompletion(widget._homework.id, x);
+                                      await appSys.offline.doneHomework
+                                          .setHWCompletion(
+                                              widget._homework.id, x);
                                     },
                             );
                           }),
@@ -108,19 +109,23 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
                                 children: [
                                   Container(
                                     width: screenSize.size.width / 5 * 3,
-                                    child: AutoSizeText(widget._homework.discipline!,
+                                    child: AutoSizeText(
+                                        widget._homework.discipline!,
                                         textScaleFactor: 1.0,
                                         textAlign: TextAlign.left,
                                         overflow: TextOverflow.ellipsis,
-                                        style:
-                                            TextStyle(fontSize: 14, fontFamily: "Asap", fontWeight: FontWeight.bold)),
+                                        style: TextStyle(
+                                            fontSize: 14,
+                                            fontFamily: "Asap",
+                                            fontWeight: FontWeight.bold)),
                                   ),
                                   if (widget.load)
                                     Container(
                                         width: screenSize.size.width / 5 * 0.4,
                                         child: FittedBox(
                                           child: SpinKitThreeBounce(
-                                            color: ThemeUtils.darken(widget.color),
+                                            color:
+                                                ThemeUtils.darken(widget.color),
                                           ),
                                         )),
                                 ],
@@ -129,7 +134,9 @@ class _HomeworkTicketState extends State<HomeworkTicket> {
                             Container(
                               width: screenSize.size.width / 5 * 2.7,
                               child: AutoSizeText(
-                                parse(widget._homework.rawContent ?? "").documentElement!.text,
+                                parse(widget._homework.rawContent ?? "")
+                                    .documentElement!
+                                    .text,
                                 style: TextStyle(fontFamily: "Asap"),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -162,7 +169,8 @@ class _QuickHomeworkState extends State<QuickHomework> {
         value: appSys.homeworkController,
         child: Consumer<HomeworkController>(builder: (context, model, child) {
           return Card(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             margin: EdgeInsets.only(top: 0),
             shadowColor: Colors.transparent,
             color: Colors.transparent,
@@ -177,7 +185,9 @@ class _QuickHomeworkState extends State<QuickHomework> {
                         alignment: Alignment.topCenter,
                         child: Container(
                             margin: EdgeInsets.only(
-                                top: (screenSize.size.height / 10 * 8.8) / 10 * 0.1,
+                                top: (screenSize.size.height / 10 * 8.8) /
+                                    10 *
+                                    0.1,
                                 left: screenSize.size.width / 5 * 0.25,
                                 right: screenSize.size.width / 5 * 0.15),
                             child: Column(
@@ -189,26 +199,44 @@ class _QuickHomeworkState extends State<QuickHomework> {
                                       child: Card(
                                         color: Theme.of(context).primaryColor,
                                         child: Container(
-                                          padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.08),
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: screenSize.size.height /
+                                                  10 *
+                                                  0.08),
                                           child: Center(
                                             child: Row(
-                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
                                               children: [
                                                 Container(
                                                   decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(500),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            500),
                                                   ),
-                                                  width: screenSize.size.width / 5 * 0.4,
-                                                  height: screenSize.size.width / 5 * 0.4,
-                                                  child: LiquidCircularProgressIndicator(
-                                                    value:
-                                                        (model.homeworkCompletion[0] ?? 100) / 100, // Defaults to 0.5.
-                                                    valueColor: AlwaysStoppedAnimation(Color(
-                                                        0xff15803D)), // Defaults to the current Theme's accentColor.
-                                                    backgroundColor: Color(0xff27272A),
+                                                  width: screenSize.size.width /
+                                                      5 *
+                                                      0.4,
+                                                  height:
+                                                      screenSize.size.width /
+                                                          5 *
+                                                          0.4,
+                                                  child:
+                                                      LiquidCircularProgressIndicator(
+                                                    value: (model.homeworkCompletion[
+                                                                0] ??
+                                                            100) /
+                                                        100, // Defaults to 0.5.
+                                                    valueColor:
+                                                        AlwaysStoppedAnimation(
+                                                            Color(
+                                                                0xff15803D)), // Defaults to the current Theme's accentColor.
+                                                    backgroundColor:
+                                                        Color(0xff27272A),
                                                     borderWidth:
                                                         0.00, // Defaults to the current Theme's backgroundColor.
-                                                    borderColor: Colors.transparent,
+                                                    borderColor:
+                                                        Colors.transparent,
                                                     direction: Axis.vertical,
                                                     center: Icon(
                                                       Icons.done,
@@ -218,35 +246,60 @@ class _QuickHomeworkState extends State<QuickHomework> {
                                                 ),
                                                 Container(
                                                   margin: EdgeInsets.only(
-                                                      left: screenSize.size.width / 5 * 0.3,
-                                                      right: screenSize.size.width / 5 * 0.3),
+                                                      left: screenSize
+                                                              .size.width /
+                                                          5 *
+                                                          0.3,
+                                                      right: screenSize
+                                                              .size.width /
+                                                          5 *
+                                                          0.3),
                                                   child: Row(
-                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
                                                     children: [
                                                       Text(
-                                                        model.homeworkCompletion[1].toString(),
-                                                        textAlign: TextAlign.center,
+                                                        model
+                                                            .homeworkCompletion[
+                                                                1]
+                                                            .toString(),
+                                                        textAlign:
+                                                            TextAlign.center,
                                                         style: TextStyle(
                                                           fontFamily: "Asap",
-                                                          color: ThemeUtils.textColor(),
-                                                          fontWeight: FontWeight.bold,
+                                                          color: ThemeUtils
+                                                              .textColor(),
+                                                          fontWeight:
+                                                              FontWeight.bold,
                                                         ),
                                                       ),
                                                       Text(
                                                           " fait" +
-                                                              (model.homeworkCompletion[1] > 1 ? "s " : " ") +
+                                                              (model.homeworkCompletion[
+                                                                          1] >
+                                                                      1
+                                                                  ? "s "
+                                                                  : " ") +
                                                               "sur ",
                                                           style: TextStyle(
                                                             fontFamily: "Asap",
-                                                            color: ThemeUtils.textColor(),
+                                                            color: ThemeUtils
+                                                                .textColor(),
                                                           )),
                                                       Text(
-                                                        model.homeworkCompletion[2].toString(),
-                                                        textAlign: TextAlign.center,
+                                                        model
+                                                            .homeworkCompletion[
+                                                                2]
+                                                            .toString(),
+                                                        textAlign:
+                                                            TextAlign.center,
                                                         style: TextStyle(
                                                           fontFamily: "Asap",
-                                                          color: ThemeUtils.textColor(),
-                                                          fontWeight: FontWeight.bold,
+                                                          color: ThemeUtils
+                                                              .textColor(),
+                                                          fontWeight:
+                                                              FontWeight.bold,
                                                         ),
                                                       ),
                                                     ],
@@ -262,42 +315,82 @@ class _QuickHomeworkState extends State<QuickHomework> {
                                       child: Card(
                                         color: Theme.of(context).primaryColor,
                                         child: Container(
-                                          padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.08),
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: screenSize.size.height /
+                                                  10 *
+                                                  0.08),
                                           child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
                                             children: [
                                               Container(
-                                                  width: screenSize.size.width / 5 * 0.4,
-                                                  height: screenSize.size.width / 5 * 0.4,
-                                                  padding: EdgeInsets.all(screenSize.size.width / 5 * 0.01),
+                                                  width: screenSize.size.width /
+                                                      5 *
+                                                      0.4,
+                                                  height:
+                                                      screenSize.size.width /
+                                                          5 *
+                                                          0.4,
+                                                  padding: EdgeInsets.all(
+                                                      screenSize.size.width /
+                                                          5 *
+                                                          0.01),
                                                   child: Icon(
                                                     MdiIcons.pen,
                                                     color: Colors.white,
                                                   ),
                                                   decoration: BoxDecoration(
                                                     color: Color(0xff27272A),
-                                                    borderRadius: BorderRadius.circular(500),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            500),
                                                   )),
-                                              ChangeNotifierProvider<HomeworkController?>.value(
-                                                value: appSys.homeworkController,
-                                                child: Consumer<HomeworkController>(builder: (context, model, child) {
+                                              ChangeNotifierProvider<
+                                                  HomeworkController?>.value(
+                                                value:
+                                                    appSys.homeworkController,
+                                                child: Consumer<
+                                                        HomeworkController>(
+                                                    builder: (context, model,
+                                                        child) {
                                                   return Container(
                                                     margin: EdgeInsets.only(
-                                                        left: screenSize.size.width / 5 * 0.3,
-                                                        right: screenSize.size.width / 5 * 0.3),
+                                                        left: screenSize
+                                                                .size.width /
+                                                            5 *
+                                                            0.3,
+                                                        right: screenSize
+                                                                .size.width /
+                                                            5 *
+                                                            0.3),
                                                     child: Row(
-                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
                                                       children: [
-                                                        Text(model.examsCount.toString(),
+                                                        Text(
+                                                            model.examsCount
+                                                                .toString(),
                                                             style: TextStyle(
-                                                              fontFamily: "Asap",
-                                                              color: ThemeUtils.textColor(),
-                                                              fontWeight: FontWeight.bold,
+                                                              fontFamily:
+                                                                  "Asap",
+                                                              color: ThemeUtils
+                                                                  .textColor(),
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
                                                             )),
-                                                        Text(" contrôle" + (model.examsCount > 1 ? "s" : ""),
+                                                        Text(
+                                                            " contrôle" +
+                                                                (model.examsCount >
+                                                                        1
+                                                                    ? "s"
+                                                                    : ""),
                                                             style: TextStyle(
-                                                              fontFamily: "Asap",
-                                                              color: ThemeUtils.textColor(),
+                                                              fontFamily:
+                                                                  "Asap",
+                                                              color: ThemeUtils
+                                                                  .textColor(),
                                                             )),
                                                       ],
                                                     ),
@@ -316,56 +409,95 @@ class _QuickHomeworkState extends State<QuickHomework> {
                     Align(
                       alignment: Alignment.topCenter,
                       child: Container(
-                        margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.8),
+                        margin: EdgeInsets.only(
+                            top: screenSize.size.height / 10 * 0.8),
                         child: RefreshIndicator(
                           onRefresh: model.refresh,
                           child: CupertinoScrollbar(
-                            child: ChangeNotifierProvider<HomeworkController>.value(
+                            child: ChangeNotifierProvider<
+                                HomeworkController>.value(
                               value: appSys.homeworkController,
                               child: Consumer<HomeworkController>(
                                 builder: (context, model, child) {
-                                  if (model.getHomework != null && (model.getHomework ?? []).length != 0) {
+                                  if (model.getHomework != null &&
+                                      (model.getHomework ?? []).length != 0) {
                                     return Padding(
-                                      padding: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.4),
+                                      padding: EdgeInsets.only(
+                                          bottom: screenSize.size.height /
+                                              10 *
+                                              0.4),
                                       child: ColumnBuilder(
-                                          itemCount: (model.getHomework ?? []).length,
+                                          itemCount:
+                                              (model.getHomework ?? []).length,
                                           itemBuilder: (context, index) {
                                             return FutureBuilder<int>(
                                               initialData: 0,
-                                              future: getColor((model.getHomework ?? [])[index].disciplineCode),
-                                              builder: (context, color) => Column(
+                                              future: getColor(
+                                                  (model.getHomework ??
+                                                          [])[index]
+                                                      .disciplineCode),
+                                              builder: (context, color) =>
+                                                  Column(
                                                 children: <Widget>[
                                                   if (index == 0 ||
-                                                      (model.getHomework ?? [])[index - 1].date !=
-                                                          (model.getHomework ?? [])[index].date)
+                                                      (model.getHomework ??
+                                                                  [])[index - 1]
+                                                              .date !=
+                                                          (model.getHomework ??
+                                                                  [])[index]
+                                                              .date)
                                                     Container(
-                                                      margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.25),
-                                                      child: Row(children: <Widget>[
-                                                        Text(
-                                                          DateFormat("EEEE d", "fr_FR")
-                                                                  .format((model.getHomework ?? [])[index].date!)
-                                                                  .toString()
-                                                                  .capitalize() +
-                                                              " " +
-                                                              DateFormat("MMMM", "fr_FR")
-                                                                  .format((model.getHomework ?? [])[index].date!)
-                                                                  .toString()
-                                                                  .capitalize(),
-                                                          style: TextStyle(
-                                                              color: ThemeUtils.textColor(),
-                                                              fontFamily: "Asap",
-                                                              fontSize: 17,
-                                                              fontWeight: FontWeight.w600),
-                                                        ),
-                                                      ]),
+                                                      margin: EdgeInsets.only(
+                                                          left: screenSize
+                                                                  .size.width /
+                                                              5 *
+                                                              0.25),
+                                                      child: Row(
+                                                          children: <Widget>[
+                                                            Text(
+                                                              DateFormat("EEEE d",
+                                                                          "fr_FR")
+                                                                      .format((model.getHomework ?? [])[
+                                                                              index]
+                                                                          .date!)
+                                                                      .toString()
+                                                                      .capitalize() +
+                                                                  " " +
+                                                                  DateFormat(
+                                                                          "MMMM",
+                                                                          "fr_FR")
+                                                                      .format((model.getHomework ??
+                                                                              [])[index]
+                                                                          .date!)
+                                                                      .toString()
+                                                                      .capitalize(),
+                                                              style: TextStyle(
+                                                                  color: ThemeUtils
+                                                                      .textColor(),
+                                                                  fontFamily:
+                                                                      "Asap",
+                                                                  fontSize: 17,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600),
+                                                            ),
+                                                          ]),
                                                     ),
-                                                  SizedBox(height: screenSize.size.height / 10 * 0.1),
+                                                  SizedBox(
+                                                      height: screenSize
+                                                              .size.height /
+                                                          10 *
+                                                          0.1),
                                                   HomeworkTicket(
-                                                      (model.getHomework ?? [])[index],
+                                                      (model.getHomework ??
+                                                          [])[index],
                                                       Color(color.data ?? 0),
-                                                      widget.switchPage,
-                                                      appSys.homeworkController.refresh,
-                                                      model.isFetching && !(model.getHomework ?? [])[index].loaded!),
+                                                      appSys.homeworkController
+                                                          .refresh,
+                                                      model.isFetching &&
+                                                          !(model.getHomework ??
+                                                                  [])[index]
+                                                              .loaded!),
                                                 ],
                                               ),
                                             );
@@ -373,47 +505,76 @@ class _QuickHomeworkState extends State<QuickHomework> {
                                     );
                                   } else {
                                     return Padding(
-                                      padding: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.4),
+                                      padding: EdgeInsets.only(
+                                          bottom: screenSize.size.height /
+                                              10 *
+                                              0.4),
                                       child: Center(
                                         child: FittedBox(
                                           child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
                                             children: <Widget>[
                                               Container(
-                                                height: (screenSize.size.height / 10 * 8.8) / 10 * 1.5,
+                                                height:
+                                                    (screenSize.size.height /
+                                                            10 *
+                                                            8.8) /
+                                                        10 *
+                                                        1.5,
                                                 child: Image(
                                                     fit: BoxFit.fitWidth,
-                                                    image: AssetImage('assets/images/noHomework.png')),
+                                                    image: AssetImage(
+                                                        'assets/images/noHomework.png')),
                                               ),
                                               Text(
                                                 "Pas de devoirs à l'horizon... \non se détend ?",
                                                 textAlign: TextAlign.center,
                                                 style: TextStyle(
                                                     fontFamily: "Asap",
-                                                    color: ThemeUtils.textColor(),
-                                                    fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
+                                                    color:
+                                                        ThemeUtils.textColor(),
+                                                    fontSize: (screenSize
+                                                                .size.height /
+                                                            10 *
+                                                            8.8) /
+                                                        10 *
+                                                        0.2),
                                               ),
                                               FlatButton(
-                                                  textColor: ThemeUtils.textColor(),
+                                                  textColor:
+                                                      ThemeUtils.textColor(),
                                                   onPressed: () async {
-                                                    await model.refresh(force: true);
+                                                    await model.refresh(
+                                                        force: true);
                                                   },
                                                   shape: RoundedRectangleBorder(
                                                       side: BorderSide(
-                                                          color: ThemeUtils.textColor(),
+                                                          color: ThemeUtils
+                                                              .textColor(),
                                                           width: 0.2,
-                                                          style: BorderStyle.solid),
-                                                      borderRadius: BorderRadius.circular(50)),
+                                                          style: BorderStyle
+                                                              .solid),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              50)),
                                                   child: !model.isFetching
                                                       ? Text("Recharger",
                                                           style: TextStyle(
                                                             fontFamily: "Asap",
-                                                            color: ThemeUtils.textColor(),
+                                                            color: ThemeUtils
+                                                                .textColor(),
                                                           ))
                                                       : FittedBox(
                                                           child: SpinKitThreeBounce(
-                                                              color: Theme.of(context).primaryColorDark,
-                                                              size: screenSize.size.width / 5 * 0.4))),
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .primaryColorDark,
+                                                              size: screenSize
+                                                                      .size
+                                                                      .width /
+                                                                  5 *
+                                                                  0.4))),
                                             ],
                                           ),
                                         ),

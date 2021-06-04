@@ -291,7 +291,6 @@ class _DrawerBuilderState extends State<DrawerBuilder>
         "tabName": appTabs.SUMMARY,
         "icon": MdiIcons.home,
         "page": SummaryPage(
-          switchPage: _switchPage,
           key: summaryPage,
         ),
         "key": summaryPage

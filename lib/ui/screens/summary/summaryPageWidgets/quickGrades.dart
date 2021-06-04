@@ -28,8 +28,7 @@ class CustomHalfCircleClipper extends CustomClipper<Path> {
 }
 
 class QuickGrades extends StatefulWidget {
-  final Function? switchPage;
-  QuickGrades({Key? key, this.switchPage}) : super(key: key);
+  QuickGrades({Key? key}) : super(key: key);
   @override
   _QuickGradesState createState() => _QuickGradesState();
 }
@@ -41,15 +40,19 @@ class _QuickGradesState extends State<QuickGrades> {
       value: appSys.gradesController,
       child: Consumer<GradesController>(builder: (context, model, child) {
         return Column(children: [
-          buildCHart(context, model.disciplines(showAll: true), model.isFetching),
+          buildCHart(
+              context, model.disciplines(showAll: true), model.isFetching),
           buildGradesList(
-              context, getAllGrades(model.disciplines(showAll: true), overrideLimit: true, sortByWritingDate: true)),
+              context,
+              getAllGrades(model.disciplines(showAll: true),
+                  overrideLimit: true, sortByWritingDate: true)),
         ]);
       }),
     );
   }
 
-  Widget buildCHart(BuildContext context, List<Discipline>? disciplines, bool fetching) {
+  Widget buildCHart(
+      BuildContext context, List<Discipline>? disciplines, bool fetching) {
     var screenSize = MediaQuery.of(context);
 
     //First division (gauge)
@@ -61,7 +64,8 @@ class _QuickGradesState extends State<QuickGrades> {
         margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
         child: Card(
             shadowColor: Colors.transparent,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             color: Colors.transparent,
             child: Container(
               color: Colors.transparent,
@@ -77,11 +81,15 @@ class _QuickGradesState extends State<QuickGrades> {
                           child: (disciplines != null && !fetching)
                               ? ClipRRect(
                                   child: SummaryChart(
-                                    getAllGrades(disciplines, overrideLimit: true, sortByWritingDate: true),
+                                    getAllGrades(disciplines,
+                                        overrideLimit: true,
+                                        sortByWritingDate: true),
                                   ),
                                 )
                               : CustomLoader(
-                                  screenSize.size.width / 5 * 2.5, screenSize.size.width / 5 * 2.5, Color(0xff5c66c1)))
+                                  screenSize.size.width / 5 * 2.5,
+                                  screenSize.size.width / 5 * 2.5,
+                                  Color(0xff5c66c1)))
                     ],
                   ),
                 ],
@@ -114,14 +122,16 @@ class _QuickGradesState extends State<QuickGrades> {
                     style: TextStyle(
                         color: (ThemeUtils.textColor()),
                         fontWeight: FontWeight.normal,
-                        fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.4)),
+                        fontSize:
+                            (screenSize.size.height / 10 * 8.8) / 10 * 0.4)),
               if (grade.notSignificant == true)
                 TextSpan(
                     text: ")",
                     style: TextStyle(
                         color: (ThemeUtils.textColor()),
                         fontWeight: FontWeight.normal,
-                        fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.5)),
+                        fontSize:
+                            (screenSize.size.height / 10 * 8.8) / 10 * 0.5)),
             ],
           ),
         ),
@@ -149,21 +159,26 @@ class _QuickGradesState extends State<QuickGrades> {
               if (grade.disciplineName != null || grade.disciplineName != "")
                 Text(
                   grade.disciplineName ?? "",
-                  style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
+                  style: TextStyle(
+                      color: ThemeUtils.textColor(), fontFamily: "Asap"),
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.left,
                 ),
               if (grade.testName != null && grade.testName != "")
                 Text(
                   grade.testName ?? "",
-                  style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                      color: ThemeUtils.textColor(),
+                      fontFamily: "Asap",
+                      fontWeight: FontWeight.bold),
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.left,
                 ),
               if (grade.date != null)
                 Text(
                   grade.date != null ? df.format(grade.entryDate!) : "",
-                  style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
+                  style: TextStyle(
+                      color: ThemeUtils.textColor(), fontFamily: "Asap"),
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.left,
                 )
@@ -192,13 +207,17 @@ class _QuickGradesState extends State<QuickGrades> {
         height: screenSize.size.height / 10 * 1.4,
         width: screenSize.size.width,
         child: ListView.builder(
-            padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.1),
+            padding: EdgeInsets.symmetric(
+                vertical: screenSize.size.height / 10 * 0.1),
             itemCount: grades.length,
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) {
               return Card(
-                margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.2, top: screenSize.size.height / 10 * 0.1),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
+                margin: EdgeInsets.only(
+                    left: screenSize.size.width / 5 * 0.2,
+                    top: screenSize.size.height / 10 * 0.1),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(11)),
                 color: Theme.of(context).primaryColor,
                 child: Material(
                   borderRadius: BorderRadius.circular(11),
@@ -206,14 +225,15 @@ class _QuickGradesState extends State<QuickGrades> {
                   child: InkWell(
                     borderRadius: BorderRadius.circular(11),
                     onLongPress: () {
-                      CustomDialogs.showShareGradeDialog(context, grades[index]);
+                      CustomDialogs.showShareGradeDialog(
+                          context, grades[index]);
                     },
-                    onTap: () {
-                      widget.switchPage!(1);
-                    },
+                    onTap: () =>
+                        Navigator.pushReplacementNamed(context, "/grades"),
                     child: Container(
                       padding: EdgeInsets.symmetric(
-                          horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.height / 10 * 0.1),
+                          horizontal: screenSize.size.width / 5 * 0.1,
+                          vertical: screenSize.size.height / 10 * 0.1),
                       height: screenSize.size.height / 10 * 0.5,
                       child: buildGradeItem(grades[index]),
                     ),

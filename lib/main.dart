@@ -17,6 +17,7 @@ import 'package:ynotes/routes.dart';
 import 'package:ynotes/ui/screens/carousel/carousel.dart';
 import 'package:ynotes/ui/screens/drawer/drawerBuilder.dart';
 import 'package:ynotes/ui/screens/loading/loadingPage.dart';
+import 'package:ynotes/ui/screens/summary/summaryPage.dart';
 import 'package:ynotes/ui/screens/testPage.dart';
 
 import 'core/utils/themeUtils.dart';
@@ -81,7 +82,7 @@ class HomePage extends StatelessWidget {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
-    return TestPage();
+    return SummaryPage();
     // return Scaffold(
     //     backgroundColor: Theme.of(context).backgroundColor,
     //     body: SafeArea(
@@ -163,7 +164,6 @@ class _HomeAppState extends State<HomeApp> {
             navigatorKey: _navigatorKey,
             home: Loader(),
             themeMode: ThemeMode.light,
-            // routes: routes,
             onGenerateRoute: onGenerateRoute,
           ),
         );

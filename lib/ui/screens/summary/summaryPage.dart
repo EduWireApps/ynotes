@@ -4,12 +4,15 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
-import 'package:ynotes/ui/components/hiddenSettings.dart';
+import 'package:ynotes/ui/components/y_page/mixins.dart';
+import 'package:ynotes/ui/components/y_page/y_page.dart';
+import 'package:ynotes/ui/components/y_page/y_page_local.dart';
 import 'package:ynotes/ui/screens/grades/gradesPage.dart';
 import 'package:ynotes/ui/screens/summary/summaryPageWidgets/quickGrades.dart';
 import 'package:ynotes/ui/screens/summary/summaryPageWidgets/quickHomework.dart';
@@ -21,18 +24,15 @@ bool firstStart = true;
 
 ///First page to access quickly to last grades, homework and
 class SummaryPage extends StatefulWidget {
-  final Function? switchPage;
-
   const SummaryPage({
     Key? key,
-    this.switchPage,
   }) : super(key: key);
   State<StatefulWidget> createState() {
     return SummaryPageState();
   }
 }
 
-class SummaryPageState extends State<SummaryPage> {
+class SummaryPageState extends State<SummaryPage> with YPageMixin {
   double? actualPage;
   late PageController _pageControllerSummaryPage;
   PageController? todoSettingsController;
@@ -43,67 +43,34 @@ class SummaryPageState extends State<SummaryPage> {
 
   @override
   Widget build(BuildContext context) {
-    MediaQueryData screenSize = MediaQuery.of(context);
-
-    return VisibilityDetector(
-      key: Key('sumpage'),
-      onVisibilityChanged: (visibilityInfo) async {
-        await Permission.notification.request();
-        //Ensure that page is visible
-        var visiblePercentage = visibilityInfo.visibleFraction * 100;
-        if (visiblePercentage == 100) {
-          await showUpdateNote();
-        }
-      },
-      child: HiddenSettings(
-          controller: summarySettingsController,
-          settingsWidget: SummaryPageSettings(),
-          child: Container(
-            color: Colors.transparent,
-            height: screenSize.size.height,
-            child: RefreshIndicator(
-              onRefresh: refreshControllers,
-              child: ShaderMask(
-                shaderCallback: (Rect rect) {
-                  return LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [
-                      Colors.purple,
-                      Colors.transparent,
-                      Colors.transparent,
-                      Colors.purple
-                    ],
-                    stops: [
-                      0.0,
-                      0.0,
-                      0.94,
-                      1.0
-                    ], // 10% purple, 80% transparent, 10% purple
-                  ).createShader(rect);
-                },
-                blendMode: BlendMode.dstOut,
-                child: SingleChildScrollView(
-                  physics: AlwaysScrollableScrollPhysics(),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      separator(context, "Notes"),
-                      QuickGrades(
-                        switchPage: widget.switchPage,
-                      ),
-                      separator(context, "Devoirs"),
-                      QuickHomework(
-                        switchPage: widget.switchPage,
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          )),
-    );
+    return YPage(
+        title: "Résumé",
+        actions: [
+          IconButton(
+              onPressed: () => openLocalPage(
+                  YPageLocal(title: "Options", child: SummaryPageSettings())),
+              icon: Icon(MdiIcons.wrench))
+        ],
+        body: VisibilityDetector(
+            key: Key('sumpage'),
+            onVisibilityChanged: (visibilityInfo) async {
+              await Permission.notification.request();
+              //Ensure that page is visible
+              var visiblePercentage = visibilityInfo.visibleFraction * 100;
+              if (visiblePercentage == 100) {
+                await showUpdateNote();
+              }
+            },
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                separator(context, "Notes"),
+                QuickGrades(),
+                separator(context, "Devoirs"),
+                QuickHomework()
+              ],
+            )));
   }
 
   initLoginController() async {

@@ -11,10 +11,10 @@ class _TestPage2State extends State<TestPage2> with YPageMixin {
   @override
   Widget build(BuildContext context) {
     return YPage(
-        primaryColor: Colors.blue[700],
-        secondaryColor: Colors.teal,
+        // primaryColor: Colors.blue[700],
+        // secondaryColor: Colors.teal,
         title: "TestPage 2",
-        headerChildren: [Text("TEST 2")],
+        // headerChildren: [Text("TEST 2")],
         body: Column(
           children: [
             Text("Body test 2"),

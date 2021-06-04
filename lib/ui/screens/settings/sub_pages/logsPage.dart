@@ -16,13 +16,15 @@ Future<String> getFileData() async {
   }
 }
 
-logFile(String error) async {
+logFile(String text) async {
   print("logging");
   try {
     final directory = await FolderAppUtil.getDirectory();
     final File file = File('${directory.path}/logs.txt');
     String existingText = await getFileData();
-    await file.writeAsString(DateTime.now().toString() + "\n" + error + "\n\n" + existingText, mode: FileMode.write);
+    await file.writeAsString(
+        DateTime.now().toString() + "\n" + text + "\n\n" + existingText,
+        mode: FileMode.write);
   } catch (e) {
     print(e.toString());
   }
@@ -53,8 +55,10 @@ class _LogsPageState extends State<LogsPage> {
             IconButton(
               icon: new Icon(Icons.delete),
               onPressed: () async {
-                bool? val = await (CustomDialogs.showConfirmationDialog(context, null,
-                    alternativeText: "Voulez vous vraiment supprimer l'intégralité des logs (irréversible) ?"));
+                bool? val = await (CustomDialogs.showConfirmationDialog(
+                    context, null,
+                    alternativeText:
+                        "Voulez vous vraiment supprimer l'intégralité des logs (irréversible) ?"));
                 if (val ?? false) {
                   await removeLogFile();
                   setState(() {});
@@ -82,14 +86,17 @@ class _LogsPageState extends State<LogsPage> {
                     if (snapshot.hasData) {
                       return Center(
                           child: Container(
-                              padding: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
+                              padding: EdgeInsets.only(
+                                  top: screenSize.size.height / 10 * 0.2),
                               width: screenSize.size.width / 5 * 4.5,
                               child: SingleChildScrollView(
                                 padding: EdgeInsets.zero,
                                 reverse: true,
                                 child: SelectableText(
                                   snapshot.data ?? "",
-                                  style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                                  style: TextStyle(
+                                      fontFamily: "Asap",
+                                      color: ThemeUtils.textColor()),
                                 ),
                               )));
                     } else {
