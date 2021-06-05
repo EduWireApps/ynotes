@@ -1,5 +1,6 @@
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/offline/data/agenda/events.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/agendaEventEditBottomSheet.dart';
@@ -10,9 +11,9 @@ addEvent(context) async {
   if (temp != null) {
     print(temp.recurrenceScheme);
     if (temp.recurrenceScheme != null && temp.recurrenceScheme != "0") {
-      await appSys.offline.agendaEvents.addAgendaEvent(temp, temp.recurrenceScheme);
+      await AgendaEventsOffline(appSys.offline).addAgendaEvent(temp, temp.recurrenceScheme);
     } else {
-      await appSys.offline.agendaEvents.addAgendaEvent(temp, await getWeek(temp.start!));
+      await AgendaEventsOffline(appSys.offline).addAgendaEvent(temp, await getWeek(temp.start!));
     }
     await AppNotification.scheduleAgendaReminders(temp);
   }

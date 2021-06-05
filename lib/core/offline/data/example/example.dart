@@ -2,12 +2,12 @@ import 'package:ynotes/core/offline/offline.dart';
 
 class Example {}
 
-class ExampleOffline extends Offline {
+class ExampleOffline {
   late Offline parent;
 
   //Locked bool is often useless but add it if you don't want your class to be collected
   //in isolates.
-  ExampleOffline(bool locked, Offline _parent) : super(locked) {
+  ExampleOffline(Offline _parent) {
     parent = _parent;
   }
 
@@ -36,7 +36,6 @@ class ExampleOffline extends Offline {
 
   update(List<Example>? newData) async {
     /*
-    if (!locked) {
       print("Update examples (length : ${newData!.length})");
       try {
         //IMPORTANT :
@@ -44,11 +43,11 @@ class ExampleOffline extends Offline {
         await parent.offlineBox!.delete("example");
         await parent.offlineBox!.put("example", newData);
         //refresh cached data
-        await parent.refreshData();
+        
       } catch (e) {
         print("Error while updating examples " + e.toString());
       }
-    }
+  
     */
   }
 }

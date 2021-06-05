@@ -1,7 +1,11 @@
+
+import 'package:supercharged/supercharged.dart';
+
 import 'package:calendar_time/calendar_time.dart';
 import 'package:isar/isar.dart';
 import 'package:ynotes/core/logic/appConfig/controller.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/offline/data/homework/doneHomework.dart';
 import 'package:ynotes/isar.g.dart';
 
 class OfflineHomework {
@@ -30,7 +34,7 @@ class OfflineHomework {
   Future<void> migrateOldDoneHomeworkStatus(ApplicationSystem _appSys) async {
     if (_appSys.settings?["system"]["migratedHW"] ?? false) {
       print("Migrate old HW");
-      List<String> temp = _appSys.offline.doneHomework.getAllDoneHomeworkIDs() ?? [];
+      List<String> temp = DoneHomeworkOffline(_appSys.offline).getAllDoneHomeworkIDs() ?? [];
       await isarInstance.writeTxn((isar) async {
         print(temp);
         List<Homework> hw =
@@ -47,6 +51,7 @@ class OfflineHomework {
   }
 
   Future<void> updateHomework(List<Homework> newHomeworks) async {
+
     await isarInstance.writeTxn((isar) async {
       await Future.forEach(
           await isar.homeworks

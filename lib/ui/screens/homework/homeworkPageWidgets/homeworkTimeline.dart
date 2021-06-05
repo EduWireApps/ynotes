@@ -79,7 +79,9 @@ class _HomeworkElementState extends State<HomeworkElement> with SingleTickerProv
                   child: Container(
                     child: Card(
                       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-                      color: widget.homework[widget.index].editable ? Color(0xff7DD3FC) : Color(snapshot.data ?? 0),
+                      color: widget.homework[widget.index].editable
+                          ? Theme.of(context).primaryColor
+                          : Color(snapshot.data ?? 0),
                       margin: EdgeInsets.zero,
                       child: InkWell(
                         borderRadius: BorderRadius.circular(5),

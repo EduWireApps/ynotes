@@ -1,4 +1,5 @@
 import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/offline/data/homework/doneHomework.dart';
 import 'package:ynotes/globals.dart';
 
 class HomeworkUtils {
@@ -13,7 +14,7 @@ class HomeworkUtils {
         int done = 0;
 
         await Future.forEach(list, (dynamic element) async {
-          bool isDone = await appSys.offline.doneHomework.getHWCompletion(element.id);
+          bool isDone = await DoneHomeworkOffline(appSys.offline).getHWCompletion(element.id);
           if (isDone) {
             done++;
           }

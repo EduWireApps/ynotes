@@ -5,6 +5,8 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:uuid/uuid.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/offline/data/agenda/events.dart';
+import 'package:ynotes/core/offline/data/agenda/reminders.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
@@ -129,12 +131,12 @@ class _AgendaEventEditLayoutState extends State<AgendaEventEditLayout> {
                                       null &&
                                   this.widget.customEvent!.recurrenceScheme !=
                                       "0") {
-                                await appSys.offline.agendaEvents
+                                await AgendaEventsOffline(appSys.offline)
                                     .removeAgendaEvent(
                                         id,
                                         await getWeek(
                                             this.widget.customEvent!.start!));
-                                await appSys.offline.agendaEvents
+                                await AgendaEventsOffline(appSys.offline)
                                     .removeAgendaEvent(
                                         id,
                                         this
@@ -142,7 +144,7 @@ class _AgendaEventEditLayoutState extends State<AgendaEventEditLayout> {
                                             .customEvent!
                                             .recurrenceScheme);
                               } else {
-                                await appSys.offline.agendaEvents
+                                await AgendaEventsOffline(appSys.offline)
                                     .removeAgendaEvent(
                                         id,
                                         await getWeek(
@@ -150,7 +152,7 @@ class _AgendaEventEditLayoutState extends State<AgendaEventEditLayout> {
                               }
                             }
                             if (this.widget.reminder != null) {
-                              appSys.offline.reminders.remove(id);
+                              RemindersOffline(appSys.offline).remove(id);
                             }
                             Navigator.of(context).pop("removed");
                           },

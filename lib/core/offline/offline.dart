@@ -11,38 +11,77 @@ import 'package:ynotes/core/offline/data/mails/recipients.dart';
 import 'package:ynotes/core/offline/data/polls/polls.dart';
 import 'package:ynotes/core/offline/data/schoolLife/schoolLife.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
+
+class HiveBoxProvider {
+  static Future<dynamic>? _initFlutterFuture;
+
+  Future deleteBox(String name) async {
+    return await Hive.deleteBoxFromDisk(name);
+  }
+
+  Future<Box<TValue>> openBox<TValue>(String name) async {
+    await init();
+    return await Hive.openBox<TValue>(name);
+  }
+
+  static Future close() async {
+    _initFlutterFuture = null;
+    await Hive.close();
+  }
+
+  static Future init() async {
+    if (_initFlutterFuture == null) {
+      var dir = await FolderAppUtil.getDirectory();
+      try {
+        Hive.init("${dir.path}/offline");
+      } catch (e) {
+        print("Issue while initing Hive : " + e.toString());
+      }
+      registerAdapters();
+    }
+    await _initFlutterFuture;
+  }
+
+  static void registerAdapters() {
+    _registerAdapter(GradeAdapter());
+    _registerAdapter(HomeworkAdapter());
+    _registerAdapter(DisciplineAdapter());
+    _registerAdapter(DocumentAdapter());
+    _registerAdapter(LessonAdapter());
+    _registerAdapter(PollInfoAdapter());
+    _registerAdapter(AgendaReminderAdapter());
+    _registerAdapter(AgendaEventAdapter());
+    _registerAdapter(RecipientAdapter());
+    _registerAdapter(SchoolLifeTicketAdapter());
+    _registerAdapter(AlarmTypeAdapter());
+  }
+
+  static void _registerAdapter<T>(TypeAdapter<T> adapter) {
+    if (!Hive.isAdapterRegistered(adapter.typeId)) {
+      Hive.registerAdapter<T>(adapter);
+    }
+  }
+}
 
 ///An offline class to deal with the `hivedb` package
 ///used to store offline data and stored values such as agenda events
 ///The "locked" boolean avoid database unwanted modifications on another thread
 ///Unlock it on another thread/isolate could `definitely break the user database, so please be cautious`.
 class Offline {
-  //To use in isolate in order to read only
-  final bool locked;
+  //Boxes name
+  static final String offlineCacheBoxName = "offlineData";
+  static final String doneHomeworkBoxName = "doneHomework";
+  static final String pinnedHomeworkBoxName = "pinnedHomework";
+  static final String agendaBoxName = "agenda";
 
-  //Return disciplines + grades
-  List<Discipline>? disciplinesData;
-  //Return homework
-  List<Homework>? homeworkData;
-  //Return lessons
-  Map<dynamic, dynamic>? lessonsData;
-  //Return polls
-  List<PollInfo>? pollsData;
-  //Return school life tickets
-  List<SchoolLifeTicket>? schoolLifeData;
-  //Return agenda reminder
-  List<AgendaReminder>? remindersData;
-  //Return agenda event
-  Map<dynamic, dynamic>? agendaEventsData;
-  //Return recipients
-  List<Recipient>? recipientsData;
-  //Boxes containing offline data
   Box? offlineBox;
   Box? homeworkDoneBox;
   Box? pinnedHomeworkBox;
+  Box? homeworkBox;
   Box? agendaBox;
-
+/*
   //Imports
   late HomeworkOffline homework;
   late DoneHomeworkOffline doneHomework;
@@ -56,33 +95,14 @@ class Offline {
   late PollsOffline polls;
 
   late RecipientsOffline recipients;
-
-  Offline(this.locked);
+*/
+  Offline();
   //Called on dispose
   clearAll() async {
     try {
-      if (offlineBox == null || !offlineBox!.isOpen) {
-        offlineBox = await Hive.openBox("offlineData");
-      }
-      if (homeworkDoneBox == null || !homeworkDoneBox!.isOpen) {
-        homeworkDoneBox = await Hive.openBox("doneHomework");
-      }
-      if (pinnedHomeworkBox == null || !pinnedHomeworkBox!.isOpen) {
-        pinnedHomeworkBox = await Hive.openBox('pinnedHomework');
-      }
-      if (agendaBox == null || !agendaBox!.isOpen) {
-        agendaBox = await Hive.openBox("agenda");
-      }
-      await offlineBox!.deleteFromDisk();
-      await homeworkDoneBox!.deleteFromDisk();
-      await pinnedHomeworkBox!.deleteFromDisk();
-      disciplinesData?.clear();
-      homeworkData?.clear();
-      lessonsData?.clear();
-      remindersData?.clear();
-      agendaEventsData?.clear();
-      schoolLifeData?.clear();
-      recipientsData?.clear();
+      await offlineBox?.deleteFromDisk();
+      await homeworkDoneBox?.deleteFromDisk();
+      await pinnedHomeworkBox?.deleteFromDisk();
       await this.init();
     } catch (e) {
       print("Failed to clear all db " + e.toString());
@@ -104,105 +124,25 @@ class Offline {
 
   init() async {
     print("Init offline");
-    if (!locked) {
-      //Register adapters once
-      try {
-        Hive.registerAdapter(GradeAdapter());
-        Hive.registerAdapter(HomeworkAdapter());
+    //Register adapters once
 
-        Hive.registerAdapter(DisciplineAdapter());
-        Hive.registerAdapter(DocumentAdapter());
-        Hive.registerAdapter(LessonAdapter());
-        Hive.registerAdapter(PollInfoAdapter());
-        Hive.registerAdapter(AgendaReminderAdapter());
-        Hive.registerAdapter(AgendaEventAdapter());
-        Hive.registerAdapter(RecipientAdapter());
-        Hive.registerAdapter(SchoolLifeTicketAdapter());
-
-        Hive.registerAdapter(AlarmTypeAdapter());
-      } catch (e) {
-        print("Error " + e.toString());
-      }
-      var dir = await FolderAppUtil.getDirectory();
-      try {
-        Hive.init("${dir.path}/offline");
-        offlineBox = await safeBoxOpen("offlineData");
-        homeworkDoneBox = await Hive.openBox('doneHomework');
-        pinnedHomeworkBox = await Hive.openBox('pinnedHomework');
-        agendaBox = await Hive.openBox("agenda");
-        print("All boxes opened");
-      } catch (e) {
-        print("Issue while opening boxes : " + e.toString());
-      }
-    }
-    initObjects();
-  }
-
-  initObjects() {
-    homework = HomeworkOffline(this.locked, this);
-    doneHomework = DoneHomeworkOffline(this.locked, this);
-    pinnedHomework = PinnedHomeworkOffline(this.locked, this);
-    agendaEvents = AgendaEventsOffline(this.locked, this);
-    reminders = RemindersOffline(this.locked, this);
-    lessons = LessonsOffline(this.locked, this);
-    disciplines = DisciplinesOffline(this.locked, this);
-    polls = PollsOffline(this.locked, this);
-    recipients = RecipientsOffline(this.locked, this);
-    schoolLife = SchoolLifeOffline(this.locked, this);
-  }
-
-  openBoxes() {}
-
-  refreshData() async {
-    if (!locked) {
-      print("Refreshing offline");
-      try {
-        //Get data and cast it
-        var offlineLessonsData = await agendaBox?.get("lessons");
-        var offlineDisciplinesData = await offlineBox?.get("disciplines");
-        var offlinehomeworkData = await offlineBox?.get("homework");
-        var offlinePollsData = await offlineBox?.get("polls");
-        var offlineRemindersData = await agendaBox?.get("reminders");
-        var offlineAgendaEventsData = await agendaBox?.get("agendaEvents");
-        var offlineRecipientsData = await offlineBox?.get("recipients");
-        var offlineSchoolLifeData = await offlineBox?.get("schoolLife");
-
-        //ensure that fetched data isn't null and if not, add it to the final value
-        if (offlineLessonsData != null) {
-          this.lessonsData = Map<dynamic, dynamic>.from(offlineLessonsData);
-        }
-        if (offlineDisciplinesData != null) {
-          this.disciplinesData = offlineDisciplinesData.cast<Discipline>();
-        }
-        if (offlinehomeworkData != null) {
-          this.homeworkData = offlinehomeworkData.cast<Homework>();
-        }
-        if (offlinePollsData != null) {
-          this.pollsData = offlinePollsData.cast<PollInfo>();
-        }
-        if (offlineRemindersData != null) {
-          this.remindersData = offlineRemindersData.cast<AgendaReminder>();
-        }
-        if (offlineAgendaEventsData != null) {
-          this.agendaEventsData =
-              Map<dynamic, dynamic>.from(offlineAgendaEventsData);
-        }
-        if (offlineRecipientsData != null) {
-          this.recipientsData = offlineRecipientsData.cast<Recipient>();
-        }
-        if (offlineSchoolLifeData != null) {
-          this.schoolLifeData = offlineSchoolLifeData.cast<SchoolLifeTicket>();
-        }
-      } catch (e) {
-        print("Error while refreshing " + e.toString());
-      }
+    var dir = await FolderAppUtil.getDirectory();
+    try {
+      Hive.init("${dir.path}/offline");
+      offlineBox = await safeBoxOpen(offlineCacheBoxName);
+      homeworkDoneBox = await appSys.hiveBoxProvider.openBox(doneHomeworkBoxName);
+      pinnedHomeworkBox = await appSys.hiveBoxProvider.openBox(pinnedHomeworkBoxName);
+      agendaBox = await appSys.hiveBoxProvider.openBox(agendaBoxName);
+      print("All boxes opened");
+    } catch (e) {
+      print("Issue while opening boxes : " + e.toString());
     }
   }
 
   //Refresh lists when needed
   safeBoxOpen(String boxName) async {
     try {
-      Box box = await Hive.openBox(boxName).catchError((e) async {
+      Box box = await appSys.hiveBoxProvider.openBox(boxName).catchError((e) async {
         await logFile("Error while opening $boxName");
         throw ("Something bad happened.");
       });
@@ -211,16 +151,11 @@ class Offline {
     } catch (e) {
       print("Error while opening $boxName");
       if (boxName.contains("offlineData")) {
-        await deleteCorruptedBox(boxName);
+        await appSys.hiveBoxProvider.deleteBox(boxName);
       }
-      await init();
+      await this.init();
 
       throw ("Error while opening $boxName");
     }
-  }
-
-  //Clear all databases
-  test() {
-    print(offlineBox);
   }
 }

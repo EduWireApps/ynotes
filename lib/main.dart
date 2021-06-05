@@ -13,6 +13,7 @@ import 'package:ynotes/core/logic/appConfig/controller.dart';
 import 'package:ynotes/core/services/background.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/globals.dart';
+import 'package:ynotes/ui/components/hiveLifeCycleManager.dart';
 import 'package:ynotes/ui/screens/carousel/carousel.dart';
 import 'package:ynotes/ui/screens/drawer/drawerBuilder.dart';
 import 'package:ynotes/ui/screens/loading/loadingPage.dart';
@@ -47,8 +48,7 @@ _headlessTask(HeadlessTask? task) async {
       await AppNotification.cancelNotification(task.taskId.hashCode);
       BackgroundFetch.finish(task.taskId);
     }
-    await BackgroundService.backgroundFetchHeadlessTask(task.taskId,
-        headless: true);
+    await BackgroundService.backgroundFetchHeadlessTask(task.taskId, headless: true);
     BackgroundFetch.finish(task.taskId);
   }
 }
@@ -126,13 +126,9 @@ class _HomeAppState extends State<HomeApp> {
           secret: "y9zengsvskpriizwniqxr6vxa1ka1n6u",
           navigatorKey: _navigatorKey,
           theme: WiredashThemeData(
-              backgroundColor:
-                  ThemeUtils.isThemeDark ? Color(0xff313131) : Colors.white,
-              primaryBackgroundColor: ThemeUtils.isThemeDark
-                  ? Color(0xff414141)
-                  : Color(0xffF3F3F3),
-              secondaryBackgroundColor:
-                  ThemeUtils.isThemeDark ? Color(0xff313131) : Colors.white,
+              backgroundColor: ThemeUtils.isThemeDark ? Color(0xff313131) : Colors.white,
+              primaryBackgroundColor: ThemeUtils.isThemeDark ? Color(0xff414141) : Color(0xffF3F3F3),
+              secondaryBackgroundColor: ThemeUtils.isThemeDark ? Color(0xff313131) : Colors.white,
               secondaryColor: Theme.of(context).primaryColorDark,
               primaryColor: Theme.of(context).primaryColor,
               primaryTextColor: ThemeUtils.textColor(),
@@ -142,24 +138,26 @@ class _HomeAppState extends State<HomeApp> {
             /// You can set your own locale to override device default (`window.locale` by default)
             locale: const Locale.fromSubtags(languageCode: 'fr'),
           ),
-          child: MaterialApp(
-            localizationsDelegates: [
-              // ... app-specific localization delegate[s] here
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: [
-              const Locale('en'), // English (could be useless ?)
-              const Locale('fr'), //French
-              // ... other locales the app supports
-            ],
-            debugShowCheckedModeBanner: false,
-            theme: model.theme,
-            title: kDebugMode ? "yNotes DEV" : "yNotes",
-            navigatorKey: _navigatorKey,
-            home: Loader(),
-            themeMode: ThemeMode.light,
+          child: HiveLifecycleManager(
+            child: MaterialApp(
+              localizationsDelegates: [
+                // ... app-specific localization delegate[s] here
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: [
+                const Locale('en'), // English (could be useless ?)
+                const Locale('fr'), //French
+                // ... other locales the app supports
+              ],
+              debugShowCheckedModeBanner: false,
+              theme: model.theme,
+              title: kDebugMode ? "yNotes DEV" : "yNotes",
+              navigatorKey: _navigatorKey,
+              home: Loader(),
+              themeMode: ThemeMode.light,
+            ),
           ),
         );
       }),
@@ -171,15 +169,15 @@ class _HomeAppState extends State<HomeApp> {
   }
 }
 
-extension StringExtension on String {
-  String capitalize() {
-    return "${this[0].toUpperCase()}${this.substring(1)}";
-  }
-}
-
 extension IndexedIterable<E> on Iterable<E> {
   Iterable<T> mapIndexed<T>(T Function(E e, int i) f) {
     var i = 0;
     return map((e) => f(e, i++));
+  }
+}
+
+extension StringExtension on String {
+  String capitalize() {
+    return "${this[0].toUpperCase()}${this.substring(1)}";
   }
 }

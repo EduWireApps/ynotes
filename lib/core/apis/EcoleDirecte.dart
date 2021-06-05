@@ -12,6 +12,10 @@ import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/offline/data/agenda/lessons.dart';
+import 'package:ynotes/core/offline/data/disciplines/disciplines.dart';
+import 'package:ynotes/core/offline/data/mails/recipients.dart';
+import 'package:ynotes/core/offline/data/schoolLife/schoolLife.dart';
 import 'package:ynotes/core/offline/isar/data/homework.dart';
 import 'package:ynotes/core/offline/isar/data/mail.dart';
 import 'package:ynotes/core/offline/offline.dart';
@@ -138,7 +142,7 @@ class APIEcoleDirecte extends API {
         {
           print("Returing mail recipients");
           return (await EcoleDirecteMethod.fetchAnyData(
-              EcoleDirecteMethod(this.offlineController).recipients, offlineController.recipients.getRecipients));
+              EcoleDirecteMethod(this.offlineController).recipients, RecipientsOffline(offlineController).getRecipients));
         }
     }
   }
@@ -165,8 +169,8 @@ class APIEcoleDirecte extends API {
 //Getting grades
   Future<List<Discipline>> getGrades({bool? forceReload}) async {
     return await EcoleDirecteMethod.fetchAnyData(
-        EcoleDirecteMethod(this.offlineController).grades, offlineController.disciplines.getDisciplines,
-        forceFetch: forceReload ?? false, isOfflineLocked: this.offlineController.locked);
+        EcoleDirecteMethod(this.offlineController).grades, DisciplinesOffline(offlineController).getDisciplines,
+        forceFetch: forceReload ?? false);
   }
 
 //Get dates of the the next homework (based on the EcoleDirecte API)
@@ -175,7 +179,6 @@ class APIEcoleDirecte extends API {
         EcoleDirecteMethod(this.offlineController, isar: appSys.isar).homeworkFor,
         OfflineHomework(appSys.isar).getHomeworkFor,
         forceFetch: forceReload ?? false,
-        isOfflineLocked: this.offlineController.locked,
         offlineArguments: dateHomework,
         onlineArguments: dateHomework);
   }
@@ -184,7 +187,7 @@ class APIEcoleDirecte extends API {
   Future<List<Mail>>? getMails({bool? forceReload}) async {
     return await EcoleDirecteMethod.fetchAnyData(
         EcoleDirecteMethod(this.offlineController, isar: appSys.isar).mails, OfflineMail(appSys.isar).getAllMails,
-        forceFetch: forceReload ?? false, isOfflineLocked: this.offlineController.locked);
+        forceFetch: forceReload ?? false);
   }
 
   Future<List<Homework>> getNextHomework({bool? forceReload}) async {
@@ -197,9 +200,8 @@ class APIEcoleDirecte extends API {
   @override
   Future<List<Lesson>?> getNextLessons(DateTime dateToUse, {bool? forceReload = false}) async {
     List<Lesson>? lessons = await EcoleDirecteMethod.fetchAnyData(
-        EcoleDirecteMethod.lessons, offlineController.lessons.get,
+        EcoleDirecteMethod(offlineController).lessons, LessonsOffline(offlineController).get,
         forceFetch: forceReload ?? false,
-        isOfflineLocked: super.offlineController.locked,
         onlineArguments: dateToUse,
         offlineArguments: await getWeek(dateToUse));
 
@@ -212,7 +214,7 @@ class APIEcoleDirecte extends API {
 
   Future<List<SchoolLifeTicket>> getSchoolLife({bool forceReload = false}) async {
     return await EcoleDirecteMethod.fetchAnyData(
-        EcoleDirecteMethod(this.offlineController).schoolLife, offlineController.schoolLife.get,
+        EcoleDirecteMethod(this.offlineController).schoolLife, SchoolLifeOffline(offlineController).get,
         forceFetch: forceReload);
   }
 
@@ -296,7 +298,7 @@ class APIEcoleDirecte extends API {
 
   Future<List<Recipient>?> mailRecipients() async {
     return (await EcoleDirecteMethod.fetchAnyData(
-        EcoleDirecteMethod(this.offlineController).recipients, offlineController.recipients.getRecipients));
+        EcoleDirecteMethod(this.offlineController).recipients, RecipientsOffline(offlineController).getRecipients));
   }
 
   @override
@@ -304,7 +306,7 @@ class APIEcoleDirecte extends API {
     try {
       //Getting the offline count of grades
       List<Grade> listOfflineGrades =
-          getAllGrades(await appSys.offline.disciplines.getDisciplines(), overrideLimit: true)!;
+          getAllGrades(await DisciplinesOffline(offlineController).getDisciplines(), overrideLimit: true)!;
       print("Offline length is ${listOfflineGrades.length}");
       //Getting the online count of grades
       List<Grade> listOnlineGrades =

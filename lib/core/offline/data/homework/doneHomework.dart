@@ -1,8 +1,8 @@
 import 'package:ynotes/core/offline/offline.dart';
 
-class DoneHomeworkOffline extends Offline {
+class DoneHomeworkOffline {
   late Offline parent;
-  DoneHomeworkOffline(bool locked, Offline _parent) : super(locked) {
+  DoneHomeworkOffline(Offline _parent) {
     parent = _parent;
   }
 
@@ -45,13 +45,11 @@ class DoneHomeworkOffline extends Offline {
   }
 
   setHWCompletion(String? id, bool? state) async {
-    if (!locked) {
-      print("Setting done hw");
-      try {
-        await parent.homeworkDoneBox!.put(id.toString(), state);
-      } catch (e) {
-        print("Error during the setHomeworkDoneProcess $e");
-      }
+    print("Setting done hw");
+    try {
+      await parent.homeworkDoneBox!.put(id.toString(), state);
+    } catch (e) {
+      print("Error during the setHomeworkDoneProcess $e");
     }
   }
 }

@@ -196,10 +196,10 @@ class _SpaceAgendaState extends State<SpaceAgenda> {
         /*AgendaEvent temp = await agendaEventEdit(context, true, defaultDate: agendaDate);
         if (temp != null) {
           if (temp.recurrenceScheme != null && temp.recurrenceScheme != "0") {
-            await appSys.offline.agendaEvents.add(temp, temp.recurrenceScheme);
+            await AgendaEventsOffline(appSys.offline).add(temp, temp.recurrenceScheme);
             await refreshAgendaFutures(force: false);
           } else {
-            await appSys.offline.agendaEvents.add(temp, await get_week(temp.start));
+            await AgendaEventsOffline(appSys.offline).add(temp, await get_week(temp.start));
             await refreshAgendaFutures(force: false);
           }
         }
