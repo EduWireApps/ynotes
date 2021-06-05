@@ -189,7 +189,6 @@ class HomeworkController extends ChangeNotifier {
 //Load all events
   Future<void> prepareOld(List<Homework> oldHW) async {
     Future.forEach(oldHW, (Homework element) async {
-      await element.files.load();
       //remove duplicates
       if (!element.loaded! &&
           !unloadedHW.any((unloadedelement) =>

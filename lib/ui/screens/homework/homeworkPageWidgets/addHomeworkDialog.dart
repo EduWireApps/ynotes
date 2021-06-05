@@ -257,7 +257,6 @@ class _AddHomeworkBottomSheetState extends State<AddHomeworkBottomSheet> {
         ..disciplineCode = disciplineNameTextController.text.hashCode.toString()
         ..rawContent = contentTextController.text
         ..isATest = isATest
-        ..dbId = widget.defaultHW?.dbId
         ..id = generateID()
         ..loaded = true
         ..done = false

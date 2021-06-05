@@ -71,7 +71,7 @@ class AgendaReminder {
   @HiveField(2)
   String? description;
   @HiveField(3)
-  alarmType? alarm;
+  AlarmType? alarm;
   @HiveField(4)
   int? tagColor;
   @HiveField(5)
@@ -89,7 +89,7 @@ class AgendaReminder {
 ///`exactly` will trigger the alarm at the exact event start, `oneDay` will trigger the alarm
 ///at 7:00 pm the day before
 @HiveType(typeId: 7)
-enum alarmType {
+enum AlarmType {
   @HiveField(0)
   none,
   @HiveField(1)
@@ -137,7 +137,7 @@ class AgendaEvent {
   @HiveField(12)
   final String? description;
   @HiveField(13)
-  final alarmType? alarm;
+  final AlarmType? alarm;
   @HiveField(14)
   final bool? wholeDay;
   @HiveField(15)

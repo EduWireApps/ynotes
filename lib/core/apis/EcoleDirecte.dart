@@ -14,6 +14,7 @@ import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/offline/data/agenda/lessons.dart';
 import 'package:ynotes/core/offline/data/disciplines/disciplines.dart';
+import 'package:ynotes/core/offline/data/homework/homework.dart';
 import 'package:ynotes/core/offline/data/mails/recipients.dart';
 import 'package:ynotes/core/offline/data/schoolLife/schoolLife.dart';
 import 'package:ynotes/core/offline/isar/data/homework.dart';
@@ -177,7 +178,7 @@ class APIEcoleDirecte extends API {
   Future<List<Homework>> getHomeworkFor(DateTime? dateHomework, {bool? forceReload}) async {
     return await EcoleDirecteMethod.fetchAnyData(
         EcoleDirecteMethod(this.offlineController, isar: appSys.isar).homeworkFor,
-        OfflineHomework(appSys.isar).getHomeworkFor,
+        HomeworkOffline(appSys.offline).getHomeworkFor,
         forceFetch: forceReload ?? false,
         offlineArguments: dateHomework,
         onlineArguments: dateHomework);
@@ -193,7 +194,7 @@ class APIEcoleDirecte extends API {
   Future<List<Homework>> getNextHomework({bool? forceReload}) async {
     return await EcoleDirecteMethod.fetchAnyData(
         EcoleDirecteMethod(this.offlineController, isar: appSys.isar).nextHomework,
-        OfflineHomework(appSys.isar).getAllHomework,
+        HomeworkOffline(appSys.offline).getAllHomework,
         forceFetch: forceReload ?? false);
   }
 

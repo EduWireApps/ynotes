@@ -14,7 +14,7 @@ import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:wiredash/wiredash.dart';
 import 'package:ynotes/core/logic/appConfig/controller.dart';
-import 'package:ynotes/core/offline/isar/data/homework.dart';
+import 'package:ynotes/core/offline/data/homework/homework.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/services/platform.dart';
 import 'package:ynotes/core/utils/settingsUtils.dart';
@@ -521,7 +521,6 @@ class _SettingsPageState extends State<SettingsPage>
                                       "Etes-vous sûr de vouloir supprimer les données hors ligne ? (irréversible)")) ??
                               false) {
                             await _appSys.isar.writeTxn((isar) async {
-                              await isar.homeworks.where().deleteAll();
                               await isar.mails.where().deleteAll();
                             });
                           }
@@ -555,7 +554,6 @@ class _SettingsPageState extends State<SettingsPage>
                         title: 'Test',
                         leading: Icon(MdiIcons.emoticonConfused, color: ThemeUtils.textColor()),
                        onPressed: (context)  async {
-                          await OfflineHomework(appSys.isar).migrateOldDoneHomeworkStatus(_appSys);
                         },
                         titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                         subtitleTextStyle: TextStyle(

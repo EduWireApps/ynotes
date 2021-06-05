@@ -6,11 +6,8 @@ part 'models.g.dart';
 
 ///Class of a piece of homework
 
-@Collection()
 @HiveType(typeId: 0)
-class Homework {
-  @Id()
-  int? dbId;
+class Homework extends HiveObject {
   @HiveField(0)
   String? discipline;
   @HiveField(1)
@@ -38,8 +35,8 @@ class Homework {
   bool? loaded;
   bool editable;
   bool? pinned;
-  IsarLinks<Document> files = IsarLinks<Document>();
-  IsarLinks<Document> sessionFiles = IsarLinks<Document>();
+  List<Document> files = [];
+  List<Document> sessionFiles = [];
   Homework(
       {this.discipline,
       this.disciplineCode,
@@ -54,5 +51,5 @@ class Homework {
       this.teacherName,
       this.loaded,
       this.editable = false,
-      this.pinned});
+      this.pinned,});
 }

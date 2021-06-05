@@ -319,7 +319,7 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                                   crossAxisAlignment: WrapCrossAlignment.center,
                                   children: [
                                     //Plus button
-                                    if (reminders[index].alarm != alarmType.none)
+                                    if (reminders[index].alarm != AlarmType.none)
                                       Container(
                                         width: screenSize.size.width / 5 * 0.4,
                                         height: screenSize.size.width / 5 * 0.4,

@@ -246,7 +246,7 @@ class _AgendaElementState extends State<AgendaElement> {
                                               if (this.widget.event.alarm !=
                                                       null &&
                                                   this.widget.event.alarm !=
-                                                      alarmType.none)
+                                                      AlarmType.none)
                                                 Container(
                                                     width:
                                                         screenSize.size.width /

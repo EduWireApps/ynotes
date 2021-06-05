@@ -12,6 +12,7 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
 import 'package:ynotes/core/offline/data/agenda/lessons.dart';
 import 'package:ynotes/core/offline/data/disciplines/disciplines.dart';
+import 'package:ynotes/core/offline/data/homework/homework.dart';
 import 'package:ynotes/core/offline/data/polls/polls.dart';
 import 'package:ynotes/core/offline/isar/data/homework.dart';
 import 'package:ynotes/core/offline/offline.dart';
@@ -79,7 +80,7 @@ class APIPronote extends API {
   Future<List<Homework>?> getHomeworkFor(DateTime? dateHomework, {bool? forceReload}) async {
     pronoteMethod.isar = appSys.isar;
     return (await pronoteMethod.fetchAnyData(
-        pronoteMethod.homeworkFor, OfflineHomework(appSys.isar).getHomeworkFor, "homework for",
+        pronoteMethod.homeworkFor, HomeworkOffline(offlineController).getHomeworkFor, "homework for",
         forceFetch: forceReload ?? false,
         offlineArguments: dateHomework,
         onlineArguments: dateHomework));
@@ -89,7 +90,7 @@ class APIPronote extends API {
   Future<List<Homework>?> getNextHomework({bool? forceReload}) async {
     pronoteMethod.isar = appSys.isar;
     return (await pronoteMethod.fetchAnyData(
-        pronoteMethod.nextHomework, OfflineHomework(appSys.isar).getAllHomework, "homework",
+        pronoteMethod.nextHomework, HomeworkOffline(offlineController).getAllHomework, "homework",
         forceFetch: forceReload ?? false));
   }
 

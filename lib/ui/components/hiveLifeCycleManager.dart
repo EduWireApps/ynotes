@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/offline/offline.dart';
+import 'package:ynotes/globals.dart';
 
 class HiveLifecycleManager extends StatefulWidget {
   final Widget child;
@@ -22,7 +23,10 @@ class _HiveLifecycleManagerState extends State<HiveLifecycleManager> with Widget
       case AppLifecycleState.resumed:
         // force a close and start from fresh. Just incase
         // a box wasn't closed on inactive/paused
-        HiveBoxProvider.close().then((value) => HiveBoxProvider.init());
+        HiveBoxProvider.close().then((value) {
+          HiveBoxProvider.init();
+          appSys.offline.init();
+        });
         break;
       case AppLifecycleState.inactive:
       case AppLifecycleState.paused:

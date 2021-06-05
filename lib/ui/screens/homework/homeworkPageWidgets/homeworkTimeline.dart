@@ -11,7 +11,7 @@ import 'package:provider/provider.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/homework/controller.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/core/offline/isar/data/homework.dart';
+import 'package:ynotes/core/offline/data/homework/homework.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/main.dart';
@@ -127,7 +127,7 @@ class _HomeworkElementState extends State<HomeworkElement> with SingleTickerProv
                                               onChanged: (bool? x) async {
                                                 widget.homework[widget.index].done = x;
                                                 setState(() {});
-                                                await OfflineHomework(appSys.isar)
+                                                await HomeworkOffline(appSys.offline)
                                                     .updateSingleHW(widget.homework[widget.index]);
                                               },
                                             )),
@@ -425,7 +425,8 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
       onPressed: () async {
         Homework? temp = await showAddHomeworkBottomSheet(context);
         if (temp != null) {
-          await OfflineHomework(appSys.isar).updateHomework([temp]);
+          await HomeworkOffline(appSys.offline).updateHomework([temp]);
+        } else {
         }
         await appSys.homeworkController.refresh();
 

@@ -73,6 +73,7 @@ class Offline {
   //Boxes name
   static final String offlineCacheBoxName = "offlineData";
   static final String doneHomeworkBoxName = "doneHomework";
+    static final String homeworkBoxName = "homework";
   static final String pinnedHomeworkBoxName = "pinnedHomework";
   static final String agendaBoxName = "agenda";
 
@@ -131,6 +132,7 @@ class Offline {
       Hive.init("${dir.path}/offline");
       offlineBox = await safeBoxOpen(offlineCacheBoxName);
       homeworkDoneBox = await appSys.hiveBoxProvider.openBox(doneHomeworkBoxName);
+      homeworkBox = await appSys.hiveBoxProvider.openBox(doneHomeworkBoxName);
       pinnedHomeworkBox = await appSys.hiveBoxProvider.openBox(pinnedHomeworkBoxName);
       agendaBox = await appSys.hiveBoxProvider.openBox(agendaBoxName);
       print("All boxes opened");

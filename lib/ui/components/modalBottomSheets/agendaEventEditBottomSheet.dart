@@ -84,7 +84,7 @@ class _AgendaEventEditLayoutState extends State<AgendaEventEditLayout> {
 
   DateTime? start;
   DateTime? end;
-  alarmType alarm = alarmType.none;
+  AlarmType alarm = AlarmType.none;
   String? description;
   bool? wholeDay = true;
   String? id;
@@ -512,7 +512,7 @@ class _AgendaEventEditLayoutState extends State<AgendaEventEditLayout> {
                                   singleChoice: true);
                           if (choice != null && choice.length == 1) {
                             setState(() {
-                              alarm = alarmType.values[choice[0]];
+                              alarm = AlarmType.values[choice[0]];
                             });
                           }
                         },
@@ -609,7 +609,7 @@ class _AgendaEventEditLayoutState extends State<AgendaEventEditLayout> {
       titleController.text = title ?? "";
       description = this.widget.customEvent?.description;
       descriptionController.text = description ?? "";
-      alarm = this.widget.customEvent?.alarm ?? alarmType.none;
+      alarm = this.widget.customEvent?.alarm ?? AlarmType.none;
       id = this.widget.customEvent?.id;
       tagColor = this.widget.customEvent?.realColor ?? Colors.deepOrange;
       wholeDay = this.widget.customEvent?.wholeDay;
@@ -628,7 +628,7 @@ class _AgendaEventEditLayoutState extends State<AgendaEventEditLayout> {
       titleController.text = title!;
       description = this.widget.reminder?.description;
       descriptionController.text = description!;
-      alarm = this.widget.reminder?.alarm ?? alarmType.none;
+      alarm = this.widget.reminder?.alarm ?? AlarmType.none;
       id = this.widget.reminder?.id;
       tagColor = this.widget.reminder?.realTagColor ?? Colors.deepOrange;
     }

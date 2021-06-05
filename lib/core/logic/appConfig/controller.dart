@@ -15,7 +15,6 @@ import 'package:ynotes/core/logic/homework/controller.dart';
 import 'package:ynotes/core/logic/mails/controller.dart';
 import 'package:ynotes/core/logic/schoolLife/controller.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
-import 'package:ynotes/core/offline/isar/data/homework.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/background.dart';
 import 'package:ynotes/core/services/notifications.dart';
@@ -84,7 +83,6 @@ class ApplicationSystem extends ChangeNotifier {
       await storage.deleteAll();
       this.updateTheme("clair");
       await this.isar.writeTxn((isar) async {
-        await isar.homeworks.where().deleteAll();
         await isar.mails.where().deleteAll();
       });
     } catch (e) {
@@ -131,7 +129,6 @@ class ApplicationSystem extends ChangeNotifier {
   initIsar() async {
     var dir = await FolderAppUtil.getDirectory();
     isar = await openIsar(directory: "${dir.path}/offline");
-    await OfflineHomework(isar).migrateOldDoneHomeworkStatus(this);
   }
 
 //Leave app

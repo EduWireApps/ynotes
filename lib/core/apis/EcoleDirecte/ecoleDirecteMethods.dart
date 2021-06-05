@@ -12,6 +12,7 @@ import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/offline/data/agenda/lessons.dart';
 import 'package:ynotes/core/offline/data/disciplines/disciplines.dart';
+import 'package:ynotes/core/offline/data/homework/homework.dart';
 import 'package:ynotes/core/offline/data/homework/pinnedHomework.dart';
 import 'package:ynotes/core/offline/data/mails/recipients.dart';
 import 'package:ynotes/core/offline/data/schoolLife/schoolLife.dart';
@@ -113,7 +114,7 @@ class EcoleDirecteMethod {
       hw.date = date;
     });
     if (this.isar != null) {
-      await OfflineHomework(isar!).updateHomework(homework);
+      await HomeworkOffline(_offlineController).updateHomework(homework);
       print("Updated hw");
     }
     //await appSys.offline.homework.updateHomework(homework, add: true, forceAdd: true);
@@ -150,7 +151,7 @@ class EcoleDirecteMethod {
         data, rootUrl, method, EcoleDirecteHomeworkConverter.unloadedHomework, "UHomework request returned an error:",
         ignoreMethodAndId: false);
     if (this.isar != null) {
-      await OfflineHomework(isar!).updateHomework(homeworkList);
+      await HomeworkOffline(_offlineController).updateHomework(homeworkList);
       print("Updated hw");
     }
     return homeworkList;

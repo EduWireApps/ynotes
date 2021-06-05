@@ -10,6 +10,7 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
 import 'package:ynotes/core/offline/data/agenda/lessons.dart';
 import 'package:ynotes/core/offline/data/disciplines/disciplines.dart';
+import 'package:ynotes/core/offline/data/homework/homework.dart';
 import 'package:ynotes/core/offline/isar/data/homework.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/utils/nullSafeMap.dart';
@@ -95,7 +96,7 @@ class PronoteMethod {
         await request("PageCahierDeTexte", PronoteHomeworkConverter.homework, data: jsonData, onglet: 88);
     (hw ?? []).removeWhere((element) => element.date != date);
     if (this.isar != null && hw != null) {
-      await OfflineHomework(isar!).updateHomework(hw);
+      await HomeworkOffline(_offlineController).updateHomework(hw);
     }
     return hw;
   }
@@ -148,7 +149,7 @@ class PronoteMethod {
 
     listHW.addAll(hws ?? []);
     if (this.isar != null) {
-      await OfflineHomework(isar!).updateHomework(listHW);
+      await HomeworkOffline(_offlineController).updateHomework(listHW);
     }
     return listHW;
   }

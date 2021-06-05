@@ -185,23 +185,23 @@ class AppNotification {
       ]);
 
       //Unschedule existing
-      if (event.alarm == alarmType.none) {
+      if (event.alarm == AlarmType.none) {
       } else {
         //delay between task start and task end
         Duration delay = Duration();
-        if (event.alarm == alarmType.exactly) {
+        if (event.alarm == AlarmType.exactly) {
           delay = Duration.zero;
         }
-        if (event.alarm == alarmType.fiveMinutes) {
+        if (event.alarm == AlarmType.fiveMinutes) {
           delay = Duration(minutes: 5);
         }
-        if (event.alarm == alarmType.fifteenMinutes) {
+        if (event.alarm == AlarmType.fifteenMinutes) {
           delay = Duration(minutes: 15);
         }
-        if (event.alarm == alarmType.thirtyMinutes) {
+        if (event.alarm == AlarmType.thirtyMinutes) {
           delay = Duration(minutes: 30);
         }
-        if (event.alarm == alarmType.oneDay) {
+        if (event.alarm == AlarmType.oneDay) {
           delay = Duration(days: 1);
         }
         String time = DateFormat("HH:mm").format(event.start!);
@@ -237,24 +237,24 @@ class AppNotification {
         await (RemindersOffline(appSys.offline).getReminders(event.lesson!.id) as Future<List<AgendaReminder>>);
     await Future.forEach(reminders, (AgendaReminder rmd) async {
       //Unschedule existing
-      if (rmd.alarm == alarmType.none) {
+      if (rmd.alarm == AlarmType.none) {
         await cancelNotification(event.id.hashCode);
       } else {
         //delay between task start and task end
         Duration delay = Duration();
-        if (rmd.alarm == alarmType.exactly) {
+        if (rmd.alarm == AlarmType.exactly) {
           delay = Duration.zero;
         }
-        if (rmd.alarm == alarmType.fiveMinutes) {
+        if (rmd.alarm == AlarmType.fiveMinutes) {
           delay = Duration(minutes: 5);
         }
-        if (rmd.alarm == alarmType.fifteenMinutes) {
+        if (rmd.alarm == AlarmType.fifteenMinutes) {
           delay = Duration(minutes: 15);
         }
-        if (rmd.alarm == alarmType.thirtyMinutes) {
+        if (rmd.alarm == AlarmType.thirtyMinutes) {
           delay = Duration(minutes: 30);
         }
-        if (rmd.alarm == alarmType.oneDay) {
+        if (rmd.alarm == AlarmType.oneDay) {
           delay = Duration(days: 1);
         }
         String text = "Rappel relié à l'évènement ${event.name} : \n <b>${rmd.name}</b> ${rmd.description}";
