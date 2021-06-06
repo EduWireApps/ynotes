@@ -33,7 +33,7 @@ apiManager(Offline _offline) {
   //The parser list index corresponding to the user choice
   switch (appSys.settings!["system"]["chosenParser"]) {
     case 0:
-      return APIEcoleDirecte(_offline, appSys.isar);
+      return APIEcoleDirecte(_offline);
 
     case 1:
       return APIPronote(_offline);

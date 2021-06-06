@@ -18,7 +18,7 @@ class MailsController extends ChangeNotifier {
     loading = true;
     notifyListeners();
     try {
-      mails = await (_api! as APIEcoleDirecte).getMails(forceReload: force);
+      mails = await (_api as APIEcoleDirecte).getMails(forceReload: force);
       notifyListeners();
     } catch (e) {
       print(e);

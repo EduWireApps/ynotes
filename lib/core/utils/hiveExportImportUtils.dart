@@ -77,7 +77,6 @@ class HiveBackUpManager {
 
         await this.box!.putAll(finalMap);
       }
-      await appSys.offline.refreshData();
     }
     print("Imported data");
   }

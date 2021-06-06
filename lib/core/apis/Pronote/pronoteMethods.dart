@@ -1,6 +1,5 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:intl/intl.dart';
-import 'package:isar/isar.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteAPI.dart';
 import 'package:ynotes/core/apis/Pronote/converters/polls.dart';
 import 'package:ynotes/core/apis/Pronote/convertersExporter.dart';
@@ -8,7 +7,9 @@ import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
-import 'package:ynotes/core/offline/isar/data/homework.dart';
+import 'package:ynotes/core/offline/data/agenda/lessons.dart';
+import 'package:ynotes/core/offline/data/disciplines/disciplines.dart';
+import 'package:ynotes/core/offline/data/homework/homework.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/utils/nullSafeMap.dart';
 import 'package:ynotes/globals.dart';
@@ -18,20 +19,15 @@ class PronoteMethod {
   Map locks = Map();
   PronoteClient? client;
   final Offline _offlineController;
-  Isar? isar;
 
-  PronoteMethod(this.client, this._offlineController, {this.isar});
+  PronoteMethod(this.client, this._offlineController);
 
   Future<List<SchoolAccount>?> accounts() async {}
 
   Future<List<CloudItem>?> cloudFolders() async {}
 
-  Future<dynamic> fetchAnyData(
-      dynamic onlineFetch, dynamic offlineFetch, String lockName,
-      {bool forceFetch = false,
-      isOfflineLocked = false,
-      dynamic onlineArguments,
-      dynamic offlineArguments}) async {
+  Future<dynamic> fetchAnyData(dynamic onlineFetch, dynamic offlineFetch, String lockName,
+      {bool forceFetch = false, isOfflineLocked = false, dynamic onlineArguments, dynamic offlineArguments}) async {
     //Test connection status
     var connectivityResult = await (Connectivity().checkConnectivity());
     //Offline
@@ -42,17 +38,13 @@ class PronoteMethod {
         await onlineFetchWithLock(onlineFetch, lockName, arguments: onlineArguments);
         return await offlineFetch();
       } catch (e) {
-        return await (offlineArguments != null
-            ? offlineFetch(offlineArguments)
-            : offlineFetch());
+        return await (offlineArguments != null ? offlineFetch(offlineArguments) : offlineFetch());
       }
     } else {
       //Offline data;
       var data;
       if (!isOfflineLocked) {
-        data = await (offlineArguments != null
-            ? offlineFetch(offlineArguments)
-            : offlineFetch());
+        data = await (offlineArguments != null ? offlineFetch(offlineArguments) : offlineFetch());
       }
       if (data == null) {
         print("Online fetch because offline is null");
@@ -83,9 +75,9 @@ class PronoteMethod {
       });
     }
     print("Completed disciplines request");
-    if (!_offlineController.locked) {
-      await _offlineController.disciplines.updateDisciplines(listDisciplines);
-    }
+
+    await DisciplinesOffline(_offlineController).updateDisciplines(listDisciplines);
+
     appSys.updateSetting(appSys.settings!["system"], "lastGradeCount",
         (getAllGrades(listDisciplines, overrideLimit: true) ?? []).length);
     return listDisciplines;
@@ -94,27 +86,21 @@ class PronoteMethod {
   Future<List<Homework>?> homeworkFor(DateTime date) async {
     var jsonData = {
       'donnees': {
-        'domaine': {
-          '_T': 8,
-          'V': "[${await getWeek(date)}..${await getWeek(date)}]"
-        }
+        'domaine': {'_T': 8, 'V': "[${await getWeek(date)}..${await getWeek(date)}]"}
       },
     };
-    List<Homework>? hw = await request(
-        "PageCahierDeTexte", PronoteHomeworkConverter.homework,
-        data: jsonData, onglet: 88);
+    List<Homework>? hw =
+        await request("PageCahierDeTexte", PronoteHomeworkConverter.homework, data: jsonData, onglet: 88);
     (hw ?? []).removeWhere((element) => element.date != date);
-    if (this.isar != null && hw != null) {
-      await OfflineHomework(isar!).updateHomework(hw);
+    if (hw != null) {
+      await HomeworkOffline(_offlineController).updateHomework(hw);
     }
     return hw;
   }
 
   Future<List<Lesson>?> lessons(DateTime dateFrom, {DateTime? dateTo}) async {
     List<Lesson>? lessons = [];
-    var user =
-        mapGet(client?.paramsUser, ['donneesSec', 'donnees', 'ressource']) ??
-            "";
+    var user = mapGet(client?.paramsUser, ['donneesSec', 'donnees', 'ressource']) ?? "";
     Map jsonData = {
       "donnees": {
         "ressource": user,
@@ -135,11 +121,10 @@ class PronoteMethod {
     for (int week = firstWeek; week < (lastWeek + 1); week++) {
       jsonData["donnees"]["NumeroSemaine"] = week;
       jsonData["donnees"]["numeroSemaine"] = week;
-      List<Lesson> newLessons = await request(
-          "PageEmploiDuTemps", PronoteLessonsConverter.lessons,
-          data: jsonData, onglet: 16);
+      List<Lesson> newLessons =
+          await request("PageEmploiDuTemps", PronoteLessonsConverter.lessons, data: jsonData, onglet: 16);
       lessons.addAll(newLessons);
-      await appSys.offline.lessons.updateLessons(newLessons, week);
+      await LessonsOffline(_offlineController).updateLessons(newLessons, week);
     }
 
     return lessons;
@@ -149,31 +134,23 @@ class PronoteMethod {
     DateTime now = DateTime.now();
     List<Homework> listHW = [];
     final f = new DateFormat('dd/MM/yyyy');
-    var dateTo = f.parse(this.client?.funcOptions['donneesSec']['donnees']
-        ['General']['DerniereDate']['V']);
+    var dateTo = f.parse(this.client?.funcOptions['donneesSec']['donnees']['General']['DerniereDate']['V']);
     var jsonData = {
       'donnees': {
-        'domaine': {
-          '_T': 8,
-          'V': "[${await getWeek(now)}..${await getWeek(dateTo)}]"
-        }
+        'domaine': {'_T': 8, 'V': "[${await getWeek(now)}..${await getWeek(dateTo)}]"}
       },
     };
-    List<Homework>? hws = await request(
-        "PageCahierDeTexte", PronoteHomeworkConverter.homework,
-        data: jsonData, onglet: 88);
-    hws?.removeWhere(
-        (element) => element.date == null && element.date!.isBefore(now));
+    List<Homework>? hws =
+        await request("PageCahierDeTexte", PronoteHomeworkConverter.homework, data: jsonData, onglet: 88);
+    hws?.removeWhere((element) => element.date == null && element.date!.isBefore(now));
 
     listHW.addAll(hws ?? []);
-    if (this.isar != null) {
-      await OfflineHomework(isar!).updateHomework(listHW);
-    }
+    await HomeworkOffline(_offlineController).updateHomework(listHW);
+
     return listHW;
   }
 
-  onlineFetchWithLock(dynamic onlineFetch, lockName,
-      {dynamic arguments}) async {
+  onlineFetchWithLock(dynamic onlineFetch, lockName, {dynamic arguments}) async {
     int req = 0;
     //Time out of 20 seconds. Wait until the task is unlocked
     while (testLock(lockName) && req < 10) {
@@ -185,16 +162,12 @@ class PronoteMethod {
         //Lock current function
         locks[lockName] = true;
         print("Fetching task with name " + lockName);
-        var toReturn =
-            await (arguments != null ? onlineFetch(arguments) : onlineFetch());
+        var toReturn = await (arguments != null ? onlineFetch(arguments) : onlineFetch());
         //Unlock it
         locks[lockName] = false;
         return toReturn;
       } catch (e) {
-        print("Error while fetching for " +
-            (lockName ?? "") +
-            " " +
-            e.toString());
+        print("Error while fetching for " + (lockName ?? "") + " " + e.toString());
         locks[lockName] = false;
         if (!testLock("recursive_" + lockName)) {
           print("Refreshing client");
@@ -208,9 +181,7 @@ class PronoteMethod {
 
   //Test if another concurrent task is not running
   Future<List<PollInfo>?> polls() async {
-    List<PollInfo>? polls = await request(
-        "PageActualites", PronotePollsConverter.polls,
-        data: {}, onglet: 8);
+    List<PollInfo>? polls = await request("PageActualites", PronotePollsConverter.polls, data: {}, onglet: 8);
     return polls;
   }
 
@@ -227,25 +198,19 @@ class PronoteMethod {
     }
   }
 
-  request(String functionName, Function? converter,
-      {var data, var customURL, int? onglet}) async {
+  Future<dynamic> request(String functionName, Function? converter, {var data, var customURL, int? onglet}) async {
     data = Map.from(data);
-    if (onglet != null &&
-        appSys.currentSchoolAccount != null &&
-        !appSys.account!.isParentMainAccount)
+    if (onglet != null && appSys.currentSchoolAccount != null && !appSys.account!.isParentMainAccount)
       data['_Signature_'] = {'onglet': onglet};
     //If it is a parent account
-    if (onglet != null &&
-        appSys.currentSchoolAccount != null &&
-        appSys.account!.isParentMainAccount) {
+    if (onglet != null && appSys.currentSchoolAccount != null && appSys.account!.isParentMainAccount) {
       data['_Signature_'] = {
         'onglet': onglet,
         'membre': {'N': appSys.currentSchoolAccount!.studentID, 'G': 4}
       };
     }
     if (converter != null) {
-      return await converter(this.client,
-          await this.client?.communication!.post(functionName, data: data));
+      return await converter(this.client, await this.client?.communication!.post(functionName, data: data));
     } else {
       return await this.client?.communication!.post(functionName, data: data);
     }

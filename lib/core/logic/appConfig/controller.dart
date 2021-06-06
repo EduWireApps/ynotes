@@ -4,7 +4,6 @@ import 'package:background_fetch/background_fetch.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:isar/isar.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ynotes/core/apis/model.dart';
@@ -15,14 +14,11 @@ import 'package:ynotes/core/logic/homework/controller.dart';
 import 'package:ynotes/core/logic/mails/controller.dart';
 import 'package:ynotes/core/logic/schoolLife/controller.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
-import 'package:ynotes/core/offline/isar/data/homework.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/background.dart';
 import 'package:ynotes/core/services/notifications.dart';
-import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/utils/settingsUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
-import 'package:ynotes/isar.g.dart';
 import 'package:ynotes/ui/themes.dart';
 
 ///Top level application sytem class
@@ -43,9 +39,8 @@ class ApplicationSystem extends ChangeNotifier {
   ///The chosen API
   API? api;
 
-  ///The chosen API
   late Offline offline;
-  late final Isar isar;
+  late HiveBoxProvider hiveBoxProvider;
 
   ///App logger
   late Logger logger;
@@ -72,6 +67,15 @@ class ApplicationSystem extends ChangeNotifier {
     notifyListeners();
   }
 
+  buildControllers() {
+    loginController = LoginController();
+    gradesController = GradesController(this.api);
+    homeworkController = HomeworkController(this.api);
+    agendaController = AgendaController(this.api);
+    schoolLifeController = SchoolLifeController(this.api);
+    mailsController = MailsController(this.api);
+  }
+
   exitApp() async {
     try {
       await this.offline.clearAll();
@@ -86,10 +90,6 @@ class ApplicationSystem extends ChangeNotifier {
       //Delete all
       await storage.deleteAll();
       this.updateTheme("clair");
-      await this.isar.writeTxn((isar) async {
-        await isar.homeworks.where().deleteAll();
-        await isar.mails.where().deleteAll();
-      });
     } catch (e) {
       print(e);
     }
@@ -98,15 +98,13 @@ class ApplicationSystem extends ChangeNotifier {
   ///The most important function
   ///It will intialize Offline, APIs and background fetch
   initApp() async {
-    await initIsar();
-
     logger = Logger();
     //set settings
     await _initSettings();
     //Set theme to default
     updateTheme(settings!["user"]["global"]["theme"]);
     //Set offline
-    await _initOffline();
+    await initOffline();
     //Set api
     this.api = apiManager(this.offline);
 
@@ -119,12 +117,7 @@ class ApplicationSystem extends ChangeNotifier {
     //Set background fetch
     await _initBackgroundFetch();
     //Set controllers
-    loginController = LoginController();
-    gradesController = GradesController(this.api);
-    homeworkController = HomeworkController(this.api);
-    agendaController = AgendaController(this.api);
-    schoolLifeController = SchoolLifeController(this.api);
-    mailsController = MailsController(this.api);
+    buildControllers();
   }
 
   initControllers() async {
@@ -132,19 +125,21 @@ class ApplicationSystem extends ChangeNotifier {
     await this.homeworkController.refresh(force: true);
   }
 
-  initIsar() async {
-    var dir = await FolderAppUtil.getDirectory();
-    isar = await openIsar(directory: "${dir.path}/offline");
-    await OfflineHomework(isar).migrateOldDoneHomeworkStatus(this);
+//Leave app
+  initOffline() async {
+    hiveBoxProvider = HiveBoxProvider();
+    //Initiate an unlocked offline controller
+    offline = Offline();
+    await offline.init();
   }
 
-//Leave app
   updateSetting(Map path, String key, var value) {
     path[key] = value;
     SettingsUtils.setSetting(settings);
     notifyListeners();
   }
 
+// This "Headless Task" is run when app is terminated.
   updateTheme(String themeName) {
     print("Updating theme to " + themeName);
     theme = appThemes[themeName];
@@ -156,7 +151,6 @@ class ApplicationSystem extends ChangeNotifier {
     notifyListeners();
   }
 
-// This "Headless Task" is run when app is terminated.
   _initBackgroundFetch() async {
     if (Platform.isAndroid || Platform.isIOS) {
       print("Background fetch configuration...");
@@ -185,23 +179,10 @@ class ApplicationSystem extends ChangeNotifier {
     }
   }
 
-  _initOffline() async {
-    //Initiate an unlocked offline controller
-    offline = Offline(false);
-    await offline.init();
-  }
-
   _initSettings() async {
     settings = await SettingsUtils.getSettings();
     //Set theme to default
     updateTheme(settings!["user"]["global"]["theme"]);
     notifyListeners();
-  }
-}
-
-class Test {
-  Map? settings;
-  Test() {
-    settings = SettingsUtils.getAppSettings();
   }
 }

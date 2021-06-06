@@ -223,10 +223,6 @@ class _MailPageState extends State<MailPage> {
                                                         .primaryColor,
                                                 child: InkWell(
                                                     onTap: () async {
-                                                      await filterMails(
-                                                              localList)[index]
-                                                          .files
-                                                          .load();
                                                       await mailModalBottomSheet(
                                                           context,
                                                           filterMails(

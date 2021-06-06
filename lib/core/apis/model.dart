@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/offline/data/agenda/events.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/space/recurringEvents.dart';
 import 'package:ynotes/globals.dart';
@@ -45,12 +46,10 @@ abstract class API {
   Future<List<DateTime>?> getDatesNextHomework();
 
   ///All events
-  Future<List<AgendaEvent>?> getEvents(DateTime date, bool afterSchool,
-      {bool forceReload = false}) async {
+  Future<List<AgendaEvent>?> getEvents(DateTime date, bool afterSchool, {bool forceReload = false}) async {
     List<AgendaEvent> events = [];
     List<AgendaEvent>? extracurricularEvents = [];
-    List<Lesson>? lessons =
-        await (appSys.api!.getNextLessons(date, forceReload: forceReload));
+    List<Lesson>? lessons = await (appSys.api!.getNextLessons(date, forceReload: forceReload));
     int week = await getWeek(date);
     //Add lessons for this day
     if (lessons != null) {
@@ -59,8 +58,7 @@ abstract class API {
       lessons.sort((a, b) => a.end!.compareTo(b.end!));
     }
     if (!afterSchool) {
-      extracurricularEvents =
-          await (appSys.offline.agendaEvents.getAgendaEvents(week));
+      extracurricularEvents = await (AgendaEventsOffline(appSys.offline).getAgendaEvents(week));
       if (extracurricularEvents != null) {
         if (lessons != null && lessons.length > 0) {
           //delete the last one
@@ -73,13 +71,11 @@ abstract class API {
         }
         //merge
         for (AgendaEvent extracurricularEvent in extracurricularEvents) {
-          events
-              .removeWhere((element) => element.id == extracurricularEvent.id);
+          events.removeWhere((element) => element.id == extracurricularEvent.id);
         }
       }
     } else {
-      extracurricularEvents =
-          await (appSys.offline.agendaEvents.getAgendaEvents(week));
+      extracurricularEvents = await (AgendaEventsOffline(appSys.offline).getAgendaEvents(week));
 
       if (extracurricularEvents != null) {
         //extracurricularEvents.removeWhere((element) => element.isLesson);
@@ -92,8 +88,7 @@ abstract class API {
         }
         //merge
         for (AgendaEvent extracurricularEvent in extracurricularEvents) {
-          events
-              .removeWhere((element) => element.id == extracurricularEvent.id);
+          events.removeWhere((element) => element.id == extracurricularEvent.id);
         }
       }
     }
@@ -103,16 +98,15 @@ abstract class API {
     RecurringEventSchemes recurr = RecurringEventSchemes();
     recurr.date = date;
     recurr.week = week;
-    var recurringEvents = await appSys.offline.agendaEvents
-        .getAgendaEvents(week, selector: recurr.testRequest);
+    var recurringEvents = await AgendaEventsOffline(appSys.offline).getAgendaEvents(week, selector: recurr.testRequest);
     if (recurringEvents != null && recurringEvents.length != 0) {
       recurringEvents.forEach((recurringEvent) {
         events.removeWhere((element) => element.id == recurringEvent.id);
         if (recurringEvent.start != null && recurringEvent.end != null) {
-          recurringEvent.start = DateTime(date.year, date.month, date.day,
-              recurringEvent.start!.hour, recurringEvent.start!.minute);
-          recurringEvent.end = DateTime(date.year, date.month, date.day,
-              recurringEvent.end!.hour, recurringEvent.end!.minute);
+          recurringEvent.start =
+              DateTime(date.year, date.month, date.day, recurringEvent.start!.hour, recurringEvent.start!.minute);
+          recurringEvent.end =
+              DateTime(date.year, date.month, date.day, recurringEvent.end!.hour, recurringEvent.end!.minute);
         }
       });
 
@@ -134,7 +128,6 @@ abstract class API {
   Future<List<Homework>?> getNextHomework({bool? forceReload});
 
   Future<List<Lesson>?> getNextLessons(DateTime from, {bool? forceReload});
-
 
   ///SchoolLife
   Future<List<SchoolLifeTicket>?> getSchoolLife({bool forceReload = false});
@@ -177,8 +170,7 @@ class AppAccount {
     required this.isParentMainAccount,
     required this.apiType,
   });
-  factory AppAccount.fromJson(Map<String, dynamic> json) =>
-      _$AppAccountFromJson(json);
+  factory AppAccount.fromJson(Map<String, dynamic> json) => _$AppAccountFromJson(json);
   Map<String, dynamic> toJson() => _$AppAccountToJson(this);
 }
 
@@ -202,14 +194,8 @@ class SchoolAccount {
   ///Configuration credentials
   Map? credentials;
   SchoolAccount(
-      {this.name,
-      this.studentClass,
-      this.studentID,
-      required this.availableTabs,
-      this.surname,
-      this.schoolName})
+      {this.name, this.studentClass, this.studentID, required this.availableTabs, this.surname, this.schoolName})
       : super();
-  factory SchoolAccount.fromJson(Map<String, dynamic> json) =>
-      _$SchoolAccountFromJson(json);
+  factory SchoolAccount.fromJson(Map<String, dynamic> json) => _$SchoolAccountFromJson(json);
   Map<String, dynamic> toJson() => _$SchoolAccountToJson(this);
 }

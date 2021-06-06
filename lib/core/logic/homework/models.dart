@@ -1,16 +1,12 @@
 import 'package:hive/hive.dart';
-import 'package:isar/isar.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 
 part 'models.g.dart';
 
 ///Class of a piece of homework
 
-@Collection()
 @HiveType(typeId: 0)
-class Homework {
-  @Id()
-  int? dbId;
+class Homework extends HiveObject {
   @HiveField(0)
   String? discipline;
   @HiveField(1)
@@ -36,23 +32,29 @@ class Homework {
   //Useful for Ecole Directe users
   @HiveField(13)
   bool? loaded;
+  @HiveField(14)
   bool editable;
+
+  @HiveField(15)
   bool? pinned;
-  IsarLinks<Document> files = IsarLinks<Document>();
-  IsarLinks<Document> sessionFiles = IsarLinks<Document>();
-  Homework(
-      {this.discipline,
-      this.disciplineCode,
-      this.id,
-      this.rawContent,
-      this.sessionRawContent,
-      this.date,
-      this.entryDate,
-      this.done,
-      this.toReturn,
-      this.isATest,
-      this.teacherName,
-      this.loaded,
-      this.editable = false,
-      this.pinned});
+  @HiveField(16)
+  List<Document> files = [];
+  @HiveField(17)
+  List<Document> sessionFiles = [];
+  Homework({
+    this.discipline,
+    this.disciplineCode,
+    this.id,
+    this.rawContent,
+    this.sessionRawContent,
+    this.date,
+    this.entryDate,
+    this.done,
+    this.toReturn,
+    this.isATest,
+    this.teacherName,
+    this.loaded,
+    this.editable = false,
+    this.pinned,
+  });
 }

@@ -10,10 +10,9 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/appConfig/controller.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/core/offline/isar/data/homework.dart';
+import 'package:ynotes/core/offline/data/homework/homework.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/isar.g.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/filesBottomSheet.dart';
@@ -144,7 +143,7 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                 setState(() {
                   hw.done = !(hw.done ?? false);
                 });
-                await OfflineHomework(appSys.isar).updateSingleHW(hw);
+                await HomeworkOffline(appSys.offline).updateSingleHW(hw);
               },
                   borderRadius: BorderRadius.circular(11),
                   backgroundColor: (hw.done ?? false) ? Colors.green : color,
@@ -155,7 +154,7 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                 setState(() {
                   hw.pinned = !(hw.pinned ?? false);
                 });
-                await OfflineHomework(appSys.isar).updateSingleHW(hw);
+                await HomeworkOffline(appSys.offline).updateSingleHW(hw);
               },
                   borderRadius: BorderRadius.circular(11),
                   backgroundColor: (hw.pinned ?? false) ? Colors.green : color,
@@ -194,7 +193,7 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                     context, screenSize.size.width / 5 * 0.55, screenSize.size.width / 5 * 0.55, () async {
                   Homework? temp = await showAddHomeworkBottomSheet(context, hw: hw);
                   if (temp != null) {
-                    await OfflineHomework(appSys.isar).updateHomework([temp]);
+                    await HomeworkOffline(appSys.offline).updateSingleHW(temp);
                   }
                   await refreshSelf();
                   setState(() {});
@@ -206,10 +205,9 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
               if (hw.editable)
                 CustomButtons.materialButton(
                     context, screenSize.size.width / 5 * 0.55, screenSize.size.width / 5 * 0.55, () async {
-                  if (hw.dbId != null) {
-                    await appSys.isar.writeTxn((isar) => isar.homeworks.delete(hw.dbId!));
-                  }
+                  await hw.delete();
                   await refreshSelf();
+
                   setState(() {});
                 },
                     borderRadius: BorderRadius.circular(11),
@@ -487,9 +485,7 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
       } else {
         widget.homework = hw;
       }
-      await Future.forEach(widget.homework, (Homework hw) async {
-        await hw.files.load();
-      });
+
       setState(() {});
     }
   }

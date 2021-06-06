@@ -10,7 +10,6 @@ import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/dragHandle.dart';
 
 Future<Homework?> showAddHomeworkBottomSheet(context, {Homework? hw}) {
-
   return showModalBottomSheet(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
@@ -251,18 +250,20 @@ class _AddHomeworkBottomSheetState extends State<AddHomeworkBottomSheet> {
 
   process(BuildContext context) {
     if (disciplineNameTextController.text != "" && contentTextController.text != "") {
-      Homework hw = Homework()
+      if (widget.defaultHW == null) {
+        widget.defaultHW = Homework();
+      }
+      widget.defaultHW!
         ..date = date
         ..discipline = disciplineNameTextController.text
         ..disciplineCode = disciplineNameTextController.text.hashCode.toString()
         ..rawContent = contentTextController.text
         ..isATest = isATest
-        ..dbId = widget.defaultHW?.dbId
         ..id = generateID()
         ..loaded = true
         ..done = false
         ..editable = true;
-      Navigator.pop(context, hw);
+      Navigator.pop(context, widget.defaultHW);
     } else {
       CustomDialogs.showAnyDialog(context, "Remplissez tous les champs");
     }

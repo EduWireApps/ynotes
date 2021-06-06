@@ -4,6 +4,8 @@ import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/offline/data/agenda/events.dart';
+import 'package:ynotes/core/offline/data/agenda/reminders.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
@@ -124,7 +126,7 @@ class _AgendaElementState extends State<AgendaElement> {
                             if (temp != null) {
                               if (temp.recurrenceScheme != null &&
                                   temp.recurrenceScheme != "0") {
-                                await appSys.offline.agendaEvents
+                                await AgendaEventsOffline(appSys.offline)
                                     .addAgendaEvent(
                                         temp, temp.recurrenceScheme);
 
@@ -132,7 +134,7 @@ class _AgendaElementState extends State<AgendaElement> {
                                   this.widget.event = temp;
                                 });
                               } else {
-                                await appSys.offline.agendaEvents
+                                await AgendaEventsOffline(appSys.offline)
                                     .addAgendaEvent(
                                         temp, await getWeek(temp.start));
 
@@ -144,7 +146,7 @@ class _AgendaElementState extends State<AgendaElement> {
                                   temp);
                             }
                           } else {
-                            await appSys.offline.reminders.removeAll(_event.id);
+                            await RemindersOffline(appSys.offline).removeAll(_event.id);
                             await AppNotification.cancelNotification(
                                 _event.id.hashCode);
                           }
@@ -244,7 +246,7 @@ class _AgendaElementState extends State<AgendaElement> {
                                               if (this.widget.event.alarm !=
                                                       null &&
                                                   this.widget.event.alarm !=
-                                                      alarmType.none)
+                                                      AlarmType.none)
                                                 Container(
                                                     width:
                                                         screenSize.size.width /

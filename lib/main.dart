@@ -14,6 +14,7 @@ import 'package:ynotes/core/services/background.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/router.dart';
+import 'package:ynotes/ui/components/hiveLifeCycleManager.dart';
 import 'package:ynotes/ui/screens/carousel/carousel.dart';
 import 'package:ynotes/ui/screens/loading/loadingPage.dart';
 import 'package:ynotes/ui/screens/summary/summaryPage.dart';
@@ -144,25 +145,27 @@ class _HomeAppState extends State<HomeApp> {
             /// You can set your own locale to override device default (`window.locale` by default)
             locale: const Locale.fromSubtags(languageCode: 'fr'),
           ),
-          child: MaterialApp(
-            localizationsDelegates: [
-              // ... app-specific localization delegate[s] here
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: [
-              const Locale('en'), // English (could be useless ?)
-              const Locale('fr'), //French
-              // ... other locales the app supports
-            ],
-            debugShowCheckedModeBanner: false,
-            theme: model.theme,
-            title: kDebugMode ? "yNotes DEV" : "yNotes",
-            navigatorKey: _navigatorKey,
-            home: Loader(),
-            themeMode: ThemeMode.light,
-            onGenerateRoute: onGenerateRoute,
+          child: HiveLifecycleManager(
+            child: MaterialApp(
+              localizationsDelegates: [
+                // ... app-specific localization delegate[s] here
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: [
+                const Locale('en'), // English (could be useless ?)
+                const Locale('fr'), //French
+                // ... other locales the app supports
+              ],
+              debugShowCheckedModeBanner: false,
+              theme: model.theme,
+              title: kDebugMode ? "yNotes DEV" : "yNotes",
+              navigatorKey: _navigatorKey,
+              home: Loader(),
+              themeMode: ThemeMode.light,
+              onGenerateRoute: onGenerateRoute,
+            ),
           ),
         );
       }),
@@ -174,15 +177,15 @@ class _HomeAppState extends State<HomeApp> {
   }
 }
 
-extension StringExtension on String {
-  String capitalize() {
-    return "${this[0].toUpperCase()}${this.substring(1)}";
-  }
-}
-
 extension IndexedIterable<E> on Iterable<E> {
   Iterable<T> mapIndexed<T>(T Function(E e, int i) f) {
     var i = 0;
     return map((e) => f(e, i++));
+  }
+}
+
+extension StringExtension on String {
+  String capitalize() {
+    return "${this[0].toUpperCase()}${this.substring(1)}";
   }
 }

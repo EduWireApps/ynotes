@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:isar/isar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ynotes/core/apis/EcoleDirecte/convertersExporter.dart';
 import 'package:ynotes/core/apis/EcoleDirecte/ecoleDirecteCloud.dart';
@@ -12,8 +11,12 @@ import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/core/offline/isar/data/homework.dart';
-import 'package:ynotes/core/offline/isar/data/mail.dart';
+import 'package:ynotes/core/offline/data/agenda/lessons.dart';
+import 'package:ynotes/core/offline/data/disciplines/disciplines.dart';
+import 'package:ynotes/core/offline/data/homework/homework.dart';
+import 'package:ynotes/core/offline/data/mails/mails.dart';
+import 'package:ynotes/core/offline/data/mails/recipients.dart';
+import 'package:ynotes/core/offline/data/schoolLife/schoolLife.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
@@ -71,47 +74,9 @@ Future<List<CloudItem>?> getCloud(String? args, String? action, CloudItem? item)
   }
 }
 
-Future<String?> readMail(String mailId, bool read, bool received) async {
-  await EcoleDirecteMethod.testToken();
-  String? id = appSys.currentSchoolAccount?.studentID;
-  String settingMode = received ? "destinataire" : "expediteur";
-  var url = 'https://api.ecoledirecte.com/v3/eleves/$id/messages/$mailId.awp?verbe=get&mode=$settingMode';
-
-  Map<String, String> headers = {"Content-type": "text/plain"};
-  String data = 'data={"token": "$token"}';
-  //encode Map to JSON
-  var body = data;
-  var response = await http.post(Uri.parse(url), headers: headers, body: body).catchError((e) {
-    throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou reessayez plus tard.");
-  });
-  print("Starting the mail reading");
-  try {
-    if (response.statusCode == 200) {
-      Map<String, dynamic> req = jsonDecode(response.body);
-      if (req['code'] == 200) {
-        String toDecode = req['data']['content'];
-        toDecode = utf8.decode(base64.decode(toDecode.replaceAll("\n", "")));
-        await OfflineMail(appSys.isar).updateMailContent(toDecode, mailId);
-        return toDecode;
-      }
-      //Return an error
-      else {
-        printWrapped(response.body);
-        throw "Error wrong internal status code ";
-      }
-    } else {
-      print(response.statusCode);
-      throw "Error wrong status code";
-    }
-  } catch (e) {
-    print("error during the mail reading $e");
-  }
-}
-
 ///The ecole directe api extended from the apiManager.dart API class
 class APIEcoleDirecte extends API {
-  Isar? isar;
-  APIEcoleDirecte(Offline offlineController, Isar isar) : super(offlineController);
+  APIEcoleDirecte(Offline offlineController) : super(offlineController);
 
   @override
   Future<List> apiStatus() async {
@@ -137,8 +102,8 @@ class APIEcoleDirecte extends API {
       case "mailRecipients":
         {
           print("Returing mail recipients");
-          return (await EcoleDirecteMethod.fetchAnyData(
-              EcoleDirecteMethod(this.offlineController).recipients, offlineController.recipients.getRecipients));
+          return (await EcoleDirecteMethod.fetchAnyData(EcoleDirecteMethod(this.offlineController).recipients,
+              RecipientsOffline(offlineController).getRecipients));
         }
     }
   }
@@ -165,43 +130,35 @@ class APIEcoleDirecte extends API {
 //Getting grades
   Future<List<Discipline>> getGrades({bool? forceReload}) async {
     return await EcoleDirecteMethod.fetchAnyData(
-        EcoleDirecteMethod(this.offlineController).grades, offlineController.disciplines.getDisciplines,
-        forceFetch: forceReload ?? false, isOfflineLocked: this.offlineController.locked);
+        EcoleDirecteMethod(this.offlineController).grades, DisciplinesOffline(offlineController).getDisciplines,
+        forceFetch: forceReload ?? false);
+  }
+
+  Future<List<Homework>> getHomeworkFor(DateTime? dateHomework, {bool? forceReload}) async {
+    return await EcoleDirecteMethod.fetchAnyData(
+        EcoleDirecteMethod(this.offlineController).homeworkFor, HomeworkOffline(offlineController).getHomeworkFor,
+        forceFetch: forceReload ?? false, offlineArguments: dateHomework, onlineArguments: dateHomework);
   }
 
 //Get dates of the the next homework (based on the EcoleDirecte API)
-  Future<List<Homework>> getHomeworkFor(DateTime? dateHomework, {bool? forceReload}) async {
+  Future<List<Mail>>? getMails({bool? forceReload}) async {
     return await EcoleDirecteMethod.fetchAnyData(
-        EcoleDirecteMethod(this.offlineController, isar: appSys.isar).homeworkFor,
-        OfflineHomework(appSys.isar).getHomeworkFor,
-        forceFetch: forceReload ?? false,
-        isOfflineLocked: this.offlineController.locked,
-        offlineArguments: dateHomework,
-        onlineArguments: dateHomework);
+        EcoleDirecteMethod(this.offlineController).mails, MailsOffline(this.offlineController).getAllMails,
+        forceFetch: forceReload ?? false);
   }
 
 //Get homeworks for a specific date
-  Future<List<Mail>>? getMails({bool? forceReload}) async {
+  Future<List<Homework>?> getNextHomework({bool? forceReload}) async {
     return await EcoleDirecteMethod.fetchAnyData(
-        EcoleDirecteMethod(this.offlineController, isar: appSys.isar).mails, OfflineMail(appSys.isar).getAllMails,
-        forceFetch: forceReload ?? false, isOfflineLocked: this.offlineController.locked);
-  }
-
-  Future<List<Homework>> getNextHomework({bool? forceReload}) async {
-    return await EcoleDirecteMethod.fetchAnyData(
-        EcoleDirecteMethod(this.offlineController, isar: appSys.isar).nextHomework,
-        OfflineHomework(appSys.isar).getAllHomework,
+        EcoleDirecteMethod(this.offlineController).nextHomework, HomeworkOffline(this.offlineController).getAllHomework,
         forceFetch: forceReload ?? false);
   }
 
   @override
   Future<List<Lesson>?> getNextLessons(DateTime dateToUse, {bool? forceReload = false}) async {
     List<Lesson>? lessons = await EcoleDirecteMethod.fetchAnyData(
-        EcoleDirecteMethod.lessons, offlineController.lessons.get,
-        forceFetch: forceReload ?? false,
-        isOfflineLocked: super.offlineController.locked,
-        onlineArguments: dateToUse,
-        offlineArguments: await getWeek(dateToUse));
+        EcoleDirecteMethod(offlineController).lessons, LessonsOffline(offlineController).get,
+        forceFetch: forceReload ?? false, onlineArguments: dateToUse, offlineArguments: await getWeek(dateToUse));
 
     return (lessons ?? [])
         .where((lesson) =>
@@ -212,7 +169,7 @@ class APIEcoleDirecte extends API {
 
   Future<List<SchoolLifeTicket>> getSchoolLife({bool forceReload = false}) async {
     return await EcoleDirecteMethod.fetchAnyData(
-        EcoleDirecteMethod(this.offlineController).schoolLife, offlineController.schoolLife.get,
+        EcoleDirecteMethod(this.offlineController).schoolLife, SchoolLifeOffline(offlineController).get,
         forceFetch: forceReload);
   }
 
@@ -296,7 +253,44 @@ class APIEcoleDirecte extends API {
 
   Future<List<Recipient>?> mailRecipients() async {
     return (await EcoleDirecteMethod.fetchAnyData(
-        EcoleDirecteMethod(this.offlineController).recipients, offlineController.recipients.getRecipients));
+        EcoleDirecteMethod(this.offlineController).recipients, RecipientsOffline(offlineController).getRecipients));
+  }
+
+  Future<String?> readMail(String mailId, bool read, bool received) async {
+    await EcoleDirecteMethod.testToken();
+    String? id = appSys.currentSchoolAccount?.studentID;
+    String settingMode = received ? "destinataire" : "expediteur";
+    var url = 'https://api.ecoledirecte.com/v3/eleves/$id/messages/$mailId.awp?verbe=get&mode=$settingMode';
+
+    Map<String, String> headers = {"Content-type": "text/plain"};
+    String data = 'data={"token": "$token"}';
+    //encode Map to JSON
+    var body = data;
+    var response = await http.post(Uri.parse(url), headers: headers, body: body).catchError((e) {
+      throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou reessayez plus tard.");
+    });
+    print("Starting the mail reading");
+    try {
+      if (response.statusCode == 200) {
+        Map<String, dynamic> req = jsonDecode(response.body);
+        if (req['code'] == 200) {
+          String toDecode = req['data']['content'];
+          toDecode = utf8.decode(base64.decode(toDecode.replaceAll("\n", "")));
+          await MailsOffline(offlineController).updateMailContent(toDecode, mailId);
+          return toDecode;
+        }
+        //Return an error
+        else {
+          printWrapped(response.body);
+          throw "Error wrong internal status code ";
+        }
+      } else {
+        print(response.statusCode);
+        throw "Error wrong status code";
+      }
+    } catch (e) {
+      print("error during the mail reading $e");
+    }
   }
 
   @override
@@ -304,11 +298,11 @@ class APIEcoleDirecte extends API {
     try {
       //Getting the offline count of grades
       List<Grade> listOfflineGrades =
-          getAllGrades(await appSys.offline.disciplines.getDisciplines(), overrideLimit: true)!;
+          getAllGrades(await DisciplinesOffline(offlineController).getDisciplines(), overrideLimit: true)!;
       print("Offline length is ${listOfflineGrades.length}");
       //Getting the online count of grades
       List<Grade> listOnlineGrades =
-          getAllGrades(await EcoleDirecteMethod(this.offlineController).grades(), overrideLimit: true)!;
+          getAllGrades(await EcoleDirecteMethod(offlineController).grades(), overrideLimit: true)!;
       print("Online length is ${listOnlineGrades.length}");
       return (listOfflineGrades.length < listOnlineGrades.length);
     } catch (e) {

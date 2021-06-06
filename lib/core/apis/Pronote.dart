@@ -10,7 +10,10 @@ import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
-import 'package:ynotes/core/offline/isar/data/homework.dart';
+import 'package:ynotes/core/offline/data/agenda/lessons.dart';
+import 'package:ynotes/core/offline/data/disciplines/disciplines.dart';
+import 'package:ynotes/core/offline/data/homework/homework.dart';
+import 'package:ynotes/core/offline/data/polls/polls.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/utils/nullSafeMap.dart';
 import 'package:ynotes/globals.dart';
@@ -68,16 +71,14 @@ class APIPronote extends API {
   @override
   Future<List<Discipline>?> getGrades({bool? forceReload}) async {
     return (await pronoteMethod.fetchAnyData(pronoteMethod.grades,
-        offlineController.disciplines.getDisciplines, "grades",
-        forceFetch: forceReload ?? false,
-        isOfflineLocked: super.offlineController.locked));
+        DisciplinesOffline(offlineController).getDisciplines, "grades",
+        forceFetch: forceReload ?? false));
   }
 
   @override
   Future<List<Homework>?> getHomeworkFor(DateTime? dateHomework, {bool? forceReload}) async {
-    pronoteMethod.isar = appSys.isar;
     return (await pronoteMethod.fetchAnyData(
-        pronoteMethod.homeworkFor, OfflineHomework(appSys.isar).getHomeworkFor, "homework for",
+        pronoteMethod.homeworkFor, HomeworkOffline(offlineController).getHomeworkFor, "homework for",
         forceFetch: forceReload ?? false,
         offlineArguments: dateHomework,
         onlineArguments: dateHomework));
@@ -85,19 +86,17 @@ class APIPronote extends API {
 
   @override
   Future<List<Homework>?> getNextHomework({bool? forceReload}) async {
-    pronoteMethod.isar = appSys.isar;
     return (await pronoteMethod.fetchAnyData(
-        pronoteMethod.nextHomework, OfflineHomework(appSys.isar).getAllHomework, "homework",
-        forceFetch: forceReload ?? false, isOfflineLocked: super.offlineController.locked));
+        pronoteMethod.nextHomework, HomeworkOffline(offlineController).getAllHomework, "homework",
+        forceFetch: forceReload ?? false));
   }
 
   @override
   Future<List<Lesson>?> getNextLessons(DateTime dateToUse,
       {bool? forceReload}) async {
     List<Lesson>? lessons = await pronoteMethod.fetchAnyData(
-        pronoteMethod.lessons, offlineController.lessons.get, "lessons",
+        pronoteMethod.lessons, LessonsOffline(offlineController).get, "lessons",
         forceFetch: forceReload ?? false,
-        isOfflineLocked: super.offlineController.locked,
         onlineArguments: dateToUse,
         offlineArguments: await getWeek(dateToUse));
     if (lessons != null) {
@@ -112,7 +111,7 @@ class APIPronote extends API {
     try {
       List<Period> listPeriods = [];
       List<Discipline>? disciplines =
-          await appSys.offline.disciplines.getDisciplines();
+          await DisciplinesOffline(offlineController).getDisciplines();
       List<Grade> grades = (disciplines ?? [])
           .map((e) => e.gradesList)
           .toList()
@@ -160,10 +159,9 @@ class APIPronote extends API {
     List<PollInfo>? listPolls = [];
     List<PollInfo>? pollsFromInternet = (await pronoteMethod.fetchAnyData(
       pronoteMethod.polls,
-      offlineController.polls.get,
+      PollsOffline(offlineController).get,
       "polls",
       forceFetch: forceReload ?? false,
-      isOfflineLocked: super.offlineController.locked,
     ));
     listPolls.addAll(pollsFromInternet ?? []);
     return listPolls;
