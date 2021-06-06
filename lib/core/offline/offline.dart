@@ -4,6 +4,8 @@ import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
 
+import 'data/example/example.dart';
+
 class HiveBoxProvider {
   static Future<dynamic>? _initFlutterFuture;
 
@@ -46,6 +48,7 @@ class HiveBoxProvider {
     _registerAdapter(RecipientAdapter());
     _registerAdapter(SchoolLifeTicketAdapter());
     _registerAdapter(AlarmTypeAdapter());
+    _registerAdapter(MailAdapter());
   }
 
   static void _registerAdapter<T>(TypeAdapter<T> adapter) {
@@ -67,6 +70,11 @@ class Offline {
   static final String pinnedHomeworkBoxName = "pinnedHomework";
   static final String agendaBoxName = "agenda";
   static final String mailsBoxName = "mails";
+
+  //sample box for example.dart (do not delete)
+  Box<Example>? exampleBox;
+
+  //boxes
   Box? offlineBox;
   Box? homeworkDoneBox;
   Box? pinnedHomeworkBox;

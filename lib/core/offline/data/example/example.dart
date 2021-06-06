@@ -1,53 +1,73 @@
+import 'package:hive/hive.dart';
 import 'package:ynotes/core/offline/offline.dart';
 
-class Example {}
+class Example extends HiveObject {
+  int id;
+  String? fieldToUpdateOnce;
+  String? fieldToUpdate;
+
+  Example(this.id, {this.fieldToUpdateOnce, this.fieldToUpdate});
+}
 
 class ExampleOffline {
   late Offline parent;
 
-  //Locked bool is often useless but add it if you don't want your class to be collected
-  //in isolates.
+  //We need to access parent database to access opened boxes
   ExampleOffline(Offline _parent) {
     parent = _parent;
   }
 
   //A really simple get example
-  Future<List<Example>?> get() async {
-    /*
+  Future<List<Example>?> getAllExample() async {
     try {
-      //If cache is not empty return from cache
-      if (parent.exampleData != null) {
-        //Commented because schoo
-        //return parent.exampleData;//
-      } else {
-        //Else, refresh data (query the DB)
-        await refreshData();
-        //return parent.exampleData!.cast<Example>();
-      }
+      //Await is not even needed
+      //Here we access a box content we dont even need to cast content
+      //But we need to reference the box like that `Box<Example>` in `offline.dart`
+      //Caution box can be null
+      return parent.exampleBox?.values.toList();
     } catch (e) {
-      //Something happened :(
       print("Error while returning example " + e.toString());
       return null;
     }
-    */
   }
 
-  ///Update existing examples objects (clear old data) with passed data
-
-  update(List<Example>? newData) async {
-    /*
-      print("Update examples (length : ${newData!.length})");
-      try {
-        //IMPORTANT :
-        //Here we are using `offlineBox` and the `example` key
-        await parent.offlineBox!.delete("example");
-        await parent.offlineBox!.put("example", newData);
-        //refresh cached data
-        
-      } catch (e) {
-        print("Error while updating examples " + e.toString());
+  ///Here we update existing data : but we don't want every fields to be updated each time
+  update(List<Example> newExamples) async {
+    print("Update examples (length : ${newExamples.length})");
+    try {
+      //Here we get already persisted data
+      List<Example>? oldExamples = [];
+      if (await getAllExample() != null) {
+        oldExamples = await getAllExample();
       }
-  
-    */
+
+      //Here we treat already persisteddata
+      if (oldExamples != null) {
+        await Future.forEach(oldExamples, (Example oldExample) async {
+          await Future.forEach(newExamples, (Example newExample) async {
+            if (newExample.id == oldExample.id) {
+              //fields we want to update in the old example
+              oldExample.fieldToUpdate = newExample.fieldToUpdate;
+              //we can update it in the database easily with save();
+              //caution : don't update newExample (not in the datbase) but oldExample
+              await oldExample.save();
+            }
+          });
+        });
+      }
+
+      //We clear existing values
+      final old = (parent.exampleBox?.values.toList().cast<Example>())
+          ?.where((oldExample) => newExamples.any((newExample) => newExample.id == oldExample.id));
+      if (old != null) {
+        newExamples.removeWhere((newExample) => old.any((oldExample) => newExample.id == oldExample.id));
+        print(newExamples.length);
+      }
+
+      //We add to the database the others
+      await parent.exampleBox?.addAll(newExamples);
+    } catch (e) {
+      print("Error while updating examples " + e.toString());
+    }
   }
 }
