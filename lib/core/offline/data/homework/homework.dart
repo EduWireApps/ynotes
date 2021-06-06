@@ -52,9 +52,7 @@ class HomeworkOffline {
                 oldHW.teacherName = newHW.teacherName;
                 oldHW.loaded = newHW.loaded;
               }
-
-              oldHW.files.clear();
-              oldHW.files.addAll(newHW.files);
+              oldHW.files = newHW.files;
               await oldHW.save();
             }
           });
