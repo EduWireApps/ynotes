@@ -29,13 +29,17 @@ class HomeworkAdapter extends TypeAdapter<Homework> {
       isATest: fields[9] as bool?,
       teacherName: fields[12] as String?,
       loaded: fields[13] as bool?,
-    );
+      editable: fields[14] as bool,
+      pinned: fields[15] as bool?,
+    )
+      ..files = (fields[16] as List).cast<Document>()
+      ..sessionFiles = (fields[17] as List).cast<Document>();
   }
 
   @override
   void write(BinaryWriter writer, Homework obj) {
     writer
-      ..writeByte(12)
+      ..writeByte(16)
       ..writeByte(0)
       ..write(obj.discipline)
       ..writeByte(1)
@@ -59,7 +63,15 @@ class HomeworkAdapter extends TypeAdapter<Homework> {
       ..writeByte(12)
       ..write(obj.teacherName)
       ..writeByte(13)
-      ..write(obj.loaded);
+      ..write(obj.loaded)
+      ..writeByte(14)
+      ..write(obj.editable)
+      ..writeByte(15)
+      ..write(obj.pinned)
+      ..writeByte(16)
+      ..write(obj.files)
+      ..writeByte(17)
+      ..write(obj.sessionFiles);
   }
 
   @override

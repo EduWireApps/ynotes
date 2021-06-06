@@ -33,9 +33,14 @@ class Homework extends HiveObject {
   //Useful for Ecole Directe users
   @HiveField(13)
   bool? loaded;
+  @HiveField(14)
   bool editable;
+
+  @HiveField(15)
   bool? pinned;
+  @HiveField(16)
   List<Document> files = [];
+  @HiveField(17)
   List<Document> sessionFiles = [];
   Homework(
       {this.discipline,

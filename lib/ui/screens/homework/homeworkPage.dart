@@ -24,8 +24,7 @@ class HomeworkPageState extends State<HomeworkPage> {
   PageController agendaSettingsController = PageController(initialPage: 1);
 
   animateToPage(int index) {
-    _pageControllerHW!.animateToPage(index,
-        duration: Duration(milliseconds: 250), curve: Curves.ease);
+    _pageControllerHW!.animateToPage(index, duration: Duration(milliseconds: 250), curve: Curves.ease);
   }
 
   @override
@@ -38,11 +37,11 @@ class HomeworkPageState extends State<HomeworkPage> {
             "Devoirs",
             style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
           ),
-          leading:       TextButton(
-                                            style: TextButton.styleFrom(
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius: new BorderRadius.circular(18.0),
-                                                  side: BorderSide(color: Theme.of(context).primaryColorDark))),
+          leading: TextButton(
+            style: TextButton.styleFrom(
+                shape: RoundedRectangleBorder(
+                    borderRadius: new BorderRadius.circular(18.0),
+                    side: BorderSide(color: Theme.of(context).primaryColorDark))),
             child: Icon(MdiIcons.menu, color: ThemeUtils.textColor()),
             onPressed: () async {
               widget.parentScaffoldState.currentState?.openDrawer();
@@ -68,9 +67,7 @@ class HomeworkPageState extends State<HomeworkPage> {
 
 //Build the main widget container of the homeworkpage
   void triggerSettings() {
-    agendaSettingsController.animateToPage(
-        agendaSettingsController.page == 1 ? 0 : 1,
-        duration: Duration(milliseconds: 300),
-        curve: Curves.ease);
+    agendaSettingsController.animateToPage(agendaSettingsController.page == 1 ? 0 : 1,
+        duration: Duration(milliseconds: 300), curve: Curves.ease);
   }
 }

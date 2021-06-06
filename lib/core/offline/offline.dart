@@ -1,15 +1,5 @@
 import 'package:hive/hive.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/core/offline/data/agenda/events.dart';
-import 'package:ynotes/core/offline/data/agenda/lessons.dart';
-import 'package:ynotes/core/offline/data/agenda/reminders.dart';
-import 'package:ynotes/core/offline/data/disciplines/disciplines.dart';
-import 'package:ynotes/core/offline/data/homework/doneHomework.dart';
-import 'package:ynotes/core/offline/data/homework/homework.dart';
-import 'package:ynotes/core/offline/data/homework/pinnedHomework.dart';
-import 'package:ynotes/core/offline/data/mails/recipients.dart';
-import 'package:ynotes/core/offline/data/polls/polls.dart';
-import 'package:ynotes/core/offline/data/schoolLife/schoolLife.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
@@ -73,7 +63,7 @@ class Offline {
   //Boxes name
   static final String offlineCacheBoxName = "offlineData";
   static final String doneHomeworkBoxName = "doneHomework";
-    static final String homeworkBoxName = "homework";
+  static final String homeworkBoxName = "homework";
   static final String pinnedHomeworkBoxName = "pinnedHomework";
   static final String agendaBoxName = "agenda";
 
@@ -104,6 +94,7 @@ class Offline {
       await offlineBox?.deleteFromDisk();
       await homeworkDoneBox?.deleteFromDisk();
       await pinnedHomeworkBox?.deleteFromDisk();
+      await homeworkBox?.deleteFromDisk();
       await this.init();
     } catch (e) {
       print("Failed to clear all db " + e.toString());
@@ -127,12 +118,10 @@ class Offline {
     print("Init offline");
     //Register adapters once
 
-    var dir = await FolderAppUtil.getDirectory();
     try {
-      Hive.init("${dir.path}/offline");
       offlineBox = await safeBoxOpen(offlineCacheBoxName);
       homeworkDoneBox = await appSys.hiveBoxProvider.openBox(doneHomeworkBoxName);
-      homeworkBox = await appSys.hiveBoxProvider.openBox(doneHomeworkBoxName);
+      homeworkBox = await appSys.hiveBoxProvider.openBox(homeworkBoxName);
       pinnedHomeworkBox = await appSys.hiveBoxProvider.openBox(pinnedHomeworkBoxName);
       agendaBox = await appSys.hiveBoxProvider.openBox(agendaBoxName);
       print("All boxes opened");

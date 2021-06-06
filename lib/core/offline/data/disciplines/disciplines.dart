@@ -45,8 +45,8 @@ class DisciplinesOffline {
   updateDisciplines(List<Discipline> newData) async {
     try {
       print("Updating disciplines");
-      await parent.offlineBox!.delete("disciplines");
-      await parent.offlineBox!.put("disciplines", newData);
+      await parent.offlineBox?.delete("disciplines");
+      await parent.offlineBox?.put("disciplines", newData);
     } catch (e) {
       print("Error while updating disciplines " + e.toString());
     }

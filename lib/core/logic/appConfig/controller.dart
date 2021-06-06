@@ -101,7 +101,7 @@ class ApplicationSystem extends ChangeNotifier {
     //Set theme to default
     updateTheme(settings!["user"]["global"]["theme"]);
     //Set offline
-    await _initOffline();
+    await initOffline();
     //Set api
     this.api = apiManager(this.offline);
 
@@ -132,12 +132,20 @@ class ApplicationSystem extends ChangeNotifier {
   }
 
 //Leave app
+  initOffline() async {
+    hiveBoxProvider = HiveBoxProvider();
+    //Initiate an unlocked offline controller
+    offline = Offline();
+    await offline.init();
+  }
+
   updateSetting(Map path, String key, var value) {
     path[key] = value;
     SettingsUtils.setSetting(settings);
     notifyListeners();
   }
 
+// This "Headless Task" is run when app is terminated.
   updateTheme(String themeName) {
     print("Updating theme to " + themeName);
     theme = appThemes[themeName];
@@ -148,7 +156,6 @@ class ApplicationSystem extends ChangeNotifier {
     notifyListeners();
   }
 
-// This "Headless Task" is run when app is terminated.
   _initBackgroundFetch() async {
     if (Platform.isAndroid || Platform.isIOS) {
       print("Background fetch configuration...");
@@ -175,13 +182,6 @@ class ApplicationSystem extends ChangeNotifier {
       print(i);
       print("Configured background fetch");
     }
-  }
-
-  _initOffline() async {
-    hiveBoxProvider = HiveBoxProvider();
-    //Initiate an unlocked offline controller
-    offline = Offline();
-    await offline.init();
   }
 
   _initSettings() async {

@@ -120,8 +120,8 @@ class HomeworkController extends ChangeNotifier {
       list.addAll(_old!);
     }
     //Remove antecedent hw
-    list.removeWhere((element) => element.date!.isBefore(
-        DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now()))));
+    list.removeWhere(
+        (element) => element.date!.isBefore(DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.now()))));
     //Number of elements in list
     int total = list.length;
 
@@ -131,16 +131,16 @@ class HomeworkController extends ChangeNotifier {
     } else {
       int done = 0;
 
-        done = list.where((element) => element.done ?? false).toList().length;
+      done = list.where((element) => element.done ?? false).toList().length;
 
-        int percent = (done * 100 / total).round();
+      int percent = (done * 100 / total).round();
 
       _hwCompletion = [percent, done, list.length];
       notifyListeners();
     }
   }
 
-  List<Homework>? homework({bool showAll = false}) => filterHW(_old, showAll).where((Homework e) {
+  List<Homework>? homework({bool showAll = false}) => filterHW(_old, showAll)?.where((Homework e) {
         if (e.date != null) {
           return !e.date!.isBefore(CalendarTime(DateTime.now()).startOfDay);
         } else {
@@ -208,16 +208,14 @@ class HomeworkController extends ChangeNotifier {
 
   void prepareTomorrowAndWeekCount() {
     List<Homework> hwList = (getHomework ?? []);
-      tomorrowCount = hwList.where((element) => CalendarTime(element.date).isTomorrow).length;
-      weekCount = hwList.where((element) => CalendarTime(element.date).isNextWeek).length;
+    tomorrowCount = hwList.where((element) => CalendarTime(element.date).isTomorrow).length;
+    weekCount = hwList.where((element) => CalendarTime(element.date).isNextWeek).length;
 
-      notifyListeners();
-    
+    notifyListeners();
   }
 
   Future<void> refresh({bool force = false, refreshFromOffline = false}) async {
-    print("Refreshing homework " +
-        (refreshFromOffline ? "from offline" : "online"));
+    print("Refreshing homework " + (refreshFromOffline ? "from offline" : "online"));
     isFetching = true;
     notifyListeners();
     if (refreshFromOffline) {

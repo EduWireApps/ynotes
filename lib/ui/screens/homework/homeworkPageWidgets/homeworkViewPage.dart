@@ -193,7 +193,7 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                     context, screenSize.size.width / 5 * 0.55, screenSize.size.width / 5 * 0.55, () async {
                   Homework? temp = await showAddHomeworkBottomSheet(context, hw: hw);
                   if (temp != null) {
-                    await HomeworkOffline(appSys.offline).updateHomework([temp]);
+                    await HomeworkOffline(appSys.offline).updateSingleHW(temp);
                   }
                   await refreshSelf();
                   setState(() {});

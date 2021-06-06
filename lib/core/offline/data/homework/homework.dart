@@ -67,7 +67,6 @@ class HomeworkOffline {
             .removeWhere((newHomework) => old.any((oldPieceOfHomework) => oldPieceOfHomework.id == newHomework.id));
         print(newHomeworks.length);
       }
-
       await parent.homeworkBox?.addAll(newHomeworks);
     } catch (e) {
       print("Error while updating homework " + e.toString());

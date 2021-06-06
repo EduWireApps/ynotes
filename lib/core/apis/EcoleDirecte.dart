@@ -191,7 +191,7 @@ class APIEcoleDirecte extends API {
         forceFetch: forceReload ?? false);
   }
 
-  Future<List<Homework>> getNextHomework({bool? forceReload}) async {
+  Future<List<Homework>?> getNextHomework({bool? forceReload}) async {
     return await EcoleDirecteMethod.fetchAnyData(
         EcoleDirecteMethod(this.offlineController, isar: appSys.isar).nextHomework,
         HomeworkOffline(appSys.offline).getAllHomework,
@@ -311,7 +311,7 @@ class APIEcoleDirecte extends API {
       print("Offline length is ${listOfflineGrades.length}");
       //Getting the online count of grades
       List<Grade> listOnlineGrades =
-          getAllGrades(await EcoleDirecteMethod(this.offlineController).grades(), overrideLimit: true)!;
+          getAllGrades(await EcoleDirecteMethod(offlineController).grades(), overrideLimit: true)!;
       print("Online length is ${listOnlineGrades.length}");
       return (listOfflineGrades.length < listOnlineGrades.length);
     } catch (e) {
