@@ -11,6 +11,13 @@ class MailAdapter extends TypeAdapter<Mail> {
   final int typeId = 11;
 
   @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) || other is MailAdapter && runtimeType == other.runtimeType && typeId == other.typeId;
+
+  @override
   Mail read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
@@ -25,9 +32,7 @@ class MailAdapter extends TypeAdapter<Mail> {
       subject: fields[6] as String?,
       date: fields[7] as String?,
       content: fields[8] as String?,
-      to: (fields[5] as List?)
-          ?.map((dynamic e) => (e as Map?)?.cast<dynamic, dynamic>())
-          .toList(),
+      to: (fields[5] as List?)?.map((dynamic e) => (e as Map?)?.cast<dynamic, dynamic>()).toList(),
     )..files = (fields[9] as List).cast<Document>();
   }
 
@@ -56,21 +61,18 @@ class MailAdapter extends TypeAdapter<Mail> {
       ..writeByte(9)
       ..write(obj.files);
   }
+}
+
+class RecipientAdapter extends TypeAdapter<Recipient> {
+  @override
+  final int typeId = 9;
 
   @override
   int get hashCode => typeId.hashCode;
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is MailAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
-}
-
-class RecipientAdapter extends TypeAdapter<Recipient> {
-  @override
-  final int typeId = 9;
+      identical(this, other) || other is RecipientAdapter && runtimeType == other.runtimeType && typeId == other.typeId;
 
   @override
   Recipient read(BinaryReader reader) {
@@ -102,14 +104,4 @@ class RecipientAdapter extends TypeAdapter<Recipient> {
       ..writeByte(4)
       ..write(obj.isTeacher);
   }
-
-  @override
-  int get hashCode => typeId.hashCode;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is RecipientAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
 }

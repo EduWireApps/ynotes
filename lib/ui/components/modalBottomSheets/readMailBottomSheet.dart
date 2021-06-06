@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/customLoader.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
@@ -224,7 +225,8 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
     if (widget.mail.content != null && widget.mail.content != "") {
       return widget.mail.content;
     } else {
-      return await readMail(widget.mail.id ?? "", true, widget.mail.mtype == "received");
+      return await (appSys.api as APIEcoleDirecte)
+          .readMail(widget.mail.id ?? "", true, widget.mail.mtype == "received");
     }
   }
 

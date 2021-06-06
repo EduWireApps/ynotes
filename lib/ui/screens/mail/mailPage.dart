@@ -195,7 +195,6 @@ class _MailPageState extends State<MailPage> {
                                                     : Theme.of(context).primaryColor,
                                                 child: InkWell(
                                                     onTap: () async {
-                                                      await filterMails(localList)[index].files.load();
                                                       await mailModalBottomSheet(context, filterMails(localList)[index],
                                                           index: index);
                                                       refreshLocalMailsList(forceReload: false);

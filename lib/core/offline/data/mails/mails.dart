@@ -25,10 +25,10 @@ class MailsOffline {
 
   ///Update existing mails with passed data
   updateMails(List<Mail> mails) async {
-    print("Update offline homwork");
+    print("Update offline mails");
     try {
       List<Mail>? oldMails = [];
-      if (parent.homeworkBox?.values != null) {
+      if (parent.mailsBox?.values != null) {
         oldMails = await getAllMails();
       }
       if (oldMails != null) {
@@ -38,14 +38,13 @@ class MailsOffline {
               //Fields succeptible to be updated (technically mails are immutable but "read" boolean can change)
               oldMail.read = mail.read;
               oldMail.idClasseur = mail.idClasseur;
-
-              oldMail.files.addAll(mail.files);
+              oldMail.files = mail.files;
               await oldMail.save();
             }
           });
         });
       }
-      final old = (parent.homeworkBox?.values.toList().cast<Homework>())
+      final old = (parent.mailsBox?.values.toList().cast<Mail>())
           ?.where((oldMail) => mails.any((newMail) => newMail.id == oldMail.id));
       if (old != null) {
         mails.removeWhere((newMail) => old.any((oldMail) => oldMail.id == newMail.id));
@@ -53,7 +52,7 @@ class MailsOffline {
       }
       await parent.mailsBox?.addAll(mails);
     } catch (e) {
-      print("Error while updating homework " + e.toString());
+      print("Error while updating mails " + e.toString());
     }
   }
 }

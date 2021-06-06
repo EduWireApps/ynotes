@@ -40,6 +40,7 @@ class AgendaEventsOffline {
       }
     } catch (e) {
       print("Error while returning agenda events for week $week " + e.toString());
+      
       return null;
     }
   }

@@ -12,6 +12,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:wiredash/wiredash.dart';
+import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/appConfig/controller.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/services/platform.dart';
@@ -431,6 +432,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                                   alternativeButtonConfirmText: "Supprimer ce mail")) ??
                               false)) {
                             await appSys.offline.clearAll();
+                            appSys.api = apiManager(appSys.offline);
                           }
                         },
                         titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),

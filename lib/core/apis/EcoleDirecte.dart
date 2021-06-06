@@ -74,43 +74,6 @@ Future<List<CloudItem>?> getCloud(String? args, String? action, CloudItem? item)
   }
 }
 
-Future<String?> readMail(String mailId, bool read, bool received) async {
-  await EcoleDirecteMethod.testToken();
-  String? id = appSys.currentSchoolAccount?.studentID;
-  String settingMode = received ? "destinataire" : "expediteur";
-  var url = 'https://api.ecoledirecte.com/v3/eleves/$id/messages/$mailId.awp?verbe=get&mode=$settingMode';
-
-  Map<String, String> headers = {"Content-type": "text/plain"};
-  String data = 'data={"token": "$token"}';
-  //encode Map to JSON
-  var body = data;
-  var response = await http.post(Uri.parse(url), headers: headers, body: body).catchError((e) {
-    throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou reessayez plus tard.");
-  });
-  print("Starting the mail reading");
-  try {
-    if (response.statusCode == 200) {
-      Map<String, dynamic> req = jsonDecode(response.body);
-      if (req['code'] == 200) {
-        String toDecode = req['data']['content'];
-        toDecode = utf8.decode(base64.decode(toDecode.replaceAll("\n", "")));
-        await MailsOffline(appSys.offline).updateMailContent(toDecode, mailId);
-        return toDecode;
-      }
-      //Return an error
-      else {
-        printWrapped(response.body);
-        throw "Error wrong internal status code ";
-      }
-    } else {
-      print(response.statusCode);
-      throw "Error wrong status code";
-    }
-  } catch (e) {
-    print("error during the mail reading $e");
-  }
-}
-
 ///The ecole directe api extended from the apiManager.dart API class
 class APIEcoleDirecte extends API {
   APIEcoleDirecte(Offline offlineController) : super(offlineController);
@@ -171,27 +134,23 @@ class APIEcoleDirecte extends API {
         forceFetch: forceReload ?? false);
   }
 
-//Get dates of the the next homework (based on the EcoleDirecte API)
   Future<List<Homework>> getHomeworkFor(DateTime? dateHomework, {bool? forceReload}) async {
     return await EcoleDirecteMethod.fetchAnyData(
-        EcoleDirecteMethod(this.offlineController).homeworkFor,
-        HomeworkOffline(appSys.offline).getHomeworkFor,
-        forceFetch: forceReload ?? false,
-        offlineArguments: dateHomework,
-        onlineArguments: dateHomework);
+        EcoleDirecteMethod(this.offlineController).homeworkFor, HomeworkOffline(offlineController).getHomeworkFor,
+        forceFetch: forceReload ?? false, offlineArguments: dateHomework, onlineArguments: dateHomework);
   }
 
-//Get homeworks for a specific date
+//Get dates of the the next homework (based on the EcoleDirecte API)
   Future<List<Mail>>? getMails({bool? forceReload}) async {
     return await EcoleDirecteMethod.fetchAnyData(
-        EcoleDirecteMethod(this.offlineController).mails, MailsOffline(offlineController).getAllMails,
+        EcoleDirecteMethod(this.offlineController).mails, MailsOffline(this.offlineController).getAllMails,
         forceFetch: forceReload ?? false);
   }
 
+//Get homeworks for a specific date
   Future<List<Homework>?> getNextHomework({bool? forceReload}) async {
     return await EcoleDirecteMethod.fetchAnyData(
-        EcoleDirecteMethod(this.offlineController).nextHomework,
-        HomeworkOffline(appSys.offline).getAllHomework,
+        EcoleDirecteMethod(this.offlineController).nextHomework, HomeworkOffline(this.offlineController).getAllHomework,
         forceFetch: forceReload ?? false);
   }
 
@@ -295,6 +254,43 @@ class APIEcoleDirecte extends API {
   Future<List<Recipient>?> mailRecipients() async {
     return (await EcoleDirecteMethod.fetchAnyData(
         EcoleDirecteMethod(this.offlineController).recipients, RecipientsOffline(offlineController).getRecipients));
+  }
+
+  Future<String?> readMail(String mailId, bool read, bool received) async {
+    await EcoleDirecteMethod.testToken();
+    String? id = appSys.currentSchoolAccount?.studentID;
+    String settingMode = received ? "destinataire" : "expediteur";
+    var url = 'https://api.ecoledirecte.com/v3/eleves/$id/messages/$mailId.awp?verbe=get&mode=$settingMode';
+
+    Map<String, String> headers = {"Content-type": "text/plain"};
+    String data = 'data={"token": "$token"}';
+    //encode Map to JSON
+    var body = data;
+    var response = await http.post(Uri.parse(url), headers: headers, body: body).catchError((e) {
+      throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou reessayez plus tard.");
+    });
+    print("Starting the mail reading");
+    try {
+      if (response.statusCode == 200) {
+        Map<String, dynamic> req = jsonDecode(response.body);
+        if (req['code'] == 200) {
+          String toDecode = req['data']['content'];
+          toDecode = utf8.decode(base64.decode(toDecode.replaceAll("\n", "")));
+          await MailsOffline(offlineController).updateMailContent(toDecode, mailId);
+          return toDecode;
+        }
+        //Return an error
+        else {
+          printWrapped(response.body);
+          throw "Error wrong internal status code ";
+        }
+      } else {
+        print(response.statusCode);
+        throw "Error wrong status code";
+      }
+    } catch (e) {
+      print("error during the mail reading $e");
+    }
   }
 
   @override

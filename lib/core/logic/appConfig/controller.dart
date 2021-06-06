@@ -17,7 +17,6 @@ import 'package:ynotes/core/logic/shared/loginController.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/background.dart';
 import 'package:ynotes/core/services/notifications.dart';
-import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/utils/settingsUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/ui/themes/themesList.dart';
@@ -65,6 +64,15 @@ class ApplicationSystem extends ChangeNotifier {
     notifyListeners();
   }
 
+  buildControllers() {
+    loginController = LoginController();
+    gradesController = GradesController(this.api);
+    homeworkController = HomeworkController(this.api);
+    agendaController = AgendaController(this.api);
+    schoolLifeController = SchoolLifeController(this.api);
+    mailsController = MailsController(this.api);
+  }
+
   exitApp() async {
     try {
       await this.offline.clearAll();
@@ -79,7 +87,6 @@ class ApplicationSystem extends ChangeNotifier {
       //Delete all
       await storage.deleteAll();
       this.updateTheme("clair");
-    
     } catch (e) {
       print(e);
     }
@@ -88,7 +95,6 @@ class ApplicationSystem extends ChangeNotifier {
   ///The most important function
   ///It will intialize Offline, APIs and background fetch
   initApp() async {
-
     logger = Logger();
     //set settings
     await _initSettings();
@@ -107,19 +113,13 @@ class ApplicationSystem extends ChangeNotifier {
     //Set background fetch
     await _initBackgroundFetch();
     //Set controllers
-    loginController = LoginController();
-    gradesController = GradesController(this.api);
-    homeworkController = HomeworkController(this.api);
-    agendaController = AgendaController(this.api);
-    schoolLifeController = SchoolLifeController(this.api);
-    mailsController = MailsController(this.api);
+    buildControllers();
   }
 
   initControllers() async {
     await this.gradesController.refresh(force: true);
     await this.homeworkController.refresh(force: true);
   }
-
 
 //Leave app
   initOffline() async {
