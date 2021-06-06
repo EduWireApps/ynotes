@@ -6,7 +6,7 @@ Suivez ce guide pour générer des adapters :
 
 https://docs.hivedb.dev/#/custom-objects/generate_adapter
 
-Vous devriez également etendre votre classe avece `extends HiveObject` pour bénéficier des fonctions très pratiques `save()` et `delete()`.
+Vous devriez également étendre votre classe avec `extends HiveObject` pour bénéficier des fonctions très pratiques `save()` et `delete()`.
 
 Après avoir annoté votre classe n'oubliez pas de lancer la commande `flutter packages pub run build_runner build`. Si vous recevez une erreur
 essayez avec `flutter packages pub run build_runner build --delete-conflicting-outputs`. 
