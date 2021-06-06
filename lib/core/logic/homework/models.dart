@@ -1,5 +1,4 @@
 import 'package:hive/hive.dart';
-import 'package:isar/isar.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 
 part 'models.g.dart';
@@ -42,19 +41,20 @@ class Homework extends HiveObject {
   List<Document> files = [];
   @HiveField(17)
   List<Document> sessionFiles = [];
-  Homework(
-      {this.discipline,
-      this.disciplineCode,
-      this.id,
-      this.rawContent,
-      this.sessionRawContent,
-      this.date,
-      this.entryDate,
-      this.done,
-      this.toReturn,
-      this.isATest,
-      this.teacherName,
-      this.loaded,
-      this.editable = false,
-      this.pinned,});
+  Homework({
+    this.discipline,
+    this.disciplineCode,
+    this.id,
+    this.rawContent,
+    this.sessionRawContent,
+    this.date,
+    this.entryDate,
+    this.done,
+    this.toReturn,
+    this.isATest,
+    this.teacherName,
+    this.loaded,
+    this.editable = false,
+    this.pinned,
+  });
 }

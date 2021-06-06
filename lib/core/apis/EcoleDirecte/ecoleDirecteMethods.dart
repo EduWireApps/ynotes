@@ -4,7 +4,6 @@ import 'package:connectivity/connectivity.dart';
 import 'package:html_character_entities/html_character_entities.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:isar/isar.dart';
 import 'package:ynotes/core/apis/EcoleDirecte/converters/cloud.dart';
 import 'package:ynotes/core/apis/EcoleDirecte/convertersExporter.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
@@ -26,8 +25,7 @@ import '../EcoleDirecte.dart';
 class EcoleDirecteMethod {
   static const fakeToken = "a95fd30b-ca20-467b-8128-679f48e1498e";
   Offline _offlineController;
-  final Isar? isar;
-  EcoleDirecteMethod(this._offlineController, {this.isar});
+  EcoleDirecteMethod(this._offlineController);
   Future<List<CloudItem>> cloudFolders() async {
     await EcoleDirecteMethod.testToken();
     String rootUrl = 'https://api.ecoledirecte.com/v3/E/';
@@ -94,7 +92,7 @@ class EcoleDirecteMethod {
     return homeworkDates;
   }
 
-  Future<List<Homework>> homeworkFor(DateTime date) async {
+  Future<List<Homework>?> homeworkFor(DateTime date) async {
     await EcoleDirecteMethod.testToken();
     String dateToUse = DateFormat("yyyy-MM-dd").format(date).toString();
     String rootUrl = 'https://api.ecoledirecte.com/v3/Eleves/';
@@ -106,13 +104,13 @@ class EcoleDirecteMethod {
       data = 'data={"token": "$fakeToken"}';
     }*/
 
-    List<Homework> homework = await request(
+    List<Homework>? homework = await request(
         data, rootUrl, method, EcoleDirecteHomeworkConverter.homework, "Homework request returned an error:",
         ignoreMethodAndId: false);
-    homework.forEach((hw) {
+    homework?.forEach((hw) {
       hw.date = date;
     });
-    if (this.isar != null) {
+    if (homework != null) {
       await HomeworkOffline(_offlineController).updateHomework(homework);
       print("Updated hw");
     }
@@ -148,14 +146,14 @@ class EcoleDirecteMethod {
     String rootUrl = "https://api.ecoledirecte.com/v3/eleves/";
 
     String method = "messages.awp?verbe=getall&typeRecuperation=all";
-    List<Mail> mails = await request(
+    List<Mail>? mails = await request(
       data,
       rootUrl,
       method,
       EcoleDirecteMailConverter.mails,
       "Mails request returned an error:",
     );
-    if (this.isar != null) {
+    if (mails != null) {
       await MailsOffline(_offlineController).updateMails(mails);
       print("Updated mails");
     }
@@ -167,11 +165,11 @@ class EcoleDirecteMethod {
     String rootUrl = 'https://api.ecoledirecte.com/v3/Eleves/';
     String method = "cahierdetexte.awp?verbe=get&";
     String data = 'data={"token": "$token"}';
-    List<Homework> homeworkList = [];
+    List<Homework>? homeworkList = [];
     homeworkList = await request(
         data, rootUrl, method, EcoleDirecteHomeworkConverter.unloadedHomework, "UHomework request returned an error:",
         ignoreMethodAndId: false);
-    if (this.isar != null) {
+    if (homeworkList != null) {
       await HomeworkOffline(_offlineController).updateHomework(homeworkList);
       print("Updated hw");
     }
@@ -297,7 +295,7 @@ class EcoleDirecteMethod {
   }
 
 //Returns the suitable function according to connection state
-  static request(String data, String rootUrl, String urlMethod, Function converter, String onErrorBody,
+  static Future<dynamic> request(String data, String rootUrl, String urlMethod, Function converter, String onErrorBody,
       {Map<String, String>? headers, bool ignoreMethodAndId = false, bool getRequest = false}) async {
     try {
       String id = appSys.currentSchoolAccount?.studentID ?? "";

@@ -1,6 +1,5 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:intl/intl.dart';
-import 'package:isar/isar.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteAPI.dart';
 import 'package:ynotes/core/apis/Pronote/converters/polls.dart';
 import 'package:ynotes/core/apis/Pronote/convertersExporter.dart';
@@ -20,9 +19,8 @@ class PronoteMethod {
   Map locks = Map();
   PronoteClient? client;
   final Offline _offlineController;
-  Isar? isar;
 
-  PronoteMethod(this.client, this._offlineController, {this.isar});
+  PronoteMethod(this.client, this._offlineController);
 
   Future<List<SchoolAccount>?> accounts() async {}
 
@@ -94,7 +92,7 @@ class PronoteMethod {
     List<Homework>? hw =
         await request("PageCahierDeTexte", PronoteHomeworkConverter.homework, data: jsonData, onglet: 88);
     (hw ?? []).removeWhere((element) => element.date != date);
-    if (this.isar != null && hw != null) {
+    if (hw != null) {
       await HomeworkOffline(_offlineController).updateHomework(hw);
     }
     return hw;
@@ -147,9 +145,8 @@ class PronoteMethod {
     hws?.removeWhere((element) => element.date == null && element.date!.isBefore(now));
 
     listHW.addAll(hws ?? []);
-    if (this.isar != null) {
-      await HomeworkOffline(_offlineController).updateHomework(listHW);
-    }
+    await HomeworkOffline(_offlineController).updateHomework(listHW);
+
     return listHW;
   }
 
@@ -201,7 +198,7 @@ class PronoteMethod {
     }
   }
 
-  request(String functionName, Function? converter, {var data, var customURL, int? onglet}) async {
+  Future<dynamic> request(String functionName, Function? converter, {var data, var customURL, int? onglet}) async {
     data = Map.from(data);
     if (onglet != null && appSys.currentSchoolAccount != null && !appSys.account!.isParentMainAccount)
       data['_Signature_'] = {'onglet': onglet};
