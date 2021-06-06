@@ -15,10 +15,9 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/offline/data/agenda/lessons.dart';
 import 'package:ynotes/core/offline/data/disciplines/disciplines.dart';
 import 'package:ynotes/core/offline/data/homework/homework.dart';
+import 'package:ynotes/core/offline/data/mails/mails.dart';
 import 'package:ynotes/core/offline/data/mails/recipients.dart';
 import 'package:ynotes/core/offline/data/schoolLife/schoolLife.dart';
-import 'package:ynotes/core/offline/isar/data/homework.dart';
-import 'package:ynotes/core/offline/isar/data/mail.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
@@ -96,7 +95,7 @@ Future<String?> readMail(String mailId, bool read, bool received) async {
       if (req['code'] == 200) {
         String toDecode = req['data']['content'];
         toDecode = utf8.decode(base64.decode(toDecode.replaceAll("\n", "")));
-        await OfflineMail(appSys.isar).updateMailContent(toDecode, mailId);
+        await MailsOffline(appSys.offline).updateMailContent(toDecode, mailId);
         return toDecode;
       }
       //Return an error
@@ -115,8 +114,7 @@ Future<String?> readMail(String mailId, bool read, bool received) async {
 
 ///The ecole directe api extended from the apiManager.dart API class
 class APIEcoleDirecte extends API {
-  Isar? isar;
-  APIEcoleDirecte(Offline offlineController, Isar isar) : super(offlineController);
+  APIEcoleDirecte(Offline offlineController) : super(offlineController);
 
   @override
   Future<List> apiStatus() async {
@@ -142,8 +140,8 @@ class APIEcoleDirecte extends API {
       case "mailRecipients":
         {
           print("Returing mail recipients");
-          return (await EcoleDirecteMethod.fetchAnyData(
-              EcoleDirecteMethod(this.offlineController).recipients, RecipientsOffline(offlineController).getRecipients));
+          return (await EcoleDirecteMethod.fetchAnyData(EcoleDirecteMethod(this.offlineController).recipients,
+              RecipientsOffline(offlineController).getRecipients));
         }
     }
   }
@@ -177,7 +175,7 @@ class APIEcoleDirecte extends API {
 //Get dates of the the next homework (based on the EcoleDirecte API)
   Future<List<Homework>> getHomeworkFor(DateTime? dateHomework, {bool? forceReload}) async {
     return await EcoleDirecteMethod.fetchAnyData(
-        EcoleDirecteMethod(this.offlineController, isar: appSys.isar).homeworkFor,
+        EcoleDirecteMethod(this.offlineController).homeworkFor,
         HomeworkOffline(appSys.offline).getHomeworkFor,
         forceFetch: forceReload ?? false,
         offlineArguments: dateHomework,
@@ -187,13 +185,13 @@ class APIEcoleDirecte extends API {
 //Get homeworks for a specific date
   Future<List<Mail>>? getMails({bool? forceReload}) async {
     return await EcoleDirecteMethod.fetchAnyData(
-        EcoleDirecteMethod(this.offlineController, isar: appSys.isar).mails, OfflineMail(appSys.isar).getAllMails,
+        EcoleDirecteMethod(this.offlineController).mails, MailsOffline(offlineController).getAllMails,
         forceFetch: forceReload ?? false);
   }
 
   Future<List<Homework>?> getNextHomework({bool? forceReload}) async {
     return await EcoleDirecteMethod.fetchAnyData(
-        EcoleDirecteMethod(this.offlineController, isar: appSys.isar).nextHomework,
+        EcoleDirecteMethod(this.offlineController).nextHomework,
         HomeworkOffline(appSys.offline).getAllHomework,
         forceFetch: forceReload ?? false);
   }
@@ -202,9 +200,7 @@ class APIEcoleDirecte extends API {
   Future<List<Lesson>?> getNextLessons(DateTime dateToUse, {bool? forceReload = false}) async {
     List<Lesson>? lessons = await EcoleDirecteMethod.fetchAnyData(
         EcoleDirecteMethod(offlineController).lessons, LessonsOffline(offlineController).get,
-        forceFetch: forceReload ?? false,
-        onlineArguments: dateToUse,
-        offlineArguments: await getWeek(dateToUse));
+        forceFetch: forceReload ?? false, onlineArguments: dateToUse, offlineArguments: await getWeek(dateToUse));
 
     return (lessons ?? [])
         .where((lesson) =>

@@ -1,7 +1,5 @@
 import 'package:hive/hive.dart';
-import 'package:isar/isar.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/core/offline/isar/data/adapters.dart';
 
 part 'models.g.dart';
 
@@ -14,29 +12,34 @@ class Classeur {
   Classeur(this.libelle, this.id);
 }
 
-@Collection()
-class Mail {
-  @Id()
-  int? dbId;
+@HiveType(typeId: 11)
+class Mail extends HiveObject{
   //E.G: "69627"
+  @HiveField(0)
   String? id;
   //E.G : "archived"/"sent"/"received"
+  @HiveField(1)
   String? mtype;
+  @HiveField(2)
   bool? read;
   //E.G : 183 ==> To class mails in folders
+  @HiveField(3)
   String? idClasseur;
 
-  @MapConverter()
+  @HiveField(4)
   Map? from;
 
-  @ListMapConverter()
+  @HiveField(5)
   List<Map?>? to;
   //E.G : "Coronavirus school prank"
+  @HiveField(6)
   String? subject;
+  @HiveField(7)
   String? date;
+  @HiveField(8)
   String? content;
-
-  IsarLinks<Document> files = IsarLinks<Document>();
+  @HiveField(9)
+  List<Document> files = [];
   Mail({this.id, this.mtype, this.read, this.idClasseur, this.from, this.subject, this.date, this.content, this.to});
 }
 

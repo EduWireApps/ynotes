@@ -66,12 +66,14 @@ class Offline {
   static final String homeworkBoxName = "homework";
   static final String pinnedHomeworkBoxName = "pinnedHomework";
   static final String agendaBoxName = "agenda";
-
+  static final String mailsBoxName = "mails";
   Box? offlineBox;
   Box? homeworkDoneBox;
   Box? pinnedHomeworkBox;
   Box? homeworkBox;
   Box? agendaBox;
+  Box<Mail>? mailsBox;
+
 /*
   //Imports
   late HomeworkOffline homework;
@@ -95,6 +97,8 @@ class Offline {
       await homeworkDoneBox?.deleteFromDisk();
       await pinnedHomeworkBox?.deleteFromDisk();
       await homeworkBox?.deleteFromDisk();
+      await mailsBox?.deleteFromDisk();
+
       await this.init();
     } catch (e) {
       print("Failed to clear all db " + e.toString());
@@ -124,6 +128,8 @@ class Offline {
       homeworkBox = await appSys.hiveBoxProvider.openBox(homeworkBoxName);
       pinnedHomeworkBox = await appSys.hiveBoxProvider.openBox(pinnedHomeworkBoxName);
       agendaBox = await appSys.hiveBoxProvider.openBox(agendaBoxName);
+      mailsBox = await appSys.hiveBoxProvider.openBox<Mail>(mailsBoxName);
+
       print("All boxes opened");
     } catch (e) {
       print("Issue while opening boxes : " + e.toString());

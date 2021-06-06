@@ -221,7 +221,6 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> {
   //Get monochromatic colors or not
   ///TO DO PUT IT IN A CONTROLLER
   Future<String?> getMail() async {
-    await widget.mail.files.load();
     if (widget.mail.content != null && widget.mail.content != "") {
       return widget.mail.content;
     } else {

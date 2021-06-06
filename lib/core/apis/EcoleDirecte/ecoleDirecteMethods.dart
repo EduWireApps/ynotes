@@ -14,10 +14,9 @@ import 'package:ynotes/core/offline/data/agenda/lessons.dart';
 import 'package:ynotes/core/offline/data/disciplines/disciplines.dart';
 import 'package:ynotes/core/offline/data/homework/homework.dart';
 import 'package:ynotes/core/offline/data/homework/pinnedHomework.dart';
+import 'package:ynotes/core/offline/data/mails/mails.dart';
 import 'package:ynotes/core/offline/data/mails/recipients.dart';
 import 'package:ynotes/core/offline/data/schoolLife/schoolLife.dart';
-import 'package:ynotes/core/offline/isar/data/homework.dart';
-import 'package:ynotes/core/offline/isar/data/mail.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/usefulMethods.dart';
@@ -121,6 +120,28 @@ class EcoleDirecteMethod {
     return homework;
   }
 
+  lessons(DateTime dateToUse) async {
+    await EcoleDirecteMethod.testToken();
+    String dateDebut = DateFormat("yyyy/MM/dd").format(getMonday(dateToUse));
+
+    String dateFin = DateFormat("yyyy/MM/dd").format(getNextSunday(dateToUse));
+    String data = 'data={"dateDebut":"$dateDebut","dateFin":"$dateFin", "avecTrous":false, "token": "$token"}';
+    String rootUrl = "https://api.ecoledirecte.com/v3/E/";
+    String method = "emploidutemps.awp?verbe=get&";
+    try {
+      List<Lesson>? lessonsList = await request(
+          data, rootUrl, method, EcoleDirecteLessonConverter.lessons, "Lessons request returned an error:");
+      int week = await getWeek(dateToUse);
+      if (lessonsList != null) {
+        await LessonsOffline(_offlineController).updateLessons(lessonsList, week);
+      }
+
+      return lessonsList;
+    } catch (e) {
+      return [];
+    }
+  }
+
   mails() async {
     await EcoleDirecteMethod.testToken();
     String data = 'data={"token": "$token"}';
@@ -135,7 +156,7 @@ class EcoleDirecteMethod {
       "Mails request returned an error:",
     );
     if (this.isar != null) {
-      await OfflineMail(isar!).updateMails(mails);
+      await MailsOffline(_offlineController).updateMails(mails);
       print("Updated mails");
     }
     return mails;
@@ -202,6 +223,7 @@ class EcoleDirecteMethod {
     return schoolLifeList;
   }
 
+//Bool value and Token validity tester
   static fetchAnyData(dynamic onlineFetch, dynamic offlineFetch,
       {bool forceFetch = false, isOfflineLocked = false, onlineArguments, offlineArguments}) async {
     //Test connection status
@@ -239,35 +261,12 @@ class EcoleDirecteMethod {
     }
   }
 
-//Bool value and Token validity tester
   static getMonday(DateTime date) {
     return date.subtract(Duration(days: date.weekday - 1));
   }
 
   static getNextSunday(DateTime date) {
     return date.subtract(Duration(days: date.weekday - 1)).add(Duration(days: 6));
-  }
-
-  lessons(DateTime dateToUse) async {
-    await EcoleDirecteMethod.testToken();
-    String dateDebut = DateFormat("yyyy/MM/dd").format(getMonday(dateToUse));
-
-    String dateFin = DateFormat("yyyy/MM/dd").format(getNextSunday(dateToUse));
-    String data = 'data={"dateDebut":"$dateDebut","dateFin":"$dateFin", "avecTrous":false, "token": "$token"}';
-    String rootUrl = "https://api.ecoledirecte.com/v3/E/";
-    String method = "emploidutemps.awp?verbe=get&";
-    try {
-      List<Lesson>? lessonsList = await request(
-          data, rootUrl, method, EcoleDirecteLessonConverter.lessons, "Lessons request returned an error:");
-      int week = await getWeek(dateToUse);
-      if (lessonsList != null) {
-        await LessonsOffline(_offlineController).updateLessons(lessonsList, week);
-      }
-
-      return lessonsList;
-    } catch (e) {
-      return [];
-    }
   }
 
 //Refresh the token if expired

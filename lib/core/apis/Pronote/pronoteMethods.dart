@@ -11,7 +11,6 @@ import 'package:ynotes/core/logic/shared/loginController.dart';
 import 'package:ynotes/core/offline/data/agenda/lessons.dart';
 import 'package:ynotes/core/offline/data/disciplines/disciplines.dart';
 import 'package:ynotes/core/offline/data/homework/homework.dart';
-import 'package:ynotes/core/offline/isar/data/homework.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/utils/nullSafeMap.dart';
 import 'package:ynotes/globals.dart';
