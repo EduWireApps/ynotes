@@ -24,7 +24,6 @@ import 'package:ynotes/ui/screens/mail/mailPage.dart';
 import 'package:ynotes/ui/screens/polls/pollsPage.dart';
 import 'package:ynotes/ui/screens/schoolLife/schoolLifePage.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/accountPage.dart';
-import 'package:ynotes/ui/screens/statspage/statspage.dart';
 import 'package:ynotes/ui/screens/summary/summaryPage.dart';
 import 'package:ynotes/usefulMethods.dart';
 import 'widgets/custom_drawer.dart';

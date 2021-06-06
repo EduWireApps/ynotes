@@ -6,8 +6,8 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/y_drawer/widgets/connection_status.dart';
 import 'package:ynotes/ui/components/y_drawer/y_drawer.dart';
-import 'widgets/body.dart';
-import 'widgets/header.dart';
+// import 'widgets/body.dart';
+// import 'widgets/header.dart';
 
 class YPage extends StatefulWidget {
   final String title;
@@ -17,6 +17,7 @@ class YPage extends StatefulWidget {
   // final Color? primaryColor;
   // final Color? secondaryColor;
   final List<IconButton>? actions;
+  final bool isScrollable;
 
   const YPage(
       {Key? key,
@@ -25,7 +26,8 @@ class YPage extends StatefulWidget {
       // required this.secondaryColor,
       // this.headerChildren = const [],
       this.actions,
-      required this.body})
+      required this.body,
+      this.isScrollable = true})
       : super(key: key);
 
   @override
@@ -35,19 +37,7 @@ class YPage extends StatefulWidget {
 class _YPageState extends State<YPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
-    MediaQueryData screenSize = MediaQuery.of(context);
-    late Animation<double> showLoginControllerStatus;
-    late AnimationController showLoginControllerStatusController;
-
-    showLoginControllerStatusController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 450));
-    showLoginControllerStatus = new Tween(
-      begin: 1.0,
-      end: 0.0,
-    ).animate(new CurvedAnimation(
-        parent: showLoginControllerStatusController,
-        curve: Interval(0.1, 1.0, curve: Curves.fastOutSlowIn)));
-
+    final MediaQueryData screenSize = MediaQuery.of(context);
     return Scaffold(
       // backgroundColor: widget.primaryColor,
       backgroundColor: Theme.of(context).backgroundColor,
@@ -66,28 +56,40 @@ class _YPageState extends State<YPage> with TickerProviderStateMixin {
               ? SystemUiOverlayStyle.light
               : SystemUiOverlayStyle.dark,
           actions: widget.actions),
-      body: ChangeNotifierProvider<LoginController>.value(
-        value: appSys.loginController,
-        child: Consumer<LoginController>(builder: (context, model, child) {
-          if (model.actualState != loginStatus.loggedIn) {
-            showLoginControllerStatusController.forward();
-          } else {
-            showLoginControllerStatusController.reverse();
-          }
-          return Container(
-              height: screenSize.size.height,
-              width: screenSize.size.width,
-              child: SingleChildScrollView(
-                child: Column(children: [
-                  ConnectionStatus(
-                    con: model,
-                    showLoginControllerStatus: showLoginControllerStatus,
-                  ),
-                  widget.body
-                ]),
-              ));
-        }),
-      ),
+      body: widget.isScrollable
+          ? SingleChildScrollView(child: _page(context))
+          : Container(height: screenSize.size.height, child: _page(context)),
+    );
+  }
+
+  _page(BuildContext context) {
+    late Animation<double> showLoginControllerStatus;
+    late AnimationController showLoginControllerStatusController;
+
+    showLoginControllerStatusController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 450));
+    showLoginControllerStatus = new Tween(
+      begin: 1.0,
+      end: 0.0,
+    ).animate(new CurvedAnimation(
+        parent: showLoginControllerStatusController,
+        curve: Interval(0.1, 1.0, curve: Curves.fastOutSlowIn)));
+    return ChangeNotifierProvider<LoginController>.value(
+      value: appSys.loginController,
+      child: Consumer<LoginController>(builder: (context, model, child) {
+        if (model.actualState != loginStatus.loggedIn) {
+          showLoginControllerStatusController.forward();
+        } else {
+          showLoginControllerStatusController.reverse();
+        }
+        return Column(children: [
+          ConnectionStatus(
+            con: model,
+            showLoginControllerStatus: showLoginControllerStatus,
+          ),
+          widget.isScrollable ? widget.body : Expanded(child: widget.body)
+        ]);
+      }),
     );
   }
 }
