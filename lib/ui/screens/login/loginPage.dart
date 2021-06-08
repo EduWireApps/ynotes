@@ -316,11 +316,12 @@ class _LoginPageState extends State<LoginPage> {
     String? p = await readStorage("password");
     String? url = await readStorage("pronoteurl");
     String? cas = await readStorage("pronotecas");
+    bool? iscas = (await readStorage("ispronotecas") == "true");
 
     String? z = await storage.read(key: "agreedTermsAndConfiguredApp");
 
     if (u != null && p != null && z != null) {
-      connectionData = appSys.api!.login(u, p, url: url, cas: cas);
+      connectionData = appSys.api!.login(u, p, url: url, cas: cas, mobileCasLogin: iscas);
       openLoadingDialog();
     }
   }

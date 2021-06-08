@@ -131,7 +131,7 @@ class SummaryPageState extends State<SummaryPage> {
   }
 
   initLoginController() async {
-    await appSys.loginController.init();
+    //await appSys.loginController.init();
   }
 
   initState() {

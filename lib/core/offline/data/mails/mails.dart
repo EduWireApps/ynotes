@@ -19,6 +19,7 @@ class MailsOffline {
     Mail? mail = await parent.mailsBox?.values.toList().firstWhere((element) => element.id == id);
     if (mail != null) {
       mail.content = content;
+      mail.read = true;
       await mail.save();
     }
   }

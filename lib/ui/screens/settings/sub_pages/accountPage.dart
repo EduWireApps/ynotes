@@ -27,8 +27,7 @@ class LoginStatus extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
-  List<bool?> expanded =
-      List.filled((appSys.account!.managableAccounts ?? []).length, false);
+  List<bool?> expanded = List.filled((appSys.account!.managableAccounts ?? []).length, false);
   bool isExpanded = false;
   @override
   Widget build(BuildContext context) {
@@ -44,15 +43,13 @@ class _AccountPageState extends State<AccountPage> {
               color: Theme.of(context).primaryColorLight,
               child: Container(
                 padding: EdgeInsets.symmetric(
-                    horizontal: (screenSize.size.width / 5) * 0.1,
-                    vertical: (screenSize.size.width / 5) * 0.1),
+                    horizontal: (screenSize.size.width / 5) * 0.1, vertical: (screenSize.size.width / 5) * 0.1),
                 child: Column(
                   children: [
                     buildMainAccountInfos(),
                     Container(
                       padding: EdgeInsets.symmetric(
-                          horizontal: (screenSize.size.width / 5) * 0.1,
-                          vertical: (screenSize.size.width / 5) * 0.1),
+                          horizontal: (screenSize.size.width / 5) * 0.1, vertical: (screenSize.size.width / 5) * 0.1),
                       child: SingleChildScrollView(
                           child: ExpansionPanelList(
                               expandedHeaderPadding: EdgeInsets.zero,
@@ -62,19 +59,13 @@ class _AccountPageState extends State<AccountPage> {
                                   expanded[index] = !(expanded[index] ?? false);
                                 });
                               },
-                              children: (appSys.account!.managableAccounts ??
-                                      [])
-                                  .map((e) => buildAccountDetail(
-                                      e,
-                                      (appSys.account!.managableAccounts ?? [])
-                                          .indexOf(e)))
+                              children: (appSys.account!.managableAccounts ?? [])
+                                  .map((e) =>
+                                      buildAccountDetail(e, (appSys.account!.managableAccounts ?? []).indexOf(e)))
                                   .toList())),
                     ),
-                    CustomButtons.materialButton(
-                        context, null, screenSize.size.height / 10 * 0.45,
-                        () async {
-                      if (await CustomDialogs.showConfirmationDialog(
-                              context, null,
+                    CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.45, () async {
+                      if (await CustomDialogs.showConfirmationDialog(context, null,
                               alternativeText:
                                   "Voulez-vous vraiment vous déconnecter (et supprimer toutes vos données) ?",
                               alternativeButtonConfirmText: "Se déconnecter") ??
@@ -110,10 +101,7 @@ class _AccountPageState extends State<AccountPage> {
                   style: TextStyle(
                     fontFamily: 'Asap',
                     color: Colors.transparent,
-                    shadows: [
-                      Shadow(
-                          color: ThemeUtils.textColor(), offset: Offset(0, -5))
-                    ],
+                    shadows: [Shadow(color: ThemeUtils.textColor(), offset: Offset(0, -5))],
                     fontSize: 14,
                     decorationColor: ThemeUtils.textColor(),
                     fontWeight: FontWeight.normal,
@@ -128,9 +116,7 @@ class _AccountPageState extends State<AccountPage> {
       ),
       appBar: new AppBar(
         title: new Text("Compte"),
-        systemOverlayStyle: ThemeUtils.isThemeDark
-            ? SystemUiOverlayStyle.light
-            : SystemUiOverlayStyle.dark,
+        systemOverlayStyle: ThemeUtils.isThemeDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
         brightness: ThemeUtils.isThemeDark ? Brightness.dark : Brightness.light,
         backgroundColor: Theme.of(context).primaryColor,
       ),
@@ -155,13 +141,10 @@ class _AccountPageState extends State<AccountPage> {
                 spacing: screenSize.size.width / 5 * 0.1,
                 children: [
                   Container(
-                    margin:
-                        EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
-                    padding: EdgeInsets.symmetric(
-                        horizontal: screenSize.size.width / 5 * 0.1),
+                    margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
+                    padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
                     decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColorDark,
-                        borderRadius: BorderRadius.circular(11)),
+                        color: Theme.of(context).primaryColorDark, borderRadius: BorderRadius.circular(11)),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -172,30 +155,18 @@ class _AccountPageState extends State<AccountPage> {
                             color: ThemeUtils.textColor(),
                           )),
                         Container(
-                          padding: EdgeInsets.symmetric(
-                              vertical:
-                                  MediaQuery.of(context).size.width / 10 * 0.1),
+                          padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width / 10 * 0.1),
                           child: Image(
                             width: MediaQuery.of(context).size.width /
                                 5 *
-                                (appSys.account?.apiType ==
-                                        API_TYPE.EcoleDirecte
-                                    ? 0.2
-                                    : 0.4),
+                                (appSys.account?.apiType == API_TYPE.EcoleDirecte ? 0.2 : 0.4),
                             height: screenSize.size.width /
                                 5 *
-                                (appSys.account?.apiType ==
-                                        API_TYPE.EcoleDirecte
-                                    ? 0.2
-                                    : 0.4),
-                            image: AssetImage(appSys.account?.apiType ==
-                                    API_TYPE.EcoleDirecte
+                                (appSys.account?.apiType == API_TYPE.EcoleDirecte ? 0.2 : 0.4),
+                            image: AssetImage(appSys.account?.apiType == API_TYPE.EcoleDirecte
                                 ? 'assets/images/EcoleDirecte/EcoleDirecteIcon.png'
                                 : 'assets/images/Pronote/PronoteIcon.png'),
-                            color:
-                                appSys.account?.apiType == API_TYPE.EcoleDirecte
-                                    ? ThemeUtils.textColor()
-                                    : null,
+                            color: appSys.account?.apiType == API_TYPE.EcoleDirecte ? ThemeUtils.textColor() : null,
                           ),
                         ),
                       ],
@@ -219,8 +190,7 @@ class _AccountPageState extends State<AccountPage> {
         },
         body: Container(
           decoration: BoxDecoration(color: Theme.of(context).primaryColorDark),
-          padding:
-              EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.2),
+          padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.2),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -232,8 +202,7 @@ class _AccountPageState extends State<AccountPage> {
               SizedBox(
                 height: screenSize.size.height / 10 * 0.1,
               ),
-              buildKeyValuesInfo(
-                  context, "Classe", [(account.studentClass ?? "")]),
+              buildKeyValuesInfo(context, "Classe", [(account.studentClass ?? "")]),
               SizedBox(
                 height: screenSize.size.height / 10 * 0.1,
               ),
@@ -242,8 +211,7 @@ class _AccountPageState extends State<AccountPage> {
               ),
               Container(
                 width: screenSize.size.width,
-                child: buildKeyValuesInfo(context, "Etablissement scolaire",
-                    [(account.schoolName ?? "")]),
+                child: buildKeyValuesInfo(context, "Etablissement scolaire", [(account.schoolName ?? "")]),
               ),
               SizedBox(
                 height: screenSize.size.height / 10 * 0.3,
@@ -251,9 +219,7 @@ class _AccountPageState extends State<AccountPage> {
               if (appSys.currentSchoolAccount != account)
                 Center(
                   child: CustomButtons.materialButton(
-                      context,
-                      screenSize.size.width / 5 * 1.7,
-                      screenSize.size.height / 10 * 0.4, () {
+                      context, screenSize.size.width / 5 * 1.7, screenSize.size.height / 10 * 0.4, () {
                     setState(() {
                       appSys.currentSchoolAccount = account;
                     });
@@ -272,21 +238,15 @@ class _AccountPageState extends State<AccountPage> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return Card(
-              color: (snapshot.data?[0] == 0)
-                  ? Color(0xffFEF08A)
-                  : Color(0xff99F6E4),
+              color: (snapshot.data?[0] == 0) ? Color(0xffFEF08A) : Color(0xff99F6E4),
               child: Container(
                 width: screenSize.size.width,
-                padding: EdgeInsets.symmetric(
-                    horizontal: screenSize.size.width / 5 * 0.1),
+                padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Etat des serveurs",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontFamily: "Asap")),
-                    Text(snapshot.data?[1],
-                        style: TextStyle(fontFamily: "Asap")),
+                    Text("Etat des serveurs", style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Asap")),
+                    Text(snapshot.data?[1], style: TextStyle(fontFamily: "Asap")),
                   ],
                 ),
               ),
@@ -294,15 +254,13 @@ class _AccountPageState extends State<AccountPage> {
           } else {
             return Card(
               child: Container(
-                padding: EdgeInsets.symmetric(
-                    horizontal: screenSize.size.width / 5 * 0.1),
+                padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
                 width: screenSize.size.width,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text("Etat des serveurs en cours de chargement...",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, fontFamily: "Asap")),
+                        style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Asap")),
                   ],
                 ),
               ),
@@ -320,34 +278,22 @@ class _AccountPageState extends State<AccountPage> {
           children: [
             Text(
               "Bonjour " + (appSys.account?.name ?? "{pas de nom}"),
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontFamily: "Asap",
-                  color: ThemeUtils.textColor()),
+              style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Asap", color: ThemeUtils.textColor()),
             ),
             Text(
               appSys.account?.surname ?? "",
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontFamily: "Asap",
-                  color: ThemeUtils.textColor()),
+              style: TextStyle(fontWeight: FontWeight.bold, fontFamily: "Asap", color: ThemeUtils.textColor()),
             ),
           ],
         ),
         (appSys.account?.isParentMainAccount ?? false)
             ? Text(
                 "Vous pouvez gérer le(s) compte(s) suivant(s) :",
-                style: TextStyle(
-                    fontWeight: FontWeight.w200,
-                    fontFamily: "Asap",
-                    color: ThemeUtils.textColor()),
+                style: TextStyle(fontWeight: FontWeight.w200, fontFamily: "Asap", color: ThemeUtils.textColor()),
               )
             : Text(
                 "Votre compte :",
-                style: TextStyle(
-                    fontWeight: FontWeight.w200,
-                    fontFamily: "Asap",
-                    color: ThemeUtils.textColor()),
+                style: TextStyle(fontWeight: FontWeight.w200, fontFamily: "Asap", color: ThemeUtils.textColor()),
               ),
       ],
     );
@@ -368,8 +314,7 @@ class _LoginStatusState extends State<LoginStatus> {
   String errorTitle = "Aille... une erreur a eu lieu.";
   String errorLabel = "Tapez pour consulter les détails.";
 
-  String apiIssues =
-      "Il se peut que votre système scolaire rencontre des problèmes !";
+  String apiIssues = "Il se peut que votre système scolaire rencontre des problèmes !";
 
   String errorExplanation =
       "Consultez l'erreur suivante. Reconnectez-vous maintenant ou dans quelques minutes. Si rien ne change, Contactez le support avec le bouton ci-dessous.";
@@ -395,8 +340,7 @@ class _LoginStatusState extends State<LoginStatus> {
 
     return Container(
       padding: EdgeInsets.symmetric(
-          horizontal: screenSize.size.width / 5 * 0.1,
-          vertical: screenSize.size.height / 10 * 0.1),
+          horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.height / 10 * 0.1),
       child: (Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -418,25 +362,15 @@ class _LoginStatusState extends State<LoginStatus> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CustomButtons.materialButton(
-                  context,
-                  screenSize.size.width / 5 * 1.7,
-                  screenSize.size.height / 10 * 0.4, () {
+              CustomButtons.materialButton(context, screenSize.size.width / 5 * 1.7, screenSize.size.height / 10 * 0.4,
+                  () {
                 model.login();
-              },
-                  backgroundColor: Colors.orange,
-                  label: "Reconnexion",
-                  textColor: Colors.white),
-              CustomButtons.materialButton(
-                  context,
-                  screenSize.size.width / 5 * 1.7,
-                  screenSize.size.height / 10 * 0.4, () {
+              }, backgroundColor: Colors.orange, label: "Reconnexion", textColor: Colors.white),
+              CustomButtons.materialButton(context, screenSize.size.width / 5 * 1.7, screenSize.size.height / 10 * 0.4,
+                  () {
                 //show wiredash
                 Wiredash.of(context)!.show();
-              },
-                  backgroundColor: Colors.blue,
-                  label: "Support",
-                  textColor: Colors.white),
+              }, backgroundColor: Colors.blue, label: "Support", textColor: Colors.white),
             ],
           ),
         ],
@@ -510,8 +444,7 @@ class _LoginStatusState extends State<LoginStatus> {
           Container(
             width: screenSize.size.width,
             padding: EdgeInsets.symmetric(
-                vertical: screenSize.size.height / 10 * 0.1,
-                horizontal: screenSize.size.width / 5 * 0.1),
+                vertical: screenSize.size.height / 10 * 0.1, horizontal: screenSize.size.width / 5 * 0.1),
             child: Row(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -546,15 +479,13 @@ class _LoginStatusState extends State<LoginStatus> {
                         choseDetails(model)[0],
                         maxLines: 100,
                         textAlign: TextAlign.start,
-                        style: TextStyle(
-                            fontFamily: "Asap", fontWeight: FontWeight.bold),
+                        style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
                       ),
                       Text(
                         choseDetails(model)[1],
                         maxLines: 100,
                         textAlign: TextAlign.start,
-                        style: TextStyle(
-                            fontFamily: "Asap", fontWeight: FontWeight.w200),
+                        style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w200),
                       )
                     ],
                   ),
@@ -562,7 +493,7 @@ class _LoginStatusState extends State<LoginStatus> {
               ],
             ),
           ),
-          if (expanded && model.actualState == loginStatus.error)
+          if (expanded && (model.actualState == loginStatus.error || model.actualState == loginStatus.loggedOff))
             buildErrorDetails(model)
         ],
       ),

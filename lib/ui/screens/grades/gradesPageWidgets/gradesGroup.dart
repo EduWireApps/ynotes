@@ -43,8 +43,7 @@ class _GradesGroupState extends State<GradesGroup> {
       capitalizedNomDiscipline = null;
     } else {
       String nomDiscipline = widget.discipline!.disciplineName!.toLowerCase();
-      capitalizedNomDiscipline =
-          "${nomDiscipline[0].toUpperCase()}${nomDiscipline.substring(1)}";
+      capitalizedNomDiscipline = "${nomDiscipline[0].toUpperCase()}${nomDiscipline.substring(1)}";
       if (widget.discipline!.color != null) {
         colorGroup = Color(widget.discipline!.color!);
       }
@@ -104,8 +103,7 @@ class _GradesGroupState extends State<GradesGroup> {
                                   width: screenSize.size.width / 5 * 0.1,
                                 ),
                                 Container(
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(0)),
+                                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(0)),
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(0),
                                       child: Text(
@@ -120,19 +118,18 @@ class _GradesGroupState extends State<GradesGroup> {
                                 SizedBox(
                                   width: screenSize.size.width / 5 * 0.1,
                                 ),
-                                Container(
-                                  child: Text(
-                                    capitalizedNomDiscipline,
-                                    overflow: TextOverflow.ellipsis,
-                                    textAlign: TextAlign.left,
-                                    style: TextStyle(
-                                        fontFamily: "Asap",
-                                        fontWeight: FontWeight.w400,
-                                        fontSize: screenSize.size.height / 10 * 0.2),
-                                  ),
-                                ),
                                 Expanded(
-                                  child: SizedBox(),
+                                  child: Container(
+                                    child: Text(
+                                      capitalizedNomDiscipline,
+                                      overflow: TextOverflow.ellipsis,
+                                      textAlign: TextAlign.left,
+                                      style: TextStyle(
+                                          fontFamily: "Asap",
+                                          fontWeight: FontWeight.w400,
+                                          fontSize: screenSize.size.height / 10 * 0.2),
+                                    ),
+                                  ),
                                 ),
                                 Icon(MdiIcons.information, color: ThemeUtils.textColor(revert: true).withOpacity(0.8))
                               ],
@@ -274,16 +271,14 @@ class _GradesGroupState extends State<GradesGroup> {
     );
   }
 
-  List<Grade>? getGradesForDiscipline(
-      int sousMatiereIndex, String? chosenPeriode) {
+  List<Grade>? getGradesForDiscipline(int sousMatiereIndex, String? chosenPeriode) {
     List<Grade> toReturn = [];
 
     if (widget.discipline != null) {
       widget.discipline!.gradesList!.forEach((element) {
         if (element.periodName == chosenPeriode) {
           if (widget.discipline!.subdisciplineCode!.length > 1) {
-            if (element.subdisciplineCode ==
-                widget.discipline!.subdisciplineCode![sousMatiereIndex]) {
+            if (element.subdisciplineCode == widget.discipline!.subdisciplineCode![sousMatiereIndex]) {
               toReturn.add(element);
             }
           } else {
@@ -307,12 +302,10 @@ class _GradesGroupState extends State<GradesGroup> {
     bool canShow = false;
     List<Grade>? gradesForSelectedDiscipline = getGradesForDiscipline(sousMatiereIndex, periodName);
     if (gradesForSelectedDiscipline != null) {
-      gradesForSelectedDiscipline
-          .sort((a, b) => b.entryDate!.compareTo(a.entryDate!));
+      gradesForSelectedDiscipline.sort((a, b) => b.entryDate!.compareTo(a.entryDate!));
     }
     if (gradesForSelectedDiscipline != null) {
-      gradesForSelectedDiscipline =
-          gradesForSelectedDiscipline.reversed.toList();
+      gradesForSelectedDiscipline = gradesForSelectedDiscipline.reversed.toList();
     }
 
     // ignore: unused_local_variable

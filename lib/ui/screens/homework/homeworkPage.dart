@@ -38,10 +38,6 @@ class HomeworkPageState extends State<HomeworkPage> {
             style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
           ),
           leading: TextButton(
-            style: TextButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                    borderRadius: new BorderRadius.circular(18.0),
-                    side: BorderSide(color: Theme.of(context).primaryColorDark))),
             child: Icon(MdiIcons.menu, color: ThemeUtils.textColor()),
             onPressed: () async {
               widget.parentScaffoldState.currentState?.openDrawer();

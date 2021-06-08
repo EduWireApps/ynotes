@@ -1,6 +1,5 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
-import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/apis/Pronote.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/usefulMethods.dart';
@@ -31,7 +30,7 @@ class LoginController extends ChangeNotifier {
     notifyListeners();
   }
 
-  void connectionChanged(dynamic hasConnection) {
+  void connectionChanged(dynamic hasConnection) async {
     if (hasConnection == ConnectivityResult.none) {
       _actualState = loginStatus.offline;
       _details = "Vous êtes hors ligne";
@@ -40,7 +39,7 @@ class LoginController extends ChangeNotifier {
       _actualState = loginStatus.loggedOff;
       _details = "Reconnecté";
       notifyListeners();
-      login();
+      await login();
     }
   }
 
@@ -73,8 +72,7 @@ class LoginController extends ChangeNotifier {
       String? cas = await readStorage("pronotecas");
       bool? iscas = (await readStorage("ispronotecas") == "true");
 
-      var z = await storage.read(key: "agreedTermsAndConfiguredApp");
-      if (u != null && p != null && z != null) {
+      if (u != null && p != null) {
         await appSys.api!.login(u, p, url: url, mobileCasLogin: iscas, cas: cas).then((List loginValues) {
           // ignore: unnecessary_null_comparison
           if (loginValues == null) {
@@ -83,9 +81,6 @@ class LoginController extends ChangeNotifier {
             notifyListeners();
           }
           if (loginValues[0] == 1) {
-            gradeRefreshRecursive = false;
-            hwRefreshRecursive = false;
-            lessonsRefreshRecursive = false;
             _details = "Connecté";
             _actualState = loginStatus.loggedIn;
             notifyListeners();
