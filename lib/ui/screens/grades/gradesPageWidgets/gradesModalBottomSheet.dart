@@ -26,8 +26,7 @@ void gradesModalBottomSheet(
 ) {
   showModalBottomSheet(
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+        borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
       ),
       context: context,
       backgroundColor: Colors.transparent,
@@ -56,8 +55,7 @@ class GradesModalBottomSheetContainer extends StatefulWidget {
       {Key? key, this.grade, this.stats, this.discipline, this.callback, this.gradesController})
       : super(key: key);
   @override
-  _GradesModalBottomSheetContainerState createState() =>
-      _GradesModalBottomSheetContainerState();
+  _GradesModalBottomSheetContainerState createState() => _GradesModalBottomSheetContainerState();
 }
 
 class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheetContainer> {
@@ -83,6 +81,8 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
     SchedulerBinding.instance?.addPostFrameCallback(postFrameCallbackLowerPart);
 
     MediaQueryData screenSize = MediaQuery.of(context);
+    bool largeScreen = screenSize.size.width > 400;
+
     return SlidingUpPanel(
         backdropEnabled: false,
         backdropOpacity: 0.0,
@@ -96,7 +96,9 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
         padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.2),
         minHeight: oldSize ?? 0.0,
         maxHeight: (oldSize ?? 0.0) + (statsPartOldSize ?? 0),
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+        borderRadius: BorderRadius.only(
+            topLeft: largeScreen ? Radius.zero : Radius.circular(25),
+            topRight: largeScreen ? Radius.zero : Radius.circular(25)),
         panelBuilder: (scroll) {
           return Column(
             children: [buildHeaderPart(scroll), buildStatsPart()],
@@ -145,13 +147,17 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
 
     return Container(
       width: screenSize.size.width,
-      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        buildGradeSquare(),
-        SizedBox(
-          width: screenSize.size.width / 5 * 0.14,
-        ),
-        Expanded(child: buildGradesMetas()),
-      ]),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: 500),
+        child:
+            Row(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.center, children: [
+          buildGradeSquare(),
+          SizedBox(
+            width: screenSize.size.width / 5 * 0.14,
+          ),
+          Expanded(child: buildGradesMetas()),
+        ]),
+      ),
     );
   }
 
@@ -161,12 +167,12 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
         future: getColor(widget.grade?.disciplineCode ?? ""),
         initialData: 0,
         builder: (context, snapshot) {
-          return Container(
-            decoration: BoxDecoration(color: Color(snapshot.data ?? 0), borderRadius: BorderRadius.circular(15)),
-            padding: EdgeInsets.symmetric(
-                horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.height / 10 * 0.1),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: screenSize.size.width / 5 * 1),
+          return ConstrainedBox(
+            constraints: BoxConstraints(minHeight: 100, maxHeight: 250),
+            child: Container(
+              decoration: BoxDecoration(color: Color(snapshot.data ?? 0), borderRadius: BorderRadius.circular(15)),
+              padding: EdgeInsets.symmetric(
+                  horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.height / 10 * 0.1),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
@@ -204,52 +210,55 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
   Widget buildGradeSquare() {
     MediaQueryData screenSize = MediaQuery.of(context);
 
-    return Container(
-      decoration: BoxDecoration(color: Theme.of(context).primaryColorDark, borderRadius: BorderRadius.circular(15)),
-      width: screenSize.size.width / 5 * 1,
-      height: screenSize.size.width / 5 * 1,
-      padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Expanded(
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: 100, maxHeight: 100),
+      child: Container(
+        decoration: BoxDecoration(color: Theme.of(context).primaryColorDark, borderRadius: BorderRadius.circular(15)),
+        width: screenSize.size.width / 5 * 1,
+        height: screenSize.size.width / 5 * 1,
+        padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+                child: FittedBox(
+                    child: AutoSizeText.rich(
+                        //MARK
+                        TextSpan(
+              text: ((widget.grade?.notSignificant ?? false)
+                  ? "(" + (widget.grade?.value ?? "")
+                  : (widget.grade?.value ?? "")),
+              style: TextStyle(
+                  color: (widget.grade?.simulated ?? false) ? Colors.blue : ThemeUtils.textColor(),
+                  fontFamily: "Asap",
+                  fontWeight: FontWeight.bold,
+                  fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.3),
+              children: <TextSpan>[
+                if (widget.grade?.notSignificant == true)
+                  TextSpan(
+                      text: ")",
+                      style: TextStyle(
+                          color: (widget.grade?.simulated ?? false) ? Colors.blue : ThemeUtils.textColor(),
+                          fontWeight: FontWeight.bold,
+                          fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.3)),
+              ],
+            )))),
+            Container(
+              decoration: BoxDecoration(color: ThemeUtils.textColor(), borderRadius: BorderRadius.circular(55)),
+              height: screenSize.size.height / 10 * 0.02,
+              width: screenSize.size.width / 5 * 0.6,
+            ),
+            Expanded(
               child: FittedBox(
-                  child: AutoSizeText.rich(
-                      //MARK
-                      TextSpan(
-            text: ((widget.grade?.notSignificant ?? false)
-                ? "(" + (widget.grade?.value ?? "")
-                : (widget.grade?.value ?? "")),
-            style: TextStyle(
-                color: (widget.grade?.simulated ?? false) ? Colors.blue : ThemeUtils.textColor(),
-                fontFamily: "Asap",
-                fontWeight: FontWeight.bold,
-                fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.3),
-            children: <TextSpan>[
-              if (widget.grade?.notSignificant == true)
-                TextSpan(
-                    text: ")",
-                    style: TextStyle(
-                        color: (widget.grade?.simulated ?? false) ? Colors.blue : ThemeUtils.textColor(),
-                        fontWeight: FontWeight.bold,
-                        fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.3)),
-            ],
-          )))),
-          Container(
-            decoration: BoxDecoration(color: ThemeUtils.textColor(), borderRadius: BorderRadius.circular(55)),
-            height: screenSize.size.height / 10 * 0.02,
-            width: screenSize.size.width / 5 * 0.6,
-          ),
-          Expanded(
-            child: FittedBox(
-              child: AutoSizeText(
-                (widget.grade?.scale) ?? "N/A",
-                style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: ThemeUtils.textColor()),
+                child: AutoSizeText(
+                  (widget.grade?.scale) ?? "N/A",
+                  style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: ThemeUtils.textColor()),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -284,21 +293,14 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
               iconColor: Colors.blue,
             ),
           if (widget.gradesController?.isSimulating ?? false) SizedBox(height: screenSize.size.height / 10 * 0.25),
-          buildGradeHeader(),
+          ConstrainedBox(constraints: BoxConstraints(maxWidth: 500), child: buildGradeHeader()),
           SizedBox(height: screenSize.size.height / 10 * 0.25),
           buildGradeAveragesAndDetails(),
           SizedBox(height: screenSize.size.height / 10 * 0.15),
           if (widget.grade != null)
-            CustomButtons.materialButton(
-              context,
-              screenSize.size.width / 5 * 1.5,
-              null,
-              () {
-                CustomDialogs.showShareGradeDialog(context, widget.grade!);
-              },
-              label: "Partager",
-              icon: MdiIcons.shareVariant,
-            ),
+            CustomButtons.materialButton(context, 130, 45, () {
+              CustomDialogs.showShareGradeDialog(context, widget.grade!);
+            }, label: "Partager", icon: MdiIcons.shareVariant, padding: EdgeInsets.all(10)),
           SizedBox(height: screenSize.size.height / 10 * 0.15),
           buildDragChevron(),
         ],
@@ -309,22 +311,25 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
   Widget buildSquareKeyValue(String key, String value) {
     MediaQueryData screenSize = MediaQuery.of(context);
 
-    return Container(
-      width: screenSize.size.width / 5 * 0.9,
-      height: screenSize.size.width / 5 * 0.9,
-      decoration: BoxDecoration(color: Theme.of(context).primaryColorDark, borderRadius: BorderRadius.circular(15)),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            key,
-            style: TextStyle(color: ThemeUtils.textColor(), fontSize: 12),
-          ),
-          Text(
-            value,
-            style: TextStyle(color: ThemeUtils.textColor(), fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-        ],
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: 80, maxHeight: 80),
+      child: Container(
+        width: screenSize.size.width / 5 * 0.9,
+        height: screenSize.size.width / 5 * 0.9,
+        decoration: BoxDecoration(color: Theme.of(context).primaryColorDark, borderRadius: BorderRadius.circular(15)),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              key,
+              style: TextStyle(color: ThemeUtils.textColor(), fontSize: 12),
+            ),
+            Text(
+              value,
+              style: TextStyle(color: ThemeUtils.textColor(), fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
       ),
     );
   }

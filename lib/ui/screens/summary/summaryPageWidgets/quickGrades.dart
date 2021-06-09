@@ -37,15 +37,21 @@ class QuickGrades extends StatefulWidget {
 class _QuickGradesState extends State<QuickGrades> {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<GradesController>.value(
-      value: appSys.gradesController,
-      child: Consumer<GradesController>(builder: (context, model, child) {
-        return Column(children: [
-          buildCHart(context, model.disciplines(showAll: true), model.isFetching),
-          buildGradesList(
-              context, getAllGrades(model.disciplines(showAll: true), overrideLimit: true, sortByWritingDate: true)),
-        ]);
-      }),
+    var screenSize = MediaQuery.of(context);
+
+    return Container(
+      child: ChangeNotifierProvider<GradesController>.value(
+        value: appSys.gradesController,
+        child: Consumer<GradesController>(builder: (context, model, child) {
+          return Column(children: [
+            Container(
+                padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.25),
+                child: buildCHart(context, model.disciplines(showAll: true), model.isFetching)),
+            buildGradesList(
+                context, getAllGrades(model.disciplines(showAll: true), overrideLimit: true, sortByWritingDate: true)),
+          ]);
+        }),
+      ),
     );
   }
 
@@ -66,26 +72,18 @@ class _QuickGradesState extends State<QuickGrades> {
             child: Container(
               color: Colors.transparent,
               width: screenSize.size.width / 5 * 4.5,
-              height: (screenSize.size.height / 10 * 8.8) / 10 * 2,
-              child: Stack(
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                          color: Colors.transparent,
-                          width: screenSize.size.width / 5 * 4.5,
-                          child: ((disciplines != null) || !fetching)
-                              ? ClipRRect(
-                                  child: SummaryChart(
-                                    getAllGrades(disciplines, overrideLimit: true, sortByWritingDate: true),
-                                  ),
-                                )
-                              : CustomLoader(
-                                  screenSize.size.width / 5 * 2.5, screenSize.size.width / 5 * 2.5, Color(0xff5c66c1)))
-                    ],
-                  ),
-                ],
-              ),
+              height: 130,
+              child: Container(
+                  color: Colors.transparent,
+                  width: screenSize.size.width / 5 * 4.5,
+                  child: ((disciplines != null) || !fetching)
+                      ? ClipRRect(
+                          child: SummaryChart(
+                            getAllGrades(disciplines, overrideLimit: true, sortByWritingDate: true),
+                          ),
+                        )
+                      : CustomLoader(
+                          screenSize.size.width / 5 * 2.5, screenSize.size.width / 5 * 2.5, Color(0xff5c66c1))),
             )));
   }
 
@@ -197,7 +195,7 @@ class _QuickGradesState extends State<QuickGrades> {
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) {
               return Card(
-                margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.2, top: screenSize.size.height / 10 * 0.1),
+                margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.25, top: screenSize.size.height / 10 * 0.1),
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
                 color: Theme.of(context).primaryColor,
                 child: Material(
@@ -211,11 +209,14 @@ class _QuickGradesState extends State<QuickGrades> {
                     onTap: () {
                       widget.switchPage!(1);
                     },
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.height / 10 * 0.1),
-                      height: screenSize.size.height / 10 * 0.5,
-                      child: buildGradeItem(grades[index]),
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: 450),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.height / 10 * 0.1),
+                        height: screenSize.size.height / 10 * 0.5,
+                        child: buildGradeItem(grades[index]),
+                      ),
                     ),
                   ),
                 ),

@@ -14,6 +14,7 @@ import 'package:ynotes/core/logic/appConfig/controller.dart';
 import 'package:ynotes/core/services/background.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/globals.dart';
+import 'package:ynotes/ui/components/columnGenerator.dart';
 import 'package:ynotes/ui/components/hiveLifeCycleManager.dart';
 import 'package:ynotes/ui/screens/carousel/carousel.dart';
 import 'package:ynotes/ui/screens/drawer/drawerBuilder.dart';
@@ -28,7 +29,6 @@ Future main() async {
   appSys = ApplicationSystem();
   await appSys.initApp();
   BackgroundFetch.registerHeadlessTask(_headlessTask);
-
 
   runZoned<Future<Null>>(() async {
     runApp(Phoenix(child: HomeApp()));
@@ -71,13 +71,79 @@ class HomeApp extends StatefulWidget {
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    MediaQueryData screenSize = MediaQuery.of(context);
+
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
     return Scaffold(
         backgroundColor: Theme.of(context).backgroundColor,
         body: SafeArea(
-          child: DrawerBuilder(),
+          child: Row(
+            children: [
+              if (screenSize.size.width > 800)
+                Container(
+                  width: 350,
+                  height: screenSize.size.height,
+                  child: Column(
+                    children: [
+                      ColumnBuilder(
+                          itemBuilder: (context, index) {
+                            return Container(
+                              height: 50,
+                              child: TextButton(
+                                  onPressed: () {},
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      SizedBox(
+                                        width: 25,
+                                      ),
+                                      Text(
+                                        "Menu",
+                                        style: TextStyle(
+                                            fontFamily: "Asap",
+                                            fontWeight: FontWeight.bold,
+                                            color: ThemeUtils.textColor()),
+                                      ),
+                                      Expanded(
+                                        child: SizedBox(),
+                                      ),
+                                      Icon(Icons.headphones)
+                                    ],
+                                  )),
+                            );
+                          },
+                          itemCount: 9),
+                      Expanded(child: SizedBox()),
+                      Container(
+                        height: 50,
+                        child: TextButton(
+                            onPressed: () {},
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  width: 25,
+                                ),
+                                Text(
+                                  "Paramètres",
+                                  style: TextStyle(
+                                      fontFamily: "Asap", fontWeight: FontWeight.bold, color: ThemeUtils.textColor()),
+                                ),
+                                Expanded(
+                                  child: SizedBox(),
+                                ),
+                                Icon(Icons.settings)
+                              ],
+                            )),
+                      ),
+                    ],
+                  ),
+                ),
+              Expanded(child: DrawerBuilder()),
+            ],
+          ),
         ));
   }
 }
