@@ -83,8 +83,17 @@ class _CustomTextFieldState extends State<CustomTextField> {
             ),
             if (widget.eyeButton)
               Align(
-                alignment: Alignment.centerRight,
-                child: GestureDetector(
+                  alignment: Alignment.centerRight,
+                  child: IconButton(
+                      onPressed: () {
+                        setState(() {
+                          widget.isObscured = !widget.isObscured;
+                        });
+                      },
+                      iconSize: screenSize.size.width / 5 * 0.5,
+                      icon: Icon(MdiIcons.eye, size: screenSize.size.width / 5 * 0.5, color: Color(0xff22256A)))
+
+                  /* GestureDetector(
                   onTap: () {
                     setState(() {
                       widget.isObscured = !widget.isObscured;
@@ -103,8 +112,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
                       ],
                     ),
                   ),
-                ),
-              ),
+                ), */
+                  ),
           ],
         ));
   }

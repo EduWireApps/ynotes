@@ -94,6 +94,8 @@ class ApplicationSystem extends ChangeNotifier {
       //Delete all
       await storage.deleteAll();
       this.updateTheme("clair");
+
+      
     } catch (e) {
       print(e);
     }
