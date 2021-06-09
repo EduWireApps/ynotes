@@ -286,17 +286,20 @@ class _GradesPageState extends State<GradesPage> {
 
     return Container(
       height: screenSize.size.height / 10 * 0.45,
-      width: screenSize.size.width / 5 * 1.55,
       padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
       decoration: BoxDecoration(color: Theme.of(context).primaryColorDark, borderRadius: BorderRadius.circular(8)),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Expanded(
+          Flexible(
               child: Text(
             name,
             style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
           )),
+          SizedBox(
+            width: 15,
+          ),
           Text(average,
               style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: ThemeUtils.textColor()))
         ],
@@ -312,10 +315,13 @@ class _GradesPageState extends State<GradesPage> {
       color: Theme.of(context).primaryColor,
       child: Row(
         children: [
+          SizedBox(
+            width: screenSize.size.width / 5 * 0.15,
+          ),
           Container(
-            padding: EdgeInsets.all(screenSize.size.height / 10 * 0.3),
-            width: screenSize.size.width / 5 * 1.4,
-            height: screenSize.size.width / 5 * 1.1,
+            padding: EdgeInsets.all(5),
+            width: 70,
+            height: 70,
             decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 boxShadow: <BoxShadow>[
@@ -335,20 +341,24 @@ class _GradesPageState extends State<GradesPage> {
             ),
           ),
           SizedBox(
-            width: screenSize.size.width / 5 * 0.05,
+            width: screenSize.size.width / 5 * 0.3,
           ),
           Expanded(
             child: Wrap(
               direction: Axis.horizontal,
+              alignment: WrapAlignment.start,
               runSpacing: screenSize.size.height / 10 * 0.1,
-              spacing: screenSize.size.width / 5 * 0.2,
+              spacing: screenSize.size.width / 5 * 0.1,
               children: [
                 buildAverageContainer("MAX", discipline?.maxClassGeneralAverage ?? "N/A"),
                 buildAverageContainer("CLASSE", discipline?.classGeneralAverage ?? "N/A"),
-                if (discipline?.generalRank != null) buildAverageContainer("RANG", discipline?.generalRank ?? "N/A"),
+                buildAverageContainer("RANG", discipline?.generalRank ?? "N/A"),
               ],
             ),
-          )
+          ),
+          SizedBox(
+            width: screenSize.size.width / 5 * 0.1,
+          ),
         ],
       ),
     );

@@ -21,11 +21,10 @@ void disciplineModalBottomSheet(context, Discipline? discipline, Function? callb
       colorGroup = Color(widget.discipline.color);
     }
   }
+  MediaQueryData screenSize = MediaQuery.of(context);
   showModalBottomSheet(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
-      ),
-      backgroundColor: Theme.of(context).primaryColor,
+      shape: RoundedRectangleBorder(),
+      backgroundColor: Colors.transparent,
       context: context,
       isScrollControlled: true,
       builder: (BuildContext bc) {
@@ -48,8 +47,14 @@ class _DisciplineModalBottomSheetState extends State<DisciplineModalBottomSheet>
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
+    bool largeScreen = screenSize.size.width > 400;
 
     return Container(
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.only(
+              topLeft: largeScreen ? Radius.zero : Radius.circular(25),
+              topRight: largeScreen ? Radius.zero : Radius.circular(25)),
+          color: Theme.of(context).primaryColor),
       padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.2),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -61,15 +66,20 @@ class _DisciplineModalBottomSheetState extends State<DisciplineModalBottomSheet>
           SizedBox(
             height: screenSize.size.height / 10 * 0.1,
           ),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              buildGradeSquare(),
-              SizedBox(
-                width: screenSize.size.width / 5 * 0.14,
-              ),
-              Expanded(child: buildDisciplineMetas()),
-            ],
+          ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: 500),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                buildGradeSquare(),
+                SizedBox(
+                  width: screenSize.size.width / 5 * 0.14,
+                ),
+                Expanded(
+                  child: buildDisciplineMetas(),
+                ),
+              ],
+            ),
           ),
           SizedBox(
             height: screenSize.size.height / 10 * 0.25,
@@ -91,7 +101,7 @@ class _DisciplineModalBottomSheetState extends State<DisciplineModalBottomSheet>
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        CustomButtons.materialButton(context, null, null, () async {
+        CustomButtons.materialButton(context, 130, 45, () async {
           Navigator.pop(context);
           Color? color = await CustomDialogs.showColorPicker(context, Color(widget.discipline?.color ?? 0));
 
@@ -106,7 +116,7 @@ class _DisciplineModalBottomSheetState extends State<DisciplineModalBottomSheet>
               widget.callback!();
             }
           }
-        }, label: "Couleur", icon: MdiIcons.palette),
+        }, label: "Couleur", icon: MdiIcons.palette, padding: EdgeInsets.all(10)),
       ],
     );
   }
@@ -131,12 +141,12 @@ class _DisciplineModalBottomSheetState extends State<DisciplineModalBottomSheet>
         future: getColor(widget.discipline?.disciplineCode ?? ""),
         initialData: 0,
         builder: (context, snapshot) {
-          return Container(
-            decoration: BoxDecoration(color: Color(snapshot.data ?? 0), borderRadius: BorderRadius.circular(15)),
-            padding: EdgeInsets.symmetric(
-                horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.height / 10 * 0.1),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: screenSize.size.width / 5 * 1),
+          return ConstrainedBox(
+            constraints: BoxConstraints(minHeight: 100, maxHeight: 250),
+            child: Container(
+              decoration: BoxDecoration(color: Color(snapshot.data ?? 0), borderRadius: BorderRadius.circular(15)),
+              padding: EdgeInsets.symmetric(
+                  horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.height / 10 * 0.1),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
@@ -161,24 +171,27 @@ class _DisciplineModalBottomSheetState extends State<DisciplineModalBottomSheet>
   Widget buildGradeSquare() {
     MediaQueryData screenSize = MediaQuery.of(context);
 
-    return Container(
-      decoration: BoxDecoration(color: Theme.of(context).primaryColorDark, borderRadius: BorderRadius.circular(15)),
-      width: screenSize.size.width / 5 * 1,
-      height: screenSize.size.width / 5 * 1,
-      padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.2),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Expanded(
-            child: FittedBox(
-              child: AutoSizeText(
-                ((widget.discipline?.average) ?? "N/A") != "" ? ((widget.discipline?.average) ?? "N/A") : "N/A",
-                style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: ThemeUtils.textColor()),
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: 100, maxHeight: 100),
+      child: Container(
+        decoration: BoxDecoration(color: Theme.of(context).primaryColorDark, borderRadius: BorderRadius.circular(15)),
+        width: screenSize.size.width / 5 * 1,
+        height: screenSize.size.width / 5 * 1,
+        padding: EdgeInsets.symmetric(horizontal: 20),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              child: FittedBox(
+                child: AutoSizeText(
+                  ((widget.discipline?.average) ?? "N/A") != "" ? ((widget.discipline?.average) ?? "N/A") : "N/A",
+                  style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: ThemeUtils.textColor()),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -186,22 +199,25 @@ class _DisciplineModalBottomSheetState extends State<DisciplineModalBottomSheet>
   Widget buildSquareKeyValue(String key, String value) {
     MediaQueryData screenSize = MediaQuery.of(context);
 
-    return Container(
-      width: screenSize.size.width / 5 * 0.9,
-      height: screenSize.size.width / 5 * 0.9,
-      decoration: BoxDecoration(color: Theme.of(context).primaryColorDark, borderRadius: BorderRadius.circular(15)),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            key,
-            style: TextStyle(color: ThemeUtils.textColor(), fontSize: 12),
-          ),
-          Text(
-            value,
-            style: TextStyle(color: ThemeUtils.textColor(), fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-        ],
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: 80, maxHeight: 80),
+      child: Container(
+        width: screenSize.size.width / 5 * 0.9,
+        height: screenSize.size.width / 5 * 0.9,
+        decoration: BoxDecoration(color: Theme.of(context).primaryColorDark, borderRadius: BorderRadius.circular(15)),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              key,
+              style: TextStyle(color: ThemeUtils.textColor(), fontSize: 12),
+            ),
+            Text(
+              value,
+              style: TextStyle(color: ThemeUtils.textColor(), fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
       ),
     );
   }

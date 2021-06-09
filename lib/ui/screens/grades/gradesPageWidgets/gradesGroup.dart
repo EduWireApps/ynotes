@@ -11,8 +11,8 @@ import 'package:ynotes/core/logic/stats/gradesStats.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
-import 'package:ynotes/ui/components/modalBottomSheets/disciplinesModalBottomSheet.dart';
-import 'package:ynotes/ui/components/modalBottomSheets/gradesModalBottomSheet/gradesModalBottomSheet.dart';
+import 'package:ynotes/ui/screens/grades/gradesPageWidgets/disciplinesModalBottomSheet.dart';
+import 'package:ynotes/ui/screens/grades/gradesPageWidgets/gradesModalBottomSheet.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 class GradesGroup extends StatefulWidget {
@@ -77,7 +77,6 @@ class _GradesGroupState extends State<GradesGroup> {
             children: <Widget>[
               //Label
               Container(
-                margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.0005),
                 child: Material(
                   borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
                   color: colorGroup,
@@ -252,9 +251,9 @@ class _GradesGroupState extends State<GradesGroup> {
     MediaQueryData screenSize = MediaQuery.of(context);
 
     return Container(
-      width: screenSize.size.width / 5 * 0.3,
-      height: screenSize.size.width / 5 * 0.3,
-      padding: EdgeInsets.all(screenSize.size.width / 5 * 0.05),
+      width: 28,
+      height: 28,
+      padding: EdgeInsets.all(5),
       decoration:
           BoxDecoration(color: getAdaptedColor(), shape: BoxShape.rectangle, borderRadius: BorderRadius.circular(5)),
       child: Column(
