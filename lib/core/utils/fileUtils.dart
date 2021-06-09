@@ -181,7 +181,8 @@ class FolderAppUtil {
     }
     if (Platform.isLinux) {
       var dir = await getApplicationDocumentsDirectory();
-      return download ? dir.path : dir;
+      Directory realDir = Directory(dir.path + "/" + "yNotesApp" + "/" + "files");
+      return download ? realDir.path : realDir;
     }
   }
 
