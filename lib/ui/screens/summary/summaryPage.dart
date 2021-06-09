@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:expandable/expandable.dart';
@@ -55,8 +56,7 @@ class SummaryPageState extends State<SummaryPage> {
             style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
           ),
           leading: TextButton(
-            style: TextButton.styleFrom(
-            ),
+            style: TextButton.styleFrom(),
             child: Icon(MdiIcons.menu, color: ThemeUtils.textColor()),
             onPressed: () async {
               widget.parentScaffoldState.currentState?.openDrawer();
@@ -64,7 +64,6 @@ class SummaryPageState extends State<SummaryPage> {
           ),
           actions: [
             TextButton(
-             
               child: Icon(MdiIcons.tuneVariant, color: ThemeUtils.textColor()),
               onPressed: () async {
                 triggerSettings();
@@ -76,7 +75,9 @@ class SummaryPageState extends State<SummaryPage> {
       body: VisibilityDetector(
         key: Key('sumpage'),
         onVisibilityChanged: (visibilityInfo) async {
-          await Permission.notification.request();
+          if (Platform.isAndroid || Platform.isIOS) {
+            await Permission.notification.request();
+          }
           //Ensure that page is visible
           var visiblePercentage = visibilityInfo.visibleFraction * 100;
           if (visiblePercentage == 100) {
@@ -131,7 +132,7 @@ class SummaryPageState extends State<SummaryPage> {
   }
 
   initLoginController() async {
-    //await appSys.loginController.init();
+    await appSys.loginController.init();
   }
 
   initState() {
@@ -155,8 +156,7 @@ class SummaryPageState extends State<SummaryPage> {
                     if (firstStart) {
                       firstStart = false;
                     }
-                    appSys.gradesController.refresh(force: true);
-                    appSys.homeworkController.refresh(force: true);
+                    refreshControllers();
                   })
                 }
             })!);

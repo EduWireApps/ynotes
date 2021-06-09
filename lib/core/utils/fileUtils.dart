@@ -178,8 +178,10 @@ class FolderAppUtil {
     if (Platform.isIOS) {
       var dir = await getApplicationDocumentsDirectory();
       return download ? dir.path : dir;
-    } else {
-      ///DO NOTHING
+    }
+    if (Platform.isLinux) {
+      var dir = await getApplicationDocumentsDirectory();
+      return download ? dir.path : dir;
     }
   }
 

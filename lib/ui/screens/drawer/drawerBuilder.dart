@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -341,11 +342,13 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
 
   @override
   void initState() {
-    ShakeDetector.autoStart(onPhoneShake: () {
-      if (appSys.settings?["user"]["global"]["shakeToReport"]) {
-        Wiredash.of(context)?.show();
-      }
-    });
+    if (Platform.isIOS || Platform.isAndroid) {
+      ShakeDetector.autoStart(onPhoneShake: () {
+        if (appSys.settings?["user"]["global"]["shakeToReport"]) {
+          Wiredash.of(context)?.show();
+        }
+      });
+    }
     super.initState();
     //Init hw controller
     if (firstStart == true) {
@@ -356,6 +359,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
     //Mvc init
 
     initPageControllers();
+    initControllers();
   }
 
   _onPageViewUpdate() {

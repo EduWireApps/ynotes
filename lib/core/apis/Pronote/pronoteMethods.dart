@@ -1,4 +1,4 @@
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:intl/intl.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteAPI.dart';
 import 'package:ynotes/core/apis/Pronote/converters/polls.dart';

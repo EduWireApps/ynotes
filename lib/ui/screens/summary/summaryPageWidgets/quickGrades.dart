@@ -74,7 +74,7 @@ class _QuickGradesState extends State<QuickGrades> {
                       Container(
                           color: Colors.transparent,
                           width: screenSize.size.width / 5 * 4.5,
-                          child: (disciplines != null && !fetching)
+                          child: (disciplines != null || !fetching)
                               ? ClipRRect(
                                   child: SummaryChart(
                                     getAllGrades(disciplines, overrideLimit: true, sortByWritingDate: true),

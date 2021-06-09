@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:android_alarm_manager/android_alarm_manager.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:html/parser.dart';
@@ -155,21 +155,23 @@ class AppNotification {
   }
 
   static initNotifications(BuildContext context, Function navigatorCallback) async {
-    AwesomeNotifications().initialize(null, [
-      NotificationChannel(
-          channelKey: 'alarm',
-          defaultPrivacy: NotificationPrivacy.Private,
-          channelName: 'Alarmes',
-          importance: NotificationImportance.High,
-          channelDescription: "Alarmes et rappels de l'application yNotes",
-          defaultColor: Color(0xFF9D50DD),
-          ledColor: Colors.white)
-    ]);
-    try {
-      AwesomeNotifications().actionStream.listen((receivedNotification) async {
-        await getRelatedAction(receivedNotification, context, navigatorCallback);
-      });
-    } catch (e) {}
+    if (Platform.isAndroid || Platform.isIOS) {
+      AwesomeNotifications().initialize(null, [
+        NotificationChannel(
+            channelKey: 'alarm',
+            defaultPrivacy: NotificationPrivacy.Private,
+            channelName: 'Alarmes',
+            importance: NotificationImportance.High,
+            channelDescription: "Alarmes et rappels de l'application yNotes",
+            defaultColor: Color(0xFF9D50DD),
+            ledColor: Colors.white)
+      ]);
+      try {
+        AwesomeNotifications().actionStream.listen((receivedNotification) async {
+          await getRelatedAction(receivedNotification, context, navigatorCallback);
+        });
+      } catch (e) {}
+    }
   }
 
   static Future<void> scheduleAgendaReminders(AgendaEvent event) async {
@@ -421,7 +423,7 @@ class AppNotification {
           defaultPrivacy: NotificationPrivacy.Public,
           channelName: 'Nouvelle note',
           importance: NotificationImportance.High,
-            groupKey: "gradesGroup",
+          groupKey: "gradesGroup",
           channelDescription: "Nouvelles notes",
           defaultColor: ThemeUtils.spaceColor(),
           ledColor: Colors.white)
@@ -431,7 +433,6 @@ class AppNotification {
       content: NotificationContent(
           id: grade.hashCode,
           channelKey: 'newgrade',
-          
           notificationLayout: NotificationLayout.BigText,
           title: "Nouvelle note",
           body: "<b>" +

@@ -1,4 +1,4 @@
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/usefulMethods.dart';
@@ -74,7 +74,6 @@ class LoginController extends ChangeNotifier {
       String? cas = await readStorage("pronotecas");
       bool? iscas = (await readStorage("ispronotecas") == "true");
       var z = await readStorage("agreedTermsAndConfiguredApp");
-
       if (u != null && p != null && z != null) {
         await appSys.api!.login(u, p, url: url, mobileCasLogin: iscas, cas: cas).then((List loginValues) {
           // ignore: unnecessary_null_comparison
@@ -86,8 +85,6 @@ class LoginController extends ChangeNotifier {
           if (loginValues[0] == 1) {
             _details = "Connecté";
             _actualState = loginStatus.loggedIn;
-            appSys.gradesController.refresh(force: true);
-            appSys.homeworkController.refresh(force: true);
             attemptedToRelogin = false;
 
             notifyListeners();

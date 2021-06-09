@@ -68,7 +68,7 @@ dependencies:
   build_resolvers: ^2.0.0
   calendar_time: ^2.0.0-nullsafety.0
   collection: ^1.15.0-nullsafety.4
-  connectivity: ^3.0.3
+  connectivity_plus: ^1.0.2
   csv: ^5.0.0
   date_field: ^2.0.1
   day_night_switcher: ^0.2.0+1

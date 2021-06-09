@@ -71,7 +71,6 @@ class _AccountPageState extends State<AccountPage> {
                               alternativeButtonConfirmText: "Se déconnecter") ??
                           false) {
                         await appSys.exitApp();
-                        appSys.dispose();
                         setState(() {});
                         Phoenix.rebirth(context);
                       }
