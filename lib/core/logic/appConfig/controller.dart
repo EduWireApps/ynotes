@@ -37,7 +37,7 @@ class ApplicationSystem extends ChangeNotifier {
   String? themeName;
 
   ///The chosen API
-  API? api;
+  API? _api;
 
   late Offline offline;
   late HiveBoxProvider hiveBoxProvider;
@@ -54,6 +54,12 @@ class ApplicationSystem extends ChangeNotifier {
   late MailsController mailsController;
 
   ///All the app controllers
+
+  API? get api => _api;
+  set api(API? newAPI) {
+    _api = newAPI;
+    _refreshControllersAPI();
+  }
 
   SchoolAccount? get currentSchoolAccount => _currentSchoolAccount;
   set currentSchoolAccount(SchoolAccount? newValue) {
@@ -73,6 +79,7 @@ class ApplicationSystem extends ChangeNotifier {
     mailsController = MailsController(this.api);
   }
 
+  //Leave app
   exitApp() async {
     try {
       await this.offline.clearAll();
@@ -102,6 +109,8 @@ class ApplicationSystem extends ChangeNotifier {
     updateTheme(settings!["user"]["global"]["theme"]);
     //Set offline
     await initOffline();
+
+    buildControllers();
     //Set api
     this.api = apiManager(this.offline);
 
@@ -113,15 +122,9 @@ class ApplicationSystem extends ChangeNotifier {
     //Set background fetch
     await _initBackgroundFetch();
     //Set controllers
-    buildControllers();
   }
 
-  initControllers() async {
-    await this.gradesController.refresh(force: true);
-    await this.homeworkController.refresh(force: true);
-  }
 
-//Leave app
   initOffline() async {
     hiveBoxProvider = HiveBoxProvider();
     //Initiate an unlocked offline controller
@@ -135,7 +138,6 @@ class ApplicationSystem extends ChangeNotifier {
     notifyListeners();
   }
 
-// This "Headless Task" is run when app is terminated.
   updateTheme(String themeName) {
     print("Updating theme to " + themeName);
     theme = appThemes[themeName];
@@ -146,6 +148,7 @@ class ApplicationSystem extends ChangeNotifier {
     notifyListeners();
   }
 
+// This "Headless Task" is run when app is terminated.
   _initBackgroundFetch() async {
     if (Platform.isAndroid || Platform.isIOS) {
       print("Background fetch configuration...");
@@ -179,5 +182,14 @@ class ApplicationSystem extends ChangeNotifier {
     //Set theme to default
     updateTheme(settings!["user"]["global"]["theme"]);
     notifyListeners();
+  }
+
+  ///On API refresh to provide a new API
+  _refreshControllersAPI() {
+    gradesController.api = this.api;
+    homeworkController.api = this.api;
+    agendaController.api = this.api;
+    schoolLifeController.api = this.api;
+    mailsController.api = this.api;
   }
 }

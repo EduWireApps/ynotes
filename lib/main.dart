@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
@@ -28,10 +29,9 @@ Future main() async {
   await appSys.initApp();
   BackgroundFetch.registerHeadlessTask(_headlessTask);
 
-  //appSys.loginController = LoginController();
 
   runZoned<Future<Null>>(() async {
-    runApp(HomeApp());
+    runApp(Phoenix(child: HomeApp()));
   });
 }
 
@@ -62,11 +62,6 @@ class Carousel extends StatelessWidget {
     ));
   }
 }
-
-/*//login manager
-LoginController appSys.loginController;
-Offline offline;
-API appSys.api;*/
 
 class HomeApp extends StatefulWidget {
   @override

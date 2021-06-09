@@ -146,8 +146,6 @@ class SummaryPageState extends State<SummaryPage> {
       });
     });
     //Init controllers
-    appSys.gradesController.refresh(force: false);
-    appSys.homeworkController.refresh(force: false);
     SchedulerBinding.instance!.addPostFrameCallback((!mounted
         ? null
         : (_) => {

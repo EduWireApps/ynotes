@@ -1,6 +1,5 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
-import 'package:ynotes/core/apis/Pronote.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/usefulMethods.dart';
 
@@ -14,7 +13,10 @@ class LoginController extends ChangeNotifier {
   String logs = "";
   //getters
   Connectivity _connectivity = Connectivity();
+
+  bool attemptedToRelogin = false;
   LoginController() {
+    print("Init login controller");
     _connectivity.onConnectivityChanged.listen(connectionChanged);
   }
 
@@ -71,8 +73,9 @@ class LoginController extends ChangeNotifier {
       String? url = await readStorage("pronoteurl");
       String? cas = await readStorage("pronotecas");
       bool? iscas = (await readStorage("ispronotecas") == "true");
+      var z = await readStorage("agreedTermsAndConfiguredApp");
 
-      if (u != null && p != null) {
+      if (u != null && p != null && z != null) {
         await appSys.api!.login(u, p, url: url, mobileCasLogin: iscas, cas: cas).then((List loginValues) {
           // ignore: unnecessary_null_comparison
           if (loginValues == null) {
@@ -83,6 +86,10 @@ class LoginController extends ChangeNotifier {
           if (loginValues[0] == 1) {
             _details = "Connecté";
             _actualState = loginStatus.loggedIn;
+            appSys.gradesController.refresh(force: true);
+            appSys.homeworkController.refresh(force: true);
+            attemptedToRelogin = false;
+
             notifyListeners();
           } else {
             print("La valeur est :" + loginValues[1].toString());
@@ -97,9 +104,16 @@ class LoginController extends ChangeNotifier {
             notifyListeners();
           }
         });
-      } else {
+      } else if (!attemptedToRelogin) {
         _details = "Déconnecté";
         _actualState = loginStatus.loggedOff;
+        attemptedToRelogin = true;
+        await login();
+        notifyListeners();
+      } else {
+        _details = "Erreur de connexion.";
+        logs = "Sans détails";
+        _actualState = loginStatus.error;
         notifyListeners();
       }
     } catch (e) {}

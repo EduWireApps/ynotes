@@ -1,6 +1,7 @@
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
@@ -10,7 +11,6 @@ import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/main.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/keyValues.dart';
@@ -71,14 +71,9 @@ class _AccountPageState extends State<AccountPage> {
                               alternativeButtonConfirmText: "Se déconnecter") ??
                           false) {
                         await appSys.exitApp();
-                        appSys.api!.gradesList!.clear();
-                        setState(() {
-                          appSys.api = null;
-                        });
-                        try {
-                          appSys.updateTheme("clair");
-                        } catch (e) {}
-                        Navigator.of(context).pushReplacement(router(Login()));
+                        appSys.dispose();
+                        setState(() {});
+                        Phoenix.rebirth(context);
                       }
                     },
                         backgroundColor: Colors.red,

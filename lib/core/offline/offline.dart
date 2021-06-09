@@ -106,6 +106,7 @@ class Offline {
       await pinnedHomeworkBox?.deleteFromDisk();
       await homeworkBox?.deleteFromDisk();
       await mailsBox?.deleteFromDisk();
+      await homeworkBox?.deleteFromDisk();
 
       await this.init();
     } catch (e) {
