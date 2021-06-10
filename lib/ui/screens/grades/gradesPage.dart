@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
@@ -12,7 +13,7 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
-import 'package:ynotes/ui/components/modalBottomSheets/simulatorModalBottomSheet/simulatorModalBottomSheet.dart';
+import 'package:ynotes/ui/screens/grades/gradesPageWidgets/simulatorModalBottomSheet.dart';
 import 'package:ynotes/ui/screens/grades/gradesPageWidgets/gradesGroup.dart';
 
 bool firstStart = true;
@@ -36,7 +37,7 @@ class _GradesPageState extends State<GradesPage> {
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
-
+    bool largeScreen = screenSize.size.width > 480;
     return ChangeNotifierProvider<GradesController>.value(
       value: appSys.gradesController,
       child: Consumer<GradesController>(builder: (context, model, child) {
@@ -140,31 +141,38 @@ class _GradesPageState extends State<GradesPage> {
                                           if (model.isSimulating) _buildResetButton(model),
                                           Expanded(
                                             child: ShaderMask(
-                                              shaderCallback: (Rect rect) {
-                                                return LinearGradient(
-                                                  begin: Alignment.topCenter,
-                                                  end: Alignment.bottomCenter,
-                                                  colors: [
-                                                    Colors.purple,
-                                                    Colors.transparent,
-                                                    Colors.transparent,
-                                                    Colors.purple
-                                                  ],
-                                                  stops: [0, 0, 0.9, 1.0], // 10% purple, 80% transparent, 10% purple
-                                                ).createShader(rect);
-                                              },
-                                              blendMode: BlendMode.dstOut,
-                                              child: ListView.builder(
-                                                  physics: AlwaysScrollableScrollPhysics(),
-                                                  itemCount: model.disciplines()!.length,
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: screenSize.size.width / 5 * 0.05),
-                                                  itemBuilder: (BuildContext context, int index) {
-                                                    return GradesGroup(
-                                                        discipline: model.disciplines()![index],
-                                                        gradesController: model);
-                                                  }),
-                                            ),
+                                                shaderCallback: (Rect rect) {
+                                                  return LinearGradient(
+                                                    begin: Alignment.topCenter,
+                                                    end: Alignment.bottomCenter,
+                                                    colors: [
+                                                      Colors.purple,
+                                                      Colors.transparent,
+                                                      Colors.transparent,
+                                                      Colors.purple
+                                                    ],
+                                                    stops: [0, 0, 0.9, 1.0], // 10% purple, 80% transparent, 10% purple
+                                                  ).createShader(rect);
+                                                },
+                                                blendMode: BlendMode.dstOut,
+                                                child: Container(
+                                                    width: screenSize.size.width,
+                                                    child: LayoutBuilder(builder: (context, constraints) {
+                                                      return StaggeredGridView.countBuilder(
+                                                        padding: EdgeInsets.symmetric(horizontal: 15),
+                                                        crossAxisCount: 4,
+                                                        itemCount: model.disciplines()!.length,
+                                                        itemBuilder: (BuildContext context, int index) =>
+                                                            new GradesGroup(
+                                                          discipline: model.disciplines()![index],
+                                                          gradesController: model,
+                                                        ),
+                                                        staggeredTileBuilder: (int index) =>
+                                                            new StaggeredTile.fit(largeScreen ? 2 : 4),
+                                                        mainAxisSpacing: 15,
+                                                        crossAxisSpacing: 10,
+                                                      );
+                                                    }))),
                                           ),
                                         ],
                                       );

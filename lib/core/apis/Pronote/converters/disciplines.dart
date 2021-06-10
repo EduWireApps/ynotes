@@ -33,7 +33,7 @@ class PronoteDisciplineConverter {
           classAverage: classAverage,
           generalAverage: generalAverage,
           classGeneralAverage: classGeneralAverage,
-          subdisciplineCode: subdisciplineCode,
+          subdisciplineCodes: subdisciplineCode,
           teachers: teachers));
     });
     var rawGrades = mapGet(disciplinesData, ['donneesSec', 'donnees', 'listeDevoirs', 'V']) ?? [];

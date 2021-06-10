@@ -25,7 +25,7 @@ class DisciplineAdapter extends TypeAdapter<Discipline> {
       minClassAverage: fields[8] as String?,
       maxClassAverage: fields[9] as String?,
       disciplineCode: fields[3] as String?,
-      subdisciplineCode: (fields[4] as List?)?.cast<String?>(),
+      subdisciplineCodes: (fields[4] as List?)?.cast<String?>(),
       average: fields[6] as String?,
       teachers: (fields[10] as List?)?.cast<String?>(),
       disciplineName: fields[5] as String?,
@@ -52,7 +52,7 @@ class DisciplineAdapter extends TypeAdapter<Discipline> {
       ..writeByte(3)
       ..write(obj.disciplineCode)
       ..writeByte(4)
-      ..write(obj.subdisciplineCode)
+      ..write(obj.subdisciplineCodes)
       ..writeByte(5)
       ..write(obj.disciplineName)
       ..writeByte(6)

@@ -19,7 +19,6 @@ class GradesGroup extends StatefulWidget {
   final Discipline? discipline;
   final GradesController? gradesController;
   const GradesGroup({this.discipline, this.gradesController});
-
   State<StatefulWidget> createState() {
     return _GradesGroupState();
   }
@@ -36,6 +35,8 @@ class _GradesGroupState extends State<GradesGroup> {
         colorGroup = Color(widget.discipline!.color!);
       });
     }
+
+    String test = "lol";
 
     if (widget.discipline == null) {
       colorGroup = Theme.of(context).primaryColorDark;
@@ -58,8 +59,21 @@ class _GradesGroupState extends State<GradesGroup> {
         }
       }
     }
+
     double impact = 0.0;
     bool largeScreen = screenSize.size.width > 500;
+    double getWidthConstraints() {
+      if (largeScreen) {
+        if (screenSize.size.width > 800) {
+          return ((screenSize.size.width - 310) / 2.2);
+        } else {
+          return 480;
+        }
+      } else {
+        return 480;
+      }
+    }
+
     //BLOCK BUILDER
     return ChangeNotifierProvider<GradesController>.value(
       value: appSys.gradesController,
@@ -70,9 +84,8 @@ class _GradesGroupState extends State<GradesGroup> {
           GradesStats stats = GradesStats(grades.first, grades);
           impact = stats.calculateAverageImpact();
         }
-        return Container(
-          width: screenSize.size.width / 5 * 3.2,
-          margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.2),
+        return ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: getWidthConstraints()),
           child: Column(
             children: <Widget>[
               //Label
@@ -181,7 +194,7 @@ class _GradesGroupState extends State<GradesGroup> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         if (widget.discipline != null)
-                          if (widget.discipline!.subdisciplineCode!.length > 0)
+                          if (widget.discipline!.subdisciplineCodes!.length > 0)
                             Center(
                               child: Container(
                                   margin: EdgeInsets.only(top: 5),
@@ -195,9 +208,16 @@ class _GradesGroupState extends State<GradesGroup> {
                             ),
                         gradesList(0, widget.gradesController!.period),
                         if (widget.discipline != null)
-                          if (widget.discipline!.subdisciplineCode!.length > 0) Divider(thickness: 2),
+                          if (widget.discipline!.subdisciplineCodes!.length > 0 &&
+                              widget.discipline!.gradesList?.where((element) =>
+                                      element.subdisciplineCode == widget.discipline!.subdisciplineCodes![1]) !=
+                                  null)
+                            Divider(thickness: 2),
                         if (widget.discipline != null)
-                          if (widget.discipline!.subdisciplineCode!.length > 0)
+                          if (widget.discipline!.subdisciplineCodes!.length > 0 &&
+                              widget.discipline!.gradesList?.where((element) =>
+                                      element.subdisciplineCode == widget.discipline!.subdisciplineCodes![1]) !=
+                                  null)
                             Center(
                               child: Text("Oral",
                                   style: TextStyle(
@@ -206,7 +226,10 @@ class _GradesGroupState extends State<GradesGroup> {
                                   )),
                             ),
                         if (widget.discipline != null)
-                          if (widget.discipline!.subdisciplineCode!.length > 0)
+                          if (widget.discipline!.subdisciplineCodes!.length > 0 &&
+                              widget.discipline!.gradesList?.where((element) =>
+                                      element.subdisciplineCode == widget.discipline!.subdisciplineCodes![1]) !=
+                                  null)
                             gradesList(1, widget.gradesController!.period),
                       ],
                     ),
@@ -252,7 +275,6 @@ class _GradesGroupState extends State<GradesGroup> {
       }
     }
 
-
     return Container(
       width: 28,
       height: 28,
@@ -279,8 +301,8 @@ class _GradesGroupState extends State<GradesGroup> {
     if (widget.discipline != null) {
       widget.discipline!.gradesList!.forEach((element) {
         if (element.periodName == chosenPeriode) {
-          if (widget.discipline!.subdisciplineCode!.length > 1) {
-            if (element.subdisciplineCode == widget.discipline!.subdisciplineCode![sousMatiereIndex]) {
+          if (widget.discipline!.subdisciplineCodes!.length > 1) {
+            if (element.subdisciplineCode == widget.discipline!.subdisciplineCodes![sousMatiereIndex]) {
               toReturn.add(element);
             }
           } else {
@@ -349,8 +371,7 @@ class _GradesGroupState extends State<GradesGroup> {
                         callback, this.widget, widget.gradesController);
                   },
                   child: Container(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: 15, vertical: 5),
+                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
