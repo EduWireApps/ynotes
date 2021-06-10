@@ -81,48 +81,64 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
     SchedulerBinding.instance?.addPostFrameCallback(postFrameCallbackLowerPart);
 
     MediaQueryData screenSize = MediaQuery.of(context);
-    bool largeScreen = screenSize.size.width > 400;
+    bool largeScreen = screenSize.size.width > 500;
 
-    return SlidingUpPanel(
-        backdropEnabled: false,
-        backdropOpacity: 0.0,
-        body: GestureDetector(
-          onTap: () {
-            Navigator.pop(context);
-          },
-        ),
-        controller: panelController,
-        color: Theme.of(context).primaryColor,
-        padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.2),
-        minHeight: oldSize ?? 0.0,
-        maxHeight: (oldSize ?? 0.0) + (statsPartOldSize ?? 0),
-        borderRadius: BorderRadius.only(
-            topLeft: largeScreen ? Radius.zero : Radius.circular(25),
-            topRight: largeScreen ? Radius.zero : Radius.circular(25)),
-        panelBuilder: (scroll) {
-          return Column(
-            children: [buildHeaderPart(scroll), buildStatsPart()],
-          );
-        });
+    return Container(
+      width: 500,
+      child: ClipRRect(
+        child: SlidingUpPanel(
+            backdropEnabled: false,
+            backdropOpacity: 0.0,
+            body: GestureDetector(
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            controller: panelController,
+            color: Theme.of(context).primaryColor,
+            padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.2),
+            minHeight: oldSize ?? 0.0,
+            maxHeight: (oldSize ?? 0.0) + (statsPartOldSize ?? 0),
+            borderRadius: BorderRadius.only(
+                topLeft: largeScreen ? Radius.zero : Radius.circular(25),
+                topRight: largeScreen ? Radius.zero : Radius.circular(25)),
+            panelBuilder: (scroll) {
+              return Container(
+                width: 500,
+                child: ClipRRect(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [buildHeaderPart(scroll), buildStatsPart()],
+                  ),
+                ),
+              );
+            }),
+      ),
+    );
   }
 
   Widget buildDragChevron() {
-    MediaQueryData screenSize = MediaQuery.of(context);
-    return Column(
-      children: [
-        Text(
-          "Voir plus",
-          style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontWeight: FontWeight.bold),
-        ),
-        Container(
-          width: screenSize.size.width / 5 * 0.3,
-          height: screenSize.size.width / 5 * 0.3,
-          child: Icon(
-            MdiIcons.chevronDown,
-            color: ThemeUtils.textColor(),
+    return InkWell(
+      onTap: () {
+        panelController.isPanelOpen ? panelController.close() : panelController.open();
+      },
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Text(
+            "Voir plus",
+            style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontWeight: FontWeight.bold),
           ),
-        ),
-      ],
+          Container(
+            width: 50,
+            height: 50,
+            child: Icon(
+              MdiIcons.chevronDown,
+              color: ThemeUtils.textColor(),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -266,44 +282,48 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
   Widget buildHeaderPart(ScrollController con) {
     MediaQueryData screenSize = MediaQuery.of(context);
 
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.1),
-      decoration:
-          BoxDecoration(borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25))),
-      key: headerPart,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          DragHandle(),
-          SizedBox(
-            height: screenSize.size.height / 10 * 0.1,
-          ),
-          if (widget.gradesController?.isSimulating ?? false)
-            CustomButtons.materialButton(
-              context,
-              null,
-              null,
-              () async {
-                Navigator.pop(context);
-                widget.gradesController!.simulationRemove(widget.grade);
-              },
-              label: "Supprimer virtuellement la note",
-              textColor: Colors.blue,
-              icon: MdiIcons.trashCan,
-              iconColor: Colors.blue,
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: 500),
+      child: Container(
+        width: 500,
+        padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.1),
+        decoration:
+            BoxDecoration(borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25))),
+        key: headerPart,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            DragHandle(),
+            SizedBox(
+              height: screenSize.size.height / 10 * 0.1,
             ),
-          if (widget.gradesController?.isSimulating ?? false) SizedBox(height: screenSize.size.height / 10 * 0.25),
-          ConstrainedBox(constraints: BoxConstraints(maxWidth: 500), child: buildGradeHeader()),
-          SizedBox(height: screenSize.size.height / 10 * 0.25),
-          buildGradeAveragesAndDetails(),
-          SizedBox(height: screenSize.size.height / 10 * 0.15),
-          if (widget.grade != null)
-            CustomButtons.materialButton(context, 130, 45, () {
-              CustomDialogs.showShareGradeDialog(context, widget.grade!);
-            }, label: "Partager", icon: MdiIcons.shareVariant, padding: EdgeInsets.all(10)),
-          SizedBox(height: screenSize.size.height / 10 * 0.15),
-          buildDragChevron(),
-        ],
+            if (widget.gradesController?.isSimulating ?? false)
+              CustomButtons.materialButton(
+                context,
+                null,
+                null,
+                () async {
+                  Navigator.pop(context);
+                  widget.gradesController!.simulationRemove(widget.grade);
+                },
+                label: "Supprimer virtuellement la note",
+                textColor: Colors.blue,
+                icon: MdiIcons.trashCan,
+                iconColor: Colors.blue,
+              ),
+            if (widget.gradesController?.isSimulating ?? false) SizedBox(height: screenSize.size.height / 10 * 0.25),
+            ConstrainedBox(constraints: BoxConstraints(maxWidth: 500), child: buildGradeHeader()),
+            SizedBox(height: screenSize.size.height / 10 * 0.25),
+            buildGradeAveragesAndDetails(),
+            SizedBox(height: screenSize.size.height / 10 * 0.15),
+            if (widget.grade != null)
+              CustomButtons.materialButton(context, 130, 45, () {
+                CustomDialogs.showShareGradeDialog(context, widget.grade!);
+              }, label: "Partager", icon: MdiIcons.shareVariant, padding: EdgeInsets.all(10)),
+            SizedBox(height: screenSize.size.height / 10 * 0.15),
+            buildDragChevron(),
+          ],
+        ),
       ),
     );
   }
@@ -356,9 +376,9 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
                 child: Row(
                   children: [
                     Container(
-                      width: screenSize.size.width / 5 * 0.8,
-                      height: screenSize.size.width / 5 * 0.8,
-                      padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
+                      width: 90,
+                      height: 50,
+                      padding: EdgeInsets.all(10),
                       decoration:
                           BoxDecoration(color: getAdaptedColor(impact), borderRadius: BorderRadius.circular(20)),
                       child: FittedBox(
@@ -398,7 +418,8 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
               ),
               expanded: Container(
                 width: screenSize.size.width / 5 * 4.8,
-                padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
+                padding: EdgeInsets.symmetric(
+                    horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.height / 10 * 0.1),
                 child: Text(
                   explanation,
                   style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w500, color: ThemeUtils.textColor()),
@@ -459,6 +480,12 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
               ),
             ))
       ],
+    );
+  }
+
+  Widget buildTest() {
+    return Center(
+      child: Text("test"),
     );
   }
 

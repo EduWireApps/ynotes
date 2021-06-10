@@ -309,6 +309,7 @@ class _GradesPageState extends State<GradesPage> {
 
   Widget buildBottomBar(Discipline? discipline, GradesController model) {
     var screenSize = MediaQuery.of(context);
+    bool largeScreen = screenSize.size.width > 500;
 
     return Container(
       padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.1),
@@ -346,7 +347,7 @@ class _GradesPageState extends State<GradesPage> {
           Expanded(
             child: Wrap(
               direction: Axis.horizontal,
-              alignment: WrapAlignment.start,
+              alignment: largeScreen ? WrapAlignment.end : WrapAlignment.start,
               runSpacing: screenSize.size.height / 10 * 0.1,
               spacing: screenSize.size.width / 5 * 0.1,
               children: [
@@ -455,7 +456,7 @@ class _GradesPageState extends State<GradesPage> {
   _buildFloatingButton(BuildContext context) {
     var screenSize = MediaQuery.of(context);
     return Container(
-      margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.1),
+      margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.1, right: screenSize.size.width / 5 * 0.1),
       child: Align(
         alignment: Alignment.bottomRight,
         child: Container(
@@ -463,11 +464,15 @@ class _GradesPageState extends State<GradesPage> {
             heroTag: "simulBtn",
             backgroundColor: Colors.transparent,
             child: Container(
-              width: screenSize.size.width / 5 * 0.8,
-              height: screenSize.size.width / 5 * 0.8,
-              child: Icon(
-                Icons.add,
-                size: screenSize.size.width / 5 * 0.5,
+              width: 120,
+              height: 120,
+              child: FittedBox(
+                child: Center(
+                  child: Icon(
+                    Icons.add,
+                    size: 90,
+                  ),
+                ),
               ),
               decoration: BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
             ),
@@ -485,12 +490,20 @@ class _GradesPageState extends State<GradesPage> {
 
   _buildResetButton(GradesController controller) {
     var screenSize = MediaQuery.of(context);
-    return Container(
-      margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.2),
-      child:
-          CustomButtons.materialButton(context, screenSize.size.width / 5 * 3.2, screenSize.size.height / 10 * 0.5, () {
-        controller.simulationReset();
-      }, label: "Réinitialiser les notes", textColor: Colors.white, backgroundColor: Colors.blue),
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: 400),
+      child: Container(
+        margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.2),
+        child: CustomButtons.materialButton(context, screenSize.size.width / 5 * 3.2, screenSize.size.height / 10 * 0.5,
+            () {
+          controller.simulationReset();
+        },
+            label: "Réinitialiser les notes",
+            textColor: Colors.white,
+            backgroundColor: Colors.blue,
+            padding: EdgeInsets.all(10),
+            borderRadius: BorderRadius.circular(10)),
+      ),
     );
   }
 }

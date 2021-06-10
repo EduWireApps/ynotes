@@ -88,7 +88,6 @@ class _QuickGradesState extends State<QuickGrades> {
   }
 
   Widget buildGradeCircle(Grade grade) {
-    var screenSize = MediaQuery.of(context);
     return Container(
       decoration: BoxDecoration(
         shape: BoxShape.circle,
@@ -100,33 +99,33 @@ class _QuickGradesState extends State<QuickGrades> {
           TextSpan(
             text: (grade.notSignificant! ? "(" + grade.value! : grade.value),
             style: TextStyle(
-                color: (ThemeUtils.textColor()),
-                fontFamily: "Asap",
-                fontWeight: FontWeight.normal,
-                fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.5),
+              color: (ThemeUtils.textColor()),
+              fontFamily: "Asap",
+              fontWeight: FontWeight.normal,
+            ),
             children: <TextSpan>[
               if (grade.scale != "20")
                 //MARK ON
                 TextSpan(
                     text: '/' + grade.scale!,
                     style: TextStyle(
-                        color: (ThemeUtils.textColor()),
-                        fontWeight: FontWeight.normal,
-                        fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.4)),
+                      color: (ThemeUtils.textColor()),
+                      fontWeight: FontWeight.normal,
+                    )),
               if (grade.notSignificant == true)
                 TextSpan(
                     text: ")",
                     style: TextStyle(
-                        color: (ThemeUtils.textColor()),
-                        fontWeight: FontWeight.normal,
-                        fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.5)),
+                      color: (ThemeUtils.textColor()),
+                      fontWeight: FontWeight.normal,
+                    )),
             ],
           ),
         ),
       ),
-      padding: EdgeInsets.all(screenSize.size.width / 5 * 0.15),
-      width: screenSize.size.width / 5 * 0.9,
-      height: screenSize.size.width / 5 * 0.9,
+      width: 90,
+      padding: EdgeInsets.all(15),
+      height: 150,
     );
   }
 
@@ -134,41 +133,62 @@ class _QuickGradesState extends State<QuickGrades> {
     DateFormat df = DateFormat("dd MMMM", "fr_FR");
     var screenSize = MediaQuery.of(context);
 
-    return ConstrainedBox(
-      constraints: BoxConstraints(maxWidth: screenSize.size.width / 5 * 2.8),
-      child: Row(children: [
-        buildGradeCircle(grade),
-        SizedBox(width: screenSize.size.width / 5 * 0.1),
-        Expanded(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (grade.disciplineName != null || grade.disciplineName != "")
-                Text(
-                  grade.disciplineName ?? "",
-                  style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.left,
-                ),
-              if (grade.testName != null && grade.testName != "")
-                Text(
-                  grade.testName ?? "",
-                  style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontWeight: FontWeight.bold),
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.left,
-                ),
-              if (grade.date != null)
-                Text(
-                  grade.date != null ? df.format(grade.entryDate!) : "",
-                  style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.left,
+    return Card(
+      margin: EdgeInsets.only(left: 20, top: screenSize.size.height / 10 * 0.1),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
+      color: Theme.of(context).primaryColor,
+      child: Material(
+        borderRadius: BorderRadius.circular(11),
+        color: Theme.of(context).primaryColor,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(11),
+          onLongPress: () {
+            CustomDialogs.showShareGradeDialog(context, grade);
+          },
+          onTap: () {
+            widget.switchPage!(1);
+          },
+          child: ConstrainedBox(
+            constraints: BoxConstraints(maxWidth:250),
+            child: Container(
+              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+              child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
+                buildGradeCircle(grade),
+                Flexible(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (grade.disciplineName != null || grade.disciplineName != "")
+                        Text(
+                          grade.disciplineName ?? "",
+                          style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.left,
+                        ),
+                      if (grade.testName != null && grade.testName != "")
+                        Text(
+                          grade.testName ?? "",
+                          style:
+                              TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontWeight: FontWeight.bold),
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.left,
+                        ),
+                      if (grade.date != null)
+                        Text(
+                          grade.date != null ? df.format(grade.entryDate!) : "",
+                          style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
+                          overflow: TextOverflow.ellipsis,
+                          textAlign: TextAlign.left,
+                        )
+                    ],
+                  ),
                 )
-            ],
+              ]),
+            ),
           ),
-        )
-      ]),
+        ),
+      ),
     );
   }
 
@@ -194,33 +214,7 @@ class _QuickGradesState extends State<QuickGrades> {
             itemCount: grades.length,
             scrollDirection: Axis.horizontal,
             itemBuilder: (context, index) {
-              return Card(
-                margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.25, top: screenSize.size.height / 10 * 0.1),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
-                color: Theme.of(context).primaryColor,
-                child: Material(
-                  borderRadius: BorderRadius.circular(11),
-                  color: Theme.of(context).primaryColor,
-                  child: InkWell(
-                    borderRadius: BorderRadius.circular(11),
-                    onLongPress: () {
-                      CustomDialogs.showShareGradeDialog(context, grades[index]);
-                    },
-                    onTap: () {
-                      widget.switchPage!(1);
-                    },
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(maxWidth: 450),
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.height / 10 * 0.1),
-                        height: screenSize.size.height / 10 * 0.5,
-                        child: buildGradeItem(grades[index]),
-                      ),
-                    ),
-                  ),
-                ),
-              );
+              return buildGradeItem(grades[index]);
             }),
       );
     }

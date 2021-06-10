@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:logger/logger.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:wiredash/wiredash.dart';
@@ -82,63 +83,94 @@ class HomePage extends StatelessWidget {
           child: Row(
             children: [
               if (screenSize.size.width > 800)
-                Container(
-                  width: 350,
-                  height: screenSize.size.height,
-                  child: Column(
-                    children: [
-                      ColumnBuilder(
-                          itemBuilder: (context, index) {
-                            return Container(
-                              height: 50,
-                              child: TextButton(
-                                  onPressed: () {},
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                    children: [
-                                      SizedBox(
-                                        width: 25,
-                                      ),
-                                      Text(
-                                        "Menu",
-                                        style: TextStyle(
-                                            fontFamily: "Asap",
-                                            fontWeight: FontWeight.bold,
-                                            color: ThemeUtils.textColor()),
-                                      ),
-                                      Expanded(
-                                        child: SizedBox(),
-                                      ),
-                                      Icon(Icons.headphones)
-                                    ],
-                                  )),
-                            );
-                          },
-                          itemCount: 9),
-                      Expanded(child: SizedBox()),
-                      Container(
-                        height: 50,
-                        child: TextButton(
-                            onPressed: () {},
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                  width: 25,
-                                ),
-                                Text(
-                                  "Paramètres",
-                                  style: TextStyle(
-                                      fontFamily: "Asap", fontWeight: FontWeight.bold, color: ThemeUtils.textColor()),
-                                ),
-                                Expanded(
-                                  child: SizedBox(),
-                                ),
-                                Icon(Icons.settings)
-                              ],
-                            )),
-                      ),
-                    ],
+                Material(
+                  elevation: 4,
+                  color: Theme.of(context).primaryColor,
+                  shadowColor: Colors.black,
+                  child: Container(
+                    padding: EdgeInsets.only(right: 10),
+                    width: 310,
+                    height: screenSize.size.height,
+                    color: Colors.transparent,
+                    child: Column(
+                      children: [
+                        ColumnBuilder(
+                            itemBuilder: (context, index) {
+                              return Container(
+                                height: 50,
+                                child: TextButton(
+                                    onPressed: () {},
+                                    child: Row(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        SizedBox(
+                                          width: 25,
+                                        ),
+                                        Text(
+                                          "Menu",
+                                          style: TextStyle(
+                                              fontFamily: "Asap",
+                                              fontWeight: FontWeight.bold,
+                                              color: ThemeUtils.textColor()),
+                                        ),
+                                        Expanded(
+                                          child: SizedBox(),
+                                        ),
+                                        Icon(Icons.headphones)
+                                      ],
+                                    )),
+                              );
+                            },
+                            itemCount: 9),
+                        Expanded(child: SizedBox()),
+                        Container(
+                          height: 50,
+                          child: TextButton(
+                              onPressed: () {},
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    width: 25,
+                                  ),
+                                  Text(
+                                    "Faire un retour",
+                                    style: TextStyle(
+                                        fontFamily: "Asap", fontWeight: FontWeight.bold, color: ThemeUtils.textColor()),
+                                  ),
+                                  Expanded(
+                                    child: SizedBox(),
+                                  ),
+                                  Icon(
+                                    MdiIcons.forum,
+                                  )
+                                ],
+                              )),
+                        ),
+                        Container(
+                          height: 50,
+                          child: TextButton(
+                              onPressed: () {},
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  SizedBox(
+                                    width: 25,
+                                  ),
+                                  Text(
+                                    "Paramètres",
+                                    style: TextStyle(
+                                        fontFamily: "Asap", fontWeight: FontWeight.bold, color: ThemeUtils.textColor()),
+                                  ),
+                                  Expanded(
+                                    child: SizedBox(),
+                                  ),
+                                  Icon(Icons.settings)
+                                ],
+                              )),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               Expanded(child: DrawerBuilder()),

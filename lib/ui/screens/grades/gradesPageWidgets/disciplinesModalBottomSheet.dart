@@ -21,7 +21,6 @@ void disciplineModalBottomSheet(context, Discipline? discipline, Function? callb
       colorGroup = Color(widget.discipline.color);
     }
   }
-  MediaQueryData screenSize = MediaQuery.of(context);
   showModalBottomSheet(
       shape: RoundedRectangleBorder(),
       backgroundColor: Colors.transparent,
@@ -47,53 +46,58 @@ class _DisciplineModalBottomSheetState extends State<DisciplineModalBottomSheet>
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
-    bool largeScreen = screenSize.size.width > 400;
 
-    return Container(
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.only(
-              topLeft: largeScreen ? Radius.zero : Radius.circular(25),
-              topRight: largeScreen ? Radius.zero : Radius.circular(25)),
-          color: Theme.of(context).primaryColor),
-      padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.2),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          SizedBox(
-            height: screenSize.size.height / 10 * 0.1,
-          ),
-          DragHandle(),
-          SizedBox(
-            height: screenSize.size.height / 10 * 0.1,
-          ),
-          ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: 500),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                buildGradeSquare(),
+    return Wrap(
+      alignment: WrapAlignment.center,
+      children: [
+        ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: 500),
+          child: Container(
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+                color: Theme.of(context).primaryColor),
+            padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.2),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
                 SizedBox(
-                  width: screenSize.size.width / 5 * 0.14,
+                  height: screenSize.size.height / 10 * 0.1,
                 ),
-                Expanded(
-                  child: buildDisciplineMetas(),
+                DragHandle(),
+                SizedBox(
+                  height: screenSize.size.height / 10 * 0.1,
+                ),
+                ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: 500),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      buildGradeSquare(),
+                      SizedBox(
+                        width: screenSize.size.width / 5 * 0.14,
+                      ),
+                      Expanded(
+                        child: buildDisciplineMetas(),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: screenSize.size.height / 10 * 0.25,
+                ),
+                buildDisciplineAverageAndDetails(),
+                SizedBox(
+                  height: screenSize.size.height / 10 * 0.4,
+                ),
+                buildButtons(),
+                SizedBox(
+                  height: screenSize.size.height / 10 * 0.1,
                 ),
               ],
             ),
           ),
-          SizedBox(
-            height: screenSize.size.height / 10 * 0.25,
-          ),
-          buildDisciplineAverageAndDetails(),
-          SizedBox(
-            height: screenSize.size.height / 10 * 0.4,
-          ),
-          buildButtons(),
-          SizedBox(
-            height: screenSize.size.height / 10 * 0.1,
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 

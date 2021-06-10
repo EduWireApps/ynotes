@@ -110,26 +110,28 @@ class _HomeworkElementState extends State<HomeworkElement> with SingleTickerProv
                               children: [
                                 Expanded(
                                   child: Container(
-                                    padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
+                                    padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.08),
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
                                         Container(
-                                            width: screenSize.size.width / 5 * 0.4,
-                                            height: screenSize.size.width / 5 * 0.4,
-                                            child: Checkbox(
-                                              side: BorderSide(width: 1, color: Colors.white),
-                                              fillColor: MaterialStateColor.resolveWith(ThemeUtils.getCheckBoxColor),
-                                              shape: const CircleBorder(),
-                                              activeColor: Colors.blue,
-                                              value: widget.homework[widget.index].done ?? false,
-                                              materialTapTargetSize: MaterialTapTargetSize.padded,
-                                              onChanged: (bool? x) async {
-                                                widget.homework[widget.index].done = x;
-                                                setState(() {});
-                                                await HomeworkOffline(appSys.offline)
-                                                    .updateSingleHW(widget.homework[widget.index]);
-                                              },
+                                            width: 50,
+                                            height: 50,
+                                            child: FittedBox(
+                                              child: Checkbox(
+                                                side: BorderSide(width: 1, color: Colors.white),
+                                                fillColor: MaterialStateColor.resolveWith(ThemeUtils.getCheckBoxColor),
+                                                shape: const CircleBorder(),
+                                                activeColor: Colors.blue,
+                                                value: widget.homework[widget.index].done ?? false,
+                                                materialTapTargetSize: MaterialTapTargetSize.padded,
+                                                onChanged: (bool? x) async {
+                                                  widget.homework[widget.index].done = x;
+                                                  setState(() {});
+                                                  await HomeworkOffline(appSys.offline)
+                                                      .updateSingleHW(widget.homework[widget.index]);
+                                                },
+                                              ),
                                             )),
                                         Expanded(
                                           child: Column(
@@ -332,43 +334,38 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: [
+      children: <Widget>[
         Container(
-          height: screenSize.size.height / 10 * 7.5,
-          width: screenSize.size.width / 5 * 4.7,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Image(fit: BoxFit.fitWidth, image: AssetImage('assets/images/noHomework.png')),
-              Text(
-                "Pas de devoirs à l'horizon... \non se détend ?",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontFamily: "Asap",
-                  color: ThemeUtils.textColor(),
-                ),
-              ),
-              TextButton(
-                style: TextButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.circular(18.0),
-                      side: BorderSide(color: Theme.of(context).primaryColorDark)),
-                ),
-                onPressed: () {
-                  //Reload list
-                  appSys.homeworkController.refresh(force: true);
-                },
-                child: !model.isFetching
-                    ? Text("Recharger",
-                        style: TextStyle(
-                          fontFamily: "Asap",
-                          color: ThemeUtils.textColor(),
-                        ))
-                    : FittedBox(
-                        child: SpinKitThreeBounce(
-                            color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4)),
-              )
-            ],
+            height: screenSize.size.height / 10 * 5,
+            child: FittedBox(child: Image(fit: BoxFit.fitHeight, image: AssetImage('assets/images/noHomework.png')))),
+        Text(
+          "Pas de devoirs à l'horizon... \non se détend ?",
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontFamily: "Asap",
+            color: ThemeUtils.textColor(),
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
+          width: 80,
+          child: TextButton(
+            style: TextButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                  borderRadius: new BorderRadius.circular(18.0),
+                  side: BorderSide(color: Theme.of(context).primaryColorDark)),
+            ),
+            onPressed: () {
+              //Reload list
+              appSys.homeworkController.refresh(force: true);
+            },
+            child: !model.isFetching
+                ? Text("Recharger",
+                    style: TextStyle(
+                      fontFamily: "Asap",
+                      color: ThemeUtils.textColor(),
+                    ))
+                : FittedBox(child: SpinKitThreeBounce(color: Theme.of(context).primaryColorDark, size: 30)),
           ),
         )
       ],
@@ -409,16 +406,19 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
 
   //Date on the left of the homework
   _buildFloatingButton(BuildContext context) {
-    var screenSize = MediaQuery.of(context);
     return FloatingActionButton(
       heroTag: "addHomework",
       backgroundColor: Colors.transparent,
       child: Container(
-        width: screenSize.size.width / 5 * 0.8,
-        height: screenSize.size.width / 5 * 0.8,
-        child: Icon(
-          Icons.add,
-          size: screenSize.size.width / 5 * 0.5,
+        width: 90,
+        height: 90,
+        child: FittedBox(
+          child: Center(
+            child: Icon(
+              Icons.add,
+              size: 80,
+            ),
+          ),
         ),
         decoration: BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
       ),
@@ -426,8 +426,7 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
         Homework? temp = await showAddHomeworkBottomSheet(context);
         if (temp != null) {
           await HomeworkOffline(appSys.offline).updateHomework([temp]);
-        } else {
-        }
+        } else {}
         await appSys.homeworkController.refresh();
 
         setState(() {});

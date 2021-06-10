@@ -244,16 +244,19 @@ class _AgendaState extends State<Agenda> {
   }
 
   _buildFloatingButton(BuildContext context) {
-    var screenSize = MediaQuery.of(context);
     return FloatingActionButton(
       heroTag: "btn1",
       backgroundColor: Colors.transparent,
       child: Container(
-        width: screenSize.size.width / 5 * 0.8,
-        height: screenSize.size.width / 5 * 0.8,
-        child: Icon(
-          Icons.add,
-          size: screenSize.size.width / 5 * 0.5,
+        width: 90,
+        height: 90,
+        child: FittedBox(
+          child: Center(
+            child: Icon(
+              Icons.add,
+              size: 80,
+            ),
+          ),
         ),
         decoration: BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
       ),

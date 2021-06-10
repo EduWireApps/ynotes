@@ -59,7 +59,7 @@ class _GradesGroupState extends State<GradesGroup> {
       }
     }
     double impact = 0.0;
-
+    bool largeScreen = screenSize.size.width > 500;
     //BLOCK BUILDER
     return ChangeNotifierProvider<GradesController>.value(
       value: appSys.gradesController,
@@ -78,10 +78,14 @@ class _GradesGroupState extends State<GradesGroup> {
               //Label
               Container(
                 child: Material(
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(largeScreen ? 25 : 15),
+                      topRight: Radius.circular(largeScreen ? 25 : 15)),
                   color: colorGroup,
                   child: InkWell(
-                    borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(largeScreen ? 25 : 15),
+                        topRight: Radius.circular(largeScreen ? 25 : 15)),
                     onTap: () {
                       if (widget.discipline != null) {
                         disciplineModalBottomSheet(context, widget.discipline, callback, this.widget);
@@ -159,18 +163,18 @@ class _GradesGroupState extends State<GradesGroup> {
               //Body with columns
               Container(
                   width: screenSize.size.width / 5 * 4.51,
-                  padding: EdgeInsets.symmetric(vertical: screenSize.size.width / 10 * 0.3),
+                  padding: EdgeInsets.symmetric(vertical: 10),
                   decoration: BoxDecoration(
                     color: Theme.of(context).primaryColor,
                     borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(15),
-                      bottomRight: Radius.circular(15),
+                      bottomLeft: Radius.circular(largeScreen ? 25 : 15),
+                      bottomRight: Radius.circular(largeScreen ? 25 : 15),
                     ),
                   ),
                   child: ClipRRect(
                     borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(15),
-                      bottomRight: Radius.circular(15),
+                      bottomLeft: Radius.circular(largeScreen ? 25 : 15),
+                      bottomRight: Radius.circular(largeScreen ? 25 : 15),
                     ),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -248,7 +252,6 @@ class _GradesGroupState extends State<GradesGroup> {
       }
     }
 
-    MediaQueryData screenSize = MediaQuery.of(context);
 
     return Container(
       width: 28,
@@ -347,7 +350,7 @@ class _GradesGroupState extends State<GradesGroup> {
                   },
                   child: Container(
                     padding: EdgeInsets.symmetric(
-                        horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.width / 10 * 0.1),
+                        horizontal: 15, vertical: 5),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,

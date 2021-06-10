@@ -93,13 +93,13 @@ class SummaryChartState extends State<SummaryChart> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
       child: (_grades != null && ((_grades ?? []).length != 0))
           ? Container(
-              height: screenSize.size.height / 10 * 3,
+              height: 250,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
                     width: screenSize.size.width / 5 * 4.2,
-                    height: screenSize.size.height / 10 * 1.34,
+                    height: 100,
                     child: LineChart(
                       avgData(),
                     ),
