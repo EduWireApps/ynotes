@@ -35,7 +35,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
   String? initialPath = "";
   var actualSort = explorerSortValue.date;
   List<FileInfo> clipboard = [];
-  
+
   List<FileInfo>? listFiles;
   @override
   Widget build(BuildContext context) {
@@ -196,8 +196,8 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                           child: InkWell(
                             borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
                             onTap: () async {
-                              CustomDialogs.showNewFolderDialog(context, (initialPath ?? "") + path, listFiles,
-                                  selectionMode, refreshFileListFuture);
+                              CustomDialogs.showNewFolderDialog(
+                                  context, (initialPath ?? "") + path, listFiles, selectionMode, refreshFileListFuture);
 
                               await refreshFileListFuture();
                             },
@@ -241,8 +241,8 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                                           defaultText: await FileAppUtil.getFileNameWithExtension(
                                               listFiles!.firstWhere((element) => element.selected).element));
                                       if (newName != null) {
-                                        String dir = pathPackage.dirname(
-                                            listFiles!.firstWhere((element) => element.selected).element.path);
+                                        String dir = pathPackage
+                                            .dirname(listFiles!.firstWhere((element) => element.selected).element.path);
                                         String newPath = pathPackage.join(dir, newName);
                                         await listFiles!
                                             .firstWhere((element) => element.selected)
@@ -640,7 +640,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
   }
 
   Future<void> refreshFileListFuture() async {
-    if (await Permission.storage.request().isGranted) {
+    if (Platform.isLinux || await Permission.storage.request().isGranted) {
       selectionMode = false;
       setState(() {
         filesListFuture = FileAppUtil.getFilesList(initialPath! + path);

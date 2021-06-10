@@ -10,6 +10,8 @@ class Discipline {
   final String? generalAverage;
   @HiveField(1)
   final String? maxClassGeneralAverage;
+  @HiveField(19)
+  final String? minClassGeneralAverage;
   @HiveField(2)
   final String? classGeneralAverage;
   @HiveField(3)
@@ -66,40 +68,11 @@ class Discipline {
       this.generalRank,
       this.weight,
       this.periodCode,
-      this.subdisciplineNames});
+      this.subdisciplineNames,
+      this.minClassGeneralAverage});
 
-  factory Discipline.fromEcoleDirecteJson(
-      {required Map<String, dynamic> json,
-      required List<String?> profs,
-      required String? periode,
-      required String? periodeId,
-      required String? moyenneG,
-      required String? bmoyenneClasse,
-      required String? moyenneClasse,
-      required Color color,
-      bool showrank = false,
-      String? effectifClasse = "0",
-      String? rangGeneral = "0"}) {
-    return Discipline(
-        subdisciplineCodes: [],
-        disciplineCode: json['codeMatiere'],
-        disciplineName: json['discipline'],
-        average: json['moyenne'],
-        classAverage: json['moyenneClasse'],
-        minClassAverage: json['moyenneMin'],
-        maxClassAverage: json['moyenneMax'],
-        teachers: profs,
-        periodName: periode,
-        periodCode: periodeId,
-        color: color.value,
-        generalAverage: moyenneG,
-        maxClassGeneralAverage: bmoyenneClasse,
-        classGeneralAverage: moyenneClasse,
-        disciplineRank: showrank ? json["rang"] : null,
-        classNumber: effectifClasse,
-        generalRank: rangGeneral,
-        weight: json["coef"].toString());
-  }
+  
+  
 
   @override
   int get hashCode => super.hashCode;

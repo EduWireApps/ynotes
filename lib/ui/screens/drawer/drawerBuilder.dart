@@ -107,25 +107,36 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
             ),
           ),
           backgroundColor: ThemeUtils.darken(Theme.of(context).backgroundColor, forceAmount: 0.05),
-          body: Stack(
-            children: <Widget>[
-              ClipRRect(
-                child: PageView.builder(
-                  physics: NeverScrollableScrollPhysics(),
-                  controller: drawerPageViewController,
-                  itemBuilder: (context, index) {
-                    return ChangeNotifierProvider<LoginController>.value(
-                      value: appSys.loginController,
-                      child: Consumer<LoginController>(builder: (context, model, child) {
-                        if (model.actualState != loginStatus.loggedIn) {
-                          showLoginControllerStatusController.forward();
-                        } else {
-                          showLoginControllerStatusController.reverse();
-                        }
-                        return buildPageWithHeader(model, child: entries()[index]["page"]);
-                      }),
-                    );
-                  },
+          body: Row(
+            children: [
+              if (screenSize.size.width > 800)
+                Container(
+                  width: 310,
+                  child: CustomDrawer(
+                    entries(),
+                    notifier: _notifier,
+                    drawerPageViewController: drawerPageViewController,
+                  ),
+                ),
+              Expanded(
+                child: ClipRRect(
+                  child: PageView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    controller: drawerPageViewController,
+                    itemBuilder: (context, index) {
+                      return ChangeNotifierProvider<LoginController>.value(
+                        value: appSys.loginController,
+                        child: Consumer<LoginController>(builder: (context, model, child) {
+                          if (model.actualState != loginStatus.loggedIn) {
+                            showLoginControllerStatusController.forward();
+                          } else {
+                            showLoginControllerStatusController.reverse();
+                          }
+                          return buildPageWithHeader(model, child: entries()[index]["page"]);
+                        }),
+                      );
+                    },
+                  ),
                 ),
               ),
             ],

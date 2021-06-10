@@ -22,27 +22,62 @@ class EcoleDirecteDisciplineConverter {
           });
           //No one sub discipline
           if (rawData['codeSousMatiere'] == "") {
-            disciplinesList.add(Discipline.fromEcoleDirecteJson(
-                json: rawData,
-                profs: teachersNames,
-                periode: periodeElement["periode"],
-                periodeId: periodeElement["idPeriode"],
-                moyenneG: periodeElement["ensembleMatieres"]["moyenneGenerale"],
-                bmoyenneClasse: periodeElement["ensembleMatieres"]["moyenneMax"],
-                moyenneClasse: periodeElement["ensembleMatieres"]["moyenneClasse"],
-                color: Colors.blue,
-                showrank: settings["moyenneRang"] ?? false,
-                effectifClasse: periodeElement["ensembleMatieres"]["effectif"],
-                rangGeneral: (settings["moyenneRang"] ?? false) ? periodeElement["ensembleMatieres"]["rang"] : null));
+            String? disciplineCode = rawData['codeMatiere'];
+            String? disciplineName = rawData['discipline'];
+            String? average = rawData['moyenne'];
+            String? classAverage = rawData['moyenneClasse'];
+            String? minClassAverage = rawData['moyenneMin'];
+            String? maxClassAverage = rawData['moyenneMax'];
+            String periodeName = periodeElement["periode"];
+            String? periodeId = periodeElement["idPeriode"];
+            String? generalAverage = periodeElement["ensembleMatieres"]["moyenneGenerale"];
+            String? classGeneralAverage = periodeElement["ensembleMatieres"]["moyenneClasse"];
+            String? maxClassGeneralAverage = periodeElement["ensembleMatieres"]["moyenneMax"];
+            String? minClassGeneralAverage = periodeElement["ensembleMatieres"]["moyenneMin"];
+            Color color = Colors.blue;
+            bool showRank = settings["moyenneRang"] ?? false;
+            int? disciplineRank = showRank ? rawData["rang"] : null;
+            String? classNumber = periodeElement["ensembleMatieres"]["effectif"];
+            String? generalRank =
+                (settings["moyenneRang"] ?? false) ? periodeElement["ensembleMatieres"]["rang"] : null;
+            String weight = rawData["coef"].toString();
+
+            disciplinesList.add(Discipline(
+                maxClassGeneralAverage: maxClassGeneralAverage,
+                minClassGeneralAverage: minClassGeneralAverage,
+                classGeneralAverage: classGeneralAverage,
+                generalAverage: generalAverage,
+                classAverage: classAverage,
+                minClassAverage: minClassAverage,
+                maxClassAverage: maxClassAverage,
+                disciplineCode: disciplineCode,
+                average: average,
+                teachers: teachersNames,
+                disciplineName: disciplineName,
+                periodName: periodeName,
+                color: color.value,
+                disciplineRank: disciplineRank,
+                classNumber: classNumber,
+                generalRank: generalRank,
+                weight: weight,
+                periodCode: periodeId));
           }
           //Sub discipline
           else {
             try {
+              //We add sub discipline codes
               disciplinesList[disciplinesList.lastIndexWhere((disciplinesList) =>
                       disciplinesList.disciplineCode == rawData['codeMatiere'] &&
                       disciplinesList.periodName == periodeElement["periode"])]
                   .subdisciplineCodes!
                   .add(rawData['codeSousMatiere']);
+
+              //We add sub discipline names
+              disciplinesList[disciplinesList.lastIndexWhere((disciplinesList) =>
+                      disciplinesList.disciplineCode == rawData['codeMatiere'] &&
+                      disciplinesList.periodName == periodeElement["periode"])]
+                  .subdisciplineNames!
+                  .add(rawData['discipline']);
             } catch (e) {
               print(e);
             }

@@ -13,8 +13,8 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
-import 'package:ynotes/ui/screens/grades/gradesPageWidgets/simulatorModalBottomSheet.dart';
 import 'package:ynotes/ui/screens/grades/gradesPageWidgets/gradesGroup.dart';
+import 'package:ynotes/ui/screens/grades/gradesPageWidgets/simulatorModalBottomSheet.dart';
 
 bool firstStart = true;
 
@@ -181,9 +181,15 @@ class _GradesPageState extends State<GradesPage> {
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         crossAxisAlignment: CrossAxisAlignment.center,
                                         children: <Widget>[
-                                          Image(
-                                              image: AssetImage('assets/images/book.png'),
-                                              width: screenSize.size.width / 5 * 4),
+                                          Container(
+                                            height: screenSize.size.height / 10 * 2.5,
+                                            child: FittedBox(
+                                              child: Image(
+                                                fit: BoxFit.fitHeight,
+                                                image: AssetImage('assets/images/book.png'),
+                                              ),
+                                            ),
+                                          ),
                                           Center(
                                             child: Container(
                                               margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.5),
@@ -192,26 +198,30 @@ class _GradesPageState extends State<GradesPage> {
                                                   style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor())),
                                             ),
                                           ),
-                                          TextButton(
-                                            style: TextButton.styleFrom(
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius: new BorderRadius.circular(18.0),
-                                                  side: BorderSide(color: Theme.of(context).primaryColorDark)),
+                                          Container(
+                                            margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
+                                            width: 80,
+                                            child: TextButton(
+                                              style: TextButton.styleFrom(
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius: new BorderRadius.circular(18.0),
+                                                    side: BorderSide(color: Theme.of(context).primaryColorDark)),
+                                              ),
+                                              onPressed: () {
+                                                //Reload list
+                                                forceRefreshGrades();
+                                              },
+                                              child: !model.isFetching
+                                                  ? Text("Recharger",
+                                                      style: TextStyle(
+                                                          fontFamily: "Asap",
+                                                          color: ThemeUtils.textColor(),
+                                                          fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2))
+                                                  : FittedBox(
+                                                      child: SpinKitThreeBounce(
+                                                          color: Theme.of(context).primaryColorDark,
+                                                          size: screenSize.size.width / 5 * 0.4)),
                                             ),
-                                            onPressed: () {
-                                              //Reload list
-                                              forceRefreshGrades();
-                                            },
-                                            child: !model.isFetching
-                                                ? Text("Recharger",
-                                                    style: TextStyle(
-                                                        fontFamily: "Asap",
-                                                        color: ThemeUtils.textColor(),
-                                                        fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2))
-                                                : FittedBox(
-                                                    child: SpinKitThreeBounce(
-                                                        color: Theme.of(context).primaryColorDark,
-                                                        size: screenSize.size.width / 5 * 0.4)),
                                           )
                                         ],
                                       );

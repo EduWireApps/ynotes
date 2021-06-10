@@ -36,7 +36,6 @@ class _GradesGroupState extends State<GradesGroup> {
       });
     }
 
-    String test = "lol";
 
     if (widget.discipline == null) {
       colorGroup = Theme.of(context).primaryColorDark;
