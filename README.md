@@ -11,7 +11,7 @@
 *L'application actuelle est basée sur les APIs des sites **École Directe** et **Pronote***. 
 
 
-- ### Téléchargez dès maintenant yNotes sur le [Google Play Store](https://play.google.com/store/apps/details?id=fr.ynotes) 
+- ### Téléchargez dès maintenant yNotes sur le [Google Play Store](https://play.google.com/store/apps/details?id=fr.ynotes) ou l'[App Store](https://apps.apple.com/fr/app/ynotes/id1563624059)
 - ### Rejoignez le [serveur Discord officiel](https://discord.gg/uNy7F3hwuA) pour contacter l'équipe et être au courant de chaque nouveauté
 
 ```diff
@@ -19,10 +19,10 @@
 - Vos identifiants sont chiffrés et stockés sur votre appareil et nous n'y avons strictement pas accès
 - Nous ne nous portons pas responsables en cas de sanction de l'application scolaire. 
 ```
-# Plan de ce README
+# Sommaire
 - [yNotes](#ynotes)
 - [Introduction](#introduction)
-- [Plan de ce README](#plan-de-ce-readme)
+- [Sommaire](#sommaire)
 - [Fonctionnalités](#fonctionnalités)
     - [Fonctionnalités mises en place](#fonctionnalités-mises-en-place)
     - [Fonctionnalités à venir](#fonctionnalités-à-venir)
