@@ -154,6 +154,7 @@ class _QuickGradesState extends State<QuickGrades> {
               padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
               child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
                 buildGradeCircle(grade),
+                SizedBox(width: 5,),
                 Flexible(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,

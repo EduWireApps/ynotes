@@ -109,7 +109,7 @@ class _AgendaState extends State<Agenda> {
                             FutureBuilder<List<AgendaEvent>?>(
                                 future: agendaFuture,
                                 builder: (context, snapshot) {
-                                  if (false) {
+                                  if (snapshot.hasData && snapshot.data != null && (snapshot.data ?? []).length != 0) {
                                     return RefreshIndicator(
                                         onRefresh: refreshAgendaFuture,
                                         child: AgendaGrid(

@@ -289,8 +289,8 @@ class _MailPageState extends State<MailPage> with Layout {
                                 width: screenSize.size.width,
                                 height: screenSize.size.height,
                                 child: Center(
-                                  child: CustomLoader(screenSize.size.width / 5 * 2.5, screenSize.size.width / 5 * 2.5,
-                                      Theme.of(context).primaryColor),
+                                  child: CustomLoader(
+                                      500, screenSize.size.height / 10 * 2.4, Theme.of(context).primaryColorDark),
                                 ),
                               );
                             }

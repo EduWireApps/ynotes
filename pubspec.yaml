@@ -73,6 +73,7 @@ dependencies:
   date_field: ^2.0.1
   day_night_switcher: ^0.2.0+1
   device_apps: ^2.0.2
+  desktop_window: ^0.4.0
   dotted_border: ^2.0.0-nullsafety.0
   dotted_line: ^3.0.0
   encrypt: ^5.0.0

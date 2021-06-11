@@ -29,7 +29,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
     return Container(
         width: screenSize.size.width / 5 * 4.2,
-        height: screenSize.size.height / 10 * 0.7,
+        height: 50,
         decoration: BoxDecoration(
             border: Border.all(width: 0.7, color: ThemeUtils.textColor().withOpacity(0.4)),
             borderRadius: BorderRadius.circular(10000),
@@ -40,7 +40,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           children: [
             Container(
               width: screenSize.size.width / 5 * 4.2,
-              height: screenSize.size.height / 10 * 0.7,
+              height: 50,
               child: TextField(
                 maxLines: 1,
                 controller: widget.controller,

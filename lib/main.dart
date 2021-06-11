@@ -1,6 +1,8 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:background_fetch/background_fetch.dart';
+import 'package:desktop_window/desktop_window.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -25,6 +27,9 @@ import 'ui/screens/school_api_choice/schoolAPIChoicePage.dart';
 Future main() async {
   Logger.level = Level.warning;
   WidgetsFlutterBinding.ensureInitialized();
+
+  WidgetsFlutterBinding.ensureInitialized();
+  
   appSys = ApplicationSystem();
   await appSys.initApp();
   BackgroundFetch.registerHeadlessTask(_headlessTask);
@@ -70,7 +75,6 @@ class HomeApp extends StatefulWidget {
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);

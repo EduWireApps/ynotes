@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:another_flushbar/flushbar.dart';
+import 'package:desktop_window/desktop_window.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -448,7 +449,9 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                           title: 'Bouton magique',
                           leading: Icon(MdiIcons.testTube, color: ThemeUtils.textColor()),
                           onPressed: (context) async {
-                            await appSys.updateSetting(appSys.settings!["system"], "lastMailCount", 60);
+                            if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+                              await DesktopWindow.setWindowSize(Size(768, 1024));
+                            }
                           },
                           titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                           subtitleTextStyle: TextStyle(
