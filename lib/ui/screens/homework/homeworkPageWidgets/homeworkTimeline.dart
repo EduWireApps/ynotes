@@ -252,9 +252,11 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
               screenSize.size.width / 5 * 2.5,
               Theme.of(context).primaryColorDark,
             )),
-          Align(
-            alignment: Alignment.bottomRight,
+          Positioned(
+            bottom: 50,
+            right: 50,
             child: Container(
+              color: Colors.red,
               margin: EdgeInsets.only(right: screenSize.size.width / 5 * 0.1, bottom: screenSize.size.width / 5 * 0.1),
               child: _buildFloatingButton(context),
             ),
@@ -375,6 +377,7 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
     );
   }
 
+  //Date on the left of the homework
   List<List<Homework>> groupHomeworkByDate(List<Homework> homeworkList) {
     List<DateTime> dates = [];
     List<DateTime> formattedDates = [];
@@ -407,7 +410,6 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
     });
   }
 
-  //Date on the left of the homework
   _buildFloatingButton(BuildContext context) {
     var screenSize = MediaQuery.of(context);
     return FloatingActionButton(
@@ -426,8 +428,7 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
         Homework? temp = await showAddHomeworkBottomSheet(context);
         if (temp != null) {
           await HomeworkOffline(appSys.offline).updateHomework([temp]);
-        } else {
-        }
+        } else {}
         await appSys.homeworkController.refresh();
 
         setState(() {});
