@@ -21,6 +21,10 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+  ynotes_components:
+    git:
+      url: https://github.com/EduWireApps/ynotes-components
+      ref: main
   battery_optimization:
     git:
       url: https://github.com/ChangJoo-Park/battery_optimization
