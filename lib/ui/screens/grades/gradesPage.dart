@@ -13,6 +13,7 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
+import 'package:ynotes/ui/mixins/layoutMixin.dart';
 import 'package:ynotes/ui/screens/grades/gradesPageWidgets/gradesGroup.dart';
 import 'package:ynotes/ui/screens/grades/gradesPageWidgets/simulatorModalBottomSheet.dart';
 
@@ -32,12 +33,12 @@ class GradesPage extends StatefulWidget {
   }
 }
 
-class _GradesPageState extends State<GradesPage> {
+class _GradesPageState extends State<GradesPage> with Layout {
   ///Start building grades box from here
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
-    bool largeScreen = screenSize.size.width > 480;
+
     return ChangeNotifierProvider<GradesController>.value(
       value: appSys.gradesController,
       child: Consumer<GradesController>(builder: (context, model, child) {
@@ -47,13 +48,15 @@ class _GradesPageState extends State<GradesPage> {
                 "Notes",
                 style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
               ),
-              leading: TextButton(
-                style: TextButton.styleFrom(primary: Colors.transparent),
-                child: Icon(MdiIcons.menu, color: ThemeUtils.textColor()),
-                onPressed: () async {
-                  widget.parentScaffoldState.currentState?.openDrawer();
-                },
-              ),
+              leading: !isVeryLargeScreen
+                  ? TextButton(
+                      style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent)),
+                      child: Icon(MdiIcons.menu, color: ThemeUtils.textColor()),
+                      onPressed: () async {
+                        widget.parentScaffoldState.currentState?.openDrawer();
+                      },
+                    )
+                  : null,
               actions: [
                 Container(
                   width: screenSize.size.width / 5 * 0.6,
@@ -168,7 +171,7 @@ class _GradesPageState extends State<GradesPage> {
                                                           gradesController: model,
                                                         ),
                                                         staggeredTileBuilder: (int index) =>
-                                                            new StaggeredTile.fit(largeScreen ? 2 : 4),
+                                                            new StaggeredTile.fit(isLargeScreen ? 2 : 4),
                                                         mainAxisSpacing: 15,
                                                         crossAxisSpacing: 10,
                                                       );

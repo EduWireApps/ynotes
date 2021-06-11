@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
+import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 
 // ignore: must_be_immutable
@@ -15,20 +15,175 @@ class RecurringEventsDialog extends StatefulWidget {
 
 class _RecurringEventsDialogState extends State<RecurringEventsDialog> {
   String? _scheme;
+  bool? enabled;
+
+  bool? everyDay;
+
+  late int weekType;
+
+  List selectedDays = [];
+
+  List weekTypes = ["Toutes les semaines", "Semaine A", "Semaine B"];
   @override
-  void initState() {
-    super.initState();
-    _scheme = this.widget.scheme;
-    getReverseAB();
+  Widget build(BuildContext context) {
+    if (enabled == null && everyDay == null) {
+      getParams();
+    }
+    MediaQueryData screenSize;
+    screenSize = MediaQuery.of(context);
+    return AlertDialog(
+        backgroundColor: Theme.of(context).primaryColor,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0))),
+        contentPadding: EdgeInsets.only(top: 0.0),
+        content: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: 500),
+          child: Container(
+            width: screenSize.size.width,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  height: screenSize.size.height / 10 * 3.2,
+                  width: screenSize.size.width,
+                  padding: EdgeInsets.symmetric(
+                      horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.height / 10 * 0.1),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SwitchListTile(
+                            contentPadding: EdgeInsets.zero,
+                            title: Text(
+                              'Activée',
+                              style: TextStyle(
+                                  fontFamily: "Asap", color: ThemeUtils.textColor().withOpacity(0.8), fontSize: 25),
+                            ),
+                            value: enabled!,
+                            onChanged: (nValue) {
+                              setState(() {
+                                enabled = nValue;
+                              });
+                            }),
+                        if (enabled!)
+                          DropdownButton<String>(
+                            value: weekTypes[weekType],
+                            dropdownColor: Theme.of(context).primaryColor,
+                            iconSize: 0.0,
+                            style: TextStyle(fontSize: 18, fontFamily: "Asap", color: ThemeUtils.textColor()),
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                weekType = weekTypes.indexOf(newValue);
+                              });
+                            },
+                            focusColor: Theme.of(context).primaryColor,
+                            items: weekTypes.map<DropdownMenuItem<String>>((var value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(
+                                  value,
+                                  textAlign: TextAlign.left,
+                                  style: TextStyle(fontSize: 18, fontFamily: "Asap", color: ThemeUtils.textColor()),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        SwitchListTile(
+                            contentPadding: EdgeInsets.zero,
+                            title: Text(
+                              'Tous les jours',
+                              style: TextStyle(
+                                  fontFamily: "Asap", color: ThemeUtils.textColor().withOpacity(0.8), fontSize: 25),
+                            ),
+                            value: everyDay!,
+                            onChanged: enabled!
+                                ? (nValue) {
+                                    setState(() {
+                                      everyDay = nValue;
+                                    });
+                                  }
+                                : null),
+                        if (enabled! && !everyDay!)
+                          Wrap(
+                            runSpacing: screenSize.size.width / 5 * 0.1,
+                            children: [
+                              buildDay(1, "L"),
+                              buildDay(2, "M"),
+                              buildDay(3, "M"),
+                              buildDay(4, "J"),
+                              buildDay(5, "V"),
+                              buildDay(6, "S"),
+                              buildDay(7, "D"),
+                            ],
+                          )
+                      ],
+                    ),
+                  ),
+                ),
+                CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5, () async {
+                  if (enabled!) {
+                    if (everyDay! ? true : selectedDays.isNotEmpty) {
+                      var value = export();
+                      Navigator.of(context).pop(value);
+                    } else {
+                      CustomDialogs.showAnyDialog(context, "Vous devez sélectionner au moins un jour");
+                    }
+                  } else {
+                    Navigator.of(context).pop();
+                  }
+                },
+                    label: "J'ai fini",
+                    backgroundColor: (everyDay! ? true : selectedDays.isNotEmpty)
+                        ? Colors.green
+                        : Theme.of(context).primaryColorDark,
+                    padding: EdgeInsets.all(5),
+                    borderRadius: BorderRadius.circular(8)),
+                SizedBox(
+                  height: 10,
+                )
+              ],
+            ),
+          ),
+        ));
   }
 
-  getReverseAB() async {
-    bool reverse = appSys.settings!["user"]["agendaPage"]["reverseWeekNames"];
-    if (reverse) {
-      setState(() {
-        weekTypes = ["Toutes les semaines", "Semaine B", "Semaine A"];
-      });
-    }
+  buildDay(int dayNumber, String dayName) {
+    MediaQueryData screenSize;
+    screenSize = MediaQuery.of(context);
+    return Container(
+      margin: EdgeInsets.only(right: screenSize.size.width / 5 * 0.1),
+      child: Material(
+        shape: CircleBorder(),
+        color: selectedDays.contains(dayNumber) ? Colors.blue : Theme.of(context).primaryColorDark,
+        child: InkWell(
+          customBorder: CircleBorder(),
+          onTap: () {
+            if (selectedDays.contains(dayNumber)) {
+              setState(() {
+                selectedDays.remove(dayNumber);
+              });
+            } else {
+              setState(() {
+                selectedDays.add(dayNumber);
+              });
+            }
+          },
+          child: Container(
+            height: 50,
+            width: 50,
+            padding: EdgeInsets.all(5),
+            child: Center(
+              child: Text(
+                dayName,
+                style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                textAlign: TextAlign.center,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   export() {
@@ -89,194 +244,19 @@ class _RecurringEventsDialogState extends State<RecurringEventsDialog> {
     }
   }
 
-  bool? enabled;
-  bool? everyDay;
-  late int weekType;
-  List selectedDays = [];
-  List weekTypes = ["Toutes les semaines", "Semaine A", "Semaine B"];
-  @override
-  Widget build(BuildContext context) {
-    if (enabled == null && everyDay == null) {
-      getParams();
+  getReverseAB() async {
+    bool reverse = appSys.settings!["user"]["agendaPage"]["reverseWeekNames"];
+    if (reverse) {
+      setState(() {
+        weekTypes = ["Toutes les semaines", "Semaine B", "Semaine A"];
+      });
     }
-    MediaQueryData screenSize;
-    screenSize = MediaQuery.of(context);
-    return AlertDialog(
-        backgroundColor: Theme.of(context).primaryColor,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(15.0))),
-        contentPadding: EdgeInsets.only(top: 0.0),
-        content: Container(
-          height: screenSize.size.height / 10 * 3.7,
-          width: screenSize.size.width,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              GestureDetector(
-                onTap: () {
-                  if (enabled!) {
-                    if (everyDay! ? true : selectedDays.isNotEmpty) {
-                      var value = export();
-                      Navigator.of(context).pop(value);
-                    } else {
-                      CustomDialogs.showAnyDialog(
-                          context, "Vous devez sélectionner au moins un jour");
-                    }
-                  } else {
-                    Navigator.of(context).pop();
-                  }
-                },
-                child: Container(
-                  width: screenSize.size.width,
-                  height: screenSize.size.height / 10 * 0.5,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Container(
-                          margin: EdgeInsets.only(
-                              top: screenSize.size.width / 5 * 0.2),
-                          height:
-                              (screenSize.size.height / 10 * 8.8) / 10 * 0.75,
-                          width: screenSize.size.width / 5 * 2,
-                          child: Icon(MdiIcons.check,
-                              color: ThemeUtils.textColor())),
-                    ],
-                  ),
-                ),
-              ),
-              Container(
-                height: screenSize.size.height / 10 * 3.2,
-                width: screenSize.size.width,
-                padding: EdgeInsets.symmetric(
-                    horizontal: screenSize.size.width / 5 * 0.1,
-                    vertical: screenSize.size.height / 10 * 0.1),
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SwitchListTile(
-                          contentPadding: EdgeInsets.zero,
-                          title: Text(
-                            'Activée',
-                            style: TextStyle(
-                                fontFamily: "Asap",
-                                color: ThemeUtils.textColor().withOpacity(0.8),
-                                fontSize: screenSize.size.width / 5 * 0.25),
-                          ),
-                          value: enabled!,
-                          onChanged: (nValue) {
-                            setState(() {
-                              enabled = nValue;
-                            });
-                          }),
-                      if (enabled!)
-                        DropdownButton<String>(
-                          value: weekTypes[weekType],
-                          dropdownColor: Theme.of(context).primaryColor,
-                          iconSize: 0.0,
-                          style: TextStyle(
-                              fontSize: 18,
-                              fontFamily: "Asap",
-                              color: ThemeUtils.textColor()),
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              weekType = weekTypes.indexOf(newValue);
-                            });
-                          },
-                          focusColor: Theme.of(context).primaryColor,
-                          items: weekTypes
-                              .map<DropdownMenuItem<String>>((var value) {
-                            return DropdownMenuItem<String>(
-                              value: value,
-                              child: Text(
-                                value,
-                                textAlign: TextAlign.left,
-                                style: TextStyle(
-                                    fontSize: 18,
-                                    fontFamily: "Asap",
-                                    color: ThemeUtils.textColor()),
-                              ),
-                            );
-                          }).toList(),
-                        ),
-                      SwitchListTile(
-                          contentPadding: EdgeInsets.zero,
-                          title: Text(
-                            'Tous les jours',
-                            style: TextStyle(
-                                fontFamily: "Asap",
-                                color: ThemeUtils.textColor().withOpacity(0.8),
-                                fontSize: screenSize.size.width / 5 * 0.25),
-                          ),
-                          value: everyDay!,
-                          onChanged: enabled!
-                              ? (nValue) {
-                                  setState(() {
-                                    everyDay = nValue;
-                                  });
-                                }
-                              : null),
-                      if (enabled! && !everyDay!)
-                        Wrap(
-                          runSpacing: screenSize.size.width / 5 * 0.1,
-                          children: [
-                            buildDay(1, "L"),
-                            buildDay(2, "M"),
-                            buildDay(3, "M"),
-                            buildDay(4, "J"),
-                            buildDay(5, "V"),
-                            buildDay(6, "S"),
-                            buildDay(7, "D"),
-                          ],
-                        )
-                    ],
-                  ),
-                ),
-              )
-            ],
-          ),
-        ));
   }
 
-  buildDay(int dayNumber, String dayName) {
-    MediaQueryData screenSize;
-    screenSize = MediaQuery.of(context);
-    return Container(
-      margin: EdgeInsets.only(right: screenSize.size.width / 5 * 0.1),
-      child: Material(
-        shape: CircleBorder(),
-        color: selectedDays.contains(dayNumber)
-            ? Colors.blue
-            : Theme.of(context).primaryColorDark,
-        child: InkWell(
-          customBorder: CircleBorder(),
-          onTap: () {
-            if (selectedDays.contains(dayNumber)) {
-              setState(() {
-                selectedDays.remove(dayNumber);
-              });
-            } else {
-              setState(() {
-                selectedDays.add(dayNumber);
-              });
-            }
-          },
-          child: Container(
-            height: screenSize.size.width / 5 * 0.5,
-            width: screenSize.size.width / 5 * 0.5,
-            padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
-            child: Center(
-              child: Text(
-                dayName,
-                style: TextStyle(fontFamily: "Asap"),
-                textAlign: TextAlign.center,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
+  @override
+  void initState() {
+    super.initState();
+    _scheme = this.widget.scheme;
+    getReverseAB();
   }
 }

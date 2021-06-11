@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/ui/mixins/layoutMixin.dart';
 import 'package:ynotes/ui/screens/statspage/statspagewidgets/leadingIcon.dart';
 
 class StatsPage extends StatefulWidget {
@@ -14,23 +15,26 @@ class StatsPage extends StatefulWidget {
   _StatsPageState createState() => _StatsPageState();
 }
 
-class _StatsPageState extends State<StatsPage> {
+class _StatsPageState extends State<StatsPage> with Layout {
   @override
   Widget build(BuildContext context) {
-    MediaQueryData screenSize = MediaQuery.of(context);
+    var screenSize = MediaQuery.of(context);
+
     return Scaffold(
       appBar: new AppBar(
           title: new Text(
             "Statistiques",
             style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
           ),
-          leading: TextButton(
-            style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent)),
-            child: Icon(MdiIcons.menu, color: ThemeUtils.textColor()),
-            onPressed: () async {
-              widget.parentScaffoldState.currentState?.openDrawer();
-            },
-          ),
+          leading: !isVeryLargeScreen
+              ? TextButton(
+                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent)),
+                  child: Icon(MdiIcons.menu, color: ThemeUtils.textColor()),
+                  onPressed: () async {
+                    widget.parentScaffoldState.currentState?.openDrawer();
+                  },
+                )
+              : null,
           backgroundColor: Theme.of(context).primaryColor),
       backgroundColor: Theme.of(context).backgroundColor,
       body: Container(

@@ -46,7 +46,7 @@ abstract class API {
   Future<List<DateTime>?> getDatesNextHomework();
 
   ///All events
-  Future<List<AgendaEvent>?> getEvents(DateTime date, bool afterSchool, {bool forceReload = false}) async {
+  Future<List<AgendaEvent>?> getEvents(DateTime date,  {bool forceReload = false}) async {
     List<AgendaEvent> events = [];
     List<AgendaEvent>? extracurricularEvents = [];
     List<Lesson>? lessons = await (appSys.api!.getNextLessons(date, forceReload: forceReload));
@@ -57,41 +57,7 @@ abstract class API {
       //Add extracurricular events
       lessons.sort((a, b) => a.end!.compareTo(b.end!));
     }
-    if (!afterSchool) {
-      extracurricularEvents = await (AgendaEventsOffline(appSys.offline).getAgendaEvents(week));
-      if (extracurricularEvents != null) {
-        if (lessons != null && lessons.length > 0) {
-          //delete the last one
-          extracurricularEvents.removeWhere((event) =>
-              DateTime.parse(DateFormat("yyyy-MM-dd").format(event.start!)) !=
-              DateTime.parse(DateFormat("yyyy-MM-dd").format(date)));
-          /*if (lessons.last.end != null) {
-            extracurricularEvents.removeWhere((element) => element.start.isAfter(lastLessonEnd));
-          }*/
-        }
-        //merge
-        for (AgendaEvent extracurricularEvent in extracurricularEvents) {
-          events.removeWhere((element) => element.id == extracurricularEvent.id);
-        }
-      }
-    } else {
-      extracurricularEvents = await (AgendaEventsOffline(appSys.offline).getAgendaEvents(week));
-
-      if (extracurricularEvents != null) {
-        //extracurricularEvents.removeWhere((element) => element.isLesson);
-        if (lessons != null && lessons.length > 0) {
-          //delete the last one
-          extracurricularEvents.removeWhere((event) =>
-              DateTime.parse(DateFormat("yyyy-MM-dd").format(event.start!)) !=
-              DateTime.parse(DateFormat("yyyy-MM-dd").format(date)));
-          //extracurricularEvents.removeWhere((event) => event.start.isBefore(lastLessonEnd));
-        }
-        //merge
-        for (AgendaEvent extracurricularEvent in extracurricularEvents) {
-          events.removeWhere((element) => element.id == extracurricularEvent.id);
-        }
-      }
-    }
+   
     if (extracurricularEvents != null) {
       events.addAll(extracurricularEvents);
     }

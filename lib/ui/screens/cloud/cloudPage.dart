@@ -11,6 +11,7 @@ import 'package:ynotes/core/logic/shared/downloadController.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/ui/components/customLoader.dart';
+import 'package:ynotes/ui/mixins/layoutMixin.dart';
 
 var actualSort = sortValue.date;
 
@@ -52,25 +53,26 @@ class CloudPage extends StatefulWidget {
 enum sortValue { date, reversed_date, author }
 
 //Sort in the main page
-class _CloudPageState extends State<CloudPage> {
+class _CloudPageState extends State<CloudPage> with Layout {
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
+
     return Scaffold(
       appBar: new AppBar(
           title: new Text(
             "Cloud",
             style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
           ),
-          leading: TextButton(
-            style: TextButton.styleFrom(
-              primary: Colors.transparent,
-            ),
-            child: Icon(MdiIcons.menu, color: ThemeUtils.textColor()),
-            onPressed: () async {
-              widget.parentScaffoldState.currentState?.openDrawer();
-            },
-          ),
+          leading: !isVeryLargeScreen
+              ? TextButton(
+                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent)),
+                  child: Icon(MdiIcons.menu, color: ThemeUtils.textColor()),
+                  onPressed: () async {
+                    widget.parentScaffoldState.currentState?.openDrawer();
+                  },
+                )
+              : null,
           backgroundColor: Theme.of(context).primaryColor),
       backgroundColor: Theme.of(context).backgroundColor,
       body: Container(
@@ -95,7 +97,7 @@ class _CloudPageState extends State<CloudPage> {
                           child: Opacity(
                             opacity: path == "/" ? 0.4 : 1,
                             child: Material(
-                              borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                              borderRadius: BorderRadius.circular(12),
                               color: Theme.of(context).primaryColorDark,
                               child: InkWell(
                                 onTap: path == "/"
@@ -125,7 +127,7 @@ class _CloudPageState extends State<CloudPage> {
                                       },
                                 child: Container(
                                   height: screenSize.size.height / 10 * 0.5,
-                                  padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
+                                  padding: EdgeInsets.all(5),
                                   child: FittedBox(
                                     child: Row(
                                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -271,72 +273,74 @@ class _CloudPageState extends State<CloudPage> {
                                                                           ),
                                                                         );
                                                                       }),
-                                                                  Container(
-                                                                    margin: EdgeInsets.only(
-                                                                        left: screenSize.size.width / 5 * 0.4),
-                                                                    width: screenSize.size.width / 5 * 4,
-                                                                    child: Column(
-                                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                                      children: <Widget>[
-                                                                        Container(
-                                                                          child: Text(
-                                                                            localFoldersList![index].title!,
-                                                                            textAlign: TextAlign.start,
-                                                                            style: TextStyle(
-                                                                              fontFamily: "Asap",
-                                                                              fontSize:
-                                                                                  screenSize.size.height / 10 * 0.25,
-                                                                              color: ThemeUtils.textColor(),
-                                                                            ),
-                                                                            overflow: TextOverflow.ellipsis,
-                                                                          ),
-                                                                        ),
-                                                                        if (localFoldersList![index].author != "")
-                                                                          Text(
-                                                                            localFoldersList![index].author!,
-                                                                            textAlign: TextAlign.start,
-                                                                            style: TextStyle(
-                                                                              fontFamily: "Asap",
-                                                                              fontSize:
-                                                                                  screenSize.size.height / 10 * 0.2,
-                                                                              color: ThemeUtils.isThemeDark
-                                                                                  ? Colors.white60
-                                                                                  : Colors.black87,
-                                                                            ),
-                                                                            overflow: TextOverflow.ellipsis,
-                                                                          ),
-                                                                        if (localFoldersList![index].date != null)
-                                                                          Row(
-                                                                            children: <Widget>[
-                                                                              Text(
-                                                                                localFoldersList![index]
-                                                                                    .date
-                                                                                    .toString(),
-                                                                                textAlign: TextAlign.start,
-                                                                                style: TextStyle(
-                                                                                  fontFamily: "Asap",
-                                                                                  fontSize:
-                                                                                      screenSize.size.height / 10 * 0.2,
-                                                                                  color: ThemeUtils.isThemeDark
-                                                                                      ? Colors.white38
-                                                                                      : Colors.black38,
-                                                                                ),
-                                                                                overflow: TextOverflow.ellipsis,
-                                                                              ),
-                                                                            ],
-                                                                          ),
-
-                                                                        //File downloading
-                                                                        if (model.isDownloading &&
-                                                                            model.downloadProgress != null &&
-                                                                            model.downloadProgress < 100)
+                                                                  Expanded(
+                                                                    child: Container(
+                                                                      margin: EdgeInsets.only(
+                                                                          left: screenSize.size.width / 5 * 0.1),
+                                                                      child: Column(
+                                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                                        children: <Widget>[
                                                                           Container(
-                                                                              width: screenSize.size.width / 5 * 4,
-                                                                              child: LinearProgressIndicator(
-                                                                                value: model.downloadProgress,
-                                                                              ))
-                                                                      ],
+                                                                            child: Text(
+                                                                              localFoldersList![index].title!,
+                                                                              textAlign: TextAlign.start,
+                                                                              style: TextStyle(
+                                                                                fontFamily: "Asap",
+                                                                                fontSize:
+                                                                                    screenSize.size.height / 10 * 0.25,
+                                                                                color: ThemeUtils.textColor(),
+                                                                              ),
+                                                                              overflow: TextOverflow.ellipsis,
+                                                                            ),
+                                                                          ),
+                                                                          if (localFoldersList![index].author != "")
+                                                                            Text(
+                                                                              localFoldersList![index].author!,
+                                                                              textAlign: TextAlign.start,
+                                                                              style: TextStyle(
+                                                                                fontFamily: "Asap",
+                                                                                fontSize:
+                                                                                    screenSize.size.height / 10 * 0.2,
+                                                                                color: ThemeUtils.isThemeDark
+                                                                                    ? Colors.white60
+                                                                                    : Colors.black87,
+                                                                              ),
+                                                                              overflow: TextOverflow.ellipsis,
+                                                                            ),
+                                                                          if (localFoldersList![index].date != null)
+                                                                            Row(
+                                                                              children: <Widget>[
+                                                                                Text(
+                                                                                  localFoldersList![index]
+                                                                                      .date
+                                                                                      .toString(),
+                                                                                  textAlign: TextAlign.start,
+                                                                                  style: TextStyle(
+                                                                                    fontFamily: "Asap",
+                                                                                    fontSize: screenSize.size.height /
+                                                                                        10 *
+                                                                                        0.2,
+                                                                                    color: ThemeUtils.isThemeDark
+                                                                                        ? Colors.white38
+                                                                                        : Colors.black38,
+                                                                                  ),
+                                                                                  overflow: TextOverflow.ellipsis,
+                                                                                ),
+                                                                              ],
+                                                                            ),
+
+                                                                          //File downloading
+                                                                          if (model.isDownloading &&
+                                                                              model.downloadProgress != null &&
+                                                                              model.downloadProgress < 100)
+                                                                            Container(
+                                                                                width: screenSize.size.width / 5 * 4,
+                                                                                child: LinearProgressIndicator(
+                                                                                  value: model.downloadProgress,
+                                                                                ))
+                                                                        ],
+                                                                      ),
                                                                     ),
                                                                   ),
                                                                 ],
@@ -367,28 +371,37 @@ class _CloudPageState extends State<CloudPage> {
                                             "Une erreur a eu lieu",
                                             style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                                           ),
-                                          TextButton(
-                                            style: TextButton.styleFrom(
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius: new BorderRadius.circular(18.0),
-                                                  side: BorderSide(color: Theme.of(context).primaryColorDark)),
+                                          Container(
+                                            margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
+                                            width: 80,
+                                            child: TextButton(
+                                              style: TextButton.styleFrom(
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius: new BorderRadius.circular(18.0),
+                                                    side: BorderSide(color: Theme.of(context).primaryColorDark)),
+                                              ),
+                                              onPressed: () {
+                                                //Reload list
+                                                refreshLocalCloudItemsList();
+                                              },
+                                              child: !(snapshot.connectionState == ConnectionState.waiting)
+                                                  ? Text("Recharger",
+                                                      style: TextStyle(
+                                                        fontFamily: "Asap",
+                                                        color: ThemeUtils.textColor(),
+                                                      ))
+                                                  : FittedBox(
+                                                      child: SpinKitThreeBounce(
+                                                          color: Theme.of(context).primaryColorDark,
+                                                          size: screenSize.size.height / 10 * 1.8)),
                                             ),
-                                            onPressed: () {
-                                              //Reload list
-                                              refreshLocalCloudItemsList();
-                                            },
-                                            child: Text("Recharger",
-                                                style: TextStyle(
-                                                  fontFamily: "Asap",
-                                                  color: ThemeUtils.textColor(),
-                                                )),
-                                          ),
+                                          )
                                         ],
                                       ),
                                     );
                                   } else {
                                     return Center(
-                                      child: CustomLoader(screenSize.size.width / 5 * 2.5,
+                                      child: CustomLoader(screenSize.size.width / 10 * 1.8,
                                           screenSize.size.width / 5 * 2.5, Theme.of(context).primaryColorDark),
                                     );
                                   }
@@ -445,8 +458,9 @@ class _CloudPageState extends State<CloudPage> {
       isLoading = true;
     });
     await cloudFolderFuture;
-    setState(() {
-      isLoading = false;
-    });
+    if (mounted)
+      setState(() {
+        isLoading = false;
+      });
   }
 }

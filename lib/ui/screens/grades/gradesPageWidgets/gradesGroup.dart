@@ -10,6 +10,7 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/stats/gradesStats.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
+import 'package:ynotes/ui/components/columnGenerator.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/screens/grades/gradesPageWidgets/disciplinesModalBottomSheet.dart';
 import 'package:ynotes/ui/screens/grades/gradesPageWidgets/gradesModalBottomSheet.dart';
@@ -35,7 +36,6 @@ class _GradesGroupState extends State<GradesGroup> {
         colorGroup = Color(widget.discipline!.color!);
       });
     }
-
 
     if (widget.discipline == null) {
       colorGroup = Theme.of(context).primaryColorDark;
@@ -174,65 +174,32 @@ class _GradesGroupState extends State<GradesGroup> {
 
               //Body with columns
               Container(
-                  width: screenSize.size.width / 5 * 4.51,
-                  padding: EdgeInsets.symmetric(vertical: 10),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor,
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(largeScreen ? 25 : 15),
-                      bottomRight: Radius.circular(largeScreen ? 25 : 15),
-                    ),
+                width: screenSize.size.width / 5 * 4.51,
+                padding: EdgeInsets.symmetric(vertical: 10),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(largeScreen ? 25 : 15),
+                    bottomRight: Radius.circular(largeScreen ? 25 : 15),
                   ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(largeScreen ? 25 : 15),
-                      bottomRight: Radius.circular(largeScreen ? 25 : 15),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        if (widget.discipline != null)
-                          if (widget.discipline!.subdisciplineCodes!.length > 0)
-                            Center(
-                              child: Container(
-                                  margin: EdgeInsets.only(top: 5),
-                                  child: Text(
-                                    "Ecrit",
-                                    style: TextStyle(
-                                      fontFamily: "Asap",
-                                      color: ThemeUtils.textColor(),
-                                    ),
-                                  )),
-                            ),
-                        gradesList(0, widget.gradesController!.period),
-                        if (widget.discipline != null)
-                          if (widget.discipline!.subdisciplineCodes!.length > 0 &&
-                              widget.discipline!.gradesList?.where((element) =>
-                                      element.subdisciplineCode == widget.discipline!.subdisciplineCodes![1]) !=
-                                  null)
-                            Divider(thickness: 2),
-                        if (widget.discipline != null)
-                          if (widget.discipline!.subdisciplineCodes!.length > 0 &&
-                              widget.discipline!.gradesList?.where((element) =>
-                                      element.subdisciplineCode == widget.discipline!.subdisciplineCodes![1]) !=
-                                  null)
-                            Center(
-                              child: Text("Oral",
-                                  style: TextStyle(
-                                    fontFamily: "Asap",
-                                    color: ThemeUtils.textColor(),
-                                  )),
-                            ),
-                        if (widget.discipline != null)
-                          if (widget.discipline!.subdisciplineCodes!.length > 0 &&
-                              widget.discipline!.gradesList?.where((element) =>
-                                      element.subdisciplineCode == widget.discipline!.subdisciplineCodes![1]) !=
-                                  null)
-                            gradesList(1, widget.gradesController!.period),
-                      ],
-                    ),
-                  ))
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(largeScreen ? 25 : 15),
+                    bottomRight: Radius.circular(largeScreen ? 25 : 15),
+                  ),
+                  child: ColumnBuilder(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    itemCount: (widget.discipline?.subdisciplineCodes != null &&
+                            widget.discipline!.subdisciplineCodes!.length > 0)
+                        ? widget.discipline!.subdisciplineCodes!.length
+                        : 1,
+                    itemBuilder: (context, index) {
+                      return gradesList(index, model.period);
+                    },
+                  ),
+                ),
+              )
             ],
           ),
         );
@@ -342,9 +309,40 @@ class _GradesGroupState extends State<GradesGroup> {
     }
 
     MediaQueryData screenSize = MediaQuery.of(context);
-    return Container(
-        margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
-        child: Wrap(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        //Used to fullfill size
+        Divider(
+          thickness: 0,
+          height: 0,
+          indent: 0,
+          endIndent: 0,
+          color: Colors.transparent,
+        ),
+        if (widget.discipline?.subdisciplineNames != null &&
+            widget.discipline!.subdisciplineNames!.length - 1 >= sousMatiereIndex &&
+            gradesForSelectedDiscipline != null &&
+            gradesForSelectedDiscipline.length > 0)
+          if (sousMatiereIndex > 0)
+            Divider(
+              thickness: 2,
+            ),
+        if (widget.discipline?.subdisciplineNames != null &&
+            widget.discipline!.subdisciplineNames!.length - 1 >= sousMatiereIndex &&
+            gradesForSelectedDiscipline != null &&
+            gradesForSelectedDiscipline.length > 0)
+          Center(
+              child: Container(
+                  margin: EdgeInsets.only(top: 5),
+                  child: Text(
+                    widget.discipline!.subdisciplineNames![sousMatiereIndex] ?? "N/A",
+                    style: TextStyle(
+                      fontFamily: "Asap",
+                      color: ThemeUtils.textColor(),
+                    ),
+                  ))),
+        Wrap(
           spacing: screenSize.size.width / 5 * 0.05,
           alignment: WrapAlignment.start,
           direction: Axis.horizontal,
@@ -450,6 +448,8 @@ class _GradesGroupState extends State<GradesGroup> {
               return Container();
             }
           }),
-        ));
+        ),
+      ],
+    );
   }
 }

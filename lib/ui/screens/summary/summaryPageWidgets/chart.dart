@@ -5,6 +5,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/ui/mixins/layoutMixin.dart';
 
 class SummaryChart extends StatefulWidget {
   final List<Grade>? lastGrades;
@@ -17,13 +18,13 @@ class SummaryChart extends StatefulWidget {
   SummaryChartState createState() => SummaryChartState();
 }
 
-class SummaryChartState extends State<SummaryChart> {
+class SummaryChartState extends State<SummaryChart> with Layout {
   List<Grade>? _grades = [];
   List<Color> gradientColors = [
     const Color(0xff3a4398),
     const Color(0xff5c66c1),
   ];
-
+  bool _LargeScreen = false;
   LineChartData avgData() {
     var screenSize = MediaQuery.of(context);
     return LineChartData(
@@ -62,12 +63,12 @@ class SummaryChartState extends State<SummaryChart> {
       axisTitleData: FlAxisTitleData(topTitle: AxisTitle()),
       borderData: FlBorderData(show: false, border: Border.all(color: const Color(0xff37434d), width: 1)),
       minX: 0,
-      maxX: ((_grades ?? []).length > 10 ? 10 : (_grades ?? []).length).toDouble(),
+      maxX: ((_grades ?? []).length > maxGradesCount() ? maxGradesCount() : (_grades ?? []).length).toDouble(),
       minY: getMin() > 0 ? ((getMin() ?? 1) - 1) : getMin(),
       maxY: getMax() + 2,
       lineBarsData: [
         LineChartBarData(
-          spots: List.generate((_grades ?? []).length > 10 ? 10 : (_grades ?? []).length,
+          spots: List.generate((_grades ?? []).length > maxGradesCount() ? maxGradesCount() : (_grades ?? []).length,
               (index) => FlSpot(index.toDouble(), toDouble((_grades ?? [])[index]))),
           isCurved: true,
           colors: [
@@ -86,6 +87,7 @@ class SummaryChartState extends State<SummaryChart> {
 
   @override
   Widget build(BuildContext context) {
+    _LargeScreen = isLargeScreen;
     var screenSize = MediaQuery.of(context);
     return Card(
       color: Colors.transparent,
@@ -151,7 +153,7 @@ class SummaryChartState extends State<SummaryChart> {
       }
     }).toList();
     //Reduce values size
-    values = values.sublist(0, ((_grades ?? []).length > 10 ? 10 : (_grades ?? []).length));
+    values = values.sublist(0, ((_grades ?? []).length > maxGradesCount() ? maxGradesCount() : (_grades ?? []).length));
     values.removeWhere((element) => element == -1000.0);
     if (values.length > 0) {
       return (values).reduce(max);
@@ -172,7 +174,7 @@ class SummaryChartState extends State<SummaryChart> {
       }
     }).toList();
     //Reduce values size
-    values = values.sublist(0, ((_grades ?? []).length > 10 ? 10 : (_grades ?? []).length));
+    values = values.sublist(0, ((_grades ?? []).length > maxGradesCount() ? maxGradesCount() : (_grades ?? []).length));
     values.removeWhere((element) => element == -1000.0);
     if (values.length > 0) {
       return values.reduce(min);
@@ -189,8 +191,8 @@ class SummaryChartState extends State<SummaryChart> {
         (_grades ?? []).sort((a, b) => a.entryDate!.compareTo(b.entryDate!));
         (_grades ?? []).removeWhere(
             (element) => element.value == null || element.notSignificant! || element.simulated! || element.letters!);
-        if ((_grades ?? []).length > 10) {
-          _grades = (_grades ?? []).sublist((_grades ?? []).length - 10, (_grades ?? []).length);
+        if ((_grades ?? []).length > maxGradesCount()) {
+          _grades = (_grades ?? []).sublist((_grades ?? []).length - maxGradesCount(), (_grades ?? []).length);
         }
       });
     }
@@ -200,6 +202,8 @@ class SummaryChartState extends State<SummaryChart> {
     super.initState();
     initGrades();
   }
+
+  int maxGradesCount() => _LargeScreen ? 18 : 10;
 
   toDouble(Grade grade) {
     double toReturn;

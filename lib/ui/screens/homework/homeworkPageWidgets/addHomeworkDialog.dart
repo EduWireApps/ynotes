@@ -14,7 +14,7 @@ Future<Homework?> showAddHomeworkBottomSheet(context, {Homework? hw}) {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
       ),
-      backgroundColor: Theme.of(context).primaryColor,
+      backgroundColor: Colors.transparent,
       context: context,
       isScrollControlled: true,
       builder: (BuildContext bc) {
@@ -51,61 +51,72 @@ class _AddHomeworkBottomSheetState extends State<AddHomeworkBottomSheet> {
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
 
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.2),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          DragHandle(),
-          SizedBox(
-            height: screenSize.size.height / 10 * 0.1,
-          ),
-          Text(
-            widget.defaultHW == null ? "Ajouter un nouveau devoir" : "Modifier un devoir existant",
-            style:
-                TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontWeight: FontWeight.bold, fontSize: 20),
-          ),
-          SizedBox(
-            height: screenSize.size.height / 10 * 0.2,
-          ),
-          buildTextField(disciplineNameTextController, "Nom de la matière", autocompleterCallback),
-          SizedBox(
-            height: screenSize.size.height / 10 * 0.2,
-          ),
-          buildLargeTextField(contentTextController, "Contenu", autocompleterCallback),
-          SizedBox(
-            height: screenSize.size.height / 10 * 0.2,
-          ),
-          SwitchListTile(
-              title: Text(
-                "Ce devoir est un contrôle",
-                style: TextStyle(
-                    fontFamily: "Asap", color: ThemeUtils.textColor(), fontWeight: FontWeight.normal, fontSize: 20),
+    return Wrap(alignment: WrapAlignment.center, children: [
+      ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: 500),
+        child: Container(
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+              color: Theme.of(context).primaryColor),
+          padding: EdgeInsets.symmetric(
+              vertical: screenSize.size.height / 10 * 0.2, horizontal: screenSize.size.width / 5 * 0.2),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              DragHandle(),
+              SizedBox(
+                height: screenSize.size.height / 10 * 0.1,
               ),
-              value: isATest,
-              onChanged: (newValue) {
-                setState(() {
-                  isATest = newValue;
-                });
-              }),
-          SizedBox(
-            height: screenSize.size.height / 10 * 0.2,
+              Text(
+                widget.defaultHW == null ? "Ajouter un nouveau devoir" : "Modifier un devoir existant",
+                style: TextStyle(
+                    fontFamily: "Asap", color: ThemeUtils.textColor(), fontWeight: FontWeight.bold, fontSize: 20),
+              ),
+              SizedBox(
+                height: screenSize.size.height / 10 * 0.2,
+              ),
+              buildTextField(disciplineNameTextController, "Nom de la matière", autocompleterCallback),
+              SizedBox(
+                height: screenSize.size.height / 10 * 0.2,
+              ),
+              buildLargeTextField(contentTextController, "Contenu", autocompleterCallback),
+              SizedBox(
+                height: screenSize.size.height / 10 * 0.2,
+              ),
+              SwitchListTile(
+                  title: Text(
+                    "Ce devoir est un contrôle",
+                    style: TextStyle(
+                        fontFamily: "Asap", color: ThemeUtils.textColor(), fontWeight: FontWeight.normal, fontSize: 20),
+                  ),
+                  value: isATest,
+                  onChanged: (newValue) {
+                    setState(() {
+                      isATest = newValue;
+                    });
+                  }),
+              SizedBox(
+                height: screenSize.size.height / 10 * 0.2,
+              ),
+              buildDateChoice(),
+              SizedBox(
+                height: screenSize.size.height / 10 * 0.2,
+              ),
+              CustomButtons.materialButton(context, screenSize.size.width / 5 * 2.5, screenSize.size.height / 10 * 0.5,
+                  () async {
+                process(context);
+              },
+                  label: "J'ai fini",
+                  backgroundColor: (disciplineNameTextController.text != "" && contentTextController.text != "")
+                      ? Colors.green
+                      : Theme.of(context).primaryColorDark,
+                  padding: EdgeInsets.all(5),
+                  borderRadius: BorderRadius.circular(8))
+            ],
           ),
-          buildDateChoice(),
-          SizedBox(
-            height: screenSize.size.height / 10 * 0.2,
-          ),
-          CustomButtons.materialButton(context, screenSize.size.width / 5 * 2.5, screenSize.size.height / 10 * 0.5,
-              () async {
-            process(context);
-          },
-              label: "J'ai fini",
-              backgroundColor: (disciplineNameTextController.text != "" && contentTextController.text != "")
-                  ? Colors.green
-                  : Theme.of(context).primaryColorDark)
-        ],
-      ),
-    );
+        ),
+      )
+    ]);
   }
 
   Widget buildDateChoice() {

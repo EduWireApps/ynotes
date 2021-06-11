@@ -65,7 +65,7 @@ class FileAppUtil {
     try {
       List file = [];
 
-      if (await Permission.storage.request().isGranted) {
+      if (Platform.isLinux || await Permission.storage.request().isGranted) {
         try {
           file = Directory(path).listSync();
         } catch (e) {

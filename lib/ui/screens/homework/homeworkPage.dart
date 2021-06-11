@@ -5,6 +5,7 @@ import 'package:ynotes/core/logic/homework/controller.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/hiddenSettings.dart';
+import 'package:ynotes/ui/mixins/layoutMixin.dart';
 
 import 'homeworkPageWidgets/HWsettingsPage.dart';
 import 'homeworkPageWidgets/homeworkTimeline.dart';
@@ -19,7 +20,7 @@ class HomeworkPage extends StatefulWidget {
 }
 
 //Function that returns string like "In two weeks" with time relation
-class HomeworkPageState extends State<HomeworkPage> {
+class HomeworkPageState extends State<HomeworkPage> with Layout {
   PageController? _pageControllerHW;
   PageController agendaSettingsController = PageController(initialPage: 1);
 
@@ -29,6 +30,7 @@ class HomeworkPageState extends State<HomeworkPage> {
 
   @override
   Widget build(BuildContext context) {
+
     //Show the pin dialog
     showDialog();
     return Scaffold(
@@ -37,12 +39,15 @@ class HomeworkPageState extends State<HomeworkPage> {
             "Devoirs",
             style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
           ),
-          leading: TextButton(
-            child: Icon(MdiIcons.menu, color: ThemeUtils.textColor()),
-            onPressed: () async {
-              widget.parentScaffoldState.currentState?.openDrawer();
-            },
-          ),
+          leading: !isVeryLargeScreen
+              ? TextButton(
+                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent)),
+                  child: Icon(MdiIcons.menu, color: ThemeUtils.textColor()),
+                  onPressed: () async {
+                    widget.parentScaffoldState.currentState?.openDrawer();
+                  },
+                )
+              : null,
           backgroundColor: Theme.of(context).backgroundColor),
       body: HiddenSettings(
           controller: agendaSettingsController, settingsWidget: HomeworkSettingPage(), child: HomeworkTimeline()),

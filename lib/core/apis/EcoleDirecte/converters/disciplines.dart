@@ -60,7 +60,9 @@ class EcoleDirecteDisciplineConverter {
                 classNumber: classNumber,
                 generalRank: generalRank,
                 weight: weight,
-                periodCode: periodeId));
+                periodCode: periodeId,
+                subdisciplineCodes: [],
+                subdisciplineNames: []));
           }
           //Sub discipline
           else {

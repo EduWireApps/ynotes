@@ -14,6 +14,7 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/dragHandle.dart';
+import 'package:ynotes/ui/mixins/layoutMixin.dart';
 
 void gradesModalBottomSheet(
   context,
@@ -58,7 +59,7 @@ class GradesModalBottomSheetContainer extends StatefulWidget {
   _GradesModalBottomSheetContainerState createState() => _GradesModalBottomSheetContainerState();
 }
 
-class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheetContainer> {
+class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheetContainer> with Layout {
   var oldSize;
   var statsPartOldSize;
   bool open = false;
@@ -80,13 +81,14 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
     SchedulerBinding.instance?.addPostFrameCallback(postFrameCallback);
     SchedulerBinding.instance?.addPostFrameCallback(postFrameCallbackLowerPart);
 
-    MediaQueryData screenSize = MediaQuery.of(context);
-    bool largeScreen = screenSize.size.width > 500;
-
-    return Container(
-      width: 500,
-      child: ClipRRect(
-        child: SlidingUpPanel(
+    return Stack(
+      children: [
+        GestureDetector(
+          onTap: () {
+            Navigator.pop(context);
+          },
+        ),
+        SlidingUpPanel(
             backdropEnabled: false,
             backdropOpacity: 0.0,
             body: GestureDetector(
@@ -95,25 +97,37 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
               },
             ),
             controller: panelController,
-            color: Theme.of(context).primaryColor,
-            padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.2),
+            color: Colors.transparent,
+            boxShadow: [],
             minHeight: oldSize ?? 0.0,
             maxHeight: (oldSize ?? 0.0) + (statsPartOldSize ?? 0),
-            borderRadius: BorderRadius.only(
-                topLeft: largeScreen ? Radius.zero : Radius.circular(25),
-                topRight: largeScreen ? Radius.zero : Radius.circular(25)),
             panelBuilder: (scroll) {
-              return Container(
-                width: 500,
-                child: ClipRRect(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [buildHeaderPart(scroll), buildStatsPart()],
+              return Stack(
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
                   ),
-                ),
+                  Center(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: 500),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor,
+                          borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [buildHeaderPart(scroll), buildStatsPart()],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               );
             }),
-      ),
+      ],
     );
   }
 
@@ -285,14 +299,14 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
     return ConstrainedBox(
       constraints: BoxConstraints(maxWidth: 500),
       child: Container(
-        width: 500,
-        padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.1),
-        decoration:
-            BoxDecoration(borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25))),
+        padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.2),
         key: headerPart,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            SizedBox(
+              height: screenSize.size.height / 10 * 0.1,
+            ),
             DragHandle(),
             SizedBox(
               height: screenSize.size.height / 10 * 0.1,
@@ -439,47 +453,50 @@ class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheet
     MediaQueryData screenSize = MediaQuery.of(context);
     SchedulerBinding.instance?.addPostFrameCallback(postFrameCallbackLowerPart);
 
-    return Column(
-      key: statsPart,
-      children: [
-        Divider(
-          thickness: 2,
-        ),
-        Text(
-          "Statistiques",
-          style:
-              TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w600, fontSize: 20, color: ThemeUtils.textColor()),
-        ),
-        SizedBox(
-          height: screenSize.size.height / 10 * 0.1,
-        ),
-        Container(
-            width: screenSize.size.width / 5 * 4.8,
-            height: screenSize.size.height / 10 * 3.2,
-            padding: EdgeInsets.symmetric(
-                horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.height / 10 * 0.1),
-            decoration:
-                BoxDecoration(color: Theme.of(context).primaryColorDark, borderRadius: BorderRadius.circular(11)),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  buildStat(
-                      (widget.stats?.calculateAverageImpact() ?? 0.0),
-                      "Points de moyenne pour la matière (à l'obtention).",
-                      "Indique le nombre de points d'impact sur la moyenne de la matière au moment de l'obtention de cette note."),
-                  buildStat(
-                      (widget.stats?.calculateGlobalAverageImpact() ?? 0.0),
-                      "Points de moyenne générale (à l'obtention).",
-                      "Indique le nombre de points d'impact sur la moyenne générale au moment de l'obtention de cette note."),
-                  buildStat(
-                      (widget.stats?.calculateGlobalAverageImpactOverall() ?? 0.0),
-                      "Points de moyenne générale (tout le temps).",
-                      "Indique le nombre de points d'impact sur la moyenne générale avec ou sans la note."),
-                ],
-              ),
-            ))
-      ],
+    return Container(
+      width: 500,
+      child: Column(
+        key: statsPart,
+        children: [
+          Divider(
+            thickness: 2,
+          ),
+          Text(
+            "Statistiques",
+            style:
+                TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w600, fontSize: 20, color: ThemeUtils.textColor()),
+          ),
+          SizedBox(
+            height: screenSize.size.height / 10 * 0.1,
+          ),
+          Container(
+              width: screenSize.size.width / 5 * 4.8,
+              height: screenSize.size.height / 10 * 3.2,
+              padding: EdgeInsets.symmetric(
+                  horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.height / 10 * 0.1),
+              decoration:
+                  BoxDecoration(color: Theme.of(context).primaryColorDark, borderRadius: BorderRadius.circular(11)),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    buildStat(
+                        (widget.stats?.calculateAverageImpact() ?? 0.0),
+                        "Points de moyenne pour la matière (à l'obtention).",
+                        "Indique le nombre de points d'impact sur la moyenne de la matière au moment de l'obtention de cette note."),
+                    buildStat(
+                        (widget.stats?.calculateGlobalAverageImpact() ?? 0.0),
+                        "Points de moyenne générale (à l'obtention).",
+                        "Indique le nombre de points d'impact sur la moyenne générale au moment de l'obtention de cette note."),
+                    buildStat(
+                        (widget.stats?.calculateGlobalAverageImpactOverall() ?? 0.0),
+                        "Points de moyenne générale (tout le temps).",
+                        "Indique le nombre de points d'impact sur la moyenne générale avec ou sans la note."),
+                  ],
+                ),
+              ))
+        ],
+      ),
     );
   }
 

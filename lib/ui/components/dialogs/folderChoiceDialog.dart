@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
+
 // ignore: must_be_immutable
 class FolderChoiceDialog extends StatefulWidget {
   BuildContext context;
@@ -36,87 +37,90 @@ class _FolderChoiceDialogState extends State<FolderChoiceDialog> {
         "Création de dossier",
         style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
       ),
-      content: Container(
-        height: widget.selectionMode ? screenSize.size.height / 10 * 2.5 : screenSize.size.height / 10 * 1.2,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              child: Text(
-                "Donnez un nom à ce dossier",
-                style: TextStyle(fontFamily: 'Asap', color: ThemeUtils.textColor()),
-                textAlign: TextAlign.left,
-              ),
-            ),
-            Container(
-              width: screenSize.size.width / 5 * 4.3,
-              height: screenSize.size.height / 10 * 0.8,
-              child: TextFormField(
-                controller: textController,
-                onChanged: (newValue) {
-                  setState(() {
-                    value = newValue;
-                    if (folderNames.contains(newValue)) {
-                      dropDownValue = newValue;
-                    }
-                  });
-                },
-                decoration: InputDecoration(
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: ThemeUtils.textColor()),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: ThemeUtils.textColor()),
-                  ),
-                ),
-                style: TextStyle(
-                  fontFamily: 'Asap',
-                  color: ThemeUtils.textColor(),
-                ),
-              ),
-            ),
-            if (widget.selectionMode)
+      content: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: 500),
+        child: Container(
+          height: widget.selectionMode ? screenSize.size.height / 10 * 2.5 : screenSize.size.height / 10 * 1.2,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
               Container(
                 child: Text(
-                  "Utiliser un dossier existant",
+                  "Donnez un nom à ce dossier",
                   style: TextStyle(fontFamily: 'Asap', color: ThemeUtils.textColor()),
                   textAlign: TextAlign.left,
                 ),
               ),
-            if (widget.selectionMode)
               Container(
                 width: screenSize.size.width / 5 * 4.3,
-                child: DropdownButton<String>(
-                  value: dropDownValue,
-                  dropdownColor: Theme.of(context).primaryColor,
-                  style: TextStyle(color: ThemeUtils.textColor()),
-                  icon: null,
-                  iconSize: 0,
-                  underline: Container(
-                    height: screenSize.size.height / 10 * 0.02,
-                    color: ThemeUtils.textColor(),
-                  ),
-                  onChanged: (String? newValue) {
+                height: screenSize.size.height / 10 * 0.8,
+                child: TextFormField(
+                  controller: textController,
+                  onChanged: (newValue) {
                     setState(() {
-                      dropDownValue = newValue;
-                      if (newValue != "Aucun") {
-                        value = newValue;
-                        textController.text = newValue!;
+                      value = newValue;
+                      if (folderNames.contains(newValue)) {
+                        dropDownValue = newValue;
                       }
                     });
                   },
-                  items: folderNames.map<DropdownMenuItem<String>>((String? value) {
-                    return DropdownMenuItem<String>(
-                      value: value ?? "",
-                      child: Text(
-                        value ?? "",
-                        style: TextStyle(fontFamily: 'Asap', color: ThemeUtils.textColor()),
-                      ),
-                    );
-                  }).toList(),
+                  decoration: InputDecoration(
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: ThemeUtils.textColor()),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: ThemeUtils.textColor()),
+                    ),
+                  ),
+                  style: TextStyle(
+                    fontFamily: 'Asap',
+                    color: ThemeUtils.textColor(),
+                  ),
                 ),
-              )
-          ],
+              ),
+              if (widget.selectionMode)
+                Container(
+                  child: Text(
+                    "Utiliser un dossier existant",
+                    style: TextStyle(fontFamily: 'Asap', color: ThemeUtils.textColor()),
+                    textAlign: TextAlign.left,
+                  ),
+                ),
+              if (widget.selectionMode)
+                Container(
+                  width: screenSize.size.width / 5 * 4.3,
+                  child: DropdownButton<String>(
+                    value: dropDownValue,
+                    dropdownColor: Theme.of(context).primaryColor,
+                    style: TextStyle(color: ThemeUtils.textColor()),
+                    icon: null,
+                    iconSize: 0,
+                    underline: Container(
+                      height: screenSize.size.height / 10 * 0.02,
+                      color: ThemeUtils.textColor(),
+                    ),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        dropDownValue = newValue;
+                        if (newValue != "Aucun") {
+                          value = newValue;
+                          textController.text = newValue!;
+                        }
+                      });
+                    },
+                    items: folderNames.map<DropdownMenuItem<String>>((String? value) {
+                      return DropdownMenuItem<String>(
+                        value: value ?? "",
+                        child: Text(
+                          value ?? "",
+                          style: TextStyle(fontFamily: 'Asap', color: ThemeUtils.textColor()),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                )
+            ],
+          ),
         ),
       ),
       actions: [

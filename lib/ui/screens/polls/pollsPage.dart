@@ -12,6 +12,7 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
+import 'package:ynotes/ui/mixins/layoutMixin.dart';
 
 String dossier = "Reçus";
 
@@ -31,25 +32,26 @@ class PollsAndInfoPage extends StatefulWidget {
 
 enum sortValue { date, reversed_date, author }
 
-class _PollsAndInfoPageState extends State<PollsAndInfoPage> {
+class _PollsAndInfoPageState extends State<PollsAndInfoPage> with Layout{
   @override
   Widget build(BuildContext context) {
-    MediaQueryData screenSize = MediaQuery.of(context);
+    var screenSize = MediaQuery.of(context);
+
     return Scaffold(
       appBar: new AppBar(
           title: new Text(
             "Sondages",
             style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
           ),
-          leading: TextButton(
-            style: TextButton.styleFrom(
-              primary: Colors.transparent,
-            ),
-            child: Icon(MdiIcons.menu, color: ThemeUtils.textColor()),
-            onPressed: () async {
-              widget.parentScaffoldState.currentState?.openDrawer();
-            },
-          ),
+          leading: !isVeryLargeScreen
+              ? TextButton(
+                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent)),
+                  child: Icon(MdiIcons.menu, color: ThemeUtils.textColor()),
+                  onPressed: () async {
+                    widget.parentScaffoldState.currentState?.openDrawer();
+                  },
+                )
+              : null,
           backgroundColor: Theme.of(context).primaryColor),
       backgroundColor: Theme.of(context).backgroundColor,
       body: RefreshIndicator(
@@ -185,7 +187,7 @@ class _PollsAndInfoPageState extends State<PollsAndInfoPage> {
     setState(() {
       pollsFuture = (appSys.api as APIPronote).getPronotePolls(forceReload: forced);
     });
-   await pollsFuture;
+    await pollsFuture;
   }
 
   Widget _buildPollChoices(PollInfo poll, PollQuestion question, screenSize) {

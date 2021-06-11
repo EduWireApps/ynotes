@@ -9,9 +9,9 @@ import 'package:ynotes/core/offline/data/agenda/reminders.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/components/modalBottomSheets/agendaEventDetailsBottomSheet.dart';
-import 'package:ynotes/ui/components/modalBottomSheets/agendaEventEditBottomSheet.dart';
 import 'package:ynotes/ui/screens/agenda/agendaPage.dart';
+import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/agendaEventDetailsBottomSheet.dart';
+import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/agendaEventEditBottomSheet.dart';
 
 // ignore: must_be_immutable
 class AgendaElement extends StatefulWidget {
@@ -31,8 +31,8 @@ class _AgendaElementState extends State<AgendaElement> {
   Future<void> refreshAgendaFuture() async {
     if (mounted) {
       setState(() {
-        spaceAgendaFuture = appSys.api!.getEvents(agendaDate!, true);
-        agendaFuture = appSys.api!.getEvents(agendaDate!, false);
+        spaceAgendaFuture = appSys.api!.getEvents(agendaDate!);
+        agendaFuture = appSys.api!.getEvents(agendaDate!);
       });
     }
     await spaceAgendaFuture;

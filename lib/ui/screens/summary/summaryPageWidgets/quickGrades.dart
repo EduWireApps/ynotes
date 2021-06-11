@@ -219,7 +219,6 @@ class _QuickGradesState extends State<QuickGrades> {
       );
     }
   }
-
   Future<void> forceRefreshModel() async {
     await appSys.gradesController.refresh(force: true);
   }

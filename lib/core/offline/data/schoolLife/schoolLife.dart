@@ -8,7 +8,7 @@ class SchoolLifeOffline {
   }
   Future<List<SchoolLifeTicket>?> get() async {
     try {
-      return parent.offlineBox?.get("recipients")?.cast<SchoolLifeTicket>();
+      return parent.offlineBox?.get("schoolLife")?.cast<SchoolLifeTicket>();
     } catch (e) {
       print("Error while returning school life tickets " + e.toString());
       return null;

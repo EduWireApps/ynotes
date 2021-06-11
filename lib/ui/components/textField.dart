@@ -29,7 +29,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
     return Container(
         width: screenSize.size.width / 5 * 4.2,
-        height: screenSize.size.width / 5 * 0.7,
+        height: screenSize.size.height / 10 * 0.7,
         decoration: BoxDecoration(
             border: Border.all(width: 0.7, color: ThemeUtils.textColor().withOpacity(0.4)),
             borderRadius: BorderRadius.circular(10000),
@@ -40,7 +40,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           children: [
             Container(
               width: screenSize.size.width / 5 * 4.2,
-              height: screenSize.size.width / 5 * 0.7,
+              height: screenSize.size.height / 10 * 0.7,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -52,8 +52,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
                     textAlignVertical: TextAlignVertical.center,
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.only(
-                          left: screenSize.size.width / 5 * 0.75,
-                          right: widget.eyeButton ? screenSize.size.width / 5 * 0.75 : 0),
+                          left: 68,
+                          right: widget.eyeButton ? 12 : 0),
                       border: new OutlineInputBorder(
                         borderSide: BorderSide.none,
                         borderRadius: const BorderRadius.all(
@@ -68,8 +68,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
               ),
             ),
             Container(
-              width: screenSize.size.width / 5 * 0.7,
-              height: screenSize.size.width / 5 * 0.7,
+              width:50,
+              height: 50,
               decoration:
                   BoxDecoration(color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(50000)),
               child: Row(
@@ -77,7 +77,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Icon(widget.icon,
-                      size: screenSize.size.width / 5 * 0.5, color: ThemeUtils.textColor().withOpacity(0.8)),
+                      size:50, color: ThemeUtils.textColor().withOpacity(0.8)),
                 ],
               ),
             ),
