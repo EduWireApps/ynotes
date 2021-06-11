@@ -8,6 +8,7 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
+import 'package:ynotes/ui/components/customLoader.dart';
 import 'package:ynotes/ui/screens/agenda/agendaPage.dart';
 import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/agendaGrid.dart';
 import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/buttons.dart';
@@ -108,7 +109,7 @@ class _AgendaState extends State<Agenda> {
                             FutureBuilder<List<AgendaEvent>?>(
                                 future: agendaFuture,
                                 builder: (context, snapshot) {
-                                  if (snapshot.hasData && snapshot.data != null && (snapshot.data ?? []).length != 0) {
+                                  if (false) {
                                     return RefreshIndicator(
                                         onRefresh: refreshAgendaFuture,
                                         child: AgendaGrid(
@@ -165,9 +166,9 @@ class _AgendaState extends State<Agenda> {
                                       ),
                                     );
                                   } else {
-                                    return SpinKitFadingFour(
-                                      color: Theme.of(context).primaryColorDark,
-                                      size: screenSize.size.width / 5 * 1,
+                                    return Center(
+                                      child: CustomLoader(
+                                          500, screenSize.size.height / 10 * 2.4, Theme.of(context).primaryColorDark),
                                     );
                                   }
                                 }),

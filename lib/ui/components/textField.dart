@@ -41,34 +41,27 @@ class _CustomTextFieldState extends State<CustomTextField> {
             Container(
               width: screenSize.size.width / 5 * 4.2,
               height: screenSize.size.height / 10 * 0.7,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TextField(
-                    maxLines: 1,
-                    controller: widget.controller,
-                    obscureText: widget.isObscured,
-                    style: TextStyle(color: ThemeUtils.textColor().withOpacity(0.8)),
-                    textAlignVertical: TextAlignVertical.center,
-                    decoration: InputDecoration(
-                      contentPadding: EdgeInsets.only(
-                          left: 68,
-                          right: widget.eyeButton ? 12 : 0),
-                      border: new OutlineInputBorder(
-                        borderSide: BorderSide.none,
-                        borderRadius: const BorderRadius.all(
-                          const Radius.circular(25),
-                        ),
-                      ),
-                      hintStyle: new TextStyle(color: ThemeUtils.textColor().withOpacity(0.4)),
-                      hintText: widget.hint,
+              child: TextField(
+                maxLines: 1,
+                controller: widget.controller,
+                obscureText: widget.isObscured,
+                style: TextStyle(color: ThemeUtils.textColor().withOpacity(0.8)),
+                textAlignVertical: TextAlignVertical.center,
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.only(left: 68, right: widget.eyeButton ? 12 : 0),
+                  border: new OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: const BorderRadius.all(
+                      const Radius.circular(25),
                     ),
                   ),
-                ],
+                  hintStyle: new TextStyle(color: ThemeUtils.textColor().withOpacity(0.4)),
+                  hintText: widget.hint,
+                ),
               ),
             ),
             Container(
-              width:50,
+              width: 50,
               height: 50,
               decoration:
                   BoxDecoration(color: Theme.of(context).primaryColor, borderRadius: BorderRadius.circular(50000)),
@@ -76,8 +69,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Icon(widget.icon,
-                      size:50, color: ThemeUtils.textColor().withOpacity(0.8)),
+                  Icon(widget.icon, size: 50, color: ThemeUtils.textColor().withOpacity(0.8)),
                 ],
               ),
             ),

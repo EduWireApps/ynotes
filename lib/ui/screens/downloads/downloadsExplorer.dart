@@ -4,13 +4,13 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:path/path.dart' as pathPackage;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/ui/components/customLoader.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/mixins/layoutMixin.dart';
 import 'package:ynotes/usefulMethods.dart';
@@ -616,9 +616,8 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> with Layout {
                     if (snapshot.hasError) {
                       print("Erreur " + (snapshot.error as String));
                     }
-                    return SpinKitFadingFour(
-                      color: Theme.of(context).primaryColorDark,
-                      size: screenSize.size.width / 5 * 1,
+                    return Center(
+                      child: CustomLoader(500, screenSize.size.height / 10 * 2.4, Theme.of(context).primaryColorDark),
                     );
                   }
                 },

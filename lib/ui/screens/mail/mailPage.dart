@@ -101,35 +101,30 @@ class _MailPageState extends State<MailPage> with Layout {
                                     canvasColor: Theme.of(context).primaryColor,
                                   ),
                                   child: DropdownButtonHideUnderline(
-                                    child: FittedBox(
-                                      child: DropdownButton<String>(
-                                        value: dossier,
-                                        iconEnabledColor: ThemeUtils.textColor(),
-                                        style:
-                                            TextStyle(fontSize: 18, fontFamily: "Asap", color: ThemeUtils.textColor()),
-                                        onChanged: (String? newValue) {
-                                          setState(() {
-                                            dossier = newValue;
-                                          });
-                                        },
-                                        focusColor: Theme.of(context).primaryColor,
-                                        items: <String>[
-                                          'Reçus',
-                                          'Envoyés',
-                                        ].map<DropdownMenuItem<String>>((String value) {
-                                          return DropdownMenuItem<String>(
-                                            value: value,
-                                            child: Expanded(
-                                              child: Text(
-                                                value,
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                    fontSize: 18, fontFamily: "Asap", color: ThemeUtils.textColor()),
-                                              ),
-                                            ),
-                                          );
-                                        }).toList(),
-                                      ),
+                                    child: DropdownButton<String>(
+                                      value: dossier,
+                                      iconEnabledColor: ThemeUtils.textColor(),
+                                      style: TextStyle(fontSize: 18, fontFamily: "Asap", color: ThemeUtils.textColor()),
+                                      onChanged: (String? newValue) {
+                                        setState(() {
+                                          dossier = newValue;
+                                        });
+                                      },
+                                      focusColor: Theme.of(context).primaryColor,
+                                      items: <String>[
+                                        'Reçus',
+                                        'Envoyés',
+                                      ].map<DropdownMenuItem<String>>((String value) {
+                                        return DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(
+                                            value,
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                                fontSize: 18, fontFamily: "Asap", color: ThemeUtils.textColor()),
+                                          ),
+                                        );
+                                      }).toList(),
                                     ),
                                   ),
                                 ),
