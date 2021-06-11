@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/ui/components/expandables.dart';
-import 'package:ynotes/ui/components/hiddenSettings.dart';
 import 'package:ynotes/ui/components/y_page/mixins.dart';
 import 'package:ynotes/ui/components/y_page/y_page.dart';
 import 'package:ynotes/ui/components/y_page/y_page_local.dart';
@@ -49,45 +48,6 @@ class AgendaPageState extends State<AgendaPage> with YPageMixin {
             onPressed: () => openLocalPage(YPageLocal(title: "Options", child: AgendaSettings())),
             icon: Icon(MdiIcons.wrench))
       ],
-    );
-    return Scaffold(
-      appBar: new AppBar(
-          title: new Text(
-            "Agenda",
-            style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
-          ),
-          leading: TextButton(
-            style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent)),
-            child: Icon(MdiIcons.menu, color: ThemeUtils.textColor()),
-            onPressed: () {},
-          ),
-          actions: [
-            TextButton(
-              style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent)),
-              child: Icon(MdiIcons.tuneVariant, color: ThemeUtils.textColor()),
-              onPressed: () async {
-                triggerSettings();
-              },
-            )
-          ],
-          backgroundColor: Theme.of(context).primaryColor),
-      backgroundColor: Theme.of(context).backgroundColor,
-      body: HiddenSettings(
-        controller: agendaPageSettingsController,
-        settingsWidget: AgendaSettings(),
-        child: Expandables(
-          buildTopChild(),
-          buildBottomChild(),
-          width: screenSize.size.width,
-          maxHeight: screenSize.size.height / 10 * 7.2,
-          minHeight: screenSize.size.height / 10 * 0.7,
-          bottomExpandableColor: ThemeUtils.spaceColor(),
-          onDragUpdate: handleDragUpdate,
-          animationDuration: 200,
-          topExpandableBorderRadius: 11,
-          bottomExpandableBorderRadius: 11,
-        ),
-      ),
     );
   }
 
