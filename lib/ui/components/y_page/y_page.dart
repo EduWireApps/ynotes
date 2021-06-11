@@ -47,14 +47,11 @@ class _YPageState extends State<YPage> with TickerProviderStateMixin {
       //   shadowColor: Colors.transparent,
       // ),
       appBar: AppBar(
-          backgroundColor: ThemeUtils.isThemeDark
-              ? Theme.of(context).primaryColorLight
-              : Theme.of(context).primaryColorDark,
+          backgroundColor:
+              ThemeUtils.isThemeDark ? Theme.of(context).primaryColorLight : Theme.of(context).primaryColorDark,
           centerTitle: false,
           title: Text(widget.title, textAlign: TextAlign.start),
-          systemOverlayStyle: ThemeUtils.isThemeDark
-              ? SystemUiOverlayStyle.light
-              : SystemUiOverlayStyle.dark,
+          systemOverlayStyle: ThemeUtils.isThemeDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
           actions: widget.actions),
       body: widget.isScrollable
           ? SingleChildScrollView(child: _page(context))
@@ -66,14 +63,12 @@ class _YPageState extends State<YPage> with TickerProviderStateMixin {
     late Animation<double> showLoginControllerStatus;
     late AnimationController showLoginControllerStatusController;
 
-    showLoginControllerStatusController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 450));
+    showLoginControllerStatusController = AnimationController(vsync: this, duration: Duration(milliseconds: 450));
     showLoginControllerStatus = new Tween(
       begin: 1.0,
       end: 0.0,
     ).animate(new CurvedAnimation(
-        parent: showLoginControllerStatusController,
-        curve: Interval(0.1, 1.0, curve: Curves.fastOutSlowIn)));
+        parent: showLoginControllerStatusController, curve: Interval(0.1, 1.0, curve: Curves.fastOutSlowIn)));
     return ChangeNotifierProvider<LoginController>.value(
       value: appSys.loginController,
       child: Consumer<LoginController>(builder: (context, model, child) {

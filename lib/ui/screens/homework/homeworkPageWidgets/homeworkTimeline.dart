@@ -18,6 +18,8 @@ import 'package:ynotes/main.dart';
 import 'package:ynotes/ui/components/columnGenerator.dart';
 import 'package:ynotes/ui/components/customLoader.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
+import 'package:ynotes/ui/components/y_page/mixins.dart';
+import 'package:ynotes/ui/components/y_page/y_page_local.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/addHomeworkDialog.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/homeworkFilterDialog.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/homeworkViewPage.dart';
@@ -54,7 +56,7 @@ class StickyHeader extends StatefulWidget {
   _StickyHeaderState createState() => _StickyHeaderState();
 }
 
-class _HomeworkElementState extends State<HomeworkElement> with SingleTickerProviderStateMixin {
+class _HomeworkElementState extends State<HomeworkElement> with SingleTickerProviderStateMixin, YPageMixin {
   late AnimationController controller;
   @override
   @override
@@ -253,13 +255,9 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
               Theme.of(context).primaryColorDark,
             )),
           Positioned(
-            bottom: 50,
-            right: 50,
-            child: Container(
-              color: Colors.red,
-              margin: EdgeInsets.only(right: screenSize.size.width / 5 * 0.1, bottom: screenSize.size.width / 5 * 0.1),
-              child: _buildFloatingButton(context),
-            ),
+            bottom: 10,
+            right: 10,
+            child: _buildFloatingButton(context),
           ),
         ],
       ),

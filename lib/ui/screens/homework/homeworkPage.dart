@@ -22,13 +22,16 @@ class HomeworkPageState extends State<HomeworkPage> {
   PageController agendaSettingsController = PageController(initialPage: 1);
 
   animateToPage(int index) {
-    _pageControllerHW!.animateToPage(index,
-        duration: Duration(milliseconds: 250), curve: Curves.ease);
+    _pageControllerHW!.animateToPage(index, duration: Duration(milliseconds: 250), curve: Curves.ease);
   }
 
   @override
   Widget build(BuildContext context) {
-    return YPage(title: "Devoirs", body: HomeworkTimeline());
+    return YPage(
+      title: "Devoirs",
+      body: HomeworkTimeline(),
+      isScrollable: false,
+    );
   }
 
   void initState() {
