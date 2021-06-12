@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/logic/homework/controller.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
-import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/hiddenSettings.dart';
 import 'package:ynotes/ui/mixins/layoutMixin.dart';
 
@@ -30,9 +29,6 @@ class HomeworkPageState extends State<HomeworkPage> with Layout {
 
   @override
   Widget build(BuildContext context) {
-
-    //Show the pin dialog
-    showDialog();
     return Scaffold(
       appBar: new AppBar(
           title: new Text(
@@ -60,10 +56,6 @@ class HomeworkPageState extends State<HomeworkPage> with Layout {
 
   void initState() {
     super.initState();
-  }
-
-  showDialog() async {
-    await helpDialogs[2].showDialog(context);
   }
 
 //Build the main widget container of the homeworkpage

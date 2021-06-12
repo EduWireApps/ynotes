@@ -51,7 +51,7 @@ class _FilesBottomSheetState extends State<FilesBottomSheet> {
               height: screenSize.size.height / 10 * 0.1,
             ),
             Text(
-              "Fichiers",
+              "Téléchargements",
               style: TextStyle(
                   fontFamily: "Asap", color: ThemeUtils.textColor(), fontWeight: FontWeight.bold, fontSize: 20),
             ),

@@ -122,9 +122,7 @@ class SummaryPageState extends State<SummaryPage> with Layout {
                         ),
                         if (appSys.settings?["system"]["chosenApi"] == 0) separator(context, "Vie scolaire", 2),
                         if (appSys.settings?["system"]["chosenApi"] == 0) QuickSchoolLife(),
-                        SizedBox(
-                          height: screenSize.size.height / 10 * 0.2,
-                        )
+                        
                       ],
                     ),
                   ),

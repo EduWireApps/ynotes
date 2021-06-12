@@ -45,7 +45,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> with Layout {
     return Scaffold(
       appBar: new AppBar(
           title: new Text(
-            "Fichiers",
+            "Téléchargements",
             style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
           ),
           leading: !isVeryLargeScreen

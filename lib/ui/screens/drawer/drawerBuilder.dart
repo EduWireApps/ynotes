@@ -150,76 +150,77 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
     return AnimatedBuilder(
         animation: showLoginControllerStatus,
         builder: (context, animation) {
-          return Transform.translate(
-            offset: Offset(0, -(screenSize.size.height / 10 * 0.4 * showLoginControllerStatus.value)),
-            child: Container(
-              height: screenSize.size.height,
-              width: screenSize.size.width,
-              child: Column(
-                children: [
-                  Opacity(
-                    opacity: 0.8,
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(router(AccountPage()));
-                      },
-                      child: AnimatedContainer(
-                        duration: Duration(milliseconds: 400),
-                        color: case2(con.actualState, {
-                          loginStatus.loggedIn: Color(0xff4ADE80),
-                          loginStatus.loggedOff: Color(0xffA8A29E),
-                          loginStatus.error: Color(0xffF87171),
-                          loginStatus.offline: Color(0xffFCD34D),
-                        }),
-                        height: screenSize.size.height / 10 * 0.4,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-                              case2(
-                                con.actualState,
-                                {
-                                  loginStatus.loggedOff: SpinKitThreeBounce(
-                                    size: 30,
-                                    color: Color(0xff57534E),
-                                  ),
-                                  loginStatus.offline: Icon(
-                                    MdiIcons.networkStrengthOff,
-                                    size: 30,
-                                    color: Color(0xff78716C),
-                                  ),
-                                  loginStatus.error: GestureDetector(
-                                    onTap: () async {},
-                                    child: Icon(
-                                      MdiIcons.exclamation,
+          return Container(
+            height: screenSize.size.height,
+            width: screenSize.size.width,
+            child: Column(
+              children: [
+                Opacity(
+                  opacity: 0.8,
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(router(AccountPage()));
+                    },
+                    child: AnimatedContainer(
+                      duration: Duration(milliseconds: 400),
+                      color: case2(con.actualState, {
+                        loginStatus.loggedIn: Color(0xff4ADE80),
+                        loginStatus.loggedOff: Color(0xffA8A29E),
+                        loginStatus.error: Color(0xffF87171),
+                        loginStatus.offline: Color(0xffFCD34D),
+                      }),
+                      height: (screenSize.size.height / 10 * 0.4 * (1 - showLoginControllerStatus.value)),
+                      child: Wrap(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+                                case2(
+                                  con.actualState,
+                                  {
+                                    loginStatus.loggedOff: SpinKitThreeBounce(
                                       size: 30,
                                       color: Color(0xff57534E),
                                     ),
-                                  ),
-                                  loginStatus.loggedIn: Icon(
-                                    MdiIcons.check,
+                                    loginStatus.offline: Icon(
+                                      MdiIcons.networkStrengthOff,
+                                      size: 30,
+                                      color: Color(0xff78716C),
+                                    ),
+                                    loginStatus.error: GestureDetector(
+                                      onTap: () async {},
+                                      child: Icon(
+                                        MdiIcons.exclamation,
+                                        size: 30,
+                                        color: Color(0xff57534E),
+                                      ),
+                                    ),
+                                    loginStatus.loggedIn: Icon(
+                                      MdiIcons.check,
+                                      size: 30,
+                                      color: Color(0xff57534E),
+                                    )
+                                  },
+                                  SpinKitThreeBounce(
                                     size: 30,
                                     color: Color(0xff57534E),
-                                  )
-                                },
-                                SpinKitThreeBounce(
-                                  size: 30,
-                                  color: Color(0xff57534E),
-                                ),
-                              ) as Widget,
-                            ]),
-                            Text(con.details, style: TextStyle(fontFamily: "Asap", color: Color(0xff57534E))),
-                            Text(" Voir l'état du compte.",
-                                style: TextStyle(
-                                    fontFamily: "Asap", color: Color(0xff57534E), fontWeight: FontWeight.bold))
-                          ],
-                        ),
+                                  ),
+                                ) as Widget,
+                              ]),
+                              Text(con.details, style: TextStyle(fontFamily: "Asap", color: Color(0xff57534E))),
+                              Text(" Voir l'état du compte.",
+                                  style: TextStyle(
+                                      fontFamily: "Asap", color: Color(0xff57534E), fontWeight: FontWeight.bold))
+                            ],
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                  Expanded(child: child)
-                ],
-              ),
+                ),
+                Expanded(child: child)
+              ],
             ),
           );
         });
@@ -312,7 +313,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
         )
       },
       {
-        "menuName": "Fichiers",
+        "menuName": "Téléchargements",
         "tabName": appTabs.FILES,
         "icon": MdiIcons.file,
         "relatedApi": 0,
