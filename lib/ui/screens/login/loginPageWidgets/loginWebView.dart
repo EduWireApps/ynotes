@@ -287,12 +287,10 @@ class _LoginWebViewState extends State<LoginWebView> {
         child: Container(
           width: 90,
           height: 90,
-          child: FittedBox(
-            child: Center(
-              child: Icon(
-                MdiIcons.exitRun,
-                size: 80,
-              ),
+          child: Center(
+            child: Icon(
+              MdiIcons.exitRun,
+              size: 40,
             ),
           ),
           decoration: BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),

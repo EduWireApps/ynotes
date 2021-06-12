@@ -79,7 +79,7 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
                           child: ConstrainedBox(
                             constraints: BoxConstraints(maxWidth: 350),
                             child: Container(
-                              width: MediaQuery.of(context).size.width / 5 * 4.8,
+                              width: MediaQuery.of(context).size.width / 5 * 4.2,
                               height: 70,
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -96,11 +96,8 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
                                   ),
                                   Expanded(
                                       child: Text("Ecole Directe",
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(fontFamily: "Asap", fontSize: 35, color: Colors.white))),
-                                  SizedBox(
-                                    width: 50,
-                                  )
+                                          textAlign: TextAlign.start,
+                                          style: TextStyle(fontFamily: "Asap", fontSize: 30, color: Colors.white))),
                                 ],
                               ),
                             ),
@@ -135,7 +132,7 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
                               child: ConstrainedBox(
                                 constraints: BoxConstraints(maxWidth: 350),
                                 child: Container(
-                                    width: MediaQuery.of(context).size.width / 5 * 4.8,
+                                    width: MediaQuery.of(context).size.width / 5 * 4.2,
                                     height: 70,
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
@@ -151,12 +148,9 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
                                         ),
                                         Expanded(
                                             child: Text("Pronote",
-                                                textAlign: TextAlign.center,
+                                                textAlign: TextAlign.start,
                                                 style:
-                                                    TextStyle(fontFamily: "Asap", fontSize: 35, color: Colors.white))),
-                                        SizedBox(
-                                          width: 50,
-                                        )
+                                                    TextStyle(fontFamily: "Asap", fontSize: 30, color: Colors.white))),
                                       ],
                                     )),
                               ))),
@@ -180,7 +174,7 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
                             });
                             Navigator.of(context).pushReplacement(router(LoginPage()));
                           },
-                    child: Text('Connexion', style: TextStyle(fontSize:25)),
+                    child: Text('Connexion', style: TextStyle(fontSize: 25)),
                   ),
                 )
               ],
