@@ -8,6 +8,7 @@ import 'package:ynotes/core/logic/schoolLife/controller.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/columnGenerator.dart';
+import 'package:ynotes/ui/components/y_page/y_page.dart';
 
 class SchoolLifePage extends StatefulWidget {
   const SchoolLifePage({Key? key}) : super(key: key);
@@ -19,53 +20,37 @@ class _SchoolLifePageState extends State<SchoolLifePage> {
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
-    return Scaffold(
-      appBar: new AppBar(
-          title: new Text(
-            "Vie scolaire",
-            style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
-          ),
-          leading: TextButton(
-            style: TextButton.styleFrom(
-              primary: Colors.transparent,
-            ),
-            child: Icon(MdiIcons.menu, color: ThemeUtils.textColor()),
-            onPressed: () {},
-          ),
-          backgroundColor: Theme.of(context).primaryColor),
-      backgroundColor: Theme.of(context).backgroundColor,
-      body: RefreshIndicator(
-        onRefresh: refreshTickets,
-        child: Container(
-            width: screenSize.size.width,
-            child: ChangeNotifierProvider<SchoolLifeController>.value(
-                value: appSys.schoolLifeController,
-                child: Consumer<SchoolLifeController>(
-                    builder: (context, model, child) {
-                  //if there is no tickets
-                  if ((model.tickets ?? []).length == 0 ||
-                      model.tickets == null) {
-                    return buildNoTickets();
-                  } else {
-                    return Container(
-                      height: screenSize.size.height,
-                      width: screenSize.size.width,
-                      padding: EdgeInsets.symmetric(
-                          vertical: screenSize.size.width / 5 * 0.1,
-                          horizontal: screenSize.size.width / 5 * 0.05),
-                      child: SingleChildScrollView(
-                        child: ColumnBuilder(
-                            itemCount: (model.tickets)!.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return buildTicket(
-                                  (model.tickets)!.reversed.toList()[index]);
-                            }),
-                      ),
-                    );
-                  }
-                }))),
-      ),
-    );
+
+    return YPage(
+        title: "Vie scolaire",
+        isScrollable: false,
+        body: RefreshIndicator(
+          onRefresh: refreshTickets,
+          child: Container(
+              width: screenSize.size.width,
+              child: ChangeNotifierProvider<SchoolLifeController>.value(
+                  value: appSys.schoolLifeController,
+                  child: Consumer<SchoolLifeController>(builder: (context, model, child) {
+                    //if there is no tickets
+                    if ((model.tickets ?? []).length == 0 || model.tickets == null) {
+                      return buildNoTickets();
+                    } else {
+                      return Container(
+                        height: screenSize.size.height,
+                        width: screenSize.size.width,
+                        padding: EdgeInsets.symmetric(
+                            vertical: screenSize.size.width / 5 * 0.1, horizontal: screenSize.size.width / 5 * 0.05),
+                        child: SingleChildScrollView(
+                          child: ColumnBuilder(
+                              itemCount: (model.tickets)!.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return buildTicket((model.tickets)!.reversed.toList()[index]);
+                              }),
+                        ),
+                      );
+                    }
+                  }))),
+        ));
   }
 
   Widget buildCircle(SchoolLifeTicket ticket) {
@@ -82,8 +67,7 @@ class _SchoolLifePageState extends State<SchoolLifePage> {
 
     var screenSize = MediaQuery.of(context);
     return Container(
-        decoration: BoxDecoration(
-            shape: BoxShape.circle, color: Theme.of(context).primaryColorDark),
+        decoration: BoxDecoration(shape: BoxShape.circle, color: Theme.of(context).primaryColorDark),
         child: FittedBox(
             child: Icon(
           icon,
@@ -114,17 +98,13 @@ class _SchoolLifePageState extends State<SchoolLifePage> {
                 ),
                 Text(
                   "Pas de données.",
-                  style: TextStyle(
-                      fontFamily: "Asap",
-                      color: ThemeUtils.textColor(),
-                      fontSize: 20),
+                  style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: 20),
                 ),
                 TextButton(
                   style: TextButton.styleFrom(
                     shape: RoundedRectangleBorder(
                         borderRadius: new BorderRadius.circular(18.0),
-                        side: BorderSide(
-                            color: Theme.of(context).primaryColorDark)),
+                        side: BorderSide(color: Theme.of(context).primaryColorDark)),
                   ),
                   onPressed: () {
                     model.refresh(force: true);
@@ -134,13 +114,10 @@ class _SchoolLifePageState extends State<SchoolLifePage> {
                           style: TextStyle(
                               fontFamily: "Asap",
                               color: Colors.white,
-                              fontSize: (screenSize.size.height / 10 * 8.8) /
-                                  10 *
-                                  0.2))
+                              fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2))
                       : FittedBox(
                           child: SpinKitThreeBounce(
-                              color: Theme.of(context).primaryColorDark,
-                              size: screenSize.size.width / 5 * 0.4)),
+                              color: Theme.of(context).primaryColor, size: screenSize.size.width / 5 * 0.4)),
                 )
               ],
             ),
@@ -170,51 +147,33 @@ class _SchoolLifePageState extends State<SchoolLifePage> {
                     Text(
                       ticket.libelle!,
                       style: TextStyle(
-                          color: ThemeUtils.textColor(),
-                          fontFamily: "Asap",
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16),
+                          color: ThemeUtils.textColor(), fontFamily: "Asap", fontWeight: FontWeight.bold, fontSize: 16),
                       textAlign: TextAlign.left,
                     ),
                     Text(
                       "Motif : " + (ticket.motif ?? "(Sans motif)"),
-                      style: TextStyle(
-                          color: ThemeUtils.textColor(),
-                          fontFamily: "Asap",
-                          fontSize: 15),
+                      style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontSize: 15),
                       textAlign: TextAlign.left,
                     ),
                     Text(
                       "Date : " + (ticket.displayDate ?? "(Sans date)"),
-                      style: TextStyle(
-                          color: ThemeUtils.textColor(),
-                          fontFamily: "Asap",
-                          fontSize: 15),
+                      style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontSize: 15),
                       textAlign: TextAlign.left,
                     ),
                     RichText(
                         text: TextSpan(
                             style: TextStyle(
-                                color: (ticket.isJustified ?? false)
-                                    ? Colors.green
-                                    : Colors.orange,
+                                color: (ticket.isJustified ?? false) ? Colors.green : Colors.orange,
                                 fontFamily: "Asap",
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16),
                             children: [
                           TextSpan(
-                            text: ticket.isJustified!
-                                ? "Justifié "
-                                : "A justifier ",
+                            text: ticket.isJustified! ? "Justifié " : "A justifier ",
                           ),
                           WidgetSpan(
-                              child: Icon(
-                                  (ticket.isJustified ?? false)
-                                      ? MdiIcons.check
-                                      : MdiIcons.exclamation,
-                                  color: (ticket.isJustified ?? false)
-                                      ? Colors.green
-                                      : Colors.orange))
+                              child: Icon((ticket.isJustified ?? false) ? MdiIcons.check : MdiIcons.exclamation,
+                                  color: (ticket.isJustified ?? false) ? Colors.green : Colors.orange))
                         ])),
                   ],
                 ),
@@ -247,15 +206,11 @@ class _SchoolLifePageState extends State<SchoolLifePage> {
         left: screenSize.size.width / 5 * 0.25,
         bottom: screenSize.size.height / 10 * 0.1,
       ),
-      child:
-          Row(crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
+      child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: <Widget>[
         Text(
           text,
-          style: TextStyle(
-              color: ThemeUtils.textColor(),
-              fontFamily: "Asap",
-              fontSize: 25,
-              fontWeight: FontWeight.w600),
+          style:
+              TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap", fontSize: 25, fontWeight: FontWeight.w600),
         ),
       ]),
     );

@@ -16,6 +16,7 @@ import 'package:ynotes/ui/components/modalBottomSheets/readMailBottomSheet.dart'
 import 'package:ynotes/ui/components/textField.dart';
 import 'package:ynotes/ui/components/y_page/y_page.dart';
 import 'package:ynotes/usefulMethods.dart';
+import 'package:ynotes_components/ynotes_components.dart';
 
 String? dossier = "Reçus";
 
@@ -170,103 +171,113 @@ class _MailPageState extends State<MailPage> {
                               child: MediaQuery.removePadding(
                                 removeTop: true,
                                 context: context,
-                                child: ListView.builder(
-                                    itemCount: filterMails(localList).length,
-                                    itemBuilder: (context, index) {
-                                      return Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: <Widget>[
-                                          Material(
-                                              color: filterMails(localList)[index].read ?? false
-                                                  ? Theme.of(context).backgroundColor
-                                                  : Theme.of(context).primaryColor,
-                                              child: InkWell(
-                                                  onTap: () async {
-                                                    await mailModalBottomSheet(context, filterMails(localList)[index],
-                                                        index: index);
-                                                    refreshLocalMailsList(forceReload: false);
-                                                  },
-                                                  child: Container(
-                                                      height: screenSize.size.height / 10 * 1,
-                                                      margin: EdgeInsets.all(0),
-                                                      child: Row(
-                                                        crossAxisAlignment: CrossAxisAlignment.center,
-                                                        children: <Widget>[
-                                                          Container(
-                                                            margin:
-                                                                EdgeInsets.only(left: screenSize.size.width / 5 * 0.2),
-                                                            child: Icon(
-                                                              MdiIcons.account,
-                                                              color: ThemeUtils.textColor(),
-                                                            ),
-                                                          ),
-                                                          Container(
-                                                            margin:
-                                                                EdgeInsets.only(left: screenSize.size.width / 5 * 0.4),
-                                                            width: screenSize.size.width / 5 * 4,
-                                                            child: Column(
-                                                              mainAxisAlignment: MainAxisAlignment.center,
-                                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                                              children: <Widget>[
-                                                                Container(
-                                                                  child: Text(
-                                                                    filterMails(localList)[index].subject ?? "",
-                                                                    textAlign: TextAlign.start,
-                                                                    style: TextStyle(
-                                                                      fontFamily: "Asap",
-                                                                      fontSize: screenSize.size.height / 10 * 0.25,
-                                                                      color: ThemeUtils.textColor(),
-                                                                    ),
-                                                                    overflow: TextOverflow.ellipsis,
-                                                                  ),
+                                child: YShadowScrollContainer(
+                                  color: Theme.of(context).backgroundColor,
+                                  children: [
+                                    ListView.builder(
+                                        shrinkWrap: true,
+                                        physics: ClampingScrollPhysics(),
+                                        itemCount: filterMails(localList).length,
+                                        itemBuilder: (context, index) {
+                                          return Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: <Widget>[
+                                              Material(
+                                                  color: filterMails(localList)[index].read ?? false
+                                                      ? Theme.of(context).backgroundColor
+                                                      : Theme.of(context).primaryColor,
+                                                  child: InkWell(
+                                                      onTap: () async {
+                                                        await mailModalBottomSheet(
+                                                            context, filterMails(localList)[index],
+                                                            index: index);
+                                                        refreshLocalMailsList(forceReload: false);
+                                                      },
+                                                      child: Container(
+                                                          height: screenSize.size.height / 10 * 1,
+                                                          margin: EdgeInsets.all(0),
+                                                          child: Row(
+                                                            crossAxisAlignment: CrossAxisAlignment.center,
+                                                            children: <Widget>[
+                                                              Container(
+                                                                margin: EdgeInsets.only(
+                                                                    left: screenSize.size.width / 5 * 0.2),
+                                                                child: Icon(
+                                                                  MdiIcons.account,
+                                                                  color: ThemeUtils.textColor(),
                                                                 ),
-                                                                Text(
-                                                                  filterMails(localList)[index].from?["name"] ?? "",
-                                                                  textAlign: TextAlign.start,
-                                                                  style: TextStyle(
-                                                                    fontFamily: "Asap",
-                                                                    fontSize: screenSize.size.height / 10 * 0.2,
-                                                                    color: ThemeUtils.isThemeDark
-                                                                        ? Colors.white60
-                                                                        : Colors.black87,
-                                                                  ),
-                                                                  overflow: TextOverflow.ellipsis,
-                                                                ),
-                                                                Row(
+                                                              ),
+                                                              Container(
+                                                                margin: EdgeInsets.only(
+                                                                    left: screenSize.size.width / 5 * 0.4),
+                                                                width: screenSize.size.width / 5 * 4,
+                                                                child: Column(
+                                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                                  crossAxisAlignment: CrossAxisAlignment.start,
                                                                   children: <Widget>[
+                                                                    Container(
+                                                                      child: Text(
+                                                                        filterMails(localList)[index].subject ?? "",
+                                                                        textAlign: TextAlign.start,
+                                                                        style: TextStyle(
+                                                                          fontFamily: "Asap",
+                                                                          fontSize: screenSize.size.height / 10 * 0.25,
+                                                                          color: ThemeUtils.textColor(),
+                                                                        ),
+                                                                        overflow: TextOverflow.ellipsis,
+                                                                      ),
+                                                                    ),
                                                                     Text(
-                                                                      DateFormat("EEEE dd MMMM", "fr_FR")
-                                                                          .format(DateTime.parse(
-                                                                              filterMails(localList)[index].date!))
-                                                                          .capitalize(),
+                                                                      filterMails(localList)[index].from?["name"] ?? "",
                                                                       textAlign: TextAlign.start,
                                                                       style: TextStyle(
                                                                         fontFamily: "Asap",
-                                                                        fontSize: screenSize.size.height / 10 * 0.22,
-                                                                        color: ThemeUtils.textColor(),
+                                                                        fontSize: screenSize.size.height / 10 * 0.2,
+                                                                        color: ThemeUtils.isThemeDark
+                                                                            ? Colors.white60
+                                                                            : Colors.black87,
                                                                       ),
                                                                       overflow: TextOverflow.ellipsis,
                                                                     ),
+                                                                    Row(
+                                                                      children: <Widget>[
+                                                                        Text(
+                                                                          DateFormat("EEEE dd MMMM", "fr_FR")
+                                                                              .format(DateTime.parse(
+                                                                                  filterMails(localList)[index].date!))
+                                                                              .capitalize(),
+                                                                          textAlign: TextAlign.start,
+                                                                          style: TextStyle(
+                                                                            fontFamily: "Asap",
+                                                                            fontSize:
+                                                                                screenSize.size.height / 10 * 0.22,
+                                                                            color: ThemeUtils.textColor(),
+                                                                          ),
+                                                                          overflow: TextOverflow.ellipsis,
+                                                                        ),
+                                                                      ],
+                                                                    ),
                                                                   ],
                                                                 ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                          if (!(filterMails(localList)[index].read ?? true))
-                                                            Expanded(child: Container(width: 10, color: Colors.blue))
-                                                        ],
-                                                      )))),
-                                          Container(
-                                            child: Divider(
-                                              color: Colors.black45,
-                                              height: screenSize.size.height / 10 * 0.005,
-                                              thickness: screenSize.size.height / 10 * 0.005,
-                                            ),
-                                          )
-                                        ],
-                                      );
-                                    }),
+                                                              ),
+                                                              if (!(filterMails(localList)[index].read ?? true))
+                                                                Expanded(
+                                                                    child: Container(width: 10, color: Colors.blue))
+                                                            ],
+                                                          )))),
+                                              Container(
+                                                child: Divider(
+                                                  color: Colors.black45,
+                                                  height: screenSize.size.height / 10 * 0.005,
+                                                  thickness: screenSize.size.height / 10 * 0.005,
+                                                ),
+                                              )
+                                            ],
+                                          );
+                                        })
+                                  ],
+                                ),
                               ),
                             );
                           } else {

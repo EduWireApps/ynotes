@@ -49,8 +49,7 @@ _headlessTask(HeadlessTask? task) async {
       await AppNotification.cancelNotification(task.taskId.hashCode);
       BackgroundFetch.finish(task.taskId);
     }
-    await BackgroundService.backgroundFetchHeadlessTask(task.taskId,
-        headless: true);
+    await BackgroundService.backgroundFetchHeadlessTask(task.taskId, headless: true);
     BackgroundFetch.finish(task.taskId);
   }
 }
@@ -82,11 +81,6 @@ class HomePage extends StatelessWidget {
       DeviceOrientation.portraitUp,
     ]);
     return SummaryPage();
-    // return Scaffold(
-    //     backgroundColor: Theme.of(context).backgroundColor,
-    //     body: SafeArea(
-    //       child: DrawerBuilder(),
-    //     ));
   }
 }
 
@@ -129,13 +123,9 @@ class _HomeAppState extends State<HomeApp> {
           secret: "y9zengsvskpriizwniqxr6vxa1ka1n6u",
           navigatorKey: _navigatorKey,
           theme: WiredashThemeData(
-              backgroundColor:
-                  ThemeUtils.isThemeDark ? Color(0xff313131) : Colors.white,
-              primaryBackgroundColor: ThemeUtils.isThemeDark
-                  ? Color(0xff414141)
-                  : Color(0xffF3F3F3),
-              secondaryBackgroundColor:
-                  ThemeUtils.isThemeDark ? Color(0xff313131) : Colors.white,
+              backgroundColor: ThemeUtils.isThemeDark ? Color(0xff313131) : Colors.white,
+              primaryBackgroundColor: ThemeUtils.isThemeDark ? Color(0xff414141) : Color(0xffF3F3F3),
+              secondaryBackgroundColor: ThemeUtils.isThemeDark ? Color(0xff313131) : Colors.white,
               secondaryColor: Theme.of(context).primaryColorDark,
               primaryColor: Theme.of(context).primaryColor,
               primaryTextColor: ThemeUtils.textColor(),
