@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 
@@ -29,28 +30,29 @@ class CustomButtons {
           child: Container(
               height: height,
               padding: padding ?? EdgeInsets.all(5),
-              child: FittedBox(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    if (icon != null)
-                      Icon(
-                        icon,
-                        color: textColor ?? ThemeUtils.textColor(),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  if (icon != null)
+                    Icon(
+                      icon,
+                      color: textColor ?? ThemeUtils.textColor(),
+                    ),
+                  if (label != null)
+                    Expanded(
+                      child: AutoSizeText(
+                        label,
+                        maxLines: 1,
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.ellipsis,
+                        style: textStyle ??
+                            TextStyle(
+                              fontFamily: "Asap",
+                              color: textColor ?? ThemeUtils.textColor(),
+                            ),
                       ),
-                    if (label != null)
-                      FittedBox(
-                        child: Text(
-                          label,
-                          style: textStyle ??
-                              TextStyle(
-                                fontFamily: "Asap",
-                                color: textColor ?? ThemeUtils.textColor(),
-                              ),
-                        ),
-                      ),
-                  ],
-                ),
+                    ),
+                ],
               )),
         ),
       ),

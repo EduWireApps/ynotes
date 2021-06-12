@@ -116,41 +116,10 @@ class _Page1State extends State<Page1> {
                   child: Stack(
                     children: <Widget>[
                       Align(
-                        alignment: Alignment.center,
-                        child: Container(
-                          width: MediaQuery.of(context).size.width / 2,
-                          height: MediaQuery.of(context).size.width / 2,
-                          decoration: ShapeDecoration(
-                            color: Color(0xFFD5B872),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: new BorderRadius.circular(MediaQuery.of(context).size.width / 5 * 0.5),
-                            ),
-                          ),
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Container(
-                              width: MediaQuery.of(context).size.width / 2.5,
-                              height: MediaQuery.of(context).size.width / 2.5,
-                              decoration: ShapeDecoration(
-                                color: Color(0xFF3F3F3F),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: new BorderRadius.circular(MediaQuery.of(context).size.width),
-                                ),
-                              ),
-                              child: Align(
-                                alignment: Alignment.center,
-                                child: Container(
-                                  margin: EdgeInsets.only(left: 22, top: 10),
-                                  width: MediaQuery.of(context).size.width / 3.5,
-                                  height: MediaQuery.of(context).size.width / 3.5,
-                                  child:
-                                      Image(fit: BoxFit.fill, image: AssetImage('assets/images/marks/3.0x/mark.png')),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+                          alignment: Alignment.center,
+                          child: buildGradesBox(
+                            Color(0xFFD5B872),
+                          )),
                     ],
                   ),
                 ),
@@ -164,40 +133,10 @@ class _Page1State extends State<Page1> {
                 child: Stack(
                   children: <Widget>[
                     Align(
-                      alignment: Alignment.center,
-                      child: Container(
-                        width: MediaQuery.of(context).size.width / 2,
-                        height: MediaQuery.of(context).size.width / 2,
-                        decoration: ShapeDecoration(
-                          color: Color(0xFFC9463C),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: new BorderRadius.circular(MediaQuery.of(context).size.width / 5 * 0.5),
-                          ),
-                        ),
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Container(
-                            width: MediaQuery.of(context).size.width / 2.5,
-                            height: MediaQuery.of(context).size.width / 2.5,
-                            decoration: ShapeDecoration(
-                              color: Color(0xFF3F3F3F),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: new BorderRadius.circular(MediaQuery.of(context).size.width),
-                              ),
-                            ),
-                            child: Align(
-                              alignment: Alignment.center,
-                              child: Container(
-                                margin: EdgeInsets.only(left: 22, top: 10),
-                                width: MediaQuery.of(context).size.width / 3.5,
-                                height: MediaQuery.of(context).size.width / 3.5,
-                                child: Image(fit: BoxFit.fill, image: AssetImage('assets/images/marks/3.0x/mark.png')),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
+                        alignment: Alignment.center,
+                        child: buildGradesBox(
+                          Color(0xFFC9463C),
+                        )),
                   ],
                 ),
               ),
@@ -222,41 +161,7 @@ class _Page1State extends State<Page1> {
                 angle: -0.2 + (widget.offset! * 0.2),
                 child: Stack(
                   children: <Widget>[
-                    Align(
-                      alignment: Alignment.center,
-                      child: Container(
-                        width: MediaQuery.of(context).size.width / 2,
-                        height: MediaQuery.of(context).size.width / 2,
-                        decoration: ShapeDecoration(
-                          color: Color(0xFF1CA68A),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: new BorderRadius.circular(MediaQuery.of(context).size.width / 5 * 0.5),
-                          ),
-                        ),
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Container(
-                            width: MediaQuery.of(context).size.width / 2.5,
-                            height: MediaQuery.of(context).size.width / 2.5,
-                            decoration: ShapeDecoration(
-                              color: Color(0xFF3F3F3F),
-                              shape: RoundedRectangleBorder(
-                                borderRadius: new BorderRadius.circular(MediaQuery.of(context).size.width),
-                              ),
-                            ),
-                            child: Align(
-                              alignment: Alignment.center,
-                              child: Container(
-                                margin: EdgeInsets.only(left: 22, top: 10),
-                                width: MediaQuery.of(context).size.width / 3.5,
-                                height: MediaQuery.of(context).size.width / 3.5,
-                                child: Image(fit: BoxFit.fill, image: AssetImage('assets/images/marks/3.0x/mark.png')),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
+                    Align(alignment: Alignment.center, child: buildGradesBox(Color(0xFF1CA68A))),
                   ],
                 ),
               ),
@@ -286,6 +191,46 @@ class _Page1State extends State<Page1> {
                       style: TextStyle(fontFamily: "Asap", fontSize: 30.0)))),
         )
       ],
+    );
+  }
+
+  Widget buildGradesBox(Color color) {
+    return Container(
+      width: 190,
+      height: 190,
+      decoration: ShapeDecoration(
+        color: color,
+        shape: RoundedRectangleBorder(
+          borderRadius: new BorderRadius.circular(MediaQuery.of(context).size.width / 5 * 0.5),
+        ),
+      ),
+      child: Container(
+        margin: EdgeInsets.all(15),
+        width: 120,
+        height: 120,
+        decoration: ShapeDecoration(
+          color: Color(0xFF3F3F3F),
+          shape: RoundedRectangleBorder(
+            borderRadius: new BorderRadius.circular(MediaQuery.of(context).size.width),
+          ),
+        ),
+        child: Container(
+            child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Text("18",
+                style: TextStyle(fontFamily: "Asap", color: Colors.white, fontWeight: FontWeight.bold, fontSize: 46)),
+            Container(
+              width: 70,
+              height: 5,
+              decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(15)),
+            ),
+            Text("20",
+                style: TextStyle(fontFamily: "Asap", color: Colors.white, fontWeight: FontWeight.bold, fontSize: 46)),
+          ],
+        )),
+      ),
     );
   }
 }

@@ -25,15 +25,17 @@ buildKeyValuesInfo(BuildContext context, String key, List<String?>? values) {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(15)), color: Theme.of(context).primaryColor),
-                    padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                    child: Text(
-                      values[0] ?? "",
-                      textAlign: TextAlign.center,
-                      maxLines: 10,
-                      style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                  Flexible(
+                    child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(15)), color: Theme.of(context).primaryColor),
+                      padding: EdgeInsets.symmetric(horizontal: 5, vertical: 10),
+                      child: Text(
+                        values[0] ?? "",
+                        textAlign: TextAlign.center,
+                        maxLines: 10,
+                        style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                      ),
                     ),
                   ),
                 ],

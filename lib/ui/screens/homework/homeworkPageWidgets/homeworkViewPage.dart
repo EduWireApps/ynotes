@@ -213,30 +213,34 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                     backgroundColor: color,
                     icon: MdiIcons.trashCan,
                     iconColor: ThemeUtils.textColor()),
-              AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 200),
-                  transitionBuilder: (Widget child, Animation<double> animation) {
-                    return ScaleTransition(child: child, scale: animation);
-                  },
-                  child: (hw.toReturn ?? false)
-                      ? CustomButtons.materialButton(
-                          context,
-                          null,
-                          screenSize.size.height / 10 * 0.5,
-                          () {
-                            CustomDialogs.showUnimplementedSnackBar(context);
-                          },
-                          backgroundColor: color,
-                          label: "RENDRE MON DEVOIR",
-                          icon: MdiIcons.fileMoveOutline,
-                          borderRadius: BorderRadius.circular(11),
-                          padding: EdgeInsets.symmetric(
-                              horizontal: screenSize.size.width / 5 * 0.5,
-                              vertical: screenSize.size.height / 10 * 0.12),
-                          textStyle:
-                              TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w600, color: ThemeUtils.textColor()),
-                        )
-                      : Container()),
+              if (hw.toReturn ?? false)
+                Expanded(
+                  child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 200),
+                      transitionBuilder: (Widget child, Animation<double> animation) {
+                        return ScaleTransition(child: child, scale: animation);
+                      },
+                      child: (hw.toReturn ?? false)
+                          ? Expanded(
+                              child: CustomButtons.materialButton(
+                                context,
+                                null,
+                                45,
+                                () {
+                                  CustomDialogs.showUnimplementedSnackBar(context);
+                                },
+                                backgroundColor: color,
+                                label: "RENDRE MON DEVOIR",
+                                icon: MdiIcons.fileMoveOutline,
+                                borderRadius: BorderRadius.circular(11),
+                                padding:
+                                    EdgeInsets.symmetric(horizontal: 5, vertical: screenSize.size.height / 10 * 0.12),
+                                textStyle: TextStyle(
+                                    fontFamily: "Asap", fontWeight: FontWeight.w600, color: ThemeUtils.textColor()),
+                              ),
+                            )
+                          : Container()),
+                ),
             ],
           ),
         ],

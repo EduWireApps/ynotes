@@ -104,6 +104,7 @@ class _MailPageState extends State<MailPage> with Layout {
                                   child: DropdownButtonHideUnderline(
                                     child: DropdownButton<String>(
                                       value: dossier,
+                                      iconSize: 12,
                                       iconEnabledColor: ThemeUtils.textColor(),
                                       style: TextStyle(fontSize: 18, fontFamily: "Asap", color: ThemeUtils.textColor()),
                                       onChanged: (String? newValue) {
@@ -270,7 +271,7 @@ class _MailPageState extends State<MailPage> with Layout {
                                                               ),
                                                             ),
                                                             if (!(filterMails(localList)[index].read ?? true))
-                                                              Expanded(child: Container(width: 10, color: Colors.blue))
+                                                              Container(width: 5, color: Colors.blue)
                                                           ],
                                                         )))),
                                             Container(
