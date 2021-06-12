@@ -267,7 +267,6 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   buildMainAccountInfos() {
-    MediaQueryData screenSize = MediaQuery.of(context);
     return Column(
       children: [
         Wrap(
@@ -377,7 +376,6 @@ class _LoginStatusState extends State<LoginStatus> {
 
   buildExpandable() {}
   Widget buildIcon(LoginController _loginController) {
-    MediaQueryData screenSize = MediaQuery.of(context);
 
     return case2(
       _loginController.actualState,

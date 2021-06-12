@@ -208,11 +208,6 @@ flutter:
 
   assets:
     - assets/images/logoED.svg
-    - assets/images/space/space.png
-    - assets/images/space/2.0x/space.png
-    - assets/images/space/4.0x/space.png
-    - assets/images/marks/2.0x/mark.png
-    - assets/images/marks/3.0x/mark.png
     - assets/images/marks/mark.png
     - assets/images/shelves/calendar.png
     - assets/images/shelves/clock.png

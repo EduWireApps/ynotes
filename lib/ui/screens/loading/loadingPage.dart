@@ -46,7 +46,7 @@ class _LoadingPageState extends State<LoadingPage> {
         Center(
             child: Image(
           image: AssetImage('assets/images/LogoYNotes.png'),
-          width: 150,
+          width: 110,
         )),
       ),
     );
