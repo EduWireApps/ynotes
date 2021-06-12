@@ -81,8 +81,6 @@ class AgendaReminder {
   }
 
   AgendaReminder(this.lessonID, this.name, this.alarm, this.id, {this.description, this.tagColor});
-  factory AgendaReminder.fromJson(Map<String, dynamic> json) => _$AgendaReminderFromJson(json);
-  Map<String, dynamic> toJson() => _$AgendaReminderToJson(this);
 }
 
 ///Delay before the event for the alarm to be triggered
@@ -177,6 +175,6 @@ class AgendaEvent {
       this.alarm,
       this.color,
       this.recurrenceScheme});
-  factory AgendaEvent.fromJson(Map<String, dynamic> json) => _$AgendaEventFromJson(json);
+      
   Map<String, dynamic> toJson() => _$AgendaEventToJson(this);
 }

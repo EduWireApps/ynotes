@@ -10,16 +10,16 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/stats/gradesStats.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
+import 'package:ynotes/ui/components/columnGenerator.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
-import 'package:ynotes/ui/components/modalBottomSheets/disciplinesModalBottomSheet.dart';
-import 'package:ynotes/ui/components/modalBottomSheets/gradesModalBottomSheet/gradesModalBottomSheet.dart';
+import 'package:ynotes/ui/screens/grades/gradesPageWidgets/disciplinesModalBottomSheet.dart';
+import 'package:ynotes/ui/screens/grades/gradesPageWidgets/gradesModalBottomSheet.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 class GradesGroup extends StatefulWidget {
   final Discipline? discipline;
   final GradesController? gradesController;
   const GradesGroup({this.discipline, this.gradesController});
-
   State<StatefulWidget> createState() {
     return _GradesGroupState();
   }
@@ -58,7 +58,20 @@ class _GradesGroupState extends State<GradesGroup> {
         }
       }
     }
+
     double impact = 0.0;
+    bool largeScreen = screenSize.size.width > 500;
+    double getWidthConstraints() {
+      if (largeScreen) {
+        if (screenSize.size.width > 800) {
+          return ((screenSize.size.width - 310) / 2.2);
+        } else {
+          return 480;
+        }
+      } else {
+        return 1500;
+      }
+    }
 
     //BLOCK BUILDER
     return ChangeNotifierProvider<GradesController>.value(
@@ -70,19 +83,21 @@ class _GradesGroupState extends State<GradesGroup> {
           GradesStats stats = GradesStats(grades.first, grades);
           impact = stats.calculateAverageImpact();
         }
-        return Container(
-          width: screenSize.size.width / 5 * 3.2,
-          margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.2),
+        return ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: getWidthConstraints()),
           child: Column(
             children: <Widget>[
               //Label
               Container(
-                margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.0005),
                 child: Material(
-                  borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(largeScreen ? 25 : 15),
+                      topRight: Radius.circular(largeScreen ? 25 : 15)),
                   color: colorGroup,
                   child: InkWell(
-                    borderRadius: BorderRadius.only(topLeft: Radius.circular(15), topRight: Radius.circular(15)),
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(largeScreen ? 25 : 15),
+                        topRight: Radius.circular(largeScreen ? 25 : 15)),
                     onTap: () {
                       if (widget.discipline != null) {
                         disciplineModalBottomSheet(context, widget.discipline, callback, this.widget);
@@ -92,7 +107,6 @@ class _GradesGroupState extends State<GradesGroup> {
                       padding: EdgeInsets.symmetric(
                           vertical: (screenSize.size.height / 10 * 0.1), horizontal: screenSize.size.width / 5 * 0.1),
                       decoration: BoxDecoration(border: Border.all(width: 0.0, color: Colors.transparent)),
-                      width: screenSize.size.width / 5 * 4.5,
                       child: Stack(children: <Widget>[
                         if (widget.discipline != null && capitalizedNomDiscipline != null)
                           Container(
@@ -112,7 +126,8 @@ class _GradesGroupState extends State<GradesGroup> {
                                             : ((!widget.discipline!.getAverage().isNaN)
                                                 ? widget.discipline!.getAverage().toString()
                                                 : widget.discipline!.average ?? "-")),
-                                        style: TextStyle(fontFamily: "Asap", fontSize: 20, fontWeight: FontWeight.bold),
+                                        style:
+                                            TextStyle(fontFamily: "Asap", fontSize: 20, fontWeight: FontWeight.bold),
                                       ),
                                     )),
                                 SizedBox(
@@ -159,55 +174,31 @@ class _GradesGroupState extends State<GradesGroup> {
 
               //Body with columns
               Container(
-                  width: screenSize.size.width / 5 * 4.51,
-                  padding: EdgeInsets.symmetric(vertical: screenSize.size.width / 10 * 0.3),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor,
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(15),
-                      bottomRight: Radius.circular(15),
-                    ),
+                padding: EdgeInsets.symmetric(vertical: 10),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(largeScreen ? 25 : 15),
+                    bottomRight: Radius.circular(largeScreen ? 25 : 15),
                   ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(15),
-                      bottomRight: Radius.circular(15),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        if (widget.discipline != null)
-                          if (widget.discipline!.subdisciplineCode!.length > 0)
-                            Center(
-                              child: Container(
-                                  margin: EdgeInsets.only(top: 5),
-                                  child: Text(
-                                    "Ecrit",
-                                    style: TextStyle(
-                                      fontFamily: "Asap",
-                                      color: ThemeUtils.textColor(),
-                                    ),
-                                  )),
-                            ),
-                        gradesList(0, widget.gradesController!.period),
-                        if (widget.discipline != null)
-                          if (widget.discipline!.subdisciplineCode!.length > 0) Divider(thickness: 2),
-                        if (widget.discipline != null)
-                          if (widget.discipline!.subdisciplineCode!.length > 0)
-                            Center(
-                              child: Text("Oral",
-                                  style: TextStyle(
-                                    fontFamily: "Asap",
-                                    color: ThemeUtils.textColor(),
-                                  )),
-                            ),
-                        if (widget.discipline != null)
-                          if (widget.discipline!.subdisciplineCode!.length > 0)
-                            gradesList(1, widget.gradesController!.period),
-                      ],
-                    ),
-                  ))
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(largeScreen ? 25 : 15),
+                    bottomRight: Radius.circular(largeScreen ? 25 : 15),
+                  ),
+                  child: ColumnBuilder(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    itemCount: (widget.discipline?.subdisciplineCodes != null &&
+                            widget.discipline!.subdisciplineCodes!.length > 0)
+                        ? widget.discipline!.subdisciplineCodes!.length
+                        : 1,
+                    itemBuilder: (context, index) {
+                      return gradesList(index, model.period);
+                    },
+                  ),
+                ),
+              )
             ],
           ),
         );
@@ -249,12 +240,10 @@ class _GradesGroupState extends State<GradesGroup> {
       }
     }
 
-    MediaQueryData screenSize = MediaQuery.of(context);
-
     return Container(
-      width: screenSize.size.width / 5 * 0.3,
-      height: screenSize.size.width / 5 * 0.3,
-      padding: EdgeInsets.all(screenSize.size.width / 5 * 0.05),
+      width: 28,
+      height: 28,
+      padding: EdgeInsets.all(5),
       decoration:
           BoxDecoration(color: getAdaptedColor(), shape: BoxShape.rectangle, borderRadius: BorderRadius.circular(5)),
       child: Column(
@@ -277,8 +266,8 @@ class _GradesGroupState extends State<GradesGroup> {
     if (widget.discipline != null) {
       widget.discipline!.gradesList!.forEach((element) {
         if (element.periodName == chosenPeriode) {
-          if (widget.discipline!.subdisciplineCode!.length > 1) {
-            if (element.subdisciplineCode == widget.discipline!.subdisciplineCode![sousMatiereIndex]) {
+          if (widget.discipline!.subdisciplineCodes!.length > 1) {
+            if (element.subdisciplineCode == widget.discipline!.subdisciplineCodes![sousMatiereIndex]) {
               toReturn.add(element);
             }
           } else {
@@ -319,9 +308,40 @@ class _GradesGroupState extends State<GradesGroup> {
     }
 
     MediaQueryData screenSize = MediaQuery.of(context);
-    return Container(
-        margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
-        child: Wrap(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        //Used to fullfill size
+        Divider(
+          thickness: 0,
+          height: 0,
+          indent: 0,
+          endIndent: 0,
+          color: Colors.transparent,
+        ),
+        if (widget.discipline?.subdisciplineNames != null &&
+            widget.discipline!.subdisciplineNames!.length - 1 >= sousMatiereIndex &&
+            gradesForSelectedDiscipline != null &&
+            gradesForSelectedDiscipline.length > 0)
+          if (sousMatiereIndex > 0)
+            Divider(
+              thickness: 2,
+            ),
+        if (widget.discipline?.subdisciplineNames != null &&
+            widget.discipline!.subdisciplineNames!.length - 1 >= sousMatiereIndex &&
+            gradesForSelectedDiscipline != null &&
+            gradesForSelectedDiscipline.length > 0)
+          Center(
+              child: Container(
+                  margin: EdgeInsets.only(top: 5),
+                  child: Text(
+                    widget.discipline!.subdisciplineNames![sousMatiereIndex] ?? "N/A",
+                    style: TextStyle(
+                      fontFamily: "Asap",
+                      color: ThemeUtils.textColor(),
+                    ),
+                  ))),
+        Wrap(
           spacing: screenSize.size.width / 5 * 0.05,
           alignment: WrapAlignment.start,
           direction: Axis.horizontal,
@@ -347,8 +367,7 @@ class _GradesGroupState extends State<GradesGroup> {
                         callback, this.widget, widget.gradesController);
                   },
                   child: Container(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: screenSize.size.width / 5 * 0.1, vertical: screenSize.size.width / 10 * 0.1),
+                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -428,6 +447,8 @@ class _GradesGroupState extends State<GradesGroup> {
               return Container();
             }
           }),
-        ));
+        ),
+      ],
+    );
   }
 }

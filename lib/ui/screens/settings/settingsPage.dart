@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:another_flushbar/flushbar.dart';
+import 'package:desktop_window/desktop_window.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -169,7 +170,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                         switchValue: _appSys.settings!["user"]["global"]["notificationNewMail"],
                         onToggle: (bool value) async {
                           if (value == false ||
-                              (Platform.isIOS && await Permission.notification.request().isGranted) ||
+                              (!kIsWeb && Platform.isIOS && await Permission.notification.request().isGranted) ||
                               (await Permission.ignoreBatteryOptimizations.isGranted)) {
                             _appSys.updateSetting(_appSys.settings!["user"]["global"], "notificationNewMail", value);
                           } else {
@@ -197,7 +198,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                         switchValue: _appSys.settings!["user"]["global"]["notificationNewGrade"],
                         onToggle: (bool value) async {
                           if (value == false ||
-                              (Platform.isIOS && await Permission.notification.request().isGranted) ||
+                              (!kIsWeb && Platform.isIOS && await Permission.notification.request().isGranted) ||
                               (await Permission.ignoreBatteryOptimizations.isGranted)) {
                             _appSys.updateSetting(_appSys.settings!["user"]["global"], "notificationNewGrade", value);
                           } else {
@@ -219,7 +220,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                         iosChevron: Icon(Icons.chevron_right),
                         leading: Icon(MdiIcons.bellAlert, color: ThemeUtils.textColor()),
                         onPressed: (context) async {
-                          if (Platform.isIOS) {
+                          if (!kIsWeb && Platform.isIOS) {
                             await Permission.notification.request();
                             return;
                           }
@@ -448,7 +449,9 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                           title: 'Bouton magique',
                           leading: Icon(MdiIcons.testTube, color: ThemeUtils.textColor()),
                           onPressed: (context) async {
-                            await appSys.updateSetting(appSys.settings!["system"], "lastMailCount", 60);
+                            if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+                              await DesktopWindow.setWindowSize(Size(768, 1024));
+                            }
                           },
                           titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                           subtitleTextStyle: TextStyle(

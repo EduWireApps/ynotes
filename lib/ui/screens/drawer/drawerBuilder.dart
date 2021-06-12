@@ -18,7 +18,7 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/screens/agenda/agendaPage.dart';
 import 'package:ynotes/ui/screens/cloud/cloudPage.dart';
-import 'package:ynotes/ui/screens/downloads/downloadsExplorer.dart';
+import 'package:ynotes/ui/screens/downloads/downloadsPage.dart';
 import 'package:ynotes/ui/screens/grades/gradesPage.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPage.dart';
 import 'package:ynotes/ui/screens/mail/mailPage.dart';
@@ -107,25 +107,36 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
             ),
           ),
           backgroundColor: ThemeUtils.darken(Theme.of(context).backgroundColor, forceAmount: 0.05),
-          body: Stack(
-            children: <Widget>[
-              ClipRRect(
-                child: PageView.builder(
-                  physics: NeverScrollableScrollPhysics(),
-                  controller: drawerPageViewController,
-                  itemBuilder: (context, index) {
-                    return ChangeNotifierProvider<LoginController>.value(
-                      value: appSys.loginController,
-                      child: Consumer<LoginController>(builder: (context, model, child) {
-                        if (model.actualState != loginStatus.loggedIn) {
-                          showLoginControllerStatusController.forward();
-                        } else {
-                          showLoginControllerStatusController.reverse();
-                        }
-                        return buildPageWithHeader(model, child: entries()[index]["page"]);
-                      }),
-                    );
-                  },
+          body: Row(
+            children: [
+              if (screenSize.size.width > 800)
+                Container(
+                  width: 310,
+                  child: CustomDrawer(
+                    entries(),
+                    notifier: _notifier,
+                    drawerPageViewController: drawerPageViewController,
+                  ),
+                ),
+              Expanded(
+                child: ClipRRect(
+                  child: PageView.builder(
+                    physics: NeverScrollableScrollPhysics(),
+                    controller: drawerPageViewController,
+                    itemBuilder: (context, index) {
+                      return ChangeNotifierProvider<LoginController>.value(
+                        value: appSys.loginController,
+                        child: Consumer<LoginController>(builder: (context, model, child) {
+                          if (model.actualState != loginStatus.loggedIn) {
+                            showLoginControllerStatusController.forward();
+                          } else {
+                            showLoginControllerStatusController.reverse();
+                          }
+                          return buildPageWithHeader(model, child: entries()[index]["page"]);
+                        }),
+                      );
+                    },
+                  ),
                 ),
               ),
             ],
@@ -139,74 +150,76 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
     return AnimatedBuilder(
         animation: showLoginControllerStatus,
         builder: (context, animation) {
-          return Container(
-            height: screenSize.size.height,
-            width: screenSize.size.width,
-            child: Column(
-              children: [
-                Opacity(
-                  opacity: 0.8,
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).push(router(AccountPage()));
-                    },
-                    child: AnimatedContainer(
-                      duration: Duration(milliseconds: 400),
-                      color: case2(con.actualState, {
-                        loginStatus.loggedIn: Color(0xff4ADE80),
-                        loginStatus.loggedOff: Color(0xffA8A29E),
-                        loginStatus.error: Color(0xffF87171),
-                        loginStatus.offline: Color(0xffFCD34D),
-                      }),
-                      height: screenSize.size.height / 10 * 0.4 * (1 - showLoginControllerStatus.value),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ClipRRect(
-                              child: Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-                            case2(
-                              con.actualState,
-                              {
-                                loginStatus.loggedOff: SpinKitThreeBounce(
-                                  size: screenSize.size.width / 5 * 0.3,
-                                  color: Color(0xff57534E),
-                                ),
-                                loginStatus.offline: Icon(
-                                  MdiIcons.networkStrengthOff,
-                                  size: screenSize.size.width / 5 * 0.3,
-                                  color: Color(0xff78716C),
-                                ),
-                                loginStatus.error: GestureDetector(
-                                  onTap: () async {},
-                                  child: Icon(
-                                    MdiIcons.exclamation,
-                                    size: screenSize.size.width / 5 * 0.3,
+          return Transform.translate(
+            offset: Offset(0, -(screenSize.size.height / 10 * 0.4 * showLoginControllerStatus.value)),
+            child: Container(
+              height: screenSize.size.height,
+              width: screenSize.size.width,
+              child: Column(
+                children: [
+                  Opacity(
+                    opacity: 0.8,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).push(router(AccountPage()));
+                      },
+                      child: AnimatedContainer(
+                        duration: Duration(milliseconds: 400),
+                        color: case2(con.actualState, {
+                          loginStatus.loggedIn: Color(0xff4ADE80),
+                          loginStatus.loggedOff: Color(0xffA8A29E),
+                          loginStatus.error: Color(0xffF87171),
+                          loginStatus.offline: Color(0xffFCD34D),
+                        }),
+                        height: screenSize.size.height / 10 * 0.4,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+                              case2(
+                                con.actualState,
+                                {
+                                  loginStatus.loggedOff: SpinKitThreeBounce(
+                                    size: 30,
                                     color: Color(0xff57534E),
                                   ),
-                                ),
-                                loginStatus.loggedIn: Icon(
-                                  MdiIcons.check,
-                                  size: screenSize.size.width / 5 * 0.3,
+                                  loginStatus.offline: Icon(
+                                    MdiIcons.networkStrengthOff,
+                                    size: 30,
+                                    color: Color(0xff78716C),
+                                  ),
+                                  loginStatus.error: GestureDetector(
+                                    onTap: () async {},
+                                    child: Icon(
+                                      MdiIcons.exclamation,
+                                      size: 30,
+                                      color: Color(0xff57534E),
+                                    ),
+                                  ),
+                                  loginStatus.loggedIn: Icon(
+                                    MdiIcons.check,
+                                    size: 30,
+                                    color: Color(0xff57534E),
+                                  )
+                                },
+                                SpinKitThreeBounce(
+                                  size: 30,
                                   color: Color(0xff57534E),
-                                )
-                              },
-                              SpinKitThreeBounce(
-                                size: screenSize.size.width / 5 * 0.4,
-                                color: Color(0xff57534E),
-                              ),
-                            ) as Widget,
-                          ])),
-                          Text(con.details, style: TextStyle(fontFamily: "Asap", color: Color(0xff57534E))),
-                          Text(" Voir l'état du compte.",
-                              style:
-                                  TextStyle(fontFamily: "Asap", color: Color(0xff57534E), fontWeight: FontWeight.bold))
-                        ],
+                                ),
+                              ) as Widget,
+                            ]),
+                            Text(con.details, style: TextStyle(fontFamily: "Asap", color: Color(0xff57534E))),
+                            Text(" Voir l'état du compte.",
+                                style: TextStyle(
+                                    fontFamily: "Asap", color: Color(0xff57534E), fontWeight: FontWeight.bold))
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-                Expanded(child: child)
-              ],
+                  Expanded(child: child)
+                ],
+              ),
             ),
           );
         });
@@ -342,7 +355,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
 
   @override
   void initState() {
-    if (Platform.isIOS || Platform.isAndroid) {
+    if (!kIsWeb && (Platform.isIOS || Platform.isAndroid)) {
       ShakeDetector.autoStart(onPhoneShake: () {
         if (appSys.settings?["user"]["global"]["shakeToReport"]) {
           Wiredash.of(context)?.show();

@@ -84,7 +84,7 @@ class AgendaController extends ChangeNotifier {
       });
     }
     if ((_cachedEvents ?? [])[3] == null) {
-      (_cachedEvents ?? [])[3] = await _api?.getEvents(CalendarTime(_date).startOfDay, false, forceReload: false);
+      (_cachedEvents ?? [])[3] = await _api?.getEvents(CalendarTime(_date).startOfDay,  forceReload: false);
     }
 
     loaded[3] = true;
@@ -94,7 +94,7 @@ class AgendaController extends ChangeNotifier {
     //We offline fetch the rest
     await Future.forEach(week, (dynamic date) async {
       if (i != 3 && (_cachedEvents ?? [])[i] != null) {
-        (_cachedEvents ?? [])[i] = (await _api?.getEvents(date, false, forceReload: false)) ?? [];
+        (_cachedEvents ?? [])[i] = (await _api?.getEvents(date, forceReload: false)) ?? [];
         loaded[i] = true;
         notifyListeners();
       }

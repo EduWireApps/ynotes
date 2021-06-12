@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:background_fetch/background_fetch.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -94,8 +95,6 @@ class ApplicationSystem extends ChangeNotifier {
       //Delete all
       await storage.deleteAll();
       this.updateTheme("clair");
-
-      
     } catch (e) {
       print(e);
     }
@@ -126,7 +125,6 @@ class ApplicationSystem extends ChangeNotifier {
     //Set controllers
   }
 
-
   initOffline() async {
     hiveBoxProvider = HiveBoxProvider();
     //Initiate an unlocked offline controller
@@ -152,7 +150,7 @@ class ApplicationSystem extends ChangeNotifier {
 
 // This "Headless Task" is run when app is terminated.
   _initBackgroundFetch() async {
-    if (Platform.isAndroid || Platform.isIOS) {
+    if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
       print("Background fetch configuration...");
       int i = await BackgroundFetch.configure(
         BackgroundFetchConfig(

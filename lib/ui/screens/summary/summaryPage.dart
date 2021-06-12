@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:expandable/expandable.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -12,6 +13,7 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/hiddenSettings.dart';
+import 'package:ynotes/ui/mixins/layoutMixin.dart';
 import 'package:ynotes/ui/screens/grades/gradesPage.dart';
 import 'package:ynotes/ui/screens/summary/summaryPageWidgets/quickGrades.dart';
 import 'package:ynotes/ui/screens/summary/summaryPageWidgets/quickHomework.dart';
@@ -36,7 +38,7 @@ class SummaryPage extends StatefulWidget {
   }
 }
 
-class SummaryPageState extends State<SummaryPage> {
+class SummaryPageState extends State<SummaryPage> with Layout {
   double? actualPage;
   late PageController _pageControllerSummaryPage;
   PageController? todoSettingsController;
@@ -47,7 +49,7 @@ class SummaryPageState extends State<SummaryPage> {
 
   @override
   Widget build(BuildContext context) {
-    MediaQueryData screenSize = MediaQuery.of(context);
+    var screenSize = MediaQuery.of(context);
 
     return Scaffold(
       appBar: new AppBar(
@@ -55,13 +57,15 @@ class SummaryPageState extends State<SummaryPage> {
             "Résumé",
             style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
           ),
-          leading: TextButton(
-            style: TextButton.styleFrom(),
-            child: Icon(MdiIcons.menu, color: ThemeUtils.textColor()),
-            onPressed: () async {
-              widget.parentScaffoldState.currentState?.openDrawer();
-            },
-          ),
+          leading: !isVeryLargeScreen
+              ? TextButton(
+                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent)),
+                  child: Icon(MdiIcons.menu, color: ThemeUtils.textColor()),
+                  onPressed: () async {
+                    widget.parentScaffoldState.currentState?.openDrawer();
+                  },
+                )
+              : null,
           actions: [
             TextButton(
               child: Icon(MdiIcons.tuneVariant, color: ThemeUtils.textColor()),
@@ -75,7 +79,7 @@ class SummaryPageState extends State<SummaryPage> {
       body: VisibilityDetector(
         key: Key('sumpage'),
         onVisibilityChanged: (visibilityInfo) async {
-          if (Platform.isAndroid || Platform.isIOS) {
+          if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
             await Permission.notification.request();
           }
           //Ensure that page is visible

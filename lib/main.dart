@@ -25,10 +25,12 @@ import 'ui/screens/school_api_choice/schoolAPIChoicePage.dart';
 Future main() async {
   Logger.level = Level.warning;
   WidgetsFlutterBinding.ensureInitialized();
+
+  WidgetsFlutterBinding.ensureInitialized();
+
   appSys = ApplicationSystem();
   await appSys.initApp();
-  BackgroundFetch.registerHeadlessTask(_headlessTask);
-
+  if (!kIsWeb) BackgroundFetch.registerHeadlessTask(_headlessTask);
 
   runZoned<Future<Null>>(() async {
     runApp(Phoenix(child: HomeApp()));

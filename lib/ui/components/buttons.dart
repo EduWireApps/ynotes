@@ -19,7 +19,7 @@ class CustomButtons {
       margin: margin ?? EdgeInsets.only(left: (screenSize.size.height / 10 * 8.8) / 10 * 0.1),
       child: Material(
         shape: RoundedRectangleBorder(
-          borderRadius: borderRadius ?? BorderRadius.circular(screenSize.size.width / 5 * 0.11),
+          borderRadius: borderRadius ?? BorderRadius.circular(15),
         ),
         color: backgroundColor ?? Theme.of(context).primaryColorDark,
         child: InkWell(
@@ -28,7 +28,7 @@ class CustomButtons {
           onLongPress: onLongPress as void Function()? ?? null,
           child: Container(
               height: height,
-              padding: padding ?? EdgeInsets.all(screenSize.size.width / 5 * 0.1),
+              padding: padding ?? EdgeInsets.all(5),
               child: FittedBox(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,

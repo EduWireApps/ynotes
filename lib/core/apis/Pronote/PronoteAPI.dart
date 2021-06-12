@@ -16,7 +16,7 @@ import 'package:pointycastle/pointycastle.dart';
 import 'package:requests/requests.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
-import 'package:ynotes/core/utils/nullSafeMap.dart';
+import 'package:ynotes/core/utils/nullSafeMapGetter.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/tests.dart';
 
@@ -516,17 +516,18 @@ class PronoteClient {
   }
 
   Future<bool?> init() async {
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    if (!Platform.isLinux) {
+      PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
-    this.stepsLogger.add("ⓘ " +
-        DateFormat("dd/MM/yyyy hh:mm:ss").format(DateTime.now()) +
-        " Started login - yNotes version is : " +
-        packageInfo.version +
-        "+" +
-        packageInfo.buildNumber +
-        " T" +
-        Tests.testVersion);
-
+      this.stepsLogger.add("ⓘ " +
+          DateFormat("dd/MM/yyyy hh:mm:ss").format(DateTime.now()) +
+          " Started login - yNotes version is : " +
+          packageInfo.version +
+          "+" +
+          packageInfo.buildNumber +
+          " T" +
+          Tests.testVersion);
+    }
     var attributesandfunctions = await this.communication!.initialise();
     this.stepsLogger.add("✅ Initialized");
 

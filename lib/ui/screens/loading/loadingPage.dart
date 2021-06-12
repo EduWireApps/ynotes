@@ -38,7 +38,6 @@ class _LoadingPageState extends State<LoadingPage> {
 
   @override
   Widget build(BuildContext context) {
-    MediaQueryData screenSize = MediaQuery.of(context);
 
     return Scaffold(
       backgroundColor: Color(0xff252B62),
@@ -47,7 +46,7 @@ class _LoadingPageState extends State<LoadingPage> {
         Center(
             child: Image(
           image: AssetImage('assets/images/LogoYNotes.png'),
-          width: screenSize.size.width / 5 * 1,
+          width: 110,
         )),
       ),
     );

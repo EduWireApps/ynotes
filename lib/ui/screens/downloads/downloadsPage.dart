@@ -4,14 +4,15 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:path/path.dart' as pathPackage;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/ui/components/customLoader.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
+import 'package:ynotes/ui/mixins/layoutMixin.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 Future<List<FileInfo>>? filesListFuture;
@@ -30,29 +31,32 @@ class DownloadsExplorer extends StatefulWidget {
 
 enum explorerSortValue { date, reversed_date, name }
 
-class _DownloadsExplorerState extends State<DownloadsExplorer> {
+class _DownloadsExplorerState extends State<DownloadsExplorer> with Layout {
   String path = "";
   String? initialPath = "";
   var actualSort = explorerSortValue.date;
   List<FileInfo> clipboard = [];
-  
+
   List<FileInfo>? listFiles;
   @override
   Widget build(BuildContext context) {
-    MediaQueryData screenSize = MediaQuery.of(context);
+    var screenSize = MediaQuery.of(context);
+
     return Scaffold(
       appBar: new AppBar(
           title: new Text(
             "Fichiers",
             style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
           ),
-          leading: TextButton(
-            style: TextButton.styleFrom(primary: Colors.transparent),
-            child: Icon(MdiIcons.menu, color: ThemeUtils.textColor()),
-            onPressed: () async {
-              widget.parentScaffoldState.currentState?.openDrawer();
-            },
-          ),
+          leading: !isVeryLargeScreen
+              ? TextButton(
+                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent)),
+                  child: Icon(MdiIcons.menu, color: ThemeUtils.textColor()),
+                  onPressed: () async {
+                    widget.parentScaffoldState.currentState?.openDrawer();
+                  },
+                )
+              : null,
           backgroundColor: Theme.of(context).primaryColor),
       backgroundColor: Theme.of(context).backgroundColor,
       body: Container(
@@ -64,7 +68,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
           children: <Widget>[
             SizedBox(
               child: Container(
-                height: screenSize.size.height / 10 * 0.5,
+                height: screenSize.size.height / 10 * 0.7,
                 margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
                 width: screenSize.size.width,
                 child: FittedBox(
@@ -83,9 +87,9 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                                 margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.2),
                                 child: Material(
                                   color: Theme.of(context).primaryColorDark,
-                                  borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                                  borderRadius: BorderRadius.circular(15),
                                   child: InkWell(
-                                    borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                                    borderRadius: BorderRadius.circular(15),
                                     onTap: () async {
                                       if ((initialPath ?? "") + path != initialPath) {
                                         var splits = path.split("/");
@@ -123,8 +127,8 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                                       }
                                     },
                                     child: Container(
-                                        height: screenSize.size.height / 10 * 0.5,
-                                        padding: EdgeInsets.all(screenSize.size.width / 5 * 0.05),
+                                        height: screenSize.size.height / 10 * 0.7,
+                                        padding: EdgeInsets.all(5),
                                         child: FittedBox(
                                           child: Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
@@ -153,9 +157,9 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                                 margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
                                 child: Material(
                                   color: Theme.of(context).primaryColorDark,
-                                  borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                                  borderRadius: BorderRadius.circular(15),
                                   child: InkWell(
-                                    borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                                    borderRadius: BorderRadius.circular(15),
                                     onTap: () async {
                                       setState(() {
                                         selectionMode = false;
@@ -169,8 +173,8 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                                       await refreshFileListFuture();
                                     },
                                     child: Container(
-                                        height: screenSize.size.height / 10 * 0.5,
-                                        padding: EdgeInsets.all(screenSize.size.width / 5 * 0.05),
+                                        height: screenSize.size.height / 10 * 0.7,
+                                        padding: EdgeInsets.all(5),
                                         child: FittedBox(
                                           child: Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
@@ -192,18 +196,18 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                         margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
                         child: Material(
                           color: Theme.of(context).primaryColorDark,
-                          borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                          borderRadius: BorderRadius.circular(15),
                           child: InkWell(
-                            borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                            borderRadius: BorderRadius.circular(15),
                             onTap: () async {
-                              CustomDialogs.showNewFolderDialog(context, (initialPath ?? "") + path, listFiles,
-                                  selectionMode, refreshFileListFuture);
+                              CustomDialogs.showNewFolderDialog(
+                                  context, (initialPath ?? "") + path, listFiles, selectionMode, refreshFileListFuture);
 
                               await refreshFileListFuture();
                             },
                             child: Container(
-                                height: screenSize.size.height / 10 * 0.5,
-                                padding: EdgeInsets.all(screenSize.size.width / 5 * 0.05),
+                                height: screenSize.size.height / 10 * 0.7,
+                                padding: EdgeInsets.all(5),
                                 child: FittedBox(
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -232,17 +236,17 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                                 margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
                                 child: Material(
                                   color: Theme.of(context).primaryColorDark,
-                                  borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                                  borderRadius: BorderRadius.circular(15),
                                   child: InkWell(
-                                    borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                                    borderRadius: BorderRadius.circular(15),
                                     onTap: () async {
                                       String? newName = await CustomDialogs.showTextChoiceDialog(context,
                                           text: "un nom pour l'élément",
                                           defaultText: await FileAppUtil.getFileNameWithExtension(
                                               listFiles!.firstWhere((element) => element.selected).element));
                                       if (newName != null) {
-                                        String dir = pathPackage.dirname(
-                                            listFiles!.firstWhere((element) => element.selected).element.path);
+                                        String dir = pathPackage
+                                            .dirname(listFiles!.firstWhere((element) => element.selected).element.path);
                                         String newPath = pathPackage.join(dir, newName);
                                         await listFiles!
                                             .firstWhere((element) => element.selected)
@@ -257,8 +261,8 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                                       await refreshFileListFuture();
                                     },
                                     child: Container(
-                                        height: screenSize.size.height / 10 * 0.5,
-                                        padding: EdgeInsets.all(screenSize.size.width / 5 * 0.05),
+                                        height: screenSize.size.height / 10 * 0.7,
+                                        padding: EdgeInsets.all(5),
                                         child: FittedBox(
                                           child: Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
@@ -278,9 +282,9 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                         margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
                         child: Material(
                           color: Theme.of(context).primaryColorDark,
-                          borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                          borderRadius: BorderRadius.circular(15),
                           child: InkWell(
-                            borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                            borderRadius: BorderRadius.circular(15),
                             onTap: () async {
                               if (selectionMode) {
                                 bool response = await (CustomDialogs.showConfirmationDialog(context, null)) ?? false;
@@ -305,8 +309,8 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                               }
                             },
                             child: Container(
-                                height: screenSize.size.height / 10 * 0.5,
-                                padding: EdgeInsets.all(screenSize.size.width / 5 * 0.05),
+                                height: screenSize.size.height / 10 * 0.7,
+                                padding: EdgeInsets.all(5),
                                 child: FittedBox(
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -361,8 +365,8 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                                       });
                                     },
                                     child: Container(
-                                        height: screenSize.size.height / 10 * 0.5,
-                                        padding: EdgeInsets.all(screenSize.size.width / 5 * 0.05),
+                                        height: screenSize.size.height / 10 * 0.7,
+                                        padding: EdgeInsets.all(5),
                                         child: FittedBox(
                                           child: Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
@@ -389,9 +393,9 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                           margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
                           child: Material(
                             color: Theme.of(context).primaryColorDark,
-                            borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                            borderRadius: BorderRadius.circular(15),
                             child: InkWell(
-                              borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                              borderRadius: BorderRadius.circular(15),
                               onTap: !(clipboard.length > 0)
                                   ? null
                                   : () async {
@@ -401,7 +405,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                                               .copy((initialPath ?? "") + path + "/" + (element.fileName ?? ""));
                                         } catch (e) {
                                           print(e);
-                                          if (Platform.isAndroid) {
+                                          if (!kIsWeb && Platform.isAndroid) {
                                             print("try to paste");
                                             var result = await Process.run(
                                                 'cp', ['-r', element.element.path, (initialPath ?? "") + path + "/"]);
@@ -413,8 +417,8 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                                       await refreshFileListFuture();
                                     },
                               child: Container(
-                                  height: screenSize.size.height / 10 * 0.5,
-                                  padding: EdgeInsets.all(screenSize.size.width / 5 * 0.05),
+                                  height: screenSize.size.height / 10 * 0.7,
+                                  padding: EdgeInsets.all(5),
                                   child: FittedBox(
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
@@ -480,7 +484,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                                     children: <Widget>[
                                       ConstrainedBox(
                                         constraints: new BoxConstraints(
-                                          minHeight: screenSize.size.height / 10 * 0.8,
+                                          minHeight: screenSize.size.height / 10 * 0.7,
                                         ),
                                         child: Container(
                                           margin: EdgeInsets.only(bottom: (screenSize.size.height / 10 * 0.008)),
@@ -488,77 +492,87 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                                             color: listFiles![index].selected
                                                 ? Colors.blue
                                                 : Theme.of(context).primaryColorDark,
-                                            child: InkWell(
-                                              splashColor: Color(0xff525252),
-                                              onLongPress: () {
+                                            child: GestureDetector(
+                                              onSecondaryTap: () {
                                                 setState(() {
                                                   selectionMode = true;
                                                   listFiles![index].selected = true;
                                                 });
                                               },
-                                              onTap: () async {
-                                                if (selectionMode) {
-                                                  print(selectedFiles.length);
-                                                  listFiles![index].selected = !listFiles![index].selected;
-                                                  setState(() {});
-                                                } else {
-                                                  if (listFiles![index].element is Directory) {
-                                                    setState(() {
-                                                      path = path + "/" + listFiles![index].fileName!;
-                                                    });
-                                                    await refreshFileListFuture();
+                                              child: InkWell(
+                                                splashColor: Color(0xff525252),
+                                                onLongPress: () {
+                                                  setState(() {
+                                                    selectionMode = true;
+                                                    listFiles![index].selected = true;
+                                                  });
+                                                },
+                                                onTap: () async {
+                                                  if (selectionMode) {
+                                                    print(selectedFiles.length);
+                                                    listFiles![index].selected = !listFiles![index].selected;
+                                                    setState(() {});
                                                   } else {
-                                                    await FileAppUtil.openFile(listFiles![index].element.path);
+                                                    if (listFiles![index].element is Directory) {
+                                                      setState(() {
+                                                        path = path + "/" + listFiles![index].fileName!;
+                                                      });
+                                                      await refreshFileListFuture();
+                                                    } else {
+                                                      await FileAppUtil.openFile(listFiles![index].element.path);
+                                                    }
                                                   }
-                                                }
-                                              },
-                                              child: Container(
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: screenSize.size.width / 5 * 0.25,
-                                                    vertical: screenSize.size.height / 10 * 0.2),
+                                                },
                                                 child: Container(
-                                                  child: Row(
-                                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                                    children: <Widget>[
-                                                      Icon(
-                                                        (listFiles![index].element is Directory)
-                                                            ? MdiIcons.folder
-                                                            : MdiIcons.file,
-                                                        color: (listFiles![index].element is Directory)
-                                                            ? Colors.yellow.shade100
-                                                            : ThemeUtils.textColor().withOpacity(0.5),
-                                                      ),
-                                                      Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: <Widget>[
-                                                          Container(
-                                                            width: screenSize.size.width / 5 * 3.25,
-                                                            child: Text(
-                                                              (snapshot.data ?? [])[index].fileName ?? "",
-                                                              style: TextStyle(
-                                                                  fontFamily: "Asap",
-                                                                  fontSize: screenSize.size.height / 10 * 0.2,
-                                                                  color: ThemeUtils.textColor()),
-                                                            ),
-                                                          ),
-                                                          if ((snapshot.data ?? [])[index].lastModifiedDate != null)
-                                                            FittedBox(
-                                                              child: Text(
-                                                                DateFormat("yyyy-MM-dd HH:mm").format(
-                                                                    (snapshot.data ?? [])[index].lastModifiedDate!),
-                                                                textAlign: TextAlign.left,
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: screenSize.size.width / 5 * 0.25,
+                                                      vertical: screenSize.size.height / 10 * 0.2),
+                                                  child: Container(
+                                                    child: Row(
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                      children: <Widget>[
+                                                        Icon(
+                                                          (listFiles![index].element is Directory)
+                                                              ? MdiIcons.folder
+                                                              : MdiIcons.file,
+                                                          color: (listFiles![index].element is Directory)
+                                                              ? Colors.yellow.shade100
+                                                              : ThemeUtils.textColor().withOpacity(0.5),
+                                                        ),
+                                                        SizedBox(
+                                                          width: 5,
+                                                        ),
+                                                        Expanded(
+                                                          child: Column(
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: <Widget>[
+                                                              Text(
+                                                                (snapshot.data ?? [])[index].fileName ?? "",
                                                                 style: TextStyle(
                                                                     fontFamily: "Asap",
-                                                                    fontSize: screenSize.size.height / 10 * 0.2,
-                                                                    color: ThemeUtils.isThemeDark
-                                                                        ? Colors.white.withOpacity(0.5)
-                                                                        : Colors.black.withOpacity(0.5)),
+                                                                    fontSize: 15,
+                                                                    color: ThemeUtils.textColor()),
                                                               ),
-                                                            ),
-                                                        ],
-                                                      ),
-                                                    ],
+                                                              if ((snapshot.data ?? [])[index].lastModifiedDate != null)
+                                                                FittedBox(
+                                                                  child: Text(
+                                                                    DateFormat("yyyy-MM-dd HH:mm").format(
+                                                                        (snapshot.data ?? [])[index].lastModifiedDate!),
+                                                                    textAlign: TextAlign.left,
+                                                                    style: TextStyle(
+                                                                        fontFamily: "Asap",
+                                                                        fontSize: 15,
+                                                                        color: ThemeUtils.isThemeDark
+                                                                            ? Colors.white.withOpacity(0.5)
+                                                                            : Colors.black.withOpacity(0.5)),
+                                                                  ),
+                                                                ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
                                               ),
@@ -602,9 +616,8 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                     if (snapshot.hasError) {
                       print("Erreur " + (snapshot.error as String));
                     }
-                    return SpinKitFadingFour(
-                      color: Theme.of(context).primaryColorDark,
-                      size: screenSize.size.width / 5 * 1,
+                    return Center(
+                      child: CustomLoader(500, screenSize.size.height / 10 * 2.4, Theme.of(context).primaryColorDark),
                     );
                   }
                 },
@@ -640,7 +653,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
   }
 
   Future<void> refreshFileListFuture() async {
-    if (await Permission.storage.request().isGranted) {
+    if (Platform.isLinux || await Permission.storage.request().isGranted) {
       selectionMode = false;
       setState(() {
         filesListFuture = FileAppUtil.getFilesList(initialPath! + path);

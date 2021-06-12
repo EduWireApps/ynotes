@@ -73,6 +73,7 @@ dependencies:
   date_field: ^2.0.1
   day_night_switcher: ^0.2.0+1
   device_apps: ^2.0.2
+  desktop_window: ^0.4.0
   dotted_border: ^2.0.0-nullsafety.0
   dotted_line: ^3.0.0
   encrypt: ^5.0.0
@@ -118,6 +119,8 @@ dependencies:
   sqflite: ^2.0.0+3
   smooth_page_indicator: ^0.3.0-nullsafety.0
   stack: ^0.2.1
+  flutter_staggered_grid_view: ^0.4.0
+
   stacked: ^2.0.2
   supercharged: ^2.0.0
   url_launcher: ^6.0.3
@@ -205,12 +208,6 @@ flutter:
 
   assets:
     - assets/images/logoED.svg
-    - assets/images/space/space.png
-    - assets/images/space/2.0x/space.png
-    - assets/images/space/4.0x/space.png
-    - assets/images/marks/2.0x/mark.png
-    - assets/images/marks/3.0x/mark.png
-    - assets/images/marks/mark.png
     - assets/images/shelves/calendar.png
     - assets/images/shelves/clock.png
     - assets/images/shelves/shelve1.png

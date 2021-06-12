@@ -11,21 +11,21 @@ import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/ui/components/dialogs/authorizationsDialog.dart';
 import 'package:ynotes/ui/components/dialogs/colorPicker.dart';
-import 'package:ynotes/ui/components/dialogs/homeworkDetails.dart';
-import 'package:ynotes/ui/components/dialogs/persistantNotificationDialog.dart';
-import 'package:ynotes/ui/components/dialogs/shareDialog.dart';
+import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/homeworkDetails.dart';
+import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/persistantNotificationDialog.dart';
+import 'package:ynotes/ui/screens/grades/gradesPageWidgets/shareGradeDialog.dart';
 import 'package:ynotes/ui/components/dialogs/updateNoteDialog.dart';
 import 'package:ynotes/ui/components/giffy_dialog/src/asset.dart';
-import 'package:ynotes/ui/components/modalBottomSheets/writeMailBottomSheet.dart';
+import 'package:ynotes/ui/screens/mail/mailPageWidgets/writeMailBottomSheet.dart';
 import 'package:ynotes/ui/screens/login/loginPageWidgets/pronoteLocationDialog.dart';
 import 'package:ynotes/ui/screens/settings/settingsPage.dart';
 
 import '../../usefulMethods.dart';
-import 'dialogs/folderChoiceDialog.dart';
+import '../screens/downloads/downloadsPageWidgets/folderChoiceDialog.dart';
 import 'dialogs/multipleChoicesDialog.dart';
-import 'dialogs/newRecipientDialog.dart';
+import '../screens/mail/mailPageWidgets/newRecipientDialog.dart';
 import 'dialogs/numberChoiceDialog.dart';
-import 'dialogs/recurringEventsDialog.dart';
+import '../screens/agenda/agendaPageWidgets/recurringEventsDialog.dart';
 import 'dialogs/specialtiesDialog.dart';
 import 'dialogs/textFieldChoiceDialog.dart';
 
@@ -37,22 +37,7 @@ List<HelpDialog> helpDialogs = [
       ],
       "assets/gifs/Hello720.gif",
       0),
-  HelpDialog(
-      "QuickMenu",
-      [
-        "Glissez votre doigt vers le haut sur l'icone Space pour afficher un menu rapide.",
-      ],
-      "assets/gifs/QuickMenu720.gif",
-      1),
-  HelpDialog("Épingler", ["Restez appuyé puis épinglez un devoir pour le revoir même après sa date d'échéance."],
-      "assets/gifs/PinHomework720.gif", 2),
-  HelpDialog(
-      "Nouvel explorateur de téléchargements",
-      [
-        "Nous avons mis à jour votre explorateur de téléchargements ! Idéal pour mieux organiser vos fiches ou documents.",
-      ],
-      "assets/gifs/FileExplorer720.gif",
-      3)
+  
 ];
 
 //The help dialog class
@@ -101,45 +86,43 @@ class CustomDialogs {
       {String alternativeText = "Voulez vous vraiment supprimer cet élément (irréversible) ?",
       String alternativeButtonConfirmText = "SUPPRIMER"}) {
     // set up the AlertDialog
-    var alert = Theme(
-        data: Theme.of(context).copyWith(dialogBackgroundColor: Theme.of(context).primaryColor),
-        child: AlertDialog(
-          elevation: 50,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-          title: Text(
-            "Confirmation",
-            style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-          ),
-          content: Text(
-            alternativeText,
-            style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-          ),
-          actions: [
-            TextButton(
-              child: const Text('ANNULER', style: TextStyle(color: Colors.green), textScaleFactor: 1.0),
-              onPressed: () {
-                if (show != null) {
-                  show();
-                }
+    var alert = AlertDialog(
+      elevation: 50,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+      title: Text(
+        "Confirmation",
+        style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+      ),
+      content: Text(
+        alternativeText,
+        style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+      ),
+      actions: [
+        TextButton(
+          child: const Text('ANNULER', style: TextStyle(color: Colors.green), textScaleFactor: 1.0),
+          onPressed: () {
+            if (show != null) {
+              show();
+            }
 
-                Navigator.pop(context, false);
-              },
-            ),
-            TextButton(
-              child: Text(
-                alternativeButtonConfirmText.toUpperCase(),
-                style: TextStyle(color: Colors.red),
-                textScaleFactor: 1.0,
-              ),
-              onPressed: () {
-                if (show != null) {
-                  show();
-                }
-                Navigator.pop(context, true);
-              },
-            )
-          ],
-        ));
+            Navigator.pop(context, false);
+          },
+        ),
+        TextButton(
+          child: Text(
+            alternativeButtonConfirmText.toUpperCase(),
+            style: TextStyle(color: Colors.red),
+            textScaleFactor: 1.0,
+          ),
+          onPressed: () {
+            if (show != null) {
+              show();
+            }
+            Navigator.pop(context, true);
+          },
+        )
+      ],
+    );
 
     // show the dialog
     return showDialog<bool?>(

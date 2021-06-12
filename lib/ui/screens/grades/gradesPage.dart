@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
@@ -12,8 +13,9 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
-import 'package:ynotes/ui/components/modalBottomSheets/simulatorModalBottomSheet/simulatorModalBottomSheet.dart';
+import 'package:ynotes/ui/mixins/layoutMixin.dart';
 import 'package:ynotes/ui/screens/grades/gradesPageWidgets/gradesGroup.dart';
+import 'package:ynotes/ui/screens/grades/gradesPageWidgets/simulatorModalBottomSheet.dart';
 
 bool firstStart = true;
 
@@ -31,7 +33,7 @@ class GradesPage extends StatefulWidget {
   }
 }
 
-class _GradesPageState extends State<GradesPage> {
+class _GradesPageState extends State<GradesPage> with Layout {
   ///Start building grades box from here
   @override
   Widget build(BuildContext context) {
@@ -46,13 +48,15 @@ class _GradesPageState extends State<GradesPage> {
                 "Notes",
                 style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
               ),
-              leading: TextButton(
-                style: TextButton.styleFrom(primary: Colors.transparent),
-                child: Icon(MdiIcons.menu, color: ThemeUtils.textColor()),
-                onPressed: () async {
-                  widget.parentScaffoldState.currentState?.openDrawer();
-                },
-              ),
+              leading: !isVeryLargeScreen
+                  ? TextButton(
+                      style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent)),
+                      child: Icon(MdiIcons.menu, color: ThemeUtils.textColor()),
+                      onPressed: () async {
+                        widget.parentScaffoldState.currentState?.openDrawer();
+                      },
+                    )
+                  : null,
               actions: [
                 Container(
                   width: screenSize.size.width / 5 * 0.6,
@@ -117,7 +121,7 @@ class _GradesPageState extends State<GradesPage> {
                   child: RefreshIndicator(
                       onRefresh: forceRefreshGrades,
                       child: Container(
-                          width: screenSize.size.width / 5 * 4.7,
+                          width: screenSize.size.width,
                           margin: EdgeInsets.only(top: 0),
                           decoration: BoxDecoration(
                               border: Border.all(width: 0.000000, color: Colors.transparent),
@@ -140,31 +144,39 @@ class _GradesPageState extends State<GradesPage> {
                                           if (model.isSimulating) _buildResetButton(model),
                                           Expanded(
                                             child: ShaderMask(
-                                              shaderCallback: (Rect rect) {
-                                                return LinearGradient(
-                                                  begin: Alignment.topCenter,
-                                                  end: Alignment.bottomCenter,
-                                                  colors: [
-                                                    Colors.purple,
-                                                    Colors.transparent,
-                                                    Colors.transparent,
-                                                    Colors.purple
-                                                  ],
-                                                  stops: [0, 0, 0.9, 1.0], // 10% purple, 80% transparent, 10% purple
-                                                ).createShader(rect);
-                                              },
-                                              blendMode: BlendMode.dstOut,
-                                              child: ListView.builder(
-                                                  physics: AlwaysScrollableScrollPhysics(),
-                                                  itemCount: model.disciplines()!.length,
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: screenSize.size.width / 5 * 0.05),
-                                                  itemBuilder: (BuildContext context, int index) {
-                                                    return GradesGroup(
-                                                        discipline: model.disciplines()![index],
-                                                        gradesController: model);
-                                                  }),
-                                            ),
+                                                shaderCallback: (Rect rect) {
+                                                  return LinearGradient(
+                                                    begin: Alignment.topCenter,
+                                                    end: Alignment.bottomCenter,
+                                                    colors: [
+                                                      Colors.purple,
+                                                      Colors.transparent,
+                                                      Colors.transparent,
+                                                      Colors.purple
+                                                    ],
+                                                    stops: [0, 0, 0.9, 1.0], // 10% purple, 80% transparent, 10% purple
+                                                  ).createShader(rect);
+                                                },
+                                                blendMode: BlendMode.dstOut,
+                                                child: Container(
+                                                    width: screenSize.size.width,
+                                                    child: LayoutBuilder(builder: (context, constraints) {
+                                                      return StaggeredGridView.countBuilder(
+                                                        padding:
+                                                            EdgeInsets.symmetric(horizontal: isLargeScreen ? 15 : 5),
+                                                        crossAxisCount: 4,
+                                                        itemCount: model.disciplines()!.length,
+                                                        itemBuilder: (BuildContext context, int index) =>
+                                                            new GradesGroup(
+                                                          discipline: model.disciplines()![index],
+                                                          gradesController: model,
+                                                        ),
+                                                        staggeredTileBuilder: (int index) =>
+                                                            new StaggeredTile.fit(isLargeScreen ? 2 : 4),
+                                                        mainAxisSpacing: 15,
+                                                        crossAxisSpacing: 10,
+                                                      );
+                                                    }))),
                                           ),
                                         ],
                                       );
@@ -173,9 +185,15 @@ class _GradesPageState extends State<GradesPage> {
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         crossAxisAlignment: CrossAxisAlignment.center,
                                         children: <Widget>[
-                                          Image(
-                                              image: AssetImage('assets/images/book.png'),
-                                              width: screenSize.size.width / 5 * 4),
+                                          Container(
+                                            height: screenSize.size.height / 10 * 2.5,
+                                            child: FittedBox(
+                                              child: Image(
+                                                fit: BoxFit.fitHeight,
+                                                image: AssetImage('assets/images/book.png'),
+                                              ),
+                                            ),
+                                          ),
                                           Center(
                                             child: Container(
                                               margin: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.5),
@@ -184,26 +202,30 @@ class _GradesPageState extends State<GradesPage> {
                                                   style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor())),
                                             ),
                                           ),
-                                          TextButton(
-                                            style: TextButton.styleFrom(
-                                              shape: RoundedRectangleBorder(
-                                                  borderRadius: new BorderRadius.circular(18.0),
-                                                  side: BorderSide(color: Theme.of(context).primaryColorDark)),
+                                          Container(
+                                            margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
+                                            width: 80,
+                                            child: TextButton(
+                                              style: TextButton.styleFrom(
+                                                shape: RoundedRectangleBorder(
+                                                    borderRadius: new BorderRadius.circular(18.0),
+                                                    side: BorderSide(color: Theme.of(context).primaryColorDark)),
+                                              ),
+                                              onPressed: () {
+                                                //Reload list
+                                                forceRefreshGrades();
+                                              },
+                                              child: !model.isFetching
+                                                  ? Text("Recharger",
+                                                      style: TextStyle(
+                                                          fontFamily: "Asap",
+                                                          color: ThemeUtils.textColor(),
+                                                          fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2))
+                                                  : FittedBox(
+                                                      child: SpinKitThreeBounce(
+                                                          color: Theme.of(context).primaryColorDark,
+                                                          size: screenSize.size.width / 5 * 0.4)),
                                             ),
-                                            onPressed: () {
-                                              //Reload list
-                                              forceRefreshGrades();
-                                            },
-                                            child: !model.isFetching
-                                                ? Text("Recharger",
-                                                    style: TextStyle(
-                                                        fontFamily: "Asap",
-                                                        color: ThemeUtils.textColor(),
-                                                        fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2))
-                                                : FittedBox(
-                                                    child: SpinKitThreeBounce(
-                                                        color: Theme.of(context).primaryColorDark,
-                                                        size: screenSize.size.width / 5 * 0.4)),
                                           )
                                         ],
                                       );
@@ -231,15 +253,40 @@ class _GradesPageState extends State<GradesPage> {
                                     );
                                   } else {
                                     //Loading group
-                                    return ListView.builder(
-                                        itemCount: 5,
-                                        padding: EdgeInsets.all(screenSize.size.width / 5 * 0.3),
-                                        itemBuilder: (BuildContext context, int index) {
-                                          return GradesGroup(
-                                            gradesController: model,
-                                            discipline: null,
-                                          );
-                                        });
+                                    return Expanded(
+                                      child: ShaderMask(
+                                          shaderCallback: (Rect rect) {
+                                            return LinearGradient(
+                                              begin: Alignment.topCenter,
+                                              end: Alignment.bottomCenter,
+                                              colors: [
+                                                Colors.purple,
+                                                Colors.transparent,
+                                                Colors.transparent,
+                                                Colors.purple
+                                              ],
+                                              stops: [0, 0, 0.9, 1.0], // 10% purple, 80% transparent, 10% purple
+                                            ).createShader(rect);
+                                          },
+                                          blendMode: BlendMode.dstOut,
+                                          child: Container(
+                                              width: screenSize.size.width,
+                                              child: LayoutBuilder(builder: (context, constraints) {
+                                                return StaggeredGridView.countBuilder(
+                                                  padding: EdgeInsets.symmetric(horizontal: 15),
+                                                  crossAxisCount: 4,
+                                                  itemCount: 18,
+                                                  itemBuilder: (BuildContext context, int index) => new GradesGroup(
+                                                    discipline: null,
+                                                    gradesController: model,
+                                                  ),
+                                                  staggeredTileBuilder: (int index) =>
+                                                      new StaggeredTile.fit(isLargeScreen ? 2 : 4),
+                                                  mainAxisSpacing: 15,
+                                                  crossAxisSpacing: 10,
+                                                );
+                                              }))),
+                                    );
                                   }
                                 }),
                               ),
@@ -286,17 +333,20 @@ class _GradesPageState extends State<GradesPage> {
 
     return Container(
       height: screenSize.size.height / 10 * 0.45,
-      width: screenSize.size.width / 5 * 1.55,
       padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
       decoration: BoxDecoration(color: Theme.of(context).primaryColorDark, borderRadius: BorderRadius.circular(8)),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Expanded(
+          Flexible(
               child: Text(
             name,
             style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
           )),
+          SizedBox(
+            width: 15,
+          ),
           Text(average,
               style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: ThemeUtils.textColor()))
         ],
@@ -306,16 +356,20 @@ class _GradesPageState extends State<GradesPage> {
 
   Widget buildBottomBar(Discipline? discipline, GradesController model) {
     var screenSize = MediaQuery.of(context);
+    bool largeScreen = screenSize.size.width > 500;
 
     return Container(
       padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.1),
       color: Theme.of(context).primaryColor,
       child: Row(
         children: [
+          SizedBox(
+            width: screenSize.size.width / 5 * 0.15,
+          ),
           Container(
-            padding: EdgeInsets.all(screenSize.size.height / 10 * 0.3),
-            width: screenSize.size.width / 5 * 1.4,
-            height: screenSize.size.width / 5 * 1.1,
+            padding: EdgeInsets.all(5),
+            width: 70,
+            height: 70,
             decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 boxShadow: <BoxShadow>[
@@ -335,20 +389,24 @@ class _GradesPageState extends State<GradesPage> {
             ),
           ),
           SizedBox(
-            width: screenSize.size.width / 5 * 0.05,
+            width: screenSize.size.width / 5 * 0.3,
           ),
           Expanded(
             child: Wrap(
               direction: Axis.horizontal,
+              alignment: largeScreen ? WrapAlignment.end : WrapAlignment.start,
               runSpacing: screenSize.size.height / 10 * 0.1,
-              spacing: screenSize.size.width / 5 * 0.2,
+              spacing: screenSize.size.width / 5 * 0.1,
               children: [
                 buildAverageContainer("MAX", discipline?.maxClassGeneralAverage ?? "N/A"),
                 buildAverageContainer("CLASSE", discipline?.classGeneralAverage ?? "N/A"),
-                if (discipline?.generalRank != null) buildAverageContainer("RANG", discipline?.generalRank ?? "N/A"),
+                buildAverageContainer("RANG", discipline?.generalRank ?? "N/A"),
               ],
             ),
-          )
+          ),
+          SizedBox(
+            width: screenSize.size.width / 5 * 0.1,
+          ),
         ],
       ),
     );
@@ -445,7 +503,7 @@ class _GradesPageState extends State<GradesPage> {
   _buildFloatingButton(BuildContext context) {
     var screenSize = MediaQuery.of(context);
     return Container(
-      margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.1),
+      margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.1, right: screenSize.size.width / 5 * 0.1),
       child: Align(
         alignment: Alignment.bottomRight,
         child: Container(
@@ -453,11 +511,15 @@ class _GradesPageState extends State<GradesPage> {
             heroTag: "simulBtn",
             backgroundColor: Colors.transparent,
             child: Container(
-              width: screenSize.size.width / 5 * 0.8,
-              height: screenSize.size.width / 5 * 0.8,
-              child: Icon(
-                Icons.add,
-                size: screenSize.size.width / 5 * 0.5,
+              width: 120,
+              height: 120,
+              child: FittedBox(
+                child: Center(
+                  child: Icon(
+                    Icons.add,
+                    size: 90,
+                  ),
+                ),
               ),
               decoration: BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
             ),
@@ -475,12 +537,20 @@ class _GradesPageState extends State<GradesPage> {
 
   _buildResetButton(GradesController controller) {
     var screenSize = MediaQuery.of(context);
-    return Container(
-      margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.2),
-      child:
-          CustomButtons.materialButton(context, screenSize.size.width / 5 * 3.2, screenSize.size.height / 10 * 0.5, () {
-        controller.simulationReset();
-      }, label: "Réinitialiser les notes", textColor: Colors.white, backgroundColor: Colors.blue),
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: 400),
+      child: Container(
+        margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.2),
+        child: CustomButtons.materialButton(context, screenSize.size.width / 5 * 3.2, screenSize.size.height / 10 * 0.5,
+            () {
+          controller.simulationReset();
+        },
+            label: "Réinitialiser les notes",
+            textColor: Colors.white,
+            backgroundColor: Colors.blue,
+            padding: EdgeInsets.all(10),
+            borderRadius: BorderRadius.circular(10)),
+      ),
     );
   }
 }

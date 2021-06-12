@@ -42,7 +42,7 @@ class _QuickHomeworkState extends State<QuickHomework> {
                         alignment: Alignment.topCenter,
                         child: Container(
                             margin: EdgeInsets.only(
-                                top: (screenSize.size.height / 10 * 8.8) / 10 * 0.1,
+                                top: screenSize.size.height / 10 * 0.1,
                                 left: screenSize.size.width / 5 * 0.25,
                                 right: screenSize.size.width / 5 * 0.15),
                             child: Column(
@@ -54,6 +54,7 @@ class _QuickHomeworkState extends State<QuickHomework> {
                                       child: Card(
                                         color: Theme.of(context).primaryColor,
                                         child: Container(
+                                          height: 50,
                                           padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.08),
                                           child: Center(
                                             child: Row(
@@ -64,8 +65,8 @@ class _QuickHomeworkState extends State<QuickHomework> {
                                                   decoration: BoxDecoration(
                                                     borderRadius: BorderRadius.circular(500),
                                                   ),
-                                                  width: screenSize.size.width / 5 * 0.4,
-                                                  height: screenSize.size.width / 5 * 0.4,
+                                                  width: 30,
+                                                  height: 30,
                                                   child: LiquidCircularProgressIndicator(
                                                     value:
                                                         (model.homeworkCompletion[0] ?? 100) / 100, // Defaults to 0.5.
@@ -123,17 +124,19 @@ class _QuickHomeworkState extends State<QuickHomework> {
                                       ),
                                     ),
                                     Expanded(
-                                      child: Card(
-                                        color: Theme.of(context).primaryColor,
-                                        child: Container(
-                                          padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.08),
+                                        child: Card(
+                                      color: Theme.of(context).primaryColor,
+                                      child: Container(
+                                        height: 50,
+                                        padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.08),
+                                        child: Center(
                                           child: Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               Container(
                                                   margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
-                                                  width: screenSize.size.width / 5 * 0.4,
-                                                  height: screenSize.size.width / 5 * 0.4,
+                                                  width: 30,
+                                                  height: 30,
                                                   padding: EdgeInsets.all(screenSize.size.width / 5 * 0.01),
                                                   child: Icon(
                                                     MdiIcons.pen,
@@ -173,20 +176,20 @@ class _QuickHomeworkState extends State<QuickHomework> {
                                           ),
                                         ),
                                       ),
-                                    ),
+                                    )),
                                   ],
                                 ),
                                 Card(
                                   color: Theme.of(context).primaryColor,
                                   child: Container(
+                                    height: 50,
                                     padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.08),
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Container(
-                                            width: screenSize.size.width / 5 * 0.4,
-                                            height: screenSize.size.width / 5 * 0.4,
-                                            padding: EdgeInsets.all(screenSize.size.width / 5 * 0.01),
+                                            width: 30,
+                                            height: 30,
                                             child: Icon(
                                               MdiIcons.calendarAlert,
                                               color: Colors.white,
@@ -228,14 +231,14 @@ class _QuickHomeworkState extends State<QuickHomework> {
                                 Card(
                                   color: Theme.of(context).primaryColor,
                                   child: Container(
+                                    height: 50,
                                     padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.08),
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Container(
-                                            width: screenSize.size.width / 5 * 0.4,
-                                            height: screenSize.size.width / 5 * 0.4,
-                                            padding: EdgeInsets.all(screenSize.size.width / 5 * 0.01),
+                                            width: 30,
+                                            height: 30,
                                             child: Icon(
                                               MdiIcons.calendarWeek,
                                               color: Colors.white,

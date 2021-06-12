@@ -15,7 +15,7 @@ import 'package:ynotes/core/offline/data/disciplines/disciplines.dart';
 import 'package:ynotes/core/offline/data/homework/homework.dart';
 import 'package:ynotes/core/offline/data/polls/polls.dart';
 import 'package:ynotes/core/offline/offline.dart';
-import 'package:ynotes/core/utils/nullSafeMap.dart';
+import 'package:ynotes/core/utils/nullSafeMapGetter.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/screens/settings/settingsPage.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
@@ -153,9 +153,7 @@ class APIPronote extends API {
   
   @override
   Future<List> login(username, password, {url, cas, mobileCasLogin}) async {
-    var stack = StackTrace.current;
-    var stackString = "$stack";
-    print(stackString);
+    
     print(username + " " + password + " " + url);
     int req = 0;
 

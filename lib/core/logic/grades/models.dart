@@ -10,12 +10,16 @@ class Discipline {
   final String? generalAverage;
   @HiveField(1)
   final String? maxClassGeneralAverage;
+  @HiveField(20)
+  final String? minClassGeneralAverage;
   @HiveField(2)
   final String? classGeneralAverage;
   @HiveField(3)
   final String? disciplineCode;
   @HiveField(4)
-  final List<String?>? subdisciplineCode;
+  final List<String?>? subdisciplineCodes;
+  @HiveField(19)
+  final List<String?>? subdisciplineNames;
   @HiveField(5)
   final String? disciplineName;
   @HiveField(6)
@@ -44,80 +48,54 @@ class Discipline {
   final String? weight;
   @HiveField(18)
   String? periodCode;
-  Discipline({
-    this.gradesList,
-    this.maxClassGeneralAverage,
-    this.classGeneralAverage,
-    this.generalAverage,
-    this.classAverage,
-    this.minClassAverage,
-    this.maxClassAverage,
-    this.disciplineCode,
-    this.subdisciplineCode,
-    this.average,
-    this.teachers,
-    this.disciplineName,
-    this.periodName,
-    this.color,
-    this.disciplineRank,
-    this.classNumber,
-    this.generalRank,
-    this.weight,
-    this.periodCode
-  });
+  Discipline(
+      {this.gradesList,
+      this.maxClassGeneralAverage,
+      this.classGeneralAverage,
+      this.generalAverage,
+      this.classAverage,
+      this.minClassAverage,
+      this.maxClassAverage,
+      this.disciplineCode,
+      this.subdisciplineCodes,
+      this.average,
+      this.teachers,
+      this.disciplineName,
+      this.periodName,
+      this.color,
+      this.disciplineRank,
+      this.classNumber,
+      this.generalRank,
+      this.weight,
+      this.periodCode,
+      this.subdisciplineNames,
+      this.minClassGeneralAverage});
 
-  factory Discipline.fromEcoleDirecteJson(
-      {required Map<String, dynamic> json,
-      required List<String?> profs,
-      required String? periode,
-            required String? periodeId,
+  
+  
 
-      required String? moyenneG,
-      required String? bmoyenneClasse,
-      required String? moyenneClasse,
-      required Color color,
-      bool showrank = false,
-      String? effectifClasse = "0",
-      String? rangGeneral = "0"}) {
-    return Discipline(
-        subdisciplineCode: [],
-        disciplineCode: json['codeMatiere'],
-        disciplineName: json['discipline'],
-        average: json['moyenne'],
-        classAverage: json['moyenneClasse'],
-        minClassAverage: json['moyenneMin'],
-        maxClassAverage: json['moyenneMax'],
-        teachers: profs,
-        periodName: periode,
-        periodCode:periodeId,
-        color: color.value,
-        generalAverage: moyenneG,
-        maxClassGeneralAverage: bmoyenneClasse,
-        classGeneralAverage: moyenneClasse,
-        disciplineRank: showrank ? json["rang"] : null,
-        classNumber: effectifClasse,
-        generalRank: rangGeneral,
-        weight: json["coef"].toString());
-  }
+  @override
+  int get hashCode => super.hashCode;
 
   set setcolor(Color newcolor) {
     color = newcolor.value;
   }
 
+//Map<String, dynamic> json, List<String> profs, String codeMatiere, String periode, Color color, String moyenneG, String bmoyenneClasse, String moyenneClasse
+//disciplinesList.add(Discipline.fromJson(element, teachersNames, element['codeMatiere'], periodeElement["idPeriode"], Colors.blue, periodeElement["ensembleMatieres"]["moyenneGenerale"], periodeElement["ensembleMatieres"]["moyenneMax"], periodeElement["ensembleMatieres"]["moyenneClasse"]));
+
   set setGradeList(List<Grade> list) {
     gradesList = [];
   }
 
-//Map<String, dynamic> json, List<String> profs, String codeMatiere, String periode, Color color, String moyenneG, String bmoyenneClasse, String moyenneClasse
-//disciplinesList.add(Discipline.fromJson(element, teachersNames, element['codeMatiere'], periodeElement["idPeriode"], Colors.blue, periodeElement["ensembleMatieres"]["moyenneGenerale"], periodeElement["ensembleMatieres"]["moyenneMax"], periodeElement["ensembleMatieres"]["moyenneClasse"]));
-
+  //overrides == operator to avoid issues in selectors
   @override
   bool operator ==(Object other) =>
       other is Discipline &&
       other.disciplineCode == disciplineCode &&
       other.periodName == periodName &&
-      other.subdisciplineCode == subdisciplineCode;
-  //overrides == operator to avoid issues in selectors
+      other.subdisciplineCodes == subdisciplineCodes;
+
   double getAverage() {
     //if using Pronote
 
@@ -137,9 +115,6 @@ class Discipline {
     average = double.parse((average / counter).toStringAsFixed(2));
     return (average);
   }
-
-  @override
-  int get hashCode => super.hashCode;
 }
 
 //Marks class
@@ -221,8 +196,7 @@ class Grade {
     this.countAsZero = false,
   });
 
-  factory Grade.fromEcoleDirecteJson(
-      Map<String, dynamic> json, String? nomPeriode) {
+  factory Grade.fromEcoleDirecteJson(Map<String, dynamic> json, String? nomPeriode) {
     return Grade(
       min: json["minClasse"],
       max: json["maxClasse"],
@@ -248,6 +222,9 @@ class Grade {
   //overrides == operator to avoid issues in selectors
   //We use the most operator possible to avoid duplicates
   @override
+  int get hashCode => super.hashCode;
+
+  @override
   bool operator ==(Object other) =>
       other is Grade &&
       other.disciplineName == disciplineName &&
@@ -259,9 +236,6 @@ class Grade {
       other.testName == testName &&
       other.simulated == simulated &&
       other.scale == scale;
-
-  @override
-  int get hashCode => super.hashCode;
 }
 
 class Period {
