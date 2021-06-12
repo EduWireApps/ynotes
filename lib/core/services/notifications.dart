@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:android_alarm_manager/android_alarm_manager.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:html/parser.dart';
@@ -155,7 +156,7 @@ class AppNotification {
   }
 
   static initNotifications(BuildContext context, Function navigatorCallback) async {
-    if (Platform.isAndroid || Platform.isIOS) {
+    if (!kIsWeb  && (Platform.isAndroid || Platform.isIOS)) {
       AwesomeNotifications().initialize(null, [
         NotificationChannel(
             channelKey: 'alarm',
@@ -236,7 +237,7 @@ class AppNotification {
           ledColor: Colors.white)
     ]);
     List<AgendaReminder> reminders =
-        await (RemindersOffline(appSys.offline).getReminders(event.lesson!.id) as Future<List<AgendaReminder>>);
+        await (RemindersOffline(appSys.offline).getReminders(event.lesson!.id)) as List <AgendaReminder>;
     await Future.forEach(reminders, (AgendaReminder rmd) async {
       //Unschedule existing
       if (rmd.alarm == AlarmType.none) {

@@ -1,4 +1,3 @@
-
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/offline/offline.dart';
 
@@ -17,6 +16,7 @@ class AgendaEventsOffline {
       if (offline != null) {
         timeTable = Map<dynamic, dynamic>.from(await parent.agendaBox?.get("agendaEvents"));
       }
+      print(timeTable);
       if (timeTable[id] != null) {
         events.addAll(timeTable[id].cast<AgendaEvent>());
         events.removeWhere((element) => element.id == newData.id);
@@ -36,11 +36,11 @@ class AgendaEventsOffline {
       if (selector == null) {
         return parent.agendaBox?.get("agendaEvents")?[week]?.cast<AgendaEvent>();
       } else {
-        return parent.agendaBox?.get("agendaEvents")?[week]?.cast<AgendaEvent>().where(await selector);
+        return parent.agendaBox?.get("agendaEvents")?[week]?.cast<AgendaEvent>().where(await selector).toList();
       }
     } catch (e) {
       print("Error while returning agenda events for week $week " + e.toString());
-      
+
       return null;
     }
   }

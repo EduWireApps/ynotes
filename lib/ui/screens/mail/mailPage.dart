@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -302,7 +303,7 @@ class _MailPageState extends State<MailPage> with Layout {
                 }),
               ),
             ),
-            if (!Platform.isLinux)
+            if (!kIsWeb && !Platform.isLinux)
               Align(
                 alignment: Alignment.bottomRight,
                 child: Container(

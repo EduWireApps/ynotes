@@ -516,17 +516,18 @@ class PronoteClient {
   }
 
   Future<bool?> init() async {
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    if (!Platform.isLinux) {
+      PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
-    this.stepsLogger.add("ⓘ " +
-        DateFormat("dd/MM/yyyy hh:mm:ss").format(DateTime.now()) +
-        " Started login - yNotes version is : " +
-        packageInfo.version +
-        "+" +
-        packageInfo.buildNumber +
-        " T" +
-        Tests.testVersion);
-
+      this.stepsLogger.add("ⓘ " +
+          DateFormat("dd/MM/yyyy hh:mm:ss").format(DateTime.now()) +
+          " Started login - yNotes version is : " +
+          packageInfo.version +
+          "+" +
+          packageInfo.buildNumber +
+          " T" +
+          Tests.testVersion);
+    }
     var attributesandfunctions = await this.communication!.initialise();
     this.stepsLogger.add("✅ Initialized");
 

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -109,12 +110,12 @@ class _LoginWebViewState extends State<LoginWebView> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    if (Platform.isLinux)
+                    if (!kIsWeb  &&Platform.isLinux)
                       Text(
                         "La connexion par ENT n'est pas encore supportée sur Linux...",
                         style: TextStyle(fontFamily: "Asap", color: Colors.red),
                       ),
-                    if (!Platform.isLinux)
+                    if (!kIsWeb  && !Platform.isLinux)
                       Text(
                         "Patientez... nous vous connectons à l'ENT",
                         style: TextStyle(fontFamily: "Asap"),

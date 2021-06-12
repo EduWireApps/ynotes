@@ -405,7 +405,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> with Layout {
                                               .copy((initialPath ?? "") + path + "/" + (element.fileName ?? ""));
                                         } catch (e) {
                                           print(e);
-                                          if (Platform.isAndroid) {
+                                          if (!kIsWeb && Platform.isAndroid) {
                                             print("try to paste");
                                             var result = await Process.run(
                                                 'cp', ['-r', element.element.path, (initialPath ?? "") + path + "/"]);

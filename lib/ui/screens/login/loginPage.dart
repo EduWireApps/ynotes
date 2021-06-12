@@ -360,17 +360,19 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
             Color(0xff5C66C1),
           ],
         )),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Spacer(),
-            _loginTextAndHelpButton(),
-            Container(
-                height: screenSize.size.height / 10 * 4, width: screenSize.size.width, child: _buildPageView(true)),
-            Spacer(),
-            _buildMetaPart()
-          ],
+        child: Expanded(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Spacer(),
+              _loginTextAndHelpButton(),
+              Container(
+                  height: screenSize.size.height / 10 * 4, width: screenSize.size.width, child: _buildPageView(true)),
+              Spacer(),
+              _buildMetaPart()
+            ],
+          ),
         ));
   }
 
@@ -453,84 +455,88 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0))),
             contentPadding: EdgeInsets.only(top: 10.0),
             content: SingleChildScrollView(
-              child: Container(
-                padding: EdgeInsets.only(left: 5, right: 5, top: 20, bottom: 20),
-                child: Column(
-                  children: <Widget>[
-                    FutureBuilder<List>(
-                      future: connectionData,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData &&
-                            snapshot.data != null &&
-                            snapshot.data!.length > 0 &&
-                            snapshot.data![0] == 1) {
-                          Future.delayed(const Duration(milliseconds: 500), () {
-                            Navigator.pop(context);
-
-                            openAlertBox();
-                          });
-                          return Column(
-                            children: <Widget>[
-                              Icon(
-                                Icons.check_circle,
-                                size: MediaQuery.of(context).size.width / 5,
-                                color: Colors.lightGreen,
-                              ),
-                              Text(
-                                snapshot.data![1].toString(),
-                                textAlign: TextAlign.center,
-                              )
-                            ],
-                          );
-                        } else if (snapshot.hasData && snapshot.data![0] == 0) {
-                          print(snapshot.data);
-                          return Column(
-                            children: <Widget>[
-                              Icon(
-                                Icons.error,
-                                size: MediaQuery.of(context).size.width / 5,
-                                color: Colors.redAccent,
-                              ),
-                              Text(
-                                snapshot.data![1].toString(),
-                                textAlign: TextAlign.center,
-                              ),
-                              if (snapshot.data!.length > 2 &&
-                                  snapshot.data![2] != null &&
-                                  snapshot.data![2].length > 0)
-                                Container(
-                                  margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
-                                  child: CustomButtons.materialButton(
-                                    context,
-                                    MediaQuery.of(context).size.width / 5 * 1.5,
-                                    null,
-                                    () async {
-                                      List stepLogger = snapshot.data![2];
-                                      try {
-                                        //add step logs to clip board
-                                        await Clipboard.setData(new ClipboardData(text: stepLogger.join("\n")));
-                                        CustomDialogs.showAnyDialog(context, "Logs copiés dans le presse papier.");
-                                      } catch (e) {
-                                        CustomDialogs.showAnyDialog(
-                                            context, "Impossible de copier dans le presse papier !");
-                                      }
-                                    },
-                                    label: "Copier les logs",
-                                  ),
+              child: ConstrainedBox(
+                      constraints: BoxConstraints(maxWidth: 500),
+                child: Container(
+                  padding: EdgeInsets.only(left: 5, right: 5, top: 20, bottom: 20),
+                  child: Column(
+                    children: <Widget>[
+                      FutureBuilder<List>(
+                        future: connectionData,
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData &&
+                              snapshot.data != null &&
+                              snapshot.data!.length > 0 &&
+                              snapshot.data![0] == 1) {
+                            Future.delayed(const Duration(milliseconds: 500), () {
+                              Navigator.pop(context);
+              
+                              openAlertBox();
+                            });
+                            return Column(
+                              children: <Widget>[
+                                Icon(
+                                  Icons.check_circle,
+                                  size: 90,
+                                  color: Colors.lightGreen,
+                                ),
+                                Text(
+                                  snapshot.data![1].toString(),
+                                  textAlign: TextAlign.center,
                                 )
-                            ],
-                          );
-                        } else {
-                          return Container(
-                              width: 50,
-                              height: 50,
-                              child: CircularProgressIndicator(
-                                backgroundColor: Color(0xff444A83),
-                              ));
-                        }
-                      },
-                    )
-                  ],
+                              ],
+                            );
+                          } else if (snapshot.hasData && snapshot.data![0] == 0) {
+                            print(snapshot.data);
+                            return Column(
+                              children: <Widget>[
+                                Icon(
+                                  Icons.error,
+                                  size: 90,
+                                  color: Colors.redAccent,
+                                ),
+                                Text(
+                                  snapshot.data![1].toString(),
+                                  textAlign: TextAlign.center,
+                                ),
+                                if (snapshot.data!.length > 2 &&
+                                    snapshot.data![2] != null &&
+                                    snapshot.data![2].length > 0)
+                                  Container(
+                                    margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
+                                    child: CustomButtons.materialButton(
+                                      context,
+                                      120,
+                                      
+                                      null,
+                                      () async {
+                                        List stepLogger = snapshot.data![2];
+                                        try {
+                                          //add step logs to clip board
+                                          await Clipboard.setData(new ClipboardData(text: stepLogger.join("\n")));
+                                          CustomDialogs.showAnyDialog(context, "Logs copiés dans le presse papier.");
+                                        } catch (e) {
+                                          CustomDialogs.showAnyDialog(
+                                              context, "Impossible de copier dans le presse papier !");
+                                        }
+                                      },
+                                      label: "Copier les logs",
+                                    ),
+                                  )
+                              ],
+                            );
+                          } else {
+                            return Container(
+                                width: 50,
+                                height: 50,
+                                child: CircularProgressIndicator(
+                                  backgroundColor: Color(0xff444A83),
+                                ));
+                          }
+                        },
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -577,39 +583,43 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
   _buildMetaPart() {
     MediaQueryData screenSize = MediaQuery.of(context);
 
-    return Container(
-      margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
-      padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.4),
-      width: screenSize.size.width,
-      child: FittedBox(
-        fit: BoxFit.fitWidth,
+    return ConstrainedBox(
+      constraints: BoxConstraints(maxWidth: 480),
+      child: Container(
+        margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
+        padding: EdgeInsets.symmetric(horizontal: 5),
+        width: screenSize.size.width,
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            InkWell(
-                child: new Text(
-                  'Foire aux questions',
-                  style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: Colors.white60),
-                ),
-                onTap: () => launch('https://ynotes.fr/faq')),
-            SizedBox(
-              width: screenSize.size.width / 5 * 0.2,
+            Expanded(
+              child: InkWell(
+                  child: new Text(
+                    'Foire aux questions',
+                    textAlign: TextAlign.center,
+                    style:
+                        TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: Colors.white60, fontSize: 17),
+                  ),
+                  onTap: () => launch('https://ynotes.fr/faq')),
             ),
-            InkWell(
-                child: new Text(
-                  'PDC',
-                  style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: Colors.white60),
-                ),
-                onTap: () => launch('https://ynotes.fr/legal/PDCYNotes.pdf')),
-            SizedBox(
-              width: screenSize.size.width / 5 * 0.2,
+            Expanded(
+              child: InkWell(
+                  child: new Text('PDC',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          fontFamily: "Asap", fontWeight: FontWeight.bold, color: Colors.white60, fontSize: 17)),
+                  onTap: () => launch('https://ynotes.fr/legal/PDCYNotes.pdf')),
             ),
-            InkWell(
-                child: new Text(
-                  'CGU',
-                  style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: Colors.white60),
-                ),
-                onTap: () => launch('https://ynotes.fr/legal/CGUYNotes.pdf')),
+            Expanded(
+              child: InkWell(
+                  child: new Text(
+                    'CGU',
+                    textAlign: TextAlign.center,
+                    style:
+                        TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold, color: Colors.white60, fontSize: 17),
+                  ),
+                  onTap: () => launch('https://ynotes.fr/legal/CGUYNotes.pdf')),
+            ),
           ],
         ),
       ),
@@ -712,7 +722,8 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
               label: "Retourner au selecteur d'application",
               backgroundColor: Colors.white,
               icon: Icons.home,
-              textColor: Colors.black),
+              textColor: Colors.black,
+              padding: EdgeInsets.all(10)),
           Text(
             "Se connecter",
             style: TextStyle(fontFamily: 'Asap', color: Colors.white, fontSize: 38, fontWeight: FontWeight.bold),

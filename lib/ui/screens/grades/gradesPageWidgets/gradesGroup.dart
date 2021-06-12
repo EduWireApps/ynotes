@@ -69,7 +69,7 @@ class _GradesGroupState extends State<GradesGroup> {
           return 480;
         }
       } else {
-        return 480;
+        return 1500;
       }
     }
 
@@ -107,7 +107,6 @@ class _GradesGroupState extends State<GradesGroup> {
                       padding: EdgeInsets.symmetric(
                           vertical: (screenSize.size.height / 10 * 0.1), horizontal: screenSize.size.width / 5 * 0.1),
                       decoration: BoxDecoration(border: Border.all(width: 0.0, color: Colors.transparent)),
-                      width: screenSize.size.width / 5 * 4.5,
                       child: Stack(children: <Widget>[
                         if (widget.discipline != null && capitalizedNomDiscipline != null)
                           Container(
@@ -127,7 +126,8 @@ class _GradesGroupState extends State<GradesGroup> {
                                             : ((!widget.discipline!.getAverage().isNaN)
                                                 ? widget.discipline!.getAverage().toString()
                                                 : widget.discipline!.average ?? "-")),
-                                        style: TextStyle(fontFamily: "Asap", fontSize: 20, fontWeight: FontWeight.bold),
+                                        style:
+                                            TextStyle(fontFamily: "Asap", fontSize: 20, fontWeight: FontWeight.bold),
                                       ),
                                     )),
                                 SizedBox(
@@ -174,7 +174,6 @@ class _GradesGroupState extends State<GradesGroup> {
 
               //Body with columns
               Container(
-                width: screenSize.size.width / 5 * 4.51,
                 padding: EdgeInsets.symmetric(vertical: 10),
                 decoration: BoxDecoration(
                   color: Theme.of(context).primaryColor,

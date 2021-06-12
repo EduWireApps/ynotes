@@ -121,6 +121,7 @@ class _RecurringEventsDialogState extends State<RecurringEventsDialog> {
                     ),
                   ),
                 ),
+                
                 CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5, () async {
                   if (enabled!) {
                     if (everyDay! ? true : selectedDays.isNotEmpty) {

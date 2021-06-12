@@ -10,7 +10,7 @@ class Discipline {
   final String? generalAverage;
   @HiveField(1)
   final String? maxClassGeneralAverage;
-  @HiveField(19)
+  @HiveField(20)
   final String? minClassGeneralAverage;
   @HiveField(2)
   final String? classGeneralAverage;

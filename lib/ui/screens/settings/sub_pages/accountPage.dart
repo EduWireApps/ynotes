@@ -35,77 +35,84 @@ class _AccountPageState extends State<AccountPage> {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       body: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            LoginStatus(),
-            Card(
-              color: Theme.of(context).primaryColorLight,
-              child: Container(
-                padding: EdgeInsets.symmetric(
-                    horizontal: (screenSize.size.width / 5) * 0.1, vertical: (screenSize.size.width / 5) * 0.1),
-                child: Column(
-                  children: [
-                    buildMainAccountInfos(),
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: (screenSize.size.width / 5) * 0.1, vertical: (screenSize.size.width / 5) * 0.1),
-                      child: SingleChildScrollView(
-                          child: ExpansionPanelList(
-                              expandedHeaderPadding: EdgeInsets.zero,
-                              expansionCallback: (index, newVal) {
-                                print(index);
-                                setState(() {
-                                  expanded[index] = !(expanded[index] ?? false);
-                                });
-                              },
-                              children: (appSys.account!.managableAccounts ?? [])
-                                  .map((e) =>
-                                      buildAccountDetail(e, (appSys.account!.managableAccounts ?? []).indexOf(e)))
-                                  .toList())),
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              ConstrainedBox(constraints: BoxConstraints(maxWidth: 500), child: LoginStatus()),
+              ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 500),
+                child: Card(
+                  color: Theme.of(context).primaryColorLight,
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: 15, vertical: (screenSize.size.width / 5) * 0.1),
+                    child: Column(
+                      children: [
+                        buildMainAccountInfos(),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: (screenSize.size.width / 5) * 0.1, vertical: (screenSize.size.width / 5) * 0.1),
+                          child: SingleChildScrollView(
+                              child: ExpansionPanelList(
+                                  expandedHeaderPadding: EdgeInsets.zero,
+                                  expansionCallback: (index, newVal) {
+                                    print(index);
+                                    setState(() {
+                                      expanded[index] = !(expanded[index] ?? false);
+                                    });
+                                  },
+                                  children: (appSys.account!.managableAccounts ?? [])
+                                      .map((e) =>
+                                          buildAccountDetail(e, (appSys.account!.managableAccounts ?? []).indexOf(e)))
+                                      .toList())),
+                        ),
+                        CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.45, () async {
+                          if (await CustomDialogs.showConfirmationDialog(context, null,
+                                  alternativeText:
+                                      "Voulez-vous vraiment vous déconnecter (et supprimer toutes vos données) ?",
+                                  alternativeButtonConfirmText: "Se déconnecter") ??
+                              false) {
+                            await appSys.exitApp();
+                            setState(() {});
+                            Phoenix.rebirth(context);
+                          }
+                        },
+                            padding: EdgeInsets.all(5),
+                            backgroundColor: Colors.red,
+                            icon: MdiIcons.logout,
+                            iconColor: Colors.white,
+                            label: "Déconnexion",
+                            textColor: Colors.white),
+                      ],
                     ),
-                    CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.45, () async {
-                      if (await CustomDialogs.showConfirmationDialog(context, null,
-                              alternativeText:
-                                  "Voulez-vous vraiment vous déconnecter (et supprimer toutes vos données) ?",
-                              alternativeButtonConfirmText: "Se déconnecter") ??
-                          false) {
-                        await appSys.exitApp();
-                        setState(() {});
-                        Phoenix.rebirth(context);
-                      }
-                    },
-                        backgroundColor: Colors.red,
-                        icon: MdiIcons.logout,
-                        iconColor: Colors.white,
-                        label: "Déconnexion",
-                        textColor: Colors.white),
-                  ],
+                  ),
                 ),
               ),
-            ),
-            SizedBox(
-              height: screenSize.size.height / 10 * 0.2,
-            ),
-            GestureDetector(
-              onTap: () async {
-                launch('https://support.ynotes.fr/compte');
-              },
-              child: Text("En savoir plus sur les comptes",
-                  style: TextStyle(
-                    fontFamily: 'Asap',
-                    color: Colors.transparent,
-                    shadows: [Shadow(color: ThemeUtils.textColor(), offset: Offset(0, -5))],
-                    fontSize: 14,
-                    decorationColor: ThemeUtils.textColor(),
-                    fontWeight: FontWeight.normal,
-                    textBaseline: TextBaseline.alphabetic,
-                    decoration: TextDecoration.underline,
-                    decorationThickness: 2,
-                    decorationStyle: TextDecorationStyle.dashed,
-                  )),
-            ),
-          ],
+              SizedBox(
+                height: screenSize.size.height / 10 * 0.2,
+              ),
+              GestureDetector(
+                onTap: () async {
+                  launch('https://support.ynotes.fr/compte');
+                },
+                child: Text("En savoir plus sur les comptes",
+                    style: TextStyle(
+                      fontFamily: 'Asap',
+                      color: Colors.transparent,
+                      shadows: [Shadow(color: ThemeUtils.textColor(), offset: Offset(0, -5))],
+                      fontSize: 14,
+                      decorationColor: ThemeUtils.textColor(),
+                      fontWeight: FontWeight.normal,
+                      textBaseline: TextBaseline.alphabetic,
+                      decoration: TextDecoration.underline,
+                      decorationThickness: 2,
+                      decorationStyle: TextDecorationStyle.dashed,
+                    )),
+              ),
+            ],
+          ),
         ),
       ),
       appBar: new AppBar(
@@ -135,8 +142,8 @@ class _AccountPageState extends State<AccountPage> {
                 spacing: screenSize.size.width / 5 * 0.1,
                 children: [
                   Container(
-                    margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
-                    padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
+                    margin: EdgeInsets.only(left: 15),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
                     decoration: BoxDecoration(
                         color: Theme.of(context).primaryColorDark, borderRadius: BorderRadius.circular(11)),
                     child: Row(
@@ -151,12 +158,8 @@ class _AccountPageState extends State<AccountPage> {
                         Container(
                           padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width / 10 * 0.1),
                           child: Image(
-                            width: MediaQuery.of(context).size.width /
-                                5 *
-                                (appSys.account?.apiType == API_TYPE.EcoleDirecte ? 0.2 : 0.4),
-                            height: screenSize.size.width /
-                                5 *
-                                (appSys.account?.apiType == API_TYPE.EcoleDirecte ? 0.2 : 0.4),
+                            width: (appSys.account?.apiType == API_TYPE.EcoleDirecte ? 30 : 50),
+                            height: (appSys.account?.apiType == API_TYPE.EcoleDirecte ? 30 : 20),
                             image: AssetImage(appSys.account?.apiType == API_TYPE.EcoleDirecte
                                 ? 'assets/images/EcoleDirecte/EcoleDirecteIcon.png'
                                 : 'assets/images/Pronote/PronoteIcon.png'),
@@ -167,7 +170,7 @@ class _AccountPageState extends State<AccountPage> {
                     ),
                   ),
                   SizedBox(
-                    width: MediaQuery.of(context).size.width / 5 * 0.3,
+                    width: 15,
                   ),
                   Text(
                     account.name ?? "",
@@ -268,7 +271,7 @@ class _AccountPageState extends State<AccountPage> {
     return Column(
       children: [
         Wrap(
-          spacing: screenSize.size.width / 5 * 0.05,
+          spacing: 5,
           children: [
             Text(
               "Bonjour " + (appSys.account?.name ?? "{pas de nom}"),
@@ -380,29 +383,29 @@ class _LoginStatusState extends State<LoginStatus> {
       _loginController.actualState,
       {
         loginStatus.loggedOff: SpinKitThreeBounce(
-          size: screenSize.size.width / 5 * 0.3,
+          size: 50,
           color: Colors.black38,
         ),
         loginStatus.offline: Icon(
           MdiIcons.networkStrengthOff,
-          size: screenSize.size.width / 5 * 0.3,
+          size: 50,
           color: Colors.black38,
         ),
         loginStatus.error: GestureDetector(
           child: Icon(
             MdiIcons.exclamation,
-            size: screenSize.size.width / 5 * 0.3,
+            size: 50,
             color: Colors.black38,
           ),
         ),
         loginStatus.loggedIn: Icon(
           MdiIcons.check,
-          size: screenSize.size.width / 5 * 0.3,
+          size: 50,
           color: Colors.black38,
         )
       },
       SpinKitThreeBounce(
-        size: screenSize.size.width / 5 * 0.4,
+        size: 50,
         color: Colors.black38,
       ),
     ) as Widget;

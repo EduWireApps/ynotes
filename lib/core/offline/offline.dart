@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/globals.dart';
@@ -25,9 +27,13 @@ class HiveBoxProvider {
 
   static Future init() async {
     if (_initFlutterFuture == null) {
-      var dir = await FolderAppUtil.getDirectory();
       try {
-        Hive.init("${dir.path}/offline");
+        if (kIsWeb) {
+          await Hive.initFlutter();
+        } else {
+          var dir = await FolderAppUtil.getDirectory();
+          Hive.init("${dir.path}/offline");
+        }
       } catch (e) {
         print("Issue while initing Hive : " + e.toString());
       }

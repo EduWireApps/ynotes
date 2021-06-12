@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -112,11 +114,13 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                                       } else {
                                         await AgendaEventsOffline(appSys.offline)
                                             .addAgendaEvent(temp, await getWeek(temp.start));
-                                        await AppNotification.scheduleAgendaReminders(temp);
+                                        if (Platform.isIOS || Platform.isAndroid) {
+                                          await AppNotification.scheduleAgendaReminders(temp);
+                                        }
+                                        setState(() {
+                                          this.widget.event = temp;
+                                        });
                                       }
-                                      setState(() {
-                                        this.widget.event = temp;
-                                      });
                                     }
                                   },
                                   child: new Icon(
@@ -204,8 +208,8 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                             return GestureDetector(
                               onTap: () async {
                                 AgendaReminder? reminder =
-                                    await (agendaEventEdit(context, false, lessonID: widget.event.id)
-                                        as Future<AgendaReminder?>);
+                                    (await (agendaEventEdit(context, false, lessonID: widget.event.id)))
+                                        as AgendaReminder?;
                                 if (reminder != null) {
                                   setState(() {
                                     reminders.add(reminder);
@@ -237,8 +241,8 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                                             child: RawMaterialButton(
                                               onPressed: () async {
                                                 AgendaReminder? reminder =
-                                                    await (agendaEventEdit(context, false, lessonID: widget.event.id)
-                                                        as Future<AgendaReminder?>);
+                                                    (await agendaEventEdit(context, false, lessonID: widget.event.id))
+                                                        as AgendaReminder?;
                                                 if (reminder != null) {
                                                   setState(() {
                                                     reminders.add(reminder);
@@ -289,6 +293,8 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                           } else {
                             return GestureDetector(
                               onTap: () async {
+                                print(reminders[index]);
+
                                 var reminder = await agendaEventEdit(context, false,
                                     lessonID: widget.event.id, reminder: reminders[index]);
 
@@ -314,92 +320,90 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                                   color: reminders[index].realTagColor,
                                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
                                   child: Container(
-                                    width: screenSize.size.width / 5 * 4.5,
                                     height: screenSize.size.height / 10 * 0.8,
                                     padding: EdgeInsets.symmetric(
                                         horizontal: screenSize.size.width / 5 * 0.2,
                                         vertical: screenSize.size.height / 10 * 0.1),
-                                    child: FittedBox(
-                                      child: Wrap(
-                                        direction: Axis.horizontal,
-                                        alignment: WrapAlignment.center,
-                                        crossAxisAlignment: WrapCrossAlignment.center,
-                                        children: [
-                                          //Plus button
-                                          if (reminders[index].alarm != AlarmType.none)
-                                            Container(
-                                              width: screenSize.size.width / 5 * 0.4,
-                                              height: screenSize.size.width / 5 * 0.4,
-                                              child: RawMaterialButton(
-                                                onPressed: () async {
-                                                  var reminder = await agendaEventEdit(context, false,
-                                                      lessonID: widget.event.id, reminder: reminders[index]);
+                                    child: Wrap(
+                                      direction: Axis.horizontal,
+                                      alignment: WrapAlignment.center,
+                                      crossAxisAlignment: WrapCrossAlignment.center,
+                                      children: [
+                                        //Plus button
+                                        if (reminders[index].alarm != AlarmType.none)
+                                          Container(
+                                            width: screenSize.size.width / 5 * 0.4,
+                                            height: screenSize.size.width / 5 * 0.4,
+                                            child: RawMaterialButton(
+                                              onPressed: () async {
+                                                var reminder = await agendaEventEdit(context, false,
+                                                    lessonID: widget.event.id, reminder: reminders[index]);
 
-                                                  if (reminder != null) {
-                                                    if (reminder.runtimeType.toString().contains("String")) {
-                                                      if (reminder == "removed") {
-                                                        await AppNotification.cancelNotification(
-                                                            reminders[index].id.hashCode);
-                                                        setState(() {
-                                                          reminders.removeAt(index);
-                                                        });
-                                                      }
-                                                    } else {
+                                                if (reminder != null) {
+                                                  if (reminder.runtimeType.toString().contains("String")) {
+                                                    if (reminder == "removed") {
+                                                      await AppNotification.cancelNotification(
+                                                          reminders[index].id.hashCode);
                                                       setState(() {
-                                                        reminders.add(reminder);
+                                                        reminders.removeAt(index);
                                                       });
-                                                      RemindersOffline(appSys.offline).updateReminders(reminder);
-                                                      await AppNotification.scheduleReminders(widget.event);
                                                     }
+                                                  } else {
+                                                    setState(() {
+                                                      reminders.add(reminder);
+                                                    });
+                                                    RemindersOffline(appSys.offline).updateReminders(reminder);
+                                                    await AppNotification.scheduleReminders(widget.event);
                                                   }
-                                                },
-                                                child: FittedBox(
-                                                  child: Row(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    crossAxisAlignment: CrossAxisAlignment.center,
-                                                    children: [
-                                                      Container(
-                                                        width: screenSize.size.width / 5 * 0.3,
-                                                        height: screenSize.size.width / 5 * 0.3,
-                                                        padding: EdgeInsets.all(
-                                                          screenSize.size.width / 5 * 0.05,
-                                                        ),
-                                                        child: FittedBox(
-                                                          child: new Icon(
-                                                            MdiIcons.bellRing,
-                                                            color: ThemeUtils.textColor(),
-                                                          ),
+                                                }
+                                              },
+                                              child: FittedBox(
+                                                child: Row(
+                                                  mainAxisAlignment: MainAxisAlignment.center,
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: [
+                                                    Container(
+                                                      width: screenSize.size.width / 5 * 0.3,
+                                                      height: screenSize.size.width / 5 * 0.3,
+                                                      padding: EdgeInsets.all(
+                                                        screenSize.size.width / 5 * 0.05,
+                                                      ),
+                                                      child: FittedBox(
+                                                        child: new Icon(
+                                                          MdiIcons.bellRing,
+                                                          color: ThemeUtils.textColor(),
                                                         ),
                                                       ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                shape: new CircleBorder(),
-                                                elevation: 1.0,
-                                                fillColor: Theme.of(context).primaryColor,
-                                              ),
-                                            ),
-                                          SizedBox(width: screenSize.size.width / 5 * 0.1),
-                                          if (reminders[index].name != null && reminders[index].name!.length > 0)
-                                            Container(
-                                              height: screenSize.size.height / 10 * 0.4,
-                                              child: FittedBox(
-                                                child: Column(
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  children: [
-                                                    Text(
-                                                      reminders[index].name!,
-                                                      style: TextStyle(
-                                                          fontFamily: "Asap",
-                                                          color: ThemeUtils.textColor(),
-                                                          textBaseline: TextBaseline.ideographic),
                                                     ),
                                                   ],
                                                 ),
                                               ),
-                                            )
-                                        ],
-                                      ),
+                                              shape: new CircleBorder(),
+                                              elevation: 1.0,
+                                              fillColor: Theme.of(context).primaryColor,
+                                            ),
+                                          ),
+                                        if (reminders[index].alarm != AlarmType.none)
+                                          SizedBox(width: screenSize.size.width / 5 * 0.1),
+                                        if (reminders[index].name != null && reminders[index].name!.length > 0)
+                                          Container(
+                                            height: screenSize.size.height / 10 * 0.4,
+                                            child: FittedBox(
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  Text(
+                                                    reminders[index].name!,
+                                                    style: TextStyle(
+                                                        fontFamily: "Asap",
+                                                        color: ThemeUtils.textColor(),
+                                                        textBaseline: TextBaseline.ideographic),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          )
+                                      ],
                                     ),
                                   )),
                             );

@@ -61,40 +61,43 @@ class _PronoteSetupPartState extends State<PronoteSetupPart> {
         onTap: () {
           widget.callback!(id);
         },
-        child: Container(
-          width: screenSize.size.width / 5 * 4,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(18),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Container(
-                  width: screenSize.size.width / 5 * 1.1,
-                  height: screenSize.size.width / 5 * 1.1,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(18),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: 500),
+          child: Container(
+            width: screenSize.size.width / 5 * 4,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(18),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                    width: 90,
+                    height: 90,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(icon, size: 70),
+                      ],
+                    )),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(icon, size: screenSize.size.width / 5 * 0.5),
+                      Container(
+                          child: Text(label,
+                              style: TextStyle(fontFamily: "Asap", color: Colors.black, fontWeight: FontWeight.bold))),
+                      Container(child: Text(description, style: TextStyle(fontFamily: "Asap", color: Colors.black)))
                     ],
-                  )),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                        child: Text(label,
-                            style: TextStyle(fontFamily: "Asap", color: Colors.black, fontWeight: FontWeight.bold))),
-                    Container(child: Text(description, style: TextStyle(fontFamily: "Asap", color: Colors.black)))
-                  ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

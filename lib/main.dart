@@ -1,8 +1,6 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:background_fetch/background_fetch.dart';
-import 'package:desktop_window/desktop_window.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -29,10 +27,10 @@ Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   appSys = ApplicationSystem();
   await appSys.initApp();
-  BackgroundFetch.registerHeadlessTask(_headlessTask);
+  if (!kIsWeb) BackgroundFetch.registerHeadlessTask(_headlessTask);
 
   runZoned<Future<Null>>(() async {
     runApp(Phoenix(child: HomeApp()));

@@ -153,9 +153,7 @@ class APIPronote extends API {
   
   @override
   Future<List> login(username, password, {url, cas, mobileCasLogin}) async {
-    var stack = StackTrace.current;
-    var stackString = "$stack";
-    print(stackString);
+    
     print(username + " " + password + " " + url);
     int req = 0;
 

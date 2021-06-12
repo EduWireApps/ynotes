@@ -121,7 +121,7 @@ class _GradesPageState extends State<GradesPage> with Layout {
                   child: RefreshIndicator(
                       onRefresh: forceRefreshGrades,
                       child: Container(
-                          width: screenSize.size.width / 5 * 4.7,
+                          width: screenSize.size.width,
                           margin: EdgeInsets.only(top: 0),
                           decoration: BoxDecoration(
                               border: Border.all(width: 0.000000, color: Colors.transparent),
@@ -162,7 +162,8 @@ class _GradesPageState extends State<GradesPage> with Layout {
                                                     width: screenSize.size.width,
                                                     child: LayoutBuilder(builder: (context, constraints) {
                                                       return StaggeredGridView.countBuilder(
-                                                        padding: EdgeInsets.symmetric(horizontal: 15),
+                                                        padding:
+                                                            EdgeInsets.symmetric(horizontal: isLargeScreen ? 15 : 5),
                                                         crossAxisCount: 4,
                                                         itemCount: model.disciplines()!.length,
                                                         itemBuilder: (BuildContext context, int index) =>
@@ -253,40 +254,39 @@ class _GradesPageState extends State<GradesPage> with Layout {
                                   } else {
                                     //Loading group
                                     return Expanded(
-                                            child: ShaderMask(
-                                                shaderCallback: (Rect rect) {
-                                                  return LinearGradient(
-                                                    begin: Alignment.topCenter,
-                                                    end: Alignment.bottomCenter,
-                                                    colors: [
-                                                      Colors.purple,
-                                                      Colors.transparent,
-                                                      Colors.transparent,
-                                                      Colors.purple
-                                                    ],
-                                                    stops: [0, 0, 0.9, 1.0], // 10% purple, 80% transparent, 10% purple
-                                                  ).createShader(rect);
-                                                },
-                                                blendMode: BlendMode.dstOut,
-                                                child: Container(
-                                                    width: screenSize.size.width,
-                                                    child: LayoutBuilder(builder: (context, constraints) {
-                                                      return StaggeredGridView.countBuilder(
-                                                        padding: EdgeInsets.symmetric(horizontal: 15),
-                                                        crossAxisCount: 4,
-                                                        itemCount: 18,
-                                                        itemBuilder: (BuildContext context, int index) =>
-                                                            new GradesGroup(
-                                                          discipline: null,
-                                                          gradesController: model,
-                                                        ),
-                                                        staggeredTileBuilder: (int index) =>
-                                                            new StaggeredTile.fit(isLargeScreen ? 2 : 4),
-                                                        mainAxisSpacing: 15,
-                                                        crossAxisSpacing: 10,
-                                                      );
-                                                    }))),
-                                          );
+                                      child: ShaderMask(
+                                          shaderCallback: (Rect rect) {
+                                            return LinearGradient(
+                                              begin: Alignment.topCenter,
+                                              end: Alignment.bottomCenter,
+                                              colors: [
+                                                Colors.purple,
+                                                Colors.transparent,
+                                                Colors.transparent,
+                                                Colors.purple
+                                              ],
+                                              stops: [0, 0, 0.9, 1.0], // 10% purple, 80% transparent, 10% purple
+                                            ).createShader(rect);
+                                          },
+                                          blendMode: BlendMode.dstOut,
+                                          child: Container(
+                                              width: screenSize.size.width,
+                                              child: LayoutBuilder(builder: (context, constraints) {
+                                                return StaggeredGridView.countBuilder(
+                                                  padding: EdgeInsets.symmetric(horizontal: 15),
+                                                  crossAxisCount: 4,
+                                                  itemCount: 18,
+                                                  itemBuilder: (BuildContext context, int index) => new GradesGroup(
+                                                    discipline: null,
+                                                    gradesController: model,
+                                                  ),
+                                                  staggeredTileBuilder: (int index) =>
+                                                      new StaggeredTile.fit(isLargeScreen ? 2 : 4),
+                                                  mainAxisSpacing: 15,
+                                                  crossAxisSpacing: 10,
+                                                );
+                                              }))),
+                                    );
                                   }
                                 }),
                               ),

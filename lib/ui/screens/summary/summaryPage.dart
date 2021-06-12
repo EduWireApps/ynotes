@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:expandable/expandable.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -78,7 +79,7 @@ class SummaryPageState extends State<SummaryPage> with Layout {
       body: VisibilityDetector(
         key: Key('sumpage'),
         onVisibilityChanged: (visibilityInfo) async {
-          if (Platform.isAndroid || Platform.isIOS) {
+          if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
             await Permission.notification.request();
           }
           //Ensure that page is visible

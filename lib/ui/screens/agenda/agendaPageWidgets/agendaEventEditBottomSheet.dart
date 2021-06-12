@@ -9,7 +9,9 @@ import 'package:ynotes/core/offline/data/agenda/events.dart';
 import 'package:ynotes/core/offline/data/agenda/reminders.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
+import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
+import 'package:ynotes/ui/components/modalBottomSheets/dragHandle.dart';
 
 ///Agenda event editor, has to be called with a `buildContext`, and the boolean `isLesson` is not optionnal to avoid any confusions.
 ///`customEvent` and `reminder` are optionals (for editing existing events), but can't both be set.
@@ -51,7 +53,7 @@ class AgendaEventEditLayout extends StatefulWidget {
   //Custom event stuff
   AgendaEvent? customEvent;
 
-  AgendaEventEditLayout(this.isCustomEvent, {reminder, this.lessonID, this.customEvent, this.defaultDate});
+  AgendaEventEditLayout(this.isCustomEvent, {this.reminder, this.lessonID, this.customEvent, this.defaultDate});
 
   @override
   _AgendaEventEditLayoutState createState() => _AgendaEventEditLayoutState();
@@ -103,89 +105,11 @@ class _AgendaEventEditLayoutState extends State<AgendaEventEditLayout> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
-                    Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          GestureDetector(
-                              onTap: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: Container(
-                                  margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
-                                  child: Icon(MdiIcons.cancel, color: Colors.orange))),
-                          if (this.widget.customEvent != null || this.widget.reminder != null)
-                            GestureDetector(
-                                onTap: () async {
-                                  if (this.widget.customEvent != null) {
-                                    if (this.widget.customEvent!.recurrenceScheme != null &&
-                                        this.widget.customEvent!.recurrenceScheme != "0") {
-                                      await AgendaEventsOffline(appSys.offline)
-                                          .removeAgendaEvent(id, await getWeek(this.widget.customEvent!.start!));
-                                      await AgendaEventsOffline(appSys.offline)
-                                          .removeAgendaEvent(id, this.widget.customEvent!.recurrenceScheme);
-                                    } else {
-                                      await AgendaEventsOffline(appSys.offline)
-                                          .removeAgendaEvent(id, await getWeek(this.widget.customEvent!.start!));
-                                    }
-                                  }
-                                  if (this.widget.reminder != null) {
-                                    RemindersOffline(appSys.offline).remove(id);
-                                  }
-                                  Navigator.of(context).pop("removed");
-                                },
-                                child: Container(
-                                    margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
-                                    child: Icon(
-                                        (this.widget.isCustomEvent && this.widget.customEvent!.isLesson!)
-                                            ? MdiIcons.restore
-                                            : MdiIcons.trashCan,
-                                        color: Colors.deepOrange))),
-                          GestureDetector(
-                              onTap: () {
-                                //Exit with a value
-                                if (widget.isCustomEvent && !wholeDay! && start!.isAtSameMomentAs(end!)) {
-                                  CustomDialogs.showAnyDialog(
-                                      context, "Le début et la fin ne peuvent pas être au même moment.");
-                                } else {
-                                  if (!widget.isCustomEvent) {
-                                    AgendaReminder reminder = AgendaReminder(
-                                        widget.lessonID, titleController.text, alarm, id ?? (widget.lessonID! + "1"),
-                                        description: descriptionController.text, tagColor: tagColor.value);
-                                    Navigator.of(context).pop(reminder);
-                                  }
-                                  if (widget.isCustomEvent) {
-                                    if (wholeDay!) {}
-                                    AgendaEvent event = AgendaEvent(
-                                        wholeDay! ? widget.defaultDate : start,
-                                        wholeDay! ? widget.defaultDate : end,
-                                        titleController.text.trim(),
-                                        location,
-                                        null,
-                                        null,
-                                        canceled,
-                                        id,
-                                        null,
-                                        wholeDay: wholeDay,
-                                        color: tagColor.value,
-                                        alarm: alarm,
-                                        lesson: lesson,
-                                        isLesson: lesson != null,
-                                        description: descriptionController.text.trim(),
-                                        recurrenceScheme: recurringScheme);
-                                    Navigator.of(context).pop(event);
-                                  }
-                                }
-                              },
-                              child: Container(
-                                  margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
-                                  child: Icon(MdiIcons.check, color: ThemeUtils.textColor()))),
-                        ],
-                      ),
-                    ),
                     SingleChildScrollView(
                       child: Column(
                         children: [
+                          SizedBox(height: screenSize.size.height / 10 * 0.2),
+                          DragHandle(),
                           SizedBox(height: screenSize.size.height / 10 * 0.2),
                           Container(
                             margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
@@ -209,7 +133,6 @@ class _AgendaEventEditLayoutState extends State<AgendaEventEditLayout> {
                               }
                             },
                             child: Container(
-                              margin: EdgeInsets.only(left: 15),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: [
@@ -386,7 +309,7 @@ class _AgendaEventEditLayoutState extends State<AgendaEventEditLayout> {
                               ),
                             ),
                           ),
-                          if (widget.isCustomEvent) Divider(height: screenSize.size.height / 10 * 0.4),
+                          Divider(),
                           GestureDetector(
                             onTap: () async {
                               var choice = await CustomDialogs.showMultipleChoicesDialog(
@@ -436,6 +359,42 @@ class _AgendaEventEditLayoutState extends State<AgendaEventEditLayout> {
                             ),
                           ),
                           Divider(height: screenSize.size.height / 10 * 0.4),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5, () async {
+                                Navigator.pop(context);
+                              },
+                                  label: "Annuler",
+                                  backgroundColor: Colors.grey,
+                                  padding: EdgeInsets.all(5),
+                                  borderRadius: BorderRadius.circular(8)),
+                              if (this.widget.customEvent != null || this.widget.reminder != null)
+                                CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5,
+                                    () async {
+                                  deleteOrReset();
+                                },
+                                    label: (this.widget.isCustomEvent && this.widget.customEvent!.isLesson!)
+                                        ? "Réinitialiser"
+                                        : "Supprimer",
+                                    backgroundColor: Colors.orange,
+                                    padding: EdgeInsets.all(5),
+                                    borderRadius: BorderRadius.circular(8)),
+                              CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5, () async {
+                                createEvent();
+                              },
+                                  label: "J'ai fini",
+                                  backgroundColor:
+                                      !(widget.isCustomEvent && !wholeDay! && start!.isAtSameMomentAs(end!))
+                                          ? Colors.green
+                                          : Theme.of(context).primaryColorDark,
+                                  padding: EdgeInsets.all(5),
+                                  borderRadius: BorderRadius.circular(8)),
+                            ],
+                          ),
+                          SizedBox(
+                            height: 10,
+                          )
                         ],
                       ),
                     )
@@ -445,6 +404,48 @@ class _AgendaEventEditLayoutState extends State<AgendaEventEditLayout> {
         ),
       ],
     );
+  }
+
+  void createEvent() async {
+    //Exit with a value
+    if (widget.isCustomEvent && !wholeDay! && start!.isAtSameMomentAs(end!)) {
+      CustomDialogs.showAnyDialog(context, "Le début et la fin ne peuvent pas être au même moment.");
+    } else {
+      if (!widget.isCustomEvent) {
+        AgendaReminder reminder = AgendaReminder(
+            widget.lessonID, titleController.text, alarm, id ?? (widget.lessonID! + "1"),
+            description: descriptionController.text, tagColor: tagColor.value);
+        Navigator.of(context).pop(reminder);
+      }
+      if (widget.isCustomEvent) {
+        if (wholeDay!) {}
+        AgendaEvent event = AgendaEvent(wholeDay! ? widget.defaultDate : start, wholeDay! ? widget.defaultDate : end,
+            titleController.text.trim(), location, null, null, canceled, id, null,
+            wholeDay: wholeDay,
+            color: tagColor.value,
+            alarm: alarm,
+            lesson: lesson,
+            isLesson: lesson != null,
+            description: descriptionController.text.trim(),
+            recurrenceScheme: recurringScheme);
+        Navigator.of(context).pop(event);
+      }
+    }
+  }
+
+  void deleteOrReset() async {
+    if (this.widget.customEvent != null) {
+      if (this.widget.customEvent!.recurrenceScheme != null && this.widget.customEvent!.recurrenceScheme != "0") {
+        await AgendaEventsOffline(appSys.offline).removeAgendaEvent(id, await getWeek(this.widget.customEvent!.start!));
+        await AgendaEventsOffline(appSys.offline).removeAgendaEvent(id, this.widget.customEvent!.recurrenceScheme);
+      } else {
+        await AgendaEventsOffline(appSys.offline).removeAgendaEvent(id, await getWeek(this.widget.customEvent!.start!));
+      }
+    }
+    if (this.widget.reminder != null) {
+      RemindersOffline(appSys.offline).remove(id);
+    }
+    Navigator.of(context).pop("removed");
   }
 
   @override

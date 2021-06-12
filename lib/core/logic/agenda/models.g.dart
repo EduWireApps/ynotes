@@ -302,16 +302,6 @@ Map<String, dynamic> _$LessonToJson(Lesson instance) => <String, dynamic>{
       'id': instance.id,
     };
 
-AgendaReminder _$AgendaReminderFromJson(Map<String, dynamic> json) {
-  return AgendaReminder(
-    json['lessonID'] as String?,
-    json['name'] as String?,
-    _$enumDecodeNullable(_$AlarmTypeEnumMap, json['alarm']),
-    json['id'] as String?,
-    description: json['description'] as String?,
-    tagColor: json['tagColor'] as int?,
-  );
-}
 
 Map<String, dynamic> _$AgendaReminderToJson(AgendaReminder instance) =>
     <String, dynamic>{
@@ -369,31 +359,7 @@ const _$AlarmTypeEnumMap = {
   AlarmType.oneDay: 'oneDay',
 };
 
-AgendaEvent _$AgendaEventFromJson(Map<String, dynamic> json) {
-  return AgendaEvent(
-    json['start'] == null ? null : DateTime.parse(json['start'] as String),
-    json['end'] == null ? null : DateTime.parse(json['end'] as String),
-    json['name'] as String?,
-    json['location'] as String?,
-    (json['left'] as num?)?.toDouble(),
-    (json['height'] as num?)?.toDouble(),
-    json['canceled'] as bool?,
-    json['id'] as String?,
-    (json['width'] as num?)?.toDouble(),
-    wholeDay: json['wholeDay'] as bool?,
-    isLesson: json['isLesson'] as bool?,
-    lesson: json['lesson'] == null
-        ? null
-        : Lesson.fromJson(json['lesson'] as Map<String, dynamic>),
-    reminders: (json['reminders'] as List<dynamic>?)
-        ?.map((e) => AgendaReminder.fromJson(e as Map<String, dynamic>))
-        .toList(),
-    description: json['description'] as String?,
-    alarm: _$enumDecodeNullable(_$AlarmTypeEnumMap, json['alarm']),
-    color: json['color'] as int?,
-    recurrenceScheme: json['recurrenceScheme'] as String?,
-  );
-}
+
 
 Map<String, dynamic> _$AgendaEventToJson(AgendaEvent instance) =>
     <String, dynamic>{

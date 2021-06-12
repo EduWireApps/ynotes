@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:csv/csv.dart';
 import 'package:ext_storage/ext_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path/path.dart' as path;
@@ -65,7 +66,7 @@ class FileAppUtil {
     try {
       List file = [];
 
-      if (Platform.isLinux || await Permission.storage.request().isGranted) {
+      if (!kIsWeb && (Platform.isLinux || await Permission.storage.request().isGranted)) {
         try {
           file = Directory(path).listSync();
         } catch (e) {
@@ -165,21 +166,21 @@ class FolderAppUtil {
   }
 
   static getDirectory({bool download = false}) async {
-    if (download && Platform.isAndroid) {
+    if (download && !kIsWeb && Platform.isAndroid) {
       final dir = await ExtStorage.getExternalStoragePublicDirectory(ExtStorage.DIRECTORY_DOWNLOADS);
 
       return dir;
     }
-    if (Platform.isAndroid) {
+    if (!kIsWeb && Platform.isAndroid) {
       var dir = await getExternalStorageDirectory();
 
       return download ? dir!.path : dir;
     }
-    if (Platform.isIOS) {
+    if (!kIsWeb && Platform.isIOS) {
       var dir = await getApplicationDocumentsDirectory();
       return download ? dir.path : dir;
     }
-    if (Platform.isLinux) {
+    if (!kIsWeb && Platform.isLinux) {
       var dir = await getApplicationDocumentsDirectory();
       Directory realDir = Directory(dir.path + "/" + "yNotesApp" + "/" + "files");
       return download ? realDir.path : realDir;

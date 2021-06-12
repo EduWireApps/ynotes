@@ -101,45 +101,43 @@ class CustomDialogs {
       {String alternativeText = "Voulez vous vraiment supprimer cet élément (irréversible) ?",
       String alternativeButtonConfirmText = "SUPPRIMER"}) {
     // set up the AlertDialog
-    var alert = Theme(
-        data: Theme.of(context).copyWith(dialogBackgroundColor: Theme.of(context).primaryColor),
-        child: AlertDialog(
-          elevation: 50,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-          title: Text(
-            "Confirmation",
-            style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-          ),
-          content: Text(
-            alternativeText,
-            style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-          ),
-          actions: [
-            TextButton(
-              child: const Text('ANNULER', style: TextStyle(color: Colors.green), textScaleFactor: 1.0),
-              onPressed: () {
-                if (show != null) {
-                  show();
-                }
+    var alert = AlertDialog(
+      elevation: 50,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+      title: Text(
+        "Confirmation",
+        style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+      ),
+      content: Text(
+        alternativeText,
+        style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+      ),
+      actions: [
+        TextButton(
+          child: const Text('ANNULER', style: TextStyle(color: Colors.green), textScaleFactor: 1.0),
+          onPressed: () {
+            if (show != null) {
+              show();
+            }
 
-                Navigator.pop(context, false);
-              },
-            ),
-            TextButton(
-              child: Text(
-                alternativeButtonConfirmText.toUpperCase(),
-                style: TextStyle(color: Colors.red),
-                textScaleFactor: 1.0,
-              ),
-              onPressed: () {
-                if (show != null) {
-                  show();
-                }
-                Navigator.pop(context, true);
-              },
-            )
-          ],
-        ));
+            Navigator.pop(context, false);
+          },
+        ),
+        TextButton(
+          child: Text(
+            alternativeButtonConfirmText.toUpperCase(),
+            style: TextStyle(color: Colors.red),
+            textScaleFactor: 1.0,
+          ),
+          onPressed: () {
+            if (show != null) {
+              show();
+            }
+            Navigator.pop(context, true);
+          },
+        )
+      ],
+    );
 
     // show the dialog
     return showDialog<bool?>(

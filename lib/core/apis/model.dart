@@ -3,7 +3,6 @@ import 'dart:core';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart';
-import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
@@ -58,9 +57,7 @@ abstract class API {
       lessons.sort((a, b) => a.end!.compareTo(b.end!));
     }
    
-    if (extracurricularEvents != null) {
-      events.addAll(extracurricularEvents);
-    }
+    events.addAll(extracurricularEvents);
     RecurringEventSchemes recurr = RecurringEventSchemes();
     recurr.date = date;
     recurr.week = week;
