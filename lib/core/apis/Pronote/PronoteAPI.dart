@@ -16,7 +16,7 @@ import 'package:pointycastle/pointycastle.dart';
 import 'package:requests/requests.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
-import 'package:ynotes/core/utils/nullSafeMap.dart';
+import 'package:ynotes/core/utils/nullSafeMapGetter.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/tests.dart';
 

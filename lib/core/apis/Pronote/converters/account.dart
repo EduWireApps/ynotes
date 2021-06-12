@@ -1,6 +1,6 @@
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/logic/appConfig/models.dart';
-import 'package:ynotes/core/utils/nullSafeMap.dart';
+import 'package:ynotes/core/utils/nullSafeMapGetter.dart';
 import 'package:ynotes/main.dart';
 
 class PronoteAccountConverter {

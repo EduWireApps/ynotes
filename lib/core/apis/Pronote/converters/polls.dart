@@ -5,7 +5,7 @@ import 'package:ynotes/core/apis/Pronote/PronoteAPI.dart';
 import 'package:ynotes/core/apis/Pronote/convertersExporter.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
-import 'package:ynotes/core/utils/nullSafeMap.dart';
+import 'package:ynotes/core/utils/nullSafeMapGetter.dart';
 
 class PronotePollsConverter {
   static List<PollChoice>? pollChoices(PronoteClient client, List<Map>? choicesData) {

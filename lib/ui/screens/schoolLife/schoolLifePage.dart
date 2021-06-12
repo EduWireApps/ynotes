@@ -82,7 +82,6 @@ class _SchoolLifePageState extends State<SchoolLifePage> with Layout {
       icon = MdiIcons.foodOff;
     }
 
-    var screenSize = MediaQuery.of(context);
     return Container(
         decoration: BoxDecoration(shape: BoxShape.circle, color: Theme.of(context).primaryColorDark),
         child: FittedBox(

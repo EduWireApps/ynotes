@@ -18,7 +18,7 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/screens/agenda/agendaPage.dart';
 import 'package:ynotes/ui/screens/cloud/cloudPage.dart';
-import 'package:ynotes/ui/screens/downloads/downloadsExplorer.dart';
+import 'package:ynotes/ui/screens/downloads/downloadsPagedart';
 import 'package:ynotes/ui/screens/grades/gradesPage.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPage.dart';
 import 'package:ynotes/ui/screens/mail/mailPage.dart';

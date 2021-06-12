@@ -382,7 +382,6 @@ class _MailPageState extends State<MailPage> with Layout {
   }
 
   _buildFloatingButton(BuildContext context) {
-    var screenSize = MediaQuery.of(context);
     return Container(
         child: FloatingActionButton(
       heroTag: "btn1",

@@ -10,7 +10,7 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 
-import '../dialogs.dart';
+import '../../../components/dialogs.dart';
 
 class WriteMailBottomSheet extends StatefulWidget {
   final List<Recipient>? defaultRecipients;
