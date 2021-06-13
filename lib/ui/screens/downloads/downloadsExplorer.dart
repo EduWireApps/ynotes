@@ -38,28 +38,25 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
 
   List<FileInfo>? listFiles;
 
-  Widget _actionButton(BuildContext context, List<Widget> children, VoidCallback onTap) {
+  Widget _actionButton(BuildContext context, List<Widget> children, VoidCallback onTap, ValueKey<bool> key) {
     MediaQueryData screenSize = MediaQuery.of(context);
 
     return Container(
-      key: ValueKey<bool>(selectionMode),
-      margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.2),
-      child: Material(
-        color: Theme.of(context).primaryColor,
+      key: key,
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15), color: Theme.of(context).primaryColor),
+      width: screenSize.size.height / 10 * 0.5,
+      height: screenSize.size.height / 10 * 0.5,
+      child: InkWell(
         borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-          onTap: onTap,
-          child: Container(
-              height: screenSize.size.height / 10 * 0.5,
-              padding: EdgeInsets.all(screenSize.size.width / 5 * 0.05),
-              child: FittedBox(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: children,
-                ),
-              )),
-        ),
+        onTap: onTap,
+        child: Container(
+            height: screenSize.size.height / 10 * 0.5,
+            padding: EdgeInsets.all(screenSize.size.width / 5 * 0.05),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: children,
+            )),
       ),
     );
   }
@@ -73,54 +70,102 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
       isScrollable: false,
       body: Column(
         children: <Widget>[
-          SizedBox(
-            child: Container(
-              height: screenSize.size.height / 10 * 0.5,
-              margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
-              width: screenSize.size.width,
-              child: FittedBox(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: <Widget>[
-                    AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 200),
-                        transitionBuilder: (Widget child, Animation<double> animation) {
-                          return ScaleTransition(child: child, scale: animation);
-                        },
-                        child: (initialPath ?? "") + path == initialPath
-                            ? Container()
-                            : _actionButton(context, [
-                                Icon(
-                                  MdiIcons.arrowLeft,
-                                  color: ThemeUtils.textColor(),
-                                )
-                              ], () async {
-                                if ((initialPath ?? "") + path != initialPath) {
-                                  var splits = path.split("/");
-                                  print(splits.length);
-                                  if (splits.length > 1) {
-                                    var finalList = splits.sublist(1, splits.length - 1);
-                                    var concatenate = StringBuffer();
+          Container(
+            height: 40,
+            margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
+            child: FittedBox(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: <Widget>[
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 200),
+                    transitionBuilder: (Widget child, Animation<double> animation) {
+                      return ScaleTransition(child: child, scale: animation);
+                    },
+                    child: (initialPath ?? "") + path == initialPath
+                        ? Container()
+                        : Container(
+                            key: ValueKey<bool>(selectionMode),
+                            margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.2),
+                            child: Material(
+                              color: Theme.of(context).primaryColor,
+                              borderRadius: BorderRadius.circular(15),
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(15),
+                                onTap: () async {
+                                  if ((initialPath ?? "") + path != initialPath) {
+                                    var splits = path.split("/");
+                                    print(splits.length);
+                                    if (splits.length > 1) {
+                                      var finalList = splits.sublist(1, splits.length - 1);
+                                      var concatenate = StringBuffer();
 
-                                    finalList.forEach((item) {
-                                      concatenate.write(r'/' + item);
-                                    });
+                                      finalList.forEach((item) {
+                                        concatenate.write(r'/' + item);
+                                      });
 
-                                    setState(() {
-                                      path = concatenate.toString();
-                                    });
-                                    if (path == initialPath) {
-                                      await getInitialPath();
+                                      setState(() {
+                                        path = concatenate.toString();
+                                      });
+                                      if (path == initialPath) {
+                                        await getInitialPath();
+                                      }
+
+                                      await refreshFileListFuture();
+                                    } else {
+                                      setState(() {
+                                        path = "";
+                                      });
+
+                                      await refreshFileListFuture();
                                     }
-
-                                    await refreshFileListFuture();
-                                  } else {
-                                    setState(() {
-                                      path = "";
-                                    });
-
+                                    listFiles ??
+                                        [].forEach((element) {
+                                          setState(() {
+                                            element.selected = false;
+                                          });
+                                        });
                                     await refreshFileListFuture();
                                   }
+                                },
+                                child: Container(
+                                    height: screenSize.size.height / 10 * 0.7,
+                                    padding: EdgeInsets.all(5),
+                                    child: FittedBox(
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Icon(
+                                            MdiIcons.arrowLeft,
+                                            color: ThemeUtils.textColor(),
+                                          ),
+                                        ],
+                                      ),
+                                    )),
+                              ),
+                            ),
+                          ),
+                  ),
+                  //Cancel selection mode button
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 200),
+                    transitionBuilder: (Widget child, Animation<double> animation) {
+                      return ScaleTransition(child: child, scale: animation);
+                    },
+                    child: !selectionMode
+                        ? Container()
+                        : Container(
+                            key: ValueKey<bool>(selectionMode),
+                            margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
+                            child: Material(
+                              color: Theme.of(context).primaryColor,
+                              borderRadius: BorderRadius.circular(15),
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(15),
+                                onTap: () async {
+                                  setState(() {
+                                    selectionMode = false;
+                                  });
                                   listFiles ??
                                       [].forEach((element) {
                                         setState(() {
@@ -128,174 +173,269 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
                                         });
                                       });
                                   await refreshFileListFuture();
-                                }
-                              })),
-                    //Cancel selection mode button
-                    AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 200),
-                        transitionBuilder: (Widget child, Animation<double> animation) {
-                          return ScaleTransition(child: child, scale: animation);
-                        },
-                        child: !selectionMode
-                            ? Container()
-                            : _actionButton(context, [
-                                Icon(
-                                  MdiIcons.cancel,
-                                  color: ThemeUtils.textColor(),
-                                )
-                              ], () async {
-                                setState(() {
-                                  selectionMode = false;
-                                });
-                                listFiles ??
-                                    [].forEach((element) {
-                                      setState(() {
-                                        element.selected = false;
-                                      });
-                                    });
-                                await refreshFileListFuture();
-                              })),
-
-                    //New folder button
-                    _actionButton(context, [
-                      Icon(
-                        Icons.folder,
-                        color: Colors.yellow.shade200,
-                      )
-                    ], () async {
-                      CustomDialogs.showNewFolderDialog(
-                          context, (initialPath ?? "") + path, listFiles, selectionMode, refreshFileListFuture);
-                      await refreshFileListFuture();
-                    }),
-
-                    //Rename button
-                    AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 200),
-                        transitionBuilder: (Widget child, Animation<double> animation) {
-                          return ScaleTransition(child: child, scale: animation);
-                        },
-                        child: (listFiles == null || listFiles!.where((element) => element.selected).length != 1)
-                            ? Container()
-                            : _actionButton(context, [
-                                Icon(
-                                  MdiIcons.cursorText,
-                                  color: ThemeUtils.textColor(),
-                                )
-                              ], () async {
-                                String? newName = await CustomDialogs.showTextChoiceDialog(context,
-                                    text: "un nom pour l'élément",
-                                    defaultText: await FileAppUtil.getFileNameWithExtension(
-                                        listFiles!.firstWhere((element) => element.selected).element));
-                                if (newName != null) {
-                                  String dir = pathPackage
-                                      .dirname(listFiles!.firstWhere((element) => element.selected).element.path);
-                                  String newPath = pathPackage.join(dir, newName);
-                                  await listFiles!.firstWhere((element) => element.selected).element.rename(newPath);
-                                }
-                                listFiles!.forEach((element) {
-                                  setState(() {
-                                    element.selected = false;
-                                  });
-                                });
-                                await refreshFileListFuture();
-                              })), //Sort button / bin button
-                    _actionButton(context, [
-                      AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 200),
-                        transitionBuilder: (Widget child, Animation<double> animation) {
-                          return ScaleTransition(child: child, scale: animation);
-                        },
-                        child: selectionMode
-                            ? Icon(
-                                Icons.delete,
-                                key: ValueKey<bool>(selectionMode),
-                                color: Colors.red,
-                              )
-                            : Icon(
-                                case2(actualSort, {
-                                  explorerSortValue.date: MdiIcons.sortClockAscending,
-                                  explorerSortValue.reversed_date: MdiIcons.sortClockDescending,
-                                  explorerSortValue.name: MdiIcons.sortAlphabeticalAscending,
-                                }),
-                                color: ThemeUtils.textColor(),
+                                },
+                                child: Container(
+                                    height: screenSize.size.height / 10 * 0.7,
+                                    padding: EdgeInsets.all(5),
+                                    child: FittedBox(
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Icon(
+                                            MdiIcons.cancel,
+                                            color: ThemeUtils.textColor(),
+                                          ),
+                                        ],
+                                      ),
+                                    )),
                               ),
-                      )
-                    ], () async {
-                      if (selectionMode) {
-                        bool response = await (CustomDialogs.showConfirmationDialog(context, null)) ?? false;
-                        if (response) {
-                          await Future.forEach(listFiles!.where((element) => element.selected),
-                              (dynamic fileinfo) async {
-                            await FileAppUtil.remove(fileinfo.element);
-                          });
+                            ),
+                          ),
+                  ),
+
+                  //New folder button
+                  Container(
+                    margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
+                    child: Material(
+                      color: Theme.of(context).primaryColor,
+                      borderRadius: BorderRadius.circular(15),
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(15),
+                        onTap: () async {
+                          CustomDialogs.showNewFolderDialog(
+                              context, (initialPath ?? "") + path, listFiles, selectionMode, refreshFileListFuture);
+
                           await refreshFileListFuture();
-                        }
-                      } else {
-                        setState(() {
-                          if ((explorerSortValue.values.indexOf(actualSort) + 1) <=
-                              explorerSortValue.values.length - 1) {
-                            actualSort = explorerSortValue.values[explorerSortValue.values.indexOf(actualSort) + 1];
-                          } else {
-                            actualSort = explorerSortValue.values[0];
-                          }
-                        });
-                        sortList();
-                      }
-                    }),
-
-                    //Copy to clipboard button
-                    AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 200),
-                        transitionBuilder: (Widget child, Animation<double> animation) {
-                          return ScaleTransition(child: child, scale: animation);
                         },
-                        child: !selectionMode
-                            ? Container()
-                            : _actionButton(context, [
-                                Icon(
-                                  Icons.content_copy,
-                                  color: ThemeUtils.textColor(),
-                                )
-                              ], () {
-                                setState(() {
-                                  clipboard.clear();
-                                  clipboard.addAll((listFiles ?? []).where((element) => element.selected));
-                                });
-                              })),
-                    //Past to clipboard button
-                    AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 200),
-                      transitionBuilder: (Widget child, Animation<double> animation) {
-                        return ScaleTransition(child: child, scale: animation);
-                      },
-                      child: _actionButton(context, [
-                        Icon(
-                          MdiIcons.contentPaste,
-                          color: ThemeUtils.textColor(),
-                        )
-                      ], () async {
-                        if (clipboard.length <= 0) {
-                          return;
-                        }
-                        await Future.forEach(clipboard, (FileInfo element) async {
-                          try {
-                            await element.element.copy((initialPath ?? "") + path + "/" + (element.fileName ?? ""));
-                          } catch (e) {
-                            print(e);
-                            if (Platform.isAndroid) {
-                              print("try to paste");
-                              var result = await Process.run(
-                                  'cp', ['-r', element.element.path, (initialPath ?? "") + path + "/"]);
-                              print(result.stdout);
-                            }
-                          }
-                        });
-
-                        await refreshFileListFuture();
-                      }),
+                        child: Container(
+                            height: screenSize.size.height / 10 * 0.7,
+                            padding: EdgeInsets.all(5),
+                            child: FittedBox(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Icon(
+                                    Icons.folder,
+                                    color: Colors.yellow.shade200,
+                                  ),
+                                ],
+                              ),
+                            )),
+                      ),
                     ),
-                  ],
-                ),
+                  ),
+
+                  //Rename button
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 200),
+                    transitionBuilder: (Widget child, Animation<double> animation) {
+                      return ScaleTransition(child: child, scale: animation);
+                    },
+                    child: (listFiles == null || listFiles!.where((element) => element.selected).length != 1)
+                        ? Container()
+                        : Container(
+                            key: ValueKey<List?>(listFiles),
+                            margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
+                            child: Material(
+                              color: Theme.of(context).primaryColor,
+                              borderRadius: BorderRadius.circular(15),
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(15),
+                                onTap: () async {
+                                  String? newName = await CustomDialogs.showTextChoiceDialog(context,
+                                      text: "un nom pour l'élément",
+                                      defaultText: await FileAppUtil.getFileNameWithExtension(
+                                          listFiles!.firstWhere((element) => element.selected).element));
+                                  if (newName != null) {
+                                    String dir = pathPackage
+                                        .dirname(listFiles!.firstWhere((element) => element.selected).element.path);
+                                    String newPath = pathPackage.join(dir, newName);
+                                    await listFiles!.firstWhere((element) => element.selected).element.rename(newPath);
+                                  }
+                                  listFiles!.forEach((element) {
+                                    setState(() {
+                                      element.selected = false;
+                                    });
+                                  });
+                                  await refreshFileListFuture();
+                                },
+                                child: Container(
+                                    height: screenSize.size.height / 10 * 0.7,
+                                    padding: EdgeInsets.all(5),
+                                    child: FittedBox(
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Icon(
+                                            MdiIcons.cursorText,
+                                            color: ThemeUtils.textColor(),
+                                          ),
+                                        ],
+                                      ),
+                                    )),
+                              ),
+                            ),
+                          ),
+                  ), //Sort button / bin button
+                  Container(
+                    margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
+                    child: Material(
+                      color: Theme.of(context).primaryColor,
+                      borderRadius: BorderRadius.circular(15),
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(15),
+                        onTap: () async {
+                          if (selectionMode) {
+                            bool response = await (CustomDialogs.showConfirmationDialog(context, null)) ?? false;
+                            if (response) {
+                              await Future.forEach(listFiles!.where((element) => element.selected),
+                                  (dynamic fileinfo) async {
+                                await FileAppUtil.remove(fileinfo.element);
+                              });
+                              await refreshFileListFuture();
+                            }
+                          } else {
+                            setState(() {
+                              if ((explorerSortValue.values.indexOf(actualSort) + 1) <=
+                                  explorerSortValue.values.length - 1) {
+                                actualSort = explorerSortValue.values[explorerSortValue.values.indexOf(actualSort) + 1];
+                              } else {
+                                actualSort = explorerSortValue.values[0];
+                              }
+                            });
+                            sortList();
+                          }
+                        },
+                        child: Container(
+                            height: screenSize.size.height / 10 * 0.7,
+                            padding: EdgeInsets.all(5),
+                            child: FittedBox(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  AnimatedSwitcher(
+                                    duration: const Duration(milliseconds: 200),
+                                    transitionBuilder: (Widget child, Animation<double> animation) {
+                                      return ScaleTransition(child: child, scale: animation);
+                                    },
+                                    child: selectionMode
+                                        ? Icon(
+                                            Icons.delete,
+                                            key: ValueKey<bool>(selectionMode),
+                                            color: Colors.red,
+                                          )
+                                        : Icon(
+                                            case2(actualSort, {
+                                              explorerSortValue.date: MdiIcons.sortClockAscending,
+                                              explorerSortValue.reversed_date: MdiIcons.sortClockDescending,
+                                              explorerSortValue.name: MdiIcons.sortAlphabeticalAscending,
+                                            }),
+                                            color: ThemeUtils.textColor(),
+                                          ),
+                                  ),
+                                ],
+                              ),
+                            )),
+                      ),
+                    ),
+                  ),
+
+                  //Copy to clipboard button
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 200),
+                    transitionBuilder: (Widget child, Animation<double> animation) {
+                      return ScaleTransition(child: child, scale: animation);
+                    },
+                    child: !selectionMode
+                        ? Container()
+                        : Container(
+                            key: ValueKey<bool>(selectionMode),
+                            margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
+                            child: Material(
+                              color: Theme.of(context).primaryColor,
+                              borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+                                onTap: () {
+                                  setState(() {
+                                    clipboard.clear();
+                                    clipboard.addAll((listFiles ?? []).where((element) => element.selected));
+                                  });
+                                },
+                                child: Container(
+                                    height: screenSize.size.height / 10 * 0.7,
+                                    padding: EdgeInsets.all(5),
+                                    child: FittedBox(
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: <Widget>[
+                                          Icon(
+                                            Icons.content_copy,
+                                            color: ThemeUtils.textColor(),
+                                          ),
+                                        ],
+                                      ),
+                                    )),
+                              ),
+                            ),
+                          ),
+                  ),
+                  //Past to clipboard button
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 200),
+                    transitionBuilder: (Widget child, Animation<double> animation) {
+                      return ScaleTransition(child: child, scale: animation);
+                    },
+                    child: Container(
+                      key: ValueKey<bool>(selectionMode),
+                      margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
+                      child: Material(
+                        color: Theme.of(context).primaryColor,
+                        borderRadius: BorderRadius.circular(15),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(15),
+                          onTap: !(clipboard.length > 0)
+                              ? null
+                              : () async {
+                                  await Future.forEach(clipboard, (FileInfo element) async {
+                                    try {
+                                      await element.element
+                                          .copy((initialPath ?? "") + path + "/" + (element.fileName ?? ""));
+                                    } catch (e) {
+                                      print(e);
+                                      if (!kIsWeb && Platform.isAndroid) {
+                                        print("try to paste");
+                                        var result = await Process.run(
+                                            'cp', ['-r', element.element.path, (initialPath ?? "") + path + "/"]);
+                                        print(result.stdout);
+                                      }
+                                    }
+                                  });
+
+                                  await refreshFileListFuture();
+                                },
+                          child: Container(
+                              height: screenSize.size.height / 10 * 0.7,
+                              padding: EdgeInsets.all(5),
+                              child: FittedBox(
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: <Widget>[
+                                    Opacity(
+                                      opacity: clipboard.length > 0 ? 1.0 : 0.6,
+                                      child: Icon(
+                                        MdiIcons.contentPaste,
+                                        color: ThemeUtils.textColor(),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),

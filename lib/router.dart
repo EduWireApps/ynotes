@@ -16,112 +16,77 @@ import 'package:ynotes/ui/screens/settings/sub_pages/accountPage.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
 import 'package:ynotes/ui/screens/summary/summaryPage.dart';
 
-List<Map<String, dynamic>> routes = [
-  {
-    "path": "/login",
-    "icon": Icons.login,
-    "title": "Se connecter",
-    "page": LoginPage(),
-    "relatedApi": -1,
-    "show": false,
-  },
-  {
-    "path": "/intro",
-    "icon": Icons.info,
-    "title": "Introduction",
-    "page": SlidingCarousel(),
-    "relatedApi": -1,
-    "show": false
-  },
-  {
-    "path": "/summary",
-    "icon": MdiIcons.home,
-    "title": "Résumé",
-    "page": SummaryPage(),
-    "tab": appTabs.SUMMARY
-  },
-  {
-    "path": "/grades",
-    "icon": MdiIcons.trophy,
-    "title": "Notes",
-    "page": GradesPage(),
-    "tab": appTabs.GRADES
-  },
-  {
-    "path": "/homework",
-    "icon": MdiIcons.calendarCheck,
-    "title": "Devoirs",
-    "page": HomeworkPage(),
-    "tab": appTabs.HOMEWORK
-  },
-  {
-    "path": "/agenda",
-    "icon": MdiIcons.calendar,
-    "title": "Agenda",
-    "page": AgendaPage(),
-    "tab": appTabs.AGENDA
-  },
-  {
-    "path": "/mailbox",
-    "icon": MdiIcons.mail,
-    "title": "Messagerie",
-    "page": MailPage(),
-    "relatedApi": 0,
-    "tab": appTabs.MESSAGING
-  },
-  {
-    "path": "/school_life",
-    "icon": MdiIcons.stamper,
-    "title": "Vie scolaire",
-    "page": SchoolLifePage(),
-    "relatedApi": 0,
-    "tab": appTabs.SCHOOL_LIFE
-  },
-  {
-    "path": "/cloud",
-    "icon": MdiIcons.cloud,
-    "title": "Cloud",
-    "page": CloudPage(),
-    "relatedApi": 0,
-    "tab": appTabs.CLOUD
-  },
-  {
-    "path": "/files",
-    "icon": MdiIcons.file,
-    "title": "Fichiers",
-    "page": DownloadsExplorer(),
-    "relatedApi": 0,
-    "tab": appTabs.FILES
-  },
-  {
-    "path": "/polls",
-    "icon": MdiIcons.poll,
-    "title": "Sondages",
-    "page": PollsAndInfoPage(),
-    "relatedApi": 1,
-    "tab": appTabs.POLLS
-  },
-  {
-    "path": "/account",
-    "icon": Icons.person,
-    "title": "Compte",
-    "page": AccountPage(),
-    "tab": appTabs.ACCOUNT
-  }
+class CustomRoute {
+  final String path;
+  final IconData icon;
+  final String title;
+  final Widget page;
+  final int? relatedApi;
+  final bool show;
+  final appTabs? tab;
+
+  CustomRoute(
+      {required this.path,
+      required this.icon,
+      required this.title,
+      required this.page,
+      this.relatedApi,
+      this.show = true,
+      this.tab});
+}
+
+final List<CustomRoute> routes = [
+  CustomRoute(path: "/login", icon: Icons.login, title: "Se connecter", page: LoginPage(), relatedApi: -1, show: false),
+  CustomRoute(
+      path: "/intro", icon: Icons.info, title: "Introduction", page: SlidingCarousel(), relatedApi: -1, show: false),
+  CustomRoute(path: "/summary", icon: MdiIcons.home, title: "Résumé", page: SummaryPage(), tab: appTabs.SUMMARY),
+  CustomRoute(path: "/grades", icon: MdiIcons.trophy, title: "Notes", page: GradesPage(), tab: appTabs.GRADES),
+  CustomRoute(
+      path: "/homework", icon: MdiIcons.calendarCheck, title: "Devoirs", page: HomeworkPage(), tab: appTabs.HOMEWORK),
+  CustomRoute(path: "/agenda", icon: MdiIcons.calendar, title: "Agenda", page: AgendaPage(), tab: appTabs.AGENDA),
+  CustomRoute(
+      path: "/mailbox",
+      icon: MdiIcons.mail,
+      title: "Messagerie",
+      page: MailPage(),
+      relatedApi: 0,
+      tab: appTabs.MESSAGING),
+  CustomRoute(
+      path: "/school_life",
+      icon: MdiIcons.stamper,
+      title: "Vie scolaire",
+      page: SchoolLifePage(),
+      relatedApi: 0,
+      tab: appTabs.SCHOOL_LIFE),
+  CustomRoute(
+      path: "/cloud", icon: MdiIcons.cloud, title: "Cloud", page: CloudPage(), relatedApi: 0, tab: appTabs.CLOUD),
+  CustomRoute(
+      path: "/files",
+      icon: MdiIcons.file,
+      title: "Fichiers",
+      page: DownloadsExplorer(),
+      relatedApi: 0,
+      tab: appTabs.FILES),
+  CustomRoute(
+      path: "/polls",
+      icon: MdiIcons.poll,
+      title: "Sondages",
+      page: PollsAndInfoPage(),
+      relatedApi: 1,
+      tab: appTabs.POLLS),
+  CustomRoute(path: "/account", icon: Icons.person, title: "Compte", page: AccountPage(), tab: appTabs.ACCOUNT)
 ];
 
-PageRouteBuilder generateRoute(dynamic page) {
+PageRouteBuilder generateRoute(Widget page) {
   return PageRouteBuilder(
-      pageBuilder: (_, __, ___) => page,
-      transitionsBuilder: (_, a, __, c) =>
-          FadeTransition(opacity: a, child: c));
+      pageBuilder: (_, __, ___) => page, transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c));
 }
 
 Route<dynamic>? onGenerateRoute(RouteSettings settings) {
   logFile("Going to route: \"${settings.name}\"");
   for (var route in routes) {
-    if (settings.name == route["path"]) {
-      return generateRoute(route["page"]);
+    if (settings.name == route.path) {
+      return generateRoute(route.page);
     }
   }
 

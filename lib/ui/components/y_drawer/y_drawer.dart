@@ -12,6 +12,14 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'package:ynotes_components/ynotes_components.dart';
 
+class _SpecialRoute {
+  final String title;
+  final IconData icon;
+  final VoidCallback onTap;
+
+  _SpecialRoute({required this.title, required this.icon, required this.onTap});
+}
+
 class YDrawer extends StatefulWidget {
   const YDrawer({Key? key}) : super(key: key);
 
@@ -22,35 +30,30 @@ class YDrawer extends StatefulWidget {
 class _YDrawerState extends State<YDrawer> with YPageMixin {
   @override
   Widget build(BuildContext context) {
-    bool availableRoute(route) {
-      if (route["show"] != null && !route["show"]) return false;
-      return (route["tab"] != null && appSys.currentSchoolAccount!.availableTabs.contains(route["tab"]) ||
-          (route["relatedApi"] == -1 && !kReleaseMode));
+    bool availableRoute(CustomRoute route) {
+      if (!route.show) return false;
+      return (route.tab != null && appSys.currentSchoolAccount!.availableTabs.contains(route.tab) ||
+          (route.relatedApi == -1 && !kReleaseMode));
     }
 
-    final List<Map<String, dynamic>> specialRoutes = [
-      {
-        "title": "Paramètres",
-        "icon": Icons.settings,
-        "onTap": () => openLocalPage(YPageLocal(child: Text("bla"), title: "Paramètres"))
-      },
-      {"title": "Faire un retour", "icon": MdiIcons.forum, "onTap": () => Wiredash.of(context)!.show()},
-      {
-        "title": "Discord",
-        "icon": FontAwesomeIcons.discord,
-        "onTap": () async => await launch("https://discord.gg/pRCBs22dNX")
-      },
-      {
-        "title": "Github",
-        "icon": FontAwesomeIcons.github,
-        "onTap": () async => await launch("https://github.com/EduWireApps/ynotes")
-      },
-      {
-        "title": "Nous contacter",
-        "icon": Icons.mail,
-        "onTap": () async => await launch("https://ynotes.fr/contact/"),
-      },
-      {"title": "Centre d'aide", "icon": Icons.help, "onTap": () async => await launch("https://support.ynotes.fr/")},
+    final List<_SpecialRoute> specialRoutes = [
+      _SpecialRoute(
+          title: "Paramètres",
+          icon: Icons.settings,
+          onTap: () => openLocalPage(YPageLocal(child: Text("bla"), title: "Paramètres"))),
+      _SpecialRoute(title: "Faire un retour", icon: MdiIcons.forum, onTap: () => Wiredash.of(context)!.show()),
+      _SpecialRoute(
+          title: "Discord",
+          icon: FontAwesomeIcons.discord,
+          onTap: () async => await launch("https://discord.gg/pRCBs22dNX")),
+      _SpecialRoute(
+          title: "Github",
+          icon: FontAwesomeIcons.github,
+          onTap: () async => await launch("https://github.com/EduWireApps/ynotes")),
+      _SpecialRoute(
+          title: "Nous contacter", icon: Icons.mail, onTap: () async => await launch("https://ynotes.fr/contact/")),
+      _SpecialRoute(
+          title: "Centre d'aide", icon: Icons.help, onTap: () async => await launch("https://support.ynotes.fr/")),
     ];
 
     return Drawer(
@@ -65,23 +68,25 @@ class _YDrawerState extends State<YDrawer> with YPageMixin {
                     physics: ClampingScrollPhysics(),
                     itemCount: routes.length,
                     itemBuilder: (context, i) {
-                      if (!availableRoute(routes[i])) {
+                      final route = routes[i];
+
+                      if (!availableRoute(route)) {
                         return Container();
                       }
                       return ListTile(
                         dense: true,
                         leading: Icon(
-                          routes[i]["icon"],
+                          route.icon,
                           color: ThemeUtils.isThemeDark ? Colors.white : Colors.black,
                         ),
-                        title: Text(routes[i]["title"],
+                        title: Text(route.title,
                             style: TextStyle(color: ThemeUtils.isThemeDark ? Colors.white : Colors.black)),
                         onTap: () {
                           Navigator.pop(context);
-                          if (ModalRoute.of(context)!.settings.name == routes[i]["path"]) {
+                          if (ModalRoute.of(context)!.settings.name == route.path) {
                             return;
                           }
-                          Navigator.pushNamed(context, routes[i]["path"]);
+                          Navigator.pushNamed(context, route.path);
                         },
                       );
                     }),
@@ -91,15 +96,17 @@ class _YDrawerState extends State<YDrawer> with YPageMixin {
                     physics: ClampingScrollPhysics(),
                     itemCount: specialRoutes.length,
                     itemBuilder: (context, i) {
+                      final _SpecialRoute route = specialRoutes[i];
+
                       return ListTile(
                         dense: true,
                         leading: Icon(
-                          specialRoutes[i]["icon"],
+                          route.icon,
                           color: ThemeUtils.isThemeDark ? Colors.white : Colors.black,
                         ),
-                        title: Text(specialRoutes[i]["title"],
+                        title: Text(route.title,
                             style: TextStyle(color: ThemeUtils.isThemeDark ? Colors.white : Colors.black)),
-                        onTap: specialRoutes[i]["onTap"],
+                        onTap: route.onTap,
                       );
                     }),
               ]),

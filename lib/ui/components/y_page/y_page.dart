@@ -47,8 +47,7 @@ class _YPageState extends State<YPage> with TickerProviderStateMixin {
       //   shadowColor: Colors.transparent,
       // ),
       appBar: AppBar(
-          backgroundColor:
-              ThemeUtils.isThemeDark ? Theme.of(context).primaryColorLight : Theme.of(context).primaryColorDark,
+          backgroundColor: ThemeUtils.isThemeDark ? Theme.of(context).primaryColor : Theme.of(context).primaryColorDark,
           centerTitle: false,
           title: Text(widget.title, textAlign: TextAlign.start),
           systemOverlayStyle: ThemeUtils.isThemeDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
