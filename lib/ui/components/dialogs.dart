@@ -11,21 +11,21 @@ import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/ui/components/dialogs/authorizationsDialog.dart';
 import 'package:ynotes/ui/components/dialogs/colorPicker.dart';
-import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/homeworkDetails.dart';
-import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/persistantNotificationDialog.dart';
-import 'package:ynotes/ui/screens/grades/gradesPageWidgets/shareGradeDialog.dart';
 import 'package:ynotes/ui/components/dialogs/updateNoteDialog.dart';
 import 'package:ynotes/ui/components/giffy_dialog/src/asset.dart';
-import 'package:ynotes/ui/screens/mail/mailPageWidgets/writeMailBottomSheet.dart';
+import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/persistantNotificationDialog.dart';
+import 'package:ynotes/ui/screens/grades/gradesPageWidgets/shareGradeDialog.dart';
+import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/homeworkDetails.dart';
 import 'package:ynotes/ui/screens/login/loginPageWidgets/pronoteLocationDialog.dart';
+import 'package:ynotes/ui/screens/mail/mailPageWidgets/writeMailBottomSheet.dart';
 import 'package:ynotes/ui/screens/settings/settingsPage.dart';
 
 import '../../usefulMethods.dart';
-import '../screens/downloads/downloadsPageWidgets/folderChoiceDialog.dart';
-import 'dialogs/multipleChoicesDialog.dart';
-import '../screens/mail/mailPageWidgets/newRecipientDialog.dart';
-import 'dialogs/numberChoiceDialog.dart';
 import '../screens/agenda/agendaPageWidgets/recurringEventsDialog.dart';
+import '../screens/downloads/downloadsPageWidgets/folderChoiceDialog.dart';
+import '../screens/mail/mailPageWidgets/newRecipientDialog.dart';
+import 'dialogs/multipleChoicesDialog.dart';
+import 'dialogs/numberChoiceDialog.dart';
 import 'dialogs/specialtiesDialog.dart';
 import 'dialogs/textFieldChoiceDialog.dart';
 
@@ -37,7 +37,6 @@ List<HelpDialog> helpDialogs = [
       ],
       "assets/gifs/Hello720.gif",
       0),
-  
 ];
 
 //The help dialog class
@@ -89,6 +88,7 @@ class CustomDialogs {
     var alert = AlertDialog(
       elevation: 50,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+      backgroundColor: Theme.of(context).primaryColor,
       title: Text(
         "Confirmation",
         style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),

@@ -27,20 +27,21 @@ class CustomButtons {
           borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
           onTap: onTap as void Function()?,
           onLongPress: onLongPress as void Function()? ?? null,
-          child: Container(
-              height: height,
-              padding: padding ?? EdgeInsets.all(5),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  if (icon != null)
-                    Icon(
-                      icon,
-                      color: textColor ?? ThemeUtils.textColor(),
-                    ),
-                  if (label != null)
-                    Expanded(
-                      child: AutoSizeText(
+          child: FittedBox(
+            child: Container(
+                height: height,
+                padding: padding ?? EdgeInsets.all(5),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    if (icon != null)
+                      Icon(
+                        icon,
+                        color: textColor ?? ThemeUtils.textColor(),
+                      ),
+                    if (label != null)
+                      AutoSizeText(
                         label,
                         maxLines: 1,
                         textAlign: TextAlign.center,
@@ -51,9 +52,9 @@ class CustomButtons {
                               color: textColor ?? ThemeUtils.textColor(),
                             ),
                       ),
-                    ),
-                ],
-              )),
+                  ],
+                )),
+          ),
         ),
       ),
     );
