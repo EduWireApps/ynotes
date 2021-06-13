@@ -45,7 +45,6 @@ class PronotePollsConverter {
 
   static List<PollInfo> polls(PronoteClient client, Map pollsData) {
     List<Map>? listActus = pollsData['donneesSec']['donnees']['listeActualites']["V"].cast<Map>();
-    FileAppUtil.writeInFile(jsonEncode(pollsData), "a");
     List<PollInfo> listInfosPolls = [];
     listActus?.forEach((poll) {
       String? author = mapGet(poll, ["elmauteur", "V", "L"]);

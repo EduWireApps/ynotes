@@ -16,14 +16,14 @@ class CustomButtons {
     var screenSize = MediaQuery.of(context);
     return Container(
       width: width,
-      margin: margin ?? EdgeInsets.only(left: (screenSize.size.height / 10 * 8.8) / 10 * 0.1),
+      margin: margin ?? EdgeInsets.only(left: 10),
       child: Material(
         shape: RoundedRectangleBorder(
-          borderRadius: borderRadius ?? BorderRadius.circular(15),
+          borderRadius: borderRadius ?? BorderRadius.circular(8),
         ),
         color: backgroundColor ?? Theme.of(context).primaryColorDark,
         child: InkWell(
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(8),
           onTap: onTap as void Function()?,
           onLongPress: onLongPress as void Function()? ?? null,
           child: Container(

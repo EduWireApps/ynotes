@@ -77,8 +77,8 @@ class _GradesGroupState extends State<GradesGroup> {
     return ChangeNotifierProvider<GradesController>.value(
       value: appSys.gradesController,
       child: Consumer<GradesController>(builder: (context, model, _widget) {
-        if (getGradesForDiscipline(0, model.period) != null && getGradesForDiscipline(0, model.period)!.length > 0) {
-          List<Grade> grades = getGradesForDiscipline(0, model.period)!;
+        if (getGradesForDiscipline(0) != null && getGradesForDiscipline(0)!.length > 0) {
+          List<Grade> grades = getGradesForDiscipline(0)!;
           grades.sort((a, b) => b.entryDate!.compareTo(a.entryDate!));
           GradesStats stats = GradesStats(grades.first, grades);
           impact = stats.calculateAverageImpact();
@@ -194,7 +194,7 @@ class _GradesGroupState extends State<GradesGroup> {
                         ? widget.discipline!.subdisciplineCodes!.length
                         : 1,
                     itemBuilder: (context, index) {
-                      return gradesList(index, model.period);
+                      return gradesList(index);
                     },
                   ),
                 ),
@@ -260,12 +260,11 @@ class _GradesGroupState extends State<GradesGroup> {
     );
   }
 
-  List<Grade>? getGradesForDiscipline(int sousMatiereIndex, String? chosenPeriode) {
+  List<Grade>? getGradesForDiscipline(int sousMatiereIndex) {
     List<Grade> toReturn = [];
 
     if (widget.discipline != null) {
       widget.discipline!.gradesList!.forEach((element) {
-        if (element.periodName == chosenPeriode) {
           if (widget.discipline!.subdisciplineCodes!.length > 1) {
             if (element.subdisciplineCode == widget.discipline!.subdisciplineCodes![sousMatiereIndex]) {
               toReturn.add(element);
@@ -273,7 +272,7 @@ class _GradesGroupState extends State<GradesGroup> {
           } else {
             toReturn.add(element);
           }
-        }
+      
       });
       return toReturn;
     } else {
@@ -282,14 +281,14 @@ class _GradesGroupState extends State<GradesGroup> {
   }
 
   //MARKS LIST VIEW
-  gradesList(int sousMatiereIndex, String? periodName) {
+  gradesList(int sousMatiereIndex) {
     void callback() {
       setState(() {});
     }
 
     // ignore: unused_local_variable
     bool canShow = false;
-    List<Grade>? gradesForSelectedDiscipline = getGradesForDiscipline(sousMatiereIndex, periodName);
+    List<Grade>? gradesForSelectedDiscipline = getGradesForDiscipline(sousMatiereIndex);
     if (gradesForSelectedDiscipline != null) {
       gradesForSelectedDiscipline.sort((a, b) => b.entryDate!.compareTo(a.entryDate!));
     }

@@ -46,14 +46,14 @@ class _AccountPageState extends State<AccountPage> {
                 child: Card(
                   color: Theme.of(context).primaryColorLight,
                   child: Container(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: 15, vertical: (screenSize.size.width / 5) * 0.1),
+                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: (screenSize.size.width / 5) * 0.1),
                     child: Column(
                       children: [
                         buildMainAccountInfos(),
                         Container(
                           padding: EdgeInsets.symmetric(
-                              horizontal: (screenSize.size.width / 5) * 0.1, vertical: (screenSize.size.width / 5) * 0.1),
+                              horizontal: (screenSize.size.width / 5) * 0.1,
+                              vertical: (screenSize.size.width / 5) * 0.1),
                           child: SingleChildScrollView(
                               child: ExpansionPanelList(
                                   expandedHeaderPadding: EdgeInsets.zero,
@@ -376,7 +376,6 @@ class _LoginStatusState extends State<LoginStatus> {
 
   buildExpandable() {}
   Widget buildIcon(LoginController _loginController) {
-
     return case2(
       _loginController.actualState,
       {
@@ -403,7 +402,7 @@ class _LoginStatusState extends State<LoginStatus> {
         )
       },
       SpinKitThreeBounce(
-        size: 50,
+        size: 40,
         color: Colors.black38,
       ),
     ) as Widget;
@@ -447,8 +446,9 @@ class _LoginStatusState extends State<LoginStatus> {
                 Flexible(
                   flex: 1,
                   child: Container(
-                    height: screenSize.size.height / 10 * 0.7,
-                    width: screenSize.size.height / 10 * 0.7,
+                    height: 50,
+                    width: 50,
+                    padding: EdgeInsets.all(5),
                     decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: ThemeUtils.darken(
@@ -459,7 +459,7 @@ class _LoginStatusState extends State<LoginStatus> {
                               loginStatus.offline: Color(0xffFCD34D),
                             }) as Color,
                             forceAmount: 0.15)),
-                    child: buildIcon(model),
+                    child: FittedBox(child: buildIcon(model)),
                   ),
                 ),
                 SizedBox(

@@ -10,6 +10,7 @@ import 'package:ynotes/core/logic/shared/loginController.dart';
 import 'package:ynotes/core/offline/data/agenda/lessons.dart';
 import 'package:ynotes/core/offline/data/disciplines/disciplines.dart';
 import 'package:ynotes/core/offline/data/homework/homework.dart';
+import 'package:ynotes/core/offline/data/polls/polls.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/utils/nullSafeMapGetter.dart';
 import 'package:ynotes/globals.dart';
@@ -182,7 +183,7 @@ class PronoteMethod {
   //Test if another concurrent task is not running
   Future<List<PollInfo>?> polls() async {
     List<PollInfo>? polls = await request("PageActualites", PronotePollsConverter.polls, data: {}, onglet: 8);
-    return polls;
+    await PollsOffline(_offlineController).update(polls);
   }
 
   refreshClient() async {

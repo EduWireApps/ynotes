@@ -220,6 +220,7 @@ class Communication {
         throw ('Action not permitted. (onglet is not normally accessible)');
       }
     }
+
     if (this.shouldCompressRequests) {
       print("Compress request");
       data = conv.jsonEncode(data);
@@ -247,7 +248,7 @@ class Communication {
     print(pSite);
 
     this.requestNumber += 2;
-
+    print(json);
     var response = await Requests.post(pSite, json: json).catchError((onError) {
       print("Error occured during request : $onError");
     });

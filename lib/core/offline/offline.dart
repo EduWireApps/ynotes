@@ -55,6 +55,8 @@ class HiveBoxProvider {
     _registerAdapter(SchoolLifeTicketAdapter());
     _registerAdapter(AlarmTypeAdapter());
     _registerAdapter(MailAdapter());
+    _registerAdapter(PollChoiceAdapter());
+    _registerAdapter(PollQuestionAdapter());
   }
 
   static void _registerAdapter<T>(TypeAdapter<T> adapter) {
@@ -88,23 +90,7 @@ class Offline {
   Box? agendaBox;
   Box<Mail>? mailsBox;
 
-/*
-  //Imports
-  late HomeworkOffline homework;
-  late DoneHomeworkOffline doneHomework;
-  late PinnedHomeworkOffline pinnedHomework;
-  late AgendaEventsOffline agendaEvents;
-  late RemindersOffline reminders;
-  late LessonsOffline lessons;
-  late SchoolLifeOffline schoolLife;
-  late DisciplinesOffline disciplines;
-
-  late PollsOffline polls;
-
-  late RecipientsOffline recipients;
-*/
-  Offline()
-  {
+  Offline() {
     dateOfOpening = DateTime.now();
   }
   //Called on dispose
