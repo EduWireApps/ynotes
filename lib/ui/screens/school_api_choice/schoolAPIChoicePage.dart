@@ -3,8 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/screens/login/loginPage.dart';
-import 'package:ynotes/usefulMethods.dart';
 
 int? chosen;
 late Animation<double> chosenAnimation1;
@@ -177,7 +175,7 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
                             setState(() {
                               appSys.api = apiManager(appSys.offline);
                             });
-                            Navigator.of(context).pushReplacement(router(LoginPage()));
+                            Navigator.pushReplacementNamed(context, "/login");
                           },
                     child: Text('Connexion', style: TextStyle(fontSize: screenSize.size.width / 5 * 0.2)),
                   ),

@@ -32,7 +32,7 @@ class _LoadingPageState extends State<LoadingPage> {
     if (u != null && p != null && z != null && appSys.settings!["system"]["chosenParser"] != null) {
       Navigator.of(context).pushReplacement(router(HomePage()));
     } else {
-      Navigator.of(context).pushReplacement(router(Login()));
+      Navigator.pushReplacementNamed(context, "/login");
     }
   }
 

@@ -126,7 +126,7 @@ class _AlertBoxWidgetState extends State<AlertBoxWidget> {
                           ),
                         ),
                         onPressed: () async {
-                          Navigator.of(context).pushReplacement(router(Carousel()));
+                          Navigator.pushReplacementNamed(context, "/intro");
                         },
                         child: Text(
                           "J'accepte",
@@ -347,30 +347,33 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
     //build background
-    return Container(
-        height: screenSize.size.height,
-        width: screenSize.size.width,
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Color(0xff22256A),
-            Color(0xff5C66C1),
-          ],
-        )),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Spacer(),
-            _loginTextAndHelpButton(),
-            Container(
-                height: screenSize.size.height / 10 * 4, width: screenSize.size.width, child: _buildPageView(true)),
-            Spacer(),
-            _buildMetaPart()
-          ],
-        ));
+
+    return Material(
+      child: Container(
+          height: screenSize.size.height,
+          width: screenSize.size.width,
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xff22256A),
+              Color(0xff5C66C1),
+            ],
+          )),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Spacer(),
+              _loginTextAndHelpButton(),
+              Container(
+                  height: screenSize.size.height / 10 * 4, width: screenSize.size.width, child: _buildPageView(true)),
+              Spacer(),
+              _buildMetaPart()
+            ],
+          )),
+    );
   }
 
   formatURL(String url) {

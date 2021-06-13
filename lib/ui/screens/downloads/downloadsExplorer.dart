@@ -38,29 +38,6 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> {
 
   List<FileInfo>? listFiles;
 
-  Widget _actionButton(BuildContext context, List<Widget> children, VoidCallback onTap, ValueKey<bool> key) {
-    MediaQueryData screenSize = MediaQuery.of(context);
-
-    return Container(
-      key: key,
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15), color: Theme.of(context).primaryColor),
-      width: screenSize.size.height / 10 * 0.5,
-      height: screenSize.size.height / 10 * 0.5,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
-        onTap: onTap,
-        child: Container(
-            height: screenSize.size.height / 10 * 0.5,
-            padding: EdgeInsets.all(screenSize.size.width / 5 * 0.05),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: children,
-            )),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);

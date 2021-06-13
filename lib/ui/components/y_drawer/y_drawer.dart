@@ -9,6 +9,7 @@ import 'package:ynotes/ui/components/y_page/mixins.dart';
 import 'package:ynotes/ui/components/y_page/y_page_local.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:ynotes/ui/screens/settings/settingsPage.dart';
 
 import 'package:ynotes_components/ynotes_components.dart';
 
@@ -40,7 +41,7 @@ class _YDrawerState extends State<YDrawer> with YPageMixin {
       _SpecialRoute(
           title: "Paramètres",
           icon: Icons.settings,
-          onTap: () => openLocalPage(YPageLocal(child: Text("bla"), title: "Paramètres"))),
+          onTap: () => openLocalPage(YPageLocal(title: "Paramètres", child: SettingsPage()))),
       _SpecialRoute(title: "Faire un retour", icon: MdiIcons.forum, onTap: () => Wiredash.of(context)!.show()),
       _SpecialRoute(
           title: "Discord",
