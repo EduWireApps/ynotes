@@ -76,7 +76,7 @@ class Offline {
   static final String pinnedHomeworkBoxName = "pinnedHomework";
   static final String agendaBoxName = "agenda";
   static final String mailsBoxName = "mails";
-
+  DateTime? dateOfOpening;
   //sample box for example.dart (do not delete)
   Box<Example>? exampleBox;
 
@@ -103,7 +103,10 @@ class Offline {
 
   late RecipientsOffline recipients;
 */
-  Offline();
+  Offline()
+  {
+    dateOfOpening = DateTime.now();
+  }
   //Called on dispose
   clearAll() async {
     try {

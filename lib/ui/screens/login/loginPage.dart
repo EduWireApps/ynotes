@@ -4,9 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/pronote/schoolsModel.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
@@ -34,11 +32,14 @@ class AlertBoxWidget extends StatefulWidget {
   _AlertBoxWidgetState createState() => _AlertBoxWidgetState();
 }
 
-class LoginPage extends StatefulWidget {
-  State<StatefulWidget> createState() {
-    return _LoginPageState();
-  }
+class LoginDialog extends StatefulWidget {
+  final Future<List> connectionData;
+  const LoginDialog(this.connectionData, {Key? key}) : super(key: key);
+
+  @override
+  _LoginDialogState createState() => _LoginDialogState();
 }
+
 
 class LoginSlider extends StatefulWidget {
   final bool? setupNeeded;
@@ -174,36 +175,94 @@ class _AlertBoxWidgetState extends State<AlertBoxWidget> {
   }
 }
 
-class _LoginPageState extends State<LoginPage> {
-  String casValue = "Aucun";
-  Future<List>? connectionData;
-  bool _isFirstUse = true;
-
+class _LoginDialogState extends State<LoginDialog> {
+  @override
   Widget build(BuildContext context) {
-    return LoginSlider(
-      setupNeeded: appSys.settings!["system"]["chosenParser"] == 1,
+    var screenSize = MediaQuery.of(context);
+    return AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0))),
+      contentPadding: EdgeInsets.only(top: 10.0),
+      content: SingleChildScrollView(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: 500),
+          child: Container(
+            padding: EdgeInsets.only(left: 5, right: 5, top: 20, bottom: 20),
+            child: Column(
+              children: <Widget>[
+                FutureBuilder<List>(
+                  future: widget.connectionData,
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData &&
+                        snapshot.data != null &&
+                        snapshot.data!.length > 0 &&
+                        snapshot.data![0] == 1) {
+                      Future.delayed(const Duration(milliseconds: 500), () {
+                        Navigator.pop(context);
+
+                        openAlertBox();
+                      });
+                      return Column(
+                        children: <Widget>[
+                          Icon(
+                            Icons.check_circle,
+                            size: 90,
+                            color: Colors.lightGreen,
+                          ),
+                          Text(
+                            snapshot.data![1].toString(),
+                            textAlign: TextAlign.center,
+                          )
+                        ],
+                      );
+                    } else if (snapshot.hasData && snapshot.data![0] == 0) {
+                      print(snapshot.data);
+                      return Column(
+                        children: <Widget>[
+                          Icon(
+                            Icons.error,
+                            size: 90,
+                            color: Colors.redAccent,
+                          ),
+                          Text(
+                            snapshot.data![1].toString(),
+                            textAlign: TextAlign.center,
+                          ),
+                          if (snapshot.data!.length > 2 && snapshot.data![2] != null && snapshot.data![2].length > 0)
+                            CustomButtons.materialButton(
+                              context,
+                              120,
+                              null,
+                              () async {
+                                List stepLogger = snapshot.data![2];
+                                try {
+                                  //add step logs to clip board
+                                  await Clipboard.setData(new ClipboardData(text: stepLogger.join("\n")));
+                                  CustomDialogs.showAnyDialog(context, "Logs copiés dans le presse papier.");
+                                } catch (e) {
+                                  CustomDialogs.showAnyDialog(
+                                      context, "Impossible de copier dans le presse papier !");
+                                }
+                              },
+                              label: "Copier les logs",
+                            )
+                        ],
+                      );
+                    } else {
+                      return Container(
+                          width: 50,
+                          height: 50,
+                          child: CircularProgressIndicator(
+                            backgroundColor: Color(0xff444A83),
+                          ));
+                    }
+                  },
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
-  getFirstUse() async {
-    final prefs = await (SharedPreferences.getInstance());
-    if (prefs.getBool('firstUse') == true) {
-      _isFirstUse = true;
-    }
-  }
-
-  @override
-  initState() {
-    super.initState();
-
-    tryToConnect();
-
-    getFirstUse();
   }
 
   openAlertBox() {
@@ -215,117 +274,9 @@ class _LoginPageState extends State<LoginPage> {
           return AlertBoxWidget(screenSize: screenSize);
         });
   }
-
-  openLoadingDialog() {
-    MediaQueryData screenSize;
-    screenSize = MediaQuery.of(context);
-    return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0))),
-            contentPadding: EdgeInsets.only(top: 10.0),
-            content: SingleChildScrollView(
-              child: Container(
-                padding: EdgeInsets.only(left: 5, right: 5, top: 20, bottom: 20),
-                child: Column(
-                  children: <Widget>[
-                    FutureBuilder<List>(
-                      future: connectionData,
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData && snapshot.data![0] == 1) {
-                          Future.delayed(const Duration(milliseconds: 500), () async {
-                            Navigator.pop(context);
-                            if (_isFirstUse == true) {
-                              openAlertBox();
-                            } else {
-                              Navigator.of(context).pushReplacement(router(HomePage()));
-                            }
-                          });
-                          return Column(
-                            children: <Widget>[
-                              Icon(
-                                Icons.check_circle,
-                                size: MediaQuery.of(context).size.width / 5,
-                                color: Colors.lightGreen,
-                              ),
-                              Text(
-                                snapshot.data![1].toString(),
-                                textAlign: TextAlign.center,
-                              )
-                            ],
-                          );
-                        } else if (snapshot.hasData && snapshot.data![0] == 0) {
-                          print(snapshot.data);
-                          return Column(
-                            children: <Widget>[
-                              Icon(
-                                Icons.error,
-                                size: MediaQuery.of(context).size.width / 5,
-                                color: Colors.redAccent,
-                              ),
-                              Text(
-                                snapshot.data![1].toString(),
-                                textAlign: TextAlign.center,
-                              ),
-                              if (snapshot.data!.length > 2 &&
-                                  snapshot.data![2] != null &&
-                                  snapshot.data![2].length > 0)
-                                Container(
-                                  margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
-                                  child: CustomButtons.materialButton(
-                                    context,
-                                    MediaQuery.of(context).size.width / 5 * 1.5,
-                                    null,
-                                    () async {
-                                      List stepLogger = snapshot.data![2];
-                                      try {
-                                        //add step logs to clip board
-                                        await Clipboard.setData(new ClipboardData(text: stepLogger.join("\n")));
-                                        CustomDialogs.showAnyDialog(context, "Logs copiés dans le presse papier.");
-                                      } catch (e) {
-                                        CustomDialogs.showAnyDialog(
-                                            context, "Impossible de copier dans le presse papier !");
-                                      }
-                                    },
-                                    label: "Copier les logs",
-                                  ),
-                                )
-                            ],
-                          );
-                        } else {
-                          return Container(
-                              width: 50,
-                              height: 50,
-                              child: CircularProgressIndicator(
-                                backgroundColor: Color(0xff444A83),
-                              ));
-                        }
-                      },
-                    )
-                  ],
-                ),
-              ),
-            ),
-          );
-        });
-  }
-
-  tryToConnect() async {
-    String? u = await readStorage("username");
-    String? p = await readStorage("password");
-    String? url = await readStorage("pronoteurl");
-    String? cas = await readStorage("pronotecas");
-    bool? iscas = (await readStorage("ispronotecas") == "true");
-
-    String? z = await storage.read(key: "agreedTermsAndConfiguredApp");
-
-    if (u != null && p != null && z != null) {
-      connectionData = appSys.api!.login(u, p, url: url, cas: cas, mobileCasLogin: iscas);
-      openLoadingDialog();
-    }
-  }
 }
+
+
 
 class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin {
   PageController? sliderController;
@@ -433,111 +384,11 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
     iconSlideAnimationController.reverse();
   }
 
-  openAlertBox() {
-    MediaQueryData screenSize;
-    screenSize = MediaQuery.of(context);
-    return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertBoxWidget(screenSize: screenSize);
-        });
-  }
-
   openLoadingDialog() {
-    MediaQueryData screenSize;
-    screenSize = MediaQuery.of(context);
     return showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0))),
-            contentPadding: EdgeInsets.only(top: 10.0),
-            content: SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 500),
-                child: Container(
-                  padding: EdgeInsets.only(left: 5, right: 5, top: 20, bottom: 20),
-                  child: Column(
-                    children: <Widget>[
-                      FutureBuilder<List>(
-                        future: connectionData,
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData &&
-                              snapshot.data != null &&
-                              snapshot.data!.length > 0 &&
-                              snapshot.data![0] == 1) {
-                            Future.delayed(const Duration(milliseconds: 500), () {
-                              Navigator.pop(context);
-
-                              openAlertBox();
-                            });
-                            return Column(
-                              children: <Widget>[
-                                Icon(
-                                  Icons.check_circle,
-                                  size: 90,
-                                  color: Colors.lightGreen,
-                                ),
-                                Text(
-                                  snapshot.data![1].toString(),
-                                  textAlign: TextAlign.center,
-                                )
-                              ],
-                            );
-                          } else if (snapshot.hasData && snapshot.data![0] == 0) {
-                            print(snapshot.data);
-                            return Column(
-                              children: <Widget>[
-                                Icon(
-                                  Icons.error,
-                                  size: 90,
-                                  color: Colors.redAccent,
-                                ),
-                                Text(
-                                  snapshot.data![1].toString(),
-                                  textAlign: TextAlign.center,
-                                ),
-                                if (snapshot.data!.length > 2 &&
-                                    snapshot.data![2] != null &&
-                                    snapshot.data![2].length > 0)
-                                  Container(
-                                    margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
-                                    child: CustomButtons.materialButton(
-                                      context,
-                                      120,
-                                      null,
-                                      () async {
-                                        List stepLogger = snapshot.data![2];
-                                        try {
-                                          //add step logs to clip board
-                                          await Clipboard.setData(new ClipboardData(text: stepLogger.join("\n")));
-                                          CustomDialogs.showAnyDialog(context, "Logs copiés dans le presse papier.");
-                                        } catch (e) {
-                                          CustomDialogs.showAnyDialog(
-                                              context, "Impossible de copier dans le presse papier !");
-                                        }
-                                      },
-                                      label: "Copier les logs",
-                                    ),
-                                  )
-                              ],
-                            );
-                          } else {
-                            return Container(
-                                width: 50,
-                                height: 50,
-                                child: CircularProgressIndicator(
-                                  backgroundColor: Color(0xff444A83),
-                                ));
-                          }
-                        },
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          );
+          return LoginDialog(connectionData!);
         });
   }
 
@@ -565,8 +416,7 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
                 //Login using the chosen API
                 connectionData = appSys.api!
                     .login(_username.text.trim(), _password.text.trim(), url: _url.text.trim(), mobileCasLogin: false);
-
-                openLoadingDialog();
+                if (connectionData != null) openLoadingDialog();
               } else {
                 CustomDialogs.showAnyDialog(context, "Remplissez tous les champs.");
               }
@@ -645,7 +495,7 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
                   connectionData = appSys.api!.login("demonstration", "pronotevs",
                       url: "https://demo.index-education.net/pronote/parent.html", mobileCasLogin: false);
                 }
-                openLoadingDialog();
+                if (connectionData != null) openLoadingDialog();
               },
               loginCallback: () async {
                 try {
@@ -666,7 +516,7 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
                           .push(router(LoginWebView(url: _url.text, controller: _controller)));
                       if (a != null) {
                         connectionData = appSys.api!.login(a["login"], a["mdp"], url: _url.text, mobileCasLogin: true);
-                        openLoadingDialog();
+                        if (connectionData != null) openLoadingDialog();
                       }
                     } else {
                       sliderController!.animateToPage(2, duration: Duration(milliseconds: 300), curve: Curves.easeIn);

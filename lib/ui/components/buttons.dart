@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 
@@ -24,16 +23,16 @@ class CustomButtons {
         ),
         color: backgroundColor ?? Theme.of(context).primaryColorDark,
         child: InkWell(
-          borderRadius: BorderRadius.circular(screenSize.size.width / 5 * 0.15),
+          borderRadius: BorderRadius.circular(15),
           onTap: onTap as void Function()?,
           onLongPress: onLongPress as void Function()? ?? null,
           child: Container(
               height: height,
               padding: padding ?? EdgeInsets.all(5),
               child: Row(
-                mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   if (icon != null)
                     Icon(
@@ -41,7 +40,7 @@ class CustomButtons {
                       color: textColor ?? ThemeUtils.textColor(),
                     ),
                   if (label != null)
-                    AutoSizeText(
+                    Text(
                       label,
                       maxLines: 1,
                       textAlign: TextAlign.center,

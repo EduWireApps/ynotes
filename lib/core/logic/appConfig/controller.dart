@@ -59,6 +59,7 @@ class ApplicationSystem extends ChangeNotifier {
   API? get api => _api;
   set api(API? newAPI) {
     _api = newAPI;
+    
     buildControllers();
     _refreshControllersAPI();
   }

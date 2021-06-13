@@ -172,7 +172,9 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
                             setState(() {
                               appSys.api = apiManager(appSys.offline);
                             });
-                            Navigator.of(context).pushReplacement(router(LoginPage()));
+                            Navigator.of(context).pushReplacement(router(LoginSlider(
+                              setupNeeded: chosen == 1,
+                            )));
                           },
                     child: Text('Connexion', style: TextStyle(fontSize: 25)),
                   ),
