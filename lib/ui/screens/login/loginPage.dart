@@ -360,19 +360,17 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
             Color(0xff5C66C1),
           ],
         )),
-        child: Expanded(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Spacer(),
-              _loginTextAndHelpButton(),
-              Container(
-                  height: screenSize.size.height / 10 * 4, width: screenSize.size.width, child: _buildPageView(true)),
-              Spacer(),
-              _buildMetaPart()
-            ],
-          ),
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Spacer(),
+            _loginTextAndHelpButton(),
+            Container(
+                height: screenSize.size.height / 10 * 4, width: screenSize.size.width, child: _buildPageView(true)),
+            Spacer(),
+            _buildMetaPart()
+          ],
         ));
   }
 
@@ -456,7 +454,7 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
             contentPadding: EdgeInsets.only(top: 10.0),
             content: SingleChildScrollView(
               child: ConstrainedBox(
-                      constraints: BoxConstraints(maxWidth: 500),
+                constraints: BoxConstraints(maxWidth: 500),
                 child: Container(
                   padding: EdgeInsets.only(left: 5, right: 5, top: 20, bottom: 20),
                   child: Column(
@@ -470,7 +468,7 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
                               snapshot.data![0] == 1) {
                             Future.delayed(const Duration(milliseconds: 500), () {
                               Navigator.pop(context);
-              
+
                               openAlertBox();
                             });
                             return Column(
@@ -507,7 +505,6 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
                                     child: CustomButtons.materialButton(
                                       context,
                                       120,
-                                      
                                       null,
                                       () async {
                                         List stepLogger = snapshot.data![2];

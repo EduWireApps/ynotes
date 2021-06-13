@@ -59,6 +59,7 @@ class ApplicationSystem extends ChangeNotifier {
   API? get api => _api;
   set api(API? newAPI) {
     _api = newAPI;
+    buildControllers();
     _refreshControllersAPI();
   }
 
@@ -110,11 +111,9 @@ class ApplicationSystem extends ChangeNotifier {
     updateTheme(settings!["user"]["global"]["theme"]);
     //Set offline
     await initOffline();
-
     buildControllers();
     //Set api
     this.api = apiManager(this.offline);
-
     if (api != null) {
       account = await api!.account();
       if (account != null && account!.managableAccounts != null)
