@@ -47,8 +47,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     child: Container(
                       margin: EdgeInsets.only(right: screenSize.size.width / 5 * 0.1),
                       child: SizedBox(
-                        width: 70,
-                        height: screenSize.size.height / 10 * 0.7,
+                        width: 90,
+                        height: 60,
                         child: DayNightSwitcher(
                           isDarkModeEnabled: ThemeUtils.isThemeDark,
                           onStateChanged: (value) {

@@ -111,7 +111,7 @@ class _DrawerBuilderState extends State<DrawerBuilder> with TickerProviderStateM
             children: [
               if (screenSize.size.width > 800)
                 Container(
-                  width: 310,
+                  width: 280,
                   child: CustomDrawer(
                     entries(),
                     notifier: _notifier,

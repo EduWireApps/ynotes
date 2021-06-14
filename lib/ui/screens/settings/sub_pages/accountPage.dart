@@ -360,11 +360,11 @@ class _LoginStatusState extends State<LoginStatus> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CustomButtons.materialButton(context, screenSize.size.width / 5 * 1.7, screenSize.size.height / 10 * 0.4,
+              CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.4,
                   () {
                 model.login();
               }, backgroundColor: Colors.orange, label: "Reconnexion", textColor: Colors.white),
-              CustomButtons.materialButton(context, screenSize.size.width / 5 * 1.7, screenSize.size.height / 10 * 0.4,
+              CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.4,
                   () {
                 //show wiredash
                 Wiredash.of(context)!.show();
