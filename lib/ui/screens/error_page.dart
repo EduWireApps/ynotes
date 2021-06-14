@@ -23,8 +23,8 @@ class _ErrorPageState extends State<ErrorPage> {
               color: Colors.white,
             ),
             TextButton(
-              child: Text("Go to safe area"),
-              onPressed: () => Navigator.pushNamed(context, "/test"),
+              child: Text("Go to safe area", style: TextStyle(color: Colors.white)),
+              onPressed: () => Navigator.pushReplacementNamed(context, "/summary"),
             )
           ],
         )),

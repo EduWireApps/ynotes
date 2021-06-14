@@ -40,7 +40,6 @@ class LoginDialog extends StatefulWidget {
   _LoginDialogState createState() => _LoginDialogState();
 }
 
-
 class LoginSlider extends StatefulWidget {
   final bool? setupNeeded;
 
@@ -239,8 +238,7 @@ class _LoginDialogState extends State<LoginDialog> {
                                   await Clipboard.setData(new ClipboardData(text: stepLogger.join("\n")));
                                   CustomDialogs.showAnyDialog(context, "Logs copiés dans le presse papier.");
                                 } catch (e) {
-                                  CustomDialogs.showAnyDialog(
-                                      context, "Impossible de copier dans le presse papier !");
+                                  CustomDialogs.showAnyDialog(context, "Impossible de copier dans le presse papier !");
                                 }
                               },
                               label: "Copier les logs",
@@ -275,8 +273,6 @@ class _LoginDialogState extends State<LoginDialog> {
         });
   }
 }
-
-
 
 class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin {
   PageController? sliderController;

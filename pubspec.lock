@@ -233,7 +233,7 @@ packages:
       name: connectivity_plus_linux
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.2"
+    version: "1.0.3"
   connectivity_plus_macos:
     dependency: transitive
     description:
@@ -317,7 +317,7 @@ packages:
       name: dbus
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.5"
+    version: "0.5.2"
   desktop_window:
     dependency: "direct main"
     description:

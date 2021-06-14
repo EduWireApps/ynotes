@@ -80,7 +80,7 @@ class _YDrawerState extends State<YDrawer> with YPageMixin {
                           route.icon,
                           color: ThemeUtils.isThemeDark ? Colors.white : Colors.black,
                         ),
-                        title: Text(route.title,
+                        title: Text(route.title ?? "",
                             style: TextStyle(color: ThemeUtils.isThemeDark ? Colors.white : Colors.black)),
                         onTap: () {
                           Navigator.pop(context);

@@ -4,11 +4,11 @@ import 'package:ynotes/core/logic/appConfig/models.dart';
 import 'package:ynotes/ui/screens/agenda/agendaPage.dart';
 import 'package:ynotes/ui/screens/carousel/carousel.dart';
 import 'package:ynotes/ui/screens/cloud/cloudPage.dart';
-import 'package:ynotes/ui/screens/downloads/downloadsExplorer.dart';
+import 'package:ynotes/ui/screens/downloads/downloadsPage.dart';
 import 'package:ynotes/ui/screens/error_page.dart';
 import 'package:ynotes/ui/screens/grades/gradesPage.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPage.dart';
-import 'package:ynotes/ui/screens/login/loginPage.dart';
+import 'package:ynotes/main.dart';
 import 'package:ynotes/ui/screens/mail/mailPage.dart';
 import 'package:ynotes/ui/screens/polls/pollsPage.dart';
 import 'package:ynotes/ui/screens/schoolLife/schoolLifePage.dart';
@@ -18,25 +18,19 @@ import 'package:ynotes/ui/screens/summary/summaryPage.dart';
 
 class CustomRoute {
   final String path;
-  final IconData icon;
-  final String title;
+  final IconData? icon;
+  final String? title;
   final Widget page;
   final int? relatedApi;
   final bool show;
   final appTabs? tab;
 
   CustomRoute(
-      {required this.path,
-      required this.icon,
-      required this.title,
-      required this.page,
-      this.relatedApi,
-      this.show = true,
-      this.tab});
+      {required this.path, this.icon, this.title, required this.page, this.relatedApi, this.show = true, this.tab});
 }
 
 final List<CustomRoute> routes = [
-  CustomRoute(path: "/login", icon: Icons.login, title: "Se connecter", page: LoginPage(), relatedApi: -1, show: false),
+  CustomRoute(path: "/login", page: Login(), relatedApi: -1, show: false),
   CustomRoute(
       path: "/intro", icon: Icons.info, title: "Introduction", page: SlidingCarousel(), relatedApi: -1, show: false),
   CustomRoute(path: "/summary", icon: MdiIcons.home, title: "Résumé", page: SummaryPage(), tab: appTabs.SUMMARY),
@@ -61,9 +55,9 @@ final List<CustomRoute> routes = [
   CustomRoute(
       path: "/cloud", icon: MdiIcons.cloud, title: "Cloud", page: CloudPage(), relatedApi: 0, tab: appTabs.CLOUD),
   CustomRoute(
-      path: "/files",
+      path: "/downloads",
       icon: MdiIcons.file,
-      title: "Fichiers",
+      title: "Téléchargements",
       page: DownloadsExplorer(),
       relatedApi: 0,
       tab: appTabs.FILES),

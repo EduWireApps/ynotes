@@ -1,8 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/globals.dart';
+import 'package:ynotes/ui/screens/login/loginPage.dart';
+import 'package:ynotes/usefulMethods.dart';
 
 int? chosen;
 late Animation<double> chosenAnimation1;
@@ -22,6 +25,9 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
   Widget build(BuildContext context) {
     MediaQueryData screenSize;
     screenSize = MediaQuery.of(context);
+
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
+
 //Disable any back
     return WillPopScope(
       onWillPop: () async {
@@ -172,7 +178,9 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
                             setState(() {
                               appSys.api = apiManager(appSys.offline);
                             });
-                            Navigator.pushReplacementNamed(context, "/login");
+                            Navigator.of(context).pushReplacement(router(LoginSlider(
+                              setupNeeded: chosen == 1,
+                            )));
                           },
                     child: Text('Connexion', style: TextStyle(fontSize: 25)),
                   ),
