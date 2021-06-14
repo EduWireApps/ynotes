@@ -126,8 +126,7 @@ class _GradesGroupState extends State<GradesGroup> {
                                             : ((!widget.discipline!.getAverage().isNaN)
                                                 ? widget.discipline!.getAverage().toString()
                                                 : widget.discipline!.average ?? "-")),
-                                        style:
-                                            TextStyle(fontFamily: "Asap", fontSize: 20, fontWeight: FontWeight.bold),
+                                        style: TextStyle(fontFamily: "Asap", fontSize: 20, fontWeight: FontWeight.bold),
                                       ),
                                     )),
                                 SizedBox(
@@ -157,8 +156,7 @@ class _GradesGroupState extends State<GradesGroup> {
                                 baseColor: Color(0xff5D6469),
                                 highlightColor: Color(0xff8D9499),
                                 child: Container(
-                                  margin: EdgeInsets.only(
-                                      left: screenSize.size.width / 5 * 0.3, bottom: screenSize.size.width / 5 * 0.2),
+                                  margin: EdgeInsets.only(left: 0, bottom: 10),
                                   width: screenSize.size.width / 5 * 1.5,
                                   height: (screenSize.size.height / 10 * 8.8) / 10 * 0.3,
                                   decoration: BoxDecoration(
@@ -265,14 +263,13 @@ class _GradesGroupState extends State<GradesGroup> {
 
     if (widget.discipline != null) {
       widget.discipline!.gradesList!.forEach((element) {
-          if (widget.discipline!.subdisciplineCodes!.length > 1) {
-            if (element.subdisciplineCode == widget.discipline!.subdisciplineCodes![sousMatiereIndex]) {
-              toReturn.add(element);
-            }
-          } else {
+        if (widget.discipline!.subdisciplineCodes!.length > 1) {
+          if (element.subdisciplineCode == widget.discipline!.subdisciplineCodes![sousMatiereIndex]) {
             toReturn.add(element);
           }
-      
+        } else {
+          toReturn.add(element);
+        }
       });
       return toReturn;
     } else {
