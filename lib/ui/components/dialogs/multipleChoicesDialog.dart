@@ -163,17 +163,12 @@ class _MultipleChoicesDialogState extends State<MultipleChoicesDialog> {
   }
 
   buildCancelButton() {
-    MediaQueryData screenSize;
-    screenSize = MediaQuery.of(context);
-
     return CustomButtons.materialButton(context, null, 45, () {
       Navigator.of(context).pop();
     }, label: "Annuler", backgroundColor: Colors.orange.shade300);
   }
 
   buildValidateButton() {
-    MediaQueryData screenSize;
-    screenSize = MediaQuery.of(context);
     return CustomButtons.materialButton(context, null, 45, () {
       Navigator.of(context).pop(indexsSelected);
     }, label: "Valider", backgroundColor: Colors.green.shade300);

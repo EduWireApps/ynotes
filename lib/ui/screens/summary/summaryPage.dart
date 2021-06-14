@@ -12,7 +12,6 @@ import 'package:visibility_detector/visibility_detector.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
-import 'package:ynotes/ui/components/hiddenSettings.dart';
 import 'package:ynotes/ui/components/y_page/mixins.dart';
 import 'package:ynotes/ui/components/y_page/y_page.dart';
 import 'package:ynotes/ui/components/y_page/y_page_local.dart';
@@ -48,8 +47,6 @@ class SummaryPageState extends State<SummaryPage> with Layout, YPageMixin {
 
   @override
   Widget build(BuildContext context) {
-    var screenSize = MediaQuery.of(context);
-
     return YPage(
         title: "Résumé",
         actions: [

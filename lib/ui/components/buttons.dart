@@ -13,7 +13,6 @@ class CustomButtons {
       EdgeInsets? margin,
       EdgeInsets? padding,
       TextStyle? textStyle}) {
-    var screenSize = MediaQuery.of(context);
     return Container(
       width: width,
       margin: margin ?? EdgeInsets.only(left: 10),

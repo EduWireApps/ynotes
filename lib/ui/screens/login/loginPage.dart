@@ -9,7 +9,6 @@ import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/pronote/schoolsModel.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/main.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/textField.dart';
@@ -177,7 +176,6 @@ class _AlertBoxWidgetState extends State<AlertBoxWidget> {
 class _LoginDialogState extends State<LoginDialog> {
   @override
   Widget build(BuildContext context) {
-    var screenSize = MediaQuery.of(context);
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0))),
       contentPadding: EdgeInsets.only(top: 10.0),
