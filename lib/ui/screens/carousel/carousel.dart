@@ -201,7 +201,7 @@ class _Page1State extends State<Page1> {
       decoration: ShapeDecoration(
         color: color,
         shape: RoundedRectangleBorder(
-          borderRadius: new BorderRadius.circular(MediaQuery.of(context).size.width / 5 * 0.5),
+          borderRadius: new BorderRadius.circular(35),
         ),
       ),
       child: Container(
