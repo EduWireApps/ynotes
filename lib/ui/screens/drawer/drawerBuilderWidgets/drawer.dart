@@ -19,7 +19,7 @@ class CustomDrawer extends StatefulWidget {
     Key? key,
     required ValueNotifier<int> notifier,
     required this.drawerPageViewController,
-  })  : _notifier = notifier,
+  })   : _notifier = notifier,
         super(key: key);
 
   @override
@@ -32,7 +32,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
     var screenSize = MediaQuery.of(context);
     return Container(
       height: screenSize.size.height,
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <
+          Widget>[
         Container(
           width: screenSize.size.width / 5 * 3.6,
           height: screenSize.size.height / 10 * 0.9,
@@ -45,7 +46,8 @@ class _CustomDrawerState extends State<CustomDrawer> {
                   Align(
                     alignment: Alignment.centerRight,
                     child: Container(
-                      margin: EdgeInsets.only(right: screenSize.size.width / 5 * 0.1),
+                      margin: EdgeInsets.only(
+                          right: screenSize.size.width / 5 * 0.1),
                       child: SizedBox(
                         width: 90,
                         height: 60,
@@ -67,67 +69,87 @@ class _CustomDrawerState extends State<CustomDrawer> {
             ),
           ),
         ),
-        for (var entry in this.widget.entries)
-          if ((entry["tabName"] != null && appSys.currentSchoolAccount!.availableTabs.contains(entry["tabName"])) ||
-              (entry["relatedApi"] == -1 && !kReleaseMode))
-            ValueListenableBuilder(
-                valueListenable: widget._notifier,
-                builder: (context, dynamic value, child) {
-                  return Material(
-                    borderRadius: BorderRadius.only(topRight: Radius.circular(11), bottomRight: Radius.circular(11)),
-                    color: (this.widget.entries.indexOf(entry) == value)
-                        ? Theme.of(context).backgroundColor
-                        : Colors.transparent,
-                    child: InkWell(
-                      splashFactory: InkRipple.splashFactory,
-                      onTap: () {
-                        //Close drawer
-                        if (appSys.settings!["user"]["global"]["autoCloseDrawer"]) {
-                          Navigator.of(context).pop();
-                        }
-                        widget.drawerPageViewController!.jumpToPage(this.widget.entries.indexOf(entry));
-                      },
-                      borderRadius: BorderRadius.only(topRight: Radius.circular(11), bottomRight: Radius.circular(11)),
-                      child: ConstrainedBox(
-                        constraints: BoxConstraints(maxWidth: 380),
-                        child: Container(
-                          margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
-                          width: screenSize.size.width / 5 * 3.1,
-                          height: screenSize.size.height / 10 * 0.6,
-                          child: Row(
-                            children: [
-                              SizedBox(width: 10),
-                              Icon(
-                                entry["icon"],
-                                size: 25,
-                                color: ThemeUtils.textColor(),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Expanded(
-                                child: Text(entry["menuName"],
-                                    style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: 17)),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  );
-                }),
         Expanded(
-          child: SizedBox(),
+                  child: SingleChildScrollView(
+              child: Column(
+            children: [
+              for (var entry in this.widget.entries)
+                if ((entry["tabName"] != null &&
+                        appSys.currentSchoolAccount!.availableTabs
+                            .contains(entry["tabName"])) ||
+                    (entry["relatedApi"] == -1 && !kReleaseMode))
+                  ValueListenableBuilder(
+                      valueListenable: widget._notifier,
+                      builder: (context, dynamic value, child) {
+                        return Material(
+                          borderRadius: BorderRadius.only(
+                              topRight: Radius.circular(11),
+                              bottomRight: Radius.circular(11)),
+                          color: (this.widget.entries.indexOf(entry) == value)
+                              ? Theme.of(context).backgroundColor
+                              : Colors.transparent,
+                          child: InkWell(
+                            splashFactory: InkRipple.splashFactory,
+                            onTap: () {
+                              //Close drawer
+                              if (appSys.settings!["user"]["global"]
+                                  ["autoCloseDrawer"]) {
+                                Navigator.of(context).pop();
+                              }
+                              widget.drawerPageViewController!
+                                  .jumpToPage(this.widget.entries.indexOf(entry));
+                            },
+                            borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(11),
+                                bottomRight: Radius.circular(11)),
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(maxWidth: 380),
+                              child: Container(
+                                margin: EdgeInsets.only(
+                                    left: screenSize.size.width / 5 * 0.1),
+                                width: screenSize.size.width / 5 * 3.1,
+                                height: screenSize.size.height / 10 * 0.6,
+                                child: Row(
+                                  children: [
+                                    SizedBox(width: 10),
+                                    Icon(
+                                      entry["icon"],
+                                      size: 25,
+                                      color: ThemeUtils.textColor(),
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Expanded(
+                                      child: Text(entry["menuName"],
+                                          style: TextStyle(
+                                              fontFamily: "Asap",
+                                              color: ThemeUtils.textColor(),
+                                              fontSize: 17)),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
+            ],
+          )),
         ),
+       
         Material(
-          borderRadius: BorderRadius.only(topRight: Radius.circular(11), bottomRight: Radius.circular(11)),
+          borderRadius: BorderRadius.only(
+              topRight: Radius.circular(11), bottomRight: Radius.circular(11)),
           color: Colors.transparent,
           child: InkWell(
             splashFactory: InkRipple.splashFactory,
             onTap: () {
               Wiredash.of(context)!.show();
             },
-            borderRadius: BorderRadius.only(topRight: Radius.circular(11), bottomRight: Radius.circular(11)),
+            borderRadius: BorderRadius.only(
+                topRight: Radius.circular(11),
+                bottomRight: Radius.circular(11)),
             child: Container(
               margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
               width: screenSize.size.width / 5 * 3.4,
@@ -144,21 +166,27 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     width: 10,
                   ),
                   Text("Faire un retour",
-                      style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: 17)),
+                      style: TextStyle(
+                          fontFamily: "Asap",
+                          color: ThemeUtils.textColor(),
+                          fontSize: 17)),
                 ],
               ),
             ),
           ),
         ),
         Material(
-          borderRadius: BorderRadius.only(topRight: Radius.circular(11), bottomRight: Radius.circular(11)),
+          borderRadius: BorderRadius.only(
+              topRight: Radius.circular(11), bottomRight: Radius.circular(11)),
           color: Colors.transparent,
           child: InkWell(
             splashFactory: InkRipple.splashFactory,
             onTap: () {
               Navigator.of(context).push(router(SettingsPage()));
             },
-            borderRadius: BorderRadius.only(topRight: Radius.circular(11), bottomRight: Radius.circular(11)),
+            borderRadius: BorderRadius.only(
+                topRight: Radius.circular(11),
+                bottomRight: Radius.circular(11)),
             child: Container(
               margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
               width: screenSize.size.width / 5 * 3.4,
@@ -175,7 +203,10 @@ class _CustomDrawerState extends State<CustomDrawer> {
                     width: 10,
                   ),
                   Text("Préférences",
-                      style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: 17)),
+                      style: TextStyle(
+                          fontFamily: "Asap",
+                          color: ThemeUtils.textColor(),
+                          fontSize: 17)),
                 ],
               ),
             ),
