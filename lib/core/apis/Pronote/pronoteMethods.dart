@@ -33,7 +33,7 @@ class PronoteMethod {
     var connectivityResult = await (Connectivity().checkConnectivity());
     //Offline
     if (connectivityResult == ConnectivityResult.none && !isOfflineLocked) {
-      return await offlineFetch();
+      return await (offlineArguments != null ? offlineFetch(offlineArguments) : offlineFetch());
     } else if (forceFetch && !isOfflineLocked) {
       try {
         await onlineFetchWithLock(onlineFetch, lockName, arguments: onlineArguments);
@@ -50,7 +50,7 @@ class PronoteMethod {
       if (data == null) {
         print("Online fetch because offline is null");
         await onlineFetchWithLock(onlineFetch, lockName, arguments: onlineArguments);
-        return await offlineFetch();
+        return await (offlineArguments != null ? offlineFetch(offlineArguments) : offlineFetch());
       }
       return data;
     }

@@ -137,29 +137,30 @@ class _AgendaState extends State<Agenda> {
                                                   color: ThemeUtils.textColor(),
                                                   fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2),
                                             ),
-                                            OutlinedButton(
-                                              style: TextButton.styleFrom(
-                                                primary: Colors.black87,
-                                                minimumSize: Size(88, 36),
-                                                padding: EdgeInsets.symmetric(horizontal: 16.0),
-                                                shape: const RoundedRectangleBorder(
-                                                  borderRadius: BorderRadius.all(Radius.circular(2.0)),
+                                            Container(
+                                              margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
+                                              width: 80,
+                                              child: TextButton(
+                                                style: TextButton.styleFrom(
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius: new BorderRadius.circular(18.0),
+                                                      side: BorderSide(color: Theme.of(context).primaryColorDark)),
                                                 ),
-                                              ),
-                                              onPressed: () async {
-                                                //Reload list
-                                                await refreshAgendaFuture(force: true);
-                                              },
-                                              child: snapshot.connectionState != ConnectionState.waiting
-                                                  ? Text("Recharger",
-                                                      style: TextStyle(
+                                                onPressed: () async {
+                                                  //Reload list
+                                                  await refreshAgendaFuture(force: true);
+                                                },
+                                                child: !(snapshot.connectionState == ConnectionState.waiting)
+                                                    ? Text("Recharger",
+                                                        style: TextStyle(
                                                           fontFamily: "Asap",
                                                           color: ThemeUtils.textColor(),
-                                                          fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2))
-                                                  : FittedBox(
-                                                      child: SpinKitThreeBounce(
-                                                          color: Theme.of(context).primaryColorDark,
-                                                          size: screenSize.size.width / 5 * 0.4)),
+                                                        ))
+                                                    : FittedBox(
+                                                        child: SpinKitThreeBounce(
+                                                            color: Theme.of(context).primaryColorDark,
+                                                            size: screenSize.size.height / 10 * 1.8)),
+                                              ),
                                             )
                                           ],
                                         ),

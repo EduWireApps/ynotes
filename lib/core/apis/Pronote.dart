@@ -25,7 +25,6 @@ class APIPronote extends API {
 
   late PronoteClient localClient;
 
-
   int loginReqNumber = 0;
 
   APIPronote(Offline offlineController) : super(offlineController) {
@@ -59,21 +58,29 @@ class APIPronote extends API {
   @override
   Future<List<Discipline>?> getGrades({bool? forceReload}) async {
     return (await PronoteMethod(localClient, this.offlineController).fetchAnyData(
-        PronoteMethod(localClient, this.offlineController).grades, DisciplinesOffline(offlineController).getDisciplines, "grades",
+        PronoteMethod(localClient, this.offlineController).grades,
+        DisciplinesOffline(offlineController).getDisciplines,
+        "grades",
         forceFetch: forceReload ?? false));
   }
 
   @override
   Future<List<Homework>?> getHomeworkFor(DateTime? dateHomework, {bool? forceReload}) async {
     return (await PronoteMethod(localClient, this.offlineController).fetchAnyData(
-        PronoteMethod(localClient, this.offlineController).homeworkFor, HomeworkOffline(offlineController).getHomeworkFor, "homework for",
-        forceFetch: forceReload ?? false, offlineArguments: dateHomework, onlineArguments: dateHomework));
+        PronoteMethod(localClient, this.offlineController).homeworkFor,
+        HomeworkOffline(offlineController).getHomeworkFor,
+        "homework for",
+        forceFetch: forceReload ?? false,
+        offlineArguments: dateHomework,
+        onlineArguments: dateHomework));
   }
 
   @override
   Future<List<Homework>?> getNextHomework({bool? forceReload}) async {
     return (await PronoteMethod(localClient, this.offlineController).fetchAnyData(
-        PronoteMethod(localClient, this.offlineController).nextHomework, HomeworkOffline(offlineController).getAllHomework, "homework",
+        PronoteMethod(localClient, this.offlineController).nextHomework,
+        HomeworkOffline(offlineController).getAllHomework,
+        "homework",
         forceFetch: forceReload ?? false));
   }
 
@@ -82,12 +89,12 @@ class APIPronote extends API {
     List<Lesson>? lessons = await PronoteMethod(localClient, this.offlineController).fetchAnyData(
         PronoteMethod(localClient, this.offlineController).lessons, LessonsOffline(offlineController).get, "lessons",
         forceFetch: forceReload ?? false, onlineArguments: dateToUse, offlineArguments: await getWeek(dateToUse));
-    if (lessons != null) {
-      lessons.retainWhere((lesson) =>
-          DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start!)) ==
-          DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)));
-    }
-    return lessons;
+
+    return lessons
+        ?.where((lesson) =>
+            DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start!)) ==
+            DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)))
+        .toList();
   }
 
   getOfflinePeriods() async {
@@ -150,10 +157,8 @@ class APIPronote extends API {
     return [];
   }
 
-  
   @override
   Future<List> login(username, password, {url, cas, mobileCasLogin}) async {
-    
     print(username + " " + password + " " + url);
     int req = 0;
 
@@ -282,7 +287,8 @@ class APIPronote extends API {
         }
       };
       print(jsonEncode(data));
-      var a = await PronoteMethod(localClient, this.offlineController).request("SaisieActualites", null, data: data, onglet: 8);
+      var a = await PronoteMethod(localClient, this.offlineController)
+          .request("SaisieActualites", null, data: data, onglet: 8);
       print(a);
       return true;
     } catch (e) {
@@ -331,7 +337,8 @@ class APIPronote extends API {
         }
       };
       print(jsonEncode(data));
-      var a = await PronoteMethod(localClient, this.offlineController).request("SaisieActualites", null, data: data, onglet: 8);
+      var a = await PronoteMethod(localClient, this.offlineController)
+          .request("SaisieActualites", null, data: data, onglet: 8);
       print(a);
       return true;
     } catch (e) {
