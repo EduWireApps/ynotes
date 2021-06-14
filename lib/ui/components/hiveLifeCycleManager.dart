@@ -28,7 +28,6 @@ class _HiveLifecycleManagerState extends State<HiveLifecycleManager> with Widget
           HiveBoxProvider.init();
           await appSys.initOffline();
           appSys.api = apiManager(appSys.offline);
-          appSys.buildControllers();
         });
         break;
       case AppLifecycleState.inactive:

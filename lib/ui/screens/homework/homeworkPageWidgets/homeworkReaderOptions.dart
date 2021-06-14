@@ -70,8 +70,10 @@ class _HomeworkReaderOptionsBottomSheetState extends State<HomeworkReaderOptions
   buildForceTextColorSwitch() {
     var screenSize = MediaQuery.of(context);
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Icon(MdiIcons.eye, color: ThemeUtils.textColor()),
             SizedBox(
@@ -95,6 +97,7 @@ class _HomeworkReaderOptionsBottomSheetState extends State<HomeworkReaderOptions
           ],
         ),
         Text("Les textes des devoirs ne s’afficheront que dans la couleur primaire du thème choisi",
+            textAlign: TextAlign.start,
             style: TextStyle(
                 fontFamily: "Asap",
                 color: ThemeUtils.textColor().withOpacity(0.7),
@@ -143,8 +146,8 @@ class _PageColorChoiceState extends State<PageColorChoice> {
       },
       child: AnimatedContainer(
         duration: Duration(milliseconds: 350),
-        width: screenSize.size.width / 5 * 0.6,
-        height: screenSize.size.width / 5 * 0.6,
+        width: 50,
+        height: 50,
         margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.05),
         decoration: BoxDecoration(
             shape: BoxShape.circle,
@@ -198,68 +201,70 @@ class _PageTextChoiceState extends State<PageTextChoice> with TickerProviderStat
           SizedBox(
             width: screenSize.size.width / 5 * 0.2,
           ),
-          Container(
-            width: screenSize.size.width / 5 * 1.2,
-            height: screenSize.size.height / 10 * 0.4,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5),
-              color: Theme.of(context).primaryColorDark,
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(
-                    child: GestureDetector(
-                  onTap: () {
-                    minusController.forward();
-                    if ((appSys.settings!["user"]["homeworkPage"]["fontSize"] ?? 20) > 11)
-                      appSys.updateSetting(appSys.settings!["user"]["homeworkPage"], "fontSize",
-                          (appSys.settings!["user"]["homeworkPage"]["fontSize"] ?? 20) - 1);
-                    setState(() {});
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                        border: Border(
-                      right: BorderSide(color: ThemeUtils.textColor().withOpacity(0.2)),
-                    )),
-                    child: Center(
-                      child: AnimatedBuilder(
-                          animation: minusController,
-                          builder: (context, child) {
-                            return Transform.scale(
-                                scale: minusAnimation.value,
-                                child: Text(
-                                  "-",
-                                  style: TextStyle(color: ThemeUtils.textColor(), fontWeight: FontWeight.bold),
-                                ));
-                          }),
+          ConstrainedBox(constraints: BoxConstraints(maxWidth: 150),
+            child: Container(
+              width: screenSize.size.width / 5 * 1.2,
+              height: screenSize.size.height / 10 * 0.4,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(5),
+                color: Theme.of(context).primaryColorDark,
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Expanded(
+                      child: GestureDetector(
+                    onTap: () {
+                      minusController.forward();
+                      if ((appSys.settings!["user"]["homeworkPage"]["fontSize"] ?? 20) > 11)
+                        appSys.updateSetting(appSys.settings!["user"]["homeworkPage"], "fontSize",
+                            (appSys.settings!["user"]["homeworkPage"]["fontSize"] ?? 20) - 1);
+                      setState(() {});
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                          border: Border(
+                        right: BorderSide(color: ThemeUtils.textColor().withOpacity(0.2)),
+                      )),
+                      child: Center(
+                        child: AnimatedBuilder(
+                            animation: minusController,
+                            builder: (context, child) {
+                              return Transform.scale(
+                                  scale: minusAnimation.value,
+                                  child: Text(
+                                    "-",
+                                    style: TextStyle(color: ThemeUtils.textColor(), fontWeight: FontWeight.bold),
+                                  ));
+                            }),
+                      ),
                     ),
-                  ),
-                )),
-                Expanded(
-                    child: GestureDetector(
-                  onTap: () {
-                    plusController.forward();
-                    if ((appSys.settings!["user"]["homeworkPage"]["fontSize"] ?? 20) < 35)
-                      appSys.updateSetting(appSys.settings!["user"]["homeworkPage"], "fontSize",
-                          (appSys.settings!["user"]["homeworkPage"]["fontSize"] ?? 20) + 1);
-                    setState(() {});
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(),
-                    child: Center(
-                      child: AnimatedBuilder(
-                          animation: plusAnimation,
-                          builder: (context, child) {
-                            return Transform.scale(
-                                scale: plusAnimation.value,
-                                child: Text("+",
-                                    style: TextStyle(color: ThemeUtils.textColor(), fontWeight: FontWeight.bold)));
-                          }),
+                  )),
+                  Expanded(
+                      child: GestureDetector(
+                    onTap: () {
+                      plusController.forward();
+                      if ((appSys.settings!["user"]["homeworkPage"]["fontSize"] ?? 20) < 35)
+                        appSys.updateSetting(appSys.settings!["user"]["homeworkPage"], "fontSize",
+                            (appSys.settings!["user"]["homeworkPage"]["fontSize"] ?? 20) + 1);
+                      setState(() {});
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(),
+                      child: Center(
+                        child: AnimatedBuilder(
+                            animation: plusAnimation,
+                            builder: (context, child) {
+                              return Transform.scale(
+                                  scale: plusAnimation.value,
+                                  child: Text("+",
+                                      style: TextStyle(color: ThemeUtils.textColor(), fontWeight: FontWeight.bold)));
+                            }),
+                      ),
                     ),
-                  ),
-                )),
-              ],
+                  )),
+                ],
+              ),
             ),
           )
         ],

@@ -16,9 +16,10 @@ class MailsOffline {
   }
 
   Future<void> updateMailContent(String content, String id) async {
-    Mail? mail = await parent.mailsBox?.values.toList().firstWhere((element) => element.id == id);
+    Mail? mail = parent.mailsBox?.values.toList().firstWhere((element) => element.id == id);
     if (mail != null) {
       mail.content = content;
+      mail.read = true;
       await mail.save();
     }
   }

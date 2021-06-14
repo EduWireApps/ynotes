@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:another_flushbar/flushbar.dart';
+import 'package:desktop_window/desktop_window.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -20,8 +21,7 @@ import 'package:ynotes/core/utils/settingsUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
-import 'package:ynotes/ui/components/y_page/mixins.dart';
-import 'package:ynotes/ui/components/y_page/y_page_local.dart';
+import 'package:ynotes/ui/screens/settings/sub_pages/accountPage.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
 
 import '../../../tests.dart';
@@ -30,24 +30,6 @@ import '../../../usefulMethods.dart';
 bool? isFirstAvatarSelected;
 
 final storage = new FlutterSecureStorage();
-showExitDialog(BuildContext context) {
-  // set up the AlertDialog
-  return showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return ExitDialogWidget();
-    },
-  );
-}
-
-class ExitDialogWidget extends StatefulWidget {
-  const ExitDialogWidget({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  _ExitDialogWidgetState createState() => _ExitDialogWidgetState();
-}
 
 class SettingsPage extends StatefulWidget {
   const SettingsPage({Key? key}) : super(key: key);
@@ -58,53 +40,7 @@ class SettingsPage extends StatefulWidget {
   }
 }
 
-class _ExitDialogWidgetState extends State<ExitDialogWidget> {
-  @override
-  Widget build(BuildContext context) {
-    return AlertDialog(
-        elevation: 50,
-        backgroundColor: Theme.of(context).primaryColor,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
-        title: Text(
-          "Confirmation",
-          style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-        ),
-        content: Text(
-          "Voulez vous vraiment vous deconnecter ?",
-          style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-        ),
-        actions: [
-          TextButton(
-            child: const Text(
-              'ANNULER',
-              style: TextStyle(color: Colors.green),
-            ),
-            onPressed: () {
-              Navigator.pop(context, false);
-            },
-          ),
-          TextButton(
-            child: const Text(
-              'SE DECONNECTER',
-              style: TextStyle(color: Colors.red),
-            ),
-            onPressed: () async {
-              await appSys.exitApp();
-              appSys.api!.gradesList!.clear();
-              setState(() {
-                appSys.api = null;
-              });
-              try {
-                appSys.updateTheme("clair");
-              } catch (e) {}
-              Navigator.pushReplacementNamed(context, "/login");
-            },
-          )
-        ]);
-  }
-}
-
-class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMixin, YPageMixin {
+class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMixin {
   late AnimationController leftToRightAnimation;
   late AnimationController rightToLeftAnimation;
   //Avatar's animations :
@@ -148,7 +84,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                       leading: Icon(MdiIcons.account, color: ThemeUtils.textColor()),
                       trailing: Icon(Icons.chevron_right, color: ThemeUtils.textColor()),
                       onPressed: (context) {
-                        Navigator.pushNamed(context, "/account");
+                        Navigator.of(context).push(router(AccountPage()));
                       },
                       iosChevron: Icon(Icons.chevron_right)),
                 ],
@@ -217,7 +153,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     switchValue: _appSys.settings!["user"]["global"]["notificationNewMail"],
                     onToggle: (bool value) async {
                       if (value == false ||
-                          (Platform.isIOS && await Permission.notification.request().isGranted) ||
+                          (!kIsWeb && Platform.isIOS && await Permission.notification.request().isGranted) ||
                           (await Permission.ignoreBatteryOptimizations.isGranted)) {
                         _appSys.updateSetting(_appSys.settings!["user"]["global"], "notificationNewMail", value);
                       } else {
@@ -243,7 +179,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     switchValue: _appSys.settings!["user"]["global"]["notificationNewGrade"],
                     onToggle: (bool value) async {
                       if (value == false ||
-                          (Platform.isIOS && await Permission.notification.request().isGranted) ||
+                          (!kIsWeb && Platform.isIOS && await Permission.notification.request().isGranted) ||
                           (await Permission.ignoreBatteryOptimizations.isGranted)) {
                         _appSys.updateSetting(_appSys.settings!["user"]["global"], "notificationNewGrade", value);
                       } else {
@@ -264,7 +200,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     iosChevron: Icon(Icons.chevron_right),
                     leading: Icon(MdiIcons.bellAlert, color: ThemeUtils.textColor()),
                     onPressed: (context) async {
-                      if (Platform.isIOS) {
+                      if (!kIsWeb && Platform.isIOS) {
                         await Permission.notification.request();
                         return;
                       }
@@ -353,20 +289,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     title: 'Afficher les logs',
                     leading: Icon(MdiIcons.bug, color: ThemeUtils.textColor()),
                     onPressed: (context) {
-                      openLocalPage(YPageLocal(child: LogsPage(), title: "Logs", actions: [
-                        IconButton(
-                          icon: new Icon(Icons.delete),
-                          onPressed: () async {
-                            bool? val = await (CustomDialogs.showConfirmationDialog(context, null,
-                                alternativeText:
-                                    "Voulez vous vraiment supprimer l'intégralité des logs (irréversible) ?"));
-                            if (val ?? false) {
-                              await removeLogFile();
-                              setState(() {});
-                            }
-                          },
-                        ),
-                      ]));
+                      Navigator.of(context).push(router(LogsPage()));
                     },
                     titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                     subtitleTextStyle: TextStyle(
@@ -441,16 +364,6 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     iosChevron: Icon(Icons.chevron_right),
                   ),
                   SettingsTile(
-                    title: 'Test',
-                    leading: Icon(MdiIcons.emoticonConfused, color: ThemeUtils.textColor()),
-                    onPressed: (context) async {},
-                    titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-                    subtitleTextStyle: TextStyle(
-                        fontFamily: "Asap",
-                        color: ThemeUtils.isThemeDark ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
-                    iosChevron: Icon(Icons.chevron_right),
-                  ),
-                  SettingsTile(
                     title: 'Forcer la restauration des anciens paramètres',
                     leading: Icon(MdiIcons.emoticonConfused, color: ThemeUtils.textColor()),
                     onPressed: (context) async {
@@ -495,7 +408,9 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                       title: 'Bouton magique',
                       leading: Icon(MdiIcons.testTube, color: ThemeUtils.textColor()),
                       onPressed: (context) async {
-                        await appSys.updateSetting(appSys.settings!["system"], "lastMailCount", 60);
+                        if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+                          await DesktopWindow.setWindowSize(Size(768, 1024));
+                        }
                       },
                       titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                       subtitleTextStyle: TextStyle(

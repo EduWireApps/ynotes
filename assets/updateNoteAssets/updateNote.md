@@ -14,6 +14,8 @@ Vous découvrirez dans cette nouvelle version :
   - Une **barre de recherche** pour accéder rapidement à un mail
   - Les mails peuvent désormais être lus **hors ligne**
 - **Signalez un problème** en **secouant votre téléphone** *pas trop quand même* 🐛
+- Nous avons **retiré la possibilité d'ajouter des évènements personnalisés sur l'agenda ou de modifier ceux existants** 🗑️: personne ne s'en servait, et cela rendait la structure trop compliquée pour nous. Vous pouvez cependant toujours ajouter des rappels. 
+
 
 # Correctifs 
 - Autoformater pour l'adresse URL Pronote, évite certains problèmes de connexion récurrents

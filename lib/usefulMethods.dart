@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
@@ -30,8 +30,7 @@ TValue? case2<TOptionType, TValue>(
 
 //Connectivity  classs
 
-List<Grade>? getAllGrades(List<Discipline>? list,
-    {bool overrideLimit = false, bool sortByWritingDate = true}) {
+List<Grade>? getAllGrades(List<Discipline>? list, {bool overrideLimit = false, bool sortByWritingDate = true}) {
   if (appSys.api != null) {
     List<Grade> listToReturn = [];
     if (list != null) {
@@ -52,9 +51,8 @@ List<Grade>? getAllGrades(List<Discipline>? list,
 
       //sort grades
       if (sortByWritingDate) {
-        listToReturn.sort((a, b) => (a.entryDate != null && b.entryDate != null)
-            ? (a.entryDate!.compareTo(b.entryDate!))
-            : 1);
+        listToReturn
+            .sort((a, b) => (a.entryDate != null && b.entryDate != null) ? (a.entryDate!.compareTo(b.entryDate!)) : 1);
       }
 
       //remove duplicates
@@ -67,8 +65,7 @@ List<Grade>? getAllGrades(List<Discipline>? list,
       appSys.api!.gradesList?.addAll(listToReturn);
 
       if (overrideLimit == false) {
-        listToReturn = listToReturn.sublist(
-            0, ((listToReturn.length >= 5) ? 5 : listToReturn.length));
+        listToReturn = listToReturn.sublist(0, ((listToReturn.length >= 5) ? 5 : listToReturn.length));
       }
       return listToReturn;
     } else {
@@ -95,8 +92,7 @@ Future<String?> readStorage(_key) async {
   return u;
 }
 
-Future<List<Discipline>> refreshDisciplinesListColors(
-    List<Discipline> list) async {
+Future<List<Discipline>> refreshDisciplinesListColors(List<Discipline> list) async {
   List<Discipline> newList = [];
   list.forEach((f) async {
     f.color = await getColor(f.disciplineCode);
@@ -126,13 +122,11 @@ Route router(Widget widget) {
 
 class ConnectionStatusSingleton {
   //This creates the single instance by calling the `_internal` constructor specified below
-  static final ConnectionStatusSingleton _singleton =
-      new ConnectionStatusSingleton._internal();
+  static final ConnectionStatusSingleton _singleton = new ConnectionStatusSingleton._internal();
   bool hasConnection = false;
 
   //This is what's used to retrieve the instance through the app
-  StreamController connectionChangeController =
-      new StreamController.broadcast();
+  StreamController connectionChangeController = new StreamController.broadcast();
 
   //This tracks the current connection status
   final Connectivity _connectivity = Connectivity();

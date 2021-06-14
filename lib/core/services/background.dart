@@ -26,12 +26,7 @@ class BackgroundService {
         appSys.api = apiManager(appSys.offline);
       }
       await logFile("Init appSys");
-      /*if (!readLastFetchStatus(appSys)) {
-        //we don't write the fetch status (because no one fetch has been executed)
-        await AppNotification.cancelNotification(a.hashCode);
-        await logFile("Cancel background fetch.");
-        return;
-      }*/
+    
       await writeLastFetchStatus(appSys);
 //Ensure that grades notification are enabled and battery saver disabled
       if (appSys.settings?["user"]["global"]["notificationNewGrade"] &&

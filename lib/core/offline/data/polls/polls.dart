@@ -8,7 +8,7 @@ class PollsOffline {
   }
   Future<List<PollInfo>?> get() async {
     try {
-      return await parent.offlineBox?.get("recipients")?.cast<PollInfo>();
+      return await parent.offlineBox?.get("polls")?.cast<PollInfo>();
     } catch (e) {
       print("Error while returning polls " + e.toString());
       return null;

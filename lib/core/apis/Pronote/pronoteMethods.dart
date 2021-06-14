@@ -1,4 +1,4 @@
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:intl/intl.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteAPI.dart';
 import 'package:ynotes/core/apis/Pronote/converters/polls.dart';
@@ -10,8 +10,9 @@ import 'package:ynotes/core/logic/shared/loginController.dart';
 import 'package:ynotes/core/offline/data/agenda/lessons.dart';
 import 'package:ynotes/core/offline/data/disciplines/disciplines.dart';
 import 'package:ynotes/core/offline/data/homework/homework.dart';
+import 'package:ynotes/core/offline/data/polls/polls.dart';
 import 'package:ynotes/core/offline/offline.dart';
-import 'package:ynotes/core/utils/nullSafeMap.dart';
+import 'package:ynotes/core/utils/nullSafeMapGetter.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/usefulMethods.dart';
 
@@ -32,7 +33,7 @@ class PronoteMethod {
     var connectivityResult = await (Connectivity().checkConnectivity());
     //Offline
     if (connectivityResult == ConnectivityResult.none && !isOfflineLocked) {
-      return await offlineFetch();
+      return await (offlineArguments != null ? offlineFetch(offlineArguments) : offlineFetch());
     } else if (forceFetch && !isOfflineLocked) {
       try {
         await onlineFetchWithLock(onlineFetch, lockName, arguments: onlineArguments);
@@ -49,7 +50,7 @@ class PronoteMethod {
       if (data == null) {
         print("Online fetch because offline is null");
         await onlineFetchWithLock(onlineFetch, lockName, arguments: onlineArguments);
-        return await offlineFetch();
+        return await (offlineArguments != null ? offlineFetch(offlineArguments) : offlineFetch());
       }
       return data;
     }
@@ -182,7 +183,7 @@ class PronoteMethod {
   //Test if another concurrent task is not running
   Future<List<PollInfo>?> polls() async {
     List<PollInfo>? polls = await request("PageActualites", PronotePollsConverter.polls, data: {}, onglet: 8);
-    return polls;
+    await PollsOffline(_offlineController).update(polls);
   }
 
   refreshClient() async {

@@ -10,7 +10,6 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/globals.dart';
 
 class HomeworkController extends ChangeNotifier {
-  final api;
   List<Homework>? _old = [];
   List _hwCompletion = [100, 0, 0];
   List<Homework> unloadedHW = [];
@@ -21,7 +20,11 @@ class HomeworkController extends ChangeNotifier {
   int tomorrowCount = 0;
   int weekCount = 0;
 
-  HomeworkController(this.api) {
+  HomeworkController(API? api) {
+    _api = api;
+  }
+
+  set api(API? api) {
     _api = api;
   }
   List<Homework>? get getHomework => _old;

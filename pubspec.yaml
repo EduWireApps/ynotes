@@ -11,7 +11,7 @@ description: yNotes application de gestion de vie scolaire
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.
-version: 0.11.3+9
+version: 0.12.0+9
 publish_to: none
 
 environment:
@@ -72,11 +72,12 @@ dependencies:
   build_resolvers: ^2.0.0
   calendar_time: ^2.0.0-nullsafety.0
   collection: ^1.15.0-nullsafety.4
-  connectivity: ^3.0.3
+  connectivity_plus: ^1.0.2
   csv: ^5.0.0
   date_field: ^2.0.1
   day_night_switcher: ^0.2.0+1
   device_apps: ^2.0.2
+  desktop_window: ^0.4.0
   dotted_border: ^2.0.0-nullsafety.0
   dotted_line: ^3.0.0
   encrypt: ^5.0.0
@@ -122,12 +123,15 @@ dependencies:
   sqflite: ^2.0.0+3
   smooth_page_indicator: ^0.3.0-nullsafety.0
   stack: ^0.2.1
+  flutter_staggered_grid_view: ^0.4.0
+
   stacked: ^2.0.2
   supercharged: ^2.0.0
   url_launcher: ^6.0.3
   uuid: ^3.0.3
   visibility_detector: ^0.2.0-nullsafety.1
   font_awesome_flutter: ^9.1.0
+  flutter_phoenix: ^1.0.0
 dependency_overrides:
   intl: ^0.17.0-nullsafety.2
   mime: ^1.0.0
@@ -209,12 +213,6 @@ flutter:
 
   assets:
     - assets/images/logoED.svg
-    - assets/images/space/space.png
-    - assets/images/space/2.0x/space.png
-    - assets/images/space/4.0x/space.png
-    - assets/images/marks/2.0x/mark.png
-    - assets/images/marks/3.0x/mark.png
-    - assets/images/marks/mark.png
     - assets/images/shelves/calendar.png
     - assets/images/shelves/clock.png
     - assets/images/shelves/shelve1.png

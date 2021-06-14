@@ -3,13 +3,15 @@ import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 
 class SchoolLifeController extends ChangeNotifier {
-  final api;
   API? _api;
 
   bool loading = false;
   List<SchoolLifeTicket>? tickets;
 
-  SchoolLifeController(this.api) {
+  SchoolLifeController(API? api) {
+    _api = api;
+  }
+  set api(API? api) {
     _api = api;
   }
 

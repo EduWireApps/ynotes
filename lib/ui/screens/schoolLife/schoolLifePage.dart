@@ -9,6 +9,7 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/columnGenerator.dart';
 import 'package:ynotes/ui/components/y_page/y_page.dart';
+import 'package:ynotes/ui/mixins/layoutMixin.dart';
 
 class SchoolLifePage extends StatefulWidget {
   const SchoolLifePage({Key? key}) : super(key: key);
@@ -16,10 +17,10 @@ class SchoolLifePage extends StatefulWidget {
   _SchoolLifePageState createState() => _SchoolLifePageState();
 }
 
-class _SchoolLifePageState extends State<SchoolLifePage> {
+class _SchoolLifePageState extends State<SchoolLifePage> with Layout {
   @override
   Widget build(BuildContext context) {
-    MediaQueryData screenSize = MediaQuery.of(context);
+    var screenSize = MediaQuery.of(context);
 
     return YPage(
         title: "Vie scolaire",
@@ -65,7 +66,6 @@ class _SchoolLifePageState extends State<SchoolLifePage> {
       icon = MdiIcons.foodOff;
     }
 
-    var screenSize = MediaQuery.of(context);
     return Container(
         decoration: BoxDecoration(shape: BoxShape.circle, color: Theme.of(context).primaryColorDark),
         child: FittedBox(
@@ -73,9 +73,9 @@ class _SchoolLifePageState extends State<SchoolLifePage> {
           icon,
           color: ThemeUtils.textColor(),
         )),
-        padding: EdgeInsets.all(screenSize.size.width / 5 * 0.15),
-        width: screenSize.size.width / 5 * 0.8,
-        height: screenSize.size.width / 5 * 0.8,
+        padding: EdgeInsets.all(15),
+        width: 90,
+        height: 90,
         margin: EdgeInsets.all(10));
   }
 
@@ -93,31 +93,34 @@ class _SchoolLifePageState extends State<SchoolLifePage> {
               children: [
                 Icon(
                   MdiIcons.stamper,
-                  size: screenSize.size.width / 5 * 1.2,
+                  size: screenSize.size.height / 10 * 2.5,
                   color: ThemeUtils.textColor(),
                 ),
                 Text(
                   "Pas de données.",
                   style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: 20),
                 ),
-                TextButton(
-                  style: TextButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: new BorderRadius.circular(18.0),
-                        side: BorderSide(color: Theme.of(context).primaryColorDark)),
+                Container(
+                  width: 90,
+                  child: TextButton(
+                    style: TextButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(18.0),
+                          side: BorderSide(color: ThemeUtils.textColor())),
+                    ),
+                    onPressed: () {
+                      model.refresh(force: true);
+                    },
+                    child: model.loading
+                        ? Text("Recharger",
+                            style: TextStyle(
+                                fontFamily: "Asap",
+                                color: ThemeUtils.textColor(),
+                                fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2))
+                        : FittedBox(
+                            child: SpinKitThreeBounce(
+                                color: ThemeUtils.textColor(), size: screenSize.size.width / 5 * 0.4)),
                   ),
-                  onPressed: () {
-                    model.refresh(force: true);
-                  },
-                  child: model.loading
-                      ? Text("Recharger",
-                          style: TextStyle(
-                              fontFamily: "Asap",
-                              color: Colors.white,
-                              fontSize: (screenSize.size.height / 10 * 8.8) / 10 * 0.2))
-                      : FittedBox(
-                          child: SpinKitThreeBounce(
-                              color: Theme.of(context).primaryColor, size: screenSize.size.width / 5 * 0.4)),
                 )
               ],
             ),

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
@@ -12,10 +13,6 @@ class AgendaSettings extends StatefulWidget {
 }
 
 class _AgendaSettingsState extends State<AgendaSettings> {
-  @override
-  // ignore: must_call_super
-  void initState() {}
-
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
@@ -83,7 +80,7 @@ class _AgendaSettingsState extends State<AgendaSettings> {
             color: ThemeUtils.textColor(),
           ),
         ),
-        if (Platform.isAndroid)
+        if (!kIsWeb && Platform.isAndroid)
           ListTile(
             title: Text("Notification constante",
                 style: TextStyle(
@@ -104,4 +101,8 @@ class _AgendaSettingsState extends State<AgendaSettings> {
       ],
     );
   }
+
+  @override
+  // ignore: must_call_super
+  void initState() {}
 }

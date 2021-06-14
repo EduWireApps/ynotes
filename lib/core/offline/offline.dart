@@ -1,4 +1,6 @@
+import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/globals.dart';
@@ -25,9 +27,13 @@ class HiveBoxProvider {
 
   static Future init() async {
     if (_initFlutterFuture == null) {
-      var dir = await FolderAppUtil.getDirectory();
       try {
-        Hive.init("${dir.path}/offline");
+        if (kIsWeb) {
+          await Hive.initFlutter();
+        } else {
+          var dir = await FolderAppUtil.getDirectory();
+          Hive.init("${dir.path}/offline");
+        }
       } catch (e) {
         print("Issue while initing Hive : " + e.toString());
       }
@@ -49,6 +55,8 @@ class HiveBoxProvider {
     _registerAdapter(SchoolLifeTicketAdapter());
     _registerAdapter(AlarmTypeAdapter());
     _registerAdapter(MailAdapter());
+    _registerAdapter(PollChoiceAdapter());
+    _registerAdapter(PollQuestionAdapter());
   }
 
   static void _registerAdapter<T>(TypeAdapter<T> adapter) {
@@ -70,7 +78,7 @@ class Offline {
   static final String pinnedHomeworkBoxName = "pinnedHomework";
   static final String agendaBoxName = "agenda";
   static final String mailsBoxName = "mails";
-
+  DateTime? dateOfOpening;
   //sample box for example.dart (do not delete)
   Box<Example>? exampleBox;
 
@@ -82,22 +90,9 @@ class Offline {
   Box? agendaBox;
   Box<Mail>? mailsBox;
 
-/*
-  //Imports
-  late HomeworkOffline homework;
-  late DoneHomeworkOffline doneHomework;
-  late PinnedHomeworkOffline pinnedHomework;
-  late AgendaEventsOffline agendaEvents;
-  late RemindersOffline reminders;
-  late LessonsOffline lessons;
-  late SchoolLifeOffline schoolLife;
-  late DisciplinesOffline disciplines;
-
-  late PollsOffline polls;
-
-  late RecipientsOffline recipients;
-*/
-  Offline();
+  Offline() {
+    dateOfOpening = DateTime.now();
+  }
   //Called on dispose
   clearAll() async {
     try {
@@ -106,6 +101,7 @@ class Offline {
       await pinnedHomeworkBox?.deleteFromDisk();
       await homeworkBox?.deleteFromDisk();
       await mailsBox?.deleteFromDisk();
+      await homeworkBox?.deleteFromDisk();
 
       await this.init();
     } catch (e) {

@@ -1,0 +1,8 @@
+  [Desktop Entry]
+  Name=yNotes
+  Comment= Powerful school life app
+  Exec=ynotes
+  Icon=${SNAP}/meta/gui/ynotes.png # replace name to your app name
+  Terminal=false
+  Type=Application
+  Categories=Education; #adjust accordingly your snap category

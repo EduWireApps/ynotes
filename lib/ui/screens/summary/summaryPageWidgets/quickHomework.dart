@@ -12,8 +12,7 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 
 class QuickHomework extends StatefulWidget {
-  final Function? switchPage;
-  const QuickHomework({Key? key, this.switchPage}) : super(key: key);
+  const QuickHomework({Key? key}) : super(key: key);
   @override
   _QuickHomeworkState createState() => _QuickHomeworkState();
 }
@@ -27,8 +26,7 @@ class _QuickHomeworkState extends State<QuickHomework> {
         value: appSys.homeworkController,
         child: Consumer<HomeworkController>(builder: (context, model, child) {
           return Card(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             margin: EdgeInsets.only(top: 0),
             shadowColor: Colors.transparent,
             color: Colors.transparent,
@@ -43,9 +41,7 @@ class _QuickHomeworkState extends State<QuickHomework> {
                         alignment: Alignment.topCenter,
                         child: Container(
                             margin: EdgeInsets.only(
-                                top: (screenSize.size.height / 10 * 8.8) /
-                                    10 *
-                                    0.1,
+                                top: screenSize.size.height / 10 * 0.1,
                                 left: screenSize.size.width / 5 * 0.25,
                                 right: screenSize.size.width / 5 * 0.15),
                             child: Column(
@@ -57,49 +53,28 @@ class _QuickHomeworkState extends State<QuickHomework> {
                                       child: Card(
                                         color: Theme.of(context).primaryColor,
                                         child: Container(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: screenSize.size.height /
-                                                  10 *
-                                                  0.08),
+                                          height: 50,
+                                          padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.08),
                                           child: Center(
                                             child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
+                                              mainAxisAlignment: MainAxisAlignment.center,
                                               children: [
                                                 Container(
-                                                  margin: EdgeInsets.only(
-                                                      left: screenSize
-                                                              .size.width /
-                                                          5 *
-                                                          0.1),
+                                                  margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
                                                   decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            500),
+                                                    borderRadius: BorderRadius.circular(500),
                                                   ),
-                                                  width: screenSize.size.width /
-                                                      5 *
-                                                      0.4,
-                                                  height:
-                                                      screenSize.size.width /
-                                                          5 *
-                                                          0.4,
-                                                  child:
-                                                      LiquidCircularProgressIndicator(
-                                                    value: (model.homeworkCompletion[
-                                                                0] ??
-                                                            100) /
-                                                        100, // Defaults to 0.5.
-                                                    valueColor:
-                                                        AlwaysStoppedAnimation(
-                                                            Color(
-                                                                0xff15803D)), // Defaults to the current Theme's accentColor.
-                                                    backgroundColor:
-                                                        Color(0xff27272A),
+                                                  width: 30,
+                                                  height: 30,
+                                                  child: LiquidCircularProgressIndicator(
+                                                    value:
+                                                        (model.homeworkCompletion[0] ?? 100) / 100, // Defaults to 0.5.
+                                                    valueColor: AlwaysStoppedAnimation(Color(
+                                                        0xff15803D)), // Defaults to the current Theme's accentColor.
+                                                    backgroundColor: Color(0xff27272A),
                                                     borderWidth:
                                                         0.00, // Defaults to the current Theme's backgroundColor.
-                                                    borderColor:
-                                                        Colors.transparent,
+                                                    borderColor: Colors.transparent,
                                                     direction: Axis.vertical,
                                                     center: Icon(
                                                       Icons.done,
@@ -109,54 +84,33 @@ class _QuickHomeworkState extends State<QuickHomework> {
                                                 ),
                                                 Expanded(
                                                   child: Row(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .center,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
+                                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                                    mainAxisAlignment: MainAxisAlignment.center,
                                                     children: [
                                                       AutoSizeText(
-                                                        model
-                                                            .homeworkCompletion[
-                                                                1]
-                                                            .toString(),
-                                                        textAlign:
-                                                            TextAlign.center,
+                                                        model.homeworkCompletion[1].toString(),
+                                                        textAlign: TextAlign.center,
                                                         style: TextStyle(
                                                           fontFamily: "Asap",
-                                                          color: ThemeUtils
-                                                              .textColor(),
-                                                          fontWeight:
-                                                              FontWeight.bold,
+                                                          color: ThemeUtils.textColor(),
+                                                          fontWeight: FontWeight.bold,
                                                         ),
                                                       ),
                                                       AutoSizeText(
                                                           " fait" +
-                                                              (model.homeworkCompletion[
-                                                                          1] >
-                                                                      1
-                                                                  ? "s "
-                                                                  : " ") +
+                                                              (model.homeworkCompletion[1] > 1 ? "s " : " ") +
                                                               "sur ",
                                                           style: TextStyle(
                                                             fontFamily: "Asap",
-                                                            color: ThemeUtils
-                                                                .textColor(),
+                                                            color: ThemeUtils.textColor(),
                                                           )),
                                                       AutoSizeText(
-                                                        model
-                                                            .homeworkCompletion[
-                                                                2]
-                                                            .toString(),
-                                                        textAlign:
-                                                            TextAlign.center,
+                                                        model.homeworkCompletion[2].toString(),
+                                                        textAlign: TextAlign.center,
                                                         style: TextStyle(
                                                           fontFamily: "Asap",
-                                                          color: ThemeUtils
-                                                              .textColor(),
-                                                          fontWeight:
-                                                              FontWeight.bold,
+                                                          color: ThemeUtils.textColor(),
+                                                          fontWeight: FontWeight.bold,
                                                         ),
                                                       ),
                                                     ],
@@ -169,85 +123,47 @@ class _QuickHomeworkState extends State<QuickHomework> {
                                       ),
                                     ),
                                     Expanded(
-                                      child: Card(
-                                        color: Theme.of(context).primaryColor,
-                                        child: Container(
-                                          padding: EdgeInsets.symmetric(
-                                              vertical: screenSize.size.height /
-                                                  10 *
-                                                  0.08),
+                                        child: Card(
+                                      color: Theme.of(context).primaryColor,
+                                      child: Container(
+                                        height: 50,
+                                        padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.08),
+                                        child: Center(
                                           child: Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
+                                            mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
                                               Container(
-                                                  margin: EdgeInsets.only(
-                                                      left: screenSize
-                                                              .size.width /
-                                                          5 *
-                                                          0.1),
-                                                  width: screenSize.size.width /
-                                                      5 *
-                                                      0.4,
-                                                  height:
-                                                      screenSize.size.width /
-                                                          5 *
-                                                          0.4,
-                                                  padding: EdgeInsets.all(
-                                                      screenSize.size.width /
-                                                          5 *
-                                                          0.01),
+                                                  margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
+                                                  width: 30,
+                                                  height: 30,
+                                                  padding: EdgeInsets.all(screenSize.size.width / 5 * 0.01),
                                                   child: Icon(
                                                     MdiIcons.pen,
                                                     color: Colors.white,
                                                   ),
                                                   decoration: BoxDecoration(
                                                     color: Color(0xff27272A),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            500),
+                                                    borderRadius: BorderRadius.circular(500),
                                                   )),
                                               Expanded(
-                                                child: ChangeNotifierProvider<
-                                                    HomeworkController?>.value(
-                                                  value:
-                                                      appSys.homeworkController,
-                                                  child: Consumer<
-                                                          HomeworkController>(
-                                                      builder: (context, model,
-                                                          child) {
+                                                child: ChangeNotifierProvider<HomeworkController?>.value(
+                                                  value: appSys.homeworkController,
+                                                  child: Consumer<HomeworkController>(builder: (context, model, child) {
                                                     return Container(
                                                       child: Row(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .center,
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
+                                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                                        mainAxisAlignment: MainAxisAlignment.center,
                                                         children: [
-                                                          Text(
-                                                              model.examsCount
-                                                                  .toString(),
+                                                          Text(model.examsCount.toString(),
                                                               style: TextStyle(
-                                                                fontFamily:
-                                                                    "Asap",
-                                                                color: ThemeUtils
-                                                                    .textColor(),
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
+                                                                fontFamily: "Asap",
+                                                                color: ThemeUtils.textColor(),
+                                                                fontWeight: FontWeight.bold,
                                                               )),
-                                                          Text(
-                                                              " contrôle" +
-                                                                  (model.examsCount >
-                                                                          1
-                                                                      ? "s"
-                                                                      : ""),
+                                                          Text(" contrôle" + (model.examsCount > 1 ? "s" : ""),
                                                               style: TextStyle(
-                                                                fontFamily:
-                                                                    "Asap",
-                                                                color: ThemeUtils
-                                                                    .textColor(),
+                                                                fontFamily: "Asap",
+                                                                color: ThemeUtils.textColor(),
                                                               )),
                                                         ],
                                                       ),
@@ -259,69 +175,48 @@ class _QuickHomeworkState extends State<QuickHomework> {
                                           ),
                                         ),
                                       ),
-                                    ),
+                                    )),
                                   ],
                                 ),
                                 Card(
                                   color: Theme.of(context).primaryColor,
                                   child: Container(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical:
-                                            screenSize.size.height / 10 * 0.08),
+                                    height: 50,
+                                    padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.08),
                                     child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Container(
-                                            width:
-                                                screenSize.size.width / 5 * 0.4,
-                                            height:
-                                                screenSize.size.width / 5 * 0.4,
-                                            padding: EdgeInsets.all(
-                                                screenSize.size.width /
-                                                    5 *
-                                                    0.01),
+                                            width: 30,
+                                            height: 30,
                                             child: Icon(
                                               MdiIcons.calendarAlert,
                                               color: Colors.white,
                                             ),
                                             decoration: BoxDecoration(
                                               color: Color(0xff27272A),
-                                              borderRadius:
-                                                  BorderRadius.circular(500),
+                                              borderRadius: BorderRadius.circular(500),
                                             )),
-                                        ChangeNotifierProvider<
-                                            HomeworkController?>.value(
+                                        ChangeNotifierProvider<HomeworkController?>.value(
                                           value: appSys.homeworkController,
-                                          child: Consumer<HomeworkController>(
-                                              builder: (context, model, child) {
+                                          child: Consumer<HomeworkController>(builder: (context, model, child) {
                                             return Container(
                                               margin: EdgeInsets.only(
-                                                  left: screenSize.size.width /
-                                                      5 *
-                                                      0.3,
-                                                  right: screenSize.size.width /
-                                                      5 *
-                                                      0.3),
+                                                  left: screenSize.size.width / 5 * 0.3,
+                                                  right: screenSize.size.width / 5 * 0.3),
                                               child: Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
+                                                crossAxisAlignment: CrossAxisAlignment.center,
                                                 children: [
-                                                  Text(
-                                                      model.tomorrowCount
-                                                          .toString(),
+                                                  Text(model.tomorrowCount.toString(),
                                                       style: TextStyle(
                                                         fontFamily: "Asap",
-                                                        color: ThemeUtils
-                                                            .textColor(),
-                                                        fontWeight:
-                                                            FontWeight.bold,
+                                                        color: ThemeUtils.textColor(),
+                                                        fontWeight: FontWeight.bold,
                                                       )),
                                                   Text(" pour demain",
                                                       style: TextStyle(
                                                         fontFamily: "Asap",
-                                                        color: ThemeUtils
-                                                            .textColor(),
+                                                        color: ThemeUtils.textColor(),
                                                       )),
                                                 ],
                                               ),
@@ -335,63 +230,42 @@ class _QuickHomeworkState extends State<QuickHomework> {
                                 Card(
                                   color: Theme.of(context).primaryColor,
                                   child: Container(
-                                    padding: EdgeInsets.symmetric(
-                                        vertical:
-                                            screenSize.size.height / 10 * 0.08),
+                                    height: 50,
+                                    padding: EdgeInsets.symmetric(vertical: screenSize.size.height / 10 * 0.08),
                                     child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Container(
-                                            width:
-                                                screenSize.size.width / 5 * 0.4,
-                                            height:
-                                                screenSize.size.width / 5 * 0.4,
-                                            padding: EdgeInsets.all(
-                                                screenSize.size.width /
-                                                    5 *
-                                                    0.01),
+                                            width: 30,
+                                            height: 30,
                                             child: Icon(
                                               MdiIcons.calendarWeek,
                                               color: Colors.white,
                                             ),
                                             decoration: BoxDecoration(
                                               color: Color(0xff27272A),
-                                              borderRadius:
-                                                  BorderRadius.circular(500),
+                                              borderRadius: BorderRadius.circular(500),
                                             )),
-                                        ChangeNotifierProvider<
-                                            HomeworkController?>.value(
+                                        ChangeNotifierProvider<HomeworkController?>.value(
                                           value: appSys.homeworkController,
-                                          child: Consumer<HomeworkController>(
-                                              builder: (context, model, child) {
+                                          child: Consumer<HomeworkController>(builder: (context, model, child) {
                                             return Container(
                                               margin: EdgeInsets.only(
-                                                  left: screenSize.size.width /
-                                                      5 *
-                                                      0.3,
-                                                  right: screenSize.size.width /
-                                                      5 *
-                                                      0.3),
+                                                  left: screenSize.size.width / 5 * 0.3,
+                                                  right: screenSize.size.width / 5 * 0.3),
                                               child: Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
+                                                crossAxisAlignment: CrossAxisAlignment.center,
                                                 children: [
-                                                  Text(
-                                                      model.weekCount
-                                                          .toString(),
+                                                  Text(model.weekCount.toString(),
                                                       style: TextStyle(
                                                         fontFamily: "Asap",
-                                                        color: ThemeUtils
-                                                            .textColor(),
-                                                        fontWeight:
-                                                            FontWeight.bold,
+                                                        color: ThemeUtils.textColor(),
+                                                        fontWeight: FontWeight.bold,
                                                       )),
                                                   Text(" cette semaine",
                                                       style: TextStyle(
                                                         fontFamily: "Asap",
-                                                        color: ThemeUtils
-                                                            .textColor(),
+                                                        color: ThemeUtils.textColor(),
                                                       )),
                                                 ],
                                               ),

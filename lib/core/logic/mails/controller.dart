@@ -4,13 +4,16 @@ import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 
 class MailsController extends ChangeNotifier {
-  final api;
   API? _api;
 
   bool loading = false;
   List<Mail>? mails;
 
-  MailsController(this.api) {
+  MailsController(API? api) {
+    _api = api;
+  }
+
+  set api(API? api) {
     _api = api;
   }
   Future<void> refresh({bool force = false}) async {

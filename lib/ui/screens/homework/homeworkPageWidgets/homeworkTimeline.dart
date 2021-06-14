@@ -28,10 +28,12 @@ import 'package:ynotes/usefulMethods.dart';
 
 class HomeworkElement extends StatefulWidget {
   final List<Homework> homework;
+  final HomeworkController con;
   final int index;
   const HomeworkElement(
     this.homework,
-    this.index, {
+    this.index,
+    this.con, {
     Key? key,
   }) : super(key: key);
   @override
@@ -130,6 +132,7 @@ class _HomeworkElementState extends State<HomeworkElement> with SingleTickerProv
                                                 setState(() {});
                                                 await HomeworkOffline(appSys.offline)
                                                     .updateSingleHW(widget.homework[widget.index]);
+                                                widget.con.refresh();
                                               },
                                             )),
                                         Expanded(
@@ -228,12 +231,15 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
                             ? Expanded(
                                 child: ListView.builder(
                                     physics: AlwaysScrollableScrollPhysics(),
-                                    itemCount: groupHomeworkByDate(model.homework() ?? []).length,
+                                    itemCount: groupHomeworkByDate(
+                                      model.homework() ?? [],
+                                    ).length,
                                     itemBuilder: (context, index) {
                                       return buildHomeworkBlock(
                                           groupHomeworkByDate(model.homework() ?? [])[index].first.date ??
                                               DateTime.now(),
-                                          groupHomeworkByDate(model.homework() ?? [])[index]);
+                                          groupHomeworkByDate(model.homework() ?? [])[index],
+                                          model);
                                     }),
                               )
                             : buildNoHomework(model),
@@ -263,7 +269,7 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
     );
   }
 
-  buildHomeworkBlock(DateTime date, List<Homework> homework) {
+  buildHomeworkBlock(DateTime date, List<Homework> homework, HomeworkController con) {
     var screenSize = MediaQuery.of(context);
     return Container(
         margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.1),
@@ -279,7 +285,7 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
                   itemBuilder: (context, index) {
                     return Container(
                         margin: EdgeInsets.only(bottom: screenSize.size.height / 10 * 0.1),
-                        child: HomeworkElement(homework, index));
+                        child: HomeworkElement(homework, index, con));
                   },
                 )),
           ],
@@ -338,7 +344,9 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Image(fit: BoxFit.fitWidth, image: AssetImage('assets/images/noHomework.png')),
+              Container(
+                  height: screenSize.size.height / 10 * 5,
+                  child: Image(fit: BoxFit.fitWidth, image: AssetImage('assets/images/noHomework.png'))),
               Text(
                 "Pas de devoirs à l'horizon... \non se détend ?",
                 textAlign: TextAlign.center,
@@ -347,25 +355,29 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
                   color: ThemeUtils.textColor(),
                 ),
               ),
-              TextButton(
-                style: TextButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: new BorderRadius.circular(18.0),
-                      side: BorderSide(color: Theme.of(context).primaryColorDark)),
+              Container(
+                margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.2),
+                width: 80,
+                child: TextButton(
+                  style: TextButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                        borderRadius: new BorderRadius.circular(18.0),
+                        side: BorderSide(color: Theme.of(context).primaryColorDark)),
+                  ),
+                  onPressed: () {
+                    //Reload list
+                    appSys.homeworkController.refresh(force: true);
+                  },
+                  child: !model.isFetching
+                      ? Text("Recharger",
+                          style: TextStyle(
+                            fontFamily: "Asap",
+                            color: ThemeUtils.textColor(),
+                          ))
+                      : FittedBox(
+                          child: SpinKitThreeBounce(
+                              color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4)),
                 ),
-                onPressed: () {
-                  //Reload list
-                  appSys.homeworkController.refresh(force: true);
-                },
-                child: !model.isFetching
-                    ? Text("Recharger",
-                        style: TextStyle(
-                          fontFamily: "Asap",
-                          color: ThemeUtils.textColor(),
-                        ))
-                    : FittedBox(
-                        child: SpinKitThreeBounce(
-                            color: Theme.of(context).primaryColorDark, size: screenSize.size.width / 5 * 0.4)),
               )
             ],
           ),
@@ -408,16 +420,19 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
   }
 
   _buildFloatingButton(BuildContext context) {
-    var screenSize = MediaQuery.of(context);
     return FloatingActionButton(
-      heroTag: "addHomework",
+      heroTag: "simulBtn",
       backgroundColor: Colors.transparent,
       child: Container(
-        width: screenSize.size.width / 5 * 0.8,
-        height: screenSize.size.width / 5 * 0.8,
-        child: Icon(
-          Icons.add,
-          size: screenSize.size.width / 5 * 0.5,
+        width: 120,
+        height: 120,
+        child: FittedBox(
+          child: Center(
+            child: Icon(
+              Icons.add,
+              size: 90,
+            ),
+          ),
         ),
         decoration: BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
       ),

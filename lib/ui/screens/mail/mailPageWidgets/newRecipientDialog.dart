@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 
-import '../dialogs.dart';
+import '../../../components/dialogs.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 
 class NewRecipientDialog extends StatefulWidget {

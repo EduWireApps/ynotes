@@ -3,10 +3,14 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 
 part 'models.g.dart';
 
+@HiveType(typeId: 13)
 class PollChoice {
   //question name/title
+  @HiveField(0)
   final String? choiceName;
+  @HiveField(1)
   final String? id;
+  @HiveField(2)
   final int? rank;
   PollChoice(this.choiceName, this.id, this.rank);
 }
@@ -51,15 +55,23 @@ class PollInfo {
       this.anonymous});
 }
 
+@HiveType(typeId: 12)
 class PollQuestion {
   //question name/title
+  @HiveField(1)
   final String? questionName;
   //question body
+  @HiveField(2)
   final String? question;
+  @HiveField(3)
   final String? id;
+  @HiveField(4)
   final int? rank;
+  @HiveField(5)
   final List<PollChoice>? choices;
+  @HiveField(6)
   final String? answers;
+  @HiveField(7)
   final String? answerID;
   PollQuestion({
     this.choices,

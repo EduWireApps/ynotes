@@ -138,24 +138,24 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CustomButtons.materialButton(context, screenSize.size.width / 5 * 0.55, screenSize.size.width / 5 * 0.55,
-                  () async {
+              CustomButtons.materialButton(context, 45, 45, () async {
                 setState(() {
                   hw.done = !(hw.done ?? false);
                 });
                 await HomeworkOffline(appSys.offline).updateSingleHW(hw);
               },
+                  padding: EdgeInsets.all(5),
                   borderRadius: BorderRadius.circular(11),
                   backgroundColor: (hw.done ?? false) ? Colors.green : color,
                   icon: MdiIcons.check,
                   iconColor: ThemeUtils.textColor()),
-              CustomButtons.materialButton(context, screenSize.size.width / 5 * 0.55, screenSize.size.width / 5 * 0.55,
-                  () async {
+              CustomButtons.materialButton(context, 45, 45, () async {
                 setState(() {
                   hw.pinned = !(hw.pinned ?? false);
                 });
                 await HomeworkOffline(appSys.offline).updateSingleHW(hw);
               },
+                  padding: EdgeInsets.all(5),
                   borderRadius: BorderRadius.circular(11),
                   backgroundColor: (hw.pinned ?? false) ? Colors.green : color,
                   icon: MdiIcons.pin,
@@ -168,8 +168,7 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                   child: (hw.files.toList()).length > 0
                       ? Container(
                           key: ValueKey<int>(0),
-                          child: CustomButtons.materialButton(
-                              context, screenSize.size.width / 5 * 0.55, screenSize.size.width / 5 * 0.55, () async {
+                          child: CustomButtons.materialButton(context, 45, 45, () async {
                             await refreshSelf();
                             showFilesModalBottomSheet(context, hw.files.toList());
                           },
@@ -179,18 +178,17 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                               iconColor: ThemeUtils.textColor()),
                         )
                       : Container()),
-              CustomButtons.materialButton(context, screenSize.size.width / 5 * 0.55, screenSize.size.width / 5 * 0.55,
-                  () async {
+              CustomButtons.materialButton(context, 45, 45, () async {
                 await CustomDialogs.showHomeworkDetailsDialog(context, hw);
                 setState(() {});
               },
+                  padding: EdgeInsets.all(5),
                   borderRadius: BorderRadius.circular(11),
                   backgroundColor: color,
                   icon: MdiIcons.shareVariantOutline,
                   iconColor: ThemeUtils.textColor()),
               if (hw.editable)
-                CustomButtons.materialButton(
-                    context, screenSize.size.width / 5 * 0.55, screenSize.size.width / 5 * 0.55, () async {
+                CustomButtons.materialButton(context, 45, 45, () async {
                   Homework? temp = await showAddHomeworkBottomSheet(context, hw: hw);
                   if (temp != null) {
                     await HomeworkOffline(appSys.offline).updateSingleHW(temp);
@@ -201,43 +199,48 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
                     borderRadius: BorderRadius.circular(11),
                     backgroundColor: color,
                     icon: MdiIcons.pencil,
+                    padding: EdgeInsets.all(5),
                     iconColor: ThemeUtils.textColor()),
               if (hw.editable)
-                CustomButtons.materialButton(
-                    context, screenSize.size.width / 5 * 0.55, screenSize.size.width / 5 * 0.55, () async {
+                CustomButtons.materialButton(context, 45, 45, () async {
                   await hw.delete();
                   await refreshSelf();
 
                   setState(() {});
                 },
+                    padding: EdgeInsets.all(5),
                     borderRadius: BorderRadius.circular(11),
                     backgroundColor: color,
                     icon: MdiIcons.trashCan,
                     iconColor: ThemeUtils.textColor()),
-              AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 200),
-                  transitionBuilder: (Widget child, Animation<double> animation) {
-                    return ScaleTransition(child: child, scale: animation);
-                  },
-                  child: (hw.toReturn ?? false)
-                      ? CustomButtons.materialButton(
-                          context,
-                          null,
-                          screenSize.size.height / 10 * 0.5,
-                          () {
-                            CustomDialogs.showUnimplementedSnackBar(context);
-                          },
-                          backgroundColor: color,
-                          label: "RENDRE MON DEVOIR",
-                          icon: MdiIcons.fileMoveOutline,
-                          borderRadius: BorderRadius.circular(11),
-                          padding: EdgeInsets.symmetric(
-                              horizontal: screenSize.size.width / 5 * 0.5,
-                              vertical: screenSize.size.height / 10 * 0.12),
-                          textStyle:
-                              TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w600, color: ThemeUtils.textColor()),
-                        )
-                      : Container()),
+              if (hw.toReturn ?? false)
+                Expanded(
+                  child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 200),
+                      transitionBuilder: (Widget child, Animation<double> animation) {
+                        return ScaleTransition(child: child, scale: animation);
+                      },
+                      child: (hw.toReturn ?? false)
+                          ? Expanded(
+                              child: CustomButtons.materialButton(
+                                context,
+                                null,
+                                45,
+                                () {
+                                  CustomDialogs.showUnimplementedSnackBar(context);
+                                },
+                                backgroundColor: color,
+                                label: "RENDRE MON DEVOIR",
+                                icon: MdiIcons.fileMoveOutline,
+                                borderRadius: BorderRadius.circular(11),
+                                padding:
+                                    EdgeInsets.symmetric(horizontal: 5, vertical: screenSize.size.height / 10 * 0.12),
+                                textStyle: TextStyle(
+                                    fontFamily: "Asap", fontWeight: FontWeight.w600, color: ThemeUtils.textColor()),
+                              ),
+                            )
+                          : Container()),
+                ),
             ],
           ),
         ],

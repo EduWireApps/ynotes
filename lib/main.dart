@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
@@ -25,14 +26,15 @@ import 'ui/screens/school_api_choice/schoolAPIChoicePage.dart';
 Future main() async {
   Logger.level = Level.warning;
   WidgetsFlutterBinding.ensureInitialized();
+
+  WidgetsFlutterBinding.ensureInitialized();
+
   appSys = ApplicationSystem();
   await appSys.initApp();
-  BackgroundFetch.registerHeadlessTask(_headlessTask);
-
-  //appSys.loginController = LoginController();
+  if (!kIsWeb) BackgroundFetch.registerHeadlessTask(_headlessTask);
 
   runZoned<Future<Null>>(() async {
-    runApp(HomeApp());
+    runApp(Phoenix(child: HomeApp()));
   });
 }
 
@@ -63,11 +65,6 @@ class Carousel extends StatelessWidget {
     ));
   }
 }
-
-/*//login manager
-LoginController appSys.loginController;
-Offline offline;
-API appSys.api;*/
 
 class HomeApp extends StatefulWidget {
   @override

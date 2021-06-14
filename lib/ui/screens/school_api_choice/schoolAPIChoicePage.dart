@@ -74,31 +74,30 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
                             });
                           },
                           borderRadius: BorderRadius.circular(25),
-                          child: Container(
-                            width: screenSize.size.width / 5 * 4.2,
-                            height: screenSize.size.height / 10 * 0.8,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Container(
-                                  padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width / 10 * 0.1),
-                                  margin: EdgeInsets.only(right: MediaQuery.of(context).size.width / 10 * 0.2),
-                                  child: Image(
-                                      width: MediaQuery.of(context).size.width / 5 * 0.6,
-                                      height: MediaQuery.of(context).size.width / 5 * 0.4,
-                                      fit: BoxFit.fill,
-                                      image: AssetImage('assets/images/EcoleDirecte/EcoleDirecteIcon.png')),
-                                ),
-                                Container(
-                                    width: screenSize.size.width / 5 * 3,
-                                    child: FittedBox(
-                                        child: Text("Ecole Directe",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                fontFamily: "Asap",
-                                                fontSize: screenSize.size.height / 10 * 0.4,
-                                                color: Colors.white)))),
-                              ],
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(maxWidth: 350),
+                            child: Container(
+                              width: MediaQuery.of(context).size.width / 5 * 4.2,
+                              height: 70,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Container(
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width / 10 * 0.1),
+                                    margin: EdgeInsets.only(right: 20, left: 20),
+                                    child: Image(
+                                        width: 50,
+                                        height: 40,
+                                        fit: BoxFit.fill,
+                                        image: AssetImage('assets/images/EcoleDirecte/EcoleDirecteIcon.png')),
+                                  ),
+                                  Expanded(
+                                      child: Text("Ecole Directe",
+                                          textAlign: TextAlign.start,
+                                          style: TextStyle(fontFamily: "Asap", fontSize: 30, color: Colors.white))),
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -116,53 +115,49 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
                         );
                       },
                       child: Material(
-                        color: Color(0xff61b872),
-                        borderRadius: BorderRadius.circular(25),
-                        child: InkWell(
-                          onTap: () {
-                            //CustomDialogs.showUnimplementedSnackBar(context);
-                            setState(() {
-                              chosenAnimation1Controller.reverse();
-                              chosen = 1;
-                              chosenAnimation2Controller.forward();
-                            });
-                          },
+                          color: Color(0xff61b872),
                           borderRadius: BorderRadius.circular(25),
-                          child: Container(
-                            width: screenSize.size.width / 5 * 4.2,
-                            height: screenSize.size.height / 10 * 0.8,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Container(
-                                  padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width / 10 * 0.1),
-                                  margin: EdgeInsets.only(right: MediaQuery.of(context).size.width / 10 * 0.2),
-                                  child: Image(
-                                      width: MediaQuery.of(context).size.width / 5 * 0.5,
-                                      height: screenSize.size.width / 5 * 0.5,
-                                      fit: BoxFit.fitHeight,
-                                      image: AssetImage('assets/images/Pronote/PronoteIcon.png')),
-                                ),
-                                Container(
-                                    width: screenSize.size.width / 5 * 3,
-                                    child: FittedBox(
-                                        child: Text("Pronote",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                fontFamily: "Asap",
-                                                fontSize: screenSize.size.height / 10 * 0.4,
-                                                color: Colors.white)))),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
+                          child: InkWell(
+                              onTap: () {
+                                //CustomDialogs.showUnimplementedSnackBar(context);
+                                setState(() {
+                                  chosenAnimation1Controller.reverse();
+                                  chosen = 1;
+                                  chosenAnimation2Controller.forward();
+                                });
+                              },
+                              borderRadius: BorderRadius.circular(25),
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(maxWidth: 350),
+                                child: Container(
+                                    width: MediaQuery.of(context).size.width / 5 * 4.2,
+                                    height: 70,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Container(
+                                          padding: EdgeInsets.symmetric(vertical: 10),
+                                          margin: EdgeInsets.only(right: 20, left: 20),
+                                          child: Image(
+                                              width: 50,
+                                              height: 50,
+                                              fit: BoxFit.fill,
+                                              image: AssetImage('assets/images/Pronote/PronoteIcon.png')),
+                                        ),
+                                        Expanded(
+                                            child: Text("Pronote",
+                                                textAlign: TextAlign.start,
+                                                style:
+                                                    TextStyle(fontFamily: "Asap", fontSize: 30, color: Colors.white))),
+                                      ],
+                                    )),
+                              ))),
                     ),
                   ],
                 ),
                 Positioned(
                   bottom: screenSize.size.height / 10 * 0.4,
-                  right: screenSize.size.width / 5 * 0.1,
+                  right: 15,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       primary: chosen != null ? Color(0xff5DADE2) : Color(0xffECECEC),
@@ -172,12 +167,14 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
                         ? null
                         : () async {
                             await setChosenParser(chosen);
+                            await appSys.initOffline();
+
                             setState(() {
                               appSys.api = apiManager(appSys.offline);
                             });
                             Navigator.pushReplacementNamed(context, "/login");
                           },
-                    child: Text('Connexion', style: TextStyle(fontSize: screenSize.size.width / 5 * 0.2)),
+                    child: Text('Connexion', style: TextStyle(fontSize: 25)),
                   ),
                 )
               ],

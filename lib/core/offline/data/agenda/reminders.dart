@@ -8,7 +8,11 @@ class RemindersOffline {
   }
   Future<List<AgendaReminder>?> getReminders(String? idLesson) async {
     try {
-      return await parent.agendaBox?.get("reminders")?.where((element) => element.lessonID == idLesson).toList();
+      return parent.agendaBox
+          ?.get("reminders")
+          ?.where((element) => element.lessonID == idLesson)
+          .toList()
+          ?.cast<AgendaReminder>();
     } catch (e) {
       print("Error while returning agenda reminders " + e.toString());
       return null;
@@ -55,12 +59,10 @@ class RemindersOffline {
       var old = await parent.agendaBox?.get("reminders");
       List<AgendaReminder>? offline = [];
       if (old != null) {
-        offline = old.cast<AgendaReminder>();
+        offline.addAll(old.cast<AgendaReminder>());
       }
-      if (offline != null) {
-        offline.removeWhere((a) => a.id == newData.id);
-      }
-      offline!.add(newData);
+      offline.removeWhere((a) => a.id == newData.id);
+      offline.add(newData);
       await parent.agendaBox?.put("reminders", offline);
 
       print("Updated reminders");

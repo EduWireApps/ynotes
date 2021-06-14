@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -16,8 +18,7 @@ class LoginWebView extends StatefulWidget {
   final String? spaceUrl;
   InAppWebViewController? controller;
 
-  LoginWebView({Key? key, this.url, this.controller, this.spaceUrl})
-      : super(key: key);
+  LoginWebView({Key? key, this.url, this.controller, this.spaceUrl}) : super(key: key);
   @override
   _LoginWebViewState createState() => _LoginWebViewState();
 }
@@ -42,8 +43,7 @@ class _LoginWebViewState extends State<LoginWebView> {
       });
       String loginDataProcess =
           "(function(){return window && window.loginState ? JSON.stringify(window.loginState) : \'\';})();";
-      String? loginDataProcessResult = await (widget.controller!
-          .evaluateJavascript(source: loginDataProcess));
+      String? loginDataProcessResult = await (widget.controller!.evaluateJavascript(source: loginDataProcess));
       getCreds(loginDataProcessResult);
       if (loginStatus != null) {
         setState(() {
@@ -51,9 +51,7 @@ class _LoginWebViewState extends State<LoginWebView> {
         });
         //url: widget.url + "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335"
         await widget.controller!.loadUrl(
-            urlRequest: URLRequest(
-                url: Uri.parse(widget.url! +
-                    "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335")));
+            urlRequest: URLRequest(url: Uri.parse(widget.url! + "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335")));
       }
     });
   }
@@ -93,8 +91,7 @@ class _LoginWebViewState extends State<LoginWebView> {
             onLoadStop: (controller, url) async {
               await stepper();
             },
-            onProgressChanged:
-                (InAppWebViewController controller, int progress) {},
+            onProgressChanged: (InAppWebViewController controller, int progress) {},
           ),
           Align(
             alignment: Alignment.bottomCenter,
@@ -113,10 +110,16 @@ class _LoginWebViewState extends State<LoginWebView> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      "Patientez... nous vous connectons à l'ENT",
-                      style: TextStyle(fontFamily: "Asap"),
-                    ),
+                    if (!kIsWeb  &&Platform.isLinux)
+                      Text(
+                        "La connexion par ENT n'est pas encore supportée sur Linux...",
+                        style: TextStyle(fontFamily: "Asap", color: Colors.red),
+                      ),
+                    if (!kIsWeb  && !Platform.isLinux)
+                      Text(
+                        "Patientez... nous vous connectons à l'ENT",
+                        style: TextStyle(fontFamily: "Asap"),
+                      ),
                     CustomButtons.materialButton(context, null, null, () {
                       Navigator.of(context).pop();
                     }, label: "Quitter")
@@ -149,8 +152,7 @@ class _LoginWebViewState extends State<LoginWebView> {
     print("Getting metas");
     //Injected function to get metas
     String metaGetFunction = "(function(){return document.body.innerText;})()";
-    String? metaGetResult =
-        await (widget.controller!.evaluateJavascript(source: metaGetFunction));
+    String? metaGetResult = await (widget.controller!.evaluateJavascript(source: metaGetFunction));
     if (metaGetResult != null && metaGetResult.length > 0) {
       loginData = json.decode(metaGetResult);
       setState(() {
@@ -231,13 +233,13 @@ class _LoginWebViewState extends State<LoginWebView> {
         'return "ok";' +
         '} else return "ko";' +
         '} catch(e){return "ko";}})();';
-    String? cookieFunctionResult =
-        await (widget.controller!.evaluateJavascript(source: cookieFunction));
+    String? cookieFunctionResult = await (widget.controller!.evaluateJavascript(source: cookieFunction));
     if (cookieFunctionResult == "ok") {
       String authFunction = 'location.assign("' + widget.url! + '?fd=1")';
       setState(() {
         step = 4;
-      }); await (widget.controller!.evaluateJavascript(source: authFunction));
+      });
+      await (widget.controller!.evaluateJavascript(source: authFunction));
 
       stepper();
     }
@@ -283,14 +285,15 @@ class _LoginWebViewState extends State<LoginWebView> {
         heroTag: "btn2",
         backgroundColor: Colors.transparent,
         child: Container(
-          width: screenSize.size.width / 5 * 0.8,
-          height: screenSize.size.width / 5 * 0.8,
-          child: Icon(
-            MdiIcons.exitRun,
-            size: screenSize.size.width / 5 * 0.5,
+          width: 90,
+          height: 90,
+          child: Center(
+            child: Icon(
+              MdiIcons.exitRun,
+              size: 40,
+            ),
           ),
-          decoration:
-              BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
+          decoration: BoxDecoration(shape: BoxShape.circle, color: Color(0xff100A30)),
         ),
         onPressed: () async {
           Navigator.of(context).pop();

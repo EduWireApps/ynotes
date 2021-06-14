@@ -25,7 +25,7 @@ class DisciplineAdapter extends TypeAdapter<Discipline> {
       minClassAverage: fields[8] as String?,
       maxClassAverage: fields[9] as String?,
       disciplineCode: fields[3] as String?,
-      subdisciplineCode: (fields[4] as List?)?.cast<String?>(),
+      subdisciplineCodes: (fields[4] as List?)?.cast<String?>(),
       average: fields[6] as String?,
       teachers: (fields[10] as List?)?.cast<String?>(),
       disciplineName: fields[5] as String?,
@@ -36,23 +36,29 @@ class DisciplineAdapter extends TypeAdapter<Discipline> {
       generalRank: fields[16] as String?,
       weight: fields[17] as String?,
       periodCode: fields[18] as String?,
+      subdisciplineNames: (fields[19] as List?)?.cast<String?>(),
+      minClassGeneralAverage: fields[20] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Discipline obj) {
     writer
-      ..writeByte(19)
+      ..writeByte(21)
       ..writeByte(0)
       ..write(obj.generalAverage)
       ..writeByte(1)
       ..write(obj.maxClassGeneralAverage)
+      ..writeByte(20)
+      ..write(obj.minClassGeneralAverage)
       ..writeByte(2)
       ..write(obj.classGeneralAverage)
       ..writeByte(3)
       ..write(obj.disciplineCode)
       ..writeByte(4)
-      ..write(obj.subdisciplineCode)
+      ..write(obj.subdisciplineCodes)
+      ..writeByte(19)
+      ..write(obj.subdisciplineNames)
       ..writeByte(5)
       ..write(obj.disciplineName)
       ..writeByte(6)
