@@ -122,7 +122,6 @@ class SummaryPageState extends State<SummaryPage> with Layout {
                         ),
                         if (appSys.settings?["system"]["chosenApi"] == 0) separator(context, "Vie scolaire", 2),
                         if (appSys.settings?["system"]["chosenApi"] == 0) QuickSchoolLife(),
-                        
                       ],
                     ),
                   ),
@@ -206,11 +205,6 @@ class SummaryPageState extends State<SummaryPage> with Layout {
         ),
       ]),
     );
-  }
-
-  showDialog() async {
-    await helpDialogs[0].showDialog(context);
-    await showUpdateNote();
   }
 
   showUpdateNote() async {

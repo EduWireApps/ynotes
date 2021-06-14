@@ -3,7 +3,6 @@ import 'dart:core';
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ynotes/core/apis/EcoleDirecte/ecoleDirecteMethods.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/pronote/schoolsModel.dart';
@@ -12,13 +11,11 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/ui/components/dialogs/authorizationsDialog.dart';
 import 'package:ynotes/ui/components/dialogs/colorPicker.dart';
 import 'package:ynotes/ui/components/dialogs/updateNoteDialog.dart';
-import 'package:ynotes/ui/components/giffy_dialog/src/asset.dart';
 import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/persistantNotificationDialog.dart';
 import 'package:ynotes/ui/screens/grades/gradesPageWidgets/shareGradeDialog.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/homeworkDetails.dart';
 import 'package:ynotes/ui/screens/login/loginPageWidgets/pronoteLocationDialog.dart';
 import 'package:ynotes/ui/screens/mail/mailPageWidgets/writeMailBottomSheet.dart';
-import 'package:ynotes/ui/screens/settings/settingsPage.dart';
 
 import '../../usefulMethods.dart';
 import '../screens/agenda/agendaPageWidgets/recurringEventsDialog.dart';
@@ -29,17 +26,6 @@ import 'dialogs/numberChoiceDialog.dart';
 import 'dialogs/specialtiesDialog.dart';
 import 'dialogs/textFieldChoiceDialog.dart';
 
-List<HelpDialog> helpDialogs = [
-  HelpDialog(
-      "Bienvenue !",
-      [
-        """Bienvenue sur yNotes ! Nous sommes très content de vous voir ici ! Ceci est une fenêtre de tutoriel, d'autres apparaitront pour vous montrer les nouveautés ou les fonctionnalités utiles de l'application. Vous les avez déjà vues ? Passez le tutoriel !"""
-      ],
-      "assets/gifs/Hello720.gif",
-      0),
-];
-
-//The help dialog class
 class CustomDialogs {
   static showAnyDialog(BuildContext context, String text) {
     Flushbar(
@@ -157,44 +143,6 @@ class CustomDialogs {
             )
           : null,
     )..show(context);
-  }
-
-  static void showGiffyDialog(BuildContext context, HelpDialog hd) {
-    var screenSize = MediaQuery.of(context);
-
-    //Show a dialog with a gif
-    showDialog(
-        barrierDismissible: true,
-        context: context,
-        builder: (_) => AssetGiffyDialog(
-              image: Image.asset(hd.gifPath),
-              title: Text(
-                hd.title,
-                style: TextStyle(fontSize: screenSize.size.height / 10 * 0.3, fontWeight: FontWeight.w600),
-                textScaleFactor: 1.0,
-                textAlign: TextAlign.center,
-              ),
-              description: Text(hd.description[0], style: TextStyle(fontSize: screenSize.size.height / 10 * 0.2)),
-              buttonOkText: Text(
-                "J'ai compris",
-                style: TextStyle(fontFamily: "Asap", color: Colors.white),
-                textScaleFactor: 1.0,
-              ),
-              buttonCancelText: Text(
-                "Passer le tutoriel",
-                style: TextStyle(fontFamily: "Asap", color: Colors.white),
-                textScaleFactor: 1.0,
-              ),
-              onlyOkButton: false,
-              onlyCancelButton: false,
-              onCancelButtonPressed: () async {
-                await hd.skipEveryHelpDialog();
-                Navigator.pop(_);
-              },
-              onOkButtonPressed: () {
-                Navigator.pop(_);
-              },
-            ));
   }
 
   static Future<void> showHomeworkDetailsDialog(BuildContext context, Homework? hw) async {
@@ -400,56 +348,6 @@ class CustomDialogs {
       }).catchError((Object error) {
         CustomDialogs.showAnyDialog(context, "Le mail n'a pas été envoyé !");
       });
-    }
-  }
-}
-
-//Help dialogs list for the showcase
-class HelpDialog {
-  final int id;
-  final GlobalKey? key;
-  final String title;
-  final List<String> description;
-  final String gifPath;
-  HelpDialog(this.title, this.description, this.gifPath, this.id, {this.key});
-
-  ///Check if the dialog as already been watched
-  checkAlreadyViewed() async {
-    SharedPreferences preferences = await (SharedPreferences.getInstance());
-    bool? viewed = preferences.getBool("alreadyViewedHelpDialog" + this.id.toString());
-
-    return viewed != null ? viewed : false;
-  }
-
-  ///Set if the dialog as already been watched
-  setAlreadyViewed() async {
-    SharedPreferences preferences = await (SharedPreferences.getInstance());
-    await preferences.setBool("alreadyViewedHelpDialog" + this.id.toString(), true);
-  }
-
-  showDialog(BuildContext context) async {
-    var z = await storage.read(key: "agreedTermsAndConfiguredApp");
-    //If the dialog has never been viewed
-    if (!await checkAlreadyViewed() && z != null) {
-      CustomDialogs.showGiffyDialog(context, this);
-      //Set the dialog as viewed
-      await this.setAlreadyViewed();
-    }
-  }
-
-  ///Skip every dialogs (already seen)
-  skipEveryHelpDialog() async {
-    SharedPreferences? preferences = await SharedPreferences.getInstance();
-    for (int i = 0; i < helpDialogs.length; i++) {
-      await preferences.setBool("alreadyViewedHelpDialog" + i.toString(), true);
-    }
-  }
-
-  ///Skip every dialogs (already seen)
-  static resetEveryHelpDialog() async {
-    SharedPreferences? preferences = await SharedPreferences.getInstance();
-    for (int i = 0; i < helpDialogs.length; i++) {
-      await preferences.setBool("alreadyViewedHelpDialog" + i.toString(), false);
     }
   }
 }

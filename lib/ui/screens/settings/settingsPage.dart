@@ -342,24 +342,6 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     title: 'Autres paramètres',
                     tiles: [
                       SettingsTile(
-                        title: 'Réinitialiser le tutoriel',
-                        leading: Icon(MdiIcons.restore, color: ThemeUtils.textColor()),
-                        onPressed: (context) async {
-                          if ((await CustomDialogs.showConfirmationDialog(context, null,
-                                  alternativeText: "Etes-vous sûr de vouloir réinitialiser le tutoriel ?",
-                                  alternativeButtonConfirmText: "confirmer")) ??
-                              false) {
-                            await HelpDialog.resetEveryHelpDialog();
-                          }
-                        },
-                        titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-                        subtitleTextStyle: TextStyle(
-                            fontFamily: "Asap",
-                            color:
-                                ThemeUtils.isThemeDark ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
-                        iosChevron: Icon(Icons.chevron_right),
-                      ),
-                      SettingsTile(
                         title: 'Supprimer les données hors ligne',
                         leading: Icon(MdiIcons.deleteAlert, color: ThemeUtils.textColor()),
                         onPressed: (context) async {
