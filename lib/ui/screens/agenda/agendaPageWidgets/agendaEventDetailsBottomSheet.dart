@@ -1,12 +1,9 @@
-import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/core/offline/data/agenda/events.dart';
 import 'package:ynotes/core/offline/data/agenda/reminders.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
@@ -95,46 +92,7 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                     child: Container(
                       child: Stack(
                         children: [
-                          Align(
-                            alignment: Alignment.topLeft,
-                            child: Container(
-                              padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
-                              child: Container(
-                                width: screenSize.size.height / 10 * 0.5,
-                                height: screenSize.size.height / 10 * 0.5,
-                                child: RawMaterialButton(
-                                  onPressed: () async {
-                                    var temp = await agendaEventEdit(context, true,
-                                        defaultDate: this.widget.event.start, customEvent: this.widget.event);
-                                    if (temp != null) {
-                                      if (temp.runtimeType.toString().contains("String")) {
-                                        if (temp == "removed") {
-                                          Navigator.pop(context);
-                                        }
-                                      } else {
-                                        await AgendaEventsOffline(appSys.offline)
-                                            .addAgendaEvent(temp, await getWeek(temp.start));
-                                        if (Platform.isIOS || Platform.isAndroid) {
-                                          await AppNotification.scheduleAgendaReminders(temp);
-                                        }
-                                        setState(() {
-                                          this.widget.event = temp;
-                                        });
-                                      }
-                                    }
-                                  },
-                                  child: new Icon(
-                                    Icons.edit,
-                                    color: ThemeUtils.textColor(),
-                                    size: screenSize.size.height / 10 * 0.4,
-                                  ),
-                                  shape: new CircleBorder(),
-                                  elevation: 1.0,
-                                  fillColor: ThemeUtils.textColor(revert: true),
-                                ),
-                              ),
-                            ),
-                          ),
+                         
                           Column(
                             children: [
                               Container(
