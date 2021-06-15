@@ -20,7 +20,7 @@ import 'package:ynotes/ui/screens/carousel/index.dart';
 import 'package:ynotes/ui/screens/loading/index.dart';
 import 'package:ynotes/ui/screens/summary/index.dart';
 
-import 'core/utils/themeUtils.dart';
+import 'core/utils/theme_utils.dart';
 import 'ui/screens/school_api_choice/index.dart';
 
 Future main() async {

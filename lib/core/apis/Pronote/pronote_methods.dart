@@ -12,7 +12,7 @@ import 'package:ynotes/core/offline/data/disciplines/disciplines.dart';
 import 'package:ynotes/core/offline/data/homework/homework.dart';
 import 'package:ynotes/core/offline/data/polls/polls.dart';
 import 'package:ynotes/core/offline/offline.dart';
-import 'package:ynotes/core/utils/nullSafeMapGetter.dart';
+import 'package:ynotes/core/utils/null_safe_map_getter.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/useful_methods.dart';
 

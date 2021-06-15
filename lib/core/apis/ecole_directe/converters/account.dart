@@ -1,7 +1,7 @@
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
-import 'package:ynotes/core/utils/nullSafeMapGetter.dart';
+import 'package:ynotes/core/utils/null_safe_map_getter.dart';
 import 'package:ynotes/main.dart';
 
 class EcoleDirecteAccountConverter {

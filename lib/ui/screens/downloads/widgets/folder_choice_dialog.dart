@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:ynotes/core/utils/fileUtils.dart';
-import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/core/utils/file_utils.dart';
+import 'package:ynotes/core/utils/theme_utils.dart';
 
 // ignore: must_be_immutable
 class FolderChoiceDialog extends StatefulWidget {
@@ -149,7 +149,7 @@ class _FolderChoiceDialogState extends State<FolderChoiceDialog> {
                       ((element.element is Directory) ? "/" : ""));
                   await element.element.delete(recursive: true);
                 } catch (e) {
-                  if (!kIsWeb  &&Platform.isAndroid) {
+                  if (!kIsWeb && Platform.isAndroid) {
                     print("Trying with commandlines");
                     await Process.run('cp', ['-r', element.element.path, widget.path + "/" + value!]);
                     await element.element.delete(recursive: true);

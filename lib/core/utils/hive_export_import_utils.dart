@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 import 'package:hive/hive.dart';
-import 'fileUtils.dart';
+import 'file_utils.dart';
 
 class HiveBackUpManager {
   Box? box;
@@ -49,13 +49,11 @@ class HiveBackUpManager {
         if (data.runtimeType.toString().contains("List")) {
           var oldData = map[subBoxName];
           //Try to merge the two lists
-          if (oldData != null &&
-              oldData.runtimeType.toString().contains("List")) {
+          if (oldData != null && oldData.runtimeType.toString().contains("List")) {
             print("Merging lists");
             List finalData = oldData;
             data.forEach((dataElement) {
-              if (!finalData.any((finalDataElement) =>
-                  dataElement.id == finalDataElement.id)) {
+              if (!finalData.any((finalDataElement) => dataElement.id == finalDataElement.id)) {
                 finalData.add(dataElement);
               }
             });
@@ -95,8 +93,7 @@ class HiveBackUpManager {
     final params = OpenFileDialogParams(
       dialogType: OpenFileDialogType.document,
     );
-    final filePath =
-        await (FlutterFileDialog.pickFile(params: params) as Future<String>);
+    final filePath = await (FlutterFileDialog.pickFile(params: params) as Future<String>);
     final File file = File(filePath);
     String data = await file.readAsString();
     return data;

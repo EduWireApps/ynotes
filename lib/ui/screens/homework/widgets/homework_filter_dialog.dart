@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/logic/homework/controller.dart';
-import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
 
 class HomeworkFilterDialog extends StatefulWidget {
@@ -48,9 +48,8 @@ class _HomeworkFilterDialogState extends State<HomeworkFilterDialog> {
         onTap: () {
           appSys.homeworkController.currentFilter = filter;
           setState(() {});
-         
+
           Navigator.pop(context);
-          
         },
         borderRadius: BorderRadius.circular(11),
         child: Container(

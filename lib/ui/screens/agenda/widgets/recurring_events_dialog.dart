@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
@@ -121,7 +121,6 @@ class _RecurringEventsDialogState extends State<RecurringEventsDialog> {
                     ),
                   ),
                 ),
-                
                 CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5, () async {
                   if (enabled!) {
                     if (everyDay! ? true : selectedDays.isNotEmpty) {

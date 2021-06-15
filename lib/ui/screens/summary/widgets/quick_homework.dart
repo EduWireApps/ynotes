@@ -8,7 +8,7 @@ import 'package:liquid_progress_indicator_ns/liquid_progress_indicator.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:ynotes/core/logic/homework/controller.dart';
-import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
 
 class QuickHomework extends StatefulWidget {

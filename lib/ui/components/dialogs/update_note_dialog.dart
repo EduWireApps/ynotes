@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:ynotes/core/utils/fileUtils.dart';
-import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/core/utils/file_utils.dart';
+import 'package:ynotes/core/utils/theme_utils.dart';
 
 class UpdateNoteDialog extends StatefulWidget {
   @override

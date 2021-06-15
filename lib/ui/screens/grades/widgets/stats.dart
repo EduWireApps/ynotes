@@ -1,6 +1,6 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
-import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/core/utils/theme_utils.dart';
 
 class ImpactStat extends StatefulWidget {
   final double? impact;
@@ -39,18 +39,14 @@ class _ImpactState extends State<ImpactStat> {
       width: screenSize.size.width,
       height: screenSize.size.height / 10 * 1,
       padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
-      decoration: BoxDecoration(
-          color: Theme.of(context).primaryColorDark,
-          borderRadius: BorderRadius.circular(20)),
+      decoration: BoxDecoration(color: Theme.of(context).primaryColorDark, borderRadius: BorderRadius.circular(20)),
       child: Row(
         children: [
           Container(
             width: screenSize.size.width / 5 * 0.8,
             height: screenSize.size.width / 5 * 0.8,
             padding: EdgeInsets.all(screenSize.size.width / 5 * 0.1),
-            decoration: BoxDecoration(
-                color: getAdaptedColor(),
-                borderRadius: BorderRadius.circular(20)),
+            decoration: BoxDecoration(color: getAdaptedColor(), borderRadius: BorderRadius.circular(20)),
             child: FittedBox(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -70,8 +66,7 @@ class _ImpactState extends State<ImpactStat> {
           Container(
             height: screenSize.size.height / 10 * 0.5,
             width: screenSize.size.width / 5 * 3,
-            padding: EdgeInsets.symmetric(
-                horizontal: screenSize.size.width / 5 * 0.1),
+            padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
             child: Column(
               mainAxisSize: MainAxisSize.max,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -81,10 +76,7 @@ class _ImpactState extends State<ImpactStat> {
                   child: AutoSizeText(
                     widget.label ?? "",
                     maxLines: 2,
-                    style: TextStyle(
-                        fontFamily: "Asap",
-                        fontWeight: FontWeight.w600,
-                        color: ThemeUtils.textColor()),
+                    style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.w600, color: ThemeUtils.textColor()),
                     textAlign: TextAlign.left,
                   ),
                 )

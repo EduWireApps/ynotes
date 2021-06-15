@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/core/utils/theme_utils.dart';
 
 class CustomButtons {
   static Widget materialButton(BuildContext context, double? width, double? height, Function? onTap,
