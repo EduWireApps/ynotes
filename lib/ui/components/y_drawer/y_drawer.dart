@@ -7,6 +7,7 @@ import 'package:wiredash/wiredash.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/router.dart';
+import 'package:ynotes/ui/components/y_drawer/widgets/account_header.dart';
 import 'package:ynotes/ui/components/y_page/mixins.dart';
 import 'package:ynotes/ui/components/y_page/y_page_local.dart';
 import 'package:ynotes/ui/screens/settings/settingsPage.dart';
@@ -39,6 +40,13 @@ class _YDrawerState extends State<YDrawer> with YPageMixin {
     final List<_SpecialRoute> specialRoutes = [
       _SpecialRoute(title: "Faire un retour", icon: MdiIcons.forum, onTap: () => Wiredash.of(context)!.show()),
       _SpecialRoute(
+          title: "Paramètres",
+          icon: Icons.settings,
+          onTap: () => openLocalPage(YPageLocal(title: "Paramètres", child: SettingsPage()))),
+    ];
+
+    final List<_SpecialRoute> specialIcons = [
+      _SpecialRoute(
           title: "Discord",
           icon: FontAwesomeIcons.discord,
           onTap: () async => await launch("https://discord.gg/pRCBs22dNX")),
@@ -50,67 +58,84 @@ class _YDrawerState extends State<YDrawer> with YPageMixin {
           title: "Nous contacter", icon: Icons.mail, onTap: () async => await launch("https://ynotes.fr/contact/")),
       _SpecialRoute(
           title: "Centre d'aide", icon: Icons.help, onTap: () async => await launch("https://support.ynotes.fr/")),
-      _SpecialRoute(
-          title: "Paramètres",
-          icon: Icons.settings,
-          onTap: () => openLocalPage(YPageLocal(title: "Paramètres", child: SettingsPage()))),
     ];
 
     return Drawer(
       child: Container(
-        color: ThemeUtils.isThemeDark ? Theme.of(context).primaryColorLight : Theme.of(context).primaryColorDark,
+        color: Theme.of(context).primaryColorLight,
         child: SafeArea(
-          child: YShadowScrollContainer(
-              color: ThemeUtils.isThemeDark ? Theme.of(context).primaryColorLight : Theme.of(context).primaryColorDark,
+          child: YShadowScrollContainer(color: Theme.of(context).primaryColorLight, children: [
+            AccountHeader(),
+            ListView.builder(
+                shrinkWrap: true,
+                physics: ClampingScrollPhysics(),
+                itemCount: routes.length,
+                itemBuilder: (context, i) {
+                  final route = routes[i];
+
+                  if (!availableRoute(route)) {
+                    return Container();
+                  }
+                  return Container(
+                    color: ModalRoute.of(context)!.settings.name == route.path ? Theme.of(context).primaryColor : null,
+                    child: ListTile(
+                      leading: Icon(
+                        route.icon,
+                        color: ThemeUtils.isThemeDark ? Colors.white : Colors.black87,
+                      ),
+                      title: Text(route.title ?? "",
+                          style:
+                              TextStyle(color: ThemeUtils.isThemeDark ? Colors.white : Colors.black87, fontSize: 18)),
+                      onTap: () {
+                        if (ModalRoute.of(context)!.settings.name == route.path) {
+                          return;
+                        }
+                        Navigator.pop(context);
+
+                        Navigator.pushNamed(context, route.path);
+                      },
+                    ),
+                  );
+                }),
+            Divider(
+              color: ThemeUtils.isThemeDark ? Colors.white : Colors.black87,
+              thickness: 0.5,
+              height: 0,
+            ),
+            ListView.builder(
+                shrinkWrap: true,
+                physics: ClampingScrollPhysics(),
+                itemCount: specialRoutes.length,
+                itemBuilder: (context, i) {
+                  final _SpecialRoute route = specialRoutes[i];
+
+                  return ListTile(
+                    leading: Icon(
+                      route.icon,
+                      color: ThemeUtils.isThemeDark ? Colors.white : Colors.black87,
+                    ),
+                    title: Text(route.title,
+                        style: TextStyle(color: ThemeUtils.isThemeDark ? Colors.white : Colors.black87, fontSize: 18)),
+                    onTap: route.onTap,
+                  );
+                }),
+            Divider(
+              color: ThemeUtils.isThemeDark ? Colors.white : Colors.black87,
+              thickness: 0.5,
+              height: 0,
+            ),
+            Row(
               children: [
-                ListView.builder(
-                    shrinkWrap: true,
-                    physics: ClampingScrollPhysics(),
-                    itemCount: routes.length,
-                    itemBuilder: (context, i) {
-                      final route = routes[i];
-
-                      if (!availableRoute(route)) {
-                        return Container();
-                      }
-                      return ListTile(
-                        dense: true,
-                        leading: Icon(
-                          route.icon,
-                          color: ThemeUtils.isThemeDark ? Colors.white : Colors.black,
-                        ),
-                        title: Text(route.title ?? "",
-                            style: TextStyle(color: ThemeUtils.isThemeDark ? Colors.white : Colors.black)),
-                        onTap: () {
-                          print(ModalRoute.of(context)!.settings.name);
-                          Navigator.pop(context);
-                          if (ModalRoute.of(context)!.settings.name == route.path) {
-                            return;
-                          }
-                          Navigator.pushNamed(context, route.path);
-                        },
-                      );
-                    }),
-                Divider(color: ThemeUtils.isThemeDark ? Colors.white : Colors.black),
-                ListView.builder(
-                    shrinkWrap: true,
-                    physics: ClampingScrollPhysics(),
-                    itemCount: specialRoutes.length,
-                    itemBuilder: (context, i) {
-                      final _SpecialRoute route = specialRoutes[i];
-
-                      return ListTile(
-                        dense: true,
-                        leading: Icon(
-                          route.icon,
-                          color: ThemeUtils.isThemeDark ? Colors.white : Colors.black,
-                        ),
-                        title: Text(route.title,
-                            style: TextStyle(color: ThemeUtils.isThemeDark ? Colors.white : Colors.black)),
-                        onTap: route.onTap,
-                      );
-                    }),
-              ]),
+                for (final e in specialIcons)
+                  Expanded(
+                      child: IconButton(
+                    icon: Icon(e.icon),
+                    color: ThemeUtils.isThemeDark ? Colors.white : Colors.black87,
+                    onPressed: e.onTap,
+                  ))
+              ],
+            )
+          ]),
         ),
       ),
     );
