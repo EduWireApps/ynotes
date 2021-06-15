@@ -10,7 +10,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:ynotes/core/apis/ecole_directe.dart';
-import 'package:ynotes/core/logic/appConfig/controller.dart';
+import 'package:ynotes/core/logic/app_config/controller.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/main.dart';

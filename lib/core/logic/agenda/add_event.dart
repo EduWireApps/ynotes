@@ -1,5 +1,5 @@
 import 'package:ynotes/core/apis/utils.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/data/agenda/events.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/globals.dart';

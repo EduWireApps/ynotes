@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ynotes/core/apis/model.dart';
-import 'package:ynotes/core/consts/disciplinesFilter.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/data/disciplines_filter.dart';
+import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/globals.dart';
 
 ///To use to collect grades in a view

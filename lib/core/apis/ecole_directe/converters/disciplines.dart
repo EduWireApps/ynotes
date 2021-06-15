@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/logic/models_exporter.dart';
 
 class EcoleDirecteDisciplineConverter {
   static List<Discipline> disciplines(Map<String, dynamic> disciplinesData) {

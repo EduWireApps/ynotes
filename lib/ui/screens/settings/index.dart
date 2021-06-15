@@ -13,7 +13,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:ynotes/core/apis/utils.dart';
-import 'package:ynotes/core/logic/appConfig/controller.dart';
+import 'package:ynotes/core/logic/app_config/controller.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/services/platform.dart';
 import 'package:ynotes/core/utils/settingsUtils.dart';

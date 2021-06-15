@@ -8,7 +8,7 @@ import 'package:ynotes/core/apis/ecole_directe/converters/cloud.dart';
 import 'package:ynotes/core/apis/ecole_directe/converters_exporter.dart';
 import 'package:ynotes/core/apis/pronote/Pronote_cas.dart';
 import 'package:ynotes/core/apis/utils.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/data/agenda/lessons.dart';
 import 'package:ynotes/core/offline/data/disciplines/disciplines.dart';
 import 'package:ynotes/core/offline/data/homework/homework.dart';

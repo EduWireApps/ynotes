@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:ynotes/core/logic/shared/loginController.dart';
+import 'package:ynotes/core/logic/shared/login_controller.dart';
 import 'package:ynotes/useful_methods.dart';
 
 class ConnectionStatus extends StatefulWidget {

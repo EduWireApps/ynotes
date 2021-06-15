@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:ynotes/core/logic/shared/loginController.dart';
+import 'package:ynotes/core/logic/shared/login_controller.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/y_drawer/widgets/connection_status.dart';

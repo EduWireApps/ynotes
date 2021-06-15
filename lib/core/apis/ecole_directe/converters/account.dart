@@ -1,6 +1,6 @@
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/utils/nullSafeMapGetter.dart';
 import 'package:ynotes/main.dart';
 

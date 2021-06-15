@@ -8,8 +8,8 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/core/logic/stats/gradesStats.dart';
+import 'package:ynotes/core/logic/models_exporter.dart';
+import 'package:ynotes/core/logic/stats/grades_stats.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';

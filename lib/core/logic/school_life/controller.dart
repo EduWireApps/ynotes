@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/apis/model.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/logic/models_exporter.dart';
 
 class SchoolLifeController extends ChangeNotifier {
   API? _api;

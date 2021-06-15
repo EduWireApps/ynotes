@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:ynotes/core/logic/appConfig/models.dart';
+import 'package:ynotes/core/logic/app_config/models.dart';
 import 'package:ynotes/ui/screens/agenda/index.dart';
 import 'package:ynotes/ui/screens/carousel/index.dart';
 import 'package:ynotes/ui/screens/cloud/index.dart';

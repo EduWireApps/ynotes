@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:wiredash/wiredash.dart';
 import 'package:ynotes/core/apis/model.dart';
-import 'package:ynotes/core/logic/shared/loginController.dart';
+import 'package:ynotes/core/logic/shared/login_controller.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/buttons.dart';

@@ -1,4 +1,4 @@
-import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/logic/models_exporter.dart';
 
 class EcoleDirecteSchoolLifeConverter {
   static List<SchoolLifeTicket> schoolLife(Map<String, dynamic> schoolLifeData) {

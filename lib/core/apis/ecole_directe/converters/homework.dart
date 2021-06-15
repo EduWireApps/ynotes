@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:ynotes/core/apis/ecole_directe/converters_exporter.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/logic/models_exporter.dart';
 
 class EcoleDirecteHomeworkConverter {
   static List<Homework> homework(Map<String, dynamic> hwData) {

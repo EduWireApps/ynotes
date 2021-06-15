@@ -5,7 +5,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:ynotes/core/apis/utils.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/data/agenda/events.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/space/recurringEvents.dart';
@@ -45,7 +45,7 @@ abstract class API {
   Future<List<DateTime>?> getDatesNextHomework();
 
   ///All events
-  Future<List<AgendaEvent>?> getEvents(DateTime date,  {bool forceReload = false}) async {
+  Future<List<AgendaEvent>?> getEvents(DateTime date, {bool forceReload = false}) async {
     List<AgendaEvent> events = [];
     List<AgendaEvent>? extracurricularEvents = [];
     List<Lesson>? lessons = await (appSys.api!.getNextLessons(date, forceReload: forceReload));
@@ -56,7 +56,7 @@ abstract class API {
       //Add extracurricular events
       lessons.sort((a, b) => a.end!.compareTo(b.end!));
     }
-   
+
     events.addAll(extracurricularEvents);
     RecurringEventSchemes recurr = RecurringEventSchemes();
     recurr.date = date;

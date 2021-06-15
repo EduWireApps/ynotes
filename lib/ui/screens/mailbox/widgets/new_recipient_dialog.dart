@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/logic/models_exporter.dart';
 
 import '../../../components/dialogs.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
@@ -23,12 +23,9 @@ class _NewRecipientDialogState extends State<NewRecipientDialog> {
     return AlertDialog(
       insetPadding: EdgeInsets.zero,
       contentPadding: EdgeInsets.symmetric(
-          horizontal: screenSize.size.width / 5 * 0.2,
-          vertical: screenSize.size.height / 10 * 0.1),
-      backgroundColor: ThemeUtils.darken(Theme.of(context).primaryColorDark,
-          forceAmount: 0.01),
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(15.0))),
+          horizontal: screenSize.size.width / 5 * 0.2, vertical: screenSize.size.height / 10 * 0.1),
+      backgroundColor: ThemeUtils.darken(Theme.of(context).primaryColorDark, forceAmount: 0.01),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(15.0))),
       content: Container(
         width: screenSize.size.width / 5 * 3.2,
         height: screenSize.size.height / 10 * 4.5,
@@ -37,20 +34,13 @@ class _NewRecipientDialogState extends State<NewRecipientDialog> {
           children: [
             GestureDetector(
               onTap: () {
-                if (nameController.text != "" &&
-                    surnameController.text != '' &&
-                    idController.text != "") {
+                if (nameController.text != "" && surnameController.text != '' && idController.text != "") {
                   Navigator.pop(
                       context,
-                      Recipient(
-                          nameController.text,
-                          surnameController.text,
-                          idController.text,
-                          isTeacher,
+                      Recipient(nameController.text, surnameController.text, idController.text, isTeacher,
                           disciplineController.text));
                 } else {
-                  CustomDialogs.showAnyDialog(
-                      context, "Entrez un nom, un prénom et un ID");
+                  CustomDialogs.showAnyDialog(context, "Entrez un nom, un prénom et un ID");
                 }
               },
               child: Container(
@@ -61,12 +51,10 @@ class _NewRecipientDialogState extends State<NewRecipientDialog> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Container(
-                        margin: EdgeInsets.only(
-                            top: screenSize.size.width / 5 * 0.2),
+                        margin: EdgeInsets.only(top: screenSize.size.width / 5 * 0.2),
                         height: (screenSize.size.height / 10 * 8.8) / 10 * 0.75,
                         width: screenSize.size.width / 5 * 2,
-                        child: Icon(MdiIcons.check,
-                            color: ThemeUtils.textColor())),
+                        child: Icon(MdiIcons.check, color: ThemeUtils.textColor())),
                   ],
                 ),
               ),
@@ -100,9 +88,7 @@ class _NewRecipientDialogState extends State<NewRecipientDialog> {
               child: TextField(
                 controller: nameController,
                 style: TextStyle(
-                    fontFamily: "Asap",
-                    color: ThemeUtils.textColor(),
-                    fontSize: screenSize.size.width / 5 * 0.35),
+                    fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.width / 5 * 0.35),
                 decoration: new InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Prénom',
@@ -119,9 +105,7 @@ class _NewRecipientDialogState extends State<NewRecipientDialog> {
               child: TextField(
                 controller: surnameController,
                 style: TextStyle(
-                    fontFamily: "Asap",
-                    color: ThemeUtils.textColor(),
-                    fontSize: screenSize.size.width / 5 * 0.35),
+                    fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.width / 5 * 0.35),
                 decoration: new InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Nom de famille',
@@ -138,9 +122,7 @@ class _NewRecipientDialogState extends State<NewRecipientDialog> {
               child: TextField(
                 controller: disciplineController,
                 style: TextStyle(
-                    fontFamily: "Asap",
-                    color: ThemeUtils.textColor(),
-                    fontSize: screenSize.size.width / 5 * 0.35),
+                    fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.width / 5 * 0.35),
                 decoration: new InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Matière',
@@ -157,9 +139,7 @@ class _NewRecipientDialogState extends State<NewRecipientDialog> {
               child: TextField(
                 controller: idController,
                 style: TextStyle(
-                    fontFamily: "Asap",
-                    color: ThemeUtils.textColor(),
-                    fontSize: screenSize.size.width / 5 * 0.35),
+                    fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.width / 5 * 0.35),
                 decoration: new InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Identifiant unique',

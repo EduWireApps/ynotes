@@ -4,9 +4,9 @@ import 'package:calendar_time/calendar_time.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:ynotes/core/apis/model.dart';
-import 'package:ynotes/core/consts/disciplinesFilter.dart';
+import 'package:ynotes/core/data/disciplines_filter.dart';
 import 'package:ynotes/core/logic/homework/utils.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/globals.dart';
 
 class HomeworkController extends ChangeNotifier {
@@ -27,6 +27,7 @@ class HomeworkController extends ChangeNotifier {
   set api(API? api) {
     _api = api;
   }
+
   List<Homework>? get getHomework => _old;
 
   ///Returns [donePercent, doneLength, length]

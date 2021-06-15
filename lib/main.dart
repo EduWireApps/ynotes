@@ -10,7 +10,7 @@ import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import 'package:wiredash/wiredash.dart';
-import 'package:ynotes/core/logic/appConfig/controller.dart';
+import 'package:ynotes/core/logic/app_config/controller.dart';
 import 'package:ynotes/core/services/background.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/globals.dart';
