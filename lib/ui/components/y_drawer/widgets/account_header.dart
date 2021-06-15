@@ -14,7 +14,7 @@ class AccountHeader extends StatefulWidget {
 }
 
 class _AccountHeaderState extends State<AccountHeader> with YPageMixin {
-  final account = appSys.account!.managableAccounts!.firstWhere((e) => appSys.currentSchoolAccount == e);
+  final account = appSys.currentSchoolAccount;
 
   @override
   Widget build(BuildContext context) {
@@ -27,14 +27,14 @@ class _AccountHeaderState extends State<AccountHeader> with YPageMixin {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                "${account.name ?? ''} ${account.surname ?? ''}",
+                "${account?.name ?? ''} ${account?.surname ?? ''}",
                 style: TextStyle(
                     color: currentTheme.primary[ThemeUtils.isThemeDark ? 50 : 600],
                     fontSize: 20,
                     fontWeight: FontWeight.w600),
               ),
               Text(
-                "${account.schoolName ?? ''} · ${account.studentClass ?? ''}",
+                "${account?.schoolName ?? ''} · ${account?.studentClass ?? ''}",
                 style: TextStyle(
                     color: currentTheme.primary[ThemeUtils.isThemeDark ? 200 : 400],
                     fontSize: 16,

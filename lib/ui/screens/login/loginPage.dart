@@ -70,23 +70,21 @@ class _AlertBoxWidgetState extends State<AlertBoxWidget> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      FittedBox(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Container(
-                              padding: EdgeInsets.all(widget.screenSize.size.width / 5 * 0.1),
-                              child: FittedBox(
-                                child: Text(
-                                  "Conditions d’utilisation",
-                                  style: TextStyle(fontSize: 24.0, fontFamily: "Asap"),
-                                  textAlign: TextAlign.center,
-                                ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          Container(
+                            padding: EdgeInsets.all(5),
+                            child: FittedBox(
+                              child: Text(
+                                "Conditions d’utilisation",
+                                style: TextStyle(fontSize: 24.0, fontFamily: "Asap"),
+                                textAlign: TextAlign.center,
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                       SizedBox(
                         height: 5.0,

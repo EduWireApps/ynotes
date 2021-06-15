@@ -87,11 +87,11 @@ class _YDrawerState extends State<YDrawer> with YPageMixin {
                           style:
                               TextStyle(color: ThemeUtils.isThemeDark ? Colors.white : Colors.black87, fontSize: 18)),
                       onTap: () {
-                        print(ModalRoute.of(context)!.settings.name);
-                        Navigator.pop(context);
                         if (ModalRoute.of(context)!.settings.name == route.path) {
                           return;
                         }
+                        Navigator.pop(context);
+
                         Navigator.pushNamed(context, route.path);
                       },
                     ),
