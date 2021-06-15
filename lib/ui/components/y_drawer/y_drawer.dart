@@ -1,17 +1,23 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:wiredash/wiredash.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/router.dart';
 import 'package:ynotes/ui/components/y_page/mixins.dart';
 import 'package:ynotes/ui/components/y_page/y_page_local.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/ui/screens/settings/settingsPage.dart';
-
 import 'package:ynotes_components/ynotes_components.dart';
+
+class YDrawer extends StatefulWidget {
+  const YDrawer({Key? key}) : super(key: key);
+
+  @override
+  _YDrawerState createState() => _YDrawerState();
+}
 
 class _SpecialRoute {
   final String title;
@@ -19,13 +25,6 @@ class _SpecialRoute {
   final VoidCallback onTap;
 
   _SpecialRoute({required this.title, required this.icon, required this.onTap});
-}
-
-class YDrawer extends StatefulWidget {
-  const YDrawer({Key? key}) : super(key: key);
-
-  @override
-  _YDrawerState createState() => _YDrawerState();
 }
 
 class _YDrawerState extends State<YDrawer> with YPageMixin {
@@ -38,10 +37,6 @@ class _YDrawerState extends State<YDrawer> with YPageMixin {
     }
 
     final List<_SpecialRoute> specialRoutes = [
-      _SpecialRoute(
-          title: "Paramètres",
-          icon: Icons.settings,
-          onTap: () => openLocalPage(YPageLocal(title: "Paramètres", child: SettingsPage()))),
       _SpecialRoute(title: "Faire un retour", icon: MdiIcons.forum, onTap: () => Wiredash.of(context)!.show()),
       _SpecialRoute(
           title: "Discord",
@@ -55,6 +50,10 @@ class _YDrawerState extends State<YDrawer> with YPageMixin {
           title: "Nous contacter", icon: Icons.mail, onTap: () async => await launch("https://ynotes.fr/contact/")),
       _SpecialRoute(
           title: "Centre d'aide", icon: Icons.help, onTap: () async => await launch("https://support.ynotes.fr/")),
+      _SpecialRoute(
+          title: "Paramètres",
+          icon: Icons.settings,
+          onTap: () => openLocalPage(YPageLocal(title: "Paramètres", child: SettingsPage()))),
     ];
 
     return Drawer(
@@ -83,6 +82,7 @@ class _YDrawerState extends State<YDrawer> with YPageMixin {
                         title: Text(route.title ?? "",
                             style: TextStyle(color: ThemeUtils.isThemeDark ? Colors.white : Colors.black)),
                         onTap: () {
+                          print(ModalRoute.of(context)!.settings.name);
                           Navigator.pop(context);
                           if (ModalRoute.of(context)!.settings.name == route.path) {
                             return;
