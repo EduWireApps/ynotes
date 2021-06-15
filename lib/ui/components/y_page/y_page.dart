@@ -24,23 +24,37 @@ class _YPageState extends State<YPage> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final MediaQueryData screenSize = MediaQuery.of(context);
-    return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
-      drawer: YDrawer(),
-      appBar: AppBar(
-          backgroundColor: ThemeUtils.isThemeDark ? Theme.of(context).primaryColor : Theme.of(context).primaryColorDark,
-          centerTitle: false,
-          title: Text(widget.title, textAlign: TextAlign.start),
-          systemOverlayStyle: ThemeUtils.isThemeDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
-          brightness: ThemeUtils.isThemeDark ? Brightness.dark : Brightness.light,
-          actions: widget.actions),
-      body: widget.isScrollable
-          ? SingleChildScrollView(child: _page(context))
-          : Container(height: screenSize.size.height, child: _page(context)),
+    return Row(
+      children: [
+        if (screenSize.size.width > 800)
+          Container(
+            height: screenSize.size.height,
+            width: 310,
+            child: YDrawer(),
+          ),
+        Expanded(
+          child: Scaffold(
+            backgroundColor: Theme.of(context).backgroundColor,
+            drawer: (screenSize.size.width < 800) ? YDrawer() : null,
+            appBar: AppBar(
+                backgroundColor:
+                    ThemeUtils.isThemeDark ? Theme.of(context).primaryColor : Theme.of(context).primaryColorDark,
+                centerTitle: false,
+                title: Text(widget.title, textAlign: TextAlign.start),
+                systemOverlayStyle: ThemeUtils.isThemeDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
+                brightness: ThemeUtils.isThemeDark ? Brightness.dark : Brightness.light,
+                actions: widget.actions),
+            body: widget.isScrollable
+                ? SingleChildScrollView(child: _page(context))
+                : Container(height: screenSize.size.height, child: _page(context)),
+          ),
+        ),
+      ],
     );
   }
 
   _page(BuildContext context) {
+    var screenSize = MediaQuery.of(context);
     late Animation<double> showLoginControllerStatus;
     late AnimationController showLoginControllerStatusController;
 
