@@ -18,7 +18,6 @@ import 'package:ynotes/router.dart';
 import 'package:ynotes/ui/components/hiveLifeCycleManager.dart';
 import 'package:ynotes/ui/screens/carousel/carousel.dart';
 import 'package:ynotes/ui/screens/loading/loadingPage.dart';
-import 'package:ynotes/ui/screens/summary/summaryPage.dart';
 
 import 'core/utils/themeUtils.dart';
 import 'ui/screens/school_api_choice/schoolAPIChoicePage.dart';
@@ -69,16 +68,6 @@ class Carousel extends StatelessWidget {
 class HomeApp extends StatefulWidget {
   @override
   _HomeAppState createState() => _HomeAppState();
-}
-
-class HomePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
-    return SummaryPage();
-  }
 }
 
 class Loader extends StatelessWidget {

@@ -54,7 +54,6 @@ class _YPageState extends State<YPage> with TickerProviderStateMixin {
   }
 
   _page(BuildContext context) {
-    var screenSize = MediaQuery.of(context);
     late Animation<double> showLoginControllerStatus;
     late AnimationController showLoginControllerStatusController;
 

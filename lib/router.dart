@@ -71,19 +71,21 @@ final List<CustomRoute> routes = [
   CustomRoute(path: "/account", icon: Icons.person, title: "Compte", page: AccountPage())
 ];
 
-PageRouteBuilder generateRoute(Widget page) {
+PageRouteBuilder generateRoute(Widget page, RouteSettings settings) {
   return PageRouteBuilder(
-      pageBuilder: (_, __, ___) => page, transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c));
+      settings: settings,
+      pageBuilder: (_, __, ___) => page,
+      transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c));
 }
 
 Route<dynamic>? onGenerateRoute(RouteSettings settings) {
   logFile("Going to route: \"${settings.name}\"");
   for (var route in routes) {
     if (settings.name == route.path) {
-      return generateRoute(route.page);
+      return generateRoute(route.page, settings);
     }
   }
 
   logFile("Route \"${settings.name}\" not found");
-  return generateRoute(ErrorPage());
+  return generateRoute(ErrorPage(), settings);
 }
