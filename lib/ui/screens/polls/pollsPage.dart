@@ -5,14 +5,15 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_widget_from_html_core/flutter_widget_from_html_core.dart';
 import 'package:intl/intl.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/core/apis/Pronote.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
+import 'package:ynotes/ui/components/y_page/y_page.dart';
 import 'package:ynotes/ui/mixins/layoutMixin.dart';
+import 'package:ynotes_components/ynotes_components.dart';
 
 String dossier = "Reçus";
 
@@ -22,9 +23,7 @@ late Future<List<PollInfo>?> pollsFuture;
 List<PollInfo>? pollsList = [];
 
 class PollsAndInfoPage extends StatefulWidget {
-  final GlobalKey<ScaffoldState> parentScaffoldState;
-
-  const PollsAndInfoPage({Key? key, required this.parentScaffoldState}) : super(key: key);
+  const PollsAndInfoPage({Key? key}) : super(key: key);
 
   @override
   _PollsAndInfoPageState createState() => _PollsAndInfoPageState();
@@ -32,149 +31,119 @@ class PollsAndInfoPage extends StatefulWidget {
 
 enum sortValue { date, reversed_date, author }
 
-class _PollsAndInfoPageState extends State<PollsAndInfoPage> with Layout{
+class _PollsAndInfoPageState extends State<PollsAndInfoPage> with Layout {
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
 
-    return Scaffold(
-      appBar: new AppBar(
-          title: new Text(
-            "Sondages",
-            style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
-          ),
-          leading: !isVeryLargeScreen
-              ? TextButton(
-                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent)),
-                  child: Icon(MdiIcons.menu, color: ThemeUtils.textColor()),
-                  onPressed: () async {
-                    widget.parentScaffoldState.currentState?.openDrawer();
-                  },
-                )
-              : null,
-          backgroundColor: Theme.of(context).primaryColor),
-      backgroundColor: Theme.of(context).backgroundColor,
-      body: RefreshIndicator(
-        onRefresh: () => refreshPolls(forced: true),
-        child: SingleChildScrollView(
-          physics: AlwaysScrollableScrollPhysics(),
-          child: Container(
-            width: screenSize.size.width,
-            height: screenSize.size.height,
-            color: Theme.of(context).backgroundColor,
-            child: Stack(
-              children: [
-                Align(
-                  alignment: Alignment.center,
-                  child: Container(
-                      height: screenSize.size.height / 10 * 8.8,
-                      width: (screenSize.size.width / 5) * 4.6,
-                      child: FutureBuilder<List<PollInfo>?>(
-                          future: pollsFuture,
-                          builder: (context, snapshot) {
-                            if (snapshot.hasData && snapshot.data != null && snapshot.data!.length != 0) {
-                              SchedulerBinding.instance!.addPostFrameCallback((_) => mounted
-                                  ? setState(() {
-                                      pollsList = snapshot.data;
-                                    })
-                                  : null);
+    return YPage(
+        title: "Sondages",
+        isScrollable: false,
+        body: RefreshIndicator(
+            onRefresh: () => refreshPolls(forced: true),
+            child: FutureBuilder<List<PollInfo>?>(
+                future: pollsFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData && snapshot.data != null && snapshot.data!.length != 0) {
+                    SchedulerBinding.instance!.addPostFrameCallback((_) => mounted
+                        ? setState(() {
+                            pollsList = snapshot.data;
+                          })
+                        : null);
 
-                              return ListView.builder(
-                                  physics: AlwaysScrollableScrollPhysics(),
-                                  itemCount: pollsList!.length,
-                                  itemBuilder: (BuildContext context, int index) {
-                                    return ClipRRect(
-                                      borderRadius: BorderRadius.circular(11),
-                                      child: Card(
-                                        color: Theme.of(context).primaryColor,
-                                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(11),
-                                          child: ExpansionTile(
-                                            backgroundColor: Colors.transparent,
-                                            title: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                AutoSizeText(
-                                                  (snapshot.data?[index].title != null
-                                                          ? (snapshot.data ?? [])[index].title ?? "" + " - "
-                                                          : "") +
-                                                      (((snapshot.data ?? [])[index].start != null)
-                                                          ? DateFormat("dd/MM/yyyy")
-                                                              .format((snapshot.data ?? [])[index].start!)
-                                                          : ""),
-                                                  style: TextStyle(
-                                                      fontFamily: "Asap",
-                                                      fontWeight: FontWeight.bold,
-                                                      color: ThemeUtils.textColor()),
-                                                ),
-                                                AutoSizeText(
-                                                  (snapshot.data ?? [])[index].author ?? "",
-                                                  style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-                                                ),
-                                              ],
-                                            ),
-                                            children: [
-                                              Column(
+                    return YShadowScrollContainer(
+                      color: Theme.of(context).backgroundColor,
+                      children: [
+                        ListView.builder(
+                            itemCount: pollsList!.length,
+                            shrinkWrap: true,
+                            physics: ClampingScrollPhysics(),
+                            itemBuilder: (BuildContext context, int index) {
+                              return ClipRRect(
+                                borderRadius: BorderRadius.circular(11),
+                                child: Card(
+                                  color: Theme.of(context).primaryColor,
+                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(11),
+                                    child: ExpansionTile(
+                                      backgroundColor: Colors.transparent,
+                                      title: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          AutoSizeText(
+                                            (snapshot.data?[index].title != null
+                                                    ? (snapshot.data ?? [])[index].title ?? "" + " - "
+                                                    : "") +
+                                                (((snapshot.data ?? [])[index].start != null)
+                                                    ? DateFormat("dd/MM/yyyy")
+                                                        .format((snapshot.data ?? [])[index].start!)
+                                                    : ""),
+                                            style: TextStyle(
+                                                fontFamily: "Asap",
+                                                fontWeight: FontWeight.bold,
+                                                color: ThemeUtils.textColor()),
+                                          ),
+                                          AutoSizeText(
+                                            (snapshot.data ?? [])[index].author ?? "",
+                                            style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                                          ),
+                                        ],
+                                      ),
+                                      children: [
+                                        Column(
+                                          children: [
+                                            _buildPollQuestion((snapshot.data ?? [])[index], screenSize),
+                                            FittedBox(
+                                              child: Row(
                                                 children: [
-                                                  _buildPollQuestion((snapshot.data ?? [])[index], screenSize),
-                                                  FittedBox(
-                                                    child: Row(
-                                                      children: [
-                                                        Checkbox(
-                                                          side: BorderSide(width: 1, color: Colors.white),
-                                                          fillColor: MaterialStateColor.resolveWith(
-                                                              ThemeUtils.getCheckBoxColor),
-                                                          shape: const CircleBorder(),
-                                                          onChanged: (value) async {
-                                                            setState(() {
-                                                              (snapshot.data ?? [])[index].read = value;
-                                                            });
-                                                            if ((await (appSys.api as APIPronote).setPronotePollRead(
-                                                                (snapshot.data ?? [])[index],
-                                                                ((snapshot.data ?? [])[index].questions ?? [])
-                                                                    .first))) {
-                                                              CustomDialogs.showAnyDialog(
-                                                                  context, "Votre choix a été confirmé");
-                                                              refreshPolls(forced: true);
-                                                            } else {
-                                                              setState(() {
-                                                                (snapshot.data ?? [])[index].read = value!;
-                                                              });
-                                                            }
-                                                            await refreshPolls(forced: true);
-                                                          },
-                                                          value: pollsList![index].read,
-                                                        ),
-                                                        AutoSizeText(
-                                                          "J'ai pris connaissance de cette information",
-                                                          style: TextStyle(
-                                                              fontFamily: "Asap", color: ThemeUtils.textColor()),
-                                                        )
-                                                      ],
-                                                    ),
+                                                  Checkbox(
+                                                    side: BorderSide(width: 1, color: Colors.white),
+                                                    fillColor:
+                                                        MaterialStateColor.resolveWith(ThemeUtils.getCheckBoxColor),
+                                                    shape: const CircleBorder(),
+                                                    onChanged: (value) async {
+                                                      setState(() {
+                                                        (snapshot.data ?? [])[index].read = value;
+                                                      });
+                                                      if ((await (appSys.api as APIPronote).setPronotePollRead(
+                                                          (snapshot.data ?? [])[index],
+                                                          ((snapshot.data ?? [])[index].questions ?? []).first))) {
+                                                        CustomDialogs.showAnyDialog(
+                                                            context, "Votre choix a été confirmé");
+                                                        refreshPolls(forced: true);
+                                                      } else {
+                                                        setState(() {
+                                                          (snapshot.data ?? [])[index].read = value!;
+                                                        });
+                                                      }
+                                                      await refreshPolls(forced: true);
+                                                    },
+                                                    value: pollsList![index].read,
+                                                  ),
+                                                  AutoSizeText(
+                                                    "J'ai pris connaissance de cette information",
+                                                    style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                                                   )
                                                 ],
                                               ),
-                                            ],
-                                          ),
+                                            )
+                                          ],
                                         ),
-                                      ),
-                                    );
-                                  });
-                            } else {
-                              return SpinKitFadingFour(
-                                color: Theme.of(context).primaryColorDark,
+                                      ],
+                                    ),
+                                  ),
+                                ),
                               );
-                            }
-                          })),
-                )
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
+                            })
+                      ],
+                    );
+                  } else {
+                    return SpinKitFadingFour(
+                      color: Theme.of(context).primaryColorDark,
+                    );
+                  }
+                })));
   }
 
   @override

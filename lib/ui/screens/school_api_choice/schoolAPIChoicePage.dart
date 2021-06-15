@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/screens/login/loginPage.dart';
@@ -24,6 +25,9 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
   Widget build(BuildContext context) {
     MediaQueryData screenSize;
     screenSize = MediaQuery.of(context);
+
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
+
 //Disable any back
     return WillPopScope(
       onWillPop: () async {

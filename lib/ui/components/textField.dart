@@ -71,7 +71,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Icon(widget.icon, size: 50, color: ThemeUtils.textColor().withOpacity(0.8)),
+                    Icon(widget.icon, size: 30, color: ThemeUtils.textColor().withOpacity(0.8)),
                   ],
                 ),
               ),
@@ -85,7 +85,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
                           });
                         },
                         iconSize: 50,
-                        icon: Center(child: Icon(MdiIcons.eye, size: 40, color: Color(0xff22256A))))
+                        icon: Center(child: Icon(MdiIcons.eye, size: 30, color: Color(0xff22256A))))
 
                     /* GestureDetector(
                     onTap: () {

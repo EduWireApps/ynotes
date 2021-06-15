@@ -28,8 +28,7 @@ class CustomHalfCircleClipper extends CustomClipper<Path> {
 }
 
 class QuickGrades extends StatefulWidget {
-  final Function? switchPage;
-  QuickGrades({Key? key, this.switchPage}) : super(key: key);
+  QuickGrades({Key? key}) : super(key: key);
   @override
   _QuickGradesState createState() => _QuickGradesState();
 }
@@ -145,16 +144,16 @@ class _QuickGradesState extends State<QuickGrades> {
           onLongPress: () {
             CustomDialogs.showShareGradeDialog(context, grade);
           },
-          onTap: () {
-            widget.switchPage!(1);
-          },
+          onTap: () => Navigator.pushNamed(context, "/grades"),
           child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth:250),
+            constraints: BoxConstraints(maxWidth: 250),
             child: Container(
               padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
               child: Row(mainAxisAlignment: MainAxisAlignment.start, children: [
                 buildGradeCircle(grade),
-                SizedBox(width: 5,),
+                SizedBox(
+                  width: 5,
+                ),
                 Flexible(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -220,6 +219,7 @@ class _QuickGradesState extends State<QuickGrades> {
       );
     }
   }
+
   Future<void> forceRefreshModel() async {
     await appSys.gradesController.refresh(force: true);
   }

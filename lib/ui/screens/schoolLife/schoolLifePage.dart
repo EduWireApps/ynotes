@@ -8,12 +8,11 @@ import 'package:ynotes/core/logic/schoolLife/controller.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/columnGenerator.dart';
+import 'package:ynotes/ui/components/y_page/y_page.dart';
 import 'package:ynotes/ui/mixins/layoutMixin.dart';
 
 class SchoolLifePage extends StatefulWidget {
-  final GlobalKey<ScaffoldState> parentScaffoldState;
-
-  const SchoolLifePage({Key? key, required this.parentScaffoldState}) : super(key: key);
+  const SchoolLifePage({Key? key}) : super(key: key);
   @override
   _SchoolLifePageState createState() => _SchoolLifePageState();
 }
@@ -23,51 +22,36 @@ class _SchoolLifePageState extends State<SchoolLifePage> with Layout {
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
 
-    return Scaffold(
-      appBar: new AppBar(
-          title: new Text(
-            "Vie scolaire",
-            style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
-          ),
-          leading: !isVeryLargeScreen
-              ? TextButton(
-                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent)),
-                  child: Icon(MdiIcons.menu, color: ThemeUtils.textColor()),
-                  onPressed: () async {
-                    widget.parentScaffoldState.currentState?.openDrawer();
-                  },
-                )
-              : null,
-          backgroundColor: Theme.of(context).primaryColor),
-      backgroundColor: Theme.of(context).backgroundColor,
-      body: RefreshIndicator(
-        onRefresh: refreshTickets,
-        child: Container(
-            width: screenSize.size.width,
-            child: ChangeNotifierProvider<SchoolLifeController>.value(
-                value: appSys.schoolLifeController,
-                child: Consumer<SchoolLifeController>(builder: (context, model, child) {
-                  //if there is no tickets
-                  if ((model.tickets ?? []).length == 0 || model.tickets == null) {
-                    return buildNoTickets();
-                  } else {
-                    return Container(
-                      height: screenSize.size.height,
-                      width: screenSize.size.width,
-                      padding: EdgeInsets.symmetric(
-                          vertical: screenSize.size.width / 5 * 0.1, horizontal: screenSize.size.width / 5 * 0.05),
-                      child: SingleChildScrollView(
-                        child: ColumnBuilder(
-                            itemCount: (model.tickets)!.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return buildTicket((model.tickets)!.reversed.toList()[index]);
-                            }),
-                      ),
-                    );
-                  }
-                }))),
-      ),
-    );
+    return YPage(
+        title: "Vie scolaire",
+        isScrollable: false,
+        body: RefreshIndicator(
+          onRefresh: refreshTickets,
+          child: Container(
+              width: screenSize.size.width,
+              child: ChangeNotifierProvider<SchoolLifeController>.value(
+                  value: appSys.schoolLifeController,
+                  child: Consumer<SchoolLifeController>(builder: (context, model, child) {
+                    //if there is no tickets
+                    if ((model.tickets ?? []).length == 0 || model.tickets == null) {
+                      return buildNoTickets();
+                    } else {
+                      return Container(
+                        height: screenSize.size.height,
+                        width: screenSize.size.width,
+                        padding: EdgeInsets.symmetric(
+                            vertical: screenSize.size.width / 5 * 0.1, horizontal: screenSize.size.width / 5 * 0.05),
+                        child: SingleChildScrollView(
+                          child: ColumnBuilder(
+                              itemCount: (model.tickets)!.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return buildTicket((model.tickets)!.reversed.toList()[index]);
+                              }),
+                        ),
+                      );
+                    }
+                  }))),
+        ));
   }
 
   Widget buildCircle(SchoolLifeTicket ticket) {

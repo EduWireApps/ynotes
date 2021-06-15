@@ -18,6 +18,7 @@ import 'package:ynotes/main.dart';
 import 'package:ynotes/ui/components/columnGenerator.dart';
 import 'package:ynotes/ui/components/customLoader.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
+import 'package:ynotes/ui/components/y_page/mixins.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/addHomeworkDialog.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/homeworkFilterDialog.dart';
 import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/homeworkViewPage.dart';
@@ -56,7 +57,7 @@ class StickyHeader extends StatefulWidget {
   _StickyHeaderState createState() => _StickyHeaderState();
 }
 
-class _HomeworkElementState extends State<HomeworkElement> with SingleTickerProviderStateMixin {
+class _HomeworkElementState extends State<HomeworkElement> with SingleTickerProviderStateMixin, YPageMixin {
   late AnimationController controller;
   @override
   @override
@@ -258,12 +259,10 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
               screenSize.size.width / 5 * 2.5,
               Theme.of(context).primaryColorDark,
             )),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: Container(
-              margin: EdgeInsets.only(right: screenSize.size.width / 5 * 0.1, bottom: screenSize.size.width / 5 * 0.1),
-              child: _buildFloatingButton(context),
-            ),
+          Positioned(
+            bottom: 10,
+            right: 10,
+            child: _buildFloatingButton(context),
           ),
         ],
       ),
@@ -387,6 +386,7 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
     );
   }
 
+  //Date on the left of the homework
   List<List<Homework>> groupHomeworkByDate(List<Homework> homeworkList) {
     List<DateTime> dates = [];
     List<DateTime> formattedDates = [];
@@ -419,7 +419,6 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
     });
   }
 
-  //Date on the left of the homework
   _buildFloatingButton(BuildContext context) {
     return FloatingActionButton(
       heroTag: "simulBtn",

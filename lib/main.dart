@@ -14,10 +14,11 @@ import 'package:ynotes/core/logic/appConfig/controller.dart';
 import 'package:ynotes/core/services/background.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/globals.dart';
+import 'package:ynotes/router.dart';
 import 'package:ynotes/ui/components/hiveLifeCycleManager.dart';
 import 'package:ynotes/ui/screens/carousel/carousel.dart';
-import 'package:ynotes/ui/screens/drawer/drawerBuilder.dart';
 import 'package:ynotes/ui/screens/loading/loadingPage.dart';
+import 'package:ynotes/ui/screens/summary/summaryPage.dart';
 
 import 'core/utils/themeUtils.dart';
 import 'ui/screens/school_api_choice/schoolAPIChoicePage.dart';
@@ -76,11 +77,7 @@ class HomePage extends StatelessWidget {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
-    return Scaffold(
-        backgroundColor: Theme.of(context).backgroundColor,
-        body: SafeArea(
-          child: DrawerBuilder(),
-        ));
+    return SummaryPage();
   }
 }
 
@@ -154,6 +151,7 @@ class _HomeAppState extends State<HomeApp> {
               navigatorKey: _navigatorKey,
               home: Loader(),
               themeMode: ThemeMode.light,
+              onGenerateRoute: onGenerateRoute,
             ),
           ),
         );

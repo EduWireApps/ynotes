@@ -1,21 +1,15 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/logic/homework/controller.dart';
-import 'package:ynotes/core/utils/themeUtils.dart';
-import 'package:ynotes/ui/components/hiddenSettings.dart';
+import 'package:ynotes/globals.dart';
+import 'package:ynotes/ui/components/y_page/y_page.dart';
 import 'package:ynotes/ui/mixins/layoutMixin.dart';
 
-import 'homeworkPageWidgets/HWsettingsPage.dart';
 import 'homeworkPageWidgets/homeworkTimeline.dart';
 
 class HomeworkPage extends StatefulWidget {
-  final HomeworkController hwController;
-  final GlobalKey<ScaffoldState> parentScaffoldState;
-  HomeworkPage({Key? key, required this.hwController, required this.parentScaffoldState}) : super(key: key);
-  State<StatefulWidget> createState() {
-    return HomeworkPageState();
-  }
+  final HomeworkController hwController = appSys.homeworkController;
+  HomeworkPage({Key? key}) : super(key: key);
+  State<StatefulWidget> createState() => HomeworkPageState();
 }
 
 //Function that returns string like "In two weeks" with time relation
@@ -29,25 +23,7 @@ class HomeworkPageState extends State<HomeworkPage> with Layout {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: new AppBar(
-          title: new Text(
-            "Devoirs",
-            style: TextStyle(fontFamily: "Asap", fontWeight: FontWeight.bold),
-          ),
-          leading: !isVeryLargeScreen
-              ? TextButton(
-                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(Colors.transparent)),
-                  child: Icon(MdiIcons.menu, color: ThemeUtils.textColor()),
-                  onPressed: () async {
-                    widget.parentScaffoldState.currentState?.openDrawer();
-                  },
-                )
-              : null,
-          backgroundColor: Theme.of(context).backgroundColor),
-      body: HiddenSettings(
-          controller: agendaSettingsController, settingsWidget: HomeworkSettingPage(), child: HomeworkTimeline()),
-    );
+    return YPage(title: "Devoirs", isScrollable: false, body: HomeworkTimeline());
   }
 
   void callback() {
@@ -56,11 +32,5 @@ class HomeworkPageState extends State<HomeworkPage> with Layout {
 
   void initState() {
     super.initState();
-  }
-
-//Build the main widget container of the homeworkpage
-  void triggerSettings() {
-    agendaSettingsController.animateToPage(agendaSettingsController.page == 1 ? 0 : 1,
-        duration: Duration(milliseconds: 300), curve: Curves.ease);
   }
 }

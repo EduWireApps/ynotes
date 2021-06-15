@@ -9,7 +9,6 @@ import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/pronote/schoolsModel.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/main.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/textField.dart';
@@ -39,7 +38,6 @@ class LoginDialog extends StatefulWidget {
   @override
   _LoginDialogState createState() => _LoginDialogState();
 }
-
 
 class LoginSlider extends StatefulWidget {
   final bool? setupNeeded;
@@ -127,7 +125,7 @@ class _AlertBoxWidgetState extends State<AlertBoxWidget> {
                           ),
                         ),
                         onPressed: () async {
-                          Navigator.of(context).pushReplacement(router(Carousel()));
+                          Navigator.pushReplacementNamed(context, "/intro");
                         },
                         child: Text(
                           "J'accepte",
@@ -178,7 +176,6 @@ class _AlertBoxWidgetState extends State<AlertBoxWidget> {
 class _LoginDialogState extends State<LoginDialog> {
   @override
   Widget build(BuildContext context) {
-    var screenSize = MediaQuery.of(context);
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0))),
       contentPadding: EdgeInsets.only(top: 10.0),
@@ -239,8 +236,7 @@ class _LoginDialogState extends State<LoginDialog> {
                                   await Clipboard.setData(new ClipboardData(text: stepLogger.join("\n")));
                                   CustomDialogs.showAnyDialog(context, "Logs copiés dans le presse papier.");
                                 } catch (e) {
-                                  CustomDialogs.showAnyDialog(
-                                      context, "Impossible de copier dans le presse papier !");
+                                  CustomDialogs.showAnyDialog(context, "Impossible de copier dans le presse papier !");
                                 }
                               },
                               label: "Copier les logs",
@@ -276,8 +272,6 @@ class _LoginDialogState extends State<LoginDialog> {
   }
 }
 
-
-
 class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin {
   PageController? sliderController;
   Map loginHelpTexts = {
@@ -299,30 +293,33 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
     //build background
-    return Container(
-        height: screenSize.size.height,
-        width: screenSize.size.width,
-        decoration: BoxDecoration(
-            gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Color(0xff22256A),
-            Color(0xff5C66C1),
-          ],
-        )),
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Spacer(),
-            _loginTextAndHelpButton(),
-            Container(
-                height: screenSize.size.height / 10 * 4, width: screenSize.size.width, child: _buildPageView(true)),
-            Spacer(),
-            _buildMetaPart()
-          ],
-        ));
+
+    return Material(
+      child: Container(
+          height: screenSize.size.height,
+          width: screenSize.size.width,
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color(0xff22256A),
+              Color(0xff5C66C1),
+            ],
+          )),
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Spacer(),
+              _loginTextAndHelpButton(),
+              Container(
+                  height: screenSize.size.height / 10 * 4, width: screenSize.size.width, child: _buildPageView(true)),
+              Spacer(),
+              _buildMetaPart()
+            ],
+          )),
+    );
   }
 
   formatURL(String url) {
