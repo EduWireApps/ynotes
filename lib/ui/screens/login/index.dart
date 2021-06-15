@@ -12,8 +12,8 @@ import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/text_field.dart';
-import 'package:ynotes/ui/screens/login/loginPageWidgets/loginWebView.dart';
-import 'package:ynotes/ui/screens/login/loginPageWidgets/pronoteSetup.dart';
+import 'widgets/login_web_view.dart';
+import 'widgets/pronote_setup.dart';
 import 'package:ynotes/ui/screens/school_api_choice/schoolAPIChoicePage.dart';
 import 'package:ynotes/useful_methods.dart';
 

@@ -4,7 +4,7 @@ import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/y_page/y_page.dart';
 import 'package:ynotes/ui/mixins/layout_mixin.dart';
 
-import 'homeworkPageWidgets/homeworkTimeline.dart';
+import 'widgets/homework_timeline.dart';
 
 class HomeworkPage extends StatefulWidget {
   final HomeworkController hwController = appSys.homeworkController;

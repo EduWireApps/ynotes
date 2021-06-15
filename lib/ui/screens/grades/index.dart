@@ -15,8 +15,8 @@ import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/y_page/y_page.dart';
 import 'package:ynotes/ui/mixins/layout_mixin.dart';
-import 'package:ynotes/ui/screens/grades/gradesPageWidgets/gradesGroup.dart';
-import 'package:ynotes/ui/screens/grades/gradesPageWidgets/simulatorModalBottomSheet.dart';
+import 'widgets/grades_group.dart';
+import 'widgets/simulator_modal_bottom_sheet.dart';
 import 'package:ynotes_components/ynotes_components.dart';
 
 bool firstStart = true;

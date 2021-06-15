@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/screens/login/loginPage.dart';
+import 'package:ynotes/ui/screens/login/index.dart';
 import 'package:ynotes/useful_methods.dart';
 
 int? chosen;

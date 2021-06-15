@@ -16,8 +16,8 @@ import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/modal_bottom_sheets/files_bottom_sheet.dart';
-import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/addHomeworkDialog.dart';
-import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/homeworkReaderOptions.dart';
+import '../widgets/add_homework_dialog.dart';
+import '../widgets/homework_reader_options.dart';
 
 // ignore: must_be_immutable
 class HomeworkDayViewPage extends StatefulWidget {

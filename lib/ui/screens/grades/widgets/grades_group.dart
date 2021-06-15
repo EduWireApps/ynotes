@@ -12,8 +12,8 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/column_generator.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
-import 'package:ynotes/ui/screens/grades/gradesPageWidgets/disciplinesModalBottomSheet.dart';
-import 'package:ynotes/ui/screens/grades/gradesPageWidgets/gradesModalBottomSheet.dart';
+import 'disciplines_modal_bottom_sheet.dart';
+import 'grades_modal_bottom_sheet.dart';
 import 'package:ynotes/useful_methods.dart';
 
 class GradesGroup extends StatefulWidget {

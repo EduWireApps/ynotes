@@ -19,9 +19,9 @@ import 'package:ynotes/ui/components/column_generator.dart';
 import 'package:ynotes/ui/components/custom_loader.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/y_page/mixins.dart';
-import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/addHomeworkDialog.dart';
-import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/homeworkFilterDialog.dart';
-import 'package:ynotes/ui/screens/homework/homeworkPageWidgets/homeworkViewPage.dart';
+import 'add_homework_dialog.dart';
+import 'homework_filter_dialog.dart';
+import '../sub_pages/view.dart';
 import 'package:ynotes/useful_methods.dart';
 
 // var screenSize = MediaQuery.of(context);
