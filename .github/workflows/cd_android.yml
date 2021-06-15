@@ -31,7 +31,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v1
         with:
-            flutter-version: '2.0.x'
+            flutter-version: '2.2.x'
 
       - name: Cache pub dependencies
         uses: actions/cache@v2
