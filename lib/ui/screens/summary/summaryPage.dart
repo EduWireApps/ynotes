@@ -76,8 +76,8 @@ class SummaryPageState extends State<SummaryPage> with Layout, YPageMixin {
                 QuickGrades(),
                 separator(context, "Devoirs", "/homework"),
                 QuickHomework(),
-                if (appSys.settings?["system"]["chosenApi"] == 0) separator(context, "Vie scolaire", "/school_life"),
-                if (appSys.settings?["system"]["chosenApi"] == 0) QuickSchoolLife(),
+                if (appSys.settings?["system"]["chosenParser"] == 0) separator(context, "Vie scolaire", "/school_life"),
+                if (appSys.settings?["system"]["chosenParser"] == 0) QuickSchoolLife(),
               ],
             ),
           ),
@@ -138,17 +138,20 @@ class SummaryPageState extends State<SummaryPage> with Layout, YPageMixin {
         SizedBox(
           width: screenSize.size.width / 5 * 0.25,
         ),
-        GestureDetector(
-          onTap: () => Navigator.pushNamed(context, routeName),
-          child: Row(
-            children: [
-              Text(
-                "Accéder à la page",
-                style: TextStyle(
-                    color: ThemeUtils.textColor(), fontFamily: "Asap", fontSize: 15, fontWeight: FontWeight.w400),
-              ),
-              Icon(Icons.chevron_right, color: ThemeUtils.textColor()),
-            ],
+        Expanded(
+          child: GestureDetector(
+            onTap: () => Navigator.pushNamed(context, routeName),
+            child: Row(
+              children: [
+                Text(
+                  "Accéder à la page",
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                      color: ThemeUtils.textColor(), fontFamily: "Asap", fontSize: 15, fontWeight: FontWeight.w400),
+                ),
+                Icon(Icons.chevron_right, color: ThemeUtils.textColor()),
+              ],
+            ),
           ),
         ),
       ]),

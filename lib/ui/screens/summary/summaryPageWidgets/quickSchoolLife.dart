@@ -47,9 +47,8 @@ class _QuickSchoolLifeState extends State<QuickSchoolLife> {
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Container(
-                                            width: screenSize.size.width / 5 * 0.4,
-                                            height: screenSize.size.width / 5 * 0.4,
-                                            padding: EdgeInsets.all(screenSize.size.width / 5 * 0.01),
+                                            width: 30,
+                                            height: 30,
                                             child: Icon(
                                               MdiIcons.ticket,
                                               color: Colors.white,
