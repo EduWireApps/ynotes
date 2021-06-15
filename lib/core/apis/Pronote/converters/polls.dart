@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
-import 'package:ynotes/core/apis/Pronote/PronoteAPI.dart';
-import 'package:ynotes/core/apis/Pronote/convertersExporter.dart';
+import 'package:ynotes/core/apis/pronote/pronote_api.dart';
+import 'package:ynotes/core/apis/pronote/converters_exporter.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/nullSafeMapGetter.dart';
 

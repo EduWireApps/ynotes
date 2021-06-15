@@ -1,11 +1,10 @@
 import 'package:intl/intl.dart';
-import 'package:ynotes/core/apis/Pronote/PronoteAPI.dart';
+import 'package:ynotes/core/apis/pronote/pronote_api.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/nullSafeMapGetter.dart';
 
 class PronoteDisciplineConverter {
   static disciplines(PronoteClient client, Map disciplinesData) {
-
     List<Discipline> disciplines = [];
     //Translate averages
     String generalAverage =
@@ -46,8 +45,6 @@ class PronoteDisciplineConverter {
   }
 
   static List<Grade> grades(PronoteClient client, List gradesData) {
-
-
     List<Grade> grades = [];
     gradesData.forEach((gradeData) {
       String value = client.utils.gradeTranslate(mapGet(gradeData, ["note", "V"]) ?? "");

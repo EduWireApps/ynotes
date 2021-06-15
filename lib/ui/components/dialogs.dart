@@ -3,7 +3,7 @@ import 'dart:core';
 import 'package:another_flushbar/flushbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:ynotes/core/apis/EcoleDirecte/ecoleDirecteMethods.dart';
+import 'package:ynotes/core/apis/ecole_directe/ecole_directe_methods.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/pronote/schoolsModel.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';

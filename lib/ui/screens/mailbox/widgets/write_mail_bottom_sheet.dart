@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:html_editor_enhanced/html_editor.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:ynotes/core/apis/EcoleDirecte.dart';
+import 'package:ynotes/core/apis/ecole_directe.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
@@ -76,7 +76,7 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                         IconButton(
                           onPressed: () async {
                             print(await controller.getText());
-                          
+
                             if (selectedRecipients!.isNotEmpty) {
                               Navigator.pop(context, [
                                 subjectController.text,

@@ -1,4 +1,4 @@
-import 'package:ynotes/core/apis/EcoleDirecte/convertersExporter.dart';
+import 'package:ynotes/core/apis/ecole_directe/converters_exporter.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 
 class EcoleDirecteMailConverter {

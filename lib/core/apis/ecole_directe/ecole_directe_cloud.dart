@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:ynotes/core/apis/EcoleDirecte.dart';
+import 'package:ynotes/core/apis/ecole_directe.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/ui/screens/cloud/index.dart';
 

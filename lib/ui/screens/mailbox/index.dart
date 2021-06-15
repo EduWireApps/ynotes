@@ -7,7 +7,7 @@ import 'package:flutter/rendering.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:ynotes/core/apis/EcoleDirecte.dart';
+import 'package:ynotes/core/apis/ecole_directe.dart';
 import 'package:ynotes/core/logic/mails/controller.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';

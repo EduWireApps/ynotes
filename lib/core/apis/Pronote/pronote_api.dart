@@ -20,7 +20,7 @@ import 'package:ynotes/core/utils/nullSafeMapGetter.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/tests.dart';
 
-import '../EcoleDirecte.dart';
+import '../ecole_directe.dart';
 import '../utils.dart';
 
 Map errorMessages = {

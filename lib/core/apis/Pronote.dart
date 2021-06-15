@@ -2,10 +2,10 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:ynotes/core/apis/Pronote/PronoteAPI.dart';
-import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
-import 'package:ynotes/core/apis/Pronote/converters/account.dart';
-import 'package:ynotes/core/apis/Pronote/pronoteMethods.dart';
+import 'package:ynotes/core/apis/pronote/pronote_api.dart';
+import 'package:ynotes/core/apis/pronote/pronote_cas.dart';
+import 'package:ynotes/core/apis/pronote/converters/account.dart';
+import 'package:ynotes/core/apis/pronote/pronote_methods.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';

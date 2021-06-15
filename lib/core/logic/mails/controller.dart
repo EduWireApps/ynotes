@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ynotes/core/apis/EcoleDirecte.dart';
+import 'package:ynotes/core/apis/ecole_directe.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 
@@ -16,6 +16,7 @@ class MailsController extends ChangeNotifier {
   set api(API? api) {
     _api = api;
   }
+
   Future<void> refresh({bool force = false}) async {
     print("Refresh mails");
     loading = true;

@@ -5,9 +5,9 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:ynotes/core/apis/EcoleDirecte/convertersExporter.dart';
-import 'package:ynotes/core/apis/EcoleDirecte/ecoleDirecteCloud.dart';
-import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
+import 'package:ynotes/core/apis/ecole_directe/converters_exporter.dart';
+import 'package:ynotes/core/apis/ecole_directe/ecole_directe_cloud.dart';
+import 'package:ynotes/core/apis/pronote/Pronote_cas.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
@@ -22,7 +22,7 @@ import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logs.dart';
 import 'package:ynotes/useful_methods.dart';
 
-import 'EcoleDirecte/ecoleDirecteMethods.dart';
+import 'ecole_directe/ecole_directe_methods.dart';
 
 //Create a secure storage
 List<String> colorList = [

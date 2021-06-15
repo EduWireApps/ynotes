@@ -4,9 +4,9 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:html_character_entities/html_character_entities.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:ynotes/core/apis/EcoleDirecte/converters/cloud.dart';
-import 'package:ynotes/core/apis/EcoleDirecte/convertersExporter.dart';
-import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
+import 'package:ynotes/core/apis/ecole_directe/converters/cloud.dart';
+import 'package:ynotes/core/apis/ecole_directe/converters_exporter.dart';
+import 'package:ynotes/core/apis/pronote/Pronote_cas.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/offline/data/agenda/lessons.dart';
@@ -20,7 +20,7 @@ import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/useful_methods.dart';
 
-import '../EcoleDirecte.dart';
+import '../ecole_directe.dart';
 
 class EcoleDirecteMethod {
   static const fakeToken = "a95fd30b-ca20-467b-8128-679f48e1498e";
