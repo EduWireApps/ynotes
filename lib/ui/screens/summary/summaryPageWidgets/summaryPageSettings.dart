@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes_components/ynotes_components.dart';
 
 class SummaryPageSettings extends StatefulWidget {
   @override
@@ -16,11 +15,6 @@ class _SummaryPageSettingsState extends State<SummaryPageSettings> {
     var screenSize = MediaQuery.of(context);
     return Column(
       children: [
-        Container(
-          width: screenSize.size.width / 5 * 4.5,
-          margin: EdgeInsets.all(screenSize.size.width / 5 * 0.2),
-          child: YButton(onPressed: () => {}, text: "Test"),
-        ),
         Container(
             width: screenSize.size.width / 5 * 4.5,
             margin: EdgeInsets.all(screenSize.size.width / 5 * 0.2),

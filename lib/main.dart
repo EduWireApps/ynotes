@@ -21,6 +21,8 @@ import 'package:ynotes/ui/screens/loading/loadingPage.dart';
 import 'core/utils/themeUtils.dart';
 import 'ui/screens/school_api_choice/schoolAPIChoicePage.dart';
 
+import 'package:sizer/sizer.dart';
+
 Future main() async {
   Logger.level = Level.warning;
   WidgetsFlutterBinding.ensureInitialized();
@@ -103,25 +105,27 @@ class _HomeAppState extends State<HomeApp> {
             locale: const Locale.fromSubtags(languageCode: 'fr'),
           ),
           child: HiveLifecycleManager(
-            child: MaterialApp(
-              localizationsDelegates: [
-                // ... app-specific localization delegate[s] here
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
-              supportedLocales: [
-                const Locale('en'), // English (could be useless ?)
-                const Locale('fr'), //French
-                // ... other locales the app supports
-              ],
-              debugShowCheckedModeBanner: false,
-              theme: model.theme,
-              title: kDebugMode ? "yNotes DEV" : "yNotes",
-              navigatorKey: _navigatorKey,
-              home: Loader(),
-              themeMode: ThemeMode.light,
-              onGenerateRoute: onGenerateRoute,
+            child: Sizer(
+              builder: (context, orientation, deviceType) => MaterialApp(
+                localizationsDelegates: [
+                  // ... app-specific localization delegate[s] here
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                supportedLocales: [
+                  const Locale('en'), // English (could be useless ?)
+                  const Locale('fr'), //French
+                  // ... other locales the app supports
+                ],
+                debugShowCheckedModeBanner: false,
+                theme: model.theme,
+                title: kDebugMode ? "yNotes DEV" : "yNotes",
+                navigatorKey: _navigatorKey,
+                home: Loader(),
+                themeMode: ThemeMode.light,
+                onGenerateRoute: onGenerateRoute,
+              ),
             ),
           ),
         );
