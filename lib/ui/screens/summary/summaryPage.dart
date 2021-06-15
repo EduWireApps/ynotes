@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:expandable/expandable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -38,12 +37,9 @@ class SummaryPage extends StatefulWidget {
 
 class SummaryPageState extends State<SummaryPage> with Layout, YPageMixin {
   double? actualPage;
-  late PageController _pageControllerSummaryPage;
   PageController? todoSettingsController;
   bool done2 = false;
   double? offset;
-  ExpandableController alertExpandableDialogController = ExpandableController();
-  PageController summarySettingsController = PageController(initialPage: 1);
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +75,8 @@ class SummaryPageState extends State<SummaryPage> with Layout, YPageMixin {
                   QuickGrades(),
                   separator(context, "Devoirs", "/homework"),
                   QuickHomework(),
-                  if (appSys.settings?["system"]["chosenParser"] == 0) separator(context, "Vie scolaire", "/school_life"),
+                  if (appSys.settings?["system"]["chosenParser"] == 0)
+                    separator(context, "Vie scolaire", "/school_life"),
                   if (appSys.settings?["system"]["chosenParser"] == 0) QuickSchoolLife(),
                 ],
               ),
@@ -94,30 +91,23 @@ class SummaryPageState extends State<SummaryPage> with Layout, YPageMixin {
 
   initState() {
     super.initState();
-    refreshControllers(force: false);
     todoSettingsController = new PageController(initialPage: 0);
     initialIndexGradesOffset = 0;
-    _pageControllerSummaryPage = PageController();
-    _pageControllerSummaryPage.addListener(() {
-      setState(() {
-        actualPage = _pageControllerSummaryPage.page;
-        offset = _pageControllerSummaryPage.offset;
-      });
-    });
+
     //Init controllers
     SchedulerBinding.instance!.addPostFrameCallback((!mounted
         ? null
-        : (_) => {
-              if (firstStart)
-                {
-                  initLoginController().then((var f) {
-                    if (firstStart) {
-                      firstStart = false;
-                    }
-                    refreshControllers();
-                  })
+        : (_) {
+            refreshControllers(force: false);
+            if (firstStart) {
+              initLoginController().then((var f) {
+                if (firstStart) {
+                  firstStart = false;
                 }
-            })!);
+                refreshControllers();
+              });
+            }
+          })!);
   }
 
   Future<void> refreshControllers({force: true}) async {
