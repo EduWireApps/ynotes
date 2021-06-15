@@ -9,11 +9,11 @@ import 'package:ynotes/core/offline/data/agenda/reminders.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/mixins/layoutMixin.dart';
-import 'package:ynotes/ui/screens/agenda/agendaPage.dart';
-import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/agendaElement.dart';
-import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/agendaEventDetailsBottomSheet.dart';
-import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/agendaEventEditBottomSheet.dart';
+import 'package:ynotes/ui/mixins/layout_mixin.dart';
+import 'package:ynotes/ui/screens/agenda/index.dart';
+import 'agenda_element.dart';
+import 'agenda_event_details_bottom_sheet.dart';
+import 'agenda_event_edit_bottom_sheet.dart';
 
 // ignore: must_be_immutable
 class AgendaGrid extends StatefulWidget {
@@ -27,7 +27,7 @@ class AgendaGrid extends StatefulWidget {
 
 //final actualHourBar = new GlobalKey();
 
-class _AgendaGridState extends State<AgendaGrid> with Layout {
+class _AgendaGridState extends State<AgendaGrid> with LayoutMixin {
   ScrollController scontroller = ScrollController();
   DateTime? lastEventEnding;
 

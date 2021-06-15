@@ -8,11 +8,10 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/shared/downloadController.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
-import 'package:ynotes/ui/components/columnGenerator.dart';
-import 'package:ynotes/ui/components/modalBottomSheets/dragHandle.dart';
+import 'package:ynotes/ui/components/column_generator.dart';
+import 'package:ynotes/ui/components/modal_bottom_sheets/drag_handle.dart';
 
 void showFilesModalBottomSheet(context, List<Document> files) {
-
   showModalBottomSheet(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),

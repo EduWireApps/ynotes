@@ -5,7 +5,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/ui/mixins/layoutMixin.dart';
+import 'package:ynotes/ui/mixins/layout_mixin.dart';
 
 class SummaryChart extends StatefulWidget {
   final List<Grade>? lastGrades;
@@ -18,7 +18,7 @@ class SummaryChart extends StatefulWidget {
   SummaryChartState createState() => SummaryChartState();
 }
 
-class SummaryChartState extends State<SummaryChart> with Layout {
+class SummaryChartState extends State<SummaryChart> with LayoutMixin {
   List<Grade>? _grades = [];
   List<Color> gradientColors = [
     const Color(0xff3a4398),

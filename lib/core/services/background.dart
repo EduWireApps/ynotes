@@ -7,7 +7,7 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
-import 'package:ynotes/usefulMethods.dart';
+import 'package:ynotes/useful_methods.dart';
 
 //The main class for everything done in background
 class BackgroundService {
@@ -26,7 +26,7 @@ class BackgroundService {
         appSys.api = apiManager(appSys.offline);
       }
       await logFile("Init appSys");
-    
+
       await writeLastFetchStatus(appSys);
 //Ensure that grades notification are enabled and battery saver disabled
       if (appSys.settings?["user"]["global"]["notificationNewGrade"] &&
@@ -51,7 +51,8 @@ class BackgroundService {
 
         Mail? mail = await testNewMails();
         if (mail != null) {
-          String content = (await (appSys.api as APIEcoleDirecte).readMail(mail.id ?? "", mail.read ?? false, true)) ?? "";
+          String content =
+              (await (appSys.api as APIEcoleDirecte).readMail(mail.id ?? "", mail.read ?? false, true)) ?? "";
           await AppNotification.showNewMailNotification(mail, content);
         } else {
           print("Nothing updated");

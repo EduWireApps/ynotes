@@ -15,7 +15,7 @@ import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/y_page/mixins.dart';
 import 'package:ynotes/ui/components/y_page/y_page.dart';
 import 'package:ynotes/ui/components/y_page/y_page_local.dart';
-import 'package:ynotes/ui/mixins/layoutMixin.dart';
+import 'package:ynotes/ui/mixins/layout_mixin.dart';
 import 'package:ynotes/ui/screens/grades/gradesPage.dart';
 import 'package:ynotes/ui/screens/summary/summaryPageWidgets/quickGrades.dart';
 import 'package:ynotes/ui/screens/summary/summaryPageWidgets/quickHomework.dart';
@@ -36,7 +36,7 @@ class SummaryPage extends StatefulWidget {
   }
 }
 
-class SummaryPageState extends State<SummaryPage> with Layout, YPageMixin {
+class SummaryPageState extends State<SummaryPage> with LayoutMixin, YPageMixin {
   double? actualPage;
   late PageController _pageControllerSummaryPage;
   PageController? todoSettingsController;

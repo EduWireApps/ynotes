@@ -7,7 +7,7 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
-import 'package:ynotes/ui/components/modalBottomSheets/dragHandle.dart';
+import 'package:ynotes/ui/components/modal_bottom_sheets/drag_handle.dart';
 
 Future<Homework?> showAddHomeworkBottomSheet(context, {Homework? hw}) {
   return showModalBottomSheet(

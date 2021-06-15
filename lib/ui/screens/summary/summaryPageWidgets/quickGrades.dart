@@ -6,10 +6,10 @@ import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/components/customLoader.dart';
+import 'package:ynotes/ui/components/custom_loader.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/screens/summary/summaryPageWidgets/chart.dart';
-import 'package:ynotes/usefulMethods.dart';
+import 'package:ynotes/useful_methods.dart';
 
 class CustomHalfCircleClipper extends CustomClipper<Path> {
   @override

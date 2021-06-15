@@ -10,11 +10,11 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/stats/gradesStats.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/components/columnGenerator.dart';
+import 'package:ynotes/ui/components/column_generator.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/screens/grades/gradesPageWidgets/disciplinesModalBottomSheet.dart';
 import 'package:ynotes/ui/screens/grades/gradesPageWidgets/gradesModalBottomSheet.dart';
-import 'package:ynotes/usefulMethods.dart';
+import 'package:ynotes/useful_methods.dart';
 
 class GradesGroup extends StatefulWidget {
   final Discipline? discipline;

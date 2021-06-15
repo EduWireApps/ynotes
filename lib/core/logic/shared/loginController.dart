@@ -1,7 +1,7 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/usefulMethods.dart';
+import 'package:ynotes/useful_methods.dart';
 
 ///Login change notifier
 class LoginController extends ChangeNotifier {

@@ -10,10 +10,10 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/buttons.dart';
-import 'package:ynotes/ui/components/customLoader.dart';
+import 'package:ynotes/ui/components/custom_loader.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
-import 'package:ynotes/ui/components/modalBottomSheets/filesBottomSheet.dart';
-import 'package:ynotes/ui/mixins/layoutMixin.dart';
+import 'package:ynotes/ui/components/modal_bottom_sheets/files_bottom_sheet.dart';
+import 'package:ynotes/ui/mixins/layout_mixin.dart';
 
 class ReadMailBottomSheet extends StatefulWidget {
   final Mail mail;
@@ -24,7 +24,7 @@ class ReadMailBottomSheet extends StatefulWidget {
   _ReadMailBottomSheetState createState() => _ReadMailBottomSheetState();
 }
 
-class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> with Layout {
+class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> with LayoutMixin {
   bool monochromatic = false;
   DateFormat format = DateFormat("dd-MM-yyyy HH:hh");
 
@@ -142,7 +142,8 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> with Layout {
                                                   children: [
                                                     Text(
                                                       this.widget.mail.from?["name"] ?? "",
-                                                      style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                                                      style:
+                                                          TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                                                       overflow: TextOverflow.ellipsis,
                                                     ),
                                                     Text(

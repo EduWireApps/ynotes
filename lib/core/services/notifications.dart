@@ -20,9 +20,9 @@ import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
-import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/agenda.dart';
+import 'package:ynotes/ui/screens/agenda/widgets/agenda.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
-import 'package:ynotes/usefulMethods.dart';
+import 'package:ynotes/useful_methods.dart';
 
 ///The notifications class
 class AppNotification {
@@ -156,7 +156,7 @@ class AppNotification {
   }
 
   static initNotifications(BuildContext context, Function navigatorCallback) async {
-    if (!kIsWeb  && (Platform.isAndroid || Platform.isIOS)) {
+    if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
       AwesomeNotifications().initialize(null, [
         NotificationChannel(
             channelKey: 'alarm',
@@ -237,7 +237,7 @@ class AppNotification {
           ledColor: Colors.white)
     ]);
     List<AgendaReminder> reminders =
-        await (RemindersOffline(appSys.offline).getReminders(event.lesson!.id)) as List <AgendaReminder>;
+        await (RemindersOffline(appSys.offline).getReminders(event.lesson!.id)) as List<AgendaReminder>;
     await Future.forEach(reminders, (AgendaReminder rmd) async {
       //Unschedule existing
       if (rmd.alarm == AlarmType.none) {

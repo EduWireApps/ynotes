@@ -12,13 +12,13 @@ import 'package:ynotes/core/logic/mails/controller.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/components/customLoader.dart';
+import 'package:ynotes/ui/components/custom_loader.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
-import 'package:ynotes/ui/components/textField.dart';
+import 'package:ynotes/ui/components/text_field.dart';
 import 'package:ynotes/ui/components/y_page/y_page.dart';
-import 'package:ynotes/ui/mixins/layoutMixin.dart';
+import 'package:ynotes/ui/mixins/layout_mixin.dart';
 import 'package:ynotes/ui/screens/mail/mailPageWidgets/readMailBottomSheet.dart';
-import 'package:ynotes/usefulMethods.dart';
+import 'package:ynotes/useful_methods.dart';
 import 'package:ynotes_components/ynotes_components.dart';
 
 String? dossier = "Reçus";
@@ -54,7 +54,7 @@ class MailPage extends StatefulWidget {
 
 enum sortValue { date, reversed_date, author }
 
-class _MailPageState extends State<MailPage> with Layout {
+class _MailPageState extends State<MailPage> with LayoutMixin {
   TextEditingController searchCon = TextEditingController();
   var actualSort = sortValue.date;
   @override

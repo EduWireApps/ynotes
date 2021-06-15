@@ -10,11 +10,11 @@ import 'package:path/path.dart' as pathPackage;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
-import 'package:ynotes/ui/components/customLoader.dart';
+import 'package:ynotes/ui/components/custom_loader.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/y_page/y_page.dart';
-import 'package:ynotes/ui/mixins/layoutMixin.dart';
-import 'package:ynotes/usefulMethods.dart';
+import 'package:ynotes/ui/mixins/layout_mixin.dart';
+import 'package:ynotes/useful_methods.dart';
 import 'package:ynotes_components/ynotes_components.dart';
 
 Future<List<FileInfo>>? filesListFuture;
@@ -31,7 +31,7 @@ class DownloadsExplorer extends StatefulWidget {
 
 enum explorerSortValue { date, reversed_date, name }
 
-class _DownloadsExplorerState extends State<DownloadsExplorer> with Layout {
+class _DownloadsExplorerState extends State<DownloadsExplorer> with LayoutMixin {
   String path = "";
   String? initialPath = "";
   var actualSort = explorerSortValue.date;

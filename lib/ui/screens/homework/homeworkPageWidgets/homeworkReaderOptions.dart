@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/components/modalBottomSheets/dragHandle.dart';
+import 'package:ynotes/ui/components/modal_bottom_sheets/drag_handle.dart';
 
 class HomeworkReaderOptionsBottomSheet extends StatefulWidget {
   @override
@@ -201,7 +201,8 @@ class _PageTextChoiceState extends State<PageTextChoice> with TickerProviderStat
           SizedBox(
             width: screenSize.size.width / 5 * 0.2,
           ),
-          ConstrainedBox(constraints: BoxConstraints(maxWidth: 150),
+          ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: 150),
             child: Container(
               width: screenSize.size.width / 5 * 1.2,
               height: screenSize.size.height / 10 * 0.4,

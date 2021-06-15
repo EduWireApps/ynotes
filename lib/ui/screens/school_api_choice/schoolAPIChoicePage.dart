@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/screens/login/loginPage.dart';
-import 'package:ynotes/usefulMethods.dart';
+import 'package:ynotes/useful_methods.dart';
 
 int? chosen;
 late Animation<double> chosenAnimation1;

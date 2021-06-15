@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:simple_animations/simple_animations.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
-import 'package:ynotes/ui/mixins/layoutMixin.dart';
+import 'package:ynotes/ui/mixins/layout_mixin.dart';
 import 'package:ynotes/ui/screens/statspage/statspagewidgets/leadingIcon.dart';
 
 class StatsPage extends StatefulWidget {
@@ -15,7 +15,7 @@ class StatsPage extends StatefulWidget {
   _StatsPageState createState() => _StatsPageState();
 }
 
-class _StatsPageState extends State<StatsPage> with Layout {
+class _StatsPageState extends State<StatsPage> with LayoutMixin {
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);

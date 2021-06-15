@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ynotes/core/logic/homework/controller.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/y_page/y_page.dart';
-import 'package:ynotes/ui/mixins/layoutMixin.dart';
+import 'package:ynotes/ui/mixins/layout_mixin.dart';
 
 import 'homeworkPageWidgets/homeworkTimeline.dart';
 
@@ -13,7 +13,7 @@ class HomeworkPage extends StatefulWidget {
 }
 
 //Function that returns string like "In two weeks" with time relation
-class HomeworkPageState extends State<HomeworkPage> with Layout {
+class HomeworkPageState extends State<HomeworkPage> with LayoutMixin {
   PageController? _pageControllerHW;
   PageController agendaSettingsController = PageController(initialPage: 1);
 

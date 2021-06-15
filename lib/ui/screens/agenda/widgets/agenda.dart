@@ -8,10 +8,10 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/components/customLoader.dart';
-import 'package:ynotes/ui/screens/agenda/agendaPage.dart';
-import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/agendaGrid.dart';
-import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/buttons.dart';
+import 'package:ynotes/ui/components/custom_loader.dart';
+import 'package:ynotes/ui/screens/agenda/index.dart';
+import 'agenda_grid.dart';
+import 'buttons.dart';
 
 bool extended = false;
 

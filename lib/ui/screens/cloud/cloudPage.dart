@@ -10,9 +10,9 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/shared/downloadController.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
-import 'package:ynotes/ui/components/customLoader.dart';
+import 'package:ynotes/ui/components/custom_loader.dart';
 import 'package:ynotes/ui/components/y_page/y_page.dart';
-import 'package:ynotes/ui/mixins/layoutMixin.dart';
+import 'package:ynotes/ui/mixins/layout_mixin.dart';
 import 'package:ynotes_components/ynotes_components.dart';
 
 var actualSort = sortValue.date;
@@ -53,7 +53,7 @@ class CloudPage extends StatefulWidget {
 enum sortValue { date, reversed_date, author }
 
 //Sort in the main page
-class _CloudPageState extends State<CloudPage> with Layout {
+class _CloudPageState extends State<CloudPage> with LayoutMixin {
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);

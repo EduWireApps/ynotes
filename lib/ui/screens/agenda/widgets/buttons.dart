@@ -7,7 +7,7 @@ import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 
-import '../agendaPage.dart';
+import '../index.dart';
 
 String weekName = "";
 
@@ -40,7 +40,7 @@ class _AgendaButtonsState extends State<AgendaButtons> {
               weekName,
               style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
             ),
-             SizedBox(
+            SizedBox(
               height: 5,
             ),
             Row(

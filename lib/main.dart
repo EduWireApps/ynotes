@@ -15,7 +15,7 @@ import 'package:ynotes/core/services/background.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/router.dart';
-import 'package:ynotes/ui/components/hiveLifeCycleManager.dart';
+import 'package:ynotes/ui/components/hive_life_cycle_manager.dart';
 import 'package:ynotes/ui/screens/carousel/carousel.dart';
 import 'package:ynotes/ui/screens/loading/loadingPage.dart';
 import 'package:ynotes/ui/screens/summary/summaryPage.dart';

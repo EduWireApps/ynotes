@@ -13,8 +13,8 @@ import 'package:ynotes/core/logic/stats/gradesStats.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
-import 'package:ynotes/ui/components/modalBottomSheets/dragHandle.dart';
-import 'package:ynotes/ui/mixins/layoutMixin.dart';
+import 'package:ynotes/ui/components/modal_bottom_sheets/drag_handle.dart';
+import 'package:ynotes/ui/mixins/layout_mixin.dart';
 
 void gradesModalBottomSheet(
   context,
@@ -59,7 +59,7 @@ class GradesModalBottomSheetContainer extends StatefulWidget {
   _GradesModalBottomSheetContainerState createState() => _GradesModalBottomSheetContainerState();
 }
 
-class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheetContainer> with Layout {
+class _GradesModalBottomSheetContainerState extends State<GradesModalBottomSheetContainer> with LayoutMixin {
   var oldSize;
   var statsPartOldSize;
   bool open = false;

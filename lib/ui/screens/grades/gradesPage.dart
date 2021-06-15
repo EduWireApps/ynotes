@@ -14,7 +14,7 @@ import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/y_page/y_page.dart';
-import 'package:ynotes/ui/mixins/layoutMixin.dart';
+import 'package:ynotes/ui/mixins/layout_mixin.dart';
 import 'package:ynotes/ui/screens/grades/gradesPageWidgets/gradesGroup.dart';
 import 'package:ynotes/ui/screens/grades/gradesPageWidgets/simulatorModalBottomSheet.dart';
 import 'package:ynotes_components/ynotes_components.dart';
@@ -32,7 +32,7 @@ class GradesPage extends StatefulWidget {
   State<StatefulWidget> createState() => _GradesPageState();
 }
 
-class _GradesPageState extends State<GradesPage> with Layout {
+class _GradesPageState extends State<GradesPage> with LayoutMixin {
   ///Start building grades box from here
   @override
   Widget build(BuildContext context) {

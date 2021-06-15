@@ -1,4 +1,3 @@
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -8,9 +7,9 @@ import 'package:ynotes/core/offline/data/agenda/reminders.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/components/modalBottomSheets/dragHandle.dart';
-import 'package:ynotes/ui/components/modalBottomSheets/keyValues.dart';
-import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/agendaEventEditBottomSheet.dart';
+import 'package:ynotes/ui/components/modal_bottom_sheets/drag_handle.dart';
+import 'package:ynotes/ui/components/modal_bottom_sheets/key_values.dart';
+import 'agenda_event_edit_bottom_sheet.dart';
 
 Future<void> lessonDetails(context, AgendaEvent event) async {
   return showModalBottomSheet(
@@ -92,7 +91,6 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                     child: Container(
                       child: Stack(
                         children: [
-                         
                           Column(
                             children: [
                               Container(

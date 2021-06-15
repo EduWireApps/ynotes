@@ -13,8 +13,8 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
-import 'package:ynotes/ui/components/modalBottomSheets/keyValues.dart';
-import 'package:ynotes/usefulMethods.dart';
+import 'package:ynotes/ui/components/modal_bottom_sheets/key_values.dart';
+import 'package:ynotes/useful_methods.dart';
 
 class AccountPage extends StatefulWidget {
   @override

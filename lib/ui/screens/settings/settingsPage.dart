@@ -24,7 +24,7 @@ import 'package:ynotes/ui/screens/settings/sub_pages/accountPage.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
 
 import '../../../tests.dart';
-import '../../../usefulMethods.dart';
+import '../../../useful_methods.dart';
 
 bool? isFirstAvatarSelected;
 

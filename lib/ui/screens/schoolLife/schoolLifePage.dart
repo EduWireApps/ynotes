@@ -7,9 +7,9 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/schoolLife/controller.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/components/columnGenerator.dart';
+import 'package:ynotes/ui/components/column_generator.dart';
 import 'package:ynotes/ui/components/y_page/y_page.dart';
-import 'package:ynotes/ui/mixins/layoutMixin.dart';
+import 'package:ynotes/ui/mixins/layout_mixin.dart';
 
 class SchoolLifePage extends StatefulWidget {
   const SchoolLifePage({Key? key}) : super(key: key);
@@ -17,7 +17,7 @@ class SchoolLifePage extends StatefulWidget {
   _SchoolLifePageState createState() => _SchoolLifePageState();
 }
 
-class _SchoolLifePageState extends State<SchoolLifePage> with Layout {
+class _SchoolLifePageState extends State<SchoolLifePage> with LayoutMixin {
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);
