@@ -54,6 +54,7 @@ class SummaryPageState extends State<SummaryPage> with Layout, YPageMixin {
               onPressed: () => openLocalPage(YPageLocal(title: "Options", child: SummaryPageSettings())),
               icon: Icon(MdiIcons.wrench))
         ],
+        isScrollable: false,
         body: VisibilityDetector(
           key: Key('sumpage'),
           onVisibilityChanged: (visibilityInfo) async {
@@ -68,17 +69,20 @@ class SummaryPageState extends State<SummaryPage> with Layout, YPageMixin {
           },
           child: RefreshIndicator(
             onRefresh: refreshControllers,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                separator(context, "Notes", "/grades"),
-                QuickGrades(),
-                separator(context, "Devoirs", "/homework"),
-                QuickHomework(),
-                if (appSys.settings?["system"]["chosenParser"] == 0) separator(context, "Vie scolaire", "/school_life"),
-                if (appSys.settings?["system"]["chosenParser"] == 0) QuickSchoolLife(),
-              ],
+            child: SingleChildScrollView(
+              physics: AlwaysScrollableScrollPhysics(),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  separator(context, "Notes", "/grades"),
+                  QuickGrades(),
+                  separator(context, "Devoirs", "/homework"),
+                  QuickHomework(),
+                  if (appSys.settings?["system"]["chosenParser"] == 0) separator(context, "Vie scolaire", "/school_life"),
+                  if (appSys.settings?["system"]["chosenParser"] == 0) QuickSchoolLife(),
+                ],
+              ),
             ),
           ),
         ));
@@ -90,6 +94,7 @@ class SummaryPageState extends State<SummaryPage> with Layout, YPageMixin {
 
   initState() {
     super.initState();
+    refreshControllers(force: false);
     todoSettingsController = new PageController(initialPage: 0);
     initialIndexGradesOffset = 0;
     _pageControllerSummaryPage = PageController();
@@ -115,9 +120,9 @@ class SummaryPageState extends State<SummaryPage> with Layout, YPageMixin {
             })!);
   }
 
-  Future<void> refreshControllers() async {
-    await appSys.gradesController.refresh(force: true);
-    await appSys.homeworkController.refresh(force: true);
+  Future<void> refreshControllers({force: true}) async {
+    await appSys.gradesController.refresh(force: force);
+    await appSys.homeworkController.refresh(force: force);
   }
 
   Widget separator(BuildContext context, String text, String routeName) {

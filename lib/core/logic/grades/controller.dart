@@ -76,7 +76,6 @@ class GradesController extends ChangeNotifier {
     }
     isFetching = true;
     notifyListeners();
-    await _refreshPeriods();
     //ED
     if (refreshFromOffline) {
       _disciplines = await _api?.getGrades();
@@ -86,6 +85,7 @@ class GradesController extends ChangeNotifier {
       notifyListeners();
     }
     isFetching = false;
+    await _refreshPeriods();
     _setDefaultPeriod();
     _setAverage();
     _setBestAverage();
