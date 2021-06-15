@@ -34,7 +34,7 @@ class _AccountHeaderState extends State<AccountHeader> with YPageMixin {
                     fontWeight: FontWeight.w600),
               ),
               Text(
-                "${account.schoolName ?? ''} ${account.studentClass ?? ''}",
+                "${account.schoolName ?? ''} · ${account.studentClass ?? ''}",
                 style: TextStyle(
                     color: currentTheme.primary[ThemeUtils.isThemeDark ? 200 : 400],
                     fontSize: 16,
