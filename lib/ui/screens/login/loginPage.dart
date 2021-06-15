@@ -12,8 +12,10 @@ import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/textField.dart';
+import 'package:ynotes/ui/components/y_page/mixins.dart';
 import 'package:ynotes/ui/screens/login/loginPageWidgets/loginWebView.dart';
 import 'package:ynotes/ui/screens/login/loginPageWidgets/pronoteSetup.dart';
+import 'package:ynotes/ui/screens/login/loginPageWidgets/qrCodeLogin.dart';
 import 'package:ynotes/ui/screens/school_api_choice/schoolAPIChoicePage.dart';
 import 'package:ynotes/usefulMethods.dart';
 
@@ -273,7 +275,7 @@ class _LoginDialogState extends State<LoginDialog> {
   }
 }
 
-class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin {
+class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin, YPageMixin {
   PageController? sliderController;
   Map loginHelpTexts = {
     "pronoteSetupText":
@@ -612,7 +614,7 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
     switch (id) {
       case "qrcode":
         {
-          sliderController!.animateToPage(1, duration: Duration(milliseconds: 300), curve: Curves.easeIn);
+          Navigator.of(context).push(router(QRCodeLoginPage()));
         }
         break;
       case "location":
