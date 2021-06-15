@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:background_fetch/background_fetch.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -11,6 +12,7 @@ import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/agenda/controller.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/core/logic/homework/controller.dart';
+import 'package:ynotes/core/logic/mails/controller.dart';
 import 'package:ynotes/core/logic/schoolLife/controller.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
 import 'package:ynotes/core/offline/offline.dart';
@@ -18,7 +20,7 @@ import 'package:ynotes/core/services/background.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/utils/settingsUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
-import 'package:ynotes/ui/themes/themesList.dart';
+import 'package:ynotes/ui/themes.dart';
 
 ///Top level application sytem class
 class ApplicationSystem extends ChangeNotifier {
@@ -36,10 +38,10 @@ class ApplicationSystem extends ChangeNotifier {
   String? themeName;
 
   ///The chosen API
-  API? api;
+  API? _api;
 
-  ///The chosen API
   late Offline offline;
+  late HiveBoxProvider hiveBoxProvider;
 
   ///App logger
   late Logger logger;
@@ -50,23 +52,43 @@ class ApplicationSystem extends ChangeNotifier {
   late HomeworkController homeworkController;
   late AgendaController agendaController;
   late SchoolLifeController schoolLifeController;
+  late MailsController mailsController;
 
   ///All the app controllers
+
+  API? get api => _api;
+  set api(API? newAPI) {
+    _api = newAPI;
+    _refreshControllersAPI();
+  }
 
   SchoolAccount? get currentSchoolAccount => _currentSchoolAccount;
   set currentSchoolAccount(SchoolAccount? newValue) {
     _currentSchoolAccount = newValue;
-    if (account != null && account!.managableAccounts != null && newValue != null) {
-      this.updateSetting(this.settings!["system"], "accountIndex", this.account!.managableAccounts!.indexOf(newValue));
+    if (account != null &&
+        account!.managableAccounts != null &&
+        newValue != null) {
+      this.updateSetting(this.settings!["system"], "accountIndex",
+          this.account!.managableAccounts!.indexOf(newValue));
     }
     notifyListeners();
   }
 
+  buildControllers() {
+    loginController = LoginController();
+    gradesController = GradesController(this.api);
+    homeworkController = HomeworkController(this.api);
+    agendaController = AgendaController(this.api);
+    schoolLifeController = SchoolLifeController(this.api);
+    mailsController = MailsController(this.api);
+  }
+
+  //Leave app
   exitApp() async {
     try {
       await this.offline.clearAll();
       //Delete sharedPref
-      SharedPreferences preferences = await (SharedPreferences.getInstance() as Future<SharedPreferences>);
+      SharedPreferences preferences = await (SharedPreferences.getInstance());
       await preferences.clear();
       //delte local setings and init them
       this.settings!.clear();
@@ -90,31 +112,28 @@ class ApplicationSystem extends ChangeNotifier {
     //Set theme to default
     updateTheme(settings!["user"]["global"]["theme"]);
     //Set offline
-    await _initOffline();
+    await initOffline();
+    buildControllers();
     //Set api
     this.api = apiManager(this.offline);
-
     if (api != null) {
       account = await api!.account();
       if (account != null && account!.managableAccounts != null)
-        currentSchoolAccount = account!.managableAccounts![settings!["system"]["accountIndex"] ?? 0];
+        currentSchoolAccount = account!
+            .managableAccounts![settings!["system"]["accountIndex"] ?? 0];
     }
     //Set background fetch
     await _initBackgroundFetch();
     //Set controllers
-    loginController = LoginController();
-    gradesController = GradesController(this.api);
-    homeworkController = HomeworkController(this.api);
-    agendaController = AgendaController(this.api);
-    schoolLifeController = SchoolLifeController(this.api);
   }
 
-  initControllers() async {
-    await this.gradesController.refresh(force: true);
-    await this.homeworkController.refresh(force: true);
+  initOffline() async {
+    hiveBoxProvider = HiveBoxProvider();
+    //Initiate an unlocked offline controller
+    offline = Offline();
+    await offline.init();
   }
 
-//Leave app
   updateSetting(Map path, String key, var value) {
     path[key] = value;
     SettingsUtils.setSetting(settings);
@@ -126,14 +145,15 @@ class ApplicationSystem extends ChangeNotifier {
     theme = appThemes[themeName];
     this.themeName = themeName;
     updateSetting(this.settings!["user"]["global"], "theme", themeName);
-    SystemChrome.setSystemUIOverlayStyle(
-        ThemeUtils.isThemeDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark);
+    SystemChrome.setSystemUIOverlayStyle(ThemeUtils.isThemeDark
+        ? SystemUiOverlayStyle.light
+        : SystemUiOverlayStyle.dark);
     notifyListeners();
   }
 
 // This "Headless Task" is run when app is terminated.
   _initBackgroundFetch() async {
-    if (Platform.isAndroid || Platform.isIOS) {
+    if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
       print("Background fetch configuration...");
       int i = await BackgroundFetch.configure(
         BackgroundFetchConfig(
@@ -160,23 +180,19 @@ class ApplicationSystem extends ChangeNotifier {
     }
   }
 
-  _initOffline() async {
-    //Initiate an unlocked offline controller
-    offline = Offline(false);
-    await offline.init();
-  }
-
   _initSettings() async {
     settings = await SettingsUtils.getSettings();
     //Set theme to default
     updateTheme(settings!["user"]["global"]["theme"]);
     notifyListeners();
   }
-}
 
-class Test {
-  Map? settings;
-  Test() {
-    settings = SettingsUtils.getAppSettings();
+  ///On API refresh to provide a new API
+  _refreshControllersAPI() {
+    gradesController.api = this.api;
+    homeworkController.api = this.api;
+    agendaController.api = this.api;
+    schoolLifeController.api = this.api;
+    mailsController.api = this.api;
   }
 }

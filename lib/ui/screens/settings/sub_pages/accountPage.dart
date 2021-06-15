@@ -1,6 +1,6 @@
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
@@ -10,7 +10,6 @@ import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/main.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/keyValues.dart';
@@ -32,18 +31,19 @@ class _AccountPageState extends State<AccountPage> {
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
-    return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            LoginStatus(),
-            Card(
+
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          ConstrainedBox(constraints: BoxConstraints(maxWidth: 500), child: LoginStatus()),
+          ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: 500),
+            child: Card(
               color: Theme.of(context).primaryColorLight,
               child: Container(
-                padding: EdgeInsets.symmetric(
-                    horizontal: (screenSize.size.width / 5) * 0.1, vertical: (screenSize.size.width / 5) * 0.1),
+                padding: EdgeInsets.symmetric(horizontal: 15, vertical: (screenSize.size.width / 5) * 0.1),
                 child: Column(
                   children: [
                     buildMainAccountInfos(),
@@ -71,16 +71,13 @@ class _AccountPageState extends State<AccountPage> {
                               alternativeButtonConfirmText: "Se déconnecter") ??
                           false) {
                         await appSys.exitApp();
-                        appSys.api!.gradesList!.clear();
-                        setState(() {
-                          appSys.api = null;
-                        });
-                        try {
-                          appSys.updateTheme("clair");
-                        } catch (e) {}
-                        Navigator.of(context).pushReplacement(router(login()));
+                        appSys.api = null;
+                        appSys.buildControllers();
+                        setState(() {});
+                        Phoenix.rebirth(context);
                       }
                     },
+                        padding: EdgeInsets.all(5),
                         backgroundColor: Colors.red,
                         icon: MdiIcons.logout,
                         iconColor: Colors.white,
@@ -90,35 +87,29 @@ class _AccountPageState extends State<AccountPage> {
                 ),
               ),
             ),
-            SizedBox(
-              height: screenSize.size.height / 10 * 0.2,
-            ),
-            GestureDetector(
-              onTap: () async {
-                launch('https://support.ynotes.fr/compte');
-              },
-              child: Text("En savoir plus sur les comptes",
-                  style: TextStyle(
-                    fontFamily: 'Asap',
-                    color: Colors.transparent,
-                    shadows: [Shadow(color: ThemeUtils.textColor(), offset: Offset(0, -5))],
-                    fontSize: 14,
-                    decorationColor: ThemeUtils.textColor(),
-                    fontWeight: FontWeight.normal,
-                    textBaseline: TextBaseline.alphabetic,
-                    decoration: TextDecoration.underline,
-                    decorationThickness: 2,
-                    decorationStyle: TextDecorationStyle.dashed,
-                  )),
-            ),
-          ],
-        ),
-      ),
-      appBar: new AppBar(
-        title: new Text("Compte"),
-        systemOverlayStyle: ThemeUtils.isThemeDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
-        brightness: ThemeUtils.isThemeDark ? Brightness.dark : Brightness.light,
-        backgroundColor: Theme.of(context).primaryColor,
+          ),
+          SizedBox(
+            height: screenSize.size.height / 10 * 0.2,
+          ),
+          GestureDetector(
+            onTap: () async {
+              launch('https://support.ynotes.fr/compte');
+            },
+            child: Text("En savoir plus sur les comptes",
+                style: TextStyle(
+                  fontFamily: 'Asap',
+                  color: Colors.transparent,
+                  shadows: [Shadow(color: ThemeUtils.textColor(), offset: Offset(0, -5))],
+                  fontSize: 14,
+                  decorationColor: ThemeUtils.textColor(),
+                  fontWeight: FontWeight.normal,
+                  textBaseline: TextBaseline.alphabetic,
+                  decoration: TextDecoration.underline,
+                  decorationThickness: 2,
+                  decorationStyle: TextDecorationStyle.dashed,
+                )),
+          ),
+        ],
       ),
     );
   }
@@ -141,8 +132,8 @@ class _AccountPageState extends State<AccountPage> {
                 spacing: screenSize.size.width / 5 * 0.1,
                 children: [
                   Container(
-                    margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.1),
-                    padding: EdgeInsets.symmetric(horizontal: screenSize.size.width / 5 * 0.1),
+                    margin: EdgeInsets.only(left: 15),
+                    padding: EdgeInsets.symmetric(horizontal: 10),
                     decoration: BoxDecoration(
                         color: Theme.of(context).primaryColorDark, borderRadius: BorderRadius.circular(11)),
                     child: Row(
@@ -157,12 +148,8 @@ class _AccountPageState extends State<AccountPage> {
                         Container(
                           padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width / 10 * 0.1),
                           child: Image(
-                            width: MediaQuery.of(context).size.width /
-                                5 *
-                                (appSys.account?.apiType == API_TYPE.EcoleDirecte ? 0.2 : 0.4),
-                            height: screenSize.size.width /
-                                5 *
-                                (appSys.account?.apiType == API_TYPE.EcoleDirecte ? 0.2 : 0.4),
+                            width: (appSys.account?.apiType == API_TYPE.EcoleDirecte ? 30 : 50),
+                            height: (appSys.account?.apiType == API_TYPE.EcoleDirecte ? 30 : 20),
                             image: AssetImage(appSys.account?.apiType == API_TYPE.EcoleDirecte
                                 ? 'assets/images/EcoleDirecte/EcoleDirecteIcon.png'
                                 : 'assets/images/Pronote/PronoteIcon.png'),
@@ -173,7 +160,7 @@ class _AccountPageState extends State<AccountPage> {
                     ),
                   ),
                   SizedBox(
-                    width: MediaQuery.of(context).size.width / 5 * 0.3,
+                    width: 15,
                   ),
                   Text(
                     account.name ?? "",
@@ -270,11 +257,10 @@ class _AccountPageState extends State<AccountPage> {
   }
 
   buildMainAccountInfos() {
-    MediaQueryData screenSize = MediaQuery.of(context);
     return Column(
       children: [
         Wrap(
-          spacing: screenSize.size.width / 5 * 0.05,
+          spacing: 5,
           children: [
             Text(
               "Bonjour " + (appSys.account?.name ?? "{pas de nom}"),
@@ -362,11 +348,11 @@ class _LoginStatusState extends State<LoginStatus> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CustomButtons.materialButton(context, screenSize.size.width / 5 * 1.7, screenSize.size.height / 10 * 0.4,
+              CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.4,
                   () {
                 model.login();
               }, backgroundColor: Colors.orange, label: "Reconnexion", textColor: Colors.white),
-              CustomButtons.materialButton(context, screenSize.size.width / 5 * 1.7, screenSize.size.height / 10 * 0.4,
+              CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.4,
                   () {
                 //show wiredash
                 Wiredash.of(context)!.show();
@@ -380,42 +366,39 @@ class _LoginStatusState extends State<LoginStatus> {
 
   buildExpandable() {}
   Widget buildIcon(LoginController _loginController) {
-    MediaQueryData screenSize = MediaQuery.of(context);
-
     return case2(
       _loginController.actualState,
       {
         loginStatus.loggedOff: SpinKitThreeBounce(
-          size: screenSize.size.width / 5 * 0.3,
+          size: 50,
           color: Colors.black38,
         ),
         loginStatus.offline: Icon(
           MdiIcons.networkStrengthOff,
-          size: screenSize.size.width / 5 * 0.3,
+          size: 50,
           color: Colors.black38,
         ),
         loginStatus.error: GestureDetector(
           child: Icon(
             MdiIcons.exclamation,
-            size: screenSize.size.width / 5 * 0.3,
+            size: 50,
             color: Colors.black38,
           ),
         ),
         loginStatus.loggedIn: Icon(
           MdiIcons.check,
-          size: screenSize.size.width / 5 * 0.3,
+          size: 50,
           color: Colors.black38,
         )
       },
       SpinKitThreeBounce(
-        size: screenSize.size.width / 5 * 0.4,
+        size: 40,
         color: Colors.black38,
       ),
     ) as Widget;
   }
 
   buildLoginStatus(LoginController model) {
-    MediaQueryData screenSize = MediaQuery.of(context);
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -453,8 +436,9 @@ class _LoginStatusState extends State<LoginStatus> {
                 Flexible(
                   flex: 1,
                   child: Container(
-                    height: screenSize.size.height / 10 * 0.7,
-                    width: screenSize.size.height / 10 * 0.7,
+                    height: 50,
+                    width: 50,
+                    padding: EdgeInsets.all(5),
                     decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: ThemeUtils.darken(
@@ -465,7 +449,7 @@ class _LoginStatusState extends State<LoginStatus> {
                               loginStatus.offline: Color(0xffFCD34D),
                             }) as Color,
                             forceAmount: 0.15)),
-                    child: buildIcon(model),
+                    child: FittedBox(child: buildIcon(model)),
                   ),
                 ),
                 SizedBox(
@@ -494,7 +478,8 @@ class _LoginStatusState extends State<LoginStatus> {
               ],
             ),
           ),
-          if (expanded && model.actualState == loginStatus.error) buildErrorDetails(model)
+          if (expanded && (model.actualState == loginStatus.error || model.actualState == loginStatus.loggedOff))
+            buildErrorDetails(model)
         ],
       ),
     );

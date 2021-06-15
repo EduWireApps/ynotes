@@ -5,42 +5,37 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
 import 'package:wiredash/wiredash.dart';
 import 'package:ynotes/core/logic/appConfig/controller.dart';
 import 'package:ynotes/core/services/background.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/globals.dart';
+import 'package:ynotes/router.dart';
+import 'package:ynotes/ui/components/hiveLifeCycleManager.dart';
 import 'package:ynotes/ui/screens/carousel/carousel.dart';
-import 'package:ynotes/ui/screens/drawer/drawerBuilder.dart';
 import 'package:ynotes/ui/screens/loading/loadingPage.dart';
 
 import 'core/utils/themeUtils.dart';
 import 'ui/screens/school_api_choice/schoolAPIChoicePage.dart';
 
+import 'package:sizer/sizer.dart';
+
 Future main() async {
   Logger.level = Level.warning;
   WidgetsFlutterBinding.ensureInitialized();
+
   appSys = ApplicationSystem();
   await appSys.initApp();
-  BackgroundFetch.registerHeadlessTask(_headlessTask);
-
-  //appSys.loginController = LoginController();
+  if (!kIsWeb) BackgroundFetch.registerHeadlessTask(_headlessTask);
 
   runZoned<Future<Null>>(() async {
-    runApp(HomeApp());
+    runApp(Phoenix(child: HomeApp()));
   });
 }
 
-var setting;
-
-var uuid = Uuid();
-
-///The app main class
-///
-///
 _headlessTask(HeadlessTask? task) async {
   if (task != null) {
     if (task.timeout) {
@@ -52,7 +47,7 @@ _headlessTask(HeadlessTask? task) async {
   }
 }
 
-class carousel extends StatelessWidget {
+class Carousel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,53 +57,25 @@ class carousel extends StatelessWidget {
   }
 }
 
-/*//login manager
-LoginController appSys.loginController;
-Offline offline;
-API appSys.api;*/
-
 class HomeApp extends StatefulWidget {
   @override
   _HomeAppState createState() => _HomeAppState();
 }
 
-class homePage extends StatelessWidget {
+class Loader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
-    return Scaffold(
-        backgroundColor: Theme.of(context).backgroundColor,
-        body: SafeArea(
-          child: DrawerBuilder(),
-        ));
+    return Scaffold(body: LoadingPage());
   }
 }
 
-class loader extends StatelessWidget {
+class Login extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
-    return Scaffold(
-
-//Main container
-        body: LoadingPage());
-  }
-}
-
-class login extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
-    return Scaffold(
-
-//Main container
-        body: SchoolAPIChoice());
+    return Scaffold(body: SchoolAPIChoice());
   }
 }
 
@@ -137,24 +104,29 @@ class _HomeAppState extends State<HomeApp> {
             /// You can set your own locale to override device default (`window.locale` by default)
             locale: const Locale.fromSubtags(languageCode: 'fr'),
           ),
-          child: MaterialApp(
-            localizationsDelegates: [
-              // ... app-specific localization delegate[s] here
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: [
-              const Locale('en'), // English (could be useless ?)
-              const Locale('fr'), //French
-              // ... other locales the app supports
-            ],
-            debugShowCheckedModeBanner: false,
-            theme: model.theme,
-            title: kDebugMode ? "yNotes DEV" : "yNotes",
-            navigatorKey: _navigatorKey,
-            home: loader(),
-            themeMode: ThemeMode.light,
+          child: HiveLifecycleManager(
+            child: Sizer(
+              builder: (context, orientation, deviceType) => MaterialApp(
+                localizationsDelegates: [
+                  // ... app-specific localization delegate[s] here
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                supportedLocales: [
+                  const Locale('en'), // English (could be useless ?)
+                  const Locale('fr'), //French
+                  // ... other locales the app supports
+                ],
+                debugShowCheckedModeBanner: false,
+                theme: model.theme,
+                title: kDebugMode ? "yNotes DEV" : "yNotes",
+                navigatorKey: _navigatorKey,
+                home: Loader(),
+                themeMode: ThemeMode.light,
+                onGenerateRoute: onGenerateRoute,
+              ),
+            ),
           ),
         );
       }),
@@ -166,12 +138,11 @@ class _HomeAppState extends State<HomeApp> {
   }
 }
 
-extension on TextStyle {
-  /// Temporary fix the following Flutter Web issues
-  /// https://github.com/flutter/flutter/issues/63467
-  /// https://github.com/flutter/flutter/issues/64904#issuecomment-699039851
-  /// https://github.com/flutter/flutter/issues/65526
-  TextStyle get withZoomFix => copyWith(wordSpacing: 0);
+extension IndexedIterable<E> on Iterable<E> {
+  Iterable<T> mapIndexed<T>(T Function(E e, int i) f) {
+    var i = 0;
+    return map((e) => f(e, i++));
+  }
 }
 
 extension StringExtension on String {

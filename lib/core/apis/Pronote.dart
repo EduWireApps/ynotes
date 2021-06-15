@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:connectivity/connectivity.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteAPI.dart';
@@ -11,38 +10,25 @@ import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/shared/loginController.dart';
+import 'package:ynotes/core/offline/data/agenda/lessons.dart';
+import 'package:ynotes/core/offline/data/disciplines/disciplines.dart';
+import 'package:ynotes/core/offline/data/homework/homework.dart';
+import 'package:ynotes/core/offline/data/polls/polls.dart';
 import 'package:ynotes/core/offline/offline.dart';
-import 'package:ynotes/core/utils/nullSafeMap.dart';
+import 'package:ynotes/core/utils/nullSafeMapGetter.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/screens/settings/settingsPage.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
 
-bool gradeLock = false;
-//Locks are use to prohibit the app to send too much requests while collecting data and ensure there are made one by one
-//They are ABSOLUTELY needed or user will be quickly IP suspended
-bool gradeRefreshRecursive = false;
-bool hwLock = false;
-bool hwRefreshRecursive = false;
-bool lessonsLock = false;
-bool lessonsRefreshRecursive = false;
-late PronoteClient localClient;
-bool loginLock = false;
-bool pollsLock = false;
-bool pollsRefreshRecursive = false;
-
 class APIPronote extends API {
-  late PronoteMethod pronoteMethod;
+  bool loginLock = false;
+
+  late PronoteClient localClient;
 
   int loginReqNumber = 0;
 
   APIPronote(Offline offlineController) : super(offlineController) {
     localClient = PronoteClient("");
-    pronoteMethod = PronoteMethod(localClient, this.offlineController);
-  }
-
-  @override
-  Future<List<SchoolLifeTicket>> getSchoolLife({bool forceReload = false}) async {
-    return [];
   }
 
   @override
@@ -71,46 +57,50 @@ class APIPronote extends API {
   @override
   @override
   Future<List<Discipline>?> getGrades({bool? forceReload}) async {
-    return (await pronoteMethod.fetchAnyData(
-        pronoteMethod.grades, offlineController.disciplines.getDisciplines, "grades",
-        forceFetch: forceReload ?? false, isOfflineLocked: super.offlineController.locked));
+    return (await PronoteMethod(localClient, this.offlineController).fetchAnyData(
+        PronoteMethod(localClient, this.offlineController).grades,
+        DisciplinesOffline(offlineController).getDisciplines,
+        "grades",
+        forceFetch: forceReload ?? false));
   }
 
   @override
-  Future<List<Homework>?> getHomeworkFor(DateTime? dateHomework) async {
-    if (dateHomework != null) {
-      return (await pronoteMethod.onlineFetchWithLock(pronoteMethod.homeworkFor, "homeworkFor",
-          arguments: dateHomework));
-    }
+  Future<List<Homework>?> getHomeworkFor(DateTime? dateHomework, {bool? forceReload}) async {
+    return (await PronoteMethod(localClient, this.offlineController).fetchAnyData(
+        PronoteMethod(localClient, this.offlineController).homeworkFor,
+        HomeworkOffline(offlineController).getHomeworkFor,
+        "homework for",
+        forceFetch: forceReload ?? false,
+        offlineArguments: dateHomework,
+        onlineArguments: dateHomework));
   }
 
   @override
   Future<List<Homework>?> getNextHomework({bool? forceReload}) async {
-    return (await pronoteMethod.fetchAnyData(
-        pronoteMethod.nextHomework, offlineController.homework.getHomework, "homework",
-        forceFetch: forceReload ?? false, isOfflineLocked: super.offlineController.locked));
+    return (await PronoteMethod(localClient, this.offlineController).fetchAnyData(
+        PronoteMethod(localClient, this.offlineController).nextHomework,
+        HomeworkOffline(offlineController).getAllHomework,
+        "homework",
+        forceFetch: forceReload ?? false));
   }
 
   @override
   Future<List<Lesson>?> getNextLessons(DateTime dateToUse, {bool? forceReload}) async {
-    List<Lesson>? lessons = await pronoteMethod.fetchAnyData(
-        pronoteMethod.lessons, offlineController.lessons.get, "lessons",
-        forceFetch: forceReload ?? false,
-        isOfflineLocked: super.offlineController.locked,
-        onlineArguments: dateToUse,
-        offlineArguments: await getWeek(dateToUse));
-    if (lessons != null) {
-      lessons.retainWhere((lesson) =>
-          DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start!)) ==
-          DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)));
-    }
-    return lessons;
+    List<Lesson>? lessons = await PronoteMethod(localClient, this.offlineController).fetchAnyData(
+        PronoteMethod(localClient, this.offlineController).lessons, LessonsOffline(offlineController).get, "lessons",
+        forceFetch: forceReload ?? false, onlineArguments: dateToUse, offlineArguments: await getWeek(dateToUse));
+
+    return lessons
+        ?.where((lesson) =>
+            DateTime.parse(DateFormat("yyyy-MM-dd").format(lesson.start!)) ==
+            DateTime.parse(DateFormat("yyyy-MM-dd").format(dateToUse)))
+        .toList();
   }
 
   getOfflinePeriods() async {
     try {
       List<Period> listPeriods = [];
-      List<Discipline>? disciplines = await appSys.offline.disciplines.getDisciplines();
+      List<Discipline>? disciplines = await DisciplinesOffline(offlineController).getDisciplines();
       List<Grade> grades =
           (disciplines ?? []).map((e) => e.gradesList).toList().map((e) => e).expand((element) => element!).toList();
       grades.forEach((grade) {
@@ -137,7 +127,7 @@ class APIPronote extends API {
 
         return listPeriod;
       } else {
-        var listPronotePeriods = await localClient.periods();
+        var listPronotePeriods = localClient.periods();
         //refresh local pronote periods
         localClient.localPeriods = [];
         (listPronotePeriods).forEach((pronotePeriod) {
@@ -150,48 +140,29 @@ class APIPronote extends API {
     }
   }
 
-  @override
-  Future<List<Period>> getPeriods() async {
-    var connectivityResult = await (Connectivity().checkConnectivity());
-    try {
-      return await getOfflinePeriods();
-    } catch (e) {
-      print("Erreur while getting offline period " + e.toString());
-      if (connectivityResult != ConnectivityResult.none && localClient != null) {
-        if (localClient.loggedIn ?? false) {
-          print("getting periods online");
-          return await getOnlinePeriods();
-        } else {
-          throw "Pronote isn't logged in";
-        }
-      } else {
-        try {
-          return await getOfflinePeriods();
-        } catch (e) {
-          throw ("Error while collecting offline periods");
-        }
-      }
-    }
-  }
-
   Future<List<PollInfo>?> getPronotePolls({bool? forceReload}) async {
     List<PollInfo>? listPolls = [];
-    List<PollInfo>? pollsFromInternet = (await pronoteMethod.fetchAnyData(
-      pronoteMethod.polls,
-      offlineController.polls.get,
+    List<PollInfo>? pollsFromInternet = (await PronoteMethod(localClient, this.offlineController).fetchAnyData(
+      PronoteMethod(localClient, this.offlineController).polls,
+      PollsOffline(offlineController).get,
       "polls",
       forceFetch: forceReload ?? false,
-      isOfflineLocked: super.offlineController.locked,
     ));
     listPolls.addAll(pollsFromInternet ?? []);
     return listPolls;
   }
 
   @override
+  Future<List<SchoolLifeTicket>> getSchoolLife({bool forceReload = false}) async {
+    return [];
+  }
+
+  @override
   Future<List> login(username, password, {url, cas, mobileCasLogin}) async {
     print(username + " " + password + " " + url);
     int req = 0;
-    while (loginLock == true && req < 5 && appSys.loginController.actualState != loginStatus.loggedIn) {
+
+    while (loginLock == true && req < 8 && appSys.loginController.actualState != loginStatus.loggedIn) {
       print("Locked, trying in 5 seconds...");
       req++;
       await Future.delayed(Duration(seconds: 5), () => "1");
@@ -204,8 +175,8 @@ class APIPronote extends API {
         localClient =
             PronoteClient(url, username: username, password: password, mobileLogin: mobileCasLogin, cookies: cookies);
 
-        await localClient.init();
-        if (localClient != null && (localClient.loggedIn ?? false)) {
+        bool? login = await localClient.init();
+        if (login ?? false) {
           if (localClient.paramsUser != null) {
             appSys.account = PronoteAccountConverter.account(localClient.paramsUser!);
           }
@@ -221,8 +192,6 @@ class APIPronote extends API {
 
           this.loggedIn = true;
           loginLock = false;
-          pronoteMethod = PronoteMethod(localClient, this.offlineController);
-
           return ([1, "Bienvenue ${appSys.account?.name ?? "Invité"}!"]);
         } else {
           loginLock = false;
@@ -318,7 +287,8 @@ class APIPronote extends API {
         }
       };
       print(jsonEncode(data));
-      var a = await pronoteMethod.request("SaisieActualites", null, data: data, onglet: 8);
+      var a = await PronoteMethod(localClient, this.offlineController)
+          .request("SaisieActualites", null, data: data, onglet: 8);
       print(a);
       return true;
     } catch (e) {
@@ -367,7 +337,8 @@ class APIPronote extends API {
         }
       };
       print(jsonEncode(data));
-      var a = await pronoteMethod.request("SaisieActualites", null, data: data, onglet: 8);
+      var a = await PronoteMethod(localClient, this.offlineController)
+          .request("SaisieActualites", null, data: data, onglet: 8);
       print(a);
       return true;
     } catch (e) {

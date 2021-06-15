@@ -1,15 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/globals.dart';
-
 
 //Parsers list
 ///Color theme switcher, actually 0 for darkmode and 1 for lightmode
@@ -21,7 +19,7 @@ List<Discipline> specialities = [];
 TValue? case2<TOptionType, TValue>(
   TOptionType selectedOption,
   Map<TOptionType, TValue> branches, [
-  TValue? defaultValue = null,
+  TValue? defaultValue,
 ]) {
   if (!branches.containsKey(selectedOption)) {
     return defaultValue;
@@ -37,13 +35,11 @@ List<Grade>? getAllGrades(List<Discipline>? list, {bool overrideLimit = false, b
     List<Grade> listToReturn = [];
     if (list != null) {
       list.forEach((element) {
-        if (element != null) {
-          element.gradesList?.forEach((grade) {
-            if (!listToReturn.contains(grade)) {
-              listToReturn.add(grade);
-            }
-          });
-        }
+        element.gradesList?.forEach((grade) {
+          if (!listToReturn.contains(grade)) {
+            listToReturn.add(grade);
+          }
+        });
       });
       if (appSys.api!.gradesList != null &&
           (appSys.api!.gradesList ?? []).length > 0 &&
@@ -53,25 +49,23 @@ List<Grade>? getAllGrades(List<Discipline>? list, {bool overrideLimit = false, b
 
       listToReturn = listToReturn.toSet().toList();
 
-      if (listToReturn != null) {
-        //sort grades
-        if (sortByWritingDate) {
-          listToReturn.sort(
-              (a, b) => (a.entryDate != null && b.entryDate != null) ? (a.entryDate!.compareTo(b.entryDate!)) : 1);
-        }
+      //sort grades
+      if (sortByWritingDate) {
+        listToReturn
+            .sort((a, b) => (a.entryDate != null && b.entryDate != null) ? (a.entryDate!.compareTo(b.entryDate!)) : 1);
+      }
 
-        //remove duplicates
-        listToReturn = listToReturn.toSet().toList();
-        listToReturn = listToReturn.reversed.toList();
-        if (appSys.api!.gradesList == null) {
-          appSys.api!.gradesList = [];
-        }
-        appSys.api!.gradesList?.clear();
-        appSys.api!.gradesList?.addAll(listToReturn);
+      //remove duplicates
+      listToReturn = listToReturn.toSet().toList();
+      listToReturn = listToReturn.reversed.toList();
+      if (appSys.api!.gradesList == null) {
+        appSys.api!.gradesList = [];
+      }
+      appSys.api!.gradesList?.clear();
+      appSys.api!.gradesList?.addAll(listToReturn);
 
-        if (overrideLimit == false && listToReturn != null) {
-          listToReturn = listToReturn.sublist(0, ((listToReturn.length >= 5) ? 5 : listToReturn.length));
-        }
+      if (overrideLimit == false) {
+        listToReturn = listToReturn.sublist(0, ((listToReturn.length >= 5) ? 5 : listToReturn.length));
       }
       return listToReturn;
     } else {
@@ -125,8 +119,6 @@ Route router(Widget widget) {
     },
   );
 }
-
-
 
 class ConnectionStatusSingleton {
   //This creates the single instance by calling the `_internal` constructor specified below

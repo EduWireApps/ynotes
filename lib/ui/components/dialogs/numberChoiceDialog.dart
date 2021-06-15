@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import '../../../usefulMethods.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 
 class NumberChoiceDialog extends StatefulWidget {
@@ -33,32 +31,35 @@ class _NumberChoiceDialogState extends State<NumberChoiceDialog> {
                 textAlign: TextAlign.left,
               ),
             ),
-            Container(
-              width: screenSize.size.width / 5 * 4.3,
-              height: screenSize.size.height / 10 * 0.8,
-              child: TextFormField(
-                controller: textController,
-                keyboardType: TextInputType.numberWithOptions(decimal: widget.isDouble),
-                decoration: InputDecoration(
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: ThemeUtils.textColor()),
+            ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 400),
+              child: Container(
+                width: screenSize.size.width / 5 * 4.3,
+                height: screenSize.size.height / 10 * 0.8,
+                child: TextFormField(
+                  controller: textController,
+                  keyboardType: TextInputType.numberWithOptions(decimal: widget.isDouble),
+                  decoration: InputDecoration(
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: ThemeUtils.textColor()),
+                    ),
+                    focusedBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: ThemeUtils.textColor()),
+                    ),
                   ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: ThemeUtils.textColor()),
+                  onChanged: (newValue) {
+                    setState(() {
+                      if (widget.isDouble) {
+                        value = double.parse(newValue);
+                      } else {
+                        value = int.parse(newValue);
+                      }
+                    });
+                  },
+                  style: TextStyle(
+                    fontFamily: 'Asap',
+                    color: ThemeUtils.textColor(),
                   ),
-                ),
-                onChanged: (newValue) {
-                  setState(() {
-                    if (widget.isDouble) {
-                      value = double.parse(newValue);
-                    } else {
-                      value = int.parse(newValue);
-                    }
-                  });
-                },
-                style: TextStyle(
-                  fontFamily: 'Asap',
-                  color: ThemeUtils.textColor(),
                 ),
               ),
             ),
@@ -66,13 +67,13 @@ class _NumberChoiceDialogState extends State<NumberChoiceDialog> {
         ),
       ),
       actions: [
-        FlatButton(
+        TextButton(
           child: const Text('ANNULER', style: TextStyle(color: Colors.red), textScaleFactor: 1.0),
           onPressed: () {
             Navigator.pop(context, null);
           },
         ),
-        FlatButton(
+        TextButton(
           child: Text(
             "VALIDER",
             style: TextStyle(color: Colors.green),

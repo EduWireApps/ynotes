@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/ui/components/buttons.dart';
-import 'package:ynotes/ui/screens/login/loginPageWidgets/textField.dart';
+import 'package:ynotes/ui/components/textField.dart';
 
 class PronoteSetupPart extends StatefulWidget {
   final Function? callback;
@@ -61,40 +61,43 @@ class _PronoteSetupPartState extends State<PronoteSetupPart> {
         onTap: () {
           widget.callback!(id);
         },
-        child: Container(
-          width: screenSize.size.width / 5 * 4,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(18),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Container(
-                  width: screenSize.size.width / 5 * 1.1,
-                  height: screenSize.size.width / 5 * 1.1,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(18),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: 500),
+          child: Container(
+            width: screenSize.size.width / 5 * 4,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(18),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                    width: 90,
+                    height: 90,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(icon, size: 70),
+                      ],
+                    )),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(icon, size: screenSize.size.width / 5 * 0.5),
+                      Container(
+                          child: Text(label,
+                              style: TextStyle(fontFamily: "Asap", color: Colors.black, fontWeight: FontWeight.bold))),
+                      Container(child: Text(description, style: TextStyle(fontFamily: "Asap", color: Colors.black)))
                     ],
-                  )),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                        child: Text(label,
-                            style: TextStyle(fontFamily: "Asap", color: Colors.black, fontWeight: FontWeight.bold))),
-                    Container(child: Text(description, style: TextStyle(fontFamily: "Asap", color: Colors.black)))
-                  ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -113,7 +116,7 @@ class _PronoteUrlFieldPartState extends State<PronoteUrlFieldPart> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          LoginPageTextField(_url, "URL Pronote mobile", false, MdiIcons.link, false),
+          CustomTextField(_url, "URL Pronote mobile", false, MdiIcons.link, false),
           SizedBox(height: screenSize.size.height / 10 * 0.2),
           GestureDetector(
             onTap: () {

@@ -1,34 +1,26 @@
-## Mise à jour 0.11.2
-Fonctionnalités :
-- Ajout des tickets de Vie Scolaire (EcoleDirecte seulement pour l'instant)
+## Mise à jour 0.12
+Cette mise à jour est assez riche en nouvelles fonctionnalités et en correctifs. C'est probablement la dernière série de mises à jour avant la 1.0 : l'application se stabilise donc progressivement et nous espérons que ses fonctionnalités répondent à vos principales attentes.
 
-Correctifs :
-- Correctifs pour le rafraichissement en arrière plan (notifications de nouvelles notes et de nouveaux mails)
-  - Les utilisateurs iOS devraient désormais pouvoir recevoir correctement les notifications
-  - Le rafraichissement n'a désormais lieu que lorsque vous êtes connecté à Internet 
-- Les mails EcoleDirecte peuvent désormais contenir des caractères spéciaux
+# Améliorations et nouvelles fonctionnalités
+Vous découvrirez dans cette nouvelle version :
+- Un **nouveau look pour la page des notes** : revue pour vous convenir au maximum, nous vous laissons découvrir le nouveau look de cette page et ses améliorations
+- Une **nouvelle page pour les devoirs** :
+  - Nous avons entièrement revu la **structure de la page de devoirs**, une nouvelle page s'ouvrira désormais pour vous permettre d'afficher les détails des devoirs ⭐
+  - Des tas de nouvelles fonctionnalités relatives aux **détails des devoirs**. Envie d'afficher la consigne du prochain DM de français en police 35 ? Pas de problème. Le prof de mathématiques a mis des couleurs horribles sur son devoir qui vous empêchent de bien le visualiser ? C'est prévu aussi 😏 Cliquez juste sur le petit oeil en haut à droite et amusez vous !
+  - Ajoutez des **devoirs personnalisés** : ça nous paraît clair 😎
+  - Désormais, **épingler des devoirs** est bien plus simple, une page dédiée sert à visualiser uniquement vos devoirs épinglés 📌
+  - **Filtrez vos devoirs**, vous pouvez même choisir **une seule ou plusieurs matières** à afficher
+- Des améliorations pour **la page des mails (EcoleDirecte)** :
+  - Une **barre de recherche** pour accéder rapidement à un mail
+  - Les mails peuvent désormais être lus **hors ligne**
+- **Signalez un problème** en **secouant votre téléphone** *pas trop quand même* 🐛
+- Nous avons **retiré la possibilité d'ajouter des évènements personnalisés sur l'agenda ou de modifier ceux existants** 🗑️: personne ne s'en servait, et cela rendait la structure trop compliquée pour nous. Vous pouvez cependant toujours ajouter des rappels. 
 
-## Note de mise à jour 0.11
-*La 0.10 est passée bien vite mais accueillait surtout la compatibilité multi ENT et l'arrivée sur l'App Store de l'application.
-Dans cette version, nous avons beaucoup modifié le code source de l'application pour nous aligner sur les toutes dernières nouveautés du monde du développement mobile.
-Ainsi, même si vous n'y verrez pas grand chose, cela nous changera la vie pour l'intégration des futures fonctionnalités. ✨*
 
-- Arrivée du compte parent
-  
-Parents, ou élèves ayant seulement des identifiants de compte Parent, nous avons désormais ouvert la compatibilité à vos types de compte depuis EcoleDirecte et Pronote.
-Vous pouvez changer le compte élève à administrer depuis les paramètres. Attention, pour le moment seule la messagerie élève s'affiche.
-yNotes étant une application conçue pour les élèves, nous privilégions l'ajout de fonctionnalités concernant ces derniers.
-
-- Mise à jour du bandeau d'état de connexion
-  
-Nous avons mis à jour le petit rond qui apparaissait à chaque connexion pour le transformer en bandeau. 
-Tout simplement car c'était laid, peu pratique, et pas très rassurant. 
-Désormais, vous pourrez accéder directement aux détails des erreurs en cliquant dessus, et choisir de contacter le support ou de vous reconnecter. 
-
-- Correctifs pour l'actualisation en arrière plan
-  
-Le premier objectif de l'application était de pouvoir notifier l'utilisateur de nouveaux mails et notes... cette fonctionnalité ne fonctionnant plus depuis quelques mises à jour, nous avons rectifié le tir. N'oubliez pas de suivre [ce tutoriel](https://support.ynotes.fr/divers/notifications) si vous ne recevez toujours pas les notifications. 
-
-- Correctifs
-  
-Nous avons fait pas mal de correctifs de stabilité et d'affichage. Nous essayons de maintenir l'application au meilleur de sa forme ! N'hésitez pas à donner votre avis sur le store ou vous avez téléchargé l'application, ça nous fait toujours plaisir ! 😁
+# Correctifs 
+- Autoformater pour l'adresse URL Pronote, évite certains problèmes de connexion récurrents
+- Ajout d'un delai de sécurité pour les rafraichissements en arrière plan
+- Les utilisateurs ED peuvent désormais correctement lire les mails envoyés
+- Les utilisateurs ED peuvent désormais correctement afficher les destinataires pour envoyer un mail
+- Correctifs pour les téléchargements de pièces jointes Pronote et EcoleDirecte
+- Correctifs pour la page de tickets de vie scolaire (qui dépassait au scroll et les tickets étaient dans le mauvais sens)

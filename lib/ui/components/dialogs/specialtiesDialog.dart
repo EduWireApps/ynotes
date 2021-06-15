@@ -90,6 +90,9 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
                                             child: Row(
                                               children: <Widget>[
                                                 Checkbox(
+                                                  side: BorderSide(width: 1, color: Colors.white),
+                                                  fillColor:
+                                                      MaterialStateColor.resolveWith(ThemeUtils.getCheckBoxColor),
                                                   onChanged: (value) {
                                                     if (chosenSpecialties!.contains(disciplines[index])) {
                                                       setState(() {
@@ -167,7 +170,7 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
   setChosenSpecialties() async {
     final prefs = await (SharedPreferences.getInstance());
     if (chosenSpecialties != null && chosenSpecialties!.every((element) => element != null)) {
-      prefs.setStringList("listSpecialties", chosenSpecialties as List<String>);
+      prefs.setStringList("listSpecialties", chosenSpecialties!.cast<String>());
     }
     print(prefs.getStringList("listSpecialties"));
   }

@@ -123,7 +123,6 @@ end
 lane :local_test do
   build_number = number_of_commits()
   Dir.chdir "../.." do
-      sh("flutter","clean")
       sh("flutter", "build", "apk", "--flavor", "prod", "--release","--build-number=#{build_number}", "--split-per-abi")
   end
   #Edit this part if you need to install another APK

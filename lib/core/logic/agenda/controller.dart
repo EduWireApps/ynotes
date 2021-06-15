@@ -15,8 +15,12 @@ class AgendaController extends ChangeNotifier {
   List<List<AgendaEvent>?>? _cachedEvents = List.filled(7, []);
   AgendaController(API? api) {
     _api = api;
-   // setDay(DateTime.now());
+    // setDay(DateTime.now());
   }
+  set api(API? api) {
+    _api = api;
+  }
+
   List<AgendaEvent>? get today => (_cachedEvents ?? [])[3];
   bool get todayLoaded => loaded[3];
 
@@ -36,10 +40,8 @@ class AgendaController extends ChangeNotifier {
         dayEvents.add(event);
       }
     });
-    if (dayEvents != null) {
-      dayEvents.sort((a, b) => a.end!.compareTo(b.end!));
-      dayEventsEnd = dayEvents.last.end;
-    }
+    dayEvents.sort((a, b) => a.end!.compareTo(b.end!));
+    dayEventsEnd = dayEvents.last.end;
 
     if (eventType == eventTypes.dayEvents) {
       return events.where((event) =>
@@ -74,7 +76,6 @@ class AgendaController extends ChangeNotifier {
       oldweek.forEach((oldWeekDate) {
         for (int i = 0; i < week.length; i++) {
           if (week[i] == oldWeekDate) {
-
             //We add these events
             (_cachedEvents ?? [])[i] = [];
             (_cachedEvents ?? [])[i]!.addAll(oldEvents[i] ?? []);
@@ -83,7 +84,7 @@ class AgendaController extends ChangeNotifier {
       });
     }
     if ((_cachedEvents ?? [])[3] == null) {
-      (_cachedEvents ?? [])[3] = await _api?.getEvents(CalendarTime(_date).startOfDay, false, forceReload: false);
+      (_cachedEvents ?? [])[3] = await _api?.getEvents(CalendarTime(_date).startOfDay,  forceReload: false);
     }
 
     loaded[3] = true;
@@ -93,7 +94,7 @@ class AgendaController extends ChangeNotifier {
     //We offline fetch the rest
     await Future.forEach(week, (dynamic date) async {
       if (i != 3 && (_cachedEvents ?? [])[i] != null) {
-        (_cachedEvents ?? [])[i] = (await _api?.getEvents(date, false, forceReload: false)) ?? [];
+        (_cachedEvents ?? [])[i] = (await _api?.getEvents(date, forceReload: false)) ?? [];
         loaded[i] = true;
         notifyListeners();
       }

@@ -1,22 +1,10 @@
-import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:ynotes/core/offline/offline.dart';
 
-class PinnedHomeworkOffline extends Offline {
+class PinnedHomeworkOffline {
   late Offline parent;
-  PinnedHomeworkOffline(bool locked, Offline _parent) : super(locked) {
+  PinnedHomeworkOffline(Offline _parent) {
     parent = _parent;
-  }
-
-  ///Set a homework date as pinned (or not)
-  void set(String date, bool? value) async {
-    if (!locked) {
-      try {
-        parent.pinnedHomeworkBox!.put(date, value);
-      } catch (e) {
-        print("Error during the setPinnedHomeworkDateProcess $e");
-      }
-    }
   }
 
   ///Get pinned homework dates
@@ -46,6 +34,15 @@ class PinnedHomeworkOffline extends Offline {
       print("Error during the getPinnedHomeworkProcess $e");
 
       return null;
+    }
+  }
+
+  ///Set a homework date as pinned (or not)
+  void set(String date, bool? value) async {
+    try {
+      await parent.pinnedHomeworkBox?.put(date, value);
+    } catch (e) {
+      print("Error during the setPinnedHomeworkDateProcess $e");
     }
   }
 }
