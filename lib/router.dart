@@ -68,7 +68,7 @@ final List<CustomRoute> routes = [
       page: PollsAndInfoPage(),
       relatedApi: 1,
       tab: appTabs.POLLS),
-  CustomRoute(path: "/account", icon: Icons.person, title: "Compte", page: AccountPage(), tab: appTabs.ACCOUNT)
+  CustomRoute(path: "/account", icon: Icons.person, title: "Compte", page: AccountPage())
 ];
 
 PageRouteBuilder generateRoute(Widget page) {
