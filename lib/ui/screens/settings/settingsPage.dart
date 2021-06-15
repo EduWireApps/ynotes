@@ -12,7 +12,6 @@ import 'package:package_info/package_info.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:settings_ui/settings_ui.dart';
-import 'package:wiredash/wiredash.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/appConfig/controller.dart';
 import 'package:ynotes/core/services/notifications.dart';
@@ -270,76 +269,41 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                   ),
                 ],
               ),
-              SettingsSection(
-                titleTextStyle: TextStyle(color: ThemeUtils.textColor()),
-                title: 'Assistance',
-                tiles: [
-                  SettingsTile.switchTile(
-                      title: 'Secouer pour signaler',
-                      titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-                      subtitleTextStyle: TextStyle(
-                          fontFamily: "Asap",
-                          color:
-                              ThemeUtils.isThemeDark ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
-                      switchValue: _appSys.settings!["user"]["global"]["shakeToReport"],
-                      onToggle: (bool value) async {
-                        _appSys.updateSetting(_appSys.settings!["user"]["global"], "shakeToReport", value);
-                      }),
-                  SettingsTile(
-                    title: 'Afficher les logs',
-                    leading: Icon(MdiIcons.bug, color: ThemeUtils.textColor()),
-                    onPressed: (context) {
-                      Navigator.of(context).push(router(LogsPage()));
-                    },
+              SettingsSection(titleTextStyle: TextStyle(color: ThemeUtils.textColor()), title: 'Assistance', tiles: [
+                SettingsTile.switchTile(
+                    title: 'Secouer pour signaler',
                     titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                     subtitleTextStyle: TextStyle(
                         fontFamily: "Asap",
                         color: ThemeUtils.isThemeDark ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
-                    iosChevron: Icon(Icons.chevron_right),
-                  ),
-                  SettingsTile(
-                    title: 'Signaler un bug',
-                    subtitle: 'Ou nous recommander quelque chose',
-                    leading: Icon(MdiIcons.commentAlert, color: ThemeUtils.textColor()),
-                    onPressed: (context) {
-                      Wiredash.of(context)?.show();
-                    },
-                    titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-                    subtitleTextStyle: TextStyle(
-                        fontFamily: "Asap",
-                        color: ThemeUtils.isThemeDark ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
-                    iosChevron: Icon(Icons.chevron_right),
-                  ),
-                ],
-              ),
+                    switchValue: _appSys.settings!["user"]["global"]["shakeToReport"],
+                    onToggle: (bool value) async {
+                      _appSys.updateSetting(_appSys.settings!["user"]["global"], "shakeToReport", value);
+                    }),
+                SettingsTile(
+                  title: 'Afficher les logs',
+                  leading: Icon(MdiIcons.bug, color: ThemeUtils.textColor()),
+                  onPressed: (context) {
+                    Navigator.of(context).push(router(LogsPage()));
+                  },
+                  titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                  subtitleTextStyle: TextStyle(
+                      fontFamily: "Asap",
+                      color: ThemeUtils.isThemeDark ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
+                  iosChevron: Icon(Icons.chevron_right),
+                ),
+              ]),
               SettingsSection(
                 titleTextStyle: TextStyle(color: ThemeUtils.textColor()),
                 title: 'Autres paramètres',
                 tiles: [
                   SettingsTile(
-                    title: 'Réinitialiser le tutoriel',
-                    leading: Icon(MdiIcons.restore, color: ThemeUtils.textColor()),
-                    onPressed: (context) async {
-                      if ((await CustomDialogs.showConfirmationDialog(context, null,
-                              alternativeText: "Etes-vous sûr de vouloir réinitialiser le tutoriel ?",
-                              alternativeButtonConfirmText: "confirmer")) ??
-                          false) {
-                        await HelpDialog.resetEveryHelpDialog();
-                      }
-                    },
-                    titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
-                    subtitleTextStyle: TextStyle(
-                        fontFamily: "Asap",
-                        color: ThemeUtils.isThemeDark ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
-                    iosChevron: Icon(Icons.chevron_right),
-                  ),
-                  SettingsTile(
                     title: 'Supprimer les données hors ligne',
                     leading: Icon(MdiIcons.deleteAlert, color: ThemeUtils.textColor()),
                     onPressed: (context) async {
                       if ((await (CustomDialogs.showConfirmationDialog(context, null,
-                              alternativeText: "Êtes vous sûr de vouloir supprimer ce mail ?",
-                              alternativeButtonConfirmText: "Supprimer ce mail")) ??
+                              alternativeText: "Êtes vous sûr de vouloir supprimer les données hors ligne?",
+                              alternativeButtonConfirmText: "Supprimer")) ??
                           false)) {
                         await appSys.offline.clearAll();
                         appSys.api = apiManager(appSys.offline);
