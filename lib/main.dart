@@ -8,7 +8,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
 import 'package:wiredash/wiredash.dart';
 import 'package:ynotes/core/logic/appConfig/controller.dart';
 import 'package:ynotes/core/services/background.dart';
@@ -26,8 +25,6 @@ Future main() async {
   Logger.level = Level.warning;
   WidgetsFlutterBinding.ensureInitialized();
 
-  WidgetsFlutterBinding.ensureInitialized();
-
   appSys = ApplicationSystem();
   await appSys.initApp();
   if (!kIsWeb) BackgroundFetch.registerHeadlessTask(_headlessTask);
@@ -37,13 +34,6 @@ Future main() async {
   });
 }
 
-var setting;
-
-var uuid = Uuid();
-
-///The app main class
-///
-///
 _headlessTask(HeadlessTask? task) async {
   if (task != null) {
     if (task.timeout) {
@@ -76,10 +66,7 @@ class Loader extends StatelessWidget {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
-    return Scaffold(
-
-//Main container
-        body: LoadingPage());
+    return Scaffold(body: LoadingPage());
   }
 }
 
