@@ -4,7 +4,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
+import 'package:ynotes/ui/screens/settings/sub_pages/logs.dart';
 
 import 'data/example/example.dart';
 

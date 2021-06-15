@@ -9,7 +9,7 @@ import 'package:ynotes/globals.dart';
 import 'package:ynotes/router.dart';
 import 'package:ynotes/ui/components/y_page/mixins.dart';
 import 'package:ynotes/ui/components/y_page/y_page_local.dart';
-import 'package:ynotes/ui/screens/settings/settingsPage.dart';
+import 'package:ynotes/ui/screens/settings/index.dart';
 import 'package:ynotes_components/ynotes_components.dart';
 
 class YDrawer extends StatefulWidget {

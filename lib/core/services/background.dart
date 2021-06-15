@@ -6,7 +6,7 @@ import 'package:ynotes/core/logic/appConfig/controller.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
+import 'package:ynotes/ui/screens/settings/sub_pages/logs.dart';
 import 'package:ynotes/useful_methods.dart';
 
 //The main class for everything done in background

@@ -8,7 +8,7 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/custom_loader.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
-import 'package:ynotes/ui/screens/summary/summaryPageWidgets/chart.dart';
+import 'chart.dart';
 import 'package:ynotes/useful_methods.dart';
 
 class CustomHalfCircleClipper extends CustomClipper<Path> {

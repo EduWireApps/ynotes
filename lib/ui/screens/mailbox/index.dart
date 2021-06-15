@@ -17,7 +17,7 @@ import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/text_field.dart';
 import 'package:ynotes/ui/components/y_page/y_page.dart';
 import 'package:ynotes/ui/mixins/layout_mixin.dart';
-import 'package:ynotes/ui/screens/mail/mailPageWidgets/readMailBottomSheet.dart';
+import 'widgets/read_mail_bottom_sheet.dart';
 import 'package:ynotes/useful_methods.dart';
 import 'package:ynotes_components/ynotes_components.dart';
 

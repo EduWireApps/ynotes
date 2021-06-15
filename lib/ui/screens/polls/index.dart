@@ -22,16 +22,16 @@ Future? mailsListFuture;
 late Future<List<PollInfo>?> pollsFuture;
 List<PollInfo>? pollsList = [];
 
-class PollsAndInfoPage extends StatefulWidget {
-  const PollsAndInfoPage({Key? key}) : super(key: key);
+class PollsPage extends StatefulWidget {
+  const PollsPage({Key? key}) : super(key: key);
 
   @override
-  _PollsAndInfoPageState createState() => _PollsAndInfoPageState();
+  _PollsPageState createState() => _PollsPageState();
 }
 
 enum sortValue { date, reversed_date, author }
 
-class _PollsAndInfoPageState extends State<PollsAndInfoPage> with LayoutMixin {
+class _PollsPageState extends State<PollsPage> with LayoutMixin {
   @override
   Widget build(BuildContext context) {
     var screenSize = MediaQuery.of(context);

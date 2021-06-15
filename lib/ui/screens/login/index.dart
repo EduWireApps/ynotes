@@ -14,7 +14,7 @@ import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/text_field.dart';
 import 'widgets/login_web_view.dart';
 import 'widgets/pronote_setup.dart';
-import 'package:ynotes/ui/screens/school_api_choice/schoolAPIChoicePage.dart';
+import 'package:ynotes/ui/screens/school_api_choice/index.dart';
 import 'package:ynotes/useful_methods.dart';
 
 Color textButtonColor = Color(0xff252B62);

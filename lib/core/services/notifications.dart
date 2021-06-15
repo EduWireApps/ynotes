@@ -21,7 +21,7 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/screens/agenda/widgets/agenda.dart';
-import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
+import 'package:ynotes/ui/screens/settings/sub_pages/logs.dart';
 import 'package:ynotes/useful_methods.dart';
 
 ///The notifications class

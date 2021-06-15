@@ -17,8 +17,8 @@ import 'package:ynotes/core/offline/data/polls/polls.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/utils/nullSafeMapGetter.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/screens/settings/settingsPage.dart';
-import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
+import 'package:ynotes/ui/screens/settings/index.dart';
+import 'package:ynotes/ui/screens/settings/sub_pages/logs.dart';
 
 class APIPronote extends API {
   bool loginLock = false;

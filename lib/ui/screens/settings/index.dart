@@ -20,8 +20,8 @@ import 'package:ynotes/core/utils/settingsUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
-import 'package:ynotes/ui/screens/settings/sub_pages/accountPage.dart';
-import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
+import 'package:ynotes/ui/screens/settings/sub_pages/account.dart';
+import 'package:ynotes/ui/screens/settings/sub_pages/logs.dart';
 
 import '../../../tests.dart';
 import '../../../useful_methods.dart';

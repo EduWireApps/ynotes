@@ -18,10 +18,10 @@ import 'package:ynotes/router.dart';
 import 'package:ynotes/ui/components/hive_life_cycle_manager.dart';
 import 'package:ynotes/ui/screens/carousel/index.dart';
 import 'package:ynotes/ui/screens/loading/index.dart';
-import 'package:ynotes/ui/screens/summary/summaryPage.dart';
+import 'package:ynotes/ui/screens/summary/index.dart';
 
 import 'core/utils/themeUtils.dart';
-import 'ui/screens/school_api_choice/schoolAPIChoicePage.dart';
+import 'ui/screens/school_api_choice/index.dart';
 
 Future main() async {
   Logger.level = Level.warning;

@@ -15,12 +15,12 @@ import 'package:ynotes/ui/screens/agenda/widgets/persistant_notification_dialog.
 import 'package:ynotes/ui/screens/grades/widgets/share_grade_dialog.dart';
 import 'package:ynotes/ui/screens/homework/widgets/homework_details.dart';
 import 'package:ynotes/ui/screens/login/widgets/pronote_location_dialog.dart';
-import 'package:ynotes/ui/screens/mail/mailPageWidgets/writeMailBottomSheet.dart';
 
 import '../../useful_methods.dart';
 import '../screens/agenda/widgets/recurring_events_dialog.dart';
 import '../screens/downloads/widgets/folder_choice_dialog.dart';
-import '../screens/mail/mailPageWidgets/newRecipientDialog.dart';
+import '../screens/mailbox/widgets/new_recipient_dialog.dart';
+import '../screens/mailbox/widgets/write_mail_bottom_sheet.dart';
 import 'dialogs/multiple_choices_dialog.dart';
 import 'dialogs/number_choice_dialog.dart';
 import 'dialogs/specialties_dialog.dart';

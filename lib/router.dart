@@ -9,12 +9,11 @@ import 'package:ynotes/ui/screens/error_page.dart';
 import 'package:ynotes/ui/screens/grades/index.dart';
 import 'package:ynotes/ui/screens/homework/index.dart';
 import 'package:ynotes/main.dart';
-import 'package:ynotes/ui/screens/mail/mailPage.dart';
-import 'package:ynotes/ui/screens/polls/pollsPage.dart';
-import 'package:ynotes/ui/screens/schoolLife/schoolLifePage.dart';
-import 'package:ynotes/ui/screens/settings/sub_pages/accountPage.dart';
-import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
-import 'package:ynotes/ui/screens/summary/summaryPage.dart';
+import 'package:ynotes/ui/screens/mailbox/index.dart';
+import 'package:ynotes/ui/screens/polls/index.dart';
+import 'package:ynotes/ui/screens/school_life/index.dart';
+import 'package:ynotes/ui/screens/settings/sub_pages/logs.dart';
+import 'package:ynotes/ui/screens/summary/index.dart';
 
 class CustomRoute {
   final String path;
@@ -62,13 +61,7 @@ final List<CustomRoute> routes = [
       relatedApi: 0,
       tab: appTabs.FILES),
   CustomRoute(
-      path: "/polls",
-      icon: MdiIcons.poll,
-      title: "Sondages",
-      page: PollsAndInfoPage(),
-      relatedApi: 1,
-      tab: appTabs.POLLS),
-  CustomRoute(path: "/account", icon: Icons.person, title: "Compte", page: AccountPage())
+      path: "/polls", icon: MdiIcons.poll, title: "Sondages", page: PollsPage(), relatedApi: 1, tab: appTabs.POLLS),
 ];
 
 PageRouteBuilder generateRoute(Widget page) {

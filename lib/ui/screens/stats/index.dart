@@ -4,7 +4,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:simple_animations/simple_animations.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/ui/mixins/layout_mixin.dart';
-import 'package:ynotes/ui/screens/statspage/statspagewidgets/leadingIcon.dart';
+import 'widgets/leading_icon.dart';
 
 class StatsPage extends StatefulWidget {
   final GlobalKey<ScaffoldState> parentScaffoldState;
