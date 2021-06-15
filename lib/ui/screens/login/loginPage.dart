@@ -125,6 +125,7 @@ class _AlertBoxWidgetState extends State<AlertBoxWidget> {
                           ),
                         ),
                         onPressed: () async {
+                          Navigator.pop(context);
                           Navigator.pushReplacementNamed(context, "/intro");
                         },
                         child: Text(
