@@ -19,6 +19,4 @@ enum appTabs {
   FILES,
   @JsonValue("SCHOOL_LIFE")
   SCHOOL_LIFE,
-  @JsonValue("ACCOUNT")
-  ACCOUNT,
 }
