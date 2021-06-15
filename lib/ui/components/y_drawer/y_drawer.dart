@@ -7,6 +7,7 @@ import 'package:wiredash/wiredash.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/router.dart';
+import 'package:ynotes/ui/components/y_drawer/widgets/account_header.dart';
 import 'package:ynotes/ui/components/y_page/mixins.dart';
 import 'package:ynotes/ui/components/y_page/y_page_local.dart';
 import 'package:ynotes/ui/screens/settings/settingsPage.dart';
@@ -64,6 +65,7 @@ class _YDrawerState extends State<YDrawer> with YPageMixin {
         color: Theme.of(context).primaryColorLight,
         child: SafeArea(
           child: YShadowScrollContainer(color: Theme.of(context).primaryColorLight, children: [
+            AccountHeader(),
             ListView.builder(
                 shrinkWrap: true,
                 physics: ClampingScrollPhysics(),
