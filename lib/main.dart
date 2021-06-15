@@ -86,13 +86,7 @@ class Loader extends StatelessWidget {
 class Login extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
-    return Scaffold(
-
-//Main container
-        body: SchoolAPIChoice());
+    return Scaffold(body: SchoolAPIChoice());
   }
 }
 
