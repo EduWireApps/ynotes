@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/apis/ecole_directe.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/main.dart';
 import 'package:ynotes/ui/animations/fade_animation.dart';
 import 'package:ynotes/useful_methods.dart';
 
@@ -30,7 +29,7 @@ class _LoadingPageState extends State<LoadingPage> {
 
     z = await storage.read(key: "agreedTermsAndConfiguredApp");
     if (u != null && p != null && z != null && appSys.settings!["system"]["chosenParser"] != null) {
-      Navigator.of(context).pushReplacement(router(HomePage()));
+      Navigator.pushReplacementNamed(context, "/summary");
     } else {
       Navigator.pushReplacementNamed(context, "/login");
     }

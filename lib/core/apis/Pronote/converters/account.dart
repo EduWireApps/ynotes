@@ -1,7 +1,7 @@
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/logic/app_config/models.dart';
 import 'package:ynotes/core/utils/null_safe_map_getter.dart';
-import 'package:ynotes/main.dart';
+import 'package:uuid/uuid.dart';
 
 class PronoteAccountConverter {
   static AppAccount account(Map accountData) {
@@ -16,7 +16,7 @@ class PronoteAccountConverter {
         element.availableTabs = tabs;
       });
       //we generate a random UUID
-      String id = uuid.v1();
+      String id = Uuid().v1();
       return AppAccount(
           name: name,
           managableAccounts: accounts,
@@ -29,7 +29,7 @@ class PronoteAccountConverter {
       String? name = mapGet(data, ["L"]);
       bool isParentMainAccount = false;
       List<SchoolAccount> accounts = [singleSchoolAccount((data ?? {}))];
-      String id = uuid.v1();
+      String id = Uuid().v1();
       (accounts).forEach((element) {
         element.availableTabs = tabs;
       });

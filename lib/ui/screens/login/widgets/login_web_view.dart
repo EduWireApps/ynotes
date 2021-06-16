@@ -9,8 +9,8 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:ynotes/core/apis/pronote/Pronote_cas.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/main.dart';
 import 'package:ynotes/ui/components/buttons.dart';
+import 'package:uuid/uuid.dart';
 
 // ignore: must_be_immutable
 class LoginWebView extends StatefulWidget {
@@ -215,7 +215,7 @@ class _LoginWebViewState extends State<LoginWebView> {
   setCookie() async {
     print("Setting cookie");
     //generate UUID
-    await appSys.updateSetting(appSys.settings!["system"], "uuid", uuid.v4());
+    await appSys.updateSetting(appSys.settings!["system"], "uuid", Uuid().v4());
 
     //set cookie
     String cookieFunction = '(function(){try{' +

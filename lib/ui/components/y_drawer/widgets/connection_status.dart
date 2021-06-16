@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/logic/shared/login_controller.dart';
+import 'package:ynotes/ui/screens/settings/sub_pages/account.dart';
 import 'package:ynotes/useful_methods.dart';
+import 'package:ynotes/ui/components/y_page/mixins.dart';
+import 'package:ynotes/ui/components/y_page/y_page_local.dart';
 
 class ConnectionStatus extends StatefulWidget {
   final LoginController con;
@@ -14,7 +17,7 @@ class ConnectionStatus extends StatefulWidget {
   _ConnectionStatusState createState() => _ConnectionStatusState();
 }
 
-class _ConnectionStatusState extends State<ConnectionStatus> {
+class _ConnectionStatusState extends State<ConnectionStatus> with YPageMixin {
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
@@ -24,7 +27,7 @@ class _ConnectionStatusState extends State<ConnectionStatus> {
           return Opacity(
             opacity: 0.8,
             child: GestureDetector(
-              onTap: () => Navigator.pushNamed(context, "/account"),
+              onTap: () => openLocalPage(YPageLocal(child: AccountPage(), title: "Compte")),
               child: AnimatedContainer(
                 duration: Duration(milliseconds: 400),
                 color: case2(widget.con.actualState, {

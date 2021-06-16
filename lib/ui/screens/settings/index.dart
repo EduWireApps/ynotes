@@ -20,6 +20,8 @@ import 'package:ynotes/core/utils/settings_utils.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
+import 'package:ynotes/ui/components/y_page/mixins.dart';
+import 'package:ynotes/ui/components/y_page/y_page_local.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/account.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/logs.dart';
 
@@ -39,7 +41,7 @@ class SettingsPage extends StatefulWidget {
   }
 }
 
-class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMixin {
+class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMixin, YPageMixin {
   late AnimationController leftToRightAnimation;
   late AnimationController rightToLeftAnimation;
   //Avatar's animations :
@@ -82,9 +84,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                       subtitle: '${appSys.currentSchoolAccount?.name ?? "Invité"}',
                       leading: Icon(MdiIcons.account, color: ThemeUtils.textColor()),
                       trailing: Icon(Icons.chevron_right, color: ThemeUtils.textColor()),
-                      onPressed: (context) {
-                        Navigator.of(context).push(router(AccountPage()));
-                      },
+                      onPressed: (context) => openLocalPage(YPageLocal(child: AccountPage(), title: "Compte")),
                       iosChevron: Icon(Icons.chevron_right)),
                 ],
               ),

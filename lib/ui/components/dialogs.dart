@@ -72,6 +72,7 @@ class CustomDialogs {
       String alternativeButtonConfirmText = "SUPPRIMER"}) {
     // set up the AlertDialog
     var alert = AlertDialog(
+      backgroundColor: Theme.of(context).backgroundColor,
       elevation: 50,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
       title: Text(
