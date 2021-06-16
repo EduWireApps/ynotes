@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:ynotes/core/utils/themeUtils.dart';
+import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/y_page/mixins.dart';
 import 'package:ynotes/ui/components/y_page/y_page_local.dart';
-import 'package:ynotes/ui/screens/settings/sub_pages/accountPage.dart';
+import 'package:ynotes/ui/screens/settings/sub_pages/account.dart';
 import 'package:ynotes_components/ynotes_components.dart';
 
 class AccountHeader extends StatefulWidget {

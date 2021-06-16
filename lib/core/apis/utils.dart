@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stack/stack.dart' as sta;
 import 'package:ynotes/core/apis/ecole_directe.dart';
 import 'package:ynotes/core/apis/pronote.dart';
-import 'package:ynotes/core/apis/pronote/Pronote_cas.dart';
+import 'package:ynotes/core/apis/pronote/pronote_cas.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/globals.dart';
 

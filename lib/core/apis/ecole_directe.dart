@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ynotes/core/apis/ecole_directe/converters_exporter.dart';
 import 'package:ynotes/core/apis/ecole_directe/ecole_directe_cloud.dart';
-import 'package:ynotes/core/apis/pronote/Pronote_cas.dart';
+import 'package:ynotes/core/apis/pronote/pronote_cas.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';

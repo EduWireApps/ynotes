@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:ynotes/core/apis/ecole_directe/converters/cloud.dart';
 import 'package:ynotes/core/apis/ecole_directe/converters_exporter.dart';
-import 'package:ynotes/core/apis/pronote/Pronote_cas.dart';
+import 'package:ynotes/core/apis/pronote/pronote_cas.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/data/agenda/lessons.dart';
