@@ -13,10 +13,8 @@ import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/logic/appConfig/controller.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/main.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
-import 'package:ynotes/usefulMethods.dart';
 
 class Page1 extends StatefulWidget {
   final double? offset;
@@ -606,7 +604,7 @@ class _Page4State extends State<Page4> {
                     ),
                     CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5, () async {
                       createStorage("agreedTermsAndConfiguredApp", "true");
-                      Navigator.of(context).pushReplacement(router(HomePage()));
+                      Navigator.pushReplacementNamed(context, "/summary");
                     }, label: "Allons-y !", textColor: ThemeUtils.textColor(), backgroundColor: Color(0xff5DADE2))
                     /*RaisedButton(
                       color: Color(0xff5DADE2),
@@ -617,12 +615,12 @@ class _Page4State extends State<Page4> {
                           CreateStorage("agreedTermsAndConfiguredApp", "true");
                           final prefs = await (SharedPreferences.getInstance());
                           prefs.setStringList("listSpecialties", chosenSpecialties);
-                          Navigator.of(context).pushReplacement(router(homePage()));
+                          Navigator.pushReplacementNamed(context, "/summary");
                         } else if (!classe[0]) {
                           CreateStorage("agreedTermsAndConfiguredApp", "true");
                           final prefs = await (SharedPreferences.getInstance());
                           prefs.setStringList("listSpecialties", chosenSpecialties);
-                          Navigator.of(context).pushReplacement(router(homePage()));
+                          Navigator.pushReplacementNamed(context, "/summary");
                         } else {
                           CustomDialogs.showAnyDialog(context, "Vous devez renseigner toutes vos spécialités.");
                         }

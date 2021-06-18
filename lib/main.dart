@@ -8,7 +8,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
 import 'package:wiredash/wiredash.dart';
 import 'package:ynotes/core/logic/appConfig/controller.dart';
 import 'package:ynotes/core/services/background.dart';
@@ -18,15 +17,14 @@ import 'package:ynotes/router.dart';
 import 'package:ynotes/ui/components/hiveLifeCycleManager.dart';
 import 'package:ynotes/ui/screens/carousel/carousel.dart';
 import 'package:ynotes/ui/screens/loading/loadingPage.dart';
-import 'package:ynotes/ui/screens/summary/summaryPage.dart';
 
 import 'core/utils/themeUtils.dart';
 import 'ui/screens/school_api_choice/schoolAPIChoicePage.dart';
 
+import 'package:sizer/sizer.dart';
+
 Future main() async {
   Logger.level = Level.warning;
-  WidgetsFlutterBinding.ensureInitialized();
-
   WidgetsFlutterBinding.ensureInitialized();
 
   appSys = ApplicationSystem();
@@ -38,13 +36,6 @@ Future main() async {
   });
 }
 
-var setting;
-
-var uuid = Uuid();
-
-///The app main class
-///
-///
 _headlessTask(HeadlessTask? task) async {
   if (task != null) {
     if (task.timeout) {
@@ -71,39 +62,20 @@ class HomeApp extends StatefulWidget {
   _HomeAppState createState() => _HomeAppState();
 }
 
-class HomePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
-    return SummaryPage();
-  }
-}
-
 class Loader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
-    return Scaffold(
-
-//Main container
-        body: LoadingPage());
+    return Scaffold(body: LoadingPage());
   }
 }
 
 class Login extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
-    return Scaffold(
-
-//Main container
-        body: SchoolAPIChoice());
+    return Scaffold(body: SchoolAPIChoice());
   }
 }
 
@@ -133,25 +105,27 @@ class _HomeAppState extends State<HomeApp> {
             locale: const Locale.fromSubtags(languageCode: 'fr'),
           ),
           child: HiveLifecycleManager(
-            child: MaterialApp(
-              localizationsDelegates: [
-                // ... app-specific localization delegate[s] here
-                GlobalMaterialLocalizations.delegate,
-                GlobalWidgetsLocalizations.delegate,
-                GlobalCupertinoLocalizations.delegate,
-              ],
-              supportedLocales: [
-                const Locale('en'), // English (could be useless ?)
-                const Locale('fr'), //French
-                // ... other locales the app supports
-              ],
-              debugShowCheckedModeBanner: false,
-              theme: model.theme,
-              title: kDebugMode ? "yNotes DEV" : "yNotes",
-              navigatorKey: _navigatorKey,
-              home: Loader(),
-              themeMode: ThemeMode.light,
-              onGenerateRoute: onGenerateRoute,
+            child: Sizer(
+              builder: (context, orientation, deviceType) => MaterialApp(
+                localizationsDelegates: [
+                  // ... app-specific localization delegate[s] here
+                  GlobalMaterialLocalizations.delegate,
+                  GlobalWidgetsLocalizations.delegate,
+                  GlobalCupertinoLocalizations.delegate,
+                ],
+                supportedLocales: [
+                  const Locale('en'), // English (could be useless ?)
+                  const Locale('fr'), //French
+                  // ... other locales the app supports
+                ],
+                debugShowCheckedModeBanner: false,
+                theme: model.theme,
+                title: kDebugMode ? "yNotes DEV" : "yNotes",
+                navigatorKey: _navigatorKey,
+                home: Loader(),
+                themeMode: ThemeMode.light,
+                onGenerateRoute: onGenerateRoute,
+              ),
             ),
           ),
         );

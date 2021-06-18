@@ -1,6 +1,5 @@
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -32,96 +31,85 @@ class _AccountPageState extends State<AccountPage> {
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
-    return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              ConstrainedBox(constraints: BoxConstraints(maxWidth: 500), child: LoginStatus()),
-              ConstrainedBox(
-                constraints: BoxConstraints(maxWidth: 500),
-                child: Card(
-                  color: Theme.of(context).primaryColorLight,
-                  child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 15, vertical: (screenSize.size.width / 5) * 0.1),
-                    child: Column(
-                      children: [
-                        buildMainAccountInfos(),
-                        Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: (screenSize.size.width / 5) * 0.1,
-                              vertical: (screenSize.size.width / 5) * 0.1),
-                          child: SingleChildScrollView(
-                              child: ExpansionPanelList(
-                                  expandedHeaderPadding: EdgeInsets.zero,
-                                  expansionCallback: (index, newVal) {
-                                    print(index);
-                                    setState(() {
-                                      expanded[index] = !(expanded[index] ?? false);
-                                    });
-                                  },
-                                  children: (appSys.account!.managableAccounts ?? [])
-                                      .map((e) =>
-                                          buildAccountDetail(e, (appSys.account!.managableAccounts ?? []).indexOf(e)))
-                                      .toList())),
-                        ),
-                        CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.45, () async {
-                          if (await CustomDialogs.showConfirmationDialog(context, null,
-                                  alternativeText:
-                                      "Voulez-vous vraiment vous déconnecter (et supprimer toutes vos données) ?",
-                                  alternativeButtonConfirmText: "Se déconnecter") ??
-                              false) {
-                            await appSys.exitApp();
-                            appSys.api = null;
-                            appSys.buildControllers();
-                            setState(() {});
-                            Phoenix.rebirth(context);
-                          }
-                        },
-                            padding: EdgeInsets.all(5),
-                            backgroundColor: Colors.red,
-                            icon: MdiIcons.logout,
-                            iconColor: Colors.white,
-                            label: "Déconnexion",
-                            textColor: Colors.white),
-                      ],
+
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          ConstrainedBox(constraints: BoxConstraints(maxWidth: 500), child: LoginStatus()),
+          ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: 500),
+            child: Card(
+              color: Theme.of(context).primaryColorLight,
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 15, vertical: (screenSize.size.width / 5) * 0.1),
+                child: Column(
+                  children: [
+                    buildMainAccountInfos(),
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: (screenSize.size.width / 5) * 0.1, vertical: (screenSize.size.width / 5) * 0.1),
+                      child: SingleChildScrollView(
+                          child: ExpansionPanelList(
+                              expandedHeaderPadding: EdgeInsets.zero,
+                              expansionCallback: (index, newVal) {
+                                print(index);
+                                setState(() {
+                                  expanded[index] = !(expanded[index] ?? false);
+                                });
+                              },
+                              children: (appSys.account!.managableAccounts ?? [])
+                                  .map((e) =>
+                                      buildAccountDetail(e, (appSys.account!.managableAccounts ?? []).indexOf(e)))
+                                  .toList())),
                     ),
-                  ),
+                    CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.45, () async {
+                      if (await CustomDialogs.showConfirmationDialog(context, null,
+                              alternativeText:
+                                  "Voulez-vous vraiment vous déconnecter (et supprimer toutes vos données) ?",
+                              alternativeButtonConfirmText: "Se déconnecter") ??
+                          false) {
+                        await appSys.exitApp();
+                        appSys.api = null;
+                        appSys.buildControllers();
+                        setState(() {});
+                        Phoenix.rebirth(context);
+                      }
+                    },
+                        padding: EdgeInsets.all(5),
+                        backgroundColor: Colors.red,
+                        icon: MdiIcons.logout,
+                        iconColor: Colors.white,
+                        label: "Déconnexion",
+                        textColor: Colors.white),
+                  ],
                 ),
               ),
-              SizedBox(
-                height: screenSize.size.height / 10 * 0.2,
-              ),
-              GestureDetector(
-                onTap: () async {
-                  launch('https://support.ynotes.fr/compte');
-                },
-                child: Text("En savoir plus sur les comptes",
-                    style: TextStyle(
-                      fontFamily: 'Asap',
-                      color: Colors.transparent,
-                      shadows: [Shadow(color: ThemeUtils.textColor(), offset: Offset(0, -5))],
-                      fontSize: 14,
-                      decorationColor: ThemeUtils.textColor(),
-                      fontWeight: FontWeight.normal,
-                      textBaseline: TextBaseline.alphabetic,
-                      decoration: TextDecoration.underline,
-                      decorationThickness: 2,
-                      decorationStyle: TextDecorationStyle.dashed,
-                    )),
-              ),
-            ],
+            ),
           ),
-        ),
-      ),
-      appBar: new AppBar(
-        title: new Text("Compte"),
-        systemOverlayStyle: ThemeUtils.isThemeDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
-        brightness: ThemeUtils.isThemeDark ? Brightness.dark : Brightness.light,
-        backgroundColor: Theme.of(context).primaryColor,
+          SizedBox(
+            height: screenSize.size.height / 10 * 0.2,
+          ),
+          GestureDetector(
+            onTap: () async {
+              launch('https://support.ynotes.fr/compte');
+            },
+            child: Text("En savoir plus sur les comptes",
+                style: TextStyle(
+                  fontFamily: 'Asap',
+                  color: Colors.transparent,
+                  shadows: [Shadow(color: ThemeUtils.textColor(), offset: Offset(0, -5))],
+                  fontSize: 14,
+                  decorationColor: ThemeUtils.textColor(),
+                  fontWeight: FontWeight.normal,
+                  textBaseline: TextBaseline.alphabetic,
+                  decoration: TextDecoration.underline,
+                  decorationThickness: 2,
+                  decorationStyle: TextDecorationStyle.dashed,
+                )),
+          ),
+        ],
       ),
     );
   }
@@ -360,11 +348,11 @@ class _LoginStatusState extends State<LoginStatus> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CustomButtons.materialButton(context, screenSize.size.width / 5 * 1.7, screenSize.size.height / 10 * 0.4,
+              CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.4,
                   () {
                 model.login();
               }, backgroundColor: Colors.orange, label: "Reconnexion", textColor: Colors.white),
-              CustomButtons.materialButton(context, screenSize.size.width / 5 * 1.7, screenSize.size.height / 10 * 0.4,
+              CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.4,
                   () {
                 //show wiredash
                 Wiredash.of(context)!.show();

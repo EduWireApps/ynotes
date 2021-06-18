@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:ui';
 
-import 'package:expandable/expandable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -38,12 +37,9 @@ class SummaryPage extends StatefulWidget {
 
 class SummaryPageState extends State<SummaryPage> with Layout, YPageMixin {
   double? actualPage;
-  late PageController _pageControllerSummaryPage;
   PageController? todoSettingsController;
   bool done2 = false;
   double? offset;
-  ExpandableController alertExpandableDialogController = ExpandableController();
-  PageController summarySettingsController = PageController(initialPage: 1);
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +50,7 @@ class SummaryPageState extends State<SummaryPage> with Layout, YPageMixin {
               onPressed: () => openLocalPage(YPageLocal(title: "Options", child: SummaryPageSettings())),
               icon: Icon(MdiIcons.wrench))
         ],
+        isScrollable: false,
         body: VisibilityDetector(
           key: Key('sumpage'),
           onVisibilityChanged: (visibilityInfo) async {
@@ -68,17 +65,21 @@ class SummaryPageState extends State<SummaryPage> with Layout, YPageMixin {
           },
           child: RefreshIndicator(
             onRefresh: refreshControllers,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                separator(context, "Notes", "/grades"),
-                QuickGrades(),
-                separator(context, "Devoirs", "/homework"),
-                QuickHomework(),
-                if (appSys.settings?["system"]["chosenParser"] == 0) separator(context, "Vie scolaire", "/school_life"),
-                if (appSys.settings?["system"]["chosenParser"] == 0) QuickSchoolLife(),
-              ],
+            child: SingleChildScrollView(
+              physics: AlwaysScrollableScrollPhysics(),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  separator(context, "Notes", "/grades"),
+                  QuickGrades(),
+                  separator(context, "Devoirs", "/homework"),
+                  QuickHomework(),
+                  if (appSys.settings?["system"]["chosenParser"] == 0)
+                    separator(context, "Vie scolaire", "/school_life"),
+                  if (appSys.settings?["system"]["chosenParser"] == 0) QuickSchoolLife(),
+                ],
+              ),
             ),
           ),
         ));
@@ -92,32 +93,26 @@ class SummaryPageState extends State<SummaryPage> with Layout, YPageMixin {
     super.initState();
     todoSettingsController = new PageController(initialPage: 0);
     initialIndexGradesOffset = 0;
-    _pageControllerSummaryPage = PageController();
-    _pageControllerSummaryPage.addListener(() {
-      setState(() {
-        actualPage = _pageControllerSummaryPage.page;
-        offset = _pageControllerSummaryPage.offset;
-      });
-    });
+
     //Init controllers
     SchedulerBinding.instance!.addPostFrameCallback((!mounted
         ? null
-        : (_) => {
-              if (firstStart)
-                {
-                  initLoginController().then((var f) {
-                    if (firstStart) {
-                      firstStart = false;
-                    }
-                    refreshControllers();
-                  })
+        : (_) {
+            refreshControllers(force: false);
+            if (firstStart) {
+              initLoginController().then((var f) {
+                if (firstStart) {
+                  firstStart = false;
                 }
-            })!);
+                refreshControllers();
+              });
+            }
+          })!);
   }
 
-  Future<void> refreshControllers() async {
-    await appSys.gradesController.refresh(force: true);
-    await appSys.homeworkController.refresh(force: true);
+  Future<void> refreshControllers({force: true}) async {
+    await appSys.gradesController.refresh(force: force);
+    await appSys.homeworkController.refresh(force: force);
   }
 
   Widget separator(BuildContext context, String text, String routeName) {
