@@ -36,9 +36,6 @@ platform :ios do
     end
     lane :prod do
         setup_ci
-        Dir.chdir "../.." do
-            sh("flutter", "build" ,"ios", "--release") # Related to https://github.com/flutter/flutter/issues/22188
-        end
         match(type: "appstore")
         build_app(workspace: "Runner.xcworkspace", scheme: "Runner") # Change name of workspace
         api_key = app_store_connect_api_key(
