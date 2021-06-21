@@ -127,7 +127,8 @@ class _AgendaState extends State<Agenda> {
                                               margin: EdgeInsets.only(left: screenSize.size.width / 5 * 0.5),
                                               height: screenSize.size.height / 10 * 1.9,
                                               child: Image(
-                                                  fit: BoxFit.fitWidth, image: AssetImage('assets/images/relax.png')),
+                                                  fit: BoxFit.fitWidth,
+                                                  image: AssetImage('assets/images/pageItems/agenda/noEvent.png')),
                                             ),
                                             Text(
                                               "Journée détente ?",

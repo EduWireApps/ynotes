@@ -331,7 +331,7 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                Image(fit: BoxFit.fitWidth, image: AssetImage('assets/images/noHomework.png')),
+                Image(fit: BoxFit.fitWidth, image: AssetImage('assets/images/pageItems/homework/noHomework.png')),
                 Text(
                   "Pas de devoirs pour cette journée.",
                   textAlign: TextAlign.center,

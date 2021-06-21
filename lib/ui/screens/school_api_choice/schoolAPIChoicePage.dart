@@ -96,7 +96,7 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
                                         width: 50,
                                         height: 40,
                                         fit: BoxFit.fill,
-                                        image: AssetImage('assets/images/EcoleDirecte/EcoleDirecteIcon.png')),
+                                        image: AssetImage('assets/images/icons/ecoledirecte/EcoleDirecteIcon.png')),
                                   ),
                                   Expanded(
                                       child: Text("Ecole Directe",
@@ -148,7 +148,7 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
                                               width: 50,
                                               height: 50,
                                               fit: BoxFit.fill,
-                                              image: AssetImage('assets/images/Pronote/PronoteIcon.png')),
+                                              image: AssetImage('assets/images/icons/pronote/PronoteIcon.png')),
                                         ),
                                         Expanded(
                                             child: Text("Pronote",

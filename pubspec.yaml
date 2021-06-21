@@ -117,8 +117,7 @@ dependencies:
   preload_page_view: ^0.1.6
   provider: ^5.0.0
   qr_code_scanner: ^0.5.1
-
-  rive: ^0.7.10
+  rive: ^0.7.18
   rxdart: ^0.26.0
   scrollable_positioned_list: ^0.2.0-nullsafety.0
   shake: ^1.0.0
@@ -127,6 +126,7 @@ dependencies:
   shimmer: ^2.0.0-nullsafety.0
   sliding_up_panel: ^2.0.0+1
   smooth_page_indicator: ^0.3.0-nullsafety.0
+
   sqflite: ^2.0.0+3
   stack: ^0.2.1
 
@@ -215,19 +215,18 @@ flutter:
           weight: 700
 
   assets:
-    - assets/images/logoED.svg
-    - assets/images/shelves/calendar.png
-    - assets/images/shelves/clock.png
-    - assets/images/shelves/shelve1.png
-    - assets/images/shelves/shelve2.png
-    - assets/images/totor.png
-    - assets/images/book.png
     - assets/animations/
     - assets/images/
-    - assets/images/persistantNotification/
-    - assets/images/Pronote/
-    - assets/images/EcoleDirecte/
+    - assets/images/icons/pronote/
+    - assets/images/icons/ecoledirecte/
+    - assets/images/icons/app/
+    - assets/images/pageItems/agenda/
+    - assets/images/pageItems/carousel/shelves/
+    - assets/images/pageItems/carousel/
+    - assets/images/pageItems/grades/
+    - assets/images/pageItems/homework/
+    - assets/images/pageItems/persistantNotification/
+    - assets/documents/updateNoteAssets/
     - assets/appico/
     - assets/appico/foreground.png
-    - assets/TOS_fr.txt
-    - assets/updateNoteAssets/
+    - assets/documents/TOS_fr.txt

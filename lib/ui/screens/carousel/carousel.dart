@@ -252,28 +252,28 @@ class _Page2State extends State<Page2> {
                   child: Container(
                       height: 100,
                       width: 100,
-                      child: FittedBox(fit: BoxFit.fill, child: Image.asset('assets/images/shelves/calendar.png'))),
+                      child: FittedBox(fit: BoxFit.fill, child: Image.asset('assets/images/pageItems/carousel/shelves/calendar.png'))),
                 ),
                 Transform.translate(
                   offset: Offset(70 - (widget.offset! - 1) * 20, -157),
                   child: Container(
                       height: 120,
                       width: 120,
-                      child: FittedBox(fit: BoxFit.fill, child: Image.asset('assets/images/shelves/clock.png'))),
+                      child: FittedBox(fit: BoxFit.fill, child: Image.asset('assets/images/pageItems/carousel/shelves/clock.png'))),
                 ),
                 Transform.translate(
                   offset: Offset(0 - (widget.offset! - 1) * 400, -90),
                   child: Container(
                       height: 170,
                       width: 320,
-                      child: FittedBox(fit: BoxFit.fill, child: Image.asset('assets/images/shelves/shelve1.png'))),
+                      child: FittedBox(fit: BoxFit.fill, child: Image.asset('assets/images/pageItems/carousel/shelves/shelve1.png'))),
                 ),
                 Transform.translate(
                   offset: Offset(0 - (widget.offset! - 1) * 300, 90),
                   child: Container(
                       height: 90,
                       width: 320,
-                      child: FittedBox(fit: BoxFit.fill, child: Image.asset('assets/images/shelves/shelve2.png'))),
+                      child: FittedBox(fit: BoxFit.fill, child: Image.asset('assets/images/pageItems/carousel/shelves/shelve2.png'))),
                 ),
               ],
             ),

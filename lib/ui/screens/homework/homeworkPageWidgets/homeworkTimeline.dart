@@ -346,7 +346,8 @@ class _HomeworkTimelineState extends State<HomeworkTimeline> {
             children: <Widget>[
               Container(
                   height: screenSize.size.height / 10 * 5,
-                  child: Image(fit: BoxFit.fitWidth, image: AssetImage('assets/images/noHomework.png'))),
+                  child: Image(
+                      fit: BoxFit.fitWidth, image: AssetImage('assets/images/pageItems/homework/noHomework.png'))),
               Text(
                 "Pas de devoirs à l'horizon... \non se détend ?",
                 textAlign: TextAlign.center,

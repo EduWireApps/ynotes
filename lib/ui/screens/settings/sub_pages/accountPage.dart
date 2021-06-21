@@ -151,8 +151,8 @@ class _AccountPageState extends State<AccountPage> {
                             width: (appSys.account?.apiType == API_TYPE.EcoleDirecte ? 30 : 50),
                             height: (appSys.account?.apiType == API_TYPE.EcoleDirecte ? 30 : 20),
                             image: AssetImage(appSys.account?.apiType == API_TYPE.EcoleDirecte
-                                ? 'assets/images/EcoleDirecte/EcoleDirecteIcon.png'
-                                : 'assets/images/Pronote/PronoteIcon.png'),
+                                ? 'assets/images/icons/ecoledirecte/EcoleDirecteIcon.png'
+                                : 'assets/images/icons/pronote/PronoteIcon.png'),
                             color: appSys.account?.apiType == API_TYPE.EcoleDirecte ? ThemeUtils.textColor() : null,
                           ),
                         ),

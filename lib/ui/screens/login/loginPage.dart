@@ -93,7 +93,7 @@ class _AlertBoxWidgetState extends State<AlertBoxWidget> {
                               child: Container(
                             child: FutureBuilder(
                                 //Read the TOS file
-                                future: FileAppUtil.loadAsset("assets/TOS_fr.txt"),
+                                future: FileAppUtil.loadAsset("assets/documents/TOS_fr.txt"),
                                 builder: (context, snapshot) {
                                   if (snapshot.hasError) {
                                     print(snapshot.error);

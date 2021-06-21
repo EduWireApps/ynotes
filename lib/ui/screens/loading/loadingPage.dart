@@ -43,7 +43,7 @@ class _LoadingPageState extends State<LoadingPage> {
         0.2,
         Center(
             child: Image(
-          image: AssetImage('assets/images/LogoYNotes.png'),
+          image: AssetImage('assets/images/icons/app/AppIcon.png'),
           width: 110,
         )),
       ),

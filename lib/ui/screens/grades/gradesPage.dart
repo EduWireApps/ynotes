@@ -148,7 +148,7 @@ class _GradesPageState extends State<GradesPage> with Layout {
                                               child: FittedBox(
                                                 child: Image(
                                                   fit: BoxFit.fitHeight,
-                                                  image: AssetImage('assets/images/book.png'),
+                                                  image: AssetImage('assets/images/pageItems/grades/noGrades.png'),
                                                 ),
                                               ),
                                             ),
@@ -196,7 +196,7 @@ class _GradesPageState extends State<GradesPage> with Layout {
                                         mainAxisAlignment: MainAxisAlignment.center,
                                         children: <Widget>[
                                           Image(
-                                            image: AssetImage('assets/images/totor.png'),
+                                            image: AssetImage('assets/images/issues/totor.png'),
                                             width: screenSize.size.width / 5 * 3.5,
                                           ),
                                           Container(

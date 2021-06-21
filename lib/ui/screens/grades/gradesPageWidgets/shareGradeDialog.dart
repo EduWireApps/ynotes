@@ -178,7 +178,7 @@ class _ShareBoxState extends State<ShareBox> {
                             bottom: screenSize.size.height / 10 * 0.1,
                             right: screenSize.size.width / 5 * 0.1,
                             child: Image(
-                              image: AssetImage('assets/images/LogoYNotes.png'),
+                              image: AssetImage('assets/images/icons/app/AppIcon.png'),
                               color: ThemeUtils.textColor(),
                               height: screenSize.size.height / 10 * 0.3,
                               width: screenSize.size.width / 5 * 0.4,

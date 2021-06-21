@@ -210,7 +210,7 @@ class _AgendaElementState extends State<AgendaElement> {
                                       decoration: BoxDecoration(
                                         image: DecorationImage(
                                           image: AssetImage(
-                                              'assets/images/redGrid.png'),
+                                              'assets/images/pageItems/agenda/redGrid.png'),
                                           fit: BoxFit.fill,
                                         ),
                                       ),
