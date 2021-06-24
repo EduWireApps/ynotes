@@ -73,6 +73,7 @@ class LoginController extends ChangeNotifier {
       String? url = await readStorage("pronoteurl");
       String? cas = await readStorage("pronotecas");
       bool? iscas = (await readStorage("ispronotecas") == "true");
+
       var z = await readStorage("agreedTermsAndConfiguredApp");
       if (u != null && p != null && z != null) {
         await appSys.api!.login(u, p, additionnalSettings: {

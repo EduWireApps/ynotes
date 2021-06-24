@@ -218,11 +218,7 @@ class APIPronote extends API {
               "Le format de l'URL entrée est invalide. Vérifiez qu'il correspond bien à celui fourni par votre établissement";
         }
         if (e.toString().contains("runes")) {
-          if (localClient.qrCodeLogin ?? false) {
-            error = "Le QR code est invalide / expiré";
-          } else {
-            error = "Le mot de passe et/ou l'identifiant saisi(s) est/sont incorrect(s)";
-          }
+          error = "Le mot de passe et/ou l'identifiant saisi(s) est/sont incorrect(s)";
         }
         if (e.toString().contains("IP")) {
           error =
@@ -232,7 +228,11 @@ class APIPronote extends API {
           error = "Impossible de se connecter à l'adresse saisie. Vérifiez cette dernière et votre connexion.";
         }
         if (e.toString().contains("Invalid or corrupted pad block")) {
-          error = "Le mot de passe et/ou l'identifiant saisi(s) est/sont incorrect(s)";
+          if (additionnalSettings?["qrCodeLogin"] ?? false) {
+            error = "Le QR code est invalide / expiré";
+          } else {
+            error = "Le mot de passe et/ou l'identifiant saisi(s) est/sont incorrect(s)";
+          }
         }
         if (e.toString().contains("HTML PAGE")) {
           error = "Problème de page HTML.";

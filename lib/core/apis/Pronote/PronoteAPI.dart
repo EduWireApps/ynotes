@@ -752,7 +752,9 @@ class PronoteClient {
         password = await storage.read(key: "password");
       }
       await storage.write(key: "pronoteurl", value: this.pronoteUrl);
-      await storage.write(key: "ispronotecas", value: this.mobileLogin.toString());
+      await storage.write(
+          key: "ispronotecas", value: ((this.mobileLogin ?? false) || (this.qrCodeLogin ?? false)).toString());
+
       print("Saved credentials");
     } catch (e) {
       print("failed to write values");
@@ -768,7 +770,7 @@ class PronoteClient {
       "pourENT": this.ent,
       "enConnexionAuto": false,
       "demandeConnexionAuto": false,
-      "enConnexionAppliMobile": this.mobileLogin,
+      "enConnexionAppliMobile": !(qrCodeLogin ?? true) ? this.mobileLogin : false,
       "demandeConnexionAppliMobile": qrCodeLogin,
       "demandeConnexionAppliMobileJeton": qrCodeLogin,
       "uuidAppliMobile": appSys.settings!["system"]["uuid"],
