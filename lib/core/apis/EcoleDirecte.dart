@@ -173,7 +173,7 @@ class APIEcoleDirecte extends API {
         forceFetch: forceReload);
   }
 
-  Future<List> login(username, password, {url, cas, mobileCasLogin}) async {
+  Future<List> login(username, password, {Map? additionnalSettings}) async {
     final prefs = await SharedPreferences.getInstance();
     if (username == null) {
       username = "";

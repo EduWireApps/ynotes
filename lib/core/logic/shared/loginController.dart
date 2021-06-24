@@ -75,7 +75,11 @@ class LoginController extends ChangeNotifier {
       bool? iscas = (await readStorage("ispronotecas") == "true");
       var z = await readStorage("agreedTermsAndConfiguredApp");
       if (u != null && p != null && z != null) {
-        await appSys.api!.login(u, p, url: url, mobileCasLogin: iscas, cas: cas).then((List loginValues) {
+        await appSys.api!.login(u, p, additionnalSettings: {
+          "url": url,
+          "mobileCasLogin": iscas,
+          "cas": cas,
+        }).then((List loginValues) {
           // ignore: unnecessary_null_comparison
           if (loginValues == null) {
             _actualState = loginStatus.loggedOff;

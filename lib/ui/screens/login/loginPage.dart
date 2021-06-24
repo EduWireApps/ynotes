@@ -404,8 +404,10 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
               //Actions when pressing the ok button
               if (_username.text != "" && (appSys.settings!["system"]["chosenParser"] == 1 ? _url.text != "" : true)) {
                 //Login using the chosen API
-                connectionData = appSys.api!
-                    .login(_username.text.trim(), _password.text.trim(), url: _url.text.trim(), mobileCasLogin: false);
+                connectionData = appSys.api!.login(_username.text.trim(), _password.text.trim(), additionnalSettings: {
+                  "url": _url.text.trim(),
+                  "mobileCasLogin": false,
+                });
                 if (connectionData != null) openLoadingDialog();
               } else {
                 CustomDialogs.showAnyDialog(context, "Remplissez tous les champs.");
@@ -482,8 +484,10 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
                     _url.text.length == 0 &&
                     _password.text.length == 0 &&
                     _username.text.length == 0) {
-                  connectionData = appSys.api!.login("demonstration", "pronotevs",
-                      url: "https://demo.index-education.net/pronote/parent.html", mobileCasLogin: false);
+                  connectionData = appSys.api!.login("demonstration", "pronotevs", additionnalSettings: {
+                    "url": "https://demo.index-education.net/pronote/parent.html",
+                    "mobileCasLogin": false,
+                  });
                 }
                 if (connectionData != null) openLoadingDialog();
               },
@@ -505,7 +509,10 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
                       var a = await Navigator.of(context)
                           .push(router(LoginWebView(url: _url.text, controller: _controller)));
                       if (a != null) {
-                        connectionData = appSys.api!.login(a["login"], a["mdp"], url: _url.text, mobileCasLogin: true);
+                        connectionData = appSys.api!.login(a["login"], a["mdp"], additionnalSettings: {
+                          "url": _url.text,
+                          "mobileCasLogin": true,
+                        });
                         if (connectionData != null) openLoadingDialog();
                       }
                     } else {

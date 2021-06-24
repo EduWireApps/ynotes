@@ -142,7 +142,9 @@ class Communication {
     String url = this.rootSite +
         "/" +
         (this.cookies != null ? "?fd=1" : this.htmlPage) +
-        ((this.client.mobileLogin ?? false) ? "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335" : "");
+        (((this.client.mobileLogin ?? false) || (this.client.qrCodeLogin ?? false))
+            ? "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335"
+            : "");
     if (url.contains("?login=true") || url.contains("?fd=1")) {
       url += "&fd=1";
     } else {
@@ -346,7 +348,7 @@ class Encryption {
     final aesEncrypter = Encrypter(AES(key, mode: AESMode.cbc, padding: "PKCS7"));
     //generate AES CBC block encrypter with key and PKCS7 padding
 
-    print(this.aesIV);
+    print(this.aesIV?.base16);
 
     try {
       return aesEncrypter.decrypt64(conv.base64.encode(data), iv: this.aesIV);
@@ -486,11 +488,15 @@ class PronoteClient {
 
   List<String> stepsLogger = [];
   bool? mobileLogin;
-  PronoteClient(String pronoteUrl, {String? username, String? password, var cookies, bool? mobileLogin}) {
+  bool? qrCodeLogin;
+
+  PronoteClient(String pronoteUrl,
+      {String? username, String? password, var cookies, bool? mobileLogin, bool? qrCodeLogin}) {
     this.username = username ?? "";
     this.password = password ?? "";
     this.pronoteUrl = pronoteUrl;
     this.mobileLogin = mobileLogin;
+    this.qrCodeLogin = qrCodeLogin;
     print("Initiate communication");
 
     this.communication = Communication(pronoteUrl, cookies, this);
@@ -738,11 +744,11 @@ class PronoteClient {
     try {
       final storage = new FlutterSecureStorage();
       await storage.write(key: "username", value: this.username);
-      if (!mobileLogin!) {
+      if (!mobileLogin! && !qrCodeLogin!) {
         await storage.write(key: "password", value: this.password);
       }
       //In case password changed
-      if (mobileLogin! && (await storage.read(key: "password")) != null) {
+      if (mobileLogin! && qrCodeLogin! && (await storage.read(key: "password")) != null) {
         password = await storage.read(key: "password");
       }
       await storage.write(key: "pronoteurl", value: this.pronoteUrl);
@@ -763,8 +769,8 @@ class PronoteClient {
       "enConnexionAuto": false,
       "demandeConnexionAuto": false,
       "enConnexionAppliMobile": this.mobileLogin,
-      "demandeConnexionAppliMobile": false,
-      "demandeConnexionAppliMobileJeton": false,
+      "demandeConnexionAppliMobile": qrCodeLogin,
+      "demandeConnexionAppliMobileJeton": qrCodeLogin,
       "uuidAppliMobile": appSys.settings!["system"]["uuid"],
       "loginTokenSAV": ""
     };
@@ -774,6 +780,7 @@ class PronoteClient {
     print("Identification");
 
     var challenge = idr['donneesSec']['donnees']['challenge'];
+    print(challenge);
     var e = Encryption();
     e.aesSetIV(this.communication!.encryption.aesIV);
     var motdepasse;
@@ -804,6 +811,7 @@ class PronoteClient {
       }
 
       var alea = idr['donneesSec']['donnees']['alea'];
+      print(alea);
       List<int> encoded = conv.utf8.encode((alea ?? "") + p);
       motdepasse = sha256.convert(encoded);
       motdepasse = conv.hex.encode(motdepasse.bytes);
@@ -838,7 +846,7 @@ class PronoteClient {
     }
 
     try {
-      if (mobileLogin!) {
+      if (mobileLogin! || qrCodeLogin!) {
         print("Saving token");
         await storage.write(
             key: "password", value: this.authResponse['donneesSec']['donnees']["jetonConnexionAppliMobile"]);

@@ -126,6 +126,7 @@ dependencies:
   shimmer: ^2.0.0-nullsafety.0
   sliding_up_panel: ^2.0.0+1
   smooth_page_indicator: ^0.3.0-nullsafety.0
+  flutter_svg: ^0.22.0
 
   sqflite: ^2.0.0+3
   stack: ^0.2.1
@@ -226,6 +227,7 @@ flutter:
     - assets/images/pageItems/grades/
     - assets/images/pageItems/homework/
     - assets/images/pageItems/persistantNotification/
+    - assets/images/pageItems/login/
     - assets/documents/updateNoteAssets/
     - assets/appico/
     - assets/appico/foreground.png

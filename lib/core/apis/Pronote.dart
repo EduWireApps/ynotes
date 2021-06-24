@@ -158,8 +158,8 @@ class APIPronote extends API {
   }
 
   @override
-  Future<List> login(username, password, {url, cas, mobileCasLogin}) async {
-    print(username + " " + password + " " + url);
+  Future<List> login(username, password, {Map? additionnalSettings}) async {
+    print(username + " " + password + " " + additionnalSettings?["url"]);
     int req = 0;
 
     while (loginLock == true && req < 8 && appSys.loginController.actualState != loginStatus.loggedIn) {
@@ -171,9 +171,9 @@ class APIPronote extends API {
       loginReqNumber = 0;
       loginLock = true;
       try {
-        var cookies = await callCas(cas, username, password, url ?? "");
+        var cookies = await callCas(additionnalSettings?["cas"], username, password,  additionnalSettings?["url"] ?? "");
         localClient =
-            PronoteClient(url, username: username, password: password, mobileLogin: mobileCasLogin, cookies: cookies);
+            PronoteClient(additionnalSettings?["url"], username: username, password: password, mobileLogin:  additionnalSettings?["mobileCasLogin"], cookies: cookies,qrCodeLogin: additionnalSettings?["qrCodeLogin"]);
 
         bool? login = await localClient.init();
         if (login ?? false) {

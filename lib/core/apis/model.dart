@@ -97,7 +97,7 @@ abstract class API {
 
   ///Connect to the API
   ///Should return a connection status
-  Future<List> login(username, password, {url, cas, mobileCasLogin});
+  Future<List> login(username, password, {Map? additionnalSettings});
 
   ///Test to know if there are new grades
   Future<bool?> testNewGrades();
