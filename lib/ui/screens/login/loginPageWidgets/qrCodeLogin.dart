@@ -14,6 +14,7 @@ import 'package:ynotes/core/apis/Pronote/PronoteAPI.dart';
 import 'package:ynotes/core/utils/nullSafeMapGetter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
+import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/screens/login/loginPage.dart';
 
 export 'package:rive/src/generated/animation/state_machine_base.dart';
@@ -133,19 +134,25 @@ class _QRCodeLoginPageState extends State<QRCodeLoginPage> {
     encrypt.aesKey = md5.convert(utf8.encode(pinValue));
 
     //Decrypt credentials
-    String pass = encrypt.aesDecrypt(conv.hex.decode(loginData?["jeton"]));
-    String login = encrypt.aesDecrypt(conv.hex.decode(loginData?["login"]));
+    try {
+      String pass = encrypt.aesDecrypt(conv.hex.decode(loginData?["jeton"]));
+      String login = encrypt.aesDecrypt(conv.hex.decode(loginData?["login"]));
 
-    //Init the device UUID (important)
-    //Used by pronote to fingerprint the device
-    await appSys.updateSetting(appSys.settings!["system"], "uuid", Uuid().v4());
+      //Init the device UUID (important)
+      //Used by pronote to fingerprint the device
+      await appSys.updateSetting(appSys.settings!["system"], "uuid", Uuid().v4());
 
-    //Open the loading dialog with credentials
-    openLoadingDialog(appSys.api!.login(login, pass, additionnalSettings: {
-      "url": loginData?["url"] + "?login=true",
-      "qrCodeLogin": true,
-      "mobileCasLogin": false,
-    }));
+      //Open the loading dialog with credentials
+      openLoadingDialog(appSys.api!.login(login, pass, additionnalSettings: {
+        "url": loginData?["url"] + "?login=true",
+        "qrCodeLogin": true,
+        "mobileCasLogin": false,
+      }));
+    } catch (e) {
+      print(e);
+      CustomDialogs.showAnyDialog(context, "Votre code PIN est invalide");
+      return;
+    }
   }
 
   //Rive animation : loaded in the QR code scanner
@@ -186,16 +193,20 @@ class _QRCodeLoginPageState extends State<QRCodeLoginPage> {
   //We process the data read by the qrcode scanner
   //Returns true if this one is well formed
   Future<bool> processData(Barcode data) async {
-    Map? raw = jsonDecode(data.code);
-    if (raw != null) {
-      if (mapGet(raw, ["jeton"]) != null && mapGet(raw, ["login"]) != null && mapGet(raw, ["url"]) != null) {
-        stateMachineController?.inputs.first.change(true);
-        await Future.delayed(const Duration(seconds: 3), () => "1");
-        return true;
+    try {
+      Map? raw = jsonDecode(data.code);
+      if (raw != null) {
+        if (mapGet(raw, ["jeton"]) != null && mapGet(raw, ["login"]) != null && mapGet(raw, ["url"]) != null) {
+          stateMachineController?.inputs.first.change(true);
+          await Future.delayed(const Duration(seconds: 3), () => "1");
+          return true;
+        } else {
+          return false;
+        }
       } else {
         return false;
       }
-    } else {
+    } catch (e) {
       return false;
     }
   }
@@ -205,6 +216,7 @@ class _QRCodeLoginPageState extends State<QRCodeLoginPage> {
     this.controller = controller;
     controller.scannedDataStream.listen((scanData) async {
       if (await processData(scanData)) {
+        loginData = jsonDecode(scanData.code);
         //If data is well formed we change to the second page where the user is invited to enter the PIN
         pageCon.animateToPage(1, duration: Duration(milliseconds: 300), curve: Curves.ease);
       }

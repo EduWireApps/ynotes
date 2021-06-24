@@ -171,9 +171,13 @@ class APIPronote extends API {
       loginReqNumber = 0;
       loginLock = true;
       try {
-        var cookies = await callCas(additionnalSettings?["cas"], username, password,  additionnalSettings?["url"] ?? "");
-        localClient =
-            PronoteClient(additionnalSettings?["url"], username: username, password: password, mobileLogin:  additionnalSettings?["mobileCasLogin"], cookies: cookies,qrCodeLogin: additionnalSettings?["qrCodeLogin"]);
+        var cookies = await callCas(additionnalSettings?["cas"], username, password, additionnalSettings?["url"] ?? "");
+        localClient = PronoteClient(additionnalSettings?["url"],
+            username: username,
+            password: password,
+            mobileLogin: additionnalSettings?["mobileCasLogin"] ?? false,
+            cookies: cookies,
+            qrCodeLogin: additionnalSettings?["qrCodeLogin"] ?? false);
 
         bool? login = await localClient.init();
         if (login ?? false) {
@@ -214,7 +218,11 @@ class APIPronote extends API {
               "Le format de l'URL entrée est invalide. Vérifiez qu'il correspond bien à celui fourni par votre établissement";
         }
         if (e.toString().contains("runes")) {
-          error = "Le mot de passe et/ou l'identifiant saisi(s) est/sont incorrect(s)";
+          if (localClient.qrCodeLogin ?? false) {
+            error = "Le QR code est invalide / expiré";
+          } else {
+            error = "Le mot de passe et/ou l'identifiant saisi(s) est/sont incorrect(s)";
+          }
         }
         if (e.toString().contains("IP")) {
           error =
