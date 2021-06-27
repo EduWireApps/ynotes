@@ -13,6 +13,7 @@ import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/textField.dart';
 import 'package:ynotes/ui/components/y_page/mixins.dart';
+import 'package:ynotes/ui/components/y_page/y_page_local.dart';
 import 'package:ynotes/ui/screens/login/loginPageWidgets/loginWebView.dart';
 import 'package:ynotes/ui/screens/login/loginPageWidgets/pronoteSetup.dart';
 import 'package:ynotes/ui/screens/login/loginPageWidgets/qrCodeLogin.dart';
@@ -611,7 +612,11 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
     switch (id) {
       case "qrcode":
         {
-          Navigator.of(context).push(router(QRCodeLoginPage()));
+          Navigator.of(context).push(router(YPageLocal(
+            child: QRCodeLoginPage(),
+            title: "Connexion par QR Code",
+            scrollable: false,
+          )));
         }
         break;
       case "location":

@@ -88,6 +88,7 @@ class LoginController extends ChangeNotifier {
             notifyListeners();
           }
           if (loginValues[0] == 1) {
+            logs = "";
             _details = "Connecté";
             _actualState = loginStatus.loggedIn;
             attemptedToRelogin = false;

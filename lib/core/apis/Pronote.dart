@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -162,10 +163,13 @@ class APIPronote extends API {
     print(username + " " + password + " " + additionnalSettings?["url"]);
     int req = 0;
 
+    //we wait a random time (0 to 1 second) to never trigger the function at the same time
+    Random random = new Random();
+    await Future.delayed(Duration(milliseconds: (random.nextDouble() * 100).round()), () => "1");
     while (loginLock == true && req < 8 && appSys.loginController.actualState != loginStatus.loggedIn) {
-      print("Locked, trying in 5 seconds...");
+      print("Locked, trying in 15 seconds...");
       req++;
-      await Future.delayed(Duration(seconds: 5), () => "1");
+      await Future.delayed(Duration(seconds: 15), () => "1");
     }
     if (loginLock == false && loginReqNumber < 5) {
       loginReqNumber = 0;

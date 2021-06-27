@@ -4,6 +4,16 @@ import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/animations/FadeAnimation.dart';
 import 'package:ynotes/usefulMethods.dart';
 
+testIfExistingAccount() async {
+  var u = await storage.read(key: "username");
+  var p = await storage.read(key: "password");
+  if (u != null && p != null) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 class LoadingPage extends StatefulWidget {
   const LoadingPage({Key? key}) : super(key: key);
 
@@ -13,28 +23,6 @@ class LoadingPage extends StatefulWidget {
 
 class _LoadingPageState extends State<LoadingPage> {
   Future<String>? connectionData;
-  String? u;
-  String? p;
-  String? z;
-  @override
-  void initState() {
-    super.initState();
-    tryToConnect();
-  }
-
-  tryToConnect() async {
-    await Future.delayed(const Duration(milliseconds: 500), () => "1");
-    String? u = await readStorage("username");
-    String? p = await readStorage("password");
-
-    z = await storage.read(key: "agreedTermsAndConfiguredApp");
-    if (u != null && p != null && z != null && appSys.settings!["system"]["chosenParser"] != null) {
-      Navigator.pushReplacementNamed(context, "/summary");
-    } else {
-      Navigator.pushReplacementNamed(context, "/login");
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,14 +37,24 @@ class _LoadingPageState extends State<LoadingPage> {
       ),
     );
   }
-}
 
-testIfExistingAccount() async {
-  var u = await storage.read(key: "username");
-  var p = await storage.read(key: "password");
-  if (u != null && p != null) {
-    return true;
-  } else {
-    return false;
+  @override
+  void initState() {
+    super.initState();
+    tryToConnect();
+  }
+
+  tryToConnect() async {
+    await Future.delayed(const Duration(milliseconds: 500), () => "1");
+    String? u = await readStorage("username");
+    String? p = await readStorage("password");
+    String? z = await readStorage("agreedTermsAndConfiguredApp");
+
+    print([u, p, z]);
+    if (u != null && p != null && z != null && appSys.settings!["system"]["chosenParser"] != null) {
+      Navigator.pushReplacementNamed(context, "/summary");
+    } else {
+      Navigator.pushReplacementNamed(context, "/login");
+    }
   }
 }

@@ -744,11 +744,11 @@ class PronoteClient {
     try {
       final storage = new FlutterSecureStorage();
       await storage.write(key: "username", value: this.username);
-      if (!mobileLogin! && !qrCodeLogin!) {
+      if (mobileLogin == false && qrCodeLogin == false) {
         await storage.write(key: "password", value: this.password);
       }
       //In case password changed
-      if (mobileLogin! && qrCodeLogin! && (await storage.read(key: "password")) != null) {
+      if ((mobileLogin == true || qrCodeLogin == true) && (await storage.read(key: "password")) != null) {
         password = await storage.read(key: "password");
       }
       await storage.write(key: "pronoteurl", value: this.pronoteUrl);
@@ -770,7 +770,7 @@ class PronoteClient {
       "pourENT": this.ent,
       "enConnexionAuto": false,
       "demandeConnexionAuto": false,
-      "enConnexionAppliMobile": !(qrCodeLogin ?? true) ? this.mobileLogin : false,
+      "enConnexionAppliMobile": (qrCodeLogin == false) ? this.mobileLogin : false,
       "demandeConnexionAppliMobile": qrCodeLogin,
       "demandeConnexionAppliMobileJeton": qrCodeLogin,
       "uuidAppliMobile": appSys.settings!["system"]["uuid"],
@@ -780,9 +780,11 @@ class PronoteClient {
     this.stepsLogger.add("✅ Posted identification successfully");
 
     print("Identification");
-
+    print("Using following credentials : " +
+        this.username +
+        " , " +
+        this.password.toString().substring(0, this.password.toString().length - 2));
     var challenge = idr['donneesSec']['donnees']['challenge'];
-    print(challenge);
     var e = Encryption();
     e.aesSetIV(this.communication!.encryption.aesIV);
     var motdepasse;
@@ -848,7 +850,8 @@ class PronoteClient {
     }
 
     try {
-      if (mobileLogin! || qrCodeLogin!) {
+      if ((mobileLogin == true || qrCodeLogin == true) &&
+          this.authResponse['donneesSec']['donnees']["jetonConnexionAppliMobile"] != null) {
         print("Saving token");
         await storage.write(
             key: "password", value: this.authResponse['donneesSec']['donnees']["jetonConnexionAppliMobile"]);

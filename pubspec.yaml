@@ -15,7 +15,7 @@ version: 0.12.1+9
 publish_to: none
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: ">=2.12.0 <3.0.0"
 dependencies:
   flutter:
     sdk: flutter
@@ -62,7 +62,6 @@ dependencies:
       url: https://github.com/EduWireApps/ynotes-components
       ref: main
   android_alarm_manager: ^2.0.0
-  animated_text_kit: ^4.1.1
   another_flushbar: ^1.10.17
   app_settings: ^4.1.0
   auto_size_text: ^3.0.0-nullsafety.0

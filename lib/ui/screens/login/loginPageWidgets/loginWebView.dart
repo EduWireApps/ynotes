@@ -242,7 +242,4 @@ class _LoginWebViewState extends State<LoginWebView> {
     );
   }
 
-  _buildText(String text) {
-    return SelectableText(text);
-  }
 }
