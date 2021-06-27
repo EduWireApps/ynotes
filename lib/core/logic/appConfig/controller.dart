@@ -59,7 +59,7 @@ class ApplicationSystem extends ChangeNotifier {
   API? get api => _api;
   set api(API? newAPI) {
     _api = newAPI;
-    _refreshControllersAPI();
+    refreshControllersAPI();
   }
 
   SchoolAccount? get currentSchoolAccount => _currentSchoolAccount;
@@ -188,7 +188,7 @@ class ApplicationSystem extends ChangeNotifier {
   }
 
   ///On API refresh to provide a new API
-  _refreshControllersAPI() {
+  refreshControllersAPI() {
     gradesController.api = this.api;
     homeworkController.api = this.api;
     agendaController.api = this.api;

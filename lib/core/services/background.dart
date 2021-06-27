@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
-import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/appConfig/controller.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/services/notifications.dart';
@@ -15,22 +14,33 @@ class BackgroundService {
   static Future<void> backgroundFetchHeadlessTask(String a, {bool headless = false}) async {
     //await LocalNotification.showDebugNotification();
     try {
+      //Ensure that grades notification are enabled and battery saver disabled
+      bool gradesFetchEnabled = ((appSys.settings?["user"]["global"]["notificationNewGrade"] &&
+          !appSys.settings?["user"]["global"]["batterySaver"]));
+      //Ensure that mails notification are enabled, battery saver disabled and parser is EcoleDirecte
+      bool mailsFetchEnabled = (appSys.settings?["user"]["global"]["notificationNewMail"] &&
+          !appSys.settings?["user"]["global"]["batterySaver"] &&
+          appSys.settings?["system"]["chosenParser"] == 0);
+
       print("Starting the headless closed bakground task");
-      await AppNotification.showLoadingNotification(a.hashCode);
-      if (headless) {
-        print("headless");
-        appSys = ApplicationSystem();
-        await appSys.initApp();
-      } else {
-        await appSys.initOffline();
-        appSys.api = apiManager(appSys.offline);
+
+      //If some fetch is allowed
+      if (gradesFetchEnabled || mailsFetchEnabled) {
+        await AppNotification.showLoadingNotification(a.hashCode);
+        if (headless) {
+          print("headless");
+          appSys = ApplicationSystem();
+          await logFile("Headless task triggered");
+          await appSys.initApp();
+        } else {
+          //We have to refresh offline
+          await appSys.initOffline();
+          appSys.refreshControllersAPI();
+        }
+        await logFile("Init appSys");
+        await writeLastFetchStatus(appSys);
       }
-      await logFile("Init appSys");
-    
-      await writeLastFetchStatus(appSys);
-//Ensure that grades notification are enabled and battery saver disabled
-      if (appSys.settings?["user"]["global"]["notificationNewGrade"] &&
-          !appSys.settings?["user"]["global"]["batterySaver"]) {
+      if (gradesFetchEnabled) {
         await logFile("New grade test triggered");
         var res = (await testNewGrades());
         if (res[0]) {
@@ -44,14 +54,13 @@ class BackgroundService {
       } else {
         print("New grade notification disabled");
       }
-      if (appSys.settings?["user"]["global"]["notificationNewMail"] &&
-          !appSys.settings?["user"]["global"]["batterySaver"] &&
-          appSys.settings?["system"]["chosenParser"] == 0) {
+      if (mailsFetchEnabled) {
         await logFile("New mail test triggered");
 
         Mail? mail = await testNewMails();
         if (mail != null) {
-          String content = (await (appSys.api as APIEcoleDirecte).readMail(mail.id ?? "", mail.read ?? false, true)) ?? "";
+          String content =
+              (await (appSys.api as APIEcoleDirecte).readMail(mail.id ?? "", mail.read ?? false, true)) ?? "";
           await AppNotification.showNewMailNotification(mail, content);
         } else {
           print("Nothing updated");
