@@ -45,7 +45,7 @@ abstract class API {
   Future<List<DateTime>?> getDatesNextHomework();
 
   ///All events
-  Future<List<AgendaEvent>?> getEvents(DateTime date,  {bool forceReload = false}) async {
+  Future<List<AgendaEvent>?> getEvents(DateTime date, {bool forceReload = false}) async {
     List<AgendaEvent> events = [];
     List<AgendaEvent>? extracurricularEvents = [];
     List<Lesson>? lessons = await (appSys.api!.getNextLessons(date, forceReload: forceReload));
@@ -56,7 +56,7 @@ abstract class API {
       //Add extracurricular events
       lessons.sort((a, b) => a.end!.compareTo(b.end!));
     }
-   
+
     events.addAll(extracurricularEvents);
     RecurringEventSchemes recurr = RecurringEventSchemes();
     recurr.date = date;
@@ -151,13 +151,20 @@ class SchoolAccount {
 
   final String? studentID;
 
+  final String? profilePicture;
   //Tabs the student can have access to
   List<appTabs> availableTabs;
 
   ///Configuration credentials
   Map? credentials;
   SchoolAccount(
-      {this.name, this.studentClass, this.studentID, required this.availableTabs, this.surname, this.schoolName})
+      {this.name,
+      this.studentClass,
+      this.studentID,
+      required this.availableTabs,
+      this.surname,
+      this.schoolName,
+      this.profilePicture})
       : super();
   factory SchoolAccount.fromJson(Map<String, dynamic> json) => _$SchoolAccountFromJson(json);
   Map<String, dynamic> toJson() => _$SchoolAccountToJson(this);
