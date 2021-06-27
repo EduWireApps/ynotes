@@ -25,6 +25,7 @@ class SchoolLifeController extends ChangeNotifier {
     } catch (e) {
       print(e);
       loading = false;
+      notifyListeners();
     }
     loading = false;
     notifyListeners();
