@@ -18,8 +18,8 @@ import 'package:ynotes/core/offline/data/mails/mails.dart';
 import 'package:ynotes/core/offline/data/mails/recipients.dart';
 import 'package:ynotes/core/offline/data/schoolLife/schoolLife.dart';
 import 'package:ynotes/core/offline/offline.dart';
+import 'package:ynotes/core/utils/loggingUtils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 import 'EcoleDirecte/ecoleDirecteMethods.dart';
@@ -236,7 +236,7 @@ class APIEcoleDirecte extends API {
         } catch (e) {
           print("Error while getting user info " + e.toString());
           //log in file
-          logFile(e.toString());
+          Logger.saveLog(object: "ERROR", text: "Ecole Directe: " + e.toString());
         }
         this.loggedIn = true;
         return [1, "Bienvenue ${appSys.account?.name ?? "Invité"} !"];

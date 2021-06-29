@@ -4,8 +4,8 @@ import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/logic/appConfig/controller.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/services/notifications.dart';
+import 'package:ynotes/core/utils/loggingUtils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 //The main class for everything done in background
@@ -30,32 +30,31 @@ class BackgroundService {
         if (headless) {
           print("headless");
           appSys = ApplicationSystem();
-          await logFile("Headless task triggered");
+          Logger.saveLog(object: "BACKGROUND", text: "Headless task triggered.");
           await appSys.initApp();
         } else {
           //We have to refresh offline
           await appSys.initOffline();
           appSys.refreshControllersAPI();
         }
-        await logFile("Init appSys");
+        Logger.saveLog(object: "BACKGROUND", text: "Initiated appSys.");
         await writeLastFetchStatus(appSys);
       }
       if (gradesFetchEnabled) {
-        await logFile("New grade test triggered");
+        Logger.saveLog(object: "BACKGROUND", text: "New grade test triggered.");
         var res = (await testNewGrades());
         if (res[0]) {
           await Future.forEach(res[1], (Grade grade) async {
             await AppNotification.showNewGradeNotification(grade);
           });
         } else {
-          await logFile("Nothing updated");
-          print("Nothing updated");
+          Logger.saveLog(object: "BACKGROUND", text: "Grades: nothing updated.");
         }
       } else {
         print("New grade notification disabled");
       }
       if (mailsFetchEnabled) {
-        await logFile("New mail test triggered");
+        Logger.saveLog(object: "BACKGROUND", text: "New mail test triggered.");
 
         Mail? mail = await testNewMails();
         if (mail != null) {
@@ -74,11 +73,11 @@ class BackgroundService {
       } else {
         print("On going notification disabled");
       }
-      await logFile("Background fetch occured.");
+      Logger.saveLog(object: "BACKGROUND", text: "Background fetch occured.");
       await AppNotification.cancelNotification(a.hashCode);
     } catch (e) {
       await AppNotification.cancelNotification(a.hashCode);
-      await logFile("An error occured during the background fetch : " + e.toString());
+      Logger.saveLog(object: "ERROR", text: "An error occured during the background fetch : " + e.toString());
     }
   }
 
@@ -126,7 +125,7 @@ class BackgroundService {
         return [false];
       }
     } catch (e) {
-      await logFile("An error occured during the new grades test : " + e.toString());
+      Logger.saveLog(object: "ERROR", text: "An error occured during the new grades test : " + e.toString());
       return [false];
     }
   }
@@ -148,7 +147,7 @@ class BackgroundService {
       });
       var newMailLength = mails?.length ?? 0;
 
-      await logFile("Mails checking triggered");
+      Logger.saveLog(object: "BACKGROUND", text: "Mails checking triggered.");
       print("New length is $newMailLength");
       if (oldMailLength != 0) {
         if (oldMailLength < (newMailLength)) {

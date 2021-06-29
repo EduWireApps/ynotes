@@ -17,11 +17,11 @@ import 'package:ynotes/core/offline/data/agenda/reminders.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/platform.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
+import 'package:ynotes/core/utils/loggingUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/screens/agenda/agendaPageWidgets/agenda.dart';
-import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 ///The notifications class
@@ -104,10 +104,13 @@ class AppNotification {
     }
     //Logs for tests
     if (lesson != null) {
-      await logFile(
-          "Persistant notification next lesson callback triggered for the lesson ${lesson.disciplineCode} ${lesson.room}");
+      Logger.saveLog(
+          object: "NOTIFICATIONS",
+          text:
+              "Persistant notification next lesson callback triggered for the lesson ${lesson.disciplineCode} ${lesson.room}");
     } else {
-      await logFile("Persistant notification next lesson callback triggered : you are in break.");
+      Logger.saveLog(
+          object: "NOTIFICATIONS", text: "Persistant notification next lesson callback triggered : you are in break.");
     }
   }
 
@@ -283,8 +286,7 @@ class AppNotification {
   ///Set an on going notification which is automatically refreshed (online or not) each hour
   static Future<void> setOnGoingNotification({bool dontShowActual = false}) async {
     //Logs for tests
-    await logFile("Setting on going notification");
-    print("Setting on going notification");
+    Logger.saveLog(object: "NOTIFICATIONS", text: "Setting on going notification.");
     var connectivityResult = await (Connectivity().checkConnectivity());
     List<Lesson>? lessons = [];
     API api = apiManager(appSys.offline);

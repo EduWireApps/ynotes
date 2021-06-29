@@ -3,8 +3,8 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
+import 'package:ynotes/core/utils/loggingUtils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
 
 import 'data/example/example.dart';
 
@@ -113,7 +113,7 @@ class Offline {
   ///Deletes corrupted box
   deleteCorruptedBox(String boxName) async {
     await Hive.deleteBoxFromDisk(boxName);
-    await logFile("Recovered $boxName");
+    Logger.saveLog(object: "OFFLINE", text: "Recovered $boxName");
   }
 
   //Called when instanciated
@@ -144,8 +144,9 @@ class Offline {
   safeBoxOpen(String boxName) async {
     try {
       Box box = await appSys.hiveBoxProvider.openBox(boxName).catchError((e) async {
-        await logFile("Error while opening $boxName");
-        throw ("Something bad happened.");
+        final String errorMessage = "Error while opening $boxName";
+        Logger.saveLog(object: "OFFLINE", text: errorMessage);
+        throw (errorMessage);
       });
       print("Correctly opened $boxName");
       return box;
