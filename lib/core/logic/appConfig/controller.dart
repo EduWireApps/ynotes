@@ -24,7 +24,7 @@ import 'package:ynotes/ui/themes.dart';
 
 ///Top level application sytem class
 class ApplicationSystem extends ChangeNotifier {
-  Map? settings;
+  late FormSettings _settings;
 
   AppAccount? account;
   SchoolAccount? _currentSchoolAccount;
@@ -65,13 +65,17 @@ class ApplicationSystem extends ChangeNotifier {
   SchoolAccount? get currentSchoolAccount => _currentSchoolAccount;
   set currentSchoolAccount(SchoolAccount? newValue) {
     _currentSchoolAccount = newValue;
-    if (account != null &&
-        account!.managableAccounts != null &&
-        newValue != null) {
-      this.updateSetting(this.settings!["system"], "accountIndex",
-          this.account!.managableAccounts!.indexOf(newValue));
+    if (account != null && account!.managableAccounts != null && newValue != null) {
+      this.settings.system.accountIndex = this.account!.managableAccounts!.indexOf(newValue);
     }
     notifyListeners();
+  }
+
+  FormSettings get settings => _settings;
+
+  set settings(FormSettings newSettings) {
+    SettingsUtils.setSetting(newSettings);
+    _settings = newSettings;
   }
 
   buildControllers() {
@@ -91,7 +95,7 @@ class ApplicationSystem extends ChangeNotifier {
       SharedPreferences preferences = await (SharedPreferences.getInstance());
       await preferences.clear();
       //delte local setings and init them
-      this.settings!.clear();
+
       this._initSettings();
       //Import secureStorage
       final storage = new FlutterSecureStorage();
@@ -110,7 +114,7 @@ class ApplicationSystem extends ChangeNotifier {
     //set settings
     await _initSettings();
     //Set theme to default
-    updateTheme(settings!["user"]["global"]["theme"]);
+    updateTheme(settings.user.global.theme);
     //Set offline
     await initOffline();
     buildControllers();
@@ -119,8 +123,7 @@ class ApplicationSystem extends ChangeNotifier {
     if (api != null) {
       account = await api!.account();
       if (account != null && account!.managableAccounts != null)
-        currentSchoolAccount = account!
-            .managableAccounts![settings!["system"]["accountIndex"] ?? 0];
+        currentSchoolAccount = account!.managableAccounts![settings.system.accountIndex];
     }
     //Set background fetch
     await _initBackgroundFetch();
@@ -134,24 +137,32 @@ class ApplicationSystem extends ChangeNotifier {
     await offline.init();
   }
 
+  ///On API refresh to provide a new API
+  refreshControllersAPI() {
+    gradesController.api = this.api;
+    homeworkController.api = this.api;
+    agendaController.api = this.api;
+    schoolLifeController.api = this.api;
+    mailsController.api = this.api;
+  }
+
   updateSetting(Map path, String key, var value) {
     path[key] = value;
     SettingsUtils.setSetting(settings);
     notifyListeners();
   }
 
+// This "Headless Task" is run when app is terminated.
   updateTheme(String themeName) {
     print("Updating theme to " + themeName);
     theme = appThemes[themeName];
     this.themeName = themeName;
-    updateSetting(this.settings!["user"]["global"], "theme", themeName);
-    SystemChrome.setSystemUIOverlayStyle(ThemeUtils.isThemeDark
-        ? SystemUiOverlayStyle.light
-        : SystemUiOverlayStyle.dark);
+    settings.user.global.theme = themeName;
+    SystemChrome.setSystemUIOverlayStyle(
+        ThemeUtils.isThemeDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark);
     notifyListeners();
   }
 
-// This "Headless Task" is run when app is terminated.
   _initBackgroundFetch() async {
     if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
       print("Background fetch configuration...");
@@ -183,16 +194,7 @@ class ApplicationSystem extends ChangeNotifier {
   _initSettings() async {
     settings = await SettingsUtils.getSettings();
     //Set theme to default
-    updateTheme(settings!["user"]["global"]["theme"]);
+    updateTheme(settings.user.global.theme);
     notifyListeners();
-  }
-
-  ///On API refresh to provide a new API
-  refreshControllersAPI() {
-    gradesController.api = this.api;
-    homeworkController.api = this.api;
-    agendaController.api = this.api;
-    schoolLifeController.api = this.api;
-    mailsController.api = this.api;
   }
 }
