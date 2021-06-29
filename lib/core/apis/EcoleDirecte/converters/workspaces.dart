@@ -1,9 +1,9 @@
 import 'package:ynotes/core/logic/modelsExporter.dart';
 
-class EcoleDirecteCloudConverter {
-  static List<CloudItem> cloudFolders(var cloudFoldersData) {
-    List<CloudItem> cloudFolders = [];
-    cloudFoldersData["data"].forEach((folderData) {
+class EcoleDirecteWorkspacesConverter {
+  static List<Workspace> workspaces(var workspacesData) {
+    List<Workspace> workspaces = [];
+    workspacesData["data"].forEach((folderData) {
       String? date = folderData["creeLe"];
       try {
         if (date != null) {
@@ -12,21 +12,16 @@ class EcoleDirecteCloudConverter {
         }
       } catch (e) {}
       String? title = folderData["titre"];
-      String elementType = "FOLDER";
       String? author = folderData["creePar"];
-      bool isRootDir = true;
       bool isMemberOf = folderData["estMembre"];
       String id = folderData["id"].toString();
-      cloudFolders.add(CloudItem(
-        title,
-        elementType,
-        author,
-        isRootDir,
-        date,
-        isMemberOf: isMemberOf,
+      workspaces.add(Workspace(
+        title: title,
+        author: author,
         id: id,
+        isMemberOf: isMemberOf,
       ));
     });
-    return cloudFolders;
+    return workspaces;
   }
 }

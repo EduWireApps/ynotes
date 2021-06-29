@@ -3,7 +3,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:ynotes/core/logic/appConfig/models.dart';
 import 'package:ynotes/ui/screens/agenda/agendaPage.dart';
 import 'package:ynotes/ui/screens/carousel/carousel.dart';
-import 'package:ynotes/ui/screens/cloud/cloudPage.dart';
+import 'package:ynotes/ui/screens/workspaces/workspacesPage.dart';
 import 'package:ynotes/ui/screens/downloads/downloadsPage.dart';
 import 'package:ynotes/ui/screens/error_page.dart';
 import 'package:ynotes/ui/screens/grades/gradesPage.dart';
@@ -53,7 +53,7 @@ final List<CustomRoute> routes = [
       relatedApi: 0,
       tab: appTabs.SCHOOL_LIFE),
   CustomRoute(
-      path: "/cloud", icon: MdiIcons.cloud, title: "Cloud", page: CloudPage(), relatedApi: 0, tab: appTabs.CLOUD),
+      path: "/workspaces", icon: MdiIcons.cloud, title: "Espaces de travail", page: WorkspacesPage(), relatedApi: 0, tab: appTabs.CLOUD),
   CustomRoute(
       path: "/downloads",
       icon: MdiIcons.file,

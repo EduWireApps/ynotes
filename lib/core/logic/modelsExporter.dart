@@ -1,6 +1,6 @@
 export 'package:ynotes/core/logic/agenda/models.dart';
 
-export 'package:ynotes/core/logic/cloud/models.dart';
+export 'package:ynotes/core/logic/workspaces/models.dart';
 
 export 'package:ynotes/core/logic/grades/models.dart';
 

@@ -28,6 +28,9 @@ class SettingsUtils {
         "shakeToReport": false,
         "autoCloseDrawer": false,
       },
+      "workspacesPage": {
+        "readExplanation": false,
+      },
       "summaryPage": {"summaryQuickHomework": 11},
       "homeworkPage": {
         "isExpandedByDefault": false,
@@ -141,11 +144,11 @@ class SettingsUtils {
     if (settings == null) {
       settings = json.encode(settingsForm);
     }
-    print(settingsForm);
-    print(settings);
+    print("Settings form " + settingsForm.toString());
+    print("Saved settings " + settings.toString());
 
     Map? _settings = json.decode(settings);
-    return mergeMaps(json.decode(json.encode(settingsForm)), _settings ?? {});
+    return {...json.decode(json.encode(settingsForm)), ..._settings ?? {}};
   }
 
   //Oops
@@ -156,13 +159,15 @@ class SettingsUtils {
     _oldSettings = await getOldSettings();
     _newSettings = await getSavedSettings();
 
-    print(_newSettings == null);
+    print("Old settings " + _oldSettings.toString());
+    print("Saved merged settings " + _newSettings.toString());
+
     //merge settings
-    _settings = Map.from(json.decode(json.encode(_oldSettings)))..addAll(_newSettings ?? {});
+    _settings = {..._oldSettings, ..._newSettings ?? {}};
     if (_newSettings == null) {
       await setSetting(_settings);
     }
-    print(_settings);
+    print("Final settings " +_settings.toString());
     return _settings;
   }
 

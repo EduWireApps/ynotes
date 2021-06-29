@@ -34,10 +34,6 @@ abstract class API {
 
   ///Get the API status (down etc..;)
   Future<List> apiStatus();
-
-  ///Apps
-  app(String appname, {String? args, String? action, CloudItem? folder});
-
   ///Download a file from his name
   Future<Request> downloadRequest(Document document);
 

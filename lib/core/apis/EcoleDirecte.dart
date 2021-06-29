@@ -6,7 +6,6 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ynotes/core/apis/EcoleDirecte/convertersExporter.dart';
-import 'package:ynotes/core/apis/EcoleDirecte/ecoleDirecteCloud.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
@@ -49,31 +48,6 @@ void createStorage(String key, String? data) async {
   await storage.write(key: key, value: data);
 }
 
-///  CLOUD SUB API
-/// Read this : called with two arguments. The first one is "args" and is used to add the path:
-
-///       The second one has to be "CD", "PUSH", "RM"
-///     E.G : "CD" navigate to the path and return the files and folder existing in it : ESPACES DE TRAVAILS and PERSONNAL CLOUDS are considered as folders
-///      E.G : "PUSH" add a file to the path if it doesn't exist
-///       E.G : "RM" remove a file to the path
-Future<List<CloudItem>?> getCloud(String? args, String? action, CloudItem? item) async {
-  if (action == "CD") {
-    switch (args) {
-      //Default repository. Every folder have to be followed by / => "/CLOUD/FOLDER/"
-      //This action returns every cloud as folders
-
-      case ("/"):
-        {
-          return await EcoleDirecteMethod(appSys.offline).cloudFolders();
-        }
-      default:
-        {
-          return changeFolder(args!);
-        }
-    }
-  }
-}
-
 ///The ecole directe api extended from the apiManager.dart API class
 class APIEcoleDirecte extends API {
   APIEcoleDirecte(Offline offlineController) : super(offlineController);
@@ -81,31 +55,6 @@ class APIEcoleDirecte extends API {
   @override
   Future<List> apiStatus() async {
     return [1, "Pas de problème connu."];
-  }
-
-//Get connection message and store token
-  @override
-  Future app(String appname, {String? args, String? action, CloudItem? folder}) async {
-    switch (appname) {
-      case "mail":
-        {
-          print("Returning mails");
-          List<Mail>? mails = await (getMails());
-
-          return mails;
-        }
-      case "cloud":
-        {
-          print("Returning cloud");
-          return await getCloud(args, action, folder);
-        }
-      case "mailRecipients":
-        {
-          print("Returing mail recipients");
-          return (await EcoleDirecteMethod.fetchAnyData(EcoleDirecteMethod(this.offlineController).recipients,
-              RecipientsOffline(offlineController).getRecipients));
-        }
-    }
   }
 
   Future<http.Request> downloadRequest(Document document) async {
@@ -171,6 +120,17 @@ class APIEcoleDirecte extends API {
     return await EcoleDirecteMethod.fetchAnyData(
         EcoleDirecteMethod(this.offlineController).schoolLife, SchoolLifeOffline(offlineController).get,
         forceFetch: forceReload);
+  }
+
+  ///  CLOUD SUB API
+  /// Read this : called with two arguments. The first one is "args" and is used to add the path:
+
+  ///       The second one has to be "CD", "PUSH", "RM"
+  ///     E.G : "CD" navigate to the path and return the files and folder existing in it : ESPACES DE TRAVAILS and PERSONNAL CLOUDS are considered as folders
+  ///      E.G : "PUSH" add a file to the path if it doesn't exist
+  ///       E.G : "RM" remove a file to the path
+  Future<List<Workspace>?> getWorkspaces() async {
+    return await EcoleDirecteMethod(appSys.offline).workspaces();
   }
 
   Future<List> login(username, password, {Map? additionnalSettings}) async {

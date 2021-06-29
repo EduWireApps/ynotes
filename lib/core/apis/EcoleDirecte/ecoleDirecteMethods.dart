@@ -4,7 +4,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:html_character_entities/html_character_entities.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
-import 'package:ynotes/core/apis/EcoleDirecte/converters/cloud.dart';
+import 'package:ynotes/core/apis/EcoleDirecte/converters/workspaces.dart';
 import 'package:ynotes/core/apis/EcoleDirecte/convertersExporter.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
 import 'package:ynotes/core/apis/utils.dart';
@@ -26,14 +26,14 @@ class EcoleDirecteMethod {
   static const fakeToken = "a95fd30b-ca20-467b-8128-679f48e1498e";
   Offline _offlineController;
   EcoleDirecteMethod(this._offlineController);
-  Future<List<CloudItem>> cloudFolders() async {
+  Future<List<Workspace>> workspaces() async {
     await EcoleDirecteMethod.testToken();
     String rootUrl = 'https://api.ecoledirecte.com/v3/E/';
     String method = "espacestravail.awp?verbe=get&";
     String data = 'data={"token": "$token"}';
-    List<CloudItem> cloudFolders = await request(
-        data, rootUrl, method, EcoleDirecteCloudConverter.cloudFolders, "Cloud folders request returned an error:");
-    return cloudFolders;
+    List<Workspace> workspaces = await request(
+        data, rootUrl, method, EcoleDirecteWorkspacesConverter.workspaces, "Workspaces request returned an error:");
+    return workspaces;
   }
 
   Future<List<Discipline>> grades() async {

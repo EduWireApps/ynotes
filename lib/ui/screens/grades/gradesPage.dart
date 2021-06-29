@@ -428,24 +428,27 @@ class _GradesPageState extends State<GradesPage> with Layout {
           return AlertDialog(
             backgroundColor: Theme.of(context).primaryColor,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
-            content: Container(
-              width: screenSize.size.width / 5 * 3.2,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  buildDefaultChoice("Pas de filtre", MdiIcons.borderNoneVariant, gradesController, "all"),
-                  SizedBox(height: screenSize.size.height / 10 * 0.1),
-                  buildDefaultChoice("Spécialités", MdiIcons.star, gradesController, "specialties"),
-                  SizedBox(height: screenSize.size.height / 10 * 0.1),
-                  buildDefaultChoice("Littérature", MdiIcons.bookOpenBlankVariant, gradesController, "littérature"),
-                  SizedBox(height: screenSize.size.height / 10 * 0.1),
-                  buildDefaultChoice(
-                    "Sciences",
-                    MdiIcons.atom,
-                    gradesController,
-                    "sciences",
-                  ),
-                ],
+            content: ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: 500),
+              child: Container(
+                width: screenSize.size.width / 5 * 3.2,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    buildDefaultChoice("Pas de filtre", MdiIcons.borderNoneVariant, gradesController, "all"),
+                    SizedBox(height: screenSize.size.height / 10 * 0.1),
+                    buildDefaultChoice("Spécialités", MdiIcons.star, gradesController, "specialties"),
+                    SizedBox(height: screenSize.size.height / 10 * 0.1),
+                    buildDefaultChoice("Littérature", MdiIcons.bookOpenBlankVariant, gradesController, "littérature"),
+                    SizedBox(height: screenSize.size.height / 10 * 0.1),
+                    buildDefaultChoice(
+                      "Sciences",
+                      MdiIcons.atom,
+                      gradesController,
+                      "sciences",
+                    ),
+                  ],
+                ),
               ),
             ),
           );

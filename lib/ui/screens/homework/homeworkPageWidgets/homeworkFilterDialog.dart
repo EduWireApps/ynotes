@@ -18,21 +18,24 @@ class _HomeworkFilterDialogState extends State<HomeworkFilterDialog> {
     return AlertDialog(
       backgroundColor: Theme.of(context).primaryColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
-      content: Container(
-        width: screenSize.size.width / 5 * 3.2,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            buildDefaultChoice("Pas de filtre", MdiIcons.borderNoneVariant, homeworkFilter.ALL),
-            SizedBox(height: screenSize.size.height / 10 * 0.1),
-            buildDefaultChoice("Spécialités", MdiIcons.star, homeworkFilter.SPECIALTIES),
-            SizedBox(height: screenSize.size.height / 10 * 0.1),
-            buildDefaultChoice("Littérature", MdiIcons.bookOpenBlankVariant, homeworkFilter.LITERARY),
-            SizedBox(height: screenSize.size.height / 10 * 0.1),
-            buildDefaultChoice("Sciences", MdiIcons.atom, homeworkFilter.SCIENCES),
-            SizedBox(height: screenSize.size.height / 10 * 0.1),
-            buildDefaultChoice("Matières personnalisées", MdiIcons.pencil, homeworkFilter.CUSTOM),
-          ],
+      content: ConstrainedBox(
+        constraints: BoxConstraints(maxWidth: 500),
+        child: Container(
+          width: screenSize.size.width / 5 * 3.2,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              buildDefaultChoice("Pas de filtre", MdiIcons.borderNoneVariant, homeworkFilter.ALL),
+              SizedBox(height: screenSize.size.height / 10 * 0.1),
+              buildDefaultChoice("Spécialités", MdiIcons.star, homeworkFilter.SPECIALTIES),
+              SizedBox(height: screenSize.size.height / 10 * 0.1),
+              buildDefaultChoice("Littérature", MdiIcons.bookOpenBlankVariant, homeworkFilter.LITERARY),
+              SizedBox(height: screenSize.size.height / 10 * 0.1),
+              buildDefaultChoice("Sciences", MdiIcons.atom, homeworkFilter.SCIENCES),
+              SizedBox(height: screenSize.size.height / 10 * 0.1),
+              buildDefaultChoice("Matières personnalisées", MdiIcons.pencil, homeworkFilter.CUSTOM),
+            ],
+          ),
         ),
       ),
     );
@@ -48,9 +51,8 @@ class _HomeworkFilterDialogState extends State<HomeworkFilterDialog> {
         onTap: () {
           appSys.homeworkController.currentFilter = filter;
           setState(() {});
-         
+
           Navigator.pop(context);
-          
         },
         borderRadius: BorderRadius.circular(11),
         child: Container(
