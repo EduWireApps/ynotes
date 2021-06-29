@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/utils/loggingUtils.dart';
 
 class EcoleDirecteDisciplineConverter {
   static List<Discipline> disciplines(Map<String, dynamic> disciplinesData) {
@@ -81,7 +82,7 @@ class EcoleDirecteDisciplineConverter {
                   .subdisciplineNames!
                   .add(rawData['discipline']);
             } catch (e) {
-              print(e);
+              Logger.log("ERROR", e.toString());
             }
           }
         });
@@ -102,7 +103,7 @@ class EcoleDirecteDisciplineConverter {
           }
         });
       } catch (e) {
-        print(e);
+        Logger.log("ERROR", e.toString());
       }
     });
     return disciplinesList;

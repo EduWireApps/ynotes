@@ -40,4 +40,10 @@ class Logger {
   }
 
   static void log(String object, String text) => print('[${object.toUpperCase()}] $text');
+
+  static void logWrapped(String object, String description, String text) {
+    final pattern = RegExp('.{1,800}'); // 800 is the size of each chunk
+    log(object, description);
+    pattern.allMatches(text).forEach((match) => print(match.group(0)));
+  }
 }

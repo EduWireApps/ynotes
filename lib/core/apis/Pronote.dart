@@ -114,7 +114,8 @@ class APIPronote extends API {
 
       return listPeriods;
     } catch (e) {
-      print("Error while collecting offline periods " + e.toString());
+      Logger.log("PRONOTE", "Error while collecting offline periods.");
+      Logger.log("ERROR", e.toString());
     }
   }
 
@@ -137,7 +138,8 @@ class APIPronote extends API {
         return listPeriod;
       }
     } catch (e) {
-      print("Erreur while getting period " + e.toString());
+      Logger.log("PRONOTE", "Error while getting periods.");
+      Logger.log("ERROR", e.toString());
     }
   }
 
@@ -160,14 +162,14 @@ class APIPronote extends API {
 
   @override
   Future<List> login(username, password, {Map? additionnalSettings}) async {
-    print(username + " " + password + " " + additionnalSettings?["url"]);
+    Logger.log("PRONOTE", "username: $username / pwd: $password / url: ${additionnalSettings?["url"] ?? 'null'}");
     int req = 0;
 
     //we wait a random time (0 to 1 second) to never trigger the function at the same time
     Random random = new Random();
     await Future.delayed(Duration(milliseconds: (random.nextDouble() * 100).round()), () => "1");
     while (loginLock == true && req < 8 && appSys.loginController.actualState != loginStatus.loggedIn) {
-      print("Locked, trying in 15 seconds...");
+      Logger.log("PRONOTE", "Locked, trying in 15 seconds...");
       req++;
       await Future.delayed(Duration(seconds: 15), () => "1");
     }
@@ -194,7 +196,7 @@ class APIPronote extends API {
             appSys.currentSchoolAccount = appSys.account!.managableAccounts![0];
           } else {
             loginLock = false;
-            print("Impossible to collect accounts");
+            Logger.log("PRONOTE", "Impossible to collect accounts.");
             return [0, "Impossible de collecter les comptes."];
           }
 
@@ -211,44 +213,45 @@ class APIPronote extends API {
         }
       } catch (e) {
         loginLock = false;
-        localClient.stepsLogger.add("❌ Pronote login failed : " + e.toString());
-        print(e);
-        String error = "Une erreur a eu lieu. " + e.toString();
-        if (e.toString().contains("invalid url")) {
+        final String err = e.toString();
+        localClient.stepsLogger.add("❌ Pronote login failed : " + err);
+        Logger.log("PRONOTE", "Login failed.");
+        Logger.log("ERROR", err);
+        String error = "Une erreur a eu lieu. " + err;
+        if (err.contains("invalid url")) {
           error = "L'URL entrée est invalide";
         }
-        if (e.toString().contains("split")) {
+        if (err.contains("split")) {
           error =
               "Le format de l'URL entrée est invalide. Vérifiez qu'il correspond bien à celui fourni par votre établissement";
         }
-        if (e.toString().contains("runes")) {
+        if (err.contains("runes")) {
           error = "Le mot de passe et/ou l'identifiant saisi(s) est/sont incorrect(s)";
         }
-        if (e.toString().contains("IP")) {
+        if (err.contains("IP")) {
           error =
               "Une erreur inattendue  a eu lieu. Pronote a peut-être temporairement suspendu votre adresse IP. Veuillez recommencer dans quelques minutes.";
         }
-        if (e.toString().contains("SocketException")) {
+        if (err.contains("SocketException")) {
           error = "Impossible de se connecter à l'adresse saisie. Vérifiez cette dernière et votre connexion.";
         }
-        if (e.toString().contains("Invalid or corrupted pad block")) {
+        if (err.contains("Invalid or corrupted pad block")) {
           if (additionnalSettings?["qrCodeLogin"] ?? false) {
             error = "Le QR code est invalide / expiré";
           } else {
             error = "Le mot de passe et/ou l'identifiant saisi(s) est/sont incorrect(s)";
           }
         }
-        if (e.toString().contains("HTML PAGE")) {
+        if (err.contains("HTML PAGE")) {
           error = "Problème de page HTML.";
         }
-        if (e.toString().contains("nombre d'erreurs d'authentification autorisées")) {
+        if (err.contains("nombre d'erreurs d'authentification autorisées")) {
           error =
               "Vous avez dépassé le nombre d'erreurs d'authentification authorisées ! Réessayez dans quelques minutes.";
         }
-        if (e.toString().contains("Failed login request")) {
+        if (err.contains("Failed login request")) {
           error = "Impossible de se connecter à l'URL renseignée. Vérifiez votre connexion et l'URL entrée.";
         }
-        print("test");
         Logger.saveLog(object: "ERROR", text: "Pronote: " + error);
         return ([0, error, localClient.stepsLogger]);
       }
@@ -298,10 +301,10 @@ class APIPronote extends API {
           "saisieActualite": false
         }
       };
-      print(jsonEncode(data));
+      Logger.log("PRONOTE", "Poll: ${jsonEncode(data)}");
       var a = await PronoteMethod(localClient, this.offlineController)
           .request("SaisieActualites", null, data: data, onglet: 8);
-      print(a);
+      Logger.log("PRONOTE", a);
       return true;
     } catch (e) {
       return false;
@@ -348,10 +351,10 @@ class APIPronote extends API {
           "saisieActualite": false
         }
       };
-      print(jsonEncode(data));
+      Logger.log("PRONOTE", "Poll: ${jsonEncode(data)}");
       var a = await PronoteMethod(localClient, this.offlineController)
           .request("SaisieActualites", null, data: data, onglet: 8);
-      print(a);
+      Logger.log("PRONOTE", a);
       return true;
     } catch (e) {
       return false;

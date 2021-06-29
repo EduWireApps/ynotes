@@ -79,7 +79,7 @@ PageRouteBuilder generateRoute(Widget page, RouteSettings settings) {
 }
 
 Route<dynamic>? onGenerateRoute(RouteSettings settings) {
-  for (var route in routes) {
+  for (final route in routes) {
     if (settings.name == route.path) {
       Logger.saveLog(object: "ROUTER", text: 'Going to "${settings.name}".');
       return generateRoute(route.page, settings);
