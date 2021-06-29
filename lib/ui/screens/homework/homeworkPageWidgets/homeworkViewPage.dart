@@ -13,6 +13,7 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/offline/data/homework/homework.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
+import 'package:ynotes/extensions.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/filesBottomSheet.dart';
