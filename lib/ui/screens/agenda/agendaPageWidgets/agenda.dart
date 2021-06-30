@@ -6,6 +6,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
+import 'package:ynotes/core/utils/loggingUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/customLoader.dart';
@@ -30,7 +31,9 @@ Lesson? getCurrentLesson(List<Lesson>? lessons, {DateTime? now}) {
         lesson = dailyLessons.firstWhere((lesson) =>
             (now ?? DateTime.now()).isBefore(lesson.end!) && (now ?? DateTime.now()).isAfter(lesson.start!));
       } catch (e) {
-        print(lessons);
+        CustomLogger.log("AGENDA", "An error occured while getting current lesson");
+        CustomLogger.log("AGENDA", "Lessons: $lessons");
+        CustomLogger.error(e);
       }
 
       return lesson;
@@ -57,7 +60,8 @@ getNextLesson(List<Lesson>? lessons) {
         dailyLessons.sort((a, b) => a.start!.compareTo(b.start!));
         lesson = dailyLessons.firstWhere((lesson) => DateTime.now().isBefore(lesson.start!));
       } catch (e) {
-        print(e.toString());
+        CustomLogger.log("AGENDA", "An error occured while getting the current lesson");
+        CustomLogger.error(e);
       }
 
       return lesson;

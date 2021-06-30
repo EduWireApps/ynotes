@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/logic/appConfig/models.dart';
+import 'package:ynotes/core/utils/loggingUtils.dart';
 import 'package:ynotes/ui/screens/agenda/agendaPage.dart';
 import 'package:ynotes/ui/screens/carousel/carousel.dart';
 import 'package:ynotes/ui/screens/cloud/cloudPage.dart';
@@ -13,7 +14,6 @@ import 'package:ynotes/ui/screens/mail/mailPage.dart';
 import 'package:ynotes/ui/screens/polls/pollsPage.dart';
 import 'package:ynotes/ui/screens/schoolLife/schoolLifePage.dart';
 import 'package:ynotes/ui/screens/settings/sub_pages/accountPage.dart';
-import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
 import 'package:ynotes/ui/screens/summary/summaryPage.dart';
 
 class CustomRoute {
@@ -79,13 +79,13 @@ PageRouteBuilder generateRoute(Widget page, RouteSettings settings) {
 }
 
 Route<dynamic>? onGenerateRoute(RouteSettings settings) {
-  logFile("Going to route: \"${settings.name}\"");
-  for (var route in routes) {
+  for (final route in routes) {
     if (settings.name == route.path) {
+      CustomLogger.saveLog(object: "ROUTER", text: 'Going to "${settings.name}".');
       return generateRoute(route.page, settings);
     }
   }
 
-  logFile("Route \"${settings.name}\" not found");
+  CustomLogger.saveLog(object: "ROUTER", text: 'Route "${settings.name}" not found.');
   return generateRoute(ErrorPage(), settings);
 }

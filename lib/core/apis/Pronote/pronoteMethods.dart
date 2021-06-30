@@ -12,6 +12,7 @@ import 'package:ynotes/core/offline/data/disciplines/disciplines.dart';
 import 'package:ynotes/core/offline/data/homework/homework.dart';
 import 'package:ynotes/core/offline/data/polls/polls.dart';
 import 'package:ynotes/core/offline/offline.dart';
+import 'package:ynotes/core/utils/loggingUtils.dart';
 import 'package:ynotes/core/utils/nullSafeMapGetter.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/usefulMethods.dart';
@@ -48,7 +49,7 @@ class PronoteMethod {
         data = await (offlineArguments != null ? offlineFetch(offlineArguments) : offlineFetch());
       }
       if (data == null) {
-        print("Online fetch because offline is null");
+        CustomLogger.log("PRONOTE", "Online fetch because offline is null");
         await onlineFetchWithLock(onlineFetch, lockName, arguments: onlineArguments);
         return await (offlineArguments != null ? offlineFetch(offlineArguments) : offlineFetch());
       }
@@ -75,7 +76,7 @@ class PronoteMethod {
         listDisciplines = await refreshDisciplinesListColors(listDisciplines);
       });
     }
-    print("Completed disciplines request");
+    CustomLogger.log("PRONOTE", "Completed disciplines request");
 
     await DisciplinesOffline(_offlineController).updateDisciplines(listDisciplines);
 
@@ -162,16 +163,17 @@ class PronoteMethod {
       try {
         //Lock current function
         locks[lockName] = true;
-        print("Fetching task with name " + lockName);
+        CustomLogger.log("PRONOTE", "Fetching task with name $lockName");
         var toReturn = await (arguments != null ? onlineFetch(arguments) : onlineFetch());
         //Unlock it
         locks[lockName] = false;
         return toReturn;
       } catch (e) {
-        print("Error while fetching for " + (lockName ?? "") + " " + e.toString());
+        CustomLogger.log("PRONOTE", "Error while fetching for " + (lockName ?? ""));
+        CustomLogger.error(e);
         locks[lockName] = false;
         if (!testLock("recursive_" + lockName)) {
-          print("Refreshing client");
+          CustomLogger.log("PRONOTE", "Refreshing client");
           locks["recursive_" + lockName] = true;
         }
       }

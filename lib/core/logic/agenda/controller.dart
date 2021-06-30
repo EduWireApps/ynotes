@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/utils/loggingUtils.dart';
 
 class AgendaController extends ChangeNotifier {
   DateTime? _date;
@@ -84,7 +85,7 @@ class AgendaController extends ChangeNotifier {
       });
     }
     if ((_cachedEvents ?? [])[3] == null) {
-      (_cachedEvents ?? [])[3] = await _api?.getEvents(CalendarTime(_date).startOfDay,  forceReload: false);
+      (_cachedEvents ?? [])[3] = await _api?.getEvents(CalendarTime(_date).startOfDay, forceReload: false);
     }
 
     loaded[3] = true;
@@ -100,7 +101,7 @@ class AgendaController extends ChangeNotifier {
       }
       i++;
     });
-    print("Agenda events set");
+    CustomLogger.log("AGENDA", "Agenda events set");
   }
 
   initWeek() {

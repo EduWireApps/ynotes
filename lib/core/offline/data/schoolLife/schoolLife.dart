@@ -1,5 +1,6 @@
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/offline/offline.dart';
+import 'package:ynotes/core/utils/loggingUtils.dart';
 
 class SchoolLifeOffline {
   late Offline parent;
@@ -10,19 +11,21 @@ class SchoolLifeOffline {
     try {
       return parent.offlineBox?.get("schoolLife")?.cast<SchoolLifeTicket>();
     } catch (e) {
-      print("Error while returning school life tickets " + e.toString());
+      CustomLogger.log("SCHOOL LIFE", "An error occured while returning tickets");
+      CustomLogger.error(e);
       return null;
     }
   }
 
   ///Update existing polls (clear old data) with passed data
   update(List<SchoolLifeTicket>? newData) async {
-    print("Update school life tickets (length : ${newData!.length})");
+    CustomLogger.log("SCHOOL LIFE", "Update school life tickets (length : ${newData!.length})");
     try {
       await parent.offlineBox?.delete("schoolLife");
       await parent.offlineBox?.put("schoolLife", newData);
     } catch (e) {
-      print("Error while updating school life tickets " + e.toString());
+      CustomLogger.log("SCHOOL LIFE", "An error occured while updating tickets");
+      CustomLogger.error(e);
     }
   }
 }
