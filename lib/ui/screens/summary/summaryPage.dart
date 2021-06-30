@@ -75,9 +75,8 @@ class SummaryPageState extends State<SummaryPage> with Layout, YPageMixin {
                   QuickGrades(),
                   separator(context, "Devoirs", "/homework"),
                   QuickHomework(),
-                  if (appSys.settings?["system"]["chosenParser"] == 0)
-                    separator(context, "Vie scolaire", "/school_life"),
-                  if (appSys.settings?["system"]["chosenParser"] == 0) QuickSchoolLife(),
+                  if (appSys.settings.system.chosenParser == 0) separator(context, "Vie scolaire", "/school_life"),
+                  if (appSys.settings.system.chosenParser == 0) QuickSchoolLife(),
                 ],
               ),
             ),
@@ -154,8 +153,9 @@ class SummaryPageState extends State<SummaryPage> with Layout, YPageMixin {
   }
 
   showUpdateNote() async {
-    if ((appSys.settings!["system"]["lastReadUpdateNote"] != "0.11.2")) {
-      appSys.updateSetting(appSys.settings!["system"], "lastReadUpdateNote", "0.11.2");
+    if ((appSys.settings.system.lastReadUpdateNote != "0.11.2")) {
+      appSys.settings.system.lastReadUpdateNote = "0.11.2";
+      appSys.saveSettings();
       await CustomDialogs.showUpdateNoteDialog(context);
     }
   }

@@ -201,7 +201,7 @@ class GradesController extends ChangeNotifier {
           }
           break;
         case "littérature":
-          if (appSys.settings!["system"]["chosenParser"] == 0) {
+          if (appSys.settings.system.chosenParser == 0) {
             List<String> codeMatiere = filters["literary"]["ED"];
 
             if (f.periodName == _period &&
@@ -231,7 +231,7 @@ class GradesController extends ChangeNotifier {
 
           break;
         case "sciences":
-          if (appSys.settings!["system"]["chosenParser"] == 0) {
+          if (appSys.settings.system.chosenParser == 0) {
             List<String> codeMatiere = filters["sciences"]["ED"];
 
             if (f.periodName == _period &&
@@ -295,7 +295,7 @@ class GradesController extends ChangeNotifier {
     double? temp;
     List<double> averages = [];
     for (Discipline f in disciplines()!.where((i) => i.periodName == _period)) {
-      if (appSys.settings!["system"]["chosenParser"] == 1) {
+      if (appSys.settings.system.chosenParser == 1) {
         if (f.generalAverage != null) {
           double? _temp = double.tryParse(f.generalAverage!.replaceAll(",", "."));
           if (temp != null && !temp.isNaN) {

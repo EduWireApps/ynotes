@@ -16,7 +16,7 @@ import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/appConfig/controller.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/services/platform.dart';
-import 'package:ynotes/core/utils/settingsUtils.dart';
+import 'package:ynotes/core/utils/settings/settingsUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
@@ -115,25 +115,10 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                         fontFamily: "Asap",
                         color: ThemeUtils.isThemeDark ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
                     leading: Icon(MdiIcons.batteryHeart, color: ThemeUtils.textColor()),
-                    switchValue: _appSys.settings!["user"]["global"]["batterySaver"],
+                    switchValue: _appSys.settings.user.global.batterySaver,
                     onToggle: (value) async {
-                      _appSys.updateSetting(_appSys.settings!["user"]["global"], "batterySaver", value);
-                    },
-                  ),
-                  SettingsTile.switchTile(
-                    title: 'Fermeture du menu coulissant',
-                    subtitle: "Fermer le menu coulissant après avoir sélectionné une page",
-                    titleTextStyle: TextStyle(
-                      fontFamily: "Asap",
-                      color: ThemeUtils.textColor(),
-                    ),
-                    subtitleTextStyle: TextStyle(
-                        fontFamily: "Asap",
-                        color: ThemeUtils.isThemeDark ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
-                    leading: Icon(MdiIcons.arrowCollapseLeft, color: ThemeUtils.textColor()),
-                    switchValue: _appSys.settings!["user"]["global"]["autoCloseDrawer"],
-                    onToggle: (value) async {
-                      _appSys.updateSetting(_appSys.settings!["user"]["global"], "autoCloseDrawer", value);
+                      _appSys.settings.user.global.batterySaver = value;
+                      appSys.saveSettings();
                     },
                   ),
                 ],
@@ -144,17 +129,18 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                 tiles: [
                   SettingsTile.switchTile(
                     title: 'Notification de nouveau mail',
-                    enabled: !_appSys.settings!["user"]["global"]["batterySaver"],
+                    enabled: !_appSys.settings.user.global.batterySaver,
                     titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                     subtitleTextStyle: TextStyle(
                         fontFamily: "Asap",
                         color: ThemeUtils.isThemeDark ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
-                    switchValue: _appSys.settings!["user"]["global"]["notificationNewMail"],
+                    switchValue: _appSys.settings.user.global.notificationNewMail,
                     onToggle: (bool value) async {
                       if (value == false ||
                           (!kIsWeb && Platform.isIOS && await Permission.notification.request().isGranted) ||
                           (await Permission.ignoreBatteryOptimizations.isGranted)) {
-                        _appSys.updateSetting(_appSys.settings!["user"]["global"], "notificationNewMail", value);
+                        _appSys.settings.user.global.notificationNewMail = value;
+                        appSys.saveSettings();
                       } else {
                         if (await CustomDialogs.showAuthorizationsDialog(
                                 context,
@@ -162,7 +148,8 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                                 "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ??
                             false) {
                           if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
-                            _appSys.updateSetting(_appSys.settings!["user"]["global"], "notificationNewMail", value);
+                            _appSys.settings.user.global.notificationNewMail = value;
+                            appSys.saveSettings();
                           }
                         }
                       }
@@ -170,17 +157,18 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                   ),
                   SettingsTile.switchTile(
                     title: 'Notification de nouvelle note',
-                    enabled: !_appSys.settings!["user"]["global"]["batterySaver"],
+                    enabled: !_appSys.settings.user.global.batterySaver,
                     titleTextStyle: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                     subtitleTextStyle: TextStyle(
                         fontFamily: "Asap",
                         color: ThemeUtils.isThemeDark ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
-                    switchValue: _appSys.settings!["user"]["global"]["notificationNewGrade"],
+                    switchValue: _appSys.settings.user.global.notificationNewGrade,
                     onToggle: (bool value) async {
                       if (value == false ||
                           (!kIsWeb && Platform.isIOS && await Permission.notification.request().isGranted) ||
                           (await Permission.ignoreBatteryOptimizations.isGranted)) {
-                        _appSys.updateSetting(_appSys.settings!["user"]["global"], "notificationNewGrade", value);
+                        _appSys.settings.user.global.notificationNewGrade = value;
+                        appSys.saveSettings();
                       } else {
                         if (await CustomDialogs.showAuthorizationsDialog(
                                 context,
@@ -188,7 +176,8 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                                 "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.") ??
                             false) {
                           if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
-                            _appSys.updateSetting(_appSys.settings!["user"]["global"], "notificationNewGrade", value);
+                            _appSys.settings.user.global.notificationNewGrade = value;
+                            appSys.saveSettings();
                           }
                         }
                       }
@@ -276,9 +265,10 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     subtitleTextStyle: TextStyle(
                         fontFamily: "Asap",
                         color: ThemeUtils.isThemeDark ? Colors.white.withOpacity(0.7) : Colors.black.withOpacity(0.7)),
-                    switchValue: _appSys.settings!["user"]["global"]["shakeToReport"],
+                    switchValue: _appSys.settings.user.global.shakeToReport,
                     onToggle: (bool value) async {
-                      _appSys.updateSetting(_appSys.settings!["user"]["global"], "shakeToReport", value);
+                      _appSys.settings.user.global.shakeToReport = value;
+                      appSys.saveSettings();
                     }),
                 SettingsTile(
                   title: 'Afficher les logs',
@@ -334,6 +324,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                       var temp = await SettingsUtils.forceRestoreOldSettings();
                       setState(() {
                         appSys.settings = temp;
+                        appSys.saveSettings();
                       });
                       CustomDialogs.showAnyDialog(context, "Anciens paramètres restaurés.");
                     },

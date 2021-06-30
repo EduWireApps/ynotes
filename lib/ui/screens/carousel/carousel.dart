@@ -252,28 +252,35 @@ class _Page2State extends State<Page2> {
                   child: Container(
                       height: 100,
                       width: 100,
-                      child: FittedBox(fit: BoxFit.fill, child: Image.asset('assets/images/pageItems/carousel/shelves/calendar.png'))),
+                      child: FittedBox(
+                          fit: BoxFit.fill,
+                          child: Image.asset('assets/images/pageItems/carousel/shelves/calendar.png'))),
                 ),
                 Transform.translate(
                   offset: Offset(70 - (widget.offset! - 1) * 20, -157),
                   child: Container(
                       height: 120,
                       width: 120,
-                      child: FittedBox(fit: BoxFit.fill, child: Image.asset('assets/images/pageItems/carousel/shelves/clock.png'))),
+                      child: FittedBox(
+                          fit: BoxFit.fill, child: Image.asset('assets/images/pageItems/carousel/shelves/clock.png'))),
                 ),
                 Transform.translate(
                   offset: Offset(0 - (widget.offset! - 1) * 400, -90),
                   child: Container(
                       height: 170,
                       width: 320,
-                      child: FittedBox(fit: BoxFit.fill, child: Image.asset('assets/images/pageItems/carousel/shelves/shelve1.png'))),
+                      child: FittedBox(
+                          fit: BoxFit.fill,
+                          child: Image.asset('assets/images/pageItems/carousel/shelves/shelve1.png'))),
                 ),
                 Transform.translate(
                   offset: Offset(0 - (widget.offset! - 1) * 300, 90),
                   child: Container(
                       height: 90,
                       width: 320,
-                      child: FittedBox(fit: BoxFit.fill, child: Image.asset('assets/images/pageItems/carousel/shelves/shelve2.png'))),
+                      child: FittedBox(
+                          fit: BoxFit.fill,
+                          child: Image.asset('assets/images/pageItems/carousel/shelves/shelve2.png'))),
                 ),
               ],
             ),
@@ -530,7 +537,7 @@ class _Page4State extends State<Page4> {
                       textAlign: TextAlign.center,
                     ),
                     SwitchListTile(
-                        value: model.settings!["user"]["global"]["notificationNewGrade"],
+                        value: model.settings.user.global.notificationNewGrade,
                         title: Text(
                           "Notification de nouvelle note",
                           style: TextStyle(
@@ -549,7 +556,7 @@ class _Page4State extends State<Page4> {
                           if (value == false ||
                               (!kIsWeb && (Platform.isIOS && await Permission.notification.request().isGranted) ||
                                   (await Permission.ignoreBatteryOptimizations.isGranted))) {
-                            model.updateSetting(appSys.settings!["user"]["global"], "notificationNewGrade", value);
+                            model.settings.user.global.notificationNewGrade = value;
                           } else {
                             if (await (CustomDialogs.showAuthorizationsDialog(
                                     context,
@@ -557,7 +564,7 @@ class _Page4State extends State<Page4> {
                                     "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")) ??
                                 false) {
                               if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
-                                model.updateSetting(appSys.settings!["user"]["global"], "notificationNewGrade", value);
+                                model.settings.user.global.notificationNewGrade = value;
                               }
                             }
                           }
@@ -566,7 +573,7 @@ class _Page4State extends State<Page4> {
                       color: ThemeUtils.textColor().withOpacity(0.4),
                     ),
                     SwitchListTile(
-                      value: appSys.settings!["user"]["global"]["notificationNewMail"],
+                      value: model.settings.user.global.notificationNewMail,
                       title: Text(
                         "Notification de nouveau mail",
                         style: TextStyle(
@@ -578,7 +585,7 @@ class _Page4State extends State<Page4> {
                         if (value == false ||
                             (!kIsWeb && (Platform.isIOS && await Permission.notification.request().isGranted) ||
                                 (await Permission.ignoreBatteryOptimizations.isGranted))) {
-                          model.updateSetting(appSys.settings!["user"]["global"], "notificationNewMail", value);
+                          model.settings.user.global.notificationNewMail = value;
                         } else {
                           if (await (CustomDialogs.showAuthorizationsDialog(
                                   context,
@@ -586,7 +593,7 @@ class _Page4State extends State<Page4> {
                                   "Pouvoir s'exécuter en arrière plan sans être automatiquement arrêté par Android.")) ??
                               false) {
                             if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
-                              appSys.updateSetting(appSys.settings!["user"]["global"], "notificationNewMail", value);
+                              model.settings.user.global.notificationNewMail = value;
                             }
                           }
                         }

@@ -405,7 +405,7 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
               }, backgroundColor: Colors.grey, label: "Retour", textColor: Colors.white),
             CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5, () async {
               //Actions when pressing the ok button
-              if (_username.text != "" && (appSys.settings!["system"]["chosenParser"] == 1 ? _url.text != "" : true)) {
+              if (_username.text != "" && (appSys.settings.system.chosenParser == 1 ? _url.text != "" : true)) {
                 //Login using the chosen API
                 connectionData = appSys.api!.login(_username.text.trim(), _password.text.trim(), additionnalSettings: {
                   "url": _url.text.trim(),
@@ -483,7 +483,7 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
                 sliderController!.previousPage(duration: Duration(milliseconds: 300), curve: Curves.easeIn);
               },
               onLongPressCallback: () {
-                if (appSys.settings!["system"]["chosenParser"] == 1 &&
+                if (appSys.settings.system.chosenParser == 1 &&
                     _url.text.length == 0 &&
                     _password.text.length == 0 &&
                     _username.text.length == 0) {

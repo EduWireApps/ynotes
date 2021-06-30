@@ -68,13 +68,14 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
               ),
             ),
             SwitchListTile(
-              value: appSys.settings!["user"]["agendaPage"]["agendaOnGoingNotification"],
+              value: appSys.settings.user.agendaPage.agendaOnGoingNotification,
               title: Text("Activée",
                   style: TextStyle(
                       fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.21)),
               onChanged: (value) async {
                 if ((await Permission.ignoreBatteryOptimizations.isGranted)) {
-                  appSys.updateSetting(appSys.settings!["user"]["agendaPage"], "agendaOnGoingNotification", value);
+                  appSys.settings.user.agendaPage.agendaOnGoingNotification = value;
+                  appSys.saveSettings();
 
                   setState(() {});
                   if (value) {
@@ -90,8 +91,8 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
                           as Future<bool?>) ??
                       false) {
                     if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
-                      appSys.updateSetting(appSys.settings!["user"]["agendaPage"], "agendaOnGoingNotification", value);
-
+                      appSys.settings.user.agendaPage.agendaOnGoingNotification = value;
+                      appSys.saveSettings();
                       setState(() {});
                       if (value) {
                         await AppNotification.setOnGoingNotification();
@@ -111,12 +112,14 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
               thickness: 1,
             ),
             SwitchListTile(
-              value: appSys.settings!["user"]["agendaPage"]["enableDNDWhenOnGoingNotifEnabled"],
+              value: appSys.settings.user.agendaPage.enableDNDWhenOnGoingNotifEnabled,
               title: Text("Activer le mode ne pas déranger à l'entrée en cours",
                   style: TextStyle(
                       fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.20)),
               onChanged: (value) async {
-                appSys.updateSetting(appSys.settings!["user"]["agendaPage"], "enableDNDWhenOnGoingNotifEnabled", value);
+                appSys.settings.user.agendaPage.enableDNDWhenOnGoingNotifEnabled = value;
+                appSys.saveSettings();
+                setState(() {});
               },
               secondary: Icon(
                 MdiIcons.moonWaningCrescent,
@@ -124,13 +127,13 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
               ),
             ),
             SwitchListTile(
-              value: appSys.settings!["user"]["agendaPage"]["disableAtDayEnd"],
+              value: appSys.settings.user.agendaPage.disableAtDayEnd,
               title: Text("Desactiver en fin de journée",
                   style: TextStyle(
                       fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.20)),
               onChanged: (value) async {
-                appSys.updateSetting(appSys.settings!["user"]["agendaPage"], "disableAtDayEnd", value);
-
+                appSys.settings.user.agendaPage.disableAtDayEnd = value;
+                appSys.saveSettings();
                 setState(() {});
               },
               secondary: Icon(

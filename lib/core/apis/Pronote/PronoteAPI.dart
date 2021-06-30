@@ -769,7 +769,7 @@ class PronoteClient {
       "enConnexionAppliMobile": (qrCodeLogin == false) ? this.mobileLogin : false,
       "demandeConnexionAppliMobile": qrCodeLogin,
       "demandeConnexionAppliMobileJeton": qrCodeLogin,
-      "uuidAppliMobile": appSys.settings!["system"]["uuid"],
+      "uuidAppliMobile": appSys.settings.system.uuid,
       "loginTokenSAV": ""
     };
     var idr = await this.communication!.post("Identification", data: {'donnees': indentJson});
