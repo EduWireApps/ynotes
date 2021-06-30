@@ -159,7 +159,6 @@ class SystemSettings {
   int chosenParser;
   int lastMailCount;
   int lastGradeCount;
-
   bool migratedHW;
   int accountIndex;
   String? uuid;
