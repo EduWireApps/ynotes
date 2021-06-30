@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 import 'package:hive/hive.dart';
+import 'package:ynotes/core/utils/loggingUtils.dart';
 import 'fileUtils.dart';
 
 class HiveBackUpManager {
@@ -12,13 +13,13 @@ class HiveBackUpManager {
   HiveBackUpManager(this.box, {this.subBoxName, this.dataToImport});
   export() {
     try {
-      print("Exporting data");
+      CustomLogger.log("HIVE EXP. IMP. UTILS", "Exporting data");
       //getting map
       Map map = this.box!.toMap();
       var data;
       if (subBoxName != null) {
         data = map[subBoxName];
-        print(data.runtimeType.toString());
+        CustomLogger.log("HIVE EXP. IMP. UTILS", "Box data runtime type: ${data.runtimeType}");
         if (data.runtimeType.toString().contains("LinkedHashMap")) {
           data = Map<dynamic, dynamic>.from(data);
         }
@@ -31,6 +32,8 @@ class HiveBackUpManager {
 
       return encoded;
     } catch (e) {
+      CustomLogger.log("HIVE EXP. IMP. UTILS", "An error occured while exporting data");
+      CustomLogger.error(e);
       throw "Failed to export a box :" + e.toString();
     }
   }
@@ -49,13 +52,11 @@ class HiveBackUpManager {
         if (data.runtimeType.toString().contains("List")) {
           var oldData = map[subBoxName];
           //Try to merge the two lists
-          if (oldData != null &&
-              oldData.runtimeType.toString().contains("List")) {
-            print("Merging lists");
+          if (oldData != null && oldData.runtimeType.toString().contains("List")) {
+            CustomLogger.log("HIVE EXP. IMP. UTILS", "Merging lists");
             List finalData = oldData;
             data.forEach((dataElement) {
-              if (!finalData.any((finalDataElement) =>
-                  dataElement.id == finalDataElement.id)) {
+              if (!finalData.any((finalDataElement) => dataElement.id == finalDataElement.id)) {
                 finalData.add(dataElement);
               }
             });
@@ -77,7 +78,7 @@ class HiveBackUpManager {
         await this.box!.putAll(finalMap);
       }
     }
-    print("Imported data");
+    CustomLogger.log("HIVE EXP. IMP. UTILS", "Imported data");
   }
 
   writeBackUpFile(String data) async {
@@ -95,8 +96,7 @@ class HiveBackUpManager {
     final params = OpenFileDialogParams(
       dialogType: OpenFileDialogType.document,
     );
-    final filePath =
-        await (FlutterFileDialog.pickFile(params: params) as Future<String>);
+    final filePath = await (FlutterFileDialog.pickFile(params: params) as Future<String>);
     final File file = File(filePath);
     String data = await file.readAsString();
     return data;
