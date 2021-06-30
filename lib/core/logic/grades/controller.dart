@@ -273,7 +273,7 @@ class GradesController extends ChangeNotifier {
               toReturn.add(f);
             }
           } else {
-            debugPrint("Specialties list is null");
+            CustomLogger.log("GRADES", "Specialties list is null");
           }
           break;
       }

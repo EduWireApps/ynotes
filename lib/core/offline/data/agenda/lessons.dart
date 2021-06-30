@@ -1,6 +1,7 @@
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/offline/offline.dart';
+import 'package:ynotes/core/utils/loggingUtils.dart';
 import 'package:ynotes/globals.dart';
 
 class LessonsOffline {
@@ -13,7 +14,8 @@ class LessonsOffline {
     try {
       return parent.agendaBox?.get("lessons")?[week]?.cast<Lesson>();
     } catch (e) {
-      print("Error while returning lessons " + e.toString());
+      CustomLogger.log("LESSONS", "An error occurred while returning lessons");
+      CustomLogger.error(e);
       return null;
     }
   }
@@ -22,7 +24,7 @@ class LessonsOffline {
   ///shorten fetching delays, it should ALWAYS be from a same starting point
   updateLessons(List<Lesson> newData, int week) async {
     try {
-      print("Update offline lessons (week : $week, length : ${newData.length})");
+      CustomLogger.log("LESSONS", "Update offline lessons (week : $week, length : ${newData.length})");
       Map<dynamic, dynamic> timeTable = Map();
       var offline = await parent.agendaBox?.get("lessons");
       if (offline != null) {
@@ -43,7 +45,8 @@ class LessonsOffline {
 
       return true;
     } catch (e) {
-      print("Error while updating offline lessons " + e.toString());
+      CustomLogger.log("LESSONS", "An error occurred while updating offline lessons");
+      CustomLogger.error(e);
     }
   }
 }
