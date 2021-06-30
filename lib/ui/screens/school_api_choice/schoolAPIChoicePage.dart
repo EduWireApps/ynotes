@@ -179,7 +179,7 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
                     onPressed: chosen == null
                         ? null
                         : () async {
-                            await setChosenParser(chosen);
+                            await setChosenParser(chosen!);
                             await appSys.initOffline();
                             setState(() {
                               appSys.api = apiManager(appSys.offline);

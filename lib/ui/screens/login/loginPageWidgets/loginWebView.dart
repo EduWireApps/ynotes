@@ -162,7 +162,8 @@ class _LoginWebViewState extends State<LoginWebView> {
   setCookie() async {
     CustomLogger.log("LOGIN", "(Web view) Setting cookie");
     //generate UUID
-    await appSys.updateSetting(appSys.settings!["system"], "uuid", Uuid().v4());
+    appSys.settings.system.uuid = Uuid().v4();
+    appSys.saveSettings();
     //We use the window function to create a cookie
     //Looks like this one contains an important UUID which is used by Pronote to fingerprint the device and makes sure that nobody will use this cookie on another one
     String cookieFunction = '(function(){try{' +
@@ -172,7 +173,7 @@ class _LoginWebViewState extends State<LoginWebView> {
         'if(!!lJetonCas) {' +
         'document.cookie = "validationAppliMobile="+lJetonCas+";expires=" + new Date(new Date().getTime() + (5*60*1000)).toUTCString();' +
         'document.cookie = "uuidAppliMobile=' +
-        appSys.settings!["system"]["uuid"] +
+        appSys.settings.system.uuid! +
         ';expires=" + new Date(new Date().getTime() + (5*60*1000)).toUTCString();' +
         'document.cookie = "ielang=' +
         "1036" +

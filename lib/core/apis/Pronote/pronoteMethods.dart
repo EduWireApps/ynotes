@@ -79,9 +79,8 @@ class PronoteMethod {
     CustomLogger.log("PRONOTE", "Completed disciplines request");
 
     await DisciplinesOffline(_offlineController).updateDisciplines(listDisciplines);
-
-    appSys.updateSetting(appSys.settings!["system"], "lastGradeCount",
-        (getAllGrades(listDisciplines, overrideLimit: true) ?? []).length);
+    appSys.settings.system.lastGradeCount = (getAllGrades(listDisciplines, overrideLimit: true) ?? []).length;
+    appSys.saveSettings();
     return listDisciplines;
   }
 

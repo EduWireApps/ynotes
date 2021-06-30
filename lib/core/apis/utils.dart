@@ -31,7 +31,7 @@ sta.Stack<String> colorStack = sta.Stack();
 
 apiManager(Offline _offline) {
   //The parser list index corresponding to the user choice
-  switch (appSys.settings!["system"]["chosenParser"]) {
+  switch (appSys.settings.system.chosenParser) {
     case 0:
       return APIEcoleDirecte(_offline);
 
@@ -118,8 +118,9 @@ String linkify(String link) {
   });
 }
 
-setChosenParser(int? chosen) async {
-  await appSys.updateSetting(appSys.settings!["system"], "chosenParser", chosen);
+setChosenParser(int chosen) async {
+  appSys.settings.system.chosenParser = chosen;
+  appSys.saveSettings();
 }
 
 testIfPronoteCas(String url) async {
