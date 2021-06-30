@@ -3,8 +3,8 @@ import 'package:intl/intl.dart';
 import 'fileUtils.dart';
 import 'package:ynotes/extensions.dart';
 
-class Logger {
-  Logger._();
+class CustomLogger {
+  CustomLogger._();
 
   static Future<File> loadLog() async {
     final directory = await FolderAppUtil.getDirectory();
@@ -40,6 +40,8 @@ class Logger {
   }
 
   static void log(String object, String text) => print('[${object.toUpperCase()}] $text');
+
+  static void error(Object error) => log("ERROR", error.toString());
 
   static void logWrapped(String object, String description, String text) {
     final pattern = RegExp('.{1,800}'); // 800 is the size of each chunk

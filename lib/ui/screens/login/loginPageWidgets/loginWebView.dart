@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:uuid/uuid.dart';
-import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/utils/loggingUtils.dart';
 import 'package:ynotes/globals.dart';
@@ -137,7 +136,7 @@ class _LoginWebViewState extends State<LoginWebView> {
   //Here, we parse the credentials
   getCreds(String? credsData) {
     if (credsData != null && credsData.length > 0) {
-      Logger.logWrapped("LOGIN", "Credentials data", credsData);
+      CustomLogger.logWrapped("LOGIN", "Credentials data", credsData);
       Map temp = json.decode(credsData);
       print(temp["status"]);
       if (temp["status"] == 0) {

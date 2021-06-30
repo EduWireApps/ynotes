@@ -19,7 +19,7 @@ Future<List<CloudItem>?> changeFolder(String path) async {
   });
   var url = 'https://api.ecoledirecte.com/v3/cloud/W/$cloudUsedFolder.awp?verbe=get&idFolder=$concatenate';
   url = Uri.encodeFull(url);
-  Logger.log("ED", "Cloud url: $url");
+  CustomLogger.log("ED", "Cloud url: $url");
   List<CloudItem> toReturn = [];
 
   Map<String, String> headers = {"Content-type": "text/plain"};

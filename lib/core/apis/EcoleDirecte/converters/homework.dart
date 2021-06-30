@@ -65,7 +65,7 @@ class EcoleDirecteHomeworkConverter {
           homeworkList.add(hw);
         }
       } catch (e) {
-        Logger.log("ERROR", e.toString());
+        CustomLogger.error(e);
       }
     });
     return homeworkList;

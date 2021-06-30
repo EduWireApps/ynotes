@@ -13,7 +13,7 @@ class EcoleDirecteSchoolLifeConverter {
       bool isJustified = element["justifie"];
       schoolLifeList.add(SchoolLifeTicket(libelle, displayDate, motif, type, isJustified));
     });
-    Logger.log("ED", "School life list: $schoolLifeList");
+    CustomLogger.log("ED", "School life list: $schoolLifeList");
     return schoolLifeList;
   }
 }

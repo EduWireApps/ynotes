@@ -82,7 +82,7 @@ class EcoleDirecteDisciplineConverter {
                   .subdisciplineNames!
                   .add(rawData['discipline']);
             } catch (e) {
-              Logger.log("ERROR", e.toString());
+              CustomLogger.error(e);
             }
           }
         });
@@ -103,7 +103,7 @@ class EcoleDirecteDisciplineConverter {
           }
         });
       } catch (e) {
-        Logger.log("ERROR", e.toString());
+        CustomLogger.error(e);
       }
     });
     return disciplinesList;

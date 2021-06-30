@@ -40,11 +40,11 @@ atriumSud(String username, String? password) async {
   var response = await Requests.get(entLogin, persistCookies: true);
   //var cookies = await Requests.getStoredCookies(Requests.getHostname(ent_login));
 
-  Logger.log("PRONOTE", "ATRIUM LOGIN with $username");
-  // Logger.log("PRONOTE", response.content().toString().replaceAll("\n", "").replaceAll(" ", ""));
+  CustomLogger.log("PRONOTE", "ATRIUM LOGIN with $username");
+  // CustomLogger.log("PRONOTE", response.content().toString().replaceAll("\n", "").replaceAll(" ", ""));
   //Login payload
   var parsed = parse(response.content());
-  // Logger.log("PRONOTE", parsed.outerHtml);
+  // CustomLogger.log("PRONOTE", parsed.outerHtml);
   var input = parsed.getElementsByTagName("input").firstWhere(
       (element) => element.attributes.toString().contains("hidden") && element.attributes.toString().contains("lt"));
   var lt = input.attributes["value"];
@@ -63,7 +63,7 @@ atriumSud(String username, String? password) async {
       body: payload, persistCookies: true, bodyEncoding: RequestBodyEncoding.FormURLEncoded);
 
   var cookies = await Requests.getStoredCookies(Requests.getHostname(entLogin));
-  Logger.logWrapped("PRONOTE", "Cookies", cookies.toString());
+  CustomLogger.logWrapped("PRONOTE", "Cookies", cookies.toString());
 
   if (response2.content().contains("Vous devez activer votre compte Atrium")) {
     // throw "runes";
@@ -93,7 +93,7 @@ idf(String username, String? password, String url) async {
   String callback = Uri.encodeComponent(Uri.encodeComponent("/cas/login?service=$service"));
   //payload to send
   var payload = {"email": username, "password": password, "callback": callback};
-  Logger.log("PRONOTE", payload.toString());
+  CustomLogger.log("PRONOTE", payload.toString());
   var response2 = await Requests.post(entLogin,
       body: payload, persistCookies: true, bodyEncoding: RequestBodyEncoding.FormURLEncoded);
 
@@ -101,7 +101,7 @@ idf(String username, String? password, String url) async {
     throw "runes";
   }
   var cookies = await Requests.getStoredCookies(Requests.getHostname(entLogin));
-  Logger.logWrapped("PRONOTE", "Cookies", cookies.toString());
+  CustomLogger.logWrapped("PRONOTE", "Cookies", cookies.toString());
   return cookies;
 }
 
@@ -115,7 +115,7 @@ class Session {
   }
 
   Future post(String url, dynamic data) async {
-    Logger.log("PRONOTE", "Session post headers: $headers");
+    CustomLogger.log("PRONOTE", "Session post headers: $headers");
     http.Response response = await http.post(Uri.parse(url), body: data, headers: headers);
     updateCookie(response);
     return response.body;

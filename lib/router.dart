@@ -81,11 +81,11 @@ PageRouteBuilder generateRoute(Widget page, RouteSettings settings) {
 Route<dynamic>? onGenerateRoute(RouteSettings settings) {
   for (final route in routes) {
     if (settings.name == route.path) {
-      Logger.saveLog(object: "ROUTER", text: 'Going to "${settings.name}".');
+      CustomLogger.saveLog(object: "ROUTER", text: 'Going to "${settings.name}".');
       return generateRoute(route.page, settings);
     }
   }
 
-  Logger.saveLog(object: "ROUTER", text: 'Route "${settings.name}" not found.');
+  CustomLogger.saveLog(object: "ROUTER", text: 'Route "${settings.name}" not found.');
   return generateRoute(ErrorPage(), settings);
 }

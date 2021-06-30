@@ -26,7 +26,7 @@ abstract class API {
     final storage = new FlutterSecureStorage();
     String? appAccount = await storage.read(key: "appAccount");
     if (appAccount != null) {
-      Logger.log("API MODEL", "Returning account");
+      CustomLogger.log("API MODEL", "Returning account");
       return AppAccount.fromJson(jsonDecode(appAccount));
     } else {
       return null;

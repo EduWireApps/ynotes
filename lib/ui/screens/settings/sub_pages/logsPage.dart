@@ -18,13 +18,13 @@ class _LogsPageState extends State<LogsPage> {
       actions: [
         IconButton(
             onPressed: () async {
-              Logger.deleteLog();
+              CustomLogger.deleteLog();
               setState(() {});
             },
             icon: Icon(MdiIcons.trashCan))
       ],
       child: FutureBuilder<String>(
-          future: Logger.loadLogAsString(),
+          future: CustomLogger.loadLogAsString(),
           builder: (BuildContext context, snapshot) {
             if (snapshot.hasData) {
               return Center(

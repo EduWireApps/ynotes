@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/consts/disciplinesFilter.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/utils/loggingUtils.dart';
 import 'package:ynotes/globals.dart';
 
 ///To use to collect grades in a view
@@ -70,7 +71,7 @@ class GradesController extends ChangeNotifier {
 
   //Get school periods;
   Future<void> refresh({bool force = false, refreshFromOffline = false}) async {
-    print("Refreshing grades " + (refreshFromOffline ? "from offline" : "online"));
+    CustomLogger.log("GRADES", "Refreshing grades " + (refreshFromOffline ? "from offline" : "online"));
     if (isSimulating && force) {
       isSimulating = false;
     }
@@ -147,7 +148,7 @@ class GradesController extends ChangeNotifier {
             classNumber: e.classNumber,
             generalRank: e.generalRank))
         .toList());
-    print("Merging ...");
+    CustomLogger.log("GRADES", "Merging");
     _simulatedDisciplines.forEach((discipline) {
       discipline.gradesList!.removeWhere((_grade) => _removedGrades.any((element) =>
           element!.date == _grade.date && element.value == _grade.value && element.testName == _grade.testName));

@@ -112,7 +112,7 @@ class EcoleDirecteMethod {
     });
     if (homework != null) {
       await HomeworkOffline(_offlineController).updateHomework(homework);
-      Logger.log("ED", "Updated homework");
+      CustomLogger.log("ED", "Updated homework");
     }
     //await appSys.offline.homework.updateHomework(homework, add: true, forceAdd: true);
     return homework;
@@ -155,7 +155,7 @@ class EcoleDirecteMethod {
     );
     if (mails != null) {
       await MailsOffline(_offlineController).updateMails(mails);
-      Logger.log("ED", "Updated mails");
+      CustomLogger.log("ED", "Updated mails");
     }
     return mails;
   }
@@ -171,7 +171,7 @@ class EcoleDirecteMethod {
         ignoreMethodAndId: false);
     if (homeworkList != null) {
       await HomeworkOffline(_offlineController).updateHomework(homeworkList);
-      Logger.log("ED", "Updated homework");
+      CustomLogger.log("ED", "Updated homework");
     }
     return homeworkList;
   }
@@ -191,7 +191,7 @@ class EcoleDirecteMethod {
       EcoleDirecteAccountConverter.periods,
       "Periods request returned an error:",
     );
-    Logger.log("ED", "Amount of periods: ${periodsList.length}");
+    CustomLogger.log("ED", "Amount of periods: ${periodsList.length}");
     return periodsList;
   }
 
@@ -234,7 +234,7 @@ class EcoleDirecteMethod {
         await ((onlineArguments != null) ? onlineFetch(onlineArguments) : onlineFetch());
         return await ((offlineArguments != null) ? offlineFetch(offlineArguments) : offlineFetch());
       } catch (e) {
-        Logger.log("ERROR", e.toString());
+        CustomLogger.error(e);
         return await ((offlineArguments != null) ? offlineFetch(offlineArguments) : offlineFetch());
       }
     } else {
@@ -244,7 +244,7 @@ class EcoleDirecteMethod {
         try {
           data = await ((offlineArguments != null) ? offlineFetch(offlineArguments) : offlineFetch());
         } catch (e) {
-          Logger.log("ERROR", e.toString());
+          CustomLogger.error(e);
         }
       }
       if (data == null) {
@@ -252,7 +252,7 @@ class EcoleDirecteMethod {
           await ((onlineArguments != null) ? onlineFetch(onlineArguments) : onlineFetch());
           return await ((offlineArguments != null) ? offlineFetch(offlineArguments) : offlineFetch());
         } catch (e) {
-          Logger.log("ERROR", e.toString());
+          CustomLogger.error(e);
         }
       }
       return data;
@@ -313,7 +313,7 @@ class EcoleDirecteMethod {
       } else {
         response = await http.post(Uri.parse(finalUrl), headers: headers, body: data);
       }
-      Logger.logWrapped("ED", "Final url", finalUrl);
+      CustomLogger.logWrapped("ED", "Final url", finalUrl);
       Map<String, dynamic>? responseData = json.decode(utf8.decode(response.bodyBytes));
       if (response.statusCode == 200 &&
           responseData != null &&
@@ -327,7 +327,7 @@ class EcoleDirecteMethod {
         }
         return parsedData;
       } else {
-        Logger.logWrapped("ED", "Response data", responseData.toString());
+        CustomLogger.logWrapped("ED", "Response data", responseData.toString());
         throw (onErrorBody + "  Server returned wrong statuscode : ${response.statusCode}");
       }
     } catch (e) {
@@ -394,17 +394,17 @@ class EcoleDirecteMethod {
     "token": "$token"
     }""";
 
-    Logger.logWrapped("ED", "Mail data to send", data);
+    CustomLogger.logWrapped("ED", "Mail data to send", data);
     var body = data;
     var response = await http.post(Uri.parse(url), headers: headers, body: body).catchError((e) {
       throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou reessayez plus tard.");
     });
-    Logger.log("ED", "Starting the mail reading");
+    CustomLogger.log("ED", "Starting the mail reading");
     try {
       if (response.statusCode == 200) {
         Map<String, dynamic> req = jsonDecode(response.body);
         if (req['code'] == 200) {
-          Logger.log("ED", "Mail sent");
+          CustomLogger.log("ED", "Mail sent");
           return;
         }
         //Return an error
@@ -412,7 +412,7 @@ class EcoleDirecteMethod {
           throw "Error wrong internal status code ";
         }
       } else {
-        Logger.log("ERROR", "${response.statusCode}: wrong status code.");
+        CustomLogger.log("ERROR", "${response.statusCode}: wrong status code.");
         throw "Error wrong status code";
       }
     } catch (e) {

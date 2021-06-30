@@ -224,10 +224,10 @@ class _LoginDialogState extends State<LoginDialog> {
                               120,
                               null,
                               () async {
-                                List stepLogger = snapshot.data![2];
+                                List stepCustomLogger = snapshot.data![2];
                                 try {
                                   //add step logs to clip board
-                                  await Clipboard.setData(new ClipboardData(text: stepLogger.join("\n")));
+                                  await Clipboard.setData(new ClipboardData(text: stepCustomLogger.join("\n")));
                                   CustomDialogs.showAnyDialog(context, "Logs copiés dans le presse papier.");
                                 } catch (e) {
                                   CustomDialogs.showAnyDialog(context, "Impossible de copier dans le presse papier !");
