@@ -40,7 +40,7 @@ class _AgendaButtonsState extends State<AgendaButtons> {
               weekName,
               style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
             ),
-             SizedBox(
+            SizedBox(
               height: 5,
             ),
             Row(
@@ -165,7 +165,7 @@ class _AgendaButtonsState extends State<AgendaButtons> {
 
   getWeekName() async {
     bool isEven = (await getWeek(agendaDate!)).isEven;
-    bool reverse = appSys.settings!["user"]["agendaPage"]["reverseWeekNames"];
+    bool reverse = appSys.settings.user.agendaPage.reverseWeekNames;
     if (isEven ^= reverse) {
       if (mounted) {
         setState(() {

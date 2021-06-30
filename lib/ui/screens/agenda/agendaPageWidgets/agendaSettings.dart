@@ -27,7 +27,7 @@ class _AgendaSettingsState extends State<AgendaSettings> {
               textAlign: TextAlign.left,
             )),
         SwitchListTile(
-          value: appSys.settings!["user"]["agendaPage"]["lighteningOverride"],
+          value: appSys.settings.user.agendaPage.lighteningOverride,
           title: Text("Ignorer la réduction de stockage hors ligne",
               style: TextStyle(
                   fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.21)),
@@ -37,7 +37,7 @@ class _AgendaSettingsState extends State<AgendaSettings> {
                 fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.16),
           ),
           onChanged: (value) async {
-            appSys.updateSetting(appSys.settings!["user"]["agendaPage"], "lighteningOverride", value);
+            appSys.settings.user.agendaPage.lighteningOverride = value;
             setState(() {});
           },
           secondary: Icon(
@@ -46,12 +46,12 @@ class _AgendaSettingsState extends State<AgendaSettings> {
           ),
         ),
         SwitchListTile(
-          value: appSys.settings!["user"]["agendaPage"]["reverseWeekNames"],
+          value: appSys.settings.user.agendaPage.reverseWeekNames,
           title: Text("Inverser semaines A et B",
               style: TextStyle(
                   fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.21)),
           onChanged: (value) async {
-            appSys.updateSetting(appSys.settings!["user"]["agendaPage"], "reverseWeekNames", value);
+            appSys.settings.user.agendaPage.reverseWeekNames = value;
             setState(() {});
           },
           secondary: Icon(
@@ -64,14 +64,15 @@ class _AgendaSettingsState extends State<AgendaSettings> {
               style: TextStyle(
                   fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.21)),
           subtitle: Text(
-            "${(appSys.settings!["user"]["agendaPage"]["lessonReminderDelay"]).toString()} minutes avant",
+            "${(appSys.settings.user.agendaPage.lessonReminderDelay).toString()} minutes avant",
             style: TextStyle(
                 fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.16),
           ),
           onTap: () async {
             var value = await CustomDialogs.showNumberChoiceDialog(context, text: "la durée");
             if (value != null) {
-              appSys.updateSetting(appSys.settings!["user"]["agendaPage"], "agendaOnGoingNotification", value);
+              appSys.settings.user.agendaPage.lessonReminderDelay = value;
+
               setState(() {});
             }
           },
@@ -86,7 +87,7 @@ class _AgendaSettingsState extends State<AgendaSettings> {
                 style: TextStyle(
                     fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.21)),
             subtitle: Text(
-              appSys.settings!["user"]["agendaPage"]["agendaOnGoingNotification"] ? "Activée" : "Désactivée",
+              appSys.settings.user.agendaPage.agendaOnGoingNotification ? "Activée" : "Désactivée",
               style: TextStyle(
                   fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.16),
             ),

@@ -27,6 +27,7 @@ class HomeworkController extends ChangeNotifier {
   set api(API? api) {
     _api = api;
   }
+
   List<Homework>? get getHomework => _old;
 
   ///Returns [donePercent, doneLength, length]
@@ -44,7 +45,7 @@ class HomeworkController extends ChangeNotifier {
           toReturn.add(f);
           break;
         case homeworkFilter.LITERARY:
-          if (appSys.settings!["system"]["chosenParser"] == 0) {
+          if (appSys.settings.system.chosenParser == 0) {
             List<String> codeMatiere = filters["literary"]["ED"];
             if (codeMatiere.any((test) {
               if (test == f.disciplineCode) {
@@ -71,7 +72,7 @@ class HomeworkController extends ChangeNotifier {
 
           break;
         case homeworkFilter.SCIENCES:
-          if (appSys.settings!["system"]["chosenParser"] == 0) {
+          if (appSys.settings.system.chosenParser == 0) {
             List<String> codeMatiere = filters["sciences"]["ED"];
             if (codeMatiere.any((test) {
               if (test == f.disciplineCode) {
@@ -101,7 +102,7 @@ class HomeworkController extends ChangeNotifier {
 
         case homeworkFilter.CUSTOM:
           List codeMatiere =
-              jsonDecode(appSys.settings?["user"]["homeworkPage"]["customDisciplinesList"] ?? "[]") ?? [];
+              jsonDecode(appSys.settings.user.homeworkPage.customDisciplinesList) ?? [];
           if (codeMatiere.any((test) {
             if (test == f.discipline) {
               return true;

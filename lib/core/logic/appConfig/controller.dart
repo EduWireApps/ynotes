@@ -24,7 +24,7 @@ import 'package:ynotes/ui/themes.dart';
 
 ///Top level application sytem class
 class ApplicationSystem extends ChangeNotifier {
-  late FormSettings _settings;
+  late FormSettings settings;
 
   AppAccount? account;
   SchoolAccount? _currentSchoolAccount;
@@ -69,13 +69,6 @@ class ApplicationSystem extends ChangeNotifier {
       this.settings.system.accountIndex = this.account!.managableAccounts!.indexOf(newValue);
     }
     notifyListeners();
-  }
-
-  FormSettings get settings => _settings;
-
-  set settings(FormSettings newSettings) {
-    SettingsUtils.setSetting(newSettings);
-    _settings = newSettings;
   }
 
   buildControllers() {
@@ -130,6 +123,10 @@ class ApplicationSystem extends ChangeNotifier {
     //Set controllers
   }
 
+  refreshSettings() {
+    SettingsUtils.setSetting(this.settings);
+  }
+
   initOffline() async {
     hiveBoxProvider = HiveBoxProvider();
     //Initiate an unlocked offline controller
@@ -144,12 +141,6 @@ class ApplicationSystem extends ChangeNotifier {
     agendaController.api = this.api;
     schoolLifeController.api = this.api;
     mailsController.api = this.api;
-  }
-
-  updateSetting(Map path, String key, var value) {
-    path[key] = value;
-    SettingsUtils.setSetting(settings);
-    notifyListeners();
   }
 
 // This "Headless Task" is run when app is terminated.

@@ -85,7 +85,7 @@ class AppNotification {
     Lesson? lesson;
     //Show next lesson if this one is after current datetime
     if (nextLesson != null && nextLesson.start!.isAfter(DateTime.now())) {
-      if (await appSys.settings!["user"]["agendaPage"]["enableDNDWhenOnGoingNotifEnabled"]) {
+      if (appSys.settings.user.agendaPage.enableDNDWhenOnGoingNotifEnabled) {
         AndroidPlatformChannel.enableDND();
       }
       lesson = nextLesson;
@@ -94,8 +94,8 @@ class AppNotification {
       final prefs = await (SharedPreferences.getInstance());
       bool? value = prefs.getBool("disableAtDayEnd");
       print(value);
-      print(appSys.settings!["user"]["agendaPage"]["disableAtDayEnd"]);
-      if (appSys.settings!["user"]["agendaPage"]["disableAtDayEnd"]) {
+      print(appSys.settings.user.agendaPage.disableAtDayEnd);
+      if (appSys.settings.user.agendaPage.disableAtDayEnd) {
         await cancelOnGoingNotification();
       } else {
         lesson = currentLesson;
@@ -151,7 +151,7 @@ class AppNotification {
     }
     if (receivedNotification.channelKey == "persisnotif" &&
         receivedNotification.toMap()["buttonKeyPressed"] == "KILL") {
-      appSys.updateSetting(appSys.settings!["user"]["agendaPage"], "agendaOnGoingNotification", false);
+      appSys.settings.user.agendaPage.agendaOnGoingNotification = false;
 
       await AppNotification.cancelOnGoingNotification();
       return;
@@ -337,16 +337,17 @@ class AppNotification {
         }
       }
     }
-    if (appSys.settings!["user"]["agendaPage"]["agendaOnGoingNotification"]) {
+    if (appSys.settings.user.agendaPage.agendaOnGoingNotification) {
       Lesson? getActualLesson = getCurrentLesson(lessons);
       if (!dontShowActual) {
-        if (appSys.settings!["user"]["agendaPage"]["enableDNDWhenOnGoingNotifEnabled"]) {
+        if (appSys.settings.user.agendaPage.enableDNDWhenOnGoingNotifEnabled) {
           AndroidPlatformChannel.enableDND(); // Turn on DND - All notifications are suppressed.
         }
         await showOngoingNotification(getActualLesson);
       }
 
-      int? minutes = appSys.settings!["system"]["lastMailCount"];
+      int? minutes;
+
       await Future.forEach(lessons!, (Lesson lesson) async {
         if (lesson.start!.isAfter(date)) {
           try {
@@ -496,7 +497,7 @@ class AppNotification {
   static Future<void> showOngoingNotification(Lesson? lesson) async {
     var id = 333;
 
-    if (appSys.settings!["user"]["agendaPage"]["agendaOnGoingNotification"]) {
+    if (appSys.settings.user.agendaPage.agendaOnGoingNotification) {
       await AwesomeNotifications().initialize('resource://drawable/tfiche', [
         NotificationChannel(
             channelKey: 'persisnotif',

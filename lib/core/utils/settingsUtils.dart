@@ -55,6 +55,10 @@ class FormSettings {
           json['user'] as Map<String, dynamic>? ?? <String, dynamic>{},
         ),
       );
+  Map<String, Object> toJson() => {
+        'system': system.toJson(),
+        'user': user.toJson(),
+      };
 }
 
 class GlobalUserSettings {
@@ -279,6 +283,7 @@ class SettingsUtils {
   static setSetting(FormSettings newSettings) async {
     final prefs = await SharedPreferences.getInstance();
     String encoded = json.encode(newSettings);
+    print(encoded);
     await prefs.setString("settings", encoded);
   }
 }
@@ -302,30 +307,36 @@ class SummaryPageSettings {
 class SystemSettings {
   bool firstUse;
   String lastReadUpdateNote;
-  Null chosenParser;
+  int chosenParser;
   int lastMailCount;
   int lastGradeCount;
+
   bool migratedHW;
   int accountIndex;
-  SystemSettings({
-    required this.firstUse,
-    required this.lastReadUpdateNote,
-    required this.chosenParser,
-    required this.lastMailCount,
-    required this.lastGradeCount,
-    required this.migratedHW,
-    required this.accountIndex,
-  });
+  String? uuid;
+  int? lastFetchDate;
+
+  SystemSettings(
+      {required this.firstUse,
+      required this.lastReadUpdateNote,
+      required this.chosenParser,
+      required this.lastMailCount,
+      required this.lastGradeCount,
+      required this.migratedHW,
+      required this.accountIndex,
+      required this.uuid,
+      required this.lastFetchDate});
 
   factory SystemSettings.fromJson(Map<String, dynamic> json) => SystemSettings(
-        firstUse: (json['firstUse'] as bool?) ?? false,
-        lastReadUpdateNote: (json['lastReadUpdateNote'] as String?) ?? '',
-        chosenParser: json['chosenParser'] as Null,
-        lastMailCount: (json['lastMailCount'] as int?) ?? 0,
-        lastGradeCount: (json['lastGradeCount'] as int?) ?? 0,
-        migratedHW: (json['migratedHW'] as bool?) ?? false,
-        accountIndex: (json['accountIndex'] as int?) ?? 0,
-      );
+      firstUse: (json['firstUse'] as bool?) ?? false,
+      lastReadUpdateNote: (json['lastReadUpdateNote'] as String?) ?? '',
+      chosenParser: (json['chosenParser'] as int?) ?? 0,
+      lastMailCount: (json['lastMailCount'] as int?) ?? 0,
+      lastGradeCount: (json['lastGradeCount'] as int?) ?? 0,
+      migratedHW: (json['migratedHW'] as bool?) ?? false,
+      accountIndex: (json['accountIndex'] as int?) ?? 0,
+      uuid: (json['uuid'] as String?),
+      lastFetchDate: (json['lastFetchDate'] as int?));
 
   Map<String, Object?> toJson() => {
         'firstUse': firstUse,
@@ -334,7 +345,9 @@ class SystemSettings {
         'lastMailCount': lastMailCount,
         'lastGradeCount': lastGradeCount,
         'migratedHW': migratedHW,
-        'accountIndex': accountIndex
+        'accountIndex': accountIndex,
+        'lastFetchDate': lastFetchDate,
+        'uuid': uuid,
       };
 }
 

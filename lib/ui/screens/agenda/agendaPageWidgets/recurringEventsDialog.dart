@@ -121,7 +121,6 @@ class _RecurringEventsDialogState extends State<RecurringEventsDialog> {
                     ),
                   ),
                 ),
-                
                 CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5, () async {
                   if (enabled!) {
                     if (everyDay! ? true : selectedDays.isNotEmpty) {
@@ -246,7 +245,7 @@ class _RecurringEventsDialogState extends State<RecurringEventsDialog> {
   }
 
   getReverseAB() async {
-    bool reverse = appSys.settings!["user"]["agendaPage"]["reverseWeekNames"];
+    bool reverse = appSys.settings.user.agendaPage.reverseWeekNames;
     if (reverse) {
       setState(() {
         weekTypes = ["Toutes les semaines", "Semaine B", "Semaine A"];

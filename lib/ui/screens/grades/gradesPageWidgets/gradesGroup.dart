@@ -121,7 +121,7 @@ class _GradesGroupState extends State<GradesGroup> {
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(0),
                                       child: Text(
-                                        ((appSys.settings.system.chosenParser)
+                                        ((appSys.settings.system.chosenParser == 1)
                                             ? (widget.discipline!.average ?? "-")
                                             : ((!widget.discipline!.getAverage().isNaN)
                                                 ? widget.discipline!.getAverage().toString()
