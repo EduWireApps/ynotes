@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/pronote/schoolsModel.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
+import 'package:ynotes/core/utils/loggingUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
@@ -97,7 +98,8 @@ class _AlertBoxWidgetState extends State<AlertBoxWidget> {
                                 future: FileAppUtil.loadAsset("assets/documents/TOS_fr.txt"),
                                 builder: (context, snapshot) {
                                   if (snapshot.hasError) {
-                                    print(snapshot.error);
+                                    CustomLogger.log("LOGIN", "An error occured while getting the TOS");
+                                    CustomLogger.error(snapshot.error);
                                   }
                                   return Text(
                                     snapshot.data.toString(),
@@ -206,7 +208,7 @@ class _LoginDialogState extends State<LoginDialog> {
                         ],
                       );
                     } else if (snapshot.hasData && snapshot.data![0] == 0) {
-                      print(snapshot.data);
+                      CustomLogger.log("LOGIN", "Snapshot data: ${snapshot.data}");
                       return Column(
                         children: <Widget>[
                           Icon(
@@ -224,10 +226,10 @@ class _LoginDialogState extends State<LoginDialog> {
                               120,
                               null,
                               () async {
-                                List stepLogger = snapshot.data![2];
+                                List stepCustomLogger = snapshot.data![2];
                                 try {
                                   //add step logs to clip board
-                                  await Clipboard.setData(new ClipboardData(text: stepLogger.join("\n")));
+                                  await Clipboard.setData(new ClipboardData(text: stepCustomLogger.join("\n")));
                                   CustomDialogs.showAnyDialog(context, "Logs copiés dans le presse papier.");
                                 } catch (e) {
                                   CustomDialogs.showAnyDialog(context, "Impossible de copier dans le presse papier !");
@@ -332,14 +334,14 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
       );
       //situation where nothing matches (might be pronote/)
       if (suffixMatches.firstMatch(suffix)?.groups([1, 2]).every((element) => element == null) ?? true) {
-        print("A");
+        CustomLogger.log("LOGIN", "A");
         suffix = "/mobile.eleve.html";
         return [0, (regExp.firstMatch(url)?.group(1) ?? "") + suffix];
       }
       //situation where only mobile. is missing
       else if (suffixMatches.firstMatch(suffix)?.group(1) == null &&
           suffixMatches.firstMatch(suffix)?.group(2) != null) {
-        print("B");
+        CustomLogger.log("LOGIN", "B");
 
         suffix = "/mobile." + (suffixMatches.firstMatch(suffix)?.group(2) ?? "");
         return [0, (regExp.firstMatch(url)?.group(1) ?? "") + suffix];
@@ -347,7 +349,7 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
 
       //situation where everything matches
       else if (suffixMatches.firstMatch(suffix)?.groups([1, 2]).every((element) => element != null) ?? false) {
-        print("C");
+        CustomLogger.log("LOGIN", "C");
 
         suffix = "/" +
             (suffixMatches.firstMatch(suffix)?.group(1) ?? "") +
@@ -523,7 +525,8 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
                     CustomDialogs.showErrorSnackBar(context, "Adresse invalide", "(pas de log spécifique)");
                   }
                 } catch (e) {
-                  print(e);
+                  CustomLogger.log("LOGIN", "An error occured with the url");
+                  CustomLogger.error(e);
                   CustomDialogs.showErrorSnackBar(context, "Impossible de se connecter à cette adresse", e.toString());
                 }
               }),

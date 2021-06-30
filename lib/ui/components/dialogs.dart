@@ -7,6 +7,7 @@ import 'package:ynotes/core/apis/EcoleDirecte/ecoleDirecteMethods.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/pronote/schoolsModel.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
+import 'package:ynotes/core/utils/loggingUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/ui/components/dialogs/authorizationsDialog.dart';
 import 'package:ynotes/ui/components/dialogs/colorPicker.dart';
@@ -343,7 +344,7 @@ class CustomDialogs {
         });
     if (mailData != null) {
       await EcoleDirecteMethod.sendMail(mailData[0], mailData[1], mailData[2]).then((value) {
-        print("success");
+        CustomLogger.log("DIALOGS", "Mail sent");
         CustomDialogs.showAnyDialog(context, "Le mail a été envoyé.");
       }).catchError((Object error) {
         CustomDialogs.showAnyDialog(context, "Le mail n'a pas été envoyé !");

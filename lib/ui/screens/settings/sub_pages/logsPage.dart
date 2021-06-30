@@ -1,40 +1,8 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:ynotes/core/utils/fileUtils.dart';
+import 'package:ynotes/core/utils/loggingUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/ui/components/y_page/y_page_local.dart';
-
-Future<String> getFileData() async {
-  try {
-    final dir = await FolderAppUtil.getDirectory();
-    final File file = File('${dir.path}/logs.txt');
-    String toReturn = await file.readAsString();
-    return toReturn;
-  } catch (e) {
-    return "";
-  }
-}
-
-logFile(String text) async {
-  print("logging");
-  try {
-    final directory = await FolderAppUtil.getDirectory();
-    final File file = File('${directory.path}/logs.txt');
-    String existingText = await getFileData();
-    await file.writeAsString(DateTime.now().toString() + "\n" + text + "\n\n" + existingText, mode: FileMode.write);
-  } catch (e) {
-    print(e.toString());
-  }
-}
-
-removeLogFile() async {
-  print("Delete logs");
-  final directory = await FolderAppUtil.getDirectory();
-  final File file = File('${directory.path}/logs.txt');
-  await file.writeAsString("");
-}
 
 class LogsPage extends StatefulWidget {
   State<StatefulWidget> createState() {
@@ -50,13 +18,13 @@ class _LogsPageState extends State<LogsPage> {
       actions: [
         IconButton(
             onPressed: () async {
-              removeLogFile();
+              CustomLogger.deleteLog();
               setState(() {});
             },
             icon: Icon(MdiIcons.trashCan))
       ],
       child: FutureBuilder<String>(
-          future: getFileData(),
+          future: CustomLogger.loadLogAsString(),
           builder: (BuildContext context, snapshot) {
             if (snapshot.hasData) {
               return Center(

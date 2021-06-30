@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/apis/utils.dart';
+import 'package:ynotes/core/utils/loggingUtils.dart';
 
 ///A scheme is 9 long
 ///it has the following form  : `WADDDDDDD`.
@@ -34,11 +35,10 @@ class RecurringEventSchemes {
         selectedDays.add(i - 1);
       }
     }
-    print(selectedDays);
-    print(date);
+    CustomLogger.log("RECURRING EVENTS", "Selected days: $selectedDays");
+    CustomLogger.log("RECURRING EVENTS", "Date: $date");
     return (stringScheme.length == 9 &&
-        (((stringScheme[0] == "0" || stringScheme[0] == parity.toString()) &&
-                selectedDays.contains(date!.weekday)) ||
+        (((stringScheme[0] == "0" || stringScheme[0] == parity.toString()) && selectedDays.contains(date!.weekday)) ||
             stringScheme[1] == "1"));
   }
 
@@ -53,25 +53,13 @@ class RecurringEventSchemes {
       }
     }
     bool everyDay = (stringScheme[1] == "1");
-    String cron = tod.minute.toString() +
-        " " +
-        tod.hour.toString() +
-        " *" +
-        " *" +
-        (everyDay ? "*" : (selectedDays.join(",")));
+    String cron =
+        tod.minute.toString() + " " + tod.hour.toString() + " *" + " *" + (everyDay ? "*" : (selectedDays.join(",")));
     return cron;
   }
 
   static String humanReadableTranslaterFromRecurrencyScheme(int scheme) {
-    List daysList = [
-      "lundis",
-      "mardis",
-      "mercredis",
-      "jeudis",
-      "vendredis",
-      "samedis",
-      "dimanches"
-    ];
+    List daysList = ["lundis", "mardis", "mercredis", "jeudis", "vendredis", "samedis", "dimanches"];
     String parsed = scheme.toString();
     String weekRoot = "";
     List days = [];

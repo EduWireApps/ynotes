@@ -9,6 +9,7 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/offline/data/agenda/events.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/space/recurringEvents.dart';
+import 'package:ynotes/core/utils/loggingUtils.dart';
 import 'package:ynotes/globals.dart';
 
 part 'model.g.dart';
@@ -25,7 +26,7 @@ abstract class API {
     final storage = new FlutterSecureStorage();
     String? appAccount = await storage.read(key: "appAccount");
     if (appAccount != null) {
-      print("Returning account");
+      CustomLogger.log("API MODEL", "Returning account");
       return AppAccount.fromJson(jsonDecode(appAccount));
     } else {
       return null;

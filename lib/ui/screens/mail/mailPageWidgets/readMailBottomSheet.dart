@@ -7,6 +7,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/utils/loggingUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/buttons.dart';
@@ -30,7 +31,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> with Layout {
 
   @override
   Widget build(BuildContext context) {
-    print(this.widget.mail.id);
+    CustomLogger.log("BOTTOM SHEET", "(Read mail) Mail id: ${this.widget.mail.id}");
     MediaQueryData screenSize = MediaQuery.of(context);
     return Wrap(
       alignment: WrapAlignment.center,
@@ -142,7 +143,8 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> with Layout {
                                                   children: [
                                                     Text(
                                                       this.widget.mail.from?["name"] ?? "",
-                                                      style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
+                                                      style:
+                                                          TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                                                       overflow: TextOverflow.ellipsis,
                                                     ),
                                                     Text(
