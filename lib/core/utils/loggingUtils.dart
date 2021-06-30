@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'fileUtils.dart';
 import 'package:ynotes/extensions.dart';
@@ -39,13 +40,13 @@ class CustomLogger {
     await f.writeAsString("");
   }
 
-  static void log(String object, String text) => print('[${object.toUpperCase()}] $text');
+  static void log(String object, String text) => debugPrint('[${object.toUpperCase()}] $text');
 
-  static void error(Object error) => log("ERROR", error.toString());
+  static void error(Object? e) => log("ERROR", e.toString());
 
   static void logWrapped(String object, String description, String text) {
     final pattern = RegExp('.{1,800}'); // 800 is the size of each chunk
     log(object, description);
-    pattern.allMatches(text).forEach((match) => print(match.group(0)));
+    pattern.allMatches(text).forEach((match) => debugPrint(match.group(0)));
   }
 }

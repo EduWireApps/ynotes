@@ -36,7 +36,7 @@ class _LoginWebViewState extends State<LoginWebView> {
 
   //Checking the profile and getting the credentials
   authAndValidateProfile() async {
-    print("Validating profile");
+    CustomLogger.log("LOGIN", "(Web view) Validating profile");
 
     Timer(new Duration(milliseconds: 1500), () async {
       setState(() {
@@ -138,20 +138,20 @@ class _LoginWebViewState extends State<LoginWebView> {
     if (credsData != null && credsData.length > 0) {
       CustomLogger.logWrapped("LOGIN", "Credentials data", credsData);
       Map temp = json.decode(credsData);
-      print(temp["status"]);
+      CustomLogger.log("LOGIN", "(Web view) Status: ${temp["status"]}");
       if (temp["status"] == 0) {
         loginStatus = temp;
         Navigator.of(context).pop(loginStatus);
       } else {}
     } else {
       //This can happen if the page is not fully loaded
-      print("Credentials are null");
+      CustomLogger.log("LOGIN", "(Web view) Credentials are null");
     }
   }
 
   //IDK if it's still useful, but It redirects the user to the Pronote official page and log in
   loginTest() async {
-    print("Login test");
+    CustomLogger.log("LOGIN", "(Web view) Login test");
     Timer(new Duration(milliseconds: 1500), () async {
       String toexecute = 'if(!window.messageData) /*window.messageData = [];*/';
       await widget.controller!.evaluateJavascript(source: toexecute);
@@ -160,7 +160,7 @@ class _LoginWebViewState extends State<LoginWebView> {
 
   //We set the login cookie here
   setCookie() async {
-    print("Setting cookie");
+    CustomLogger.log("LOGIN", "(Web view) Setting cookie");
     //generate UUID
     await appSys.updateSetting(appSys.settings!["system"], "uuid", Uuid().v4());
     //We use the window function to create a cookie

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/utils/loggingUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/customLoader.dart';
@@ -71,7 +72,8 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
                                                 chosenSpecialties!
                                                     .removeWhere((element) => element == disciplines[index]);
                                               });
-                                              print(chosenSpecialties);
+                                              CustomLogger.log(
+                                                  "DIALOGS", "(Specialties) Chosen specialties: $chosenSpecialties");
                                               setChosenSpecialties();
                                             } else {
                                               if (chosenSpecialties!.length < 6) {
@@ -99,7 +101,8 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
                                                         chosenSpecialties!
                                                             .removeWhere((element) => element == disciplines[index]);
                                                       });
-                                                      print(chosenSpecialties);
+                                                      CustomLogger.log("DIALOGS",
+                                                          "(Specialties) Chosen specialties: $chosenSpecialties");
                                                       setChosenSpecialties();
                                                     } else {
                                                       if (chosenSpecialties!.length < 6) {
@@ -172,6 +175,7 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
     if (chosenSpecialties != null && chosenSpecialties!.every((element) => element != null)) {
       prefs.setStringList("listSpecialties", chosenSpecialties!.cast<String>());
     }
-    print(prefs.getStringList("listSpecialties"));
+    CustomLogger.log(
+        "DIALOGS", "(Specialties) Chosen specialties (from prefs): ${prefs.getStringList("listSpecialties")}");
   }
 }
