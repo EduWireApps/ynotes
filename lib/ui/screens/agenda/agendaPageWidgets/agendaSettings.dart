@@ -38,6 +38,7 @@ class _AgendaSettingsState extends State<AgendaSettings> {
           ),
           onChanged: (value) async {
             appSys.settings.user.agendaPage.lighteningOverride = value;
+            appSys.saveSettings();
             setState(() {});
           },
           secondary: Icon(
@@ -52,6 +53,7 @@ class _AgendaSettingsState extends State<AgendaSettings> {
                   fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.21)),
           onChanged: (value) async {
             appSys.settings.user.agendaPage.reverseWeekNames = value;
+            appSys.saveSettings();
             setState(() {});
           },
           secondary: Icon(
@@ -72,6 +74,7 @@ class _AgendaSettingsState extends State<AgendaSettings> {
             var value = await CustomDialogs.showNumberChoiceDialog(context, text: "la durée");
             if (value != null) {
               appSys.settings.user.agendaPage.lessonReminderDelay = value;
+              appSys.saveSettings();
 
               setState(() {});
             }

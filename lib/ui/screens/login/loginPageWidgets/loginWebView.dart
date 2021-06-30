@@ -163,6 +163,7 @@ class _LoginWebViewState extends State<LoginWebView> {
     print("Setting cookie");
     //generate UUID
     appSys.settings.system.uuid = Uuid().v4();
+    appSys.saveSettings();
     //We use the window function to create a cookie
     //Looks like this one contains an important UUID which is used by Pronote to fingerprint the device and makes sure that nobody will use this cookie on another one
     String cookieFunction = '(function(){try{' +

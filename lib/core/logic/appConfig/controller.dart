@@ -123,8 +123,9 @@ class ApplicationSystem extends ChangeNotifier {
     //Set controllers
   }
 
-  refreshSettings() {
+  saveSettings() {
     SettingsUtils.setSetting(this.settings);
+    notifyListeners();
   }
 
   initOffline() async {

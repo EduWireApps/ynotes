@@ -79,6 +79,7 @@ class PronoteMethod {
 
     await DisciplinesOffline(_offlineController).updateDisciplines(listDisciplines);
     appSys.settings.system.lastGradeCount = (getAllGrades(listDisciplines, overrideLimit: true) ?? []).length;
+    appSys.saveSettings();
     return listDisciplines;
   }
 

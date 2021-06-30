@@ -101,8 +101,8 @@ class HomeworkController extends ChangeNotifier {
           break;
 
         case homeworkFilter.CUSTOM:
-          List codeMatiere =
-              jsonDecode(appSys.settings.user.homeworkPage.customDisciplinesList) ?? [];
+          List codeMatiere = jsonDecode(appSys.settings.user.homeworkPage.customDisciplinesList) ?? [];
+          appSys.saveSettings();
           if (codeMatiere.any((test) {
             if (test == f.discipline) {
               return true;

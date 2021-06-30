@@ -120,6 +120,7 @@ String linkify(String link) {
 
 setChosenParser(int chosen) async {
   appSys.settings.system.chosenParser = chosen;
+  appSys.saveSettings();
 }
 
 testIfPronoteCas(String url) async {

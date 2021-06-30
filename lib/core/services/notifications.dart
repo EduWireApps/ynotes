@@ -95,6 +95,7 @@ class AppNotification {
       bool? value = prefs.getBool("disableAtDayEnd");
       print(value);
       print(appSys.settings.user.agendaPage.disableAtDayEnd);
+      appSys.saveSettings();
       if (appSys.settings.user.agendaPage.disableAtDayEnd) {
         await cancelOnGoingNotification();
       } else {
@@ -152,6 +153,7 @@ class AppNotification {
     if (receivedNotification.channelKey == "persisnotif" &&
         receivedNotification.toMap()["buttonKeyPressed"] == "KILL") {
       appSys.settings.user.agendaPage.agendaOnGoingNotification = false;
+      appSys.saveSettings();
 
       await AppNotification.cancelOnGoingNotification();
       return;

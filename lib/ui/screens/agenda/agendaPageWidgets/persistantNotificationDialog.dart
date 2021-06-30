@@ -75,6 +75,7 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
               onChanged: (value) async {
                 if ((await Permission.ignoreBatteryOptimizations.isGranted)) {
                   appSys.settings.user.agendaPage.agendaOnGoingNotification = value;
+                  appSys.saveSettings();
 
                   setState(() {});
                   if (value) {
@@ -91,6 +92,7 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
                       false) {
                     if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
                       appSys.settings.user.agendaPage.agendaOnGoingNotification = value;
+                      appSys.saveSettings();
                       setState(() {});
                       if (value) {
                         await AppNotification.setOnGoingNotification();
@@ -116,6 +118,7 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
                       fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.20)),
               onChanged: (value) async {
                 appSys.settings.user.agendaPage.enableDNDWhenOnGoingNotifEnabled = value;
+                appSys.saveSettings();
                 setState(() {});
               },
               secondary: Icon(
@@ -130,6 +133,7 @@ class _PersistantNotificationConfigDialogState extends State<PersistantNotificat
                       fontFamily: "Asap", color: ThemeUtils.textColor(), fontSize: screenSize.size.height / 10 * 0.20)),
               onChanged: (value) async {
                 appSys.settings.user.agendaPage.disableAtDayEnd = value;
+                appSys.saveSettings();
                 setState(() {});
               },
               secondary: Icon(

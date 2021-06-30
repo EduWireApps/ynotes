@@ -60,8 +60,8 @@ class EcoleDirecteMethod {
 
     createStack();
 
-
-    appSys.settings.system.lastGradeCount= (getAllGrades(disciplinesList, overrideLimit: true) ?? []).length;
+    appSys.settings.system.lastGradeCount = (getAllGrades(disciplinesList, overrideLimit: true) ?? []).length;
+    appSys.saveSettings();
 
     return disciplinesList;
   }

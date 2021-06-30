@@ -246,6 +246,7 @@ class _RecurringEventsDialogState extends State<RecurringEventsDialog> {
 
   getReverseAB() async {
     bool reverse = appSys.settings.user.agendaPage.reverseWeekNames;
+    appSys.saveSettings();
     if (reverse) {
       setState(() {
         weekTypes = ["Toutes les semaines", "Semaine B", "Semaine A"];

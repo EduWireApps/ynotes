@@ -191,6 +191,7 @@ class _QRCodeLoginPageState extends State<QRCodeLoginPage> {
       //Used by pronote to fingerprint the device
 
       appSys.settings.system.uuid = Uuid().v4();
+      appSys.saveSettings();
 
       //Open the loading dialog with credentials
       openLoadingDialog(appSys.api!.login(login, pass, additionnalSettings: {

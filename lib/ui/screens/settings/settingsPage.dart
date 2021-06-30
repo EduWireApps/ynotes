@@ -118,6 +118,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     switchValue: _appSys.settings.user.global.batterySaver,
                     onToggle: (value) async {
                       _appSys.settings.user.global.batterySaver = value;
+                      appSys.saveSettings();
                     },
                   ),
                 ],
@@ -139,6 +140,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                           (!kIsWeb && Platform.isIOS && await Permission.notification.request().isGranted) ||
                           (await Permission.ignoreBatteryOptimizations.isGranted)) {
                         _appSys.settings.user.global.notificationNewMail = value;
+                        appSys.saveSettings();
                       } else {
                         if (await CustomDialogs.showAuthorizationsDialog(
                                 context,
@@ -147,6 +149,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                             false) {
                           if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
                             _appSys.settings.user.global.notificationNewMail = value;
+                            appSys.saveSettings();
                           }
                         }
                       }
@@ -165,6 +168,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                           (!kIsWeb && Platform.isIOS && await Permission.notification.request().isGranted) ||
                           (await Permission.ignoreBatteryOptimizations.isGranted)) {
                         _appSys.settings.user.global.notificationNewGrade = value;
+                        appSys.saveSettings();
                       } else {
                         if (await CustomDialogs.showAuthorizationsDialog(
                                 context,
@@ -173,6 +177,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                             false) {
                           if (await Permission.ignoreBatteryOptimizations.request().isGranted) {
                             _appSys.settings.user.global.notificationNewGrade = value;
+                            appSys.saveSettings();
                           }
                         }
                       }
@@ -263,6 +268,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                     switchValue: _appSys.settings.user.global.shakeToReport,
                     onToggle: (bool value) async {
                       _appSys.settings.user.global.shakeToReport = value;
+                      appSys.saveSettings();
                     }),
                 SettingsTile(
                   title: 'Afficher les logs',
@@ -318,6 +324,7 @@ class _SettingsPageState extends State<SettingsPage> with TickerProviderStateMix
                       var temp = await SettingsUtils.forceRestoreOldSettings();
                       setState(() {
                         appSys.settings = temp;
+                        appSys.saveSettings();
                       });
                       CustomDialogs.showAnyDialog(context, "Anciens paramètres restaurés.");
                     },

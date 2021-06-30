@@ -38,6 +38,7 @@ class _SummaryPageSettingsState extends State<SummaryPageSettings> {
                     divisions: 11,
                     onChanged: (double newValue) async {
                       appSys.settings.user.summaryPage.summaryQuickHomework = newValue.round();
+                      appSys.saveSettings();
 
                       setState(() {});
                     }),

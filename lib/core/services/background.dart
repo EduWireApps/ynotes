@@ -17,10 +17,12 @@ class BackgroundService {
       //Ensure that grades notification are enabled and battery saver disabled
       bool gradesFetchEnabled =
           ((appSys.settings.user.global.notificationNewGrade && !appSys.settings.user.global.batterySaver));
+      appSys.saveSettings();
       //Ensure that mails notification are enabled, battery saver disabled and parser is EcoleDirecte
       bool mailsFetchEnabled = (appSys.settings.user.global.notificationNewMail &&
           !appSys.settings.user.global.batterySaver &&
           appSys.settings.system.chosenParser == 0);
+      appSys.saveSettings();
 
       print("Starting the headless closed bakground task");
 
@@ -87,6 +89,7 @@ class BackgroundService {
     try {
       if (_appSys.settings.system.lastFetchDate != null) {
         DateTime date = DateTime.fromMillisecondsSinceEpoch(_appSys.settings.system.lastFetchDate!);
+        appSys.saveSettings();
         if (DateTime.now().difference(date).inMinutes >= 5) {
           return true;
         } else {
@@ -106,6 +109,7 @@ class BackgroundService {
     try {
       //Get the old number of mails
       int oldGradesLength = appSys.settings.system.lastGradeCount;
+      appSys.saveSettings();
       //Getting the offline count of grades
       //instanciate an offline controller read only
 
@@ -136,6 +140,7 @@ class BackgroundService {
     try {
       //Get the old number of mails
       var oldMailLength = appSys.settings.system.lastMailCount;
+      appSys.saveSettings();
       print("Old length is $oldMailLength");
       //Get new mails
       List<Mail>? mails = await (appSys.api as APIEcoleDirecte?)?.getMails(forceReload: true);
@@ -154,6 +159,7 @@ class BackgroundService {
         if (oldMailLength < (newMailLength)) {
           //Manually set the new mail number
           appSys.settings.system.lastMailCount = newMailLength;
+          appSys.saveSettings();
 
           return (mails ?? []).last;
         } else {
@@ -172,6 +178,7 @@ class BackgroundService {
   static writeLastFetchStatus(ApplicationSystem _appSys) async {
     int date = DateTime.now().millisecondsSinceEpoch;
     appSys.settings.system.lastFetchDate = date;
+    appSys.saveSettings();
     print("Written last fetch status " + date.toString());
   }
 }
