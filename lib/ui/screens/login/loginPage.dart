@@ -320,7 +320,7 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
 
   formatURL(String url) {
     RegExp regExp = new RegExp(
-      r"(https://.*\.index-education.net/pronote)(.*)",
+      r"(.*/pronote)(.*)",
       caseSensitive: false,
       multiLine: false,
     );
@@ -350,7 +350,6 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
       //situation where everything matches
       else if (suffixMatches.firstMatch(suffix)?.groups([1, 2]).every((element) => element != null) ?? false) {
         CustomLogger.log("LOGIN", "C");
-
         suffix = "/" +
             (suffixMatches.firstMatch(suffix)?.group(1) ?? "") +
             (suffixMatches.firstMatch(suffix)?.group(2) ?? "");
@@ -509,6 +508,7 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
                   }
                   if (await checkPronoteURL(_url.text)) {
                     if (await testIfPronoteCas(_url.text)) {
+                      CustomLogger.log("LOGIN", "Is a pronote cas");
                       var a = await Navigator.of(context)
                           .push(router(LoginWebView(url: _url.text, controller: _controller)));
                       if (a != null) {
