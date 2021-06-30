@@ -3,8 +3,6 @@ import 'package:hive/hive.dart';
 import 'package:json_annotation/json_annotation.dart';
 part 'models.g.dart';
 
-// ignore: deprecated_member_use
-@JsonSerializable(nullable: false)
 @HiveType(typeId: 4)
 class Lesson {
   //E.G : Salle 215
@@ -55,12 +53,8 @@ class Lesson {
     this.end,
     this.id,
   });
-  factory Lesson.fromJson(Map<String, dynamic> json) => _$LessonFromJson(json);
-  Map<String, dynamic> toJson() => _$LessonToJson(this);
 }
 
-// ignore: deprecated_member_use
-@JsonSerializable(nullable: false)
 @HiveType(typeId: 6)
 //Associated with a lesson
 class AgendaReminder {
@@ -104,8 +98,6 @@ enum AlarmType {
 
 ///The agenda event, ALL events (lessons, custom events) should be converted in this class
 @HiveType(typeId: 8)
-// ignore: deprecated_member_use
-@JsonSerializable(nullable: false)
 class AgendaEvent {
   @HiveField(0)
   DateTime? start;
@@ -176,5 +168,4 @@ class AgendaEvent {
       this.color,
       this.recurrenceScheme});
       
-  Map<String, dynamic> toJson() => _$AgendaEventToJson(this);
 }

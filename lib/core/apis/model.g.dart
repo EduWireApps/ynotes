@@ -72,6 +72,7 @@ SchoolAccount _$SchoolAccountFromJson(Map<String, dynamic> json) {
         .toList(),
     surname: json['surname'] as String?,
     schoolName: json['schoolName'] as String?,
+    profilePicture: json['profilePicture'] as String?,
   )..credentials = json['credentials'] as Map<String, dynamic>?;
 }
 
@@ -82,6 +83,7 @@ Map<String, dynamic> _$SchoolAccountToJson(SchoolAccount instance) =>
       'schoolName': instance.schoolName,
       'studentClass': instance.studentClass,
       'studentID': instance.studentID,
+      'profilePicture': instance.profilePicture,
       'availableTabs':
           instance.availableTabs.map((e) => _$appTabsEnumMap[e]).toList(),
       'credentials': instance.credentials,
