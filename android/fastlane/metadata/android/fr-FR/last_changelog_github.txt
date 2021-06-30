@@ -1,2 +1,1 @@
-This version adds a new login screen :
-- All Pronote CAS should be able to login
+A lot of new features are available in this version. Please check the in-app details for more informations. 

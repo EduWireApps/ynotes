@@ -1,16 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:connectivity/connectivity.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
-import 'package:ynotes/core/services/shared_preferences.dart';
 import 'package:ynotes/globals.dart';
-
-String actualUser = "";
 
 //Parsers list
 ///Color theme switcher, actually 0 for darkmode and 1 for lightmode
@@ -18,11 +15,11 @@ int colorTheme = 0;
 
 List parsers = ["EcoleDirecte", "Pronote"];
 
-List<Discipline> specialities = List<Discipline>();
-TValue case2<TOptionType, TValue>(
+List<Discipline> specialities = [];
+TValue? case2<TOptionType, TValue>(
   TOptionType selectedOption,
   Map<TOptionType, TValue> branches, [
-  TValue defaultValue = null,
+  TValue? defaultValue,
 ]) {
   if (!branches.containsKey(selectedOption)) {
     return defaultValue;
@@ -33,43 +30,42 @@ TValue case2<TOptionType, TValue>(
 
 //Connectivity  classs
 
-List<Grade> getAllGrades(List<Discipline> list, {bool overrideLimit = false, bool sortByWritingDate = true}) {
+List<Grade>? getAllGrades(List<Discipline>? list, {bool overrideLimit = false, bool sortByWritingDate = true}) {
   if (appSys.api != null) {
-    List<Grade> listToReturn = List();
+    List<Grade> listToReturn = [];
     if (list != null) {
       list.forEach((element) {
-        if (element != null) {
-          element.gradesList.forEach((grade) {
-            if (!listToReturn.contains(grade)) {
-              listToReturn.add(grade);
-            }
-          });
-        }
+        element.gradesList?.forEach((grade) {
+          if (!listToReturn.contains(grade)) {
+            listToReturn.add(grade);
+          }
+        });
       });
-      if (appSys.api.gradesList != null && appSys.api.gradesList.length > 0 && listToReturn == appSys.api.gradesList) {
-        return appSys.api.gradesList;
+      if (appSys.api!.gradesList != null &&
+          (appSys.api!.gradesList ?? []).length > 0 &&
+          listToReturn == appSys.api!.gradesList) {
+        return appSys.api!.gradesList;
       }
 
       listToReturn = listToReturn.toSet().toList();
-      if (listToReturn != null) {
-        //sort grades
-        if (sortByWritingDate) {
-          listToReturn
-              .sort((a, b) => (a.entryDate != null && b.entryDate != null) ? (a.entryDate.compareTo(b.entryDate)) : 1);
-        }
 
-        //remove duplicates
-        listToReturn = listToReturn.toSet().toList();
-        listToReturn = listToReturn.reversed.toList();
-        if (appSys.api.gradesList == null) {
-          appSys.api.gradesList = List<Grade>();
-        }
-        appSys.api.gradesList.clear();
-        appSys.api.gradesList.addAll(listToReturn);
+      //sort grades
+      if (sortByWritingDate) {
+        listToReturn
+            .sort((a, b) => (a.entryDate != null && b.entryDate != null) ? (a.entryDate!.compareTo(b.entryDate!)) : 1);
+      }
 
-        if (overrideLimit == false && listToReturn != null) {
-          listToReturn = listToReturn.sublist(0, (listToReturn.length >= 5) ? 5 : listToReturn.length);
-        }
+      //remove duplicates
+      listToReturn = listToReturn.toSet().toList();
+      listToReturn = listToReturn.reversed.toList();
+      if (appSys.api!.gradesList == null) {
+        appSys.api!.gradesList = [];
+      }
+      appSys.api!.gradesList?.clear();
+      appSys.api!.gradesList?.addAll(listToReturn);
+
+      if (overrideLimit == false) {
+        listToReturn = listToReturn.sublist(0, ((listToReturn.length >= 5) ? 5 : listToReturn.length));
       }
       return listToReturn;
     } else {
@@ -90,14 +86,14 @@ launchURL(url) async {
 }
 
 //Redefine the switch statement
-ReadStorage(_key) async {
-  String u = await storage.read(key: _key);
+Future<String?> readStorage(_key) async {
+  String? u = await storage.read(key: _key);
 
   return u;
 }
 
 Future<List<Discipline>> refreshDisciplinesListColors(List<Discipline> list) async {
-  List<Discipline> newList = List<Discipline>();
+  List<Discipline> newList = [];
   list.forEach((f) async {
     f.color = await getColor(f.disciplineCode);
     newList.add(f);
@@ -122,25 +118,6 @@ Route router(Widget widget) {
       );
     },
   );
-}
-
-specialtiesSelectionAvailable() async {
-  return [false];
-  if (appSys.settings["system"]["chosenParser"] == 0) {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    String classe = await storage.read(key: "classe") ?? "";
-
-//E.G : It is always something like "Première blabla"
-    var split = classe.split(" ");
-
-    if (split[0] == "PremiÃ¨re" || split[0] == "Terminale") {
-      return [true, (split[0] == "PremiÃ¨re") ? "Première" : split[0]];
-    } else {
-      return [false];
-    }
-  } else {
-    return [false];
-  }
 }
 
 class ConnectionStatusSingleton {

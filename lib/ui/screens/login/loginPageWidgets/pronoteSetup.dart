@@ -1,70 +1,29 @@
-import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/ui/components/buttons.dart';
-import 'package:ynotes/ui/screens/login/loginPageWidgets/textField.dart';
+import 'package:ynotes/ui/components/textField.dart';
 
 class PronoteSetupPart extends StatefulWidget {
-  final Function callback;
+  final Function? callback;
 
-  const PronoteSetupPart({Key key, this.callback}) : super(key: key);
+  const PronoteSetupPart({Key? key, this.callback}) : super(key: key);
   @override
   _PronoteSetupPartState createState() => _PronoteSetupPartState();
 }
 
+class PronoteUrlFieldPart extends StatefulWidget {
+  final Function? loginCallback;
+  final Function? backButton;
+  final Function? onLongPressCallback;
+  final TextEditingController? pronoteUrl;
+  PronoteUrlFieldPart({Key? key, this.pronoteUrl, this.loginCallback, this.backButton, this.onLongPressCallback})
+      : super(key: key);
+  @override
+  _PronoteUrlFieldPartState createState() => _PronoteUrlFieldPartState();
+}
+
 class _PronoteSetupPartState extends State<PronoteSetupPart> {
-  _buildPronoteLoginWay(String label, String description, IconData icon, String id) {
-    MediaQueryData screenSize = MediaQuery.of(context);
-
-    return Material(
-      borderRadius: BorderRadius.circular(18),
-      color: Colors.white,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(18),
-        onTap: () {
-          widget.callback(id);
-        },
-        child: Container(
-          width: screenSize.size.width / 5 * 4,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(18),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Container(
-                  width: screenSize.size.width / 5 * 1.1,
-                  height: screenSize.size.width / 5 * 1.1,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(18),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Icon(icon, size: screenSize.size.width / 5 * 0.5),
-                    ],
-                  )),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                        child: Text(label,
-                            style: TextStyle(fontFamily: "Asap", color: Colors.black, fontWeight: FontWeight.bold))),
-                    Container(child: Text(description, style: TextStyle(fontFamily: "Asap", color: Colors.black)))
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
@@ -90,29 +49,65 @@ class _PronoteSetupPartState extends State<PronoteSetupPart> {
       ],
     );
   }
-}
 
-class PronoteUrlFieldPart extends StatefulWidget {
-  final Function loginCallback;
-  final Function backButton;
-  final Function onLongPressCallback;
-  final TextEditingController pronoteUrl;
-  PronoteUrlFieldPart({Key key, this.pronoteUrl, this.loginCallback, this.backButton, this.onLongPressCallback})
-      : super(key: key);
-  @override
-  _PronoteUrlFieldPartState createState() => _PronoteUrlFieldPartState();
+  _buildPronoteLoginWay(String label, String description, IconData icon, String id) {
+    MediaQueryData screenSize = MediaQuery.of(context);
+
+    return Material(
+      borderRadius: BorderRadius.circular(18),
+      color: Colors.white,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(18),
+        onTap: () {
+          widget.callback!(id);
+        },
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: 500),
+          child: Container(
+            width: screenSize.size.width / 5 * 4,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(18),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Container(
+                    width: 90,
+                    height: 90,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(18),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Icon(icon, size: 70),
+                      ],
+                    )),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                          child: Text(label,
+                              style: TextStyle(fontFamily: "Asap", color: Colors.black, fontWeight: FontWeight.bold))),
+                      Container(child: Text(description, style: TextStyle(fontFamily: "Asap", color: Colors.black)))
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class _PronoteUrlFieldPartState extends State<PronoteUrlFieldPart> {
   bool useEnt = false;
-  TextEditingController _url = TextEditingController();
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _url = widget.pronoteUrl;
-  }
-
+  TextEditingController? _url = TextEditingController();
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize = MediaQuery.of(context);
@@ -121,7 +116,7 @@ class _PronoteUrlFieldPartState extends State<PronoteUrlFieldPart> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          LoginPageTextField(_url, "URL Pronote", false, MdiIcons.link, false),
+          CustomTextField(_url, "URL Pronote mobile", false, MdiIcons.link, false),
           SizedBox(height: screenSize.size.height / 10 * 0.2),
           GestureDetector(
             onTap: () {
@@ -157,5 +152,11 @@ class _PronoteUrlFieldPartState extends State<PronoteUrlFieldPart> {
         ],
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _url = widget.pronoteUrl;
   }
 }

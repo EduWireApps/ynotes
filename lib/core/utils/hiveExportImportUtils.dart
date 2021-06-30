@@ -3,20 +3,18 @@ import 'dart:io';
 
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 import 'package:hive/hive.dart';
-import 'package:ynotes/main.dart';
-import 'package:ynotes/globals.dart';
 import 'fileUtils.dart';
 
 class HiveBackUpManager {
-  Box box;
-  final String subBoxName;
+  Box? box;
+  final String? subBoxName;
   final dataToImport;
   HiveBackUpManager(this.box, {this.subBoxName, this.dataToImport});
   export() {
     try {
       print("Exporting data");
       //getting map
-      Map map = this.box.toMap();
+      Map map = this.box!.toMap();
       var data;
       if (subBoxName != null) {
         data = map[subBoxName];
@@ -42,7 +40,7 @@ class HiveBackUpManager {
     //Old values
     Map map = Map();
     if (this.box != null) {
-      map = this.box.toMap();
+      map = this.box!.toMap();
 
       //New values (back up values)
       var data = this.dataToImport;
@@ -51,11 +49,13 @@ class HiveBackUpManager {
         if (data.runtimeType.toString().contains("List")) {
           var oldData = map[subBoxName];
           //Try to merge the two lists
-          if (oldData != null && oldData.runtimeType.toString().contains("List")) {
+          if (oldData != null &&
+              oldData.runtimeType.toString().contains("List")) {
             print("Merging lists");
             List finalData = oldData;
             data.forEach((dataElement) {
-              if (!finalData.any((finalDataElement) => dataElement.id == finalDataElement.id)) {
+              if (!finalData.any((finalDataElement) =>
+                  dataElement.id == finalDataElement.id)) {
                 finalData.add(dataElement);
               }
             });
@@ -63,8 +63,8 @@ class HiveBackUpManager {
             data = finalData;
           }
         }
-        await this.box.delete(subBoxName);
-        await this.box.put(subBoxName, data);
+        await this.box!.delete(subBoxName);
+        await this.box!.put(subBoxName, data);
       } else {
         //Concatenate
         Map finalMap = {
@@ -72,11 +72,10 @@ class HiveBackUpManager {
           ...data,
         };
 
-        await this.box.clear();
+        await this.box!.clear();
 
-        await this.box.putAll(finalMap);
+        await this.box!.putAll(finalMap);
       }
-      await appSys.offline.refreshData();
     }
     print("Imported data");
   }
@@ -96,7 +95,8 @@ class HiveBackUpManager {
     final params = OpenFileDialogParams(
       dialogType: OpenFileDialogType.document,
     );
-    final filePath = await FlutterFileDialog.pickFile(params: params);
+    final filePath =
+        await (FlutterFileDialog.pickFile(params: params) as Future<String>);
     final File file = File(filePath);
     String data = await file.readAsString();
     return data;

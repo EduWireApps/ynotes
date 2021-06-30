@@ -17,27 +17,29 @@ class HomeworkAdapter extends TypeAdapter<Homework> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Homework(
-      fields[0] as String,
-      fields[1] as String,
-      fields[2] as String,
-      fields[3] as String,
-      fields[4] as String,
-      fields[5] as DateTime,
-      fields[6] as DateTime,
-      fields[7] as bool,
-      fields[8] as bool,
-      fields[9] as bool,
-      (fields[10] as List)?.cast<Document>(),
-      (fields[11] as List)?.cast<Document>(),
-      fields[12] as String,
-      fields[13] as bool,
-    );
+      discipline: fields[0] as String?,
+      disciplineCode: fields[1] as String?,
+      id: fields[2] as String?,
+      rawContent: fields[3] as String?,
+      sessionRawContent: fields[4] as String?,
+      date: fields[5] as DateTime?,
+      entryDate: fields[6] as DateTime?,
+      done: fields[7] as bool?,
+      toReturn: fields[8] as bool?,
+      isATest: fields[9] as bool?,
+      teacherName: fields[12] as String?,
+      loaded: fields[13] as bool?,
+      editable: fields[14] as bool,
+      pinned: fields[15] as bool?,
+    )
+      ..files = (fields[16] as List).cast<Document>()
+      ..sessionFiles = (fields[17] as List).cast<Document>();
   }
 
   @override
   void write(BinaryWriter writer, Homework obj) {
     writer
-      ..writeByte(14)
+      ..writeByte(16)
       ..writeByte(0)
       ..write(obj.discipline)
       ..writeByte(1)
@@ -58,14 +60,18 @@ class HomeworkAdapter extends TypeAdapter<Homework> {
       ..write(obj.toReturn)
       ..writeByte(9)
       ..write(obj.isATest)
-      ..writeByte(10)
-      ..write(obj.documents)
-      ..writeByte(11)
-      ..write(obj.sessionDocuments)
       ..writeByte(12)
       ..write(obj.teacherName)
       ..writeByte(13)
-      ..write(obj.loaded);
+      ..write(obj.loaded)
+      ..writeByte(14)
+      ..write(obj.editable)
+      ..writeByte(15)
+      ..write(obj.pinned)
+      ..writeByte(16)
+      ..write(obj.files)
+      ..writeByte(17)
+      ..write(obj.sessionFiles);
   }
 
   @override
@@ -78,47 +84,3 @@ class HomeworkAdapter extends TypeAdapter<Homework> {
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
-
-// **************************************************************************
-// JsonSerializableGenerator
-// **************************************************************************
-
-Homework _$HomeworkFromJson(Map<String, dynamic> json) {
-  return Homework(
-    json['discipline'] as String,
-    json['disciplineCode'] as String,
-    json['id'] as String,
-    json['rawContent'] as String,
-    json['sessionRawContent'] as String,
-    DateTime.parse(json['date'] as String),
-    DateTime.parse(json['entryDate'] as String),
-    json['done'] as bool,
-    json['toReturn'] as bool,
-    json['isATest'] as bool,
-    (json['documents'] as List)
-        .map((e) => Document.fromJson(e as Map<String, dynamic>))
-        .toList(),
-    (json['sessionDocuments'] as List)
-        .map((e) => Document.fromJson(e as Map<String, dynamic>))
-        .toList(),
-    json['teacherName'] as String,
-    json['loaded'] as bool,
-  );
-}
-
-Map<String, dynamic> _$HomeworkToJson(Homework instance) => <String, dynamic>{
-      'discipline': instance.discipline,
-      'disciplineCode': instance.disciplineCode,
-      'id': instance.id,
-      'rawContent': instance.rawContent,
-      'sessionRawContent': instance.sessionRawContent,
-      'date': instance.date.toIso8601String(),
-      'entryDate': instance.entryDate.toIso8601String(),
-      'done': instance.done,
-      'toReturn': instance.toReturn,
-      'isATest': instance.isATest,
-      'documents': instance.documents,
-      'sessionDocuments': instance.sessionDocuments,
-      'teacherName': instance.teacherName,
-      'loaded': instance.loaded,
-    };

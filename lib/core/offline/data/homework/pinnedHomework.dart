@@ -1,30 +1,17 @@
-import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:ynotes/core/offline/offline.dart';
 
-class PinnedHomeworkOffline extends Offline {
-  Offline parent;
-  PinnedHomeworkOffline(bool locked, Offline _parent) : super(locked) {
+class PinnedHomeworkOffline {
+  late Offline parent;
+  PinnedHomeworkOffline(Offline _parent) {
     parent = _parent;
-  }
-
-  ///Set a homework date as pinned (or not)
-  void set(String date, bool value) async {
-    if (!locked) {
-     
-      try {
-        parent.pinnedHomeworkBox.put(date, value);
-      } catch (e) {
-        print("Error during the setPinnedHomeworkDateProcess $e");
-      }
-    }
   }
 
   ///Get pinned homework dates
   getPinnedHomeworkDates() async {
     try {
-      Map notParsedList = parent.pinnedHomeworkBox.toMap();
-      List<DateTime> parsedList = List<DateTime>();
+      Map notParsedList = parent.pinnedHomeworkBox!.toMap();
+      List<DateTime> parsedList = [];
       notParsedList.removeWhere((key, value) => value == false);
       notParsedList.keys.forEach((element) {
         parsedList.add(DateTime.parse(DateFormat("yyyy-MM-dd").format(DateTime.parse(element))));
@@ -37,9 +24,9 @@ class PinnedHomeworkOffline extends Offline {
   }
 
   ///Get homework pinned status for a given `date`
-  Future<bool> getPinnedHomeworkSingleDate(String date) async {
+  Future<bool?> getPinnedHomeworkSingleDate(String date) async {
     try {
-      bool toReturn = parent.pinnedHomeworkBox.get(date);
+      bool? toReturn = parent.pinnedHomeworkBox!.get(date);
 
       //If to return is null return false
       return (toReturn != null) ? toReturn : false;
@@ -47,6 +34,15 @@ class PinnedHomeworkOffline extends Offline {
       print("Error during the getPinnedHomeworkProcess $e");
 
       return null;
+    }
+  }
+
+  ///Set a homework date as pinned (or not)
+  void set(String date, bool? value) async {
+    try {
+      await parent.pinnedHomeworkBox?.put(date, value);
+    } catch (e) {
+      print("Error during the setPinnedHomeworkDateProcess $e");
     }
   }
 }

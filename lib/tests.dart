@@ -1,4 +1,3 @@
-
 enum appEnvs { prod, beta, dev }
 
 ///Here are some tests values, as mocking variables or beta app
@@ -12,6 +11,7 @@ class Tests {
   static const gradeMockUrl = String.fromEnvironment("GRADEMOCKURL");
 
   appEnvs get globalAppEnv {
+    // ignore: unnecessary_null_comparison
     if (env != null) {
       for (appEnvs appEnv in appEnvs.values) {
         if (appEnv.toString().split('.').last == env) {
@@ -21,5 +21,6 @@ class Tests {
     } else {
       return appEnvs.prod;
     }
+    return appEnvs.dev;
   }
 }

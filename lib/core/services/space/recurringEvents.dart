@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/apis/utils.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
 
 ///A scheme is 9 long
 ///it has the following form  : `WADDDDDDD`.
@@ -10,8 +9,8 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 class RecurringEventSchemes {
   //Get schemes
   static Future<List> toScheme(DateTime date) async {
-    List schemes = List();
-    int parity = ((await get_week(date)).isEven) ? 1 : 2;
+    List schemes = [];
+    int parity = ((await getWeek(date)).isEven) ? 1 : 2;
     int day = date.day;
     //Get all week event
     schemes.add("allWeek");
@@ -19,16 +18,17 @@ class RecurringEventSchemes {
     schemes.add("${parity}d$day");
     //Get day event every week
     schemes.add("0d$day");
+    return schemes;
   }
 
-  DateTime date;
-  int week;
+  DateTime? date;
+  int? week;
   //Get where function request
   bool testRequest(var scheme) {
     assert(date != null && week != null, "Date and week shouldn't be null");
     var stringScheme = scheme.toString();
-    int parity = (week.isEven) ? 1 : 2;
-    List selectedDays = List();
+    int parity = (week!.isEven) ? 1 : 2;
+    List selectedDays = [];
     for (int i = 2; i < stringScheme.runes.length; i++) {
       if (stringScheme[i] == "1") {
         selectedDays.add(i - 1);
@@ -37,31 +37,44 @@ class RecurringEventSchemes {
     print(selectedDays);
     print(date);
     return (stringScheme.length == 9 &&
-        (((stringScheme[0] == "0" || stringScheme[0] == parity.toString()) && selectedDays.contains(date.weekday)) ||
+        (((stringScheme[0] == "0" || stringScheme[0] == parity.toString()) &&
+                selectedDays.contains(date!.weekday)) ||
             stringScheme[1] == "1"));
   }
 
   String toCron(int scheme) {
-    TimeOfDay tod = TimeOfDay.fromDateTime(this.date);
-    List selectedDays;
+    TimeOfDay tod = TimeOfDay.fromDateTime(this.date!);
+    late List selectedDays;
     var stringScheme = scheme.toString();
     for (int i = 2; i < stringScheme.runes.length; i++) {
-      selectedDays = List();
+      selectedDays = [];
       if (stringScheme[i] == "1") {
         selectedDays.add(i - 1);
       }
     }
     bool everyDay = (stringScheme[1] == "1");
-    String cron =
-        tod.minute.toString() + " " + tod.hour.toString() + " *" + " *" + (everyDay ? "*" : (selectedDays.join(",")));
+    String cron = tod.minute.toString() +
+        " " +
+        tod.hour.toString() +
+        " *" +
+        " *" +
+        (everyDay ? "*" : (selectedDays.join(",")));
     return cron;
   }
 
   static String humanReadableTranslaterFromRecurrencyScheme(int scheme) {
-    List daysList = ["lundis", "mardis", "mercredis", "jeudis", "vendredis", "samedis", "dimanches"];
+    List daysList = [
+      "lundis",
+      "mardis",
+      "mercredis",
+      "jeudis",
+      "vendredis",
+      "samedis",
+      "dimanches"
+    ];
     String parsed = scheme.toString();
     String weekRoot = "";
-    List days = List();
+    List days = [];
     String end = "";
     switch (parsed[0]) {
       case "0":

@@ -3,27 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:ynotes/ui/components/color_picker/flutter_colorpicker.dart';
 
 class CustomColorPicker extends StatefulWidget {
-  final Color defaultColor;
+  final Color? defaultColor;
 
-  const CustomColorPicker({Key key, this.defaultColor}) : super(key: key);
+  const CustomColorPicker({Key? key, this.defaultColor}) : super(key: key);
   @override
   _CustomColorPickerState createState() => _CustomColorPickerState();
 }
 
 class _CustomColorPickerState extends State<CustomColorPicker> {
-  void changeColor(Color color) {
-    setState(() {
-      pickerColor = color;
-    });
-  }
+  Color? pickerColor;
 
-  Color pickerColor;
   @override
   Widget build(BuildContext context) {
-    MediaQueryData screenSize = MediaQuery.of(context);
     return AlertDialog(
       backgroundColor: Theme.of(context).primaryColor,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0))),
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(32.0))),
       content: Container(
         //padding: EdgeInsets.all(screenSize.size.height/100),
 
@@ -34,7 +29,6 @@ class _CustomColorPickerState extends State<CustomColorPicker> {
               pickerColor: pickerColor ?? widget.defaultColor,
               onColorChanged: changeColor,
               availableColors: [
-                //TODO : add the default colors
                 Colors.white,
                 Color(0xfffb6b1d),
                 Color(0xffe83b3b),
@@ -72,16 +66,16 @@ class _CustomColorPickerState extends State<CustomColorPicker> {
         ),
       ),
       actions: <Widget>[
-        FlatButton(
+        TextButton(
           child: const Text(
             "Annuler",
-            style: TextStyle(fontFamily: "Asap"),
+            style: TextStyle(fontFamily: "Asap", color: Colors.red),
           ),
           onPressed: () {
             Navigator.pop(context, null);
           },
         ),
-        FlatButton(
+        TextButton(
           child: Text(
             "J'ai choisi",
             style: TextStyle(color: Colors.green, fontFamily: "Asap"),
@@ -93,5 +87,11 @@ class _CustomColorPickerState extends State<CustomColorPicker> {
         )
       ],
     );
+  }
+
+  void changeColor(Color color) {
+    setState(() {
+      pickerColor = color;
+    });
   }
 }

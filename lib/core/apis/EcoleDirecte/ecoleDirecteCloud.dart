@@ -1,12 +1,12 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:ynotes/ui/screens/cloud/cloudPage.dart';
-import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
+import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/ui/screens/cloud/cloudPage.dart';
 
 //The basical function to change folder
-changeFolder(String path) async {
+Future<List<CloudItem>?> changeFolder(String path) async {
   ///I've chosen to not use their weird "Loaded function", user doesn't care about a little loading
   List paths = path.split("/");
   var finalPath = paths.sublist(2);
@@ -16,16 +16,19 @@ changeFolder(String path) async {
   finalPath.forEach((item) {
     concatenate.write(r'\' + item);
   });
-  var url = 'https://api.ecoledirecte.com/v3/cloud/W/${cloudUsedFolder}.awp?verbe=get&idFolder=${concatenate}';
+  var url =
+      'https://api.ecoledirecte.com/v3/cloud/W/$cloudUsedFolder.awp?verbe=get&idFolder=$concatenate';
   url = Uri.encodeFull(url);
   print(url);
-  List<CloudItem> toReturn = List();
+  List<CloudItem> toReturn = [];
 
   Map<String, String> headers = {"Content-type": "text/plain"};
   String data = 'data={"token": "$token"}';
 
   var body = data;
-  var response = await http.post(Uri.parse(url), headers: headers, body: body).catchError((e) {
+  var response = await http
+      .post(Uri.parse(url), headers: headers, body: body)
+      .catchError((e) {
     throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.");
   });
 
@@ -40,7 +43,9 @@ changeFolder(String path) async {
               element["libelle"],
               element["type"].toString().toUpperCase(),
               element["proprietaire"] != null
-                  ? element["proprietaire"]["prenom"] + " " + element["proprietaire"]["nom"]
+                  ? element["proprietaire"]["prenom"] +
+                      " " +
+                      element["proprietaire"]["nom"]
                   : "",
               false,
               element["date"],
@@ -53,6 +58,6 @@ changeFolder(String path) async {
   } else {
     throw "Erreur durant la récupération des éléments du cloud ${response.body}";
   }
-  toReturn.sort((a, b) => a.date.compareTo(b.date));
+  toReturn.sort((a, b) => a.date!.compareTo(b.date!));
   return toReturn;
 }

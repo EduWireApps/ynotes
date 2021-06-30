@@ -1,15 +1,12 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:circular_check_box/circular_check_box.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:ynotes/core/services/shared_preferences.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
-
-import '../../../main.dart';
-import '../../../usefulMethods.dart';
+import 'package:ynotes/ui/components/customLoader.dart';
 
 class DialogSpecialties extends StatefulWidget {
   State<StatefulWidget> createState() {
@@ -18,47 +15,25 @@ class DialogSpecialties extends StatefulWidget {
 }
 
 class _DialogSpecialtiesState extends State<DialogSpecialties> {
-  List<String> chosenSpecialties = List();
+  List<String?>? chosenSpecialties = [];
   var classe;
-  Future disciplinesFuture;
-
-  getChosenSpecialties() async {
-    var other = await specialtiesSelectionAvailable();
-    final prefs = await SharedPreferences.getInstance();
-    if (prefs.getStringList("listSpecialties") != null) {
-      setState(() {
-        chosenSpecialties = prefs.getStringList("listSpecialties");
-        classe = other;
-      });
-    }
-  }
-
-  setChosenSpecialties() async {
-    final prefs = await SharedPreferences.getInstance();
-    prefs.setStringList("listSpecialties", chosenSpecialties);
-    print(prefs.getStringList("listSpecialties"));
-  }
-
-  initState() {
-    super.initState();
-    getChosenSpecialties();
-    setState(() {
-      disciplinesFuture = appSys.api.getGrades(forceReload: true);
-    });
-  }
+  late Future<List<Discipline>?> disciplinesFuture;
 
   Widget build(BuildContext context) {
-    List disciplines = List();
+    List disciplines = [];
 
     MediaQueryData screenSize;
     screenSize = MediaQuery.of(context);
     return Container(
       height: screenSize.size.height / 10 * 4,
-      child: FutureBuilder(
+      child: FutureBuilder<List<Discipline>?>(
           future: disciplinesFuture,
           builder: (context, snapshot) {
+            if (snapshot.data == null) {
+              return Container();
+            }
             if (snapshot.hasData) {
-              snapshot.data.forEach((element) {
+              (snapshot.data ?? []).forEach((element) {
                 if (!disciplines.contains(element.disciplineName)) {
                   disciplines.add(element.disciplineName);
                 }
@@ -91,17 +66,17 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
                                         color: Colors.transparent,
                                         child: InkWell(
                                           onTap: () {
-                                            if (chosenSpecialties.contains(disciplines[index])) {
+                                            if (chosenSpecialties!.contains(disciplines[index])) {
                                               setState(() {
-                                                chosenSpecialties
+                                                chosenSpecialties!
                                                     .removeWhere((element) => element == disciplines[index]);
                                               });
                                               print(chosenSpecialties);
                                               setChosenSpecialties();
                                             } else {
-                                              if (chosenSpecialties.length < 6) {
+                                              if (chosenSpecialties!.length < 6) {
                                                 setState(() {
-                                                  chosenSpecialties.add(disciplines[index]);
+                                                  chosenSpecialties!.add(disciplines[index]);
                                                 });
                                                 setChosenSpecialties();
                                               }
@@ -114,26 +89,29 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
                                             ),
                                             child: Row(
                                               children: <Widget>[
-                                                CircularCheckBox(
-                                                  inactiveColor: ThemeUtils.textColor(),
+                                                Checkbox(
+                                                  side: BorderSide(width: 1, color: Colors.white),
+                                                  fillColor:
+                                                      MaterialStateColor.resolveWith(ThemeUtils.getCheckBoxColor),
                                                   onChanged: (value) {
-                                                    if (chosenSpecialties.contains(disciplines[index])) {
+                                                    if (chosenSpecialties!.contains(disciplines[index])) {
                                                       setState(() {
-                                                        chosenSpecialties
+                                                        chosenSpecialties!
                                                             .removeWhere((element) => element == disciplines[index]);
                                                       });
                                                       print(chosenSpecialties);
                                                       setChosenSpecialties();
                                                     } else {
-                                                      if (chosenSpecialties.length < 6) {
+                                                      if (chosenSpecialties!.length < 6) {
                                                         setState(() {
-                                                          chosenSpecialties.add(disciplines[index]);
+                                                          chosenSpecialties!.add(disciplines[index]);
                                                         });
                                                         setChosenSpecialties();
                                                       }
                                                     }
                                                   },
-                                                  value: chosenSpecialties.contains(disciplines[index]),
+                                                  shape: const CircleBorder(),
+                                                  value: chosenSpecialties!.contains(disciplines[index]),
                                                 ),
                                                 Container(
                                                   width: screenSize.size.width / 5 * 3,
@@ -157,7 +135,7 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
                                         Icon(MdiIcons.information, color: ThemeUtils.textColor()),
                                         AutoSizeText(
                                           "Pas assez de données pour générer votre liste de spécialités.",
-                                          style: TextStyle(fontFamily: "Asap"),
+                                          style: TextStyle(fontFamily: "Asap", color: ThemeUtils.textColor()),
                                           textAlign: TextAlign.center,
                                         )
                                       ],
@@ -165,12 +143,35 @@ class _DialogSpecialtiesState extends State<DialogSpecialties> {
                                   )),
                       )));
             } else {
-              return SpinKitFadingFour(
-                color: Theme.of(context).primaryColorDark,
-                size: screenSize.size.width / 5 * 1,
-              );
+              return CustomLoader(
+                  screenSize.size.width / 5 * 1.5, screenSize.size.width / 5 * 1.5, Theme.of(context).primaryColorDark);
             }
           }),
     );
+  }
+
+  getChosenSpecialties() async {
+    final prefs = await (SharedPreferences.getInstance());
+    if (prefs.getStringList("listSpecialties") != null) {
+      setState(() {
+        chosenSpecialties = prefs.getStringList("listSpecialties");
+      });
+    }
+  }
+
+  initState() {
+    super.initState();
+    getChosenSpecialties();
+    setState(() {
+      disciplinesFuture = appSys.api!.getGrades(forceReload: true);
+    });
+  }
+
+  setChosenSpecialties() async {
+    final prefs = await (SharedPreferences.getInstance());
+    if (chosenSpecialties != null && chosenSpecialties!.every((element) => element != null)) {
+      prefs.setStringList("listSpecialties", chosenSpecialties!.cast<String>());
+    }
+    print(prefs.getStringList("listSpecialties"));
   }
 }

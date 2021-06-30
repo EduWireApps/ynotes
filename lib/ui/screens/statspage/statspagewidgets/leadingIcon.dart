@@ -4,8 +4,8 @@ import 'package:ynotes/core/utils/themeUtils.dart';
 class LeadingAndSubtitle extends StatefulWidget {
   final Widget leading;
   final String subtitle;
-  final Color color;
-  const LeadingAndSubtitle({Key key, @required this.leading, @required this.subtitle, this.color}) : super(key: key);
+  final Color? color;
+  const LeadingAndSubtitle({Key? key, required this.leading, required this.subtitle, this.color}) : super(key: key);
   @override
   _LeadingAndSubtitleState createState() => _LeadingAndSubtitleState();
 }

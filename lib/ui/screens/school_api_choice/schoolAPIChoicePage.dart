@@ -1,18 +1,18 @@
-import 'package:ynotes/core/apis/utils.dart';
-import 'package:ynotes/core/utils/fileUtils.dart';
-
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:ynotes/ui/screens/login/loginPage.dart';
-import 'package:ynotes/main.dart';
+import 'package:flutter/services.dart';
+import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/globals.dart';
+import 'package:ynotes/ui/screens/login/loginPage.dart';
 import 'package:ynotes/usefulMethods.dart';
 
-Animation<double> chosenAnimation1;
-Animation<double> chosenAnimation2;
-AnimationController chosenAnimation1Controller;
-AnimationController chosenAnimation2Controller;
+int? chosen;
+late Animation<double> chosenAnimation1;
+late AnimationController chosenAnimation1Controller;
+late Animation<double> chosenAnimation2;
+
+late AnimationController chosenAnimation2Controller;
 
 class SchoolAPIChoice extends StatefulWidget {
   State<StatefulWidget> createState() {
@@ -20,44 +20,14 @@ class SchoolAPIChoice extends StatefulWidget {
   }
 }
 
-int chosen;
-
 class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderStateMixin {
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    chosenAnimation1Controller = AnimationController(vsync: this, duration: Duration(milliseconds: 450));
-    chosenAnimation2Controller = AnimationController(vsync: this, duration: Duration(milliseconds: 450));
-    chosenAnimation1 = new Tween(
-      begin: 1.0,
-      end: 1.1,
-    ).animate(new CurvedAnimation(parent: chosenAnimation1Controller, curve: Curves.easeInOutQuint));
-    chosenAnimation2 = new Tween(
-      begin: 1.0,
-      end: 1.1,
-    ).animate(new CurvedAnimation(parent: chosenAnimation2Controller, curve: Curves.easeInOutQuint));
-    getLocalChosen();
-  }
-
-  getLocalChosen() async {
-    setState(() {
-      chosen = appSys.settings["system"]["chosenParser"];
-    });
-    if (chosen == 0) {
-      chosenAnimation2Controller.reverse();
-      chosenAnimation1Controller.forward();
-    }
-    if (chosen == 1) {
-      chosenAnimation1Controller.reverse();
-      chosenAnimation2Controller.forward();
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize;
     screenSize = MediaQuery.of(context);
+
+    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
+
 //Disable any back
     return WillPopScope(
       onWillPop: () async {
@@ -92,7 +62,7 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
                     ),
                     AnimatedBuilder(
                       animation: chosenAnimation1,
-                      builder: (BuildContext context, Widget child) {
+                      builder: (BuildContext context, Widget? child) {
                         return Transform.scale(
                           scale: chosenAnimation1.value,
                           child: child,
@@ -110,31 +80,30 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
                             });
                           },
                           borderRadius: BorderRadius.circular(25),
-                          child: Container(
-                            width: screenSize.size.width / 5 * 4.2,
-                            height: screenSize.size.height / 10 * 0.8,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Container(
-                                  padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width / 10 * 0.1),
-                                  margin: EdgeInsets.only(right: MediaQuery.of(context).size.width / 10 * 0.2),
-                                  child: Image(
-                                      width: MediaQuery.of(context).size.width / 5 * 0.6,
-                                      height: MediaQuery.of(context).size.width / 5 * 0.4,
-                                      fit: BoxFit.fill,
-                                      image: AssetImage('assets/images/EcoleDirecte/EcoleDirecteIcon.png')),
-                                ),
-                                Container(
-                                    width: screenSize.size.width / 5 * 3,
-                                    child: FittedBox(
-                                        child: Text("Ecole Directe",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                fontFamily: "Asap",
-                                                fontSize: screenSize.size.height / 10 * 0.4,
-                                                color: Colors.white)))),
-                              ],
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(maxWidth: 350),
+                            child: Container(
+                              width: MediaQuery.of(context).size.width / 5 * 4.2,
+                              height: 70,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Container(
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width / 10 * 0.1),
+                                    margin: EdgeInsets.only(right: 20, left: 20),
+                                    child: Image(
+                                        width: 50,
+                                        height: 40,
+                                        fit: BoxFit.fill,
+                                        image: AssetImage('assets/images/EcoleDirecte/EcoleDirecteIcon.png')),
+                                  ),
+                                  Expanded(
+                                      child: Text("Ecole Directe",
+                                          textAlign: TextAlign.start,
+                                          style: TextStyle(fontFamily: "Asap", fontSize: 30, color: Colors.white))),
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -145,74 +114,75 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
                     ),
                     AnimatedBuilder(
                       animation: chosenAnimation2,
-                      builder: (BuildContext context, Widget child) {
+                      builder: (BuildContext context, Widget? child) {
                         return Transform.scale(
                           scale: chosenAnimation2.value,
                           child: child,
                         );
                       },
                       child: Material(
-                        color: Color(0xff61b872),
-                        borderRadius: BorderRadius.circular(25),
-                        child: InkWell(
-                          onTap: () {
-                            //CustomDialogs.showUnimplementedSnackBar(context);
-                            setState(() {
-                              chosenAnimation1Controller.reverse();
-                              chosen = 1;
-                              chosenAnimation2Controller.forward();
-                            });
-                          },
+                          color: Color(0xff61b872),
                           borderRadius: BorderRadius.circular(25),
-                          child: Container(
-                            width: screenSize.size.width / 5 * 4.2,
-                            height: screenSize.size.height / 10 * 0.8,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: <Widget>[
-                                Container(
-                                  padding: EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width / 10 * 0.1),
-                                  margin: EdgeInsets.only(right: MediaQuery.of(context).size.width / 10 * 0.2),
-                                  child: Image(
-                                      width: MediaQuery.of(context).size.width / 5 * 0.5,
-                                      height: screenSize.size.width / 5 * 0.5,
-                                      fit: BoxFit.fitHeight,
-                                      image: AssetImage('assets/images/Pronote/PronoteIcon.png')),
-                                ),
-                                Container(
-                                    width: screenSize.size.width / 5 * 3,
-                                    child: FittedBox(
-                                        child: Text("Pronote",
-                                            textAlign: TextAlign.center,
-                                            style: TextStyle(
-                                                fontFamily: "Asap",
-                                                fontSize: screenSize.size.height / 10 * 0.4,
-                                                color: Colors.white)))),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
+                          child: InkWell(
+                              onTap: () {
+                                //CustomDialogs.showUnimplementedSnackBar(context);
+                                setState(() {
+                                  chosenAnimation1Controller.reverse();
+                                  chosen = 1;
+                                  chosenAnimation2Controller.forward();
+                                });
+                              },
+                              borderRadius: BorderRadius.circular(25),
+                              child: ConstrainedBox(
+                                constraints: BoxConstraints(maxWidth: 350),
+                                child: Container(
+                                    width: MediaQuery.of(context).size.width / 5 * 4.2,
+                                    height: 70,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Container(
+                                          padding: EdgeInsets.symmetric(vertical: 10),
+                                          margin: EdgeInsets.only(right: 20, left: 20),
+                                          child: Image(
+                                              width: 50,
+                                              height: 50,
+                                              fit: BoxFit.fill,
+                                              image: AssetImage('assets/images/Pronote/PronoteIcon.png')),
+                                        ),
+                                        Expanded(
+                                            child: Text("Pronote",
+                                                textAlign: TextAlign.start,
+                                                style:
+                                                    TextStyle(fontFamily: "Asap", fontSize: 30, color: Colors.white))),
+                                      ],
+                                    )),
+                              ))),
                     ),
                   ],
                 ),
                 Positioned(
                   bottom: screenSize.size.height / 10 * 0.4,
-                  right: screenSize.size.width / 5 * 0.1,
-                  child: RaisedButton(
-                    color: chosen != null ? Color(0xff5DADE2) : Color(0xffECECEC),
-                    shape: StadiumBorder(),
+                  right: 15,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: chosen != null ? Color(0xff5DADE2) : Color(0xffECECEC),
+                      shape: StadiumBorder(),
+                    ),
                     onPressed: chosen == null
                         ? null
                         : () async {
                             await setChosenParser(chosen);
+                            await appSys.initOffline();
+
                             setState(() {
-                              appSys.api = APIManager(appSys.offline);
-                              appSys.initControllers();
+                              appSys.api = apiManager(appSys.offline);
                             });
-                            Navigator.of(context).pushReplacement(router(LoginPage()));
+                            Navigator.of(context).pushReplacement(router(LoginSlider(
+                              setupNeeded: chosen == 1,
+                            )));
                           },
-                    child: Text('Connexion', style: TextStyle(fontSize: screenSize.size.width / 5 * 0.2)),
+                    child: Text('Connexion', style: TextStyle(fontSize: 25)),
                   ),
                 )
               ],
@@ -221,5 +191,35 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
         ),
       ),
     );
+  }
+
+  getLocalChosen() async {
+    setState(() {
+      chosen = appSys.settings!["system"]["chosenParser"];
+    });
+    if (chosen == 0) {
+      chosenAnimation2Controller.reverse();
+      chosenAnimation1Controller.forward();
+    }
+    if (chosen == 1) {
+      chosenAnimation1Controller.reverse();
+      chosenAnimation2Controller.forward();
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    chosenAnimation1Controller = AnimationController(vsync: this, duration: Duration(milliseconds: 450));
+    chosenAnimation2Controller = AnimationController(vsync: this, duration: Duration(milliseconds: 450));
+    chosenAnimation1 = new Tween(
+      begin: 1.0,
+      end: 1.1,
+    ).animate(new CurvedAnimation(parent: chosenAnimation1Controller, curve: Curves.easeInOutQuint));
+    chosenAnimation2 = new Tween(
+      begin: 1.0,
+      end: 1.1,
+    ).animate(new CurvedAnimation(parent: chosenAnimation2Controller, curve: Curves.easeInOutQuint));
+    getLocalChosen();
   }
 }

@@ -1,18 +1,19 @@
 import 'dart:convert';
 
-import 'package:ynotes/core/services/shared_preferences.dart';
+import 'package:collection/collection.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SettingsUtils {
   static const Map secureSettingsForm = {"username": "", "password": "", "pronoteurl": "", "pronotecas": ""};
-  static Map settingsForm = {
+  static const Map settingsForm = {
     //System global settings
     "system": {
       "firstUse": false,
-      "agreedTermsAndConfiguredApp": false,
       "lastReadUpdateNote": "",
-      "chosenParser": 0,
+      "chosenParser": null,
       "lastMailCount": 0,
-      "lastGradeCount": 0
+      "lastGradeCount": 0,
+      "migratedHW": false
     },
 
     ///The user's app global settings
@@ -30,6 +31,10 @@ class SettingsUtils {
       "summaryPage": {"summaryQuickHomework": 11},
       "homeworkPage": {
         "isExpandedByDefault": false,
+        "forceMonochromeContent": false,
+        "fontSize": 20,
+        "pageColorVariant": 0,
+        "customDisciplinesList": "[]"
       },
       "agendaPage": {
         "lighteningOverride": false,
@@ -43,14 +48,21 @@ class SettingsUtils {
   };
   //retrieve old settings
   //and parse it to new settings format
+  static forceRestoreOldSettings() async {
+    var _oldSettings = await getOldSettings();
+    await setSetting(_oldSettings);
+    return _oldSettings;
+  }
+
   static Map getAppSettings() {
     //App settings
+    return {};
   }
 
   ///Deprecated
-  static Future<bool> getBoolSetting(String setting) async {
+  static Future<bool?> getBoolSetting(String setting) async {
     final prefs = await SharedPreferences.getInstance();
-    bool value = prefs.getBool(setting);
+    bool? value = prefs.getBool(setting);
     return value;
   }
 
@@ -62,6 +74,9 @@ class SettingsUtils {
       if (setting == "summaryQuickHomework") {
         value = 10;
       }
+      if (setting == "fontSize") {
+        value = 11;
+      }
       if (setting == "lessonReminderDelay") {
         value = 5;
       }
@@ -69,63 +84,89 @@ class SettingsUtils {
     return value;
   }
 
-  static Map getOldSettings() {
-    Map _settings = settingsForm;
-    (_settings["user"] as Map).keys.forEach((key1) {
-      (_settings["user"][key1] as Map).forEach((key2, value) {
-        if (value.runtimeType == int) {
-          value = getIntSetting(key2) ?? value;
+  static Future<Map> getOldSettings() async {
+    //Deep clone lol
+    Map _settings = json.decode(json.encode(settingsForm));
+
+    for (var key1 in (_settings["user"] as Map).keys) {
+      for (var entry in (_settings["user"][key1] as Map).entries) {
+        if (entry.value.runtimeType == int) {
+          _settings["user"][key1][entry.key] = (await getIntSetting(entry.key));
         }
-        if (value.runtimeType == bool) {
-          value = getBoolSetting(key2) ?? value;
+        if (entry.value.runtimeType == bool) {
+          _settings["user"][key1][entry.key] = (await getBoolSetting(entry.key)) ?? entry.value;
         }
-      });
-    });
-    (_settings["system"] as Map).forEach((key, value) {
-      if (value.runtimeType == int) {
-        value = getIntSetting(key) ?? value;
       }
-      if (value.runtimeType == bool) {
-        value = getBoolSetting(key) ?? value;
+    }
+    for (var entry in (_settings["system"] as Map).entries) {
+      if (entry.value.runtimeType == int) {
+        _settings["system"][entry.key] = (await getIntSetting(entry.key));
       }
-    });
-    print(_settings);
+      if (entry.value.runtimeType == bool) {
+        _settings["system"][entry.key] = (await getBoolSetting(entry.key)) ?? entry.value;
+      }
+    }
     return _settings;
     //The user's settings per page
   }
 
-  static Future<Map> getSavedSettings() async {
+  static Map getOldSettingsOld() {
+    Map _settings = json.decode(json.encode(settingsForm));
+    (_settings["user"] as Map).keys.forEach((key1) {
+      (_settings["user"][key1] as Map).forEach((key2, value) {
+        if (value.runtimeType == int) {
+          value = getIntSetting(key2);
+        }
+        if (value.runtimeType == bool) {
+          value = getBoolSetting(key2);
+        }
+      });
+    });
+    (_settings["user"] as Map).forEach((key, value) {
+      if (value.runtimeType == int) {
+        value = getIntSetting(key);
+      }
+      if (value.runtimeType == bool) {
+        value = getBoolSetting(key);
+      }
+    });
+    return _settings;
+    //The user's settings per page
+  }
+
+  static Future<Map?> getSavedSettings() async {
     final prefs = await SharedPreferences.getInstance();
-    String settings = prefs.getString("settings");
+    String? settings = prefs.getString("settings");
 
     if (settings == null) {
       settings = json.encode(settingsForm);
     }
+    print(settingsForm);
     print(settings);
-    Map _settings = json.decode(settings);
-    return _settings;
+
+    Map? _settings = json.decode(settings);
+    return mergeMaps(json.decode(json.encode(settingsForm)), _settings ?? {});
   }
 
-  //Deprecated
+  //Oops
   static getSettings() async {
     Map _settings;
     Map _oldSettings;
-    Map _newSettings;
-    _oldSettings = getOldSettings();
-    print(_oldSettings == null);
+    Map? _newSettings;
+    _oldSettings = await getOldSettings();
     _newSettings = await getSavedSettings();
 
     print(_newSettings == null);
-
     //merge settings
-    _settings = {
-      ..._oldSettings,
-      ..._newSettings ?? settingsForm,
-    };
+    _settings = Map.from(json.decode(json.encode(_oldSettings)))..addAll(_newSettings ?? {});
+    if (_newSettings == null) {
+      await setSetting(_settings);
+    }
+    print(_settings);
     return _settings;
   }
 
-  static setSetting(Map newMap) async {
+  static setSetting(Map? newMap) async {
     final prefs = await SharedPreferences.getInstance();
     String encoded = json.encode(newMap);
     await prefs.setString("settings", encoded);

@@ -7,7 +7,7 @@ import 'package:requests/requests.dart';
 
 ///Redirect to the good CAS
 ///Return type : cookies as Map
-callCas(String cas, String username, String password, String url) async {
+callCas(String? cas, String username, String? password, String url) async {
   final storage = new FlutterSecureStorage();
   await storage.write(key: "pronotecas", value: cas);
   if (cas == null) {
@@ -18,32 +18,25 @@ callCas(String cas, String username, String password, String url) async {
       {
         return null;
       }
-      break;
     case ("atrium sud"):
       {
-        return await atrium_sud(username, password);
+        return await atriumSud(username, password);
       }
-      break;
     case ("ile de france"):
       {
         return await idf(username, password, url);
       }
-      break;
   }
 }
 
-atrium_sud(String username, String password) async {
+atriumSud(String username, String? password) async {
   // ENT / PRONOTE required URLs
-  var ent_login =
+  var entLogin =
       'https://www.atrium-sud.fr/connexion/login?service=https:%2F%2F0060013G.index-education.net%2Fpronote%2F';
   // ENT / PRONOTE required URLs
-  var headers = {
-    'connection': 'keep-alive',
-    'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/73.0'
-  };
   // Ent connection
   //Session session = Session();
-  var response = await Requests.get(ent_login, persistCookies: true);
+  var response = await Requests.get(entLogin, persistCookies: true);
   //var cookies = await Requests.getStoredCookies(Requests.getHostname(ent_login));
 
   print("[ATRIUM LOGIN] with $username");
@@ -51,12 +44,14 @@ atrium_sud(String username, String password) async {
   //Login payload
   var parsed = parse(response.content());
   //print(parsed.outerHtml);
-  var input_ = parsed.getElementsByTagName("input").firstWhere(
-      (element) => element.attributes.toString().contains("hidden") && element.attributes.toString().contains("lt"));
-  var lt = input_.attributes["value"];
-  input_ = parsed.getElementsByTagName("input").firstWhere((element) =>
-      element.attributes.toString().contains("hidden") && element.attributes.toString().contains("execution"));
-  var execution = input_.attributes["value"];
+  var input = parsed.getElementsByTagName("input").firstWhere((element) =>
+      element.attributes.toString().contains("hidden") &&
+      element.attributes.toString().contains("lt"));
+  var lt = input.attributes["value"];
+  input = parsed.getElementsByTagName("input").firstWhere((element) =>
+      element.attributes.toString().contains("hidden") &&
+      element.attributes.toString().contains("execution"));
+  var execution = input.attributes["value"];
   var payload = {
     'execution': execution,
     '_eventId': 'submit',
@@ -65,10 +60,12 @@ atrium_sud(String username, String password) async {
     'username': username,
     'password': password
   };
-  var response2 = await Requests.post(ent_login,
-      body: payload, persistCookies: true, bodyEncoding: RequestBodyEncoding.FormURLEncoded);
+  var response2 = await Requests.post(entLogin,
+      body: payload,
+      persistCookies: true,
+      bodyEncoding: RequestBodyEncoding.FormURLEncoded);
 
-  var cookies = await Requests.getStoredCookies(Requests.getHostname(ent_login));
+  var cookies = await Requests.getStoredCookies(Requests.getHostname(entLogin));
   printWrapped(cookies.toString());
 
   if (response2.content().contains("Vous devez activer votre compte Atrium")) {
@@ -83,12 +80,7 @@ void printWrapped(String text) {
   pattern.allMatches(text).forEach((match) => print(match.group(0)));
 }
 
-idf(String username, String password, String url) async {
-  var headers = {
-    'connection': 'keep-alive',
-    'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:73.0) Gecko/20100101 Firefox/73.0'
-  };
-
+idf(String username, String? password, String url) async {
   final client = HttpClient();
 // ignore: close_sinks
   final request = await client.getUrl(Uri.parse(url));
@@ -96,27 +88,32 @@ idf(String username, String password, String url) async {
   request.followRedirects = false;
   final response = await request.close();
   //Get location from headers
-  String redirectedUrl = response.headers.value(HttpHeaders.locationHeader);
+  String redirectedUrl = response.headers.value(HttpHeaders.locationHeader)!;
   String service = Uri.encodeComponent(url);
 
   if (redirectedUrl.startsWith('http') && redirectedUrl.contains('service=')) {
     service = redirectedUrl.substring(redirectedUrl.indexOf('=') + 1);
   }
 
-  String ent_login = "https://ent.iledefrance.fr/auth/login";
+  String entLogin = "https://ent.iledefrance.fr/auth/login";
 //remove old cookies
-  await Requests.clearStoredCookies(Requests.getHostname(ent_login));
-  String callback = Uri.encodeComponent(Uri.encodeComponent("/cas/login?service=$service"));
+  await Requests.clearStoredCookies(Requests.getHostname(entLogin));
+  String callback =
+      Uri.encodeComponent(Uri.encodeComponent("/cas/login?service=$service"));
   //payload to send
   var payload = {"email": username, "password": password, "callback": callback};
   print(payload);
-  var response2 = await Requests.post(ent_login,
-      body: payload, persistCookies: true, bodyEncoding: RequestBodyEncoding.FormURLEncoded);
+  var response2 = await Requests.post(entLogin,
+      body: payload,
+      persistCookies: true,
+      bodyEncoding: RequestBodyEncoding.FormURLEncoded);
 
-  if (response2.content().contains("identifiant ou le mot de passe est incorrect.")) {
+  if (response2
+      .content()
+      .contains("identifiant ou le mot de passe est incorrect.")) {
     throw "runes";
   }
-  var cookies = await Requests.getStoredCookies(Requests.getHostname(ent_login));
+  var cookies = await Requests.getStoredCookies(Requests.getHostname(entLogin));
   printWrapped(cookies.toString());
   return cookies;
 }
@@ -132,16 +129,18 @@ class Session {
 
   Future post(String url, dynamic data) async {
     print(headers);
-    http.Response response = await http.post(Uri.parse(url), body: data, headers: headers);
+    http.Response response =
+        await http.post(Uri.parse(url), body: data, headers: headers);
     updateCookie(response);
     return response.body;
   }
 
   void updateCookie(http.Response response) {
-    String rawCookie = response.headers['set-cookie'];
+    String? rawCookie = response.headers['set-cookie'];
     if (rawCookie != null) {
       int index = rawCookie.indexOf(';');
-      headers['cookie'] = (index == -1) ? rawCookie : rawCookie.substring(0, index);
+      headers['cookie'] =
+          (index == -1) ? rawCookie : rawCookie.substring(0, index);
     }
   }
 }

@@ -3,11 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 
-
 class AuthorizationsDialog extends StatefulWidget {
-  final String authName;
-  final String goal;
-  const AuthorizationsDialog({Key key, this.authName, this.goal}) : super(key: key);
+  final String? authName;
+  final String? goal;
+  const AuthorizationsDialog({Key? key, this.authName, this.goal}) : super(key: key);
   @override
   _AuthorizationsDialogState createState() => _AuthorizationsDialogState();
 }
@@ -78,7 +77,7 @@ class _AuthorizationsDialogState extends State<AuthorizationsDialog> {
                       TextSpan(
                         children: <TextSpan>[
                           TextSpan(text: "Pour quoi faire ?", style: TextStyle(fontWeight: FontWeight.bold)),
-                          TextSpan(text: "\n" + widget.goal),
+                          TextSpan(text: "\n" + widget.goal!),
                         ],
                       ),
                       style: TextStyle(color: ThemeUtils.textColor(), fontFamily: "Asap"),
@@ -91,9 +90,11 @@ class _AuthorizationsDialogState extends State<AuthorizationsDialog> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
-                          RaisedButton(
-                            color: Colors.red,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.red,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
+                            ),
                             onPressed: () => Navigator.of(context).pop(false),
                             child: Text(
                               'Je refuse',
@@ -103,9 +104,11 @@ class _AuthorizationsDialogState extends State<AuthorizationsDialog> {
                           SizedBox(
                             width: screenSize.size.width / 5 * 0.1,
                           ),
-                          RaisedButton(
-                            color: Colors.green,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.green,
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(11)),
+                            ),
                             onPressed: () => Navigator.of(context).pop(true),
                             child: Text(
                               "Donner l'accès",

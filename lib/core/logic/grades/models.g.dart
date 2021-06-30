@@ -17,41 +17,48 @@ class DisciplineAdapter extends TypeAdapter<Discipline> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Discipline(
-      gradesList: (fields[12] as List)?.cast<Grade>(),
-      maxClassGeneralAverage: fields[1] as String,
-      classGeneralAverage: fields[2] as String,
-      generalAverage: fields[0] as String,
-      classAverage: fields[7] as String,
-      minClassAverage: fields[8] as String,
-      maxClassAverage: fields[9] as String,
-      disciplineCode: fields[3] as String,
-      subdisciplineCode: (fields[4] as List)?.cast<String>(),
-      average: fields[6] as String,
-      teachers: (fields[10] as List)?.cast<String>(),
-      disciplineName: fields[5] as String,
-      period: fields[11] as String,
-      color: fields[13] as int,
-      disciplineRank: fields[14] as int,
-      classNumber: fields[15] as String,
-      generalRank: fields[16] as String,
-      weight: fields[17] as String,
+      gradesList: (fields[12] as List?)?.cast<Grade>(),
+      maxClassGeneralAverage: fields[1] as String?,
+      classGeneralAverage: fields[2] as String?,
+      generalAverage: fields[0] as String?,
+      classAverage: fields[7] as String?,
+      minClassAverage: fields[8] as String?,
+      maxClassAverage: fields[9] as String?,
+      disciplineCode: fields[3] as String?,
+      subdisciplineCodes: (fields[4] as List?)?.cast<String?>(),
+      average: fields[6] as String?,
+      teachers: (fields[10] as List?)?.cast<String?>(),
+      disciplineName: fields[5] as String?,
+      periodName: fields[11] as String?,
+      color: fields[13] as int?,
+      disciplineRank: fields[14] as int?,
+      classNumber: fields[15] as String?,
+      generalRank: fields[16] as String?,
+      weight: fields[17] as String?,
+      periodCode: fields[18] as String?,
+      subdisciplineNames: (fields[19] as List?)?.cast<String?>(),
+      minClassGeneralAverage: fields[20] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Discipline obj) {
     writer
-      ..writeByte(18)
+      ..writeByte(21)
       ..writeByte(0)
       ..write(obj.generalAverage)
       ..writeByte(1)
       ..write(obj.maxClassGeneralAverage)
+      ..writeByte(20)
+      ..write(obj.minClassGeneralAverage)
       ..writeByte(2)
       ..write(obj.classGeneralAverage)
       ..writeByte(3)
       ..write(obj.disciplineCode)
       ..writeByte(4)
-      ..write(obj.subdisciplineCode)
+      ..write(obj.subdisciplineCodes)
+      ..writeByte(19)
+      ..write(obj.subdisciplineNames)
       ..writeByte(5)
       ..write(obj.disciplineName)
       ..writeByte(6)
@@ -65,7 +72,7 @@ class DisciplineAdapter extends TypeAdapter<Discipline> {
       ..writeByte(10)
       ..write(obj.teachers)
       ..writeByte(11)
-      ..write(obj.period)
+      ..write(obj.periodName)
       ..writeByte(12)
       ..write(obj.gradesList)
       ..writeByte(13)
@@ -77,7 +84,9 @@ class DisciplineAdapter extends TypeAdapter<Discipline> {
       ..writeByte(16)
       ..write(obj.generalRank)
       ..writeByte(17)
-      ..write(obj.weight);
+      ..write(obj.weight)
+      ..writeByte(18)
+      ..write(obj.periodCode);
   }
 
   @override
@@ -102,25 +111,25 @@ class GradeAdapter extends TypeAdapter<Grade> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Grade(
-      max: fields[17] as String,
-      min: fields[18] as String,
-      testName: fields[0] as String,
-      periodCode: fields[1] as String,
-      disciplineCode: fields[2] as String,
-      subdisciplineCode: fields[3] as String,
-      disciplineName: fields[4] as String,
-      letters: fields[5] as bool,
-      value: fields[6] as String,
-      weight: fields[7] as String,
-      scale: fields[8] as String,
-      classAverage: fields[9] as String,
-      testType: fields[10] as String,
-      date: fields[16] as DateTime,
-      entryDate: fields[15] as DateTime,
-      notSignificant: fields[13] as bool,
-      periodName: fields[14] as String,
-      simulated: fields[19] as bool,
-      countAsZero: fields[20] as bool,
+      max: fields[17] as String?,
+      min: fields[18] as String?,
+      testName: fields[0] as String?,
+      periodCode: fields[1] as String?,
+      disciplineCode: fields[2] as String?,
+      subdisciplineCode: fields[3] as String?,
+      disciplineName: fields[4] as String?,
+      letters: fields[5] as bool?,
+      value: fields[6] as String?,
+      weight: fields[7] as String?,
+      scale: fields[8] as String?,
+      classAverage: fields[9] as String?,
+      testType: fields[10] as String?,
+      date: fields[16] as DateTime?,
+      entryDate: fields[15] as DateTime?,
+      notSignificant: fields[13] as bool?,
+      periodName: fields[14] as String?,
+      simulated: fields[19] as bool?,
+      countAsZero: fields[20] as bool?,
     );
   }
 
