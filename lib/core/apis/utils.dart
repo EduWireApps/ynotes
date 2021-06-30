@@ -7,8 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stack/stack.dart' as sta;
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/apis/Pronote.dart';
-import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
 import 'package:ynotes/core/offline/offline.dart';
+import 'package:ynotes/core/utils/loggingUtils.dart';
 import 'package:ynotes/globals.dart';
 
 //Return the good API (will be extended to Pronote)
@@ -79,8 +79,7 @@ Future<int> getColor(String? disciplineCode) async {
 
 ///Generate lesson ID using, the next scheme : week parity (1 or 2), day of week (1-7) and an hashcode
 ///composed of the lesson start datetime, the lesson end datetime and the discipline name
-Future<int> getLessonID(
-    DateTime start, DateTime end, String disciplineName) async {
+Future<int> getLessonID(DateTime start, DateTime end, String disciplineName) async {
   int parity = ((await getWeek(start)).isEven) ? 1 : 2;
   int weekDay = start.weekday;
   TimeOfDay startTimeOfDay = TimeOfDay.fromDateTime(start);
@@ -91,8 +90,7 @@ Future<int> getLessonID(
       endTimeOfDay.minute.toString();
   int endHash = (parsedStartAndEnd + disciplineName).hashCode;
 
-  int finalID =
-      int.parse(parity.toString() + weekDay.toString() + endHash.toString());
+  int finalID = int.parse(parity.toString() + weekDay.toString() + endHash.toString());
 
   return finalID;
 }
@@ -100,23 +98,14 @@ Future<int> getLessonID(
 getRootAddress(addr) {
   return [
     (addr.split('/').sublist(0, addr.split('/').length - 1).join("/")),
-    (addr
-        .split('/')
-        .sublist(addr.split('/').length - 1, addr.split('/').length)
-        .join("/"))
+    (addr.split('/').sublist(addr.split('/').length - 1, addr.split('/').length).join("/"))
   ];
 }
 
 getWeek(DateTime date) async {
   final storage = new FlutterSecureStorage();
   if (await (storage.read(key: "startday")) != null) {
-    return (1 +
-            (date
-                        .difference(DateTime.parse(
-                            await (storage.read(key: "startday")) ?? ""))
-                        .inDays /
-                    7)
-                .floor())
+    return (1 + (date.difference(DateTime.parse(await (storage.read(key: "startday")) ?? "")).inDays / 7).floor())
         .round();
   } else {
     return 0;
@@ -130,8 +119,7 @@ String linkify(String link) {
 }
 
 setChosenParser(int? chosen) async {
-  await appSys.updateSetting(
-      appSys.settings!["system"], "chosenParser", chosen);
+  await appSys.updateSetting(appSys.settings!["system"], "chosenParser", chosen);
 }
 
 testIfPronoteCas(String url) async {
@@ -142,7 +130,7 @@ testIfPronoteCas(String url) async {
     url += "?fd=1";
   }
   var response = await http.get(Uri.parse(url));
-  printWrapped(response.body);
+  CustomLogger.logWrapped("API UTILS", "Response body", response.body);
   if (response.body.contains('id="id_body"')) {
     return false;
   } else {

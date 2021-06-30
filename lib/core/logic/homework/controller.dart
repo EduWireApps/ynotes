@@ -7,6 +7,7 @@ import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/consts/disciplinesFilter.dart';
 import 'package:ynotes/core/logic/homework/utils.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/utils/loggingUtils.dart';
 import 'package:ynotes/globals.dart';
 
 class HomeworkController extends ChangeNotifier {
@@ -27,6 +28,7 @@ class HomeworkController extends ChangeNotifier {
   set api(API? api) {
     _api = api;
   }
+
   List<Homework>? get getHomework => _old;
 
   ///Returns [donePercent, doneLength, length]
@@ -205,7 +207,7 @@ class HomeworkController extends ChangeNotifier {
         } catch (e) {}
       }
     });
-    print(unloadedHW);
+    CustomLogger.log("HOMEWORK", unloadedHW.toString());
     await loadAll();
   }
 
@@ -218,7 +220,7 @@ class HomeworkController extends ChangeNotifier {
   }
 
   Future<void> refresh({bool force = false, refreshFromOffline = false}) async {
-    print("Refreshing homework " + (refreshFromOffline ? "from offline" : "online"));
+    CustomLogger.log("HOMEWORK", "Refreshing homework " + (refreshFromOffline ? "from offline" : "online"));
     isFetching = true;
     notifyListeners();
     if (refreshFromOffline) {

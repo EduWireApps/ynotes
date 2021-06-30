@@ -18,6 +18,7 @@ import 'package:ynotes/core/logic/shared/loginController.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/background.dart';
 import 'package:ynotes/core/services/notifications.dart';
+import 'package:ynotes/core/utils/loggingUtils.dart';
 import 'package:ynotes/core/utils/settingsUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/ui/themes.dart';
@@ -65,11 +66,8 @@ class ApplicationSystem extends ChangeNotifier {
   SchoolAccount? get currentSchoolAccount => _currentSchoolAccount;
   set currentSchoolAccount(SchoolAccount? newValue) {
     _currentSchoolAccount = newValue;
-    if (account != null &&
-        account!.managableAccounts != null &&
-        newValue != null) {
-      this.updateSetting(this.settings!["system"], "accountIndex",
-          this.account!.managableAccounts!.indexOf(newValue));
+    if (account != null && account!.managableAccounts != null && newValue != null) {
+      this.updateSetting(this.settings!["system"], "accountIndex", this.account!.managableAccounts!.indexOf(newValue));
     }
     notifyListeners();
   }
@@ -99,7 +97,8 @@ class ApplicationSystem extends ChangeNotifier {
       await storage.deleteAll();
       this.updateTheme("clair");
     } catch (e) {
-      print(e);
+      CustomLogger.log("APPSYS", "Error occured when exiting the app");
+      CustomLogger.error(e);
     }
   }
 
@@ -119,8 +118,7 @@ class ApplicationSystem extends ChangeNotifier {
     if (api != null) {
       account = await api!.account();
       if (account != null && account!.managableAccounts != null)
-        currentSchoolAccount = account!
-            .managableAccounts![settings!["system"]["accountIndex"] ?? 0];
+        currentSchoolAccount = account!.managableAccounts![settings!["system"]["accountIndex"] ?? 0];
     }
     //Set background fetch
     await _initBackgroundFetch();
@@ -141,20 +139,19 @@ class ApplicationSystem extends ChangeNotifier {
   }
 
   updateTheme(String themeName) {
-    print("Updating theme to " + themeName);
+    CustomLogger.log("APPSYS", "Updating theme to $themeName");
     theme = appThemes[themeName];
     this.themeName = themeName;
     updateSetting(this.settings!["user"]["global"], "theme", themeName);
-    SystemChrome.setSystemUIOverlayStyle(ThemeUtils.isThemeDark
-        ? SystemUiOverlayStyle.light
-        : SystemUiOverlayStyle.dark);
+    SystemChrome.setSystemUIOverlayStyle(
+        ThemeUtils.isThemeDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark);
     notifyListeners();
   }
 
 // This "Headless Task" is run when app is terminated.
   _initBackgroundFetch() async {
     if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
-      print("Background fetch configuration...");
+      CustomLogger.log("APPSYS", "Configuring background fetch");
       int i = await BackgroundFetch.configure(
         BackgroundFetchConfig(
             minimumFetchInterval: 15,
@@ -175,8 +172,7 @@ class ApplicationSystem extends ChangeNotifier {
           BackgroundFetch.finish(taskId);
         },
       );
-      print(i);
-      print("Configured background fetch");
+      CustomLogger.log("APPSYS", "Background fetch configured: $i");
     }
   }
 

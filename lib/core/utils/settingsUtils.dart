@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:collection/collection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'loggingUtils.dart';
+
 class SettingsUtils {
   static const Map secureSettingsForm = {"username": "", "password": "", "pronoteurl": "", "pronotecas": ""};
   static const Map settingsForm = {
@@ -141,8 +143,8 @@ class SettingsUtils {
     if (settings == null) {
       settings = json.encode(settingsForm);
     }
-    print(settingsForm);
-    print(settings);
+    CustomLogger.log("SETTINGS UTILS", "Settings form: $settingsForm");
+    CustomLogger.log("SETTINGS UTILS", "Settings: $settings");
 
     Map? _settings = json.decode(settings);
     return mergeMaps(json.decode(json.encode(settingsForm)), _settings ?? {});
@@ -156,13 +158,13 @@ class SettingsUtils {
     _oldSettings = await getOldSettings();
     _newSettings = await getSavedSettings();
 
-    print(_newSettings == null);
+    CustomLogger.log("SETTINGS UTILS", "Are new settings null? ${_newSettings == null}");
     //merge settings
     _settings = Map.from(json.decode(json.encode(_oldSettings)))..addAll(_newSettings ?? {});
     if (_newSettings == null) {
       await setSetting(_settings);
     }
-    print(_settings);
+    CustomLogger.log("SETTINGS UTILS", "Settings: $_settings");
     return _settings;
   }
 

@@ -1,5 +1,6 @@
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/offline/offline.dart';
+import 'package:ynotes/core/utils/loggingUtils.dart';
 
 class RecipientsOffline {
   late Offline parent;
@@ -10,7 +11,8 @@ class RecipientsOffline {
     try {
       return parent.offlineBox?.get("recipients")?.cast<Recipient>();
     } catch (e) {
-      print("Error while returning recipients " + e.toString());
+      CustomLogger.log("MAILS", "An error occured while returning recipients");
+      CustomLogger.error(e);
       return null;
     }
   }
@@ -24,7 +26,8 @@ class RecipientsOffline {
 
       await parent.offlineBox!.put("recipients", newData);
     } catch (e) {
-      print("Error while updating recipients " + e.toString());
+      CustomLogger.log("MAILS", "An error occured while updating recipients");
+      CustomLogger.error(e);
     }
   }
 }

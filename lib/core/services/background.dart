@@ -4,8 +4,8 @@ import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/logic/appConfig/controller.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/services/notifications.dart';
+import 'package:ynotes/core/utils/loggingUtils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 //The main class for everything done in background
@@ -22,40 +22,39 @@ class BackgroundService {
           !appSys.settings?["user"]["global"]["batterySaver"] &&
           appSys.settings?["system"]["chosenParser"] == 0);
 
-      print("Starting the headless closed bakground task");
+      CustomLogger.log("BACKGROUND", "Starting the headless closed bakground task");
 
       //If some fetch is allowed
       if (gradesFetchEnabled || mailsFetchEnabled) {
         await AppNotification.showLoadingNotification(a.hashCode);
         if (headless) {
-          print("headless");
+          CustomLogger.log("BACKGROUND", "headless");
           appSys = ApplicationSystem();
-          await logFile("Headless task triggered");
+          CustomLogger.saveLog(object: "BACKGROUND", text: "Headless task triggered.");
           await appSys.initApp();
         } else {
           //We have to refresh offline
           await appSys.initOffline();
           appSys.refreshControllersAPI();
         }
-        await logFile("Init appSys");
+        CustomLogger.saveLog(object: "BACKGROUND", text: "Initiated appSys.");
         await writeLastFetchStatus(appSys);
       }
       if (gradesFetchEnabled) {
-        await logFile("New grade test triggered");
+        CustomLogger.saveLog(object: "BACKGROUND", text: "New grade test triggered.");
         var res = (await testNewGrades());
         if (res[0]) {
           await Future.forEach(res[1], (Grade grade) async {
             await AppNotification.showNewGradeNotification(grade);
           });
         } else {
-          await logFile("Nothing updated");
-          print("Nothing updated");
+          CustomLogger.saveLog(object: "BACKGROUND", text: "Grades: nothing updated.");
         }
       } else {
-        print("New grade notification disabled");
+        CustomLogger.log("BACKGROUND", "New grade notification disabled");
       }
       if (mailsFetchEnabled) {
-        await logFile("New mail test triggered");
+        CustomLogger.saveLog(object: "BACKGROUND", text: "New mail test triggered.");
 
         Mail? mail = await testNewMails();
         if (mail != null) {
@@ -63,22 +62,22 @@ class BackgroundService {
               (await (appSys.api as APIEcoleDirecte).readMail(mail.id ?? "", mail.read ?? false, true)) ?? "";
           await AppNotification.showNewMailNotification(mail, content);
         } else {
-          print("Nothing updated");
+          CustomLogger.log("BACKGROUND", "Nothing updated");
         }
       } else {
-        print("New mail notification disabled");
+        CustomLogger.log("BACKGROUND", "New mail notification disabled");
       }
       if (appSys.settings?["user"]["agendaPage"]["agendaOnGoingNotification"]) {
-        print("Setting On going notification");
+        CustomLogger.log("BACKGROUND", "Setting On going notification");
         await AppNotification.setOnGoingNotification(dontShowActual: true);
       } else {
-        print("On going notification disabled");
+        CustomLogger.log("BACKGROUND", "On going notification disabled");
       }
-      await logFile("Background fetch occured.");
+      CustomLogger.saveLog(object: "BACKGROUND", text: "Background fetch occured.");
       await AppNotification.cancelNotification(a.hashCode);
     } catch (e) {
       await AppNotification.cancelNotification(a.hashCode);
-      await logFile("An error occured during the background fetch : " + e.toString());
+      CustomLogger.saveLog(object: "ERROR", text: "An error occured during the background fetch : " + e.toString());
     }
   }
 
@@ -96,7 +95,8 @@ class BackgroundService {
         return true;
       }
     } catch (e) {
-      print("Error while reading fetch status " + e.toString());
+      CustomLogger.log("BACKGROUND", "An error occured while readinf fetch status");
+      CustomLogger.error(e);
       return false;
     }
   }
@@ -109,7 +109,7 @@ class BackgroundService {
       //Getting the offline count of grades
       //instanciate an offline controller read only
 
-      print("Old grades length is $oldGradesLength");
+      CustomLogger.log("BACKGROUND", "Old grades length is $oldGradesLength");
       //Getting the online count of grades
 
       List<Grade>? listOnlineGrades = [];
@@ -117,7 +117,7 @@ class BackgroundService {
       listOnlineGrades =
           getAllGrades(await appSys.api?.getGrades(forceReload: true), overrideLimit: true, sortByWritingDate: true);
 
-      print("Online grade length is ${listOnlineGrades!.length}");
+      CustomLogger.log("BACKGROUND", "Online grade length is ${listOnlineGrades!.length}");
       if (oldGradesLength != null && oldGradesLength != 0 && oldGradesLength < listOnlineGrades.length) {
         int diff = (listOnlineGrades.length - (listOnlineGrades.length - oldGradesLength).clamp(0, 5));
         List<Grade> newGrades = listOnlineGrades.sublist(diff);
@@ -126,7 +126,7 @@ class BackgroundService {
         return [false];
       }
     } catch (e) {
-      await logFile("An error occured during the new grades test : " + e.toString());
+      CustomLogger.saveLog(object: "ERROR", text: "An error occured during the new grades test : " + e.toString());
       return [false];
     }
   }
@@ -136,7 +136,7 @@ class BackgroundService {
     try {
       //Get the old number of mails
       var oldMailLength = appSys.settings!["system"]["lastMailCount"];
-      print("Old length is $oldMailLength");
+      CustomLogger.log("BACKGROUND", "Old length is $oldMailLength");
       //Get new mails
       List<Mail>? mails = await (appSys.api as APIEcoleDirecte?)?.getMails(forceReload: true);
       //filter mails by type
@@ -148,8 +148,8 @@ class BackgroundService {
       });
       var newMailLength = mails?.length ?? 0;
 
-      await logFile("Mails checking triggered");
-      print("New length is $newMailLength");
+      CustomLogger.saveLog(object: "BACKGROUND", text: "Mails checking triggered.");
+      CustomLogger.log("BACKGROUND", "New length is $newMailLength");
       if (oldMailLength != 0) {
         if (oldMailLength < (newMailLength)) {
           //Manually set the new mail number
@@ -163,7 +163,8 @@ class BackgroundService {
         return null;
       }
     } catch (e) {
-      print("Erreur dans la verification de nouveaux mails hors ligne " + e.toString());
+      CustomLogger.log("BACKGROUND", "An error occured while checking new offline mails");
+      CustomLogger.error(e);
       return null;
     }
   }
@@ -172,6 +173,6 @@ class BackgroundService {
   static writeLastFetchStatus(ApplicationSystem _appSys) async {
     int date = DateTime.now().millisecondsSinceEpoch;
     await _appSys.updateSetting(_appSys.settings?["system"], "lastFetchDate", date);
-    print("Written last fetch status " + date.toString());
+    CustomLogger.log("BACKGROUND", "Written last fetch status " + date.toString());
   }
 }

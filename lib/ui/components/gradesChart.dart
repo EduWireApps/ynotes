@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:ynotes/core/utils/loggingUtils.dart';
 
 final Color darkBlue = Color.fromARGB(255, 18, 32, 47);
 
@@ -96,7 +97,8 @@ getHeight(var listValues, index, var screenSize, var lineSize, var gradeContaine
       return screenSize.size.height / 10 * 0.4;
     }
   } catch (e) {
-    print(e);
+    CustomLogger.log("GRADES CHART", "An error occured while getting height");
+    CustomLogger.error(e);
     return screenSize.size.height / 10 * 0.4;
   }
 }
