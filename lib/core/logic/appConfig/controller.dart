@@ -18,7 +18,8 @@ import 'package:ynotes/core/logic/shared/loginController.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/background.dart';
 import 'package:ynotes/core/services/notifications.dart';
-import 'package:ynotes/core/utils/settingsUtils.dart';
+import 'package:ynotes/core/utils/settings/model.dart';
+import 'package:ynotes/core/utils/settings/settingsUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/ui/themes.dart';
 
