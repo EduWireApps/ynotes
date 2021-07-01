@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/apis/utils.dart';
-import 'package:ynotes/core/utils/loggingUtils.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 
 ///A scheme is 9 long
 ///it has the following form  : `WADDDDDDD`.

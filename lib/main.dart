@@ -9,17 +9,17 @@ import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:logger/logger.dart';
 import 'package:provider/provider.dart';
 import 'package:wiredash/wiredash.dart';
-import 'package:ynotes/core/logic/appConfig/controller.dart';
+import 'package:ynotes/core/logic/app_config/controller.dart';
 import 'package:ynotes/core/services/background.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/router.dart';
-import 'package:ynotes/ui/components/hiveLifeCycleManager.dart';
-import 'package:ynotes/ui/screens/carousel/carousel.dart';
-import 'package:ynotes/ui/screens/loading/loadingPage.dart';
+import 'package:ynotes/ui/components/hive_life_cycle_manager.dart';
+import 'package:ynotes/ui/screens/carousel/index.dart';
+import 'package:ynotes/ui/screens/loading/index.dart';
 
-import 'core/utils/themeUtils.dart';
-import 'ui/screens/school_api_choice/schoolAPIChoicePage.dart';
+import 'core/utils/theme_utils.dart';
+import 'ui/screens/school_api_choice/index.dart';
 
 import 'package:sizer/sizer.dart';
 

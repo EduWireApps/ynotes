@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:ynotes/ui/animations/FadeAnimation.dart';
+import 'package:ynotes/ui/animations/fade_animation.dart';
 
 class ErrorPage extends StatefulWidget {
   const ErrorPage({Key? key}) : super(key: key);

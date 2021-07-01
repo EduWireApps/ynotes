@@ -1,7 +1,7 @@
-import 'package:ynotes/core/apis/model.dart';
-import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/offline.dart';
+import 'package:ynotes/core/apis/utils.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/core/services/notifications.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
 

@@ -1,6 +1,6 @@
-import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/offline.dart';
-import 'package:ynotes/core/utils/loggingUtils.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 
 class PollsOffline {
   late Offline parent;
