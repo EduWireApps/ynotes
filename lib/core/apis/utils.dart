@@ -6,7 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stack/stack.dart' as sta;
 import 'package:ynotes/core/apis/ecole_directe.dart';
-import 'package:ynotes/core/apis/Pronote.dart';
+import 'package:ynotes/core/apis/pronote.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
