@@ -4,7 +4,7 @@ import 'dart:math';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:ynotes/core/apis/pronote/pronote_api.dart';
-import 'package:ynotes/core/apis/pronote/test.dart';
+import 'package:ynotes/core/apis/pronote/pronote_cas.dart';
 import 'package:ynotes/core/apis/pronote/converters/account.dart';
 import 'package:ynotes/core/apis/pronote/pronote_methods.dart';
 import 'package:ynotes/core/apis/model.dart';
