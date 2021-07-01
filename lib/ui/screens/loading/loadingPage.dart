@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
-import 'package:ynotes/core/utils/loggingUtils.dart';
-import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/animations/FadeAnimation.dart';
 import 'package:ynotes/usefulMethods.dart';
 
@@ -51,9 +49,8 @@ class _LoadingPageState extends State<LoadingPage> {
     String? p = await readStorage("password");
     String? z = await readStorage("agreedTermsAndConfiguredApp");
 
-    CustomLogger.log(
-        "LOADING", "Credentials: ${[u, 'PASSWORD (WONT\'T SHOW BECAUSE THAT\'S CONFIDENTIAL YOU SEE)', z]}");
-    if (u != null && p != null && z != null && appSys.settings!["system"]["chosenParser"] != null) {
+    print([u, p, z]);
+    if (u != null && p != null && z != null) {
       Navigator.pushReplacementNamed(context, "/summary");
     } else {
       Navigator.pushReplacementNamed(context, "/login");

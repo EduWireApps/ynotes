@@ -24,6 +24,9 @@ class CustomLogger {
         " à " +
         DateFormat.jms(locale).format(DateTime.now());
     final n = "\n";
+    if ((await file.exists()) == false) {
+      await file.create();
+    }
     final String currentText = await file.readAsString();
 
     await file.writeAsString(date + n + '[${object.toUpperCase()}] $text' + n + n + currentText, mode: FileMode.write);

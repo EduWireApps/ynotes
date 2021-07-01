@@ -31,7 +31,8 @@ class LessonsOffline {
         timeTable = Map<dynamic, dynamic>.from(await parent.agendaBox?.get("lessons"));
       }
       int todayWeek = await getWeek(DateTime.now());
-      bool lighteningOverride = appSys.settings?["user"]["agendaPage"]["lighteningOverride"] ?? false;
+      bool lighteningOverride = appSys.settings.user.agendaPage.lighteningOverride;
+      appSys.saveSettings();
       //Remove old lessons in order to lighten the db
       //Can be overriden in settings
       if (!lighteningOverride) {
