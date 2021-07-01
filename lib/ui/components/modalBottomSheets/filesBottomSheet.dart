@@ -7,12 +7,12 @@ import 'package:stacked/stacked.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/logic/shared/downloadController.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
+import 'package:ynotes/core/utils/loggingUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/ui/components/columnGenerator.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/dragHandle.dart';
 
 void showFilesModalBottomSheet(context, List<Document> files) {
-
   showModalBottomSheet(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(topLeft: Radius.circular(25), topRight: Radius.circular(25)),
@@ -80,7 +80,7 @@ class _FilesBottomSheetState extends State<FilesBottomSheet> {
 
   Widget buildBackground(DownloadController model, Document document, {Widget? child}) {
     MediaQueryData screenSize = MediaQuery.of(context);
-    print(model.isDownloading);
+    CustomLogger.log("BOTTOM SHEETS", "(Files) is downloading: ${model.isDownloading}");
     if (model.isDownloading) {
       return FutureBuilder<Color>(
           future: getFileItemColor(model, document),

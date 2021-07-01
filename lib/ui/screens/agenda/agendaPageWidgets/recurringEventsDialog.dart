@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:ynotes/core/utils/loggingUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/buttons.dart';
@@ -121,7 +122,6 @@ class _RecurringEventsDialogState extends State<RecurringEventsDialog> {
                     ),
                   ),
                 ),
-                
                 CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5, () async {
                   if (enabled!) {
                     if (everyDay! ? true : selectedDays.isNotEmpty) {
@@ -190,7 +190,7 @@ class _RecurringEventsDialogState extends State<RecurringEventsDialog> {
   export() {
     String scheme = "";
     if (enabled!) {
-      print(weekType.toString());
+      CustomLogger.log("DIALOGS", "(Recurring events) Week type: $weekType");
       scheme += weekType.toString();
       scheme += (everyDay! ? "1" : "0");
       for (int i = 1; i < 8; i++) {
@@ -246,7 +246,8 @@ class _RecurringEventsDialogState extends State<RecurringEventsDialog> {
   }
 
   getReverseAB() async {
-    bool reverse = appSys.settings!["user"]["agendaPage"]["reverseWeekNames"];
+    bool reverse = appSys.settings.user.agendaPage.reverseWeekNames;
+    appSys.saveSettings();
     if (reverse) {
       setState(() {
         weekTypes = ["Toutes les semaines", "Semaine B", "Semaine A"];

@@ -88,9 +88,10 @@ class _HomeworkReaderOptionsBottomSheetState extends State<HomeworkReaderOptions
                             fontSize: 14,
                             fontWeight: FontWeight.bold)))),
             Switch(
-              value: (appSys.settings!["user"]["homeworkPage"]["forceMonochromeContent"] ?? false),
+              value: (appSys.settings.user.homeworkPage.forceMonochromeContent),
               onChanged: (value) async {
-                appSys.updateSetting(appSys.settings!["user"]["homeworkPage"], "forceMonochromeContent", value);
+                appSys.settings.user.homeworkPage.forceMonochromeContent = value;
+                appSys.saveSettings();
                 setState(() {});
               },
             )
@@ -141,7 +142,8 @@ class _PageColorChoiceState extends State<PageColorChoice> {
     var screenSize = MediaQuery.of(context);
     return GestureDetector(
       onTap: () {
-        appSys.updateSetting(appSys.settings!["user"]["homeworkPage"], "pageColorVariant", index);
+        appSys.settings.user.homeworkPage.pageColorVariant = index;
+        appSys.saveSettings();
         setState(() {});
       },
       child: AnimatedContainer(
@@ -152,7 +154,7 @@ class _PageColorChoiceState extends State<PageColorChoice> {
         decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: color,
-            border: (appSys.settings!["user"]["homeworkPage"]["pageColorVariant"] ?? 0) == index
+            border: (appSys.settings.user.homeworkPage.pageColorVariant) == index
                 ? Border.all(width: 2, color: Colors.blue)
                 : Border.all(width: 2, color: Colors.grey)),
       ),
@@ -192,16 +194,17 @@ class _PageTextChoiceState extends State<PageTextChoice> with TickerProviderStat
                           fontSize: 14,
                           fontWeight: FontWeight.bold)))),
           Text(
-            (appSys.settings!["user"]["homeworkPage"]["fontSize"] ?? 20).toString(),
+            (appSys.settings.user.homeworkPage.fontSize).toString(),
             style: TextStyle(
                 fontFamily: currentFont,
-                fontSize: (appSys.settings!["user"]["homeworkPage"]["fontSize"] ?? 20).toDouble(),
+                fontSize: (appSys.settings.user.homeworkPage.fontSize).toDouble(),
                 color: ThemeUtils.textColor()),
           ),
           SizedBox(
             width: screenSize.size.width / 5 * 0.2,
           ),
-          ConstrainedBox(constraints: BoxConstraints(maxWidth: 150),
+          ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: 150),
             child: Container(
               width: screenSize.size.width / 5 * 1.2,
               height: screenSize.size.height / 10 * 0.4,
@@ -216,9 +219,9 @@ class _PageTextChoiceState extends State<PageTextChoice> with TickerProviderStat
                       child: GestureDetector(
                     onTap: () {
                       minusController.forward();
-                      if ((appSys.settings!["user"]["homeworkPage"]["fontSize"] ?? 20) > 11)
-                        appSys.updateSetting(appSys.settings!["user"]["homeworkPage"], "fontSize",
-                            (appSys.settings!["user"]["homeworkPage"]["fontSize"] ?? 20) - 1);
+                      if ((appSys.settings.user.homeworkPage.fontSize) > 11)
+                        appSys.settings.user.homeworkPage.fontSize = (appSys.settings.user.homeworkPage.fontSize - 1);
+                      appSys.saveSettings();
                       setState(() {});
                     },
                     child: Container(
@@ -244,9 +247,10 @@ class _PageTextChoiceState extends State<PageTextChoice> with TickerProviderStat
                       child: GestureDetector(
                     onTap: () {
                       plusController.forward();
-                      if ((appSys.settings!["user"]["homeworkPage"]["fontSize"] ?? 20) < 35)
-                        appSys.updateSetting(appSys.settings!["user"]["homeworkPage"], "fontSize",
-                            (appSys.settings!["user"]["homeworkPage"]["fontSize"] ?? 20) + 1);
+                      if ((appSys.settings.user.homeworkPage.fontSize) < 35)
+                        appSys.settings.user.homeworkPage.fontSize = (appSys.settings.user.homeworkPage.fontSize + 1);
+                      appSys.saveSettings();
+
                       setState(() {});
                     },
                     child: Container(

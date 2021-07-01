@@ -13,6 +13,7 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/offline/data/homework/homework.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
+import 'package:ynotes/extensions.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/modalBottomSheets/filesBottomSheet.dart';
@@ -378,7 +379,7 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
             textStyle: TextStyle(
                 color: ThemeUtils.textColor(),
                 fontFamily: "Asap",
-                fontSize: (model.settings!["user"]["homeworkPage"]["fontSize"] ?? 11).toDouble(),
+                fontSize: (model.settings.user.homeworkPage.fontSize).toDouble(),
                 backgroundColor: Colors.transparent),
             customStylesBuilder: (element) {
               if (element.attributes['style'] != null && element.attributes['style']!.contains("background")) {
@@ -448,7 +449,7 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
   }
 
   htmlColors(String? html) {
-    if (!(appSys.settings!["user"]["homeworkPage"]["forceMonochromeContent"] ?? true)) {
+    if (!(appSys.settings.user.homeworkPage.forceMonochromeContent)) {
       return html;
     }
     String color = ThemeUtils.isThemeDark ? "white" : "black";
@@ -464,15 +465,14 @@ class _HomeworkPageState extends State<HomeworkDayViewPage> {
   }
 
   pageColor(ApplicationSystem _appSys) {
-    if (_appSys.settings!["user"]["homeworkPage"]["pageColorVariant"] == null ||
-        _appSys.settings!["user"]["homeworkPage"]["pageColorVariant"] == 0 ||
-        ThemeUtils.isThemeDark && _appSys.settings!["user"]["homeworkPage"]["pageColorVariant"] == 2) {
+    if ( _appSys.settings.user.homeworkPage.pageColorVariant == 0 ||
+        ThemeUtils.isThemeDark && _appSys.settings.user.homeworkPage.pageColorVariant == 2) {
       return Theme.of(context).primaryColorDark;
     }
-    if (_appSys.settings!["user"]["homeworkPage"]["pageColorVariant"] == 1) {
+    if (_appSys.settings.user.homeworkPage.pageColorVariant == 1) {
       return ThemeUtils.textColor(revert: true);
     }
-    if (_appSys.settings!["user"]["homeworkPage"]["pageColorVariant"] == 2) {
+    if (_appSys.settings.user.homeworkPage.pageColorVariant == 2) {
       return Color(0xfff2e7bf);
     }
   }

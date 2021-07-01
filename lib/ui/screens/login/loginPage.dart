@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/pronote/schoolsModel.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
+import 'package:ynotes/core/utils/loggingUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
@@ -97,7 +98,8 @@ class _AlertBoxWidgetState extends State<AlertBoxWidget> {
                                 future: FileAppUtil.loadAsset("assets/documents/TOS_fr.txt"),
                                 builder: (context, snapshot) {
                                   if (snapshot.hasError) {
-                                    print(snapshot.error);
+                                    CustomLogger.log("LOGIN", "An error occured while getting the TOS");
+                                    CustomLogger.error(snapshot.error);
                                   }
                                   return Text(
                                     snapshot.data.toString(),
@@ -206,7 +208,7 @@ class _LoginDialogState extends State<LoginDialog> {
                         ],
                       );
                     } else if (snapshot.hasData && snapshot.data![0] == 0) {
-                      print(snapshot.data);
+                      CustomLogger.log("LOGIN", "Snapshot data: ${snapshot.data}");
                       return Column(
                         children: <Widget>[
                           Icon(
@@ -224,10 +226,10 @@ class _LoginDialogState extends State<LoginDialog> {
                               120,
                               null,
                               () async {
-                                List stepLogger = snapshot.data![2];
+                                List stepCustomLogger = snapshot.data![2];
                                 try {
                                   //add step logs to clip board
-                                  await Clipboard.setData(new ClipboardData(text: stepLogger.join("\n")));
+                                  await Clipboard.setData(new ClipboardData(text: stepCustomLogger.join("\n")));
                                   CustomDialogs.showAnyDialog(context, "Logs copiés dans le presse papier.");
                                 } catch (e) {
                                   CustomDialogs.showAnyDialog(context, "Impossible de copier dans le presse papier !");
@@ -318,7 +320,7 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
 
   formatURL(String url) {
     RegExp regExp = new RegExp(
-      r"(https://.*\.index-education.net/pronote)(.*)",
+      r"(.*/pronote)(.*)",
       caseSensitive: false,
       multiLine: false,
     );
@@ -332,14 +334,14 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
       );
       //situation where nothing matches (might be pronote/)
       if (suffixMatches.firstMatch(suffix)?.groups([1, 2]).every((element) => element == null) ?? true) {
-        print("A");
+        CustomLogger.log("LOGIN", "A");
         suffix = "/mobile.eleve.html";
         return [0, (regExp.firstMatch(url)?.group(1) ?? "") + suffix];
       }
       //situation where only mobile. is missing
       else if (suffixMatches.firstMatch(suffix)?.group(1) == null &&
           suffixMatches.firstMatch(suffix)?.group(2) != null) {
-        print("B");
+        CustomLogger.log("LOGIN", "B");
 
         suffix = "/mobile." + (suffixMatches.firstMatch(suffix)?.group(2) ?? "");
         return [0, (regExp.firstMatch(url)?.group(1) ?? "") + suffix];
@@ -347,8 +349,7 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
 
       //situation where everything matches
       else if (suffixMatches.firstMatch(suffix)?.groups([1, 2]).every((element) => element != null) ?? false) {
-        print("C");
-
+        CustomLogger.log("LOGIN", "C");
         suffix = "/" +
             (suffixMatches.firstMatch(suffix)?.group(1) ?? "") +
             (suffixMatches.firstMatch(suffix)?.group(2) ?? "");
@@ -403,7 +404,7 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
               }, backgroundColor: Colors.grey, label: "Retour", textColor: Colors.white),
             CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.5, () async {
               //Actions when pressing the ok button
-              if (_username.text != "" && (appSys.settings!["system"]["chosenParser"] == 1 ? _url.text != "" : true)) {
+              if (_username.text != "" && (appSys.settings.system.chosenParser == 1 ? _url.text != "" : true)) {
                 //Login using the chosen API
                 connectionData = appSys.api!.login(_username.text.trim(), _password.text.trim(), additionnalSettings: {
                   "url": _url.text.trim(),
@@ -481,7 +482,7 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
                 sliderController!.previousPage(duration: Duration(milliseconds: 300), curve: Curves.easeIn);
               },
               onLongPressCallback: () {
-                if (appSys.settings!["system"]["chosenParser"] == 1 &&
+                if (appSys.settings.system.chosenParser == 1 &&
                     _url.text.length == 0 &&
                     _password.text.length == 0 &&
                     _username.text.length == 0) {
@@ -507,6 +508,7 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
                   }
                   if (await checkPronoteURL(_url.text)) {
                     if (await testIfPronoteCas(_url.text)) {
+                      CustomLogger.log("LOGIN", "Is a pronote cas");
                       var a = await Navigator.of(context)
                           .push(router(LoginWebView(url: _url.text, controller: _controller)));
                       if (a != null) {
@@ -523,7 +525,8 @@ class _LoginSliderState extends State<LoginSlider> with TickerProviderStateMixin
                     CustomDialogs.showErrorSnackBar(context, "Adresse invalide", "(pas de log spécifique)");
                   }
                 } catch (e) {
-                  print(e);
+                  CustomLogger.log("LOGIN", "An error occured with the url");
+                  CustomLogger.error(e);
                   CustomDialogs.showErrorSnackBar(context, "Impossible de se connecter à cette adresse", e.toString());
                 }
               }),

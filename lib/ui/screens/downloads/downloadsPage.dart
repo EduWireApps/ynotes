@@ -9,6 +9,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:path/path.dart' as pathPackage;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:ynotes/core/utils/fileUtils.dart';
+import 'package:ynotes/core/utils/loggingUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/ui/components/customLoader.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
@@ -72,7 +73,7 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> with Layout {
                                   onTap: () async {
                                     if ((initialPath ?? "") + path != initialPath) {
                                       var splits = path.split("/");
-                                      print(splits.length);
+                                      CustomLogger.log("DOWNLOADS", "Splits length: ${splits.length}");
                                       if (splits.length > 1) {
                                         var finalList = splits.sublist(1, splits.length - 1);
                                         var concatenate = StringBuffer();
@@ -383,12 +384,14 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> with Layout {
                                         await element.element
                                             .copy((initialPath ?? "") + path + "/" + (element.fileName ?? ""));
                                       } catch (e) {
-                                        print(e);
+                                        CustomLogger.log(
+                                            "DOWNLOADS", "An error occured while copying element to clipboard");
+                                        CustomLogger.error(e);
                                         if (!kIsWeb && Platform.isAndroid) {
-                                          print("try to paste");
+                                          CustomLogger.log("DOWNLOADS", "Try to paste");
                                           var result = await Process.run(
                                               'cp', ['-r', element.element.path, (initialPath ?? "") + path + "/"]);
-                                          print(result.stdout);
+                                          CustomLogger.log("DOWNLOADS", "Result: ${result.stdout}");
                                         }
                                       }
                                     });
@@ -487,7 +490,8 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> with Layout {
                                                   },
                                                   onTap: () async {
                                                     if (selectionMode) {
-                                                      print(selectedFiles.length);
+                                                      CustomLogger.log("DOWNLOADS",
+                                                          "Number of selected files: ${selectedFiles.length}");
                                                       listFiles![index].selected = !listFiles![index].selected;
                                                       setState(() {});
                                                     } else {
@@ -595,7 +599,8 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> with Layout {
                     }
                   } else {
                     if (snapshot.hasError) {
-                      print("Erreur " + (snapshot.error as String));
+                      CustomLogger.log("DOWNLOADS", "An error occured while fetching files");
+                      CustomLogger.error(snapshot.error);
                     }
                     return Center(
                       child: CustomLoader(500, screenSize.size.height / 10 * 2.4, Theme.of(context).primaryColorDark),
@@ -662,7 +667,8 @@ class _DownloadsExplorerState extends State<DownloadsExplorer> with Layout {
                 }
               });
             } catch (e) {
-              print(e);
+              CustomLogger.log("DOWNLOADS", "An error occured while sorting files");
+              CustomLogger.error(e);
             }
           });
 

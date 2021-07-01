@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:json_annotation/json_annotation.dart';
 part 'models.g.dart';
 
 @HiveType(typeId: 4)
@@ -167,5 +166,4 @@ class AgendaEvent {
       this.alarm,
       this.color,
       this.recurrenceScheme});
-      
 }

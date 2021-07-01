@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/logic/grades/controller.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/utils/loggingUtils.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
@@ -85,7 +86,7 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
         choices!.add(element);
       });
       choices.add(null);
-      print(choices);
+      CustomLogger.log("BOTTOM SHEET", "(Simulator) Choices: $choices");
     }
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -200,7 +201,7 @@ class _SimulatorModalBottomSheetState extends State<SimulatorModalBottomSheet> {
             margin: EdgeInsets.only(top: screenSize.size.height / 10 * 0.25),
             child: CustomButtons.materialButton(
                 context, screenSize.size.width / 5 * 2.5, screenSize.size.height / 10 * 0.5, () async {
-              print(disciplineChoice!.periodName);
+              CustomLogger.log("BOTTOM SHEET", "(Simulator) Period name: ${disciplineChoice!.periodName}");
 
               if (gradeValue != null && disciplineChoice != null) {
                 if (gradeValue! > gradeOn) {

@@ -11,6 +11,7 @@ import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:uuid/uuid.dart';
 import 'package:ynotes/core/apis/Pronote/PronoteAPI.dart';
+import 'package:ynotes/core/utils/loggingUtils.dart';
 import 'package:ynotes/core/utils/nullSafeMapGetter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
@@ -189,7 +190,9 @@ class _QRCodeLoginPageState extends State<QRCodeLoginPage> {
 
       //Init the device UUID (important)
       //Used by pronote to fingerprint the device
-      await appSys.updateSetting(appSys.settings!["system"], "uuid", Uuid().v4());
+
+      appSys.settings.system.uuid = Uuid().v4();
+      appSys.saveSettings();
 
       //Open the loading dialog with credentials
       openLoadingDialog(appSys.api!.login(login, pass, additionnalSettings: {
@@ -198,7 +201,8 @@ class _QRCodeLoginPageState extends State<QRCodeLoginPage> {
         "mobileCasLogin": false,
       }));
     } catch (e) {
-      print(e);
+      CustomLogger.log("LOGIN", "(QR Code) An error occured with the PIN");
+      CustomLogger.error(e);
       CustomDialogs.showAnyDialog(context, "Votre code PIN est invalide");
       return;
     }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
+import 'package:ynotes/core/utils/loggingUtils.dart';
 
 class MailsController extends ChangeNotifier {
   dynamic _api;
@@ -18,14 +19,15 @@ class MailsController extends ChangeNotifier {
   }
 
   Future<void> refresh({bool force = false}) async {
-    print("Refresh mails");
+    CustomLogger.log("MAILS", "Refresh");
     loading = true;
     notifyListeners();
     try {
       mails = await _api.getMails(forceReload: force);
       notifyListeners();
     } catch (e) {
-      print(e);
+      CustomLogger.log("MAILS", "An error occured while refreshing");
+      CustomLogger.error(e);
       loading = false;
     }
     loading = false;

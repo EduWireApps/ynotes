@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:ynotes/core/utils/loggingUtils.dart';
 import 'package:ynotes/ui/components/y_page/y_page_local.dart';
 
 mixin YPageMixin<T extends StatefulWidget> on State<T> {
   openLocalPage(YPageLocal page) {
+    CustomLogger.saveLog(object: "ROUTING", text: 'Opening local page "${page.title}".');
     Navigator.push(
         context,
         PageRouteBuilder(
@@ -12,8 +14,7 @@ mixin YPageMixin<T extends StatefulWidget> on State<T> {
             var end = Offset.zero;
             var curve = Curves.ease;
 
-            var tween =
-                Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+            var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
 
             return SlideTransition(
               position: animation.drive(tween),

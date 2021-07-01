@@ -14,7 +14,7 @@ import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/offline/data/homework/homework.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/main.dart';
+import 'package:ynotes/extensions.dart';
 import 'package:ynotes/ui/components/columnGenerator.dart';
 import 'package:ynotes/ui/components/customLoader.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
@@ -487,8 +487,7 @@ class _StickyHeaderState extends State<StickyHeader> {
                         appSys.homeworkController.homework(showAll: true)?.map((e) => e.discipline).toList() ?? [];
                     List<int> indexes = [];
                     disciplines.forEach((element) {
-                      (jsonDecode(appSys.settings?["user"]["homeworkPage"]["customDisciplinesList"] ?? "[]") ?? [])
-                          .forEach((saved) {
+                      (jsonDecode(appSys.settings.user.homeworkPage.customDisciplinesList) ?? []).forEach((saved) {
                         if (element == saved) {
                           indexes.add(disciplines.indexOf(saved));
                         }
@@ -497,18 +496,15 @@ class _StickyHeaderState extends State<StickyHeader> {
                     List? temp = await CustomDialogs.showMultipleChoicesDialog(context, disciplines, indexes,
                         label: "Choisissez une matière parmi les suivantes :");
                     if (temp != null) {
-                      await appSys.updateSetting(
-                          appSys.settings?["user"]["homeworkPage"],
-                          "customDisciplinesList",
-                          jsonEncode(disciplines
-                              .mapIndexed((element, index) {
-                                if (temp.contains(index)) {
-                                  return element;
-                                }
-                              })
-                              .toList()
-                              .where((element) => element != null)
-                              .toList()));
+                      appSys.settings.user.homeworkPage.customDisciplinesList = jsonEncode(disciplines
+                          .mapIndexed((element, index) {
+                            if (temp.contains(index)) {
+                              return element;
+                            }
+                          })
+                          .toList()
+                          .where((element) => element != null)
+                          .toList());
                       setState(() {});
                     } else {
                       appSys.homeworkController.currentFilter = homeworkFilter.ALL;

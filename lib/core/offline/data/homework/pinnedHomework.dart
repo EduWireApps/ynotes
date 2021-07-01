@@ -1,5 +1,6 @@
 import 'package:intl/intl.dart';
 import 'package:ynotes/core/offline/offline.dart';
+import 'package:ynotes/core/utils/loggingUtils.dart';
 
 class PinnedHomeworkOffline {
   late Offline parent;
@@ -18,7 +19,8 @@ class PinnedHomeworkOffline {
       });
       return parsedList;
     } catch (e) {
-      print("Error during the getPinnedHomeworkDateProcess $e");
+      CustomLogger.log("PINNED HOMEWORK", "An error occured during the getPinnedHomeworkDateProcess");
+      CustomLogger.error(e);
       return [];
     }
   }
@@ -31,8 +33,8 @@ class PinnedHomeworkOffline {
       //If to return is null return false
       return (toReturn != null) ? toReturn : false;
     } catch (e) {
-      print("Error during the getPinnedHomeworkProcess $e");
-
+      CustomLogger.log("PINNED HOMEWORK", "An error occured during the getPinnedHomeworkDateProcess");
+      CustomLogger.error(e);
       return null;
     }
   }
@@ -42,7 +44,8 @@ class PinnedHomeworkOffline {
     try {
       await parent.pinnedHomeworkBox?.put(date, value);
     } catch (e) {
-      print("Error during the setPinnedHomeworkDateProcess $e");
+      CustomLogger.log("PINNED HOMEWORK", "An error occured during the setPinnedHomeworkDateProcess");
+      CustomLogger.error(e);
     }
   }
 }

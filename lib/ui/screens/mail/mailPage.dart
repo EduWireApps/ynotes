@@ -12,6 +12,7 @@ import 'package:ynotes/core/logic/mails/controller.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/themeUtils.dart';
 import 'package:ynotes/globals.dart';
+import 'package:ynotes/extensions.dart';
 import 'package:ynotes/ui/components/customLoader.dart';
 import 'package:ynotes/ui/components/dialogs.dart';
 import 'package:ynotes/ui/components/textField.dart';
@@ -22,12 +23,6 @@ import 'package:ynotes/usefulMethods.dart';
 import 'package:ynotes_components/ynotes_components.dart';
 
 String? dossier = "Reçus";
-
-extension StringExtension on String {
-  String capitalize() {
-    return "${this[0].toUpperCase()}${this.substring(1)}";
-  }
-}
 
 List<Mail> localList = [];
 StreamSubscription? loginconnexion;

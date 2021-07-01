@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:uuid/uuid.dart';
-import 'package:ynotes/core/apis/Pronote/PronoteCas.dart';
 import 'package:ynotes/core/apis/utils.dart';
+import 'package:ynotes/core/utils/loggingUtils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 
@@ -36,7 +36,7 @@ class _LoginWebViewState extends State<LoginWebView> {
 
   //Checking the profile and getting the credentials
   authAndValidateProfile() async {
-    print("Validating profile");
+    CustomLogger.log("LOGIN", "(Web view) Validating profile");
 
     Timer(new Duration(milliseconds: 1500), () async {
       setState(() {
@@ -136,22 +136,22 @@ class _LoginWebViewState extends State<LoginWebView> {
   //Here, we parse the credentials
   getCreds(String? credsData) {
     if (credsData != null && credsData.length > 0) {
-      printWrapped(credsData);
+      CustomLogger.logWrapped("LOGIN", "Credentials data", credsData);
       Map temp = json.decode(credsData);
-      print(temp["status"]);
+      CustomLogger.log("LOGIN", "(Web view) Status: ${temp["status"]}");
       if (temp["status"] == 0) {
         loginStatus = temp;
         Navigator.of(context).pop(loginStatus);
       } else {}
     } else {
       //This can happen if the page is not fully loaded
-      print("Credentials are null");
+      CustomLogger.log("LOGIN", "(Web view) Credentials are null");
     }
   }
 
   //IDK if it's still useful, but It redirects the user to the Pronote official page and log in
   loginTest() async {
-    print("Login test");
+    CustomLogger.log("LOGIN", "(Web view) Login test");
     Timer(new Duration(milliseconds: 1500), () async {
       String toexecute = 'if(!window.messageData) /*window.messageData = [];*/';
       await widget.controller!.evaluateJavascript(source: toexecute);
@@ -160,9 +160,10 @@ class _LoginWebViewState extends State<LoginWebView> {
 
   //We set the login cookie here
   setCookie() async {
-    print("Setting cookie");
+    CustomLogger.log("LOGIN", "(Web view) Setting cookie");
     //generate UUID
-    await appSys.updateSetting(appSys.settings!["system"], "uuid", Uuid().v4());
+    appSys.settings.system.uuid = Uuid().v4();
+    appSys.saveSettings();
     //We use the window function to create a cookie
     //Looks like this one contains an important UUID which is used by Pronote to fingerprint the device and makes sure that nobody will use this cookie on another one
     String cookieFunction = '(function(){try{' +
@@ -172,7 +173,7 @@ class _LoginWebViewState extends State<LoginWebView> {
         'if(!!lJetonCas) {' +
         'document.cookie = "validationAppliMobile="+lJetonCas+";expires=" + new Date(new Date().getTime() + (5*60*1000)).toUTCString();' +
         'document.cookie = "uuidAppliMobile=' +
-        appSys.settings!["system"]["uuid"] +
+        appSys.settings.system.uuid! +
         ';expires=" + new Date(new Date().getTime() + (5*60*1000)).toUTCString();' +
         'document.cookie = "ielang=' +
         "1036" +
@@ -241,5 +242,4 @@ class _LoginWebViewState extends State<LoginWebView> {
       ),
     );
   }
-
 }

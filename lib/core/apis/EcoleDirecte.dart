@@ -17,8 +17,8 @@ import 'package:ynotes/core/offline/data/mails/mails.dart';
 import 'package:ynotes/core/offline/data/mails/recipients.dart';
 import 'package:ynotes/core/offline/data/schoolLife/schoolLife.dart';
 import 'package:ynotes/core/offline/offline.dart';
+import 'package:ynotes/core/utils/loggingUtils.dart';
 import 'package:ynotes/globals.dart';
-import 'package:ynotes/ui/screens/settings/sub_pages/logsPage.dart';
 import 'package:ynotes/usefulMethods.dart';
 
 import 'EcoleDirecte/ecoleDirecteMethods.dart';
@@ -161,8 +161,8 @@ class APIEcoleDirecte extends API {
           try {
             appSys.account = EcoleDirecteAccountConverter.account(req);
           } catch (e) {
-            print("Impossible to get accounts " + e.toString());
-            print(e);
+            CustomLogger.log("ED", "Impossible to get accounts " + e.toString());
+            CustomLogger.error(e);
           }
 
           if (appSys.account != null && appSys.account!.managableAccounts != null) {
@@ -194,9 +194,9 @@ class APIEcoleDirecte extends API {
           //Ensure that the user will not see the carousel anymore
           prefs.setBool('firstUse', false);
         } catch (e) {
-          print("Error while getting user info " + e.toString());
+          CustomLogger.log("ED", "Error while getting user info " + e.toString());
           //log in file
-          logFile(e.toString());
+          CustomLogger.saveLog(object: "ERROR", text: "Ecole Directe: " + e.toString());
         }
         this.loggedIn = true;
         return [1, "Bienvenue ${appSys.account?.name ?? "Invité"} !"];
@@ -229,7 +229,7 @@ class APIEcoleDirecte extends API {
     var response = await http.post(Uri.parse(url), headers: headers, body: body).catchError((e) {
       throw ("Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou reessayez plus tard.");
     });
-    print("Starting the mail reading");
+    CustomLogger.log("ED", "Starting the mail reading");
     try {
       if (response.statusCode == 200) {
         Map<String, dynamic> req = jsonDecode(response.body);
@@ -241,15 +241,15 @@ class APIEcoleDirecte extends API {
         }
         //Return an error
         else {
-          printWrapped(response.body);
+          CustomLogger.logWrapped("ED", "Response body", response.body);
           throw "Error wrong internal status code ";
         }
       } else {
-        print(response.statusCode);
+        CustomLogger.log("ERROR", "${response.statusCode}: wrong status code.");
         throw "Error wrong status code";
       }
     } catch (e) {
-      print("error during the mail reading $e");
+      CustomLogger.log("ED", "error during the mail reading $e");
     }
   }
 
@@ -259,14 +259,14 @@ class APIEcoleDirecte extends API {
       //Getting the offline count of grades
       List<Grade> listOfflineGrades =
           getAllGrades(await DisciplinesOffline(offlineController).getDisciplines(), overrideLimit: true)!;
-      print("Offline length is ${listOfflineGrades.length}");
+      CustomLogger.log("ED", "Offline length is ${listOfflineGrades.length}");
       //Getting the online count of grades
       List<Grade> listOnlineGrades =
           getAllGrades(await EcoleDirecteMethod(offlineController).grades(), overrideLimit: true)!;
-      print("Online length is ${listOnlineGrades.length}");
+      CustomLogger.log("ED", "Online length is ${listOnlineGrades.length}");
       return (listOfflineGrades.length < listOnlineGrades.length);
     } catch (e) {
-      print(e);
+      CustomLogger.error(e);
       return null;
     }
   }
@@ -285,9 +285,9 @@ class APIEcoleDirecte extends API {
             ..fields['asap'] = '\nContent-Disposition: form-data; name="data"\n\n{"token":"$token","idContexte":$id}';
 
           var response = await request.send();
-          if (response.statusCode == 200) print('Uploaded!');
+          if (response.statusCode == 200) CustomLogger.log("ED", "File uploaded");
           response.stream.transform(utf8.decoder).listen((value) {
-            print(value);
+            CustomLogger.log("ED", "File stream value: $value");
           });
         }
     }
