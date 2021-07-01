@@ -96,8 +96,9 @@ class AppNotification {
     } else {
       final prefs = await (SharedPreferences.getInstance());
       bool? value = prefs.getBool("disableAtDayEnd");
-      print(value);
-      print(appSys.settings.user.agendaPage.disableAtDayEnd);
+      CustomLogger.log("NOTIFICATIONS", "disableAtDayEnd (prefs): $value");
+      CustomLogger.log(
+          "NOTIFICATIONS", "disableAtDayEnd (settings): ${appSys.settings.user.agendaPage.disableAtDayEnd}");
       appSys.saveSettings();
       if (appSys.settings.user.agendaPage.disableAtDayEnd) {
         await cancelOnGoingNotification();

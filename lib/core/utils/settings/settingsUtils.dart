@@ -1,15 +1,11 @@
 import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ynotes/core/utils/loggingUtils.dart';
 import 'package:ynotes/core/utils/settings/model.dart';
 
 class SettingsUtils {
-  static const Map secureSettingsForm = {
-    "username": "",
-    "password": "",
-    "pronoteurl": "",
-    "pronotecas": ""
-  };
+  static const Map secureSettingsForm = {"username": "", "password": "", "pronoteurl": "", "pronotecas": ""};
   static const Map settingsForm = {
     //System global settings
     "system": {
@@ -100,8 +96,7 @@ class SettingsUtils {
           _settings["user"][key1][entry.key] = (await getIntSetting(entry.key));
         }
         if (entry.value.runtimeType == bool) {
-          _settings["user"][key1][entry.key] =
-              (await getBoolSetting(entry.key)) ?? entry.value;
+          _settings["user"][key1][entry.key] = (await getBoolSetting(entry.key)) ?? entry.value;
         }
       }
     }
@@ -110,8 +105,7 @@ class SettingsUtils {
         _settings["system"][entry.key] = (await getIntSetting(entry.key));
       }
       if (entry.value.runtimeType == bool) {
-        _settings["system"][entry.key] =
-            (await getBoolSetting(entry.key)) ?? entry.value;
+        _settings["system"][entry.key] = (await getBoolSetting(entry.key)) ?? entry.value;
       }
     }
     return _settings;
@@ -160,7 +154,7 @@ class SettingsUtils {
   static setSetting(FormSettings newSettings) async {
     final prefs = await SharedPreferences.getInstance();
     String encoded = json.encode(newSettings);
-    print(encoded);
+    CustomLogger.log("SETTINGS", "Set setting: $encoded");
     await prefs.setString("settings", encoded);
   }
 }

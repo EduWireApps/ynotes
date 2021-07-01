@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/apis/EcoleDirecte.dart';
+import 'package:ynotes/core/utils/loggingUtils.dart';
 import 'package:ynotes/ui/animations/FadeAnimation.dart';
 import 'package:ynotes/usefulMethods.dart';
 
@@ -49,7 +50,7 @@ class _LoadingPageState extends State<LoadingPage> {
     String? p = await readStorage("password");
     String? z = await readStorage("agreedTermsAndConfiguredApp");
 
-    print([u, p, z]);
+    CustomLogger.log("LOADING", "${[u, p, z]}");
     if (u != null && p != null && z != null) {
       Navigator.pushReplacementNamed(context, "/summary");
     } else {

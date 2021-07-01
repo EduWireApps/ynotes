@@ -70,7 +70,7 @@ class BackgroundService {
         CustomLogger.log("BACKGROUND", "New mail notification disabled");
       }
       if (appSys.settings.user.agendaPage.agendaOnGoingNotification) {
-        print("Setting On going notification");
+        CustomLogger.log("BACKGROUND", "Setting On going notification");
         await AppNotification.setOnGoingNotification(dontShowActual: true);
       } else {
         CustomLogger.log("BACKGROUND", "On going notification disabled");
@@ -122,7 +122,7 @@ class BackgroundService {
           getAllGrades(await appSys.api?.getGrades(forceReload: true), overrideLimit: true, sortByWritingDate: true);
 
       CustomLogger.log("BACKGROUND", "Online grade length is ${listOnlineGrades!.length}");
-      if ( oldGradesLength != 0 && oldGradesLength < listOnlineGrades.length) {
+      if (oldGradesLength != 0 && oldGradesLength < listOnlineGrades.length) {
         int diff = (listOnlineGrades.length - (listOnlineGrades.length - oldGradesLength).clamp(0, 5));
         List<Grade> newGrades = listOnlineGrades.sublist(diff);
         return [true, newGrades];
@@ -139,11 +139,10 @@ class BackgroundService {
   static testNewMails() async {
     try {
       //Get the old number of mails
-      
-     
+
       var oldMailLength = appSys.settings.system.lastMailCount;
       appSys.saveSettings();
-       CustomLogger.log("BACKGROUND", "Old length is $oldMailLength");
+      CustomLogger.log("BACKGROUND", "Old length is $oldMailLength");
       //Get new mails
       List<Mail>? mails = await (appSys.api as APIEcoleDirecte?)?.getMails(forceReload: true);
       //filter mails by type
@@ -182,5 +181,6 @@ class BackgroundService {
     int date = DateTime.now().millisecondsSinceEpoch;
     appSys.settings.system.lastFetchDate = date;
     appSys.saveSettings();
-    CustomLogger.log("BACKGROUND", "Written last fetch status " + date.toString());  }
+    CustomLogger.log("BACKGROUND", "Written last fetch status " + date.toString());
+  }
 }
