@@ -1,8 +1,8 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:intl/intl.dart';
-import 'package:ynotes/core/apis/pronote/pronote_api.dart';
-import 'package:ynotes/core/apis/pronote/converters/polls.dart';
-import 'package:ynotes/core/apis/pronote/converters_exporter.dart';
+import 'package:ynotes/core/apis/pronote_t/pronote_api.dart';
+import 'package:ynotes/core/apis/pronote_t/converters/polls.dart';
+import 'package:ynotes/core/apis/pronote_t/converters_exporter.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';

@@ -1,5 +1,5 @@
 import 'package:intl/intl.dart';
-import 'package:ynotes/core/apis/pronote/pronote_api.dart';
+import 'package:ynotes/core/apis/pronote_t/pronote_api.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/utils/null_safe_map_getter.dart';
 
