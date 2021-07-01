@@ -15,15 +15,12 @@ class AgendaPageSettings {
     required this.disableAtDayEnd,
   });
 
-  factory AgendaPageSettings.fromJson(Map<String, dynamic> json) =>
-      AgendaPageSettings(
+  factory AgendaPageSettings.fromJson(Map<String, dynamic> json) => AgendaPageSettings(
         lighteningOverride: (json['lighteningOverride'] as bool?) ?? false,
-        agendaOnGoingNotification:
-            (json['agendaOnGoingNotification'] as bool?) ?? false,
+        agendaOnGoingNotification: (json['agendaOnGoingNotification'] as bool?) ?? false,
         reverseWeekNames: (json['reverseWeekNames'] as bool?) ?? false,
         lessonReminderDelay: (json['lessonReminderDelay'] as int?) ?? 5,
-        enableDNDWhenOnGoingNotifEnabled:
-            (json['enableDNDWhenOnGoingNotifEnabled'] as bool?) ?? false,
+        enableDNDWhenOnGoingNotifEnabled: (json['enableDNDWhenOnGoingNotifEnabled'] as bool?) ?? false,
         disableAtDayEnd: (json['disableAtDayEnd'] as bool?) == false,
       );
 
@@ -79,8 +76,7 @@ class GlobalUserSettings {
     required this.autoCloseDrawer,
   });
 
-  factory GlobalUserSettings.fromJson(Map<String, dynamic> json) =>
-      GlobalUserSettings(
+  factory GlobalUserSettings.fromJson(Map<String, dynamic> json) => GlobalUserSettings(
         nightmode: (json['nightmode'] as bool?) ?? false,
         theme: (json['theme'] as String?) ?? 'clair',
         batterySaver: (json['batterySaver'] as bool?) ?? false,
@@ -116,15 +112,12 @@ class HomeworkPageSettings {
     required this.customDisciplinesList,
   });
 
-  factory HomeworkPageSettings.fromJson(Map<String, dynamic> json) =>
-      HomeworkPageSettings(
+  factory HomeworkPageSettings.fromJson(Map<String, dynamic> json) => HomeworkPageSettings(
         isExpandedByDefault: (json['isExpandedByDefault'] as bool?) ?? false,
-        forceMonochromeContent:
-            (json['forceMonochromeContent'] as bool?) ?? false,
+        forceMonochromeContent: (json['forceMonochromeContent'] as bool?) ?? false,
         fontSize: (json['fontSize'] as int?) ?? 20,
         pageColorVariant: (json['pageColorVariant'] as int?) ?? 0,
-        customDisciplinesList:
-            (json['customDisciplinesList'] as String?) ?? '[]',
+        customDisciplinesList: (json['customDisciplinesList'] as String?) ?? '[]',
       );
 
   Map<String, Object> toJson() => {
@@ -143,8 +136,7 @@ class SummaryPageSettings {
     required this.summaryQuickHomework,
   });
 
-  factory SummaryPageSettings.fromJson(Map<String, dynamic> json) =>
-      SummaryPageSettings(
+  factory SummaryPageSettings.fromJson(Map<String, dynamic> json) => SummaryPageSettings(
         summaryQuickHomework: (json['summaryQuickHomework'] as int?) ?? 11,
       );
 
@@ -204,13 +196,14 @@ class UserSettings {
   SummaryPageSettings summaryPage;
   HomeworkPageSettings homeworkPage;
   AgendaPageSettings agendaPage;
+  WorkspacesPageSettings workspacesPage;
 
-  UserSettings({
-    required this.global,
-    required this.summaryPage,
-    required this.homeworkPage,
-    required this.agendaPage,
-  });
+  UserSettings(
+      {required this.global,
+      required this.summaryPage,
+      required this.homeworkPage,
+      required this.agendaPage,
+      required this.workspacesPage});
 
   factory UserSettings.fromJson(Map<String, dynamic> json) => UserSettings(
         global: GlobalUserSettings.fromJson(
@@ -225,6 +218,9 @@ class UserSettings {
         agendaPage: AgendaPageSettings.fromJson(
           json['agendaPage'] as Map<String, dynamic>? ?? <String, dynamic>{},
         ),
+        workspacesPage: WorkspacesPageSettings.fromJson(
+          json['workspacesPage'] as Map<String, dynamic>? ?? <String, dynamic>{},
+        ),
       );
 
   Map<String, Object> toJson() => {
@@ -232,5 +228,22 @@ class UserSettings {
         'summaryPage': summaryPage,
         'homeworkPage': homeworkPage,
         'agendaPage': agendaPage,
+        'workspacesPage': workspacesPage
+      };
+}
+
+class WorkspacesPageSettings {
+  bool readExplanation;
+
+  WorkspacesPageSettings({
+    required this.readExplanation,
+  });
+
+  factory WorkspacesPageSettings.fromJson(Map<String, dynamic> json) => WorkspacesPageSettings(
+        readExplanation: (json['readExplanation'] as bool?) ?? false,
+      );
+
+  Map<String, Object> toJson() => {
+        'readExplanation': readExplanation,
       };
 }

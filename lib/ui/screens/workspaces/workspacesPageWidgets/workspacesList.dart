@@ -23,7 +23,7 @@ class _WorkSpacesListState extends State<WorkSpacesList> {
       padding: EdgeInsets.symmetric(horizontal: 5),
       child: Column(
         children: [
-          if ((appSys.settings!["user"]["workspacesPage"]?["readExplanation"] ?? false) == false) buildExplanation(),
+          if (!appSys.settings.user.workspacesPage.readExplanation) buildExplanation(),
           SizedBox(height: screenSize.size.height / 10 * 0.1),
           buildSpace("Mes espaces de travail",
               widget.controller.workspaces?.where((element) => (element.isMemberOf ?? false)).toList()),
@@ -58,9 +58,9 @@ class _WorkSpacesListState extends State<WorkSpacesList> {
             ),
           ),
           CustomButtons.materialButton(context, null, null, () {
-            setState(() {
-              appSys.updateSetting(appSys.settings!["user"]["workspacesPage"], "readExplanation", true);
-            });
+            appSys.settings.user.workspacesPage.readExplanation = true;
+            appSys.saveSettings();
+            setState(() {});
           }, label: "J'ai compris", padding: EdgeInsets.symmetric(vertical: 8, horizontal: 5))
         ],
       ),

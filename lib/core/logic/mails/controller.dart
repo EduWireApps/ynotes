@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:ynotes/core/apis/EcoleDirecte.dart';
-import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/logic/modelsExporter.dart';
 import 'package:ynotes/core/utils/loggingUtils.dart';
 
