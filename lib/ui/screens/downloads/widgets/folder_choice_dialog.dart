@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/utils/file_utils.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 
 // ignore: must_be_immutable
@@ -150,7 +151,7 @@ class _FolderChoiceDialogState extends State<FolderChoiceDialog> {
                   await element.element.delete(recursive: true);
                 } catch (e) {
                   if (!kIsWeb && Platform.isAndroid) {
-                    print("Trying with commandlines");
+                    CustomLogger.log("DIALOGS", "(Folder choice) Trying with commandlines");
                     await Process.run('cp', ['-r', element.element.path, widget.path + "/" + value!]);
                     await element.element.delete(recursive: true);
                   }

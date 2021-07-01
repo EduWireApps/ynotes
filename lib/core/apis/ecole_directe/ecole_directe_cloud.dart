@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:ynotes/core/apis/ecole_directe.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/ui/screens/cloud/index.dart';
 
 //The basical function to change folder
@@ -18,7 +19,7 @@ Future<List<CloudItem>?> changeFolder(String path) async {
   });
   var url = 'https://api.ecoledirecte.com/v3/cloud/W/$cloudUsedFolder.awp?verbe=get&idFolder=$concatenate';
   url = Uri.encodeFull(url);
-  print(url);
+  CustomLogger.log("ED", "Cloud url: $url");
   List<CloudItem> toReturn = [];
 
   Map<String, String> headers = {"Content-type": "text/plain"};

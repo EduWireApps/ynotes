@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/ui/components/color_picker/flutter_colorpicker.dart';
 
 class CustomColorPicker extends StatefulWidget {
@@ -17,8 +18,7 @@ class _CustomColorPickerState extends State<CustomColorPicker> {
   Widget build(BuildContext context) {
     return AlertDialog(
       backgroundColor: Theme.of(context).primaryColor,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(32.0))),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(32.0))),
       content: Container(
         //padding: EdgeInsets.all(screenSize.size.height/100),
 
@@ -81,7 +81,7 @@ class _CustomColorPickerState extends State<CustomColorPicker> {
             style: TextStyle(color: Colors.green, fontFamily: "Asap"),
           ),
           onPressed: () {
-            print(pickerColor);
+            CustomLogger.log("COLOR PICKER", "$pickerColor");
             Navigator.pop(context, pickerColor);
           },
         )

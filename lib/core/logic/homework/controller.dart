@@ -7,6 +7,7 @@ import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/data/disciplines_filter.dart';
 import 'package:ynotes/core/logic/homework/utils.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
 
 class HomeworkController extends ChangeNotifier {
@@ -45,7 +46,7 @@ class HomeworkController extends ChangeNotifier {
           toReturn.add(f);
           break;
         case homeworkFilter.LITERARY:
-          if (appSys.settings!["system"]["chosenParser"] == 0) {
+          if (appSys.settings.system.chosenParser == 0) {
             List<String> codeMatiere = filters["literary"]["ED"];
             if (codeMatiere.any((test) {
               if (test == f.disciplineCode) {
@@ -72,7 +73,7 @@ class HomeworkController extends ChangeNotifier {
 
           break;
         case homeworkFilter.SCIENCES:
-          if (appSys.settings!["system"]["chosenParser"] == 0) {
+          if (appSys.settings.system.chosenParser == 0) {
             List<String> codeMatiere = filters["sciences"]["ED"];
             if (codeMatiere.any((test) {
               if (test == f.disciplineCode) {
@@ -101,8 +102,8 @@ class HomeworkController extends ChangeNotifier {
           break;
 
         case homeworkFilter.CUSTOM:
-          List codeMatiere =
-              jsonDecode(appSys.settings?["user"]["homeworkPage"]["customDisciplinesList"] ?? "[]") ?? [];
+          List codeMatiere = jsonDecode(appSys.settings.user.homeworkPage.customDisciplinesList) ?? [];
+          appSys.saveSettings();
           if (codeMatiere.any((test) {
             if (test == f.discipline) {
               return true;
@@ -206,7 +207,7 @@ class HomeworkController extends ChangeNotifier {
         } catch (e) {}
       }
     });
-    print(unloadedHW);
+    CustomLogger.log("HOMEWORK", unloadedHW.toString());
     await loadAll();
   }
 
@@ -219,7 +220,7 @@ class HomeworkController extends ChangeNotifier {
   }
 
   Future<void> refresh({bool force = false, refreshFromOffline = false}) async {
-    print("Refreshing homework " + (refreshFromOffline ? "from offline" : "online"));
+    CustomLogger.log("HOMEWORK", "Refreshing homework " + (refreshFromOffline ? "from offline" : "online"));
     isFetching = true;
     notifyListeners();
     if (refreshFromOffline) {

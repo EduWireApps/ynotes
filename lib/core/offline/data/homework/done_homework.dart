@@ -1,4 +1,5 @@
 import 'package:ynotes/core/offline/offline.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 
 class DoneHomeworkOffline {
   late Offline parent;
@@ -21,7 +22,8 @@ class DoneHomeworkOffline {
     try {
       return parent.homeworkDoneBox!.keys.length;
     } catch (e) {
-      print("Error during the getHomeworkDoneProcess $e");
+      CustomLogger.log("DONE HOMEWORK", "An error occured during the getHomeworkDoneProcess");
+      CustomLogger.error(e);
       return 0;
     }
   }
@@ -38,18 +40,19 @@ class DoneHomeworkOffline {
       //If to return is null return false
       return (toReturn != null) ? toReturn : false;
     } catch (e) {
-      print("Error during the getHomeworkDoneProcess $e");
-
+      CustomLogger.log("DONE HOMEWORK", "An error occured during the getHomeworkDoneProcess");
+      CustomLogger.error(e);
       return false;
     }
   }
 
   setHWCompletion(String? id, bool? state) async {
-    print("Setting done hw");
+    CustomLogger.log("DONE HOMEWORK", "Setting homework state to $state");
     try {
       await parent.homeworkDoneBox!.put(id.toString(), state);
     } catch (e) {
-      print("Error during the setHomeworkDoneProcess $e");
+      CustomLogger.log("DONE HOMEWORK", "An error occured during the setHomeworkDoneProcess");
+      CustomLogger.error(e);
     }
   }
 }

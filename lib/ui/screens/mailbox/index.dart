@@ -20,14 +20,9 @@ import 'package:ynotes/ui/mixins/layout_mixin.dart';
 import 'widgets/read_mail_bottom_sheet.dart';
 import 'package:ynotes/useful_methods.dart';
 import 'package:ynotes_components/ynotes_components.dart';
+import 'package:ynotes/extensions.dart';
 
 String? dossier = "Reçus";
-
-extension StringExtension on String {
-  String capitalize() {
-    return "${this[0].toUpperCase()}${this.substring(1)}";
-  }
-}
 
 List<Mail> localList = [];
 StreamSubscription? loginconnexion;

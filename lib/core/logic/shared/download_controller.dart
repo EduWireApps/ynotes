@@ -5,6 +5,7 @@ import 'package:http/http.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/utils/file_utils.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
 
 ///Class download to notify view when download is ended
@@ -24,7 +25,7 @@ class DownloadController extends ChangeNotifier {
     String? filename = document.documentName;
     notifyListeners();
     Request request = await appSys.api!.downloadRequest(document);
-    print(request.url);
+    CustomLogger.log("DOWNLOAD", "Download request url: ${request.url}");
     //Make a response client
     final StreamedResponse response = await Client().send(request);
     final contentLength = response.contentLength;
@@ -32,7 +33,7 @@ class DownloadController extends ChangeNotifier {
 
     _progress = 0;
     notifyListeners();
-    print("Downloading a file : $filename");
+    CustomLogger.log("DOWNLOAD", "Downloading a file : $filename");
 
     List<int> bytes = [];
     final file = await FileAppUtil.getFilePath(filename);
@@ -48,7 +49,7 @@ class DownloadController extends ChangeNotifier {
         try {
           _progress = 100;
           notifyListeners();
-          print("Téléchargement du fichier terminé : ${file.path}");
+          CustomLogger.log("DOWNLOAD", "Téléchargement du fichier terminé : ${file.path}");
           final dir = await FolderAppUtil.getDirectory(download: true);
           final Directory _appDocDirFolder = Directory('$dir/yNotesDownloads/');
 
@@ -59,14 +60,16 @@ class DownloadController extends ChangeNotifier {
 
           await file.writeAsBytes(bytes);
         } catch (e) {
-          print("Downloading file error : $e, on $filename");
+          CustomLogger.log("DOWNLOAD", "An error occured while downloading $filename");
+          CustomLogger.error(e);
           _isDownloading = false;
           _hasError = true;
           notifyListeners();
         }
       },
       onError: (e) {
-        print("Downloading file error : $e, on $filename");
+        CustomLogger.log("DOWNLOAD", "An error occured while downloading $filename");
+        CustomLogger.error(e);
         _isDownloading = false;
         _hasError = true;
         notifyListeners();
@@ -92,7 +95,7 @@ class DownloadController extends ChangeNotifier {
         });
         return toReturn;
       } else {
-        print("Not granted");
+        CustomLogger.log("DOWNLOAD", "Not granted");
         return false;
       }
     } catch (e) {

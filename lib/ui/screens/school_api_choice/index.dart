@@ -4,15 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/globals.dart';
+import 'package:ynotes/ui/components/column_generator.dart';
 import 'package:ynotes/ui/screens/login/index.dart';
 import 'package:ynotes/useful_methods.dart';
-
-int? chosen;
-late Animation<double> chosenAnimation1;
-late AnimationController chosenAnimation1Controller;
-late Animation<double> chosenAnimation2;
-
-late AnimationController chosenAnimation2Controller;
 
 class SchoolAPIChoice extends StatefulWidget {
   State<StatefulWidget> createState() {
@@ -21,6 +15,62 @@ class SchoolAPIChoice extends StatefulWidget {
 }
 
 class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderStateMixin {
+  late Animation<double> chosenAnimation1;
+  late AnimationController chosenAnimation1Controller;
+  late Animation<double> chosenAnimation2;
+  late AnimationController chosenAnimation2Controller;
+  late Animation<double> chosenAnimation3;
+  late AnimationController chosenAnimation3Controller;
+  int? chosen;
+
+  List<Map> apis() => [
+        {
+          "name": "EcoleDirecte",
+          "mainColor": Color(0xff2874A6),
+          "animation": chosenAnimation1,
+          "controller": chosenAnimation1Controller,
+          "icon": Container(
+            padding: EdgeInsets.symmetric(vertical: 10),
+            margin: EdgeInsets.only(right: 20, left: 20),
+            child: Image(
+                width: 50,
+                height: 40,
+                fit: BoxFit.fill,
+                image: AssetImage('assets/images/icons/ecoledirecte/EcoleDirecteIcon.png')),
+          ),
+        },
+        {
+          "name": "Pronote",
+          "animation": chosenAnimation2,
+          "controller": chosenAnimation2Controller,
+          "mainColor": Color(0xff61b872),
+          "icon": Container(
+            padding: EdgeInsets.symmetric(vertical: 10),
+            margin: EdgeInsets.only(right: 20, left: 20),
+            child: Image(
+                width: 50,
+                height: 50,
+                fit: BoxFit.fill,
+                image: AssetImage('assets/images/icons/pronote/PronoteIcon.png')),
+          ),
+        },
+        /*{
+          "name": "La Vie Scolaire",
+          "animation": chosenAnimation3,
+          "controller": chosenAnimation3Controller,
+          "mainColor": Color(0xff3e456b),
+          "icon": Container(
+            padding: EdgeInsets.symmetric(vertical: 10),
+            margin: EdgeInsets.only(right: 20, left: 20),
+            child: Image(
+                width: 50,
+                height: 50,
+                fit: BoxFit.fill,
+                image: AssetImage('assets/images/icons/laviescolaire/LVSIcon.png')),
+          ),
+        },*/
+      ];
+
   @override
   Widget build(BuildContext context) {
     MediaQueryData screenSize;
@@ -60,105 +110,62 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
                     SizedBox(
                       height: screenSize.size.height / 10 * 0.4,
                     ),
-                    AnimatedBuilder(
-                      animation: chosenAnimation1,
-                      builder: (BuildContext context, Widget? child) {
-                        return Transform.scale(
-                          scale: chosenAnimation1.value,
-                          child: child,
-                        );
-                      },
-                      child: Material(
-                        color: Color(0xff2874A6),
-                        borderRadius: BorderRadius.circular(25),
-                        child: InkWell(
-                          onTap: () {
-                            setState(() {
-                              chosenAnimation2Controller.reverse();
-                              chosen = 0;
-                              chosenAnimation1Controller.forward();
-                            });
-                          },
-                          borderRadius: BorderRadius.circular(25),
-                          child: ConstrainedBox(
-                            constraints: BoxConstraints(maxWidth: 350),
-                            child: Container(
-                              width: MediaQuery.of(context).size.width / 5 * 4.2,
-                              height: 70,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: <Widget>[
-                                  Container(
-                                    padding:
-                                        EdgeInsets.symmetric(vertical: MediaQuery.of(context).size.width / 10 * 0.1),
-                                    margin: EdgeInsets.only(right: 20, left: 20),
-                                    child: Image(
-                                        width: 50,
-                                        height: 40,
-                                        fit: BoxFit.fill,
-                                        image: AssetImage('assets/images/EcoleDirecte/EcoleDirecteIcon.png')),
-                                  ),
-                                  Expanded(
-                                      child: Text("Ecole Directe",
-                                          textAlign: TextAlign.start,
-                                          style: TextStyle(fontFamily: "Asap", fontSize: 30, color: Colors.white))),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: screenSize.size.height / 10 * 0.2,
-                    ),
-                    AnimatedBuilder(
-                      animation: chosenAnimation2,
-                      builder: (BuildContext context, Widget? child) {
-                        return Transform.scale(
-                          scale: chosenAnimation2.value,
-                          child: child,
-                        );
-                      },
-                      child: Material(
-                          color: Color(0xff61b872),
-                          borderRadius: BorderRadius.circular(25),
-                          child: InkWell(
-                              onTap: () {
-                                //CustomDialogs.showUnimplementedSnackBar(context);
-                                setState(() {
-                                  chosenAnimation1Controller.reverse();
-                                  chosen = 1;
-                                  chosenAnimation2Controller.forward();
-                                });
-                              },
-                              borderRadius: BorderRadius.circular(25),
-                              child: ConstrainedBox(
-                                constraints: BoxConstraints(maxWidth: 350),
-                                child: Container(
-                                    width: MediaQuery.of(context).size.width / 5 * 4.2,
-                                    height: 70,
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        Container(
-                                          padding: EdgeInsets.symmetric(vertical: 10),
-                                          margin: EdgeInsets.only(right: 20, left: 20),
-                                          child: Image(
-                                              width: 50,
-                                              height: 50,
-                                              fit: BoxFit.fill,
-                                              image: AssetImage('assets/images/Pronote/PronoteIcon.png')),
+                    ColumnBuilder(
+                        itemBuilder: (context, index) {
+                          return Column(
+                            children: [
+                              AnimatedBuilder(
+                                animation: apis()[index]["animation"],
+                                builder: (BuildContext context, Widget? child) {
+                                  return Transform.scale(
+                                    scale: apis()[index]["animation"].value,
+                                    child: child,
+                                  );
+                                },
+                                child: Material(
+                                  color: apis()[index]["mainColor"],
+                                  borderRadius: BorderRadius.circular(25),
+                                  child: InkWell(
+                                    onTap: () {
+                                      apis()
+                                          .where((element) => element["name"] != apis()[index]["name"])
+                                          .forEach((others) {
+                                        others["controller"].reverse();
+                                      });
+
+                                      apis()[index]["controller"].forward();
+
+                                      setState(() {
+                                        chosen = index;
+                                      });
+                                    },
+                                    borderRadius: BorderRadius.circular(25),
+                                    child: ConstrainedBox(
+                                      constraints: BoxConstraints(maxWidth: 350),
+                                      child: Container(
+                                        width: MediaQuery.of(context).size.width / 5 * 4.2,
+                                        height: 70,
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: <Widget>[
+                                            apis()[index]["icon"],
+                                            Expanded(
+                                                child: Text(apis()[index]["name"],
+                                                    textAlign: TextAlign.start,
+                                                    style: TextStyle(
+                                                        fontFamily: "Asap", fontSize: 30, color: Colors.white))),
+                                          ],
                                         ),
-                                        Expanded(
-                                            child: Text("Pronote",
-                                                textAlign: TextAlign.start,
-                                                style:
-                                                    TextStyle(fontFamily: "Asap", fontSize: 30, color: Colors.white))),
-                                      ],
-                                    )),
-                              ))),
-                    ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              SizedBox(height: screenSize.size.height / 10 * 0.1)
+                            ],
+                          );
+                        },
+                        itemCount: apis().length),
                   ],
                 ),
                 Positioned(
@@ -172,9 +179,8 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
                     onPressed: chosen == null
                         ? null
                         : () async {
-                            await setChosenParser(chosen);
+                            await setChosenParser(chosen!);
                             await appSys.initOffline();
-
                             setState(() {
                               appSys.api = apiManager(appSys.offline);
                             });
@@ -193,25 +199,12 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
     );
   }
 
-  getLocalChosen() async {
-    setState(() {
-      chosen = appSys.settings!["system"]["chosenParser"];
-    });
-    if (chosen == 0) {
-      chosenAnimation2Controller.reverse();
-      chosenAnimation1Controller.forward();
-    }
-    if (chosen == 1) {
-      chosenAnimation1Controller.reverse();
-      chosenAnimation2Controller.forward();
-    }
-  }
-
   @override
   void initState() {
     super.initState();
     chosenAnimation1Controller = AnimationController(vsync: this, duration: Duration(milliseconds: 450));
     chosenAnimation2Controller = AnimationController(vsync: this, duration: Duration(milliseconds: 450));
+    chosenAnimation3Controller = AnimationController(vsync: this, duration: Duration(milliseconds: 450));
     chosenAnimation1 = new Tween(
       begin: 1.0,
       end: 1.1,
@@ -220,6 +213,9 @@ class _SchoolAPIChoiceState extends State<SchoolAPIChoice> with TickerProviderSt
       begin: 1.0,
       end: 1.1,
     ).animate(new CurvedAnimation(parent: chosenAnimation2Controller, curve: Curves.easeInOutQuint));
-    getLocalChosen();
+    chosenAnimation3 = new Tween(
+      begin: 1.0,
+      end: 1.1,
+    ).animate(new CurvedAnimation(parent: chosenAnimation3Controller, curve: Curves.easeInOutQuint));
   }
 }

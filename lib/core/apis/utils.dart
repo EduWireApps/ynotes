@@ -7,8 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stack/stack.dart' as sta;
 import 'package:ynotes/core/apis/ecole_directe.dart';
 import 'package:ynotes/core/apis/pronote.dart';
-import 'package:ynotes/core/apis/pronote/pronote_cas.dart';
 import 'package:ynotes/core/offline/offline.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
 
 //Return the good API (will be extended to Pronote)
@@ -31,7 +31,7 @@ sta.Stack<String> colorStack = sta.Stack();
 
 apiManager(Offline _offline) {
   //The parser list index corresponding to the user choice
-  switch (appSys.settings!["system"]["chosenParser"]) {
+  switch (appSys.settings.system.chosenParser) {
     case 0:
       return APIEcoleDirecte(_offline);
 
@@ -118,8 +118,9 @@ String linkify(String link) {
   });
 }
 
-setChosenParser(int? chosen) async {
-  await appSys.updateSetting(appSys.settings!["system"], "chosenParser", chosen);
+setChosenParser(int chosen) async {
+  appSys.settings.system.chosenParser = chosen;
+  appSys.saveSettings();
 }
 
 testIfPronoteCas(String url) async {
@@ -130,7 +131,7 @@ testIfPronoteCas(String url) async {
     url += "?fd=1";
   }
   var response = await http.get(Uri.parse(url));
-  printWrapped(response.body);
+  CustomLogger.logWrapped("API UTILS", "Response body", response.body);
   if (response.body.contains('id="id_body"')) {
     return false;
   } else {

@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 
 class AgendaController extends ChangeNotifier {
   DateTime? _date;
@@ -100,7 +101,7 @@ class AgendaController extends ChangeNotifier {
       }
       i++;
     });
-    print("Agenda events set");
+    CustomLogger.log("AGENDA", "Agenda events set");
   }
 
   initWeek() {

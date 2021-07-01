@@ -1,5 +1,6 @@
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/logic/app_config/models.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/core/utils/null_safe_map_getter.dart';
 import 'package:uuid/uuid.dart';
 
@@ -56,7 +57,7 @@ class PronoteAccountConverter {
         });
       });
     });
-    print(tabsNumbers);
+    CustomLogger.log("ACCOUNT", "Tabs numbers: $tabsNumbers");
     (hiddenTabs ?? []).forEach((element) {
       tabsNumbers.remove(element);
     });

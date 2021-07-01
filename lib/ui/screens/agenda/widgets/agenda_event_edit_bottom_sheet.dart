@@ -7,6 +7,7 @@ import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/data/agenda/events.dart';
 import 'package:ynotes/core/offline/data/agenda/reminders.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/buttons.dart';
@@ -284,7 +285,8 @@ class _AgendaEventEditLayoutState extends State<AgendaEventEditLayout> {
                                   recurringScheme = temp;
                                 });
 
-                                print(recurringScheme);
+                                CustomLogger.log(
+                                    "BOTTOM SHEET", "(Agenda event edit) Recurring scheme: $recurringScheme");
                               }
                             },
                             child: Container(
@@ -452,7 +454,7 @@ class _AgendaEventEditLayoutState extends State<AgendaEventEditLayout> {
   void initState() {
     super.initState();
     if (start == null && widget.isCustomEvent) {
-      print(widget.defaultDate);
+      CustomLogger.log("BOTTOM SHEET", "(Agenda event edit) Default data: ${widget.defaultDate}");
       setState(() {
         widget.defaultDate = DateTime.parse(DateFormat("yyyy-MM-dd").format(widget.defaultDate!));
         start = widget.defaultDate!.add(Duration(hours: 8));

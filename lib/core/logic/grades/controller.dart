@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:ynotes/core/apis/model.dart';
 import 'package:ynotes/core/data/disciplines_filter.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
 
 ///To use to collect grades in a view
@@ -70,7 +71,7 @@ class GradesController extends ChangeNotifier {
 
   //Get school periods;
   Future<void> refresh({bool force = false, refreshFromOffline = false}) async {
-    print("Refreshing grades " + (refreshFromOffline ? "from offline" : "online"));
+    CustomLogger.log("GRADES", "Refreshing grades " + (refreshFromOffline ? "from offline" : "online"));
     if (isSimulating && force) {
       isSimulating = false;
     }
@@ -147,7 +148,7 @@ class GradesController extends ChangeNotifier {
             classNumber: e.classNumber,
             generalRank: e.generalRank))
         .toList());
-    print("Merging ...");
+    CustomLogger.log("GRADES", "Merging");
     _simulatedDisciplines.forEach((discipline) {
       discipline.gradesList!.removeWhere((_grade) => _removedGrades.any((element) =>
           element!.date == _grade.date && element.value == _grade.value && element.testName == _grade.testName));
@@ -200,7 +201,7 @@ class GradesController extends ChangeNotifier {
           }
           break;
         case "littérature":
-          if (appSys.settings!["system"]["chosenParser"] == 0) {
+          if (appSys.settings.system.chosenParser == 0) {
             List<String> codeMatiere = filters["literary"]["ED"];
 
             if (f.periodName == _period &&
@@ -230,7 +231,7 @@ class GradesController extends ChangeNotifier {
 
           break;
         case "sciences":
-          if (appSys.settings!["system"]["chosenParser"] == 0) {
+          if (appSys.settings.system.chosenParser == 0) {
             List<String> codeMatiere = filters["sciences"]["ED"];
 
             if (f.periodName == _period &&
@@ -272,7 +273,7 @@ class GradesController extends ChangeNotifier {
               toReturn.add(f);
             }
           } else {
-            debugPrint("Specialties list is null");
+            CustomLogger.log("GRADES", "Specialties list is null");
           }
           break;
       }
@@ -294,7 +295,7 @@ class GradesController extends ChangeNotifier {
     double? temp;
     List<double> averages = [];
     for (Discipline f in disciplines()!.where((i) => i.periodName == _period)) {
-      if (appSys.settings!["system"]["chosenParser"] == 1) {
+      if (appSys.settings.system.chosenParser == 1) {
         if (f.generalAverage != null) {
           double? _temp = double.tryParse(f.generalAverage!.replaceAll(",", "."));
           if (temp != null && !temp.isNaN) {

@@ -54,7 +54,6 @@ class _AccountPageState extends State<AccountPage> {
                           child: ExpansionPanelList(
                               expandedHeaderPadding: EdgeInsets.zero,
                               expansionCallback: (index, newVal) {
-                                print(index);
                                 setState(() {
                                   expanded[index] = !(expanded[index] ?? false);
                                 });
@@ -151,8 +150,8 @@ class _AccountPageState extends State<AccountPage> {
                             width: (appSys.account?.apiType == API_TYPE.EcoleDirecte ? 30 : 50),
                             height: (appSys.account?.apiType == API_TYPE.EcoleDirecte ? 30 : 20),
                             image: AssetImage(appSys.account?.apiType == API_TYPE.EcoleDirecte
-                                ? 'assets/images/EcoleDirecte/EcoleDirecteIcon.png'
-                                : 'assets/images/Pronote/PronoteIcon.png'),
+                                ? 'assets/images/icons/ecoledirecte/EcoleDirecteIcon.png'
+                                : 'assets/images/icons/pronote/PronoteIcon.png'),
                             color: appSys.account?.apiType == API_TYPE.EcoleDirecte ? ThemeUtils.textColor() : null,
                           ),
                         ),
@@ -348,12 +347,10 @@ class _LoginStatusState extends State<LoginStatus> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.4,
-                  () {
+              CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.4, () {
                 model.login();
               }, backgroundColor: Colors.orange, label: "Reconnexion", textColor: Colors.white),
-              CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.4,
-                  () {
+              CustomButtons.materialButton(context, null, screenSize.size.height / 10 * 0.4, () {
                 //show wiredash
                 Wiredash.of(context)!.show();
               }, backgroundColor: Colors.blue, label: "Support", textColor: Colors.white),

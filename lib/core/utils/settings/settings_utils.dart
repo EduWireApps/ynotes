@@ -1,7 +1,8 @@
 import 'dart:convert';
 
-import 'package:collection/collection.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
+import 'package:ynotes/core/utils/settings/model.dart';
 
 class SettingsUtils {
   static const Map secureSettingsForm = {"username": "", "password": "", "pronoteurl": "", "pronotecas": ""};
@@ -13,7 +14,8 @@ class SettingsUtils {
       "chosenParser": null,
       "lastMailCount": 0,
       "lastGradeCount": 0,
-      "migratedHW": false
+      "migratedHW": false,
+      "accountIndex": null
     },
 
     ///The user's app global settings
@@ -50,7 +52,7 @@ class SettingsUtils {
   //and parse it to new settings format
   static forceRestoreOldSettings() async {
     var _oldSettings = await getOldSettings();
-    await setSetting(_oldSettings);
+    await setSetting(FormSettings.fromJson(_oldSettings));
     return _oldSettings;
   }
 
@@ -84,9 +86,9 @@ class SettingsUtils {
     return value;
   }
 
-  static Future<Map> getOldSettings() async {
+  static Future<Map<String, dynamic>> getOldSettings() async {
     //Deep clone lol
-    Map _settings = json.decode(json.encode(settingsForm));
+    Map<String, dynamic> _settings = json.decode(json.encode(settingsForm));
 
     for (var key1 in (_settings["user"] as Map).keys) {
       for (var entry in (_settings["user"][key1] as Map).entries) {
@@ -134,41 +136,25 @@ class SettingsUtils {
     //The user's settings per page
   }
 
-  static Future<Map?> getSavedSettings() async {
+  static Future<Map<String, dynamic>?> getSavedSettings() async {
     final prefs = await SharedPreferences.getInstance();
     String? settings = prefs.getString("settings");
-
     if (settings == null) {
       settings = json.encode(settingsForm);
     }
-    print(settingsForm);
-    print(settings);
-
-    Map? _settings = json.decode(settings);
-    return mergeMaps(json.decode(json.encode(settingsForm)), _settings ?? {});
+    Map<String, dynamic>? _settings = json.decode(settings);
+    return _settings;
   }
 
   //Oops
   static getSettings() async {
-    Map _settings;
-    Map _oldSettings;
-    Map? _newSettings;
-    _oldSettings = await getOldSettings();
-    _newSettings = await getSavedSettings();
-
-    print(_newSettings == null);
-    //merge settings
-    _settings = Map.from(json.decode(json.encode(_oldSettings)))..addAll(_newSettings ?? {});
-    if (_newSettings == null) {
-      await setSetting(_settings);
-    }
-    print(_settings);
-    return _settings;
+    return FormSettings.fromJson((await getSavedSettings()) ?? {});
   }
 
-  static setSetting(Map? newMap) async {
+  static setSetting(FormSettings newSettings) async {
     final prefs = await SharedPreferences.getInstance();
-    String encoded = json.encode(newMap);
+    String encoded = json.encode(newSettings);
+    CustomLogger.log("SETTINGS", "Set setting: $encoded");
     await prefs.setString("settings", encoded);
   }
 }

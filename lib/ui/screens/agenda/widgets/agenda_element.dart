@@ -175,7 +175,7 @@ class _AgendaElementState extends State<AgendaElement> {
                                     child: Container(
                                       decoration: BoxDecoration(
                                         image: DecorationImage(
-                                          image: AssetImage('assets/images/redGrid.png'),
+                                          image: AssetImage('assets/images/pageItems/agenda/redGrid.png'),
                                           fit: BoxFit.fill,
                                         ),
                                       ),

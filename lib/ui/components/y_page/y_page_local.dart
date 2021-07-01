@@ -7,8 +7,9 @@ class YPageLocal extends StatefulWidget {
   final Widget child;
   final String title;
   final List<IconButton>? actions;
-
-  const YPageLocal({Key? key, required this.child, required this.title, this.actions}) : super(key: key);
+  final bool scrollable;
+  const YPageLocal({Key? key, required this.child, required this.title, this.actions, this.scrollable = true})
+      : super(key: key);
 
   @override
   _YPageLocalState createState() => _YPageLocalState();
@@ -33,6 +34,8 @@ class _YPageLocalState extends State<YPageLocal> {
             systemOverlayStyle: ThemeUtils.isThemeDark ? SystemUiOverlayStyle.light : SystemUiOverlayStyle.dark,
             brightness: ThemeUtils.isThemeDark ? Brightness.dark : Brightness.light,
             actions: widget.actions),
-        body: YShadowScrollContainer(color: Theme.of(context).backgroundColor, children: [widget.child]));
+        body: widget.scrollable
+            ? YShadowScrollContainer(color: Theme.of(context).backgroundColor, children: [widget.child])
+            : widget.child);
   }
 }

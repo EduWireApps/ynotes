@@ -111,7 +111,7 @@ class _SchoolLifePageState extends State<SchoolLifePage> with LayoutMixin {
                     onPressed: () {
                       model.refresh(force: true);
                     },
-                    child: model.loading
+                    child: !model.loading
                         ? Text("Recharger",
                             style: TextStyle(
                                 fontFamily: "Asap",

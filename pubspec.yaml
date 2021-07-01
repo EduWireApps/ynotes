@@ -11,11 +11,11 @@ description: yNotes application de gestion de vie scolaire
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.
-version: 0.12.0+9
+version: 0.12.1+9
 publish_to: none
 
 environment:
-  sdk: '>=2.12.0 <3.0.0'
+  sdk: ">=2.12.0 <3.0.0"
 dependencies:
   flutter:
     sdk: flutter
@@ -62,7 +62,6 @@ dependencies:
       url: https://github.com/EduWireApps/ynotes-components
       ref: main
   android_alarm_manager: ^2.0.0
-  animated_text_kit: ^4.1.1
   another_flushbar: ^1.10.17
   app_settings: ^4.1.0
   auto_size_text: ^3.0.0-nullsafety.0
@@ -110,12 +109,14 @@ dependencies:
   open_file: ^3.0.1
   package_info: ^2.0.0
   path_provider: ^2.0.1
+  pin_code_fields: ^7.2.0
   percent_indicator: ^3.3.0-nullsafety.1
   permission_handler: ^6.1.1
   pointycastle: ^3.0.1
   preload_page_view: ^0.1.6
   provider: ^5.0.0
-  rive: ^0.7.10
+  qr_code_scanner: ^0.5.1
+  rive: ^0.7.18
   rxdart: ^0.26.0
   scrollable_positioned_list: ^0.2.0-nullsafety.0
   shake: ^1.0.0
@@ -124,6 +125,8 @@ dependencies:
   shimmer: ^2.0.0-nullsafety.0
   sliding_up_panel: ^2.0.0+1
   smooth_page_indicator: ^0.3.0-nullsafety.0
+  flutter_svg: ^0.22.0
+
   sqflite: ^2.0.0+3
   stack: ^0.2.1
 
@@ -212,19 +215,20 @@ flutter:
           weight: 700
 
   assets:
-    - assets/images/logoED.svg
-    - assets/images/shelves/calendar.png
-    - assets/images/shelves/clock.png
-    - assets/images/shelves/shelve1.png
-    - assets/images/shelves/shelve2.png
-    - assets/images/totor.png
-    - assets/images/book.png
     - assets/animations/
     - assets/images/
-    - assets/images/persistantNotification/
-    - assets/images/Pronote/
-    - assets/images/EcoleDirecte/
+    - assets/images/icons/pronote/
+    - assets/images/icons/ecoledirecte/
+    - assets/images/icons/laviescolaire/
+    - assets/images/icons/app/
+    - assets/images/pageItems/agenda/
+    - assets/images/pageItems/carousel/shelves/
+    - assets/images/pageItems/carousel/
+    - assets/images/pageItems/grades/
+    - assets/images/pageItems/homework/
+    - assets/images/pageItems/persistantNotification/
+    - assets/images/pageItems/login/
+    - assets/documents/updateNoteAssets/
     - assets/appico/
     - assets/appico/foreground.png
-    - assets/TOS_fr.txt
-    - assets/updateNoteAssets/
+    - assets/documents/TOS_fr.txt

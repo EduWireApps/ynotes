@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:ynotes/core/apis/ecole_directe/converters_exporter.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 
 class EcoleDirecteHomeworkConverter {
   static List<Homework> homework(Map<String, dynamic> hwData) {
@@ -64,7 +65,7 @@ class EcoleDirecteHomeworkConverter {
           homeworkList.add(hw);
         }
       } catch (e) {
-        print(e.toString());
+        CustomLogger.error(e);
       }
     });
     return homeworkList;

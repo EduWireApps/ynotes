@@ -1,5 +1,6 @@
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/offline.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/useful_methods.dart';
 
 class DisciplinesOffline {
@@ -12,7 +13,8 @@ class DisciplinesOffline {
     try {
       return await parent.offlineBox?.get("disciplines").cast<Discipline>();
     } catch (e) {
-      print("Error while returning disciplines" + e.toString());
+      CustomLogger.log("DISCIPLINES", "An error occured while returning disciplines");
+      CustomLogger.error(e);
       return null;
     }
   }
@@ -33,7 +35,8 @@ class DisciplinesOffline {
       try {
         listPeriods.sort((a, b) => a.name!.compareTo(b.name!));
       } catch (e) {
-        print(e);
+        CustomLogger.log("DISCIPLINES", "An error occured while sorting disciplines");
+        CustomLogger.error(e);
       }
       return listPeriods;
     } catch (e) {
@@ -44,11 +47,12 @@ class DisciplinesOffline {
   ///Update existing disciplines (clear old data) with passed data
   updateDisciplines(List<Discipline> newData) async {
     try {
-      print("Updating disciplines");
+      CustomLogger.log("DISCIPLINES", "Updating disciplines");
       await parent.offlineBox?.delete("disciplines");
       await parent.offlineBox?.put("disciplines", newData);
     } catch (e) {
-      print("Error while updating disciplines " + e.toString());
+      CustomLogger.log("DISCIPLINES", "An error occured while updating disciplines");
+      CustomLogger.error(e);
     }
   }
 }

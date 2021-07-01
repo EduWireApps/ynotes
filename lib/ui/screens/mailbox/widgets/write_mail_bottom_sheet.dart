@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:ynotes/core/apis/ecole_directe.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
 
@@ -75,7 +76,7 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                       children: [
                         IconButton(
                           onPressed: () async {
-                            print(await controller.getText());
+                            CustomLogger.log("BOTTOM SHEET", "(Write mail) Editor text: ${await controller.getText()}");
 
                             if (selectedRecipients!.isNotEmpty) {
                               Navigator.pop(context, [
@@ -163,7 +164,7 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                           List<String> recipientsName = [];
                           if (recipients != null) {
                             recipients.forEach((element) {
-                              print(element.id);
+                              CustomLogger.log("BOTTOM SHEET", "(Write mail) Recipient id: ${element.id}");
                               String name = element.name ?? "";
                               String surname = element.surname ?? "";
                               String discipline = element.discipline ?? "";
@@ -179,7 +180,7 @@ class _WriteMailBottomSheetState extends State<WriteMailBottomSheet> {
                               context, recipientsName, alreadySelected,
                               singleChoice: false))) as List<int>?;
                           if (selection != null) {
-                            print(selection);
+                            CustomLogger.log("BOTTOM SHEET", "(Write mail) Selection: $selection");
                             setState(() {
                               selection.forEach((index) {
                                 if (!selectedRecipients!.contains(recipients![index]))

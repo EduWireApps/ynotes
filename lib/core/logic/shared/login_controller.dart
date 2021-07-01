@@ -1,5 +1,6 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/useful_methods.dart';
 
@@ -16,7 +17,7 @@ class LoginController extends ChangeNotifier {
 
   bool attemptedToRelogin = false;
   LoginController() {
-    print("Init login controller");
+    CustomLogger.log("LOGIN", "Init controller");
     _connectivity.onConnectivityChanged.listen(connectionChanged);
   }
 
@@ -47,7 +48,7 @@ class LoginController extends ChangeNotifier {
 
 //on connection change
   init() async {
-    print("Init connection status");
+    CustomLogger.log("LOGIN", "Init connection status");
 
     if (await _connectivity.checkConnectivity() == ConnectivityResult.none) {
       _actualState = loginStatus.offline;
@@ -73,9 +74,14 @@ class LoginController extends ChangeNotifier {
       String? url = await readStorage("pronoteurl");
       String? cas = await readStorage("pronotecas");
       bool? iscas = (await readStorage("ispronotecas") == "true");
+
       var z = await readStorage("agreedTermsAndConfiguredApp");
       if (u != null && p != null && z != null) {
-        await appSys.api!.login(u, p, url: url, mobileCasLogin: iscas, cas: cas).then((List loginValues) {
+        await appSys.api!.login(u, p, additionnalSettings: {
+          "url": url,
+          "mobileCasLogin": iscas,
+          "cas": cas,
+        }).then((List loginValues) {
           // ignore: unnecessary_null_comparison
           if (loginValues == null) {
             _actualState = loginStatus.loggedOff;
@@ -83,13 +89,14 @@ class LoginController extends ChangeNotifier {
             notifyListeners();
           }
           if (loginValues[0] == 1) {
+            logs = "";
             _details = "Connecté";
             _actualState = loginStatus.loggedIn;
             attemptedToRelogin = false;
 
             notifyListeners();
           } else {
-            print("La valeur est :" + loginValues[1].toString());
+            CustomLogger.log("LOGIN", "La valeur est : ${loginValues[1]}");
             if (loginValues[1].contains("IP")) {
               _details = "Ban temporaire IP !";
             } else {

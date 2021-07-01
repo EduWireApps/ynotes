@@ -12,6 +12,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share/share.dart';
 import 'package:ynotes/core/apis/utils.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 
@@ -151,7 +152,7 @@ class _ShareBoxState extends State<ShareBox> {
                             bottom: screenSize.size.height / 10 * 0.1,
                             right: screenSize.size.width / 5 * 0.1,
                             child: Image(
-                              image: AssetImage('assets/images/LogoYNotes.png'),
+                              image: AssetImage('assets/images/icons/app/AppIcon.png'),
                               color: ThemeUtils.textColor(),
                               height: screenSize.size.height / 10 * 0.3,
                               width: screenSize.size.width / 5 * 0.4,
@@ -192,7 +193,8 @@ class _ShareBoxState extends State<ShareBox> {
       setState(() {});
       return pngBytes;
     } catch (e) {
-      print(e);
+      CustomLogger.log("DIALOGS", "(Share grade) AN error occured while trying to screenshot");
+      CustomLogger.error(e);
     }
   }
 }

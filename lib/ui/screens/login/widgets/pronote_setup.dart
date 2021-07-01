@@ -32,11 +32,11 @@ class _PronoteSetupPartState extends State<PronoteSetupPart> {
       children: [
         Column(
           children: [
-            /*_buildPronoteLoginWay(
+           _buildPronoteLoginWay(
                 "Scanner un QR Code", "Scannez le QR code fourni par votre établissement.", Icons.qr_code, "qrcode"),
             SizedBox(
               height: screenSize.size.height / 10 * 0.1,
-            ),*/
+            ),
             _buildPronoteLoginWay("Etablissements proches",
                 "Utilisez la géolocalisation pour situer votre établissement.", MdiIcons.mapMarker, "location"),
             SizedBox(

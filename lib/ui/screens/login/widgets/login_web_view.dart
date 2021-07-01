@@ -6,11 +6,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:ynotes/core/apis/pronote/pronote_cas.dart';
+import 'package:uuid/uuid.dart';
 import 'package:ynotes/core/apis/utils.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/buttons.dart';
-import 'package:uuid/uuid.dart';
 
 // ignore: must_be_immutable
 class LoginWebView extends StatefulWidget {
@@ -32,24 +32,29 @@ class _LoginWebViewState extends State<LoginWebView> {
   String? serverUrl;
   String? espaceUrl;
   bool auth = false;
-  int step = 3;
+  int step = 1;
+
+  //Checking the profile and getting the credentials
   authAndValidateProfile() async {
-    print("Validating profile");
-    //navigate to address
+    CustomLogger.log("LOGIN", "(Web view) Validating profile");
 
     Timer(new Duration(milliseconds: 1500), () async {
       setState(() {
         auth = true;
       });
+
+      //We use this window function to get the credentials
       String loginDataProcess =
           "(function(){return window && window.loginState ? JSON.stringify(window.loginState) : \'\';})();";
       String? loginDataProcessResult = await (widget.controller!.evaluateJavascript(source: loginDataProcess));
+      //We are finally parsing the credentials, hurray !
       getCreds(loginDataProcessResult);
       if (loginStatus != null) {
         setState(() {
-          step = 5;
+          step = 3;
         });
         //url: widget.url + "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335"
+        //A weird URL
         await widget.controller!.loadUrl(
             urlRequest: URLRequest(url: Uri.parse(widget.url! + "?fd=1&bydlg=A6ABB224-12DD-4E31-AD3E-8A39A1C2C335")));
       }
@@ -94,10 +99,6 @@ class _LoginWebViewState extends State<LoginWebView> {
             onProgressChanged: (InAppWebViewController controller, int progress) {},
           ),
           Align(
-            alignment: Alignment.bottomCenter,
-            child: _buildText(loginStatus != null ? loginStatus!["mdp"] : ""),
-          ),
-          Align(
             alignment: Alignment.bottomRight,
             child: _buildFloatingButton(context),
           ),
@@ -132,92 +133,39 @@ class _LoginWebViewState extends State<LoginWebView> {
     );
   }
 
-  getCookie() {}
-
+  //Here, we parse the credentials
   getCreds(String? credsData) {
     if (credsData != null && credsData.length > 0) {
-      printWrapped(credsData);
+      CustomLogger.logWrapped("LOGIN", "Credentials data", credsData);
       Map temp = json.decode(credsData);
-      print(temp["status"]);
+      CustomLogger.log("LOGIN", "(Web view) Status: ${temp["status"]}");
       if (temp["status"] == 0) {
         loginStatus = temp;
         Navigator.of(context).pop(loginStatus);
       } else {}
     } else {
-      print("NULL");
+      //This can happen if the page is not fully loaded
+      CustomLogger.log("LOGIN", "(Web view) Credentials are null");
     }
   }
 
-  getMetas() async {
-    print("Getting metas");
-    //Injected function to get metas
-    String metaGetFunction = "(function(){return document.body.innerText;})()";
-    String? metaGetResult = await (widget.controller!.evaluateJavascript(source: metaGetFunction));
-    if (metaGetResult != null && metaGetResult.length > 0) {
-      loginData = json.decode(metaGetResult);
-      setState(() {
-        step = 2;
-      });
-      stepper();
-    } else {
-      print("Failed to get metas");
-    }
-  }
-
+  //IDK if it's still useful, but It redirects the user to the Pronote official page and log in
   loginTest() async {
-    print("Login test");
+    CustomLogger.log("LOGIN", "(Web view) Login test");
     Timer(new Duration(milliseconds: 1500), () async {
-      String toexecute = 'if(!window.messageData) /*window.messageData = [];*/'
-          /*'window._finLoadingScriptAppliMobile = function(){' +
-          '  messageData.push({action: \'load\'});' +
-          '};' */
-          /*'if(document.querySelectorAll(\'.conteneur\').length === 1){' +
-          '  messageData.push({action: \'errorMsg\', msg: document.querySelectorAll(\'.conteneur\')[0].innerText});' +
-          '}' */
-          /*'var isError = document.body.textContent.match(/HTTP Error ([0-9]{3})/i);' +
-          'if(isError && isError.length > 1 && parseInt(isError[1]) > 399) {' +
-          '  messageData.push({action: \'errorStatus\', msg: isError[1]});' +
-          '}'*/
-          ;
+      String toexecute = 'if(!window.messageData) /*window.messageData = [];*/';
       await widget.controller!.evaluateJavascript(source: toexecute);
-      /* print("A" + a.toString());
-      String toexecute3 =
-          "(function(){var lMessData = window.messageData && window.messageData.length ? window.messageData.splice(0, window.messageData.length) : \'\';return lMessData ? JSON.stringify(lMessData) : \'\';})()";
-      String c = await widget.controller.evaluateJavascript(source: toexecute3);*/
-
-      /*  String amiajoketou = await widget.controller.evaluateJavascript(source: joker);
-      print(amiajoketou);*/
     });
   }
 
-  selectProfile() async {
-    print("Selecting profile");
-
-    //lets hardcode the profile
-    currentProfile = Map();
-
-    ///TO DO NOT HARCODE
-    currentProfile["serverUrl"] = widget.url;
-    currentProfile["espaceUrl"] = loginData["espaces"][5]["URL"];
-    currentProfile["nomEsp"] = loginData["espaces"][5]["nom"];
-    currentProfile["nomEtab"] = loginData["nomEtab"];
-    currentProfile["estCAS"] = loginData["CAS"]["actif"];
-    currentProfile["casURL"] = loginData["CAS"]["casURL"];
-    currentProfile["login"] = "";
-    currentProfile["jeton"] = "";
-
-    setState(() {
-      step = 3;
-    });
-    stepper();
-  }
-
+  //We set the login cookie here
   setCookie() async {
-    print("Setting cookie");
+    CustomLogger.log("LOGIN", "(Web view) Setting cookie");
     //generate UUID
-    await appSys.updateSetting(appSys.settings!["system"], "uuid", Uuid().v4());
-
-    //set cookie
+    appSys.settings.system.uuid = Uuid().v4();
+    appSys.saveSettings();
+    //We use the window function to create a cookie
+    //Looks like this one contains an important UUID which is used by Pronote to fingerprint the device and makes sure that nobody will use this cookie on another one
     String cookieFunction = '(function(){try{' +
         'var lJetonCas = "", lJson = JSON.parse(document.body.innerText);' +
         'lJetonCas = !!lJson && !!lJson.CAS && lJson.CAS.jetonCAS;' +
@@ -225,7 +173,7 @@ class _LoginWebViewState extends State<LoginWebView> {
         'if(!!lJetonCas) {' +
         'document.cookie = "validationAppliMobile="+lJetonCas+";expires=" + new Date(new Date().getTime() + (5*60*1000)).toUTCString();' +
         'document.cookie = "uuidAppliMobile=' +
-        appSys.settings!["system"]["uuid"] +
+        appSys.settings.system.uuid! +
         ';expires=" + new Date(new Date().getTime() + (5*60*1000)).toUTCString();' +
         'document.cookie = "ielang=' +
         "1036" +
@@ -233,44 +181,37 @@ class _LoginWebViewState extends State<LoginWebView> {
         'return "ok";' +
         '} else return "ko";' +
         '} catch(e){return "ko";}})();';
+
+    //We evaluate the cookie function
     String? cookieFunctionResult = await (widget.controller!.evaluateJavascript(source: cookieFunction));
+    //If it contains "ok" we are logged in
     if (cookieFunctionResult == "ok") {
+      //We use this window function to redirect to the special login page
       String authFunction = 'location.assign("' + widget.url! + '?fd=1")';
+      //We logically set the next step before redirecting the page
       setState(() {
-        step = 4;
+        step = 2;
       });
       await (widget.controller!.evaluateJavascript(source: authFunction));
-
       stepper();
     }
   }
 
-  ///called on load stop
+  ///Called at each page load stop
+  ///Represents login steps
   stepper() async {
     switch (step) {
-      //Get url metas
       case 1:
-        {
-          await getMetas();
-        }
-        break;
-      //It should let the user chose its space...
-      case 2:
-        {
-          await selectProfile();
-        }
-        break;
-      case 3:
         {
           await setCookie();
         }
         break;
-      case 4:
+      case 2:
         {
           await authAndValidateProfile();
         }
         break;
-      case 5:
+      case 3:
         {
           await loginTest();
         }
@@ -301,12 +242,4 @@ class _LoginWebViewState extends State<LoginWebView> {
       ),
     );
   }
-
-  _buildText(String text) {
-    return SelectableText(text);
-  }
-
-  //I have to get an address like that
-  //https://0782540m.index-education.net/pronote/InfoMobileApp.json?id=0D264427-EEFC-4810-A9E9-346942A862A4
-
 }

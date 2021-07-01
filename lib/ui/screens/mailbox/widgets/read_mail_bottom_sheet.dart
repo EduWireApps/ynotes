@@ -7,6 +7,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:url_launcher/url_launcher.dart';
 import 'package:ynotes/core/apis/ecole_directe.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/buttons.dart';
@@ -30,7 +31,7 @@ class _ReadMailBottomSheetState extends State<ReadMailBottomSheet> with LayoutMi
 
   @override
   Widget build(BuildContext context) {
-    print(this.widget.mail.id);
+    CustomLogger.log("BOTTOM SHEET", "(Read mail) Mail id: ${this.widget.mail.id}");
     MediaQueryData screenSize = MediaQuery.of(context);
     return Wrap(
       alignment: WrapAlignment.center,

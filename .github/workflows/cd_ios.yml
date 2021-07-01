@@ -77,6 +77,9 @@ jobs:
           bundle install   
         working-directory: ios/fastlane
 
+      - name: Build for iOS
+        run: flutter build ios --release
+
       - name: Update to App Store
         working-directory: ios
         run: |

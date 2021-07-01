@@ -5,6 +5,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/data/agenda/reminders.dart';
 import 'package:ynotes/core/services/notifications.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/modal_bottom_sheets/drag_handle.dart';
@@ -249,7 +250,8 @@ class _LessonDetailsDialogState extends State<LessonDetailsDialog> {
                           } else {
                             return GestureDetector(
                               onTap: () async {
-                                print(reminders[index]);
+                                CustomLogger.log(
+                                    "BOTTOM SHEET", "(Agenda event details) Reminders ${reminders[index]}");
 
                                 var reminder = await agendaEventEdit(context, false,
                                     lessonID: widget.event.id, reminder: reminders[index]);

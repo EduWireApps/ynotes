@@ -1,6 +1,7 @@
 import 'package:intl/intl.dart';
 import 'package:ynotes/core/apis/pronote/pronote_api.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/core/utils/null_safe_map_getter.dart';
 
 class PronoteLessonsConverter {
@@ -19,7 +20,8 @@ class PronoteLessonsConverter {
     for (Map? endTime in (mapGet(client.funcOptions, ['donneesSec', 'donnees', 'General', 'ListeHeuresFin', 'V']))) {
       if (mapGet(endTime, ['G']) == endPlace) {
         if (endTime != null) {
-          print(matiere! + " " + "START " + start.toString() + " END " + endTime["L"]);
+          CustomLogger.log(
+              "PRONOTE", "Lessons: " + matiere! + " " + "START " + start.toString() + " END " + endTime["L"]);
         }
         DateTime endTimeDate = DateFormat("""HH'h'mm""").parse(mapGet(endTime, ["L"]));
         end = DateTime(start.year, start.month, start.day, endTimeDate.hour, endTimeDate.minute);
@@ -83,7 +85,7 @@ class PronoteLessonsConverter {
       try {
         lessonsList.add(PronoteLessonsConverter.lesson(client, lesson));
       } catch (e) {
-        print(e);
+        CustomLogger.error(e);
       }
     });
     return lessonsList;

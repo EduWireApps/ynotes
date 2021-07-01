@@ -11,6 +11,8 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 
+import 'logging_utils.dart';
+
 ///Every action related to files
 class FileAppUtil {
   static getCsv(List<Grade> associateGradeList) async {
@@ -70,7 +72,8 @@ class FileAppUtil {
         try {
           file = Directory(path).listSync();
         } catch (e) {
-          print("Error while getting file list " + e.toString());
+          CustomLogger.log("FILE UTILS", "An error occured while getting the file list");
+          CustomLogger.error(e);
         }
         //use your folder name insted of resume.
         List<FileInfo> listFiles = [];
@@ -80,7 +83,8 @@ class FileAppUtil {
             listFiles.add(new FileInfo(element, await FileAppUtil.getLastModifiedDate(element),
                 await FileAppUtil.getFileNameWithExtension(element)));
           } catch (e) {
-            print(e);
+            CustomLogger.log("FILE UTILS", "An error occured while adding file to list");
+            CustomLogger.error(e);
           }
         });
 
@@ -122,7 +126,8 @@ class FileAppUtil {
 
       await OpenFile.open(path!);
     } catch (e) {
-      print("Failed to open file : " + e.toString());
+      CustomLogger.log("FILE UTILS", "An error occured while opening file");
+      CustomLogger.error(e);
     }
   }
 
@@ -136,13 +141,14 @@ class FileAppUtil {
   }
 
   static writeInFile(String data, String fileName) async {
-    print("Writing");
+    CustomLogger.log("FILE UTILS", "Writing file");
     try {
       final directory = await FolderAppUtil.getDirectory();
       final File file = File('${directory.path}/$fileName.txt');
       await file.writeAsString(data, mode: FileMode.write);
     } catch (e) {
-      print(e.toString());
+      CustomLogger.log("FILE UTILS", "An error occured while writing $fileName²");
+      CustomLogger.error(e);
     }
   }
 }
@@ -161,7 +167,7 @@ class FolderAppUtil {
 
     if (!await _appDocDirFolder.exists()) {
       await _appDocDirFolder.create(recursive: true);
-      print("creating $path");
+      CustomLogger.log("FILE UTILS", "Created $path folder");
     }
   }
 

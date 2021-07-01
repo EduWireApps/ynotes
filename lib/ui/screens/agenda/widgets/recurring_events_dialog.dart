@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/buttons.dart';
@@ -189,7 +190,7 @@ class _RecurringEventsDialogState extends State<RecurringEventsDialog> {
   export() {
     String scheme = "";
     if (enabled!) {
-      print(weekType.toString());
+      CustomLogger.log("DIALOGS", "(Recurring events) Week type: $weekType");
       scheme += weekType.toString();
       scheme += (everyDay! ? "1" : "0");
       for (int i = 1; i < 8; i++) {
@@ -245,7 +246,8 @@ class _RecurringEventsDialogState extends State<RecurringEventsDialog> {
   }
 
   getReverseAB() async {
-    bool reverse = appSys.settings!["user"]["agendaPage"]["reverseWeekNames"];
+    bool reverse = appSys.settings.user.agendaPage.reverseWeekNames;
+    appSys.saveSettings();
     if (reverse) {
       setState(() {
         weekTypes = ["Toutes les semaines", "Semaine B", "Semaine A"];

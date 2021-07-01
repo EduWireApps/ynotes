@@ -9,6 +9,7 @@ import 'package:ynotes/core/apis/ecole_directe.dart';
 import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/logic/shared/download_controller.dart';
 import 'package:ynotes/core/utils/file_utils.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/core/utils/theme_utils.dart';
 import 'package:ynotes/ui/components/custom_loader.dart';
 import 'package:ynotes/ui/components/y_page/y_page.dart';
@@ -82,7 +83,7 @@ class _CloudPageState extends State<CloudPage> with LayoutMixin {
                           : () {
                               if (path != "/") {
                                 var splits = path.split("/");
-                                print(splits.length);
+                                CustomLogger.log("CLOUD", "Splits length: ${splits.length}");
                                 if (splits.length > 2) {
                                   var finalList = splits.sublist(1, splits.length - 2);
                                   var concatenate = StringBuffer();
@@ -90,7 +91,7 @@ class _CloudPageState extends State<CloudPage> with LayoutMixin {
                                   finalList.forEach((item) {
                                     concatenate.write(r'/' + item);
                                   });
-                                  print(concatenate);
+                                  CustomLogger.log("CLOUD", "Concatenate: $concatenate");
                                   setState(() {
                                     path = concatenate.toString() + '/';
                                   });
@@ -387,7 +388,7 @@ class _CloudPageState extends State<CloudPage> with LayoutMixin {
   }
 
   changeDirectory(CloudItem? item) async {
-    print(path);
+    CustomLogger.log("CLOUD", "New path: $path");
     setState(() {
       cloudFolderFuture = getCloud(path, "CD", item);
       isLoading = true;

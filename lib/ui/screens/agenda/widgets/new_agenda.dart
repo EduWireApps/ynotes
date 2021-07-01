@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:preload_page_view/preload_page_view.dart';
 import 'package:provider/provider.dart';
 import 'package:ynotes/core/logic/agenda/controller.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
 import 'package:ynotes/ui/components/buttons.dart';
 
@@ -32,7 +33,7 @@ class _Agenda2State extends State<Agenda2> {
                       appSys.agendaController
                           .setDay(CalendarTime(DateTime.now()).startOfDay.add(Duration(days: (position - 365))));
 
-                      print(position);
+                      CustomLogger.log("NEW AGENDA", "Page position: $position");
                     },
                     preloadPagesCount: 3,
                     controller: con,

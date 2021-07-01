@@ -9,6 +9,7 @@ import 'package:ynotes/core/logic/models_exporter.dart';
 import 'package:ynotes/core/offline/data/agenda/events.dart';
 import 'package:ynotes/core/offline/offline.dart';
 import 'package:ynotes/core/services/space/recurringEvents.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 import 'package:ynotes/globals.dart';
 
 part 'model.g.dart';
@@ -25,7 +26,7 @@ abstract class API {
     final storage = new FlutterSecureStorage();
     String? appAccount = await storage.read(key: "appAccount");
     if (appAccount != null) {
-      print("Returning account");
+      CustomLogger.log("API MODEL", "Returning account");
       return AppAccount.fromJson(jsonDecode(appAccount));
     } else {
       return null;
@@ -97,7 +98,7 @@ abstract class API {
 
   ///Connect to the API
   ///Should return a connection status
-  Future<List> login(username, password, {url, cas, mobileCasLogin});
+  Future<List> login(username, password, {Map? additionnalSettings});
 
   ///Test to know if there are new grades
   Future<bool?> testNewGrades();
@@ -151,13 +152,20 @@ class SchoolAccount {
 
   final String? studentID;
 
+  final String? profilePicture;
   //Tabs the student can have access to
   List<appTabs> availableTabs;
 
   ///Configuration credentials
   Map? credentials;
   SchoolAccount(
-      {this.name, this.studentClass, this.studentID, required this.availableTabs, this.surname, this.schoolName})
+      {this.name,
+      this.studentClass,
+      this.studentID,
+      required this.availableTabs,
+      this.surname,
+      this.schoolName,
+      this.profilePicture})
       : super();
   factory SchoolAccount.fromJson(Map<String, dynamic> json) => _$SchoolAccountFromJson(json);
   Map<String, dynamic> toJson() => _$SchoolAccountToJson(this);

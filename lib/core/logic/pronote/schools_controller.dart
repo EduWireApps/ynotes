@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:ynotes/core/logic/models_exporter.dart';
+import 'package:ynotes/core/utils/logging_utils.dart';
 
 class PronoteSchoolsController extends ChangeNotifier {
   bool geolocating = false;
@@ -82,7 +83,7 @@ class PronoteSchoolsController extends ChangeNotifier {
     // When we reach here, permissions are granted and we can
     // continue accessing the position of the device.
     Position pos = await Geolocator.getCurrentPosition();
-    print(pos.longitude.toString() + " " + pos.latitude.toString());
+    CustomLogger.log("PRONOTE", "(Schools) Current position: ${pos.longitude} ${pos.latitude}");
     try {
       await schoolRequest(pos.longitude, pos.latitude);
     } catch (e) {
@@ -108,7 +109,7 @@ class PronoteSchoolsController extends ChangeNotifier {
         List<PronoteSpace> _spaces = [];
         var data = json.decode(response.body);
         data["espaces"].forEach((space) {
-          print(space["nom"].toUpperCase());
+          CustomLogger.log("PRONOTE", "(Schools) Space name: ${space["nom"].toUpperCase()}");
           if (space["nom"].toUpperCase().contains("ÉLÈVES"))
             _spaces.add(PronoteSpace(
                 name: space["nom"],
@@ -148,6 +149,6 @@ class PronoteSchoolsController extends ChangeNotifier {
     } else {
       throw "Impossible de se connecter. Essayez de vérifier votre connexion à Internet ou réessayez plus tard.";
     }
-    print(response.statusCode);
+    CustomLogger.log("PRONOTE", "(Schools) Request response status code: ${response.statusCode}");
   }
 }
